@@ -4,6 +4,7 @@
  * until per-pet rarity / base bonus values are available.
  */
 import {VERIFIED_GAME_DATA} from './verified-game-data.js';
+import {normalizedPetBonusTargets} from './pet-simple-math.js';
 const DATA=VERIFIED_GAME_DATA;
 // Grid growth milestones read from the in-game Rune Grid expansion table (monster level, not character level).
 export const RUNE_GRID_STAGES=Object.freeze([
@@ -70,6 +71,7 @@ export function normalizeBuild(build){
  b.monsterLevel=(Number.isInteger(Number(b.monsterLevel))&&Number(b.monsterLevel)>=1)?Math.min(100000,Math.floor(Number(b.monsterLevel))):minimum;
  b.petSetup=Array.from({length:PET_EQUIPPED_MAX},(_,i)=>normalizePetSlot(b.petSetup?.[i],typeof b.pets[i]==='string'?b.pets[i]:''));
  b.pets=b.petSetup.filter(p=>p.equipped).map(p=>p.name||statName(p.hatchBonus)||'Equipped pet');
+ b.petBonusTargets=normalizedPetBonusTargets(b);
  b.petMode=b.petMode==='permanent'?'permanent':'seasonal';b.schemaVersion=9;
  b.passiveAlloc=b.passiveAlloc&&typeof b.passiveAlloc==='object'?b.passiveAlloc:{};
  b.classAllocById=b.classAllocById&&typeof b.classAllocById==='object'?b.classAllocById:{};

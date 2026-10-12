@@ -1,8 +1,9 @@
 import {esc,icon} from './ui.js';
+import {PET_BONUS_OPTIONS,normalizedPetBonusTargets} from './pet-simple-math.js';
 import {RUNE_COLS,RUNE_ROWS,monsterLevelGrid,activeRuneBoard,RUNE_GRID_STAGES,RUNE_SHAPES,RUNE_FAMILIES,RUNE_FAMILY_DETAILS,RUNE_SECONDARIES,PET_AFFIX_DEFS,PET_HATCH_BONUSES,statName,petSummary} from './labs-engine.js';
 export const FAMILY_ICONS=Object.freeze({Fury:'F',Fortitude:'Ft',Precision:'P',Wisdom:'W',Vitality:'V',Bond:'B',Fortune:'Fo'});
 export function labsTabs(active='studio'){
- const pages=[['studio','labs/build','Equipment','shield'],['runes','labs/runes','Runes','gem'],['skills','labs/skills','Skills','git'],['passives','labs/passives','Passives','layers'],['pets','labs/pets','Pets','paw']];
+ const pages=[['studio','labs/build','Equipment','shield'],['runes','labs/runes','Runes','gem'],['skills','labs/skills','Skills','git'],['passives','labs/passives','Passives','layers']];
  return `<nav class="labsTabs" aria-label="Character loadout sections">${pages.map(([id,url,label,glyph])=>`<button class="labsTab ${id===active?'active':''}" data-route="${url}" aria-current="${id===active?'page':'false'}">${icon(glyph,16)} ${label}</button>`).join('')}</nav>`;
 }
 const runeSummary=r=>`${r.family} · ${statName(r.secondary)}`;
@@ -31,11 +32,16 @@ export function runeOptionsUI({family='Fury',shape='small',secondary='critical_d
 const hatchChoice=p=>`<option value="">Choose hatch bonus</option>${[...new Set([p.hatchBonus,...PET_HATCH_BONUSES])].filter(Boolean).map(v=>`<option value="${esc(v)}" ${p.hatchBonus===v?'selected':''}>${esc(statName(v))}</option>`).join('')}`;
 const affixChoice=affix=>`<option value="">No affix</option>${PET_AFFIX_DEFS.map(v=>`<option value="${esc(v.name)}" ${affix.slug===v.name?'selected':''}>${esc(v.display_name.replace('{pet_element}','pet element'))}</option>`).join('')}`;
 export function petLoadoutView(build,readonly=false){
- const pets=build.petSetup||[];
- return `<section class="petLabV8"><div class="petHero"><div><span class="eyebrow">BUILD STUDIO / FOUR PET SLOTS</span><h2>Pet Loadout</h2><p>Only configure the pet and its current Drop Bonus. Compound and affix calculations belong to separate Labs tools.</p></div><span class="petConfigBadge">${pets.filter(p=>p.equipped).length}/4 equipped</span></div>
- <div class="petSimpleGrid">${pets.map((p,i)=>`<article class="petSimpleSlot"><div class="petSlotHead"><span class="petBadge">${icon('paw',20)}</span><div><span class="eyebrow">PET ${i+1}</span><strong>${esc(p.name||'Empty pet slot')}</strong></div><label class="petSwitch">Equipped <input type="checkbox" data-pet-equipped="${i}" ${p.equipped?'checked':''} ${readonly?'disabled':''}></label></div>
- <div class="petSimpleFields"><label>Pet<input data-pet-name="${i}" maxlength="90" value="${esc(p.name)}" placeholder="Name or pet type" ${readonly?'disabled':''}></label><label>Drop Bonus (%)<input data-pet-drop="${i}" type="number" min="0" max="100000000" step="any" inputmode="decimal" value="${p.dropBonus??''}" placeholder="Not set" ${readonly?'disabled':''}></label></div></article>`).join('')}</div>
- <div class="actionsGroup"><button class="btn primary" data-route="labs/build">${icon('shield',16)} Return to Build Studio</button><button class="btn secondary" data-route="calculators/pet">${icon('calculator',16)} Compound calculator</button></div><p class="boardFootnote">Drop Bonus is entered as shown in-game; Arcana does not derive or invent it. Existing detailed pet data is retained in older drafts but not shown here.</p></section>`;
+ const chosen=normalizedPetBonusTargets(build);
+ return `<section class="petBuildBonuses" aria-label="Four desired pet Drop Bonuses">
+ <div class="petBuildHead"><strong>Pet Drop Bonuses</strong><small>${chosen.filter(Boolean).length}/4 selected</small></div>
+ <p>Choose the four main bonuses you want for this build. Pet rarity, name, Compound and affix details belong in the calculators, not the loadout.</p>
+ <div class="petBuildGrid">${chosen.map((type,i)=>`<label>Pet ${i+1}
+ <select aria-label="Pet ${i+1} desired Drop Bonus" data-pet-bonus-target="${i}" ${readonly?'disabled':''}>
+ <option value="">Choose bonus</option>
+ ${PET_BONUS_OPTIONS.map(v=>`<option value="${esc(v.type)}" ${v.type===type?'selected':''}>${esc(v.label)}</option>`).join('')}
+ </select></label>`).join('')}</div>
+ </section>`;
 }
 export function petCompoundCalculatorView(build,mode='seasonal',levels=[0,0,0,0]){
  const pets=Array.from({length:4},(_,i)=>({equipped:true,compound:Math.max(0,Math.min(999,Math.floor(Number(levels?.[i])||0)))}));
@@ -47,6 +53,13 @@ export function petCompoundCalculatorView(build,mode='seasonal',levels=[0,0,0,0]
  <div class="actionsGroup"><button class="btn secondary" data-route="labs/pets">${icon('paw',16)} View pet loadout</button><button class="btn secondary" data-route="wiki/mechanic" data-params="id=pet-equalisation">${icon('book',16)} Read mechanics</button></div>
  <p class="notice">The effective Compound cap is calculated using the verified equalisation allowance. No Hatch Bonus growth or Drop Bonus value is invented. These trial levels do not overwrite your build.</p></section>`;
 }
-export function buildOverviewV7(build){const runeCount=build.runeBoard?.length||0,petCount=build.petSetup?.filter(p=>p.equipped).length||0;
- return `<section class="linkedBuildV7"><div class="sectionCardTop"><h3>${icon('link',19)} Connected character</h3><span>One shared draft</span></div><div class="buildDashV7">${[['Rune loadout',`${runeCount} saved · ML ${build.monsterLevel||1} grid ${monsterLevelGrid(build.monsterLevel||1).cols}×${monsterLevelGrid(build.monsterLevel||1).rows}`,'labs/runes','gem'],['Pet loadout',`${petCount}/4 equipped · Drop Bonus recorded`,'labs/pets','paw'],['Class Skills','Point allocation planner','labs/skills','git'],['Passives','Tier-by-tier planner','labs/passives','layers']].map(([name,desc,route,glyph])=>`<button class="buildDashItem" data-route="${route}">${icon(glyph,20)}<span><strong>${name}</strong><small>${desc}</small></span>${icon('arrow',16)}</button>`).join('')}</div><p class="boardFootnote">Build Studio configures the character for guides, tests, and sharing. Numerical pet and equipment calculations live in the dedicated Arcana Labs calculators.</p></section>`;
+export function buildOverviewV7(build){
+ const runeCount=build.runeBoard?.length||0,chosen=normalizedPetBonusTargets(build).filter(Boolean).length;
+ return `<section class="linkedBuildV7"><div class="sectionCardTop"><h3>${icon('link',19)} Connected character</h3><span>One shared draft</span></div><div class="buildDashV7">${[
+ ['Rune loadout',`${runeCount} saved · ML ${build.monsterLevel||1} grid ${monsterLevelGrid(build.monsterLevel||1).cols}×${monsterLevelGrid(build.monsterLevel||1).rows}`,'labs/runes','gem'],
+ ['Pet bonus choices',`${chosen}/4 desired Drop Bonuses · edit in Build Studio`,'labs/build','paw'],
+ ['Class Skills','Point allocation planner','labs/skills','git'],
+ ['Passives','Tier-by-tier planner','labs/passives','layers']
+ ].map(([name,desc,route,glyph])=>`<button class="buildDashItem" data-route="${route}">${icon(glyph,20)}<span><strong>${name}</strong><small>${desc}</small></span>${icon('arrow',16)}</button>`).join('')}</div>
+ <p class="boardFootnote">Build Studio records your four desired pet bonuses. Compound effects and shard costs are handled only by the standalone calculators.</p></section>`;
 }
