@@ -293,7 +293,7 @@ function init(){if(state.draft)state.draft=normalizeBuild(state.draft);restoreTr
   state.compoundQuick=saveCompoundPlan({...state.compoundQuick,level:e.target.value});render();return;
  }
  if(e.target.id==='petAffixType'){
-  state.affixCostQuick=saveAffixCostPlan({...state.affixCostQuick,affix:e.target.value});render();return;
+  state.affixCostQuick=saveAffixCostPlan({affix:e.target.value,currentLevel:1,targetLevel:e.target.value==='all_skills'?2:1});render();return;
  }
  if(e.target.id==='petAffixCurrent'){
   state.affixCostQuick=saveAffixCostPlan({...state.affixCostQuick,currentLevel:e.target.value});render();return;

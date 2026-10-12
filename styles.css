@@ -614,3 +614,35 @@ body,.shell{background:var(--theme-main)}
 .petAffixMetaGrid b{font-size:19px;color:var(--theme-accent-text,var(--accent))}.petAffixMetaGrid small{font-size:10px;color:var(--soft)}
 .petAffixDisclosure{display:flex;align-items:start;gap:7px;margin:0;color:var(--soft);font-size:11px;line-height:1.7}
 @media(max-width:370px){.petAffixControls,.petAffixSnapshot,.petAffixEvolve,.petAffixHero{padding:12px}}
+
+/* Arcana streamlined Pet tools: minimal controls, theme-native, mobile-first. */
+.petMiniTool{display:grid;gap:14px;padding-bottom:18px;max-width:760px;margin:auto}
+.petMiniIntro{padding:15px 16px 4px}.petMiniIntro h2{font-size:19px;margin:7px 0 4px}.petMiniIntro p{color:var(--soft);font-size:12px;line-height:1.6}
+.petMiniInputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;padding:0 2px}
+.petMiniInputs>label{display:grid;gap:7px;color:var(--soft);font-size:12px;font-weight:700;min-width:0}
+.petMiniInputs>label:first-child{grid-column:1/-1}
+.petMiniInputs select,.petMiniInputs input,.petBuildBonuses select{width:100%;min-width:0;min-height:46px;padding:10px 12px;background:var(--theme-secondary,var(--panel,#171b28));color:var(--text);border:1px solid var(--theme-border,var(--line,#34394d));border-radius:10px;font-size:14px}
+.petMiniInputs select:focus-visible,.petMiniInputs input:focus-visible,.petBuildBonuses select:focus-visible{outline:2px solid var(--theme-highlight,var(--accent));outline-offset:2px}
+.petMiniSteps{display:flex;flex-wrap:wrap;gap:7px;margin-top:0}
+.petMiniSteps button{flex:1 1 45px;min-height:44px;padding:8px 9px;border-radius:10px;font-size:12px;font-weight:750;background:var(--theme-secondary,var(--panel));border:1px solid var(--theme-highlight-border,var(--line));color:var(--theme-accent-text,var(--accent))}
+.petMiniResult{background:var(--theme-highlight-soft,var(--panel));border:1px solid var(--theme-highlight-border,var(--line));border-radius:15px;padding:15px;display:grid;gap:9px}
+.petMiniResult>span{font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--soft)}
+.petMiniResult>small{font-size:11px;color:var(--soft);line-height:1.55}
+.petMiniComparison{display:flex;align-items:center;justify-content:space-between;gap:12px}.petMiniComparison>div{display:grid;gap:5px;min-width:0}
+.petMiniComparison small{font-size:11px;color:var(--soft)}
+.petMiniComparison strong{font-size:clamp(23px,6vw,34px);color:var(--theme-accent-text,var(--accent));font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.petMiniArrow{font-size:22px;color:var(--soft)}.petMiniBig{font-size:clamp(29px,7vw,42px);font-weight:760;line-height:1.1;color:var(--theme-accent-text,var(--accent));font-variant-numeric:tabular-nums}
+.petMiniBig small{font-size:13px;color:var(--soft);font-weight:600}
+.petMiniDetails{display:flex;gap:9px;justify-content:space-between;flex-wrap:wrap;font-size:11px;line-height:1.5}
+.petMiniQuick{padding:11px;background:var(--theme-secondary,var(--panel));border:1px solid var(--theme-border,var(--line));border-radius:10px;font-size:11px;line-height:1.6;text-align:center;margin:0}
+.petMiniHelp{border:1px solid var(--theme-border,var(--line));border-radius:10px;padding:11px 13px;background:var(--theme-secondary,var(--panel))}
+.petMiniHelp summary{cursor:pointer;font-weight:700;font-size:12px;min-height:28px;display:list-item}
+.petMiniHelp p{font-size:11px;line-height:1.75;color:var(--soft);margin:7px 0 0}
+.petMiniFoot{margin:0;color:var(--soft);font-size:10px;line-height:1.65}
+.petBuildBonuses{border:1px solid var(--theme-border,var(--line));border-radius:12px;padding:12px;background:var(--theme-secondary,var(--panel));display:grid;gap:10px}
+.petBuildHead{display:flex;align-items:center;justify-content:space-between;gap:10px}.petBuildHead strong{font-size:13px}.petBuildHead small{font-size:11px;color:var(--theme-accent-text,var(--accent))}
+.petBuildBonuses>p{font-size:11px;line-height:1.55;color:var(--soft);margin:0}
+.petBuildGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.petBuildGrid label{display:grid;gap:5px;min-width:0;color:var(--soft);font-size:11px;font-weight:700}
+.petBuildGrid select{font-size:12px;padding:8px 7px}
+@media(max-width:370px){.petBuildGrid{grid-template-columns:1fr}.petMiniInputs{grid-template-columns:1fr}.petMiniInputs>label:first-child{grid-column:1}}

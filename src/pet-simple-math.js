@@ -54,7 +54,7 @@ export function compoundBonus(raw){
  }else return null;
  return {...plan,base,amount,unit:row.value_type==='percent'?'%':'',method,source:RULES.source.file};
 }
-export const defaultAffixCostPlan=()=>({affix:'item_quantity',currentLevel:1,targetLevel:95});
+export const defaultAffixCostPlan=()=>({affix:'item_quantity',currentLevel:1,targetLevel:10});
 const AFFIX_MAP=new Map(PET_AFFIX_SNAPSHOT.affixes.map(d=>[d.name,d]));
 export function normalizeAffixCostPlan(raw){
  const affix=AFFIX_MAP.has(raw?.affix)?raw.affix:'item_quantity',definition=AFFIX_MAP.get(affix);
