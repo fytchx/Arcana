@@ -329,9 +329,10 @@ with sync_playwright() as playwright:
     import struct, zlib
     def png_chunk(tag, data):
         return struct.pack('!I', len(data)) + tag + data + struct.pack('!I', zlib.crc32(tag+data)&0xffffffff)
-    test_png=(b'\\x89PNG\\r\\n\\x1a\\n'
+    png_scanline=bytes([0,255,0,128,255,0,128])
+    test_png=(bytes([137,80,78,71,13,10,26,10])
               +png_chunk(b'IHDR', struct.pack('!IIBBBBB', 2, 2, 8, 2, 0, 0, 0))
-              +png_chunk(b'IDAT', zlib.compress(b'\\x00\\xff\\x00\\x80\\xff\\x00\\x80\\xff\\x00\\x80\\xff\\x00\\x80'))
+              +png_chunk(b'IDAT', zlib.compress(png_scanline*2))
               +png_chunk(b'IEND', b''))
     page.evaluate("location.hash='#/wiki/studio'")
     page.wait_for_timeout(300)
