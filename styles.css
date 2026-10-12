@@ -566,3 +566,28 @@ body,.shell{background:var(--theme-main)}
 .wikiEmptyActions .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;text-decoration:none;font-size:12px}
 .wikiRecordText{min-height:56px}
 @media(max-width:700px){.wikiTextList .wikiRecordContent strong{font-size:13px}.wikiTextList .wikiRecordContent small{font-size:11px;white-space:normal;overflow:visible;text-overflow:clip}.wikiRecordVisual .wikiRecordContent small{font-size:11px}.wikiResultHead strong{font-size:12px}.wikiResultHead small{font-size:11px}.wikiShelfTab{min-height:46px}}
+
+/* Verified item snapshot panels: readable on narrow mobile screens, theme-aware. */
+.verifiedComparePanel,.verifiedUpgradeReference{border:1px solid var(--theme-border,var(--line,#34394d));border-radius:16px;padding:clamp(14px,3vw,21px);margin-top:18px;background:var(--theme-secondary,var(--panel,#171b28))}
+.verifiedComparePanel h2,.verifiedUpgradeReference h2{font-size:18px;letter-spacing:-.02em;margin:0 0 5px}
+.verifiedPanelIntro{font-size:12px;line-height:1.65;margin:4px 0 14px;color:var(--soft)}
+.verifiedTierRail{display:flex;gap:8px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;padding:2px 1px 11px}
+.verifiedTierChip{flex:0 0 auto;min-height:44px;padding:9px 12px;font-size:12px;white-space:nowrap;background:var(--theme-main,var(--bg));border:1px solid var(--theme-border,var(--line));border-radius:10px;color:var(--text)}
+.verifiedTierChip.active{border-color:var(--theme-highlight,var(--accent));color:var(--theme-accent-text,var(--accent));background:var(--theme-highlight-soft,transparent)}
+.verifiedStatsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.verifiedStatCard{min-width:0;background:var(--theme-main,var(--bg));border:1px solid var(--theme-border,var(--line));border-radius:12px;padding:13px}
+.verifiedStatCard>strong{display:block;min-height:34px;font-size:13px;line-height:1.4}
+.verifiedStatCard>p{font-size:11px;line-height:1.6;color:var(--soft)}
+.verifiedStatEyebrow{display:block;text-transform:uppercase;font-size:10px;letter-spacing:.06em;color:var(--theme-highlight,var(--accent));margin-bottom:6px}
+.verifiedStatCard dl{margin:8px 0 0}.verifiedStatCard dl>div{border-top:1px solid var(--theme-border,var(--line));padding:9px 0}
+.verifiedStatCard dt{font-size:11px;line-height:1.3;color:var(--soft);overflow-wrap:anywhere}.verifiedStatCard dd{margin:5px 0 0;font-size:15px;font-variant-numeric:tabular-nums;font-weight:750}
+.verifiedDifference{margin:12px 0 0;border:1px solid var(--theme-highlight-border,var(--line));border-radius:10px;padding:12px;background:var(--theme-highlight-soft,transparent)}
+.verifiedDifference strong,.verifiedDifference span,.verifiedDifference small{display:block;line-height:1.55}
+.verifiedDifference strong{font-size:12px}.verifiedDifference span{font-size:11px;margin-top:4px}.verifiedDifference small{color:var(--soft);font-size:10px;margin-top:5px}
+.verifiedSnapshotNote{color:var(--soft);font-size:11px;line-height:1.65;margin:16px 0 0}
+.verifiedUpgradeRows{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:9px}
+.verifiedUpgradeRow{border:1px solid var(--theme-border,var(--line));border-radius:10px;background:var(--theme-main,var(--bg));padding:12px;display:grid;gap:5px;font-size:12px}
+.verifiedUpgradeRow strong{color:var(--theme-highlight,var(--accent));font-size:12px}
+.verifiedUpgradeRow small{font-size:11px;color:var(--soft)}
+.verifiedSelectedNote{font-size:12px;line-height:1.6}
+@media(max-width:420px){.verifiedStatCard{padding:10px}.verifiedStatCard dd{font-size:13px}.verifiedStatCard>strong{font-size:12px}}

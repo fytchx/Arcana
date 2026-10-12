@@ -92,3 +92,11 @@ test('Codex show-more expands in place and details remember reading position',as
  assert.match(app,/wikiState\.returnPosition=\{kind:/);
  assert.match(app,/requestAnimationFrame\(\(\)=>window\.scrollTo\(\{top:saved\.top/);
 });
+
+test('verified item comparison comes from configured stat snapshot only',async()=>{
+ const app=await read('../src/app.js'),views=await read('../src/verified-item-views.js');
+ assert.match(app,/verifiedComparisonPanel\(left\?\.title,right\?\.title,state\.compareTier\)/);
+ assert.match(app,/case 'comparetier'/);
+ assert.match(app,/verifiedUpgradeReferencePanel\(e\?\.title\)/);
+ assert.match(views,/not a character’s rolled stats/);
+});
