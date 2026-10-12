@@ -10,7 +10,7 @@ ROUTES=[
  ('calculators/upgrade','Upgrade Cost Calculator'),
  ('calculators/compare','Compare Items'),
  ('calculators/pet','Pet Compound Calculator'),
- ('calculators/affixes','Pet Affix Planner'),
+ ('calculators/affixes','Pet Affix Cost'),
  ('labs/build','My Build Studio'),
  ('labs/runes','Rune Forge'),
  ('labs/pets','My Build Studio'),
