@@ -756,3 +756,12 @@ body,.shell{background:var(--theme-main)}
 @media(max-width:560px){.arcanaConnections{grid-template-columns:1fr}.arcanaConnection{min-height:59px}.arcanaConnectionText small{font-size:11px}.wikiConnectionRows{grid-template-columns:1fr}.wikiConnections{padding:13px}}
 @media(max-width:360px){.arcanaStartGrid,.arcanaShortcutGrid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.arcanaConnection,.wikiConnectionRow,.wikiConnectionChip{scroll-behavior:auto}}
+
+
+.wikiPortalShortcuts{margin:13px 0 22px}
+.wikiPortalShortcuts .wikiEyebrow{display:block;margin-bottom:9px}
+.wikiSectionActions{margin-top:13px}
+.wikiSectionActions .arcanaConnections,.wikiSectionActions{min-width:0}
+.wikiSectionActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.wikiSectionActions .arcanaConnection{background:var(--theme-secondary,var(--panel));min-height:47px}
+@media(max-width:480px){.wikiSectionActions{grid-template-columns:1fr}}
