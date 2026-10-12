@@ -1,7 +1,34 @@
 import {esc,icon} from './ui.js';
 import {gameArt,codexOfficialArt,hasCodexOfficialArt} from './assets.js';
-import {WIKI_ARTICLES,WIKI_CATEGORY_LIST,wikiArticleById,matchingRecords,recordKindLabel} from './wiki-data.js';
+import {WIKI_ARTICLES,WIKI_CATEGORY_LIST,wikiArticleById,matchingRecords,recordKindLabel,WIKI_CONNECTIONS} from './wiki-data.js';
+import {navCards} from './context-nav.js';
 const linkParams=(id)=>'id='+encodeURIComponent(id);
+// Connections are maintained alongside editorial articles, never inferred from name similarity.
+const relatedArticleLinks=article=>{
+ const relation=WIKI_CONNECTIONS[article.id]||article.connections||{};
+ const guides=(relation.articles||[]).filter(id=>id!==article.id).map(wikiArticleById).filter(Boolean).slice(0,4);
+ const categories=(relation.collections||[]).filter(kind=>WIKI_CATEGORY_LIST.some(([id])=>id===kind)).slice(0,4);
+ const tools=(relation.tools||[]).slice(0,4);
+ if(!guides.length&&!categories.length&&!tools.length)return '';
+ const rows=guides.map(a=>'<button class="wikiConnectionRow" data-route="wiki/article" data-params="id='+encodeURIComponent(a.id)+'">'+icon('book',17)+'<span><strong>'+esc(a.title)+'</strong><small>'+esc(a.summary)+'</small></span>'+icon('arrow',16)+'</button>').join('');
+ const catRows=categories.map(kind=>{
+  const type=WIKI_CATEGORY_LIST.find(([id])=>id===kind);
+  return '<button class="wikiConnectionChip" data-route="wiki/library" data-params="kind='+esc(kind)+'">'+icon(type[2],16)+' '+esc(type[1])+'</button>';
+ }).join('');
+ return '<section class="wikiConnections" aria-label="Related guides and records"><div class="wikiConnectionHeading"><span class="wikiEyebrow">KEEP EXPLORING</span><h2>Related guides and game records</h2><p>Follow these connections without searching from scratch.</p></div>'+
+ (rows?'<div class="wikiConnectionRows">'+rows+'</div>':'')+
+ (catRows?'<div class="wikiConnectionChips">'+catRows+'</div>':'')+
+ (tools?'<div class="arcanaConnections wikiConnectionTools">'+navCards(tools)+'</div>':'')+'</section>';
+};
+const wikiCategoryJourney=kind=>({
+ item:['compare','upgrade','build'],material:['upgrade','items'],currency:['reference','guides'],
+ pet:['compoundGuide','petlab','compound'], 'pet-bonus':['compound','petlab','compoundGuide'],
+ 'pet-affix':['affixes','petlab','compoundGuide'],'class-skill':['skills','build','seasonGuide'],
+ passive:['passives','build','seasonGuide'],rune:['runes','runeGuide','runewords'],
+ runeword:['runes','runeGuide','build'],biome:['monsterGuide','guides'],
+ monster:['monsterGuide','biomeRecords'], 'item-affix':['compare','build']
+})[kind]||['guides','build'];
+
 const badgeIcon=k=>({item:'shield',material:'gem',currency:'gem',pet:'paw','class-skill':'git',passive:'layers',rune:'gem',runeword:'link',biome:'layers',monster:'sword','pet-bonus':'paw','pet-affix':'paw','item-affix':'spark'})[k]||'book';
 const literal=(s)=>esc(String(s==null?'':s));
 // The visual gallery is for entities with meaningful, individual game artwork.
@@ -50,22 +77,27 @@ export function wikiLibraryView({entries=[],category='all',query='',limit=36,loa
  <div class="wikiResultHead" role="status" aria-live="polite" aria-atomic="true"><strong id="wikiFoundCount">${result.count} ${result.count===1?'reference':'references'}</strong><small id="wikiShowing">${result.count?'Showing '+Math.min(result.count,limit)+' of '+result.count:'Season 2 reference library'}</small></div>
  <div class="wikiRecordList ${shelf==='atlas'?'wikiGalleryList':'wikiTextList'}" id="wikiRecords">${result.html}</div>
  <div class="wikiMoreWrap" id="wikiMore" ${result.hasMore?'':'hidden'}><button class="btn secondary" data-action="wikimore">Show more references ${icon('arrow',15)}</button></div>
+ <section class="wikiCollectionNext"><span class="wikiEyebrow">USE WHAT YOU FIND</span><h2>Continue with a tool or guide</h2><div class="arcanaConnections">${navCards(wikiCategoryJourney(category))}</div></section>
  </div>`;
 }
 export function wikiGuidesView(){return `<div class="wikiGuidesPage"><div class="wikiPageHeading"><button class="wikiBack" data-route="wiki">${icon('back',15)} Wiki home</button><span class="wikiEyebrow">ARCANAWIKI / PLAYER GUIDES</span><h1>Useful guides. No filler.</h1><p>Answers first, deeper context when needed. Connect directly to the right planner or calculator.</p></div><section class="wikiGuideGrid">${WIKI_ARTICLES.map(wikiArticleCard).join('')}</section><div class="wikiGuideToBuild compactGuide"><span class="wikiGtbIcon">${icon('flask',22)}</span><div><span class="wikiEyebrow">BUILD INSPECTION DEMO</span><h3>Warrior Retaliation · example build</h3><p>See how a guide can load a complete character into Build Studio.</p><button class="btn primary" data-route="wiki/guide" data-params="id=warrior-retaliation-demo-guide">Open interactive example ${icon('arrow',15)}</button><small>Example build, not an endorsed strategy.</small></div></div></div>`}
 export function wikiArticleView(article){if(!article)return `<div class="wikiEmpty">Guide unavailable. Return to the guide directory.</div>`;
  const rows=article.sections.map(s=>`<section class="wikiArticleSection" id="section-${esc(s.title.toLowerCase().replace(/[^a-z0-9]+/g,'-'))}"><h2>${literal(s.title)}</h2>${s.body?`<p>${literal(s.body)}</p>`:''}${s.table?`<div class="wikiTableFrame"><table><thead><tr>${s.table[0].map(t=>`<th>${literal(t)}</th>`).join('')}</tr></thead><tbody>${s.table.slice(1).map(r=>`<tr>${r.map(c=>`<td>${literal(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:''}</section>`).join('');
- return `<article class="wikiArticle"><button class="wikiBack" data-route="wiki/guides">${icon('back',16)} All guides</button><div class="wikiArticleIntro"><span class="wikiEyebrow">${literal(article.category.toUpperCase())} · ${literal(article.readTime.toUpperCase())}</span><h1>${literal(article.title)}</h1><p>${literal(article.summary)}</p><div class="wikiArticleTags"><span>${icon('check',15)} Season 2 reference</span><span>${icon('book',15)} Quick reading</span></div></div><div class="wikiArticleBody">${rows}</div><div class="wikiArticleActions"><span class="wikiEyebrow">DO SOMETHING WITH THIS</span><h2>Continue in Arcana</h2><div class="wikiActionGrid">${article.actions.map(a=>`<button class="wikiAction" data-action="route" data-arg="${esc(a.route)}">${icon(a.icon,20)}<strong>${literal(a.label)}</strong>${icon('arrow',15)}</button>`).join('')}</div></div>${article.sourceUrl?`<p class="wikiSource">Additional reference: <a href="${esc(article.sourceUrl)}" target="_blank" rel="noopener noreferrer">IdleArc official patch notes ↗</a></p>`:''}<div class="wikiEnd"><button data-route="wiki" class="wikiTextLink">${icon('back',15)} Back to ArcanaWiki</button></div></article>`;
+ return `<article class="wikiArticle"><button class="wikiBack" data-route="wiki/guides">${icon('back',16)} All guides</button><div class="wikiArticleIntro"><span class="wikiEyebrow">${literal(article.category.toUpperCase())} · ${literal(article.readTime.toUpperCase())}</span><h1>${literal(article.title)}</h1><p>${literal(article.summary)}</p><div class="wikiArticleTags"><span>${icon('check',15)} Season 2 reference</span><span>${icon('book',15)} Quick reading</span></div></div><div class="wikiArticleBody">${rows}</div><div class="wikiArticleActions"><span class="wikiEyebrow">DO SOMETHING WITH THIS</span><h2>Continue in Arcana</h2><div class="wikiActionGrid">${article.actions.map(a=>`<button class="wikiAction" data-action="route" data-arg="${esc(a.route)}">${icon(a.icon,20)}<strong>${literal(a.label)}</strong>${icon('arrow',15)}</button>`).join('')}</div></div>${relatedArticleLinks(article)}${article.sourceUrl?`<p class="wikiSource">Additional reference: <a href="${esc(article.sourceUrl)}" target="_blank" rel="noopener noreferrer">IdleArc official patch notes ↗</a></p>`:''}<div class="wikiEnd"><button data-route="wiki" class="wikiTextLink">${icon('back',15)} Back to ArcanaWiki</button></div></article>`;
 }
 const relatedRecords=(entry,all)=>{const facts=Object.fromEntries((entry.facts||[]).map(([k,v])=>[k,String(v)]));let related=[];if(entry.gameKind==='monster'&&facts.Biome)related=all.filter(x=>x.gameKind==='biome'&&x.title===facts.Biome);if(entry.gameKind==='biome')related=all.filter(x=>x.gameKind==='monster'&&(x.facts||[]).some(([k,v])=>k==='Biome'&&v===entry.title)).slice(0,7);if(entry.gameKind==='class-skill'&&facts.Class)related=all.filter(x=>x.gameKind==='class-skill'&&x.id!==entry.id&&x.className===facts.Class&&x.branch===facts.Branch).slice(0,6);if(entry.gameKind==='rune')related=all.filter(x=>x.gameKind==='runeword'&&x.keywords.toLowerCase().includes(entry.title.toLowerCase())).slice(0,6);return related;};
 export function wikiRecordView(entry,all=[],returnCategory='all'){if(!entry)return '<div class="wikiEmpty"><strong>Reference unavailable</strong><p>Try searching for the item again.</p></div>';
  const kind=entry.gameKind||entry.kind,real={...entry,kind},recRelated=relatedRecords(entry,all);const actions=[];
- if(kind==='item')actions.push(['Compare this item','compare',entry.id,'compare'],['See upgrade costs','upgrade',entry.id,'calculator']);
- if(kind==='class-skill')actions.push(['Open Class Skill Tree','route','labs/skills','git']);
- if(kind==='passive')actions.push(['Open Passive Tree','route','labs/passives','layers']);
- if(['rune','runeword'].includes(kind))actions.push(['Open Rune Forge','route','labs/runes','gem']);
- if(['pet-affix','pet-bonus'].includes(kind))actions.push(['Pet Compound Calculator','route','calculators/pet','calculator']);
- if(kind==='biome'||kind==='monster')actions.push(['Browse Biomes & Monsters','route','wiki/library?kind=monster','search']);
+ if(kind==='item')actions.push(['Compare this item','compare',entry.id,'compare'],['See upgrade costs','upgrade',entry.id,'calculator'],['Equip in Build Studio','equip',entry.id,'flask']);
+ if(kind==='class-skill')actions.push(['Open Class Skill Tree','route','labs/skills','git'],['Plan a full build','route','labs/build','flask']);
+ if(kind==='passive')actions.push(['Open Passive Tree','route','labs/passives','layers'],['Season 2 guide','route','wiki/article?id=season-2','book']);
+ if(['rune','runeword'].includes(kind))actions.push(['Open Rune Forge','route','labs/runes','gem'],['How rune grids unlock','route','wiki/article?id=rune-grid','book']);
+ if(kind==='pet-affix')actions.push(['Pet Affix Cost Calculator','route','calculators/affixes','calculator'],['Configure pet loadout','route','labs/pets','paw']);
+ if(kind==='pet-bonus')actions.push(['Pet Compound Calculator','route','calculators/pet','calculator'],['Configure pet loadout','route','labs/pets','paw']);
+ if(kind==='pet')actions.push(['Configure pet loadout','route','labs/pets','paw'],['Read Pet Compound guide','route','wiki/article?id=pet-compound','book']);
+ if(kind==='biome'||kind==='monster')actions.push(['Browse Biomes & Monsters','route','wiki/library?kind=monster','search'],['Monster Level farming guide','route','wiki/article?id=monster-level','book']);
+ if(kind==='material')actions.push(['Open Upgrade Calculator','route','calculators/upgrade','calculator']);
+ if(kind==='item-affix')actions.push(['Compare equipment','route','calculators/compare','compare']);
  const facts=(entry.facts||[]).map(([k,v])=>`<div class="wikiFact"><span>${literal(k)}</span><strong>${literal(v)}</strong></div>`).join('');
  return `<article class="wikiReferencePage"><button class="wikiBack" data-route="wiki/library" data-params="kind=${esc(returnCategory==='all'||WIKI_CATEGORY_LIST.some(([k])=>k===returnCategory)?returnCategory:kind)}">${icon('back',16)} Back to references</button><div class="wikiReferenceHero"><span class="wikiReferenceArt ${imageKinds.has(kind)?'':'wikiReferenceArtText'}">${imageKinds.has(kind)?recordArt(real,94):icon(badgeIcon(kind),30)}</span><div><span class="wikiEyebrow">${literal(recordKindLabel(kind).toUpperCase())}</span><h1>${literal(entry.title)}</h1><p>${literal(entry.description)}</p></div></div>
  ${facts?`<section class="wikiFactPanel"><span class="wikiEyebrow">AT A GLANCE</span><div class="wikiFactGrid">${facts}</div></section>`:''}
