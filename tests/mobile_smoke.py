@@ -46,6 +46,15 @@ MOCK_ENTRIES={"entries":[
     {"id":"game:class-skill:1","kind":"class-skill","title":"Strong pet bound","subtitle":"Class Skill","description":"Archer skill","keywords":"archer"}
 ]}
 
+# Long-list testing needs enough mock class skills to exercise pagination.
+# Keep these clearly synthetic fixtures; they never enter game data or deployment.
+MOCK_ENTRIES['entries'].extend(
+    {'id':f'test:class-skill:sample-{i:03}', 'kind':'class-skill',
+     'title':f'Test Skill {i:03}', 'subtitle':'QA fixture', 'description':'QA only',
+     'keywords':'test'}
+    for i in range(75)
+)
+
 HTML=HTML.replace('</body>', '''<script>
 window.fetch = async function(input) {
  const path = String(input);
