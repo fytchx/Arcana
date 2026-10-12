@@ -43,9 +43,10 @@ test('Rank four requires 15 spent, rank seven requires 35',()=>{
  assert.match(guildTreeRule(plan,first),/12 more points/);
  plan=buildTo(80,15);
  assert.equal(guildTreeRule(plan,first),null);
- for(let i=0;i<3;i++)plan=allocate(plan,first);
+ while(guildTreeCounts(plan.events)[first]<6)plan=allocate(plan,first);
  assert.match(guildTreeRule(plan,first),/more points to unlock rank 7/);
  plan=buildTo(80,35);
+ while(guildTreeCounts(plan.events)[first]<6)plan=allocate(plan,first);
  assert.equal(guildTreeRule(plan,first),null);
 });
 
