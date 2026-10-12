@@ -554,3 +554,15 @@ body,.shell{background:var(--theme-main)}
 .wikiReferenceArtText svg{width:27px;height:27px}
 .wikiReferenceTopics .wikiTopic{min-height:118px}
 @media(max-width:360px){.wikiShelfTab{font-size:10px;gap:4px}.wikiShelfSwitch{gap:5px}.wikiGalleryList{gap:7px}.wikiGalleryList .wikiRecordVisual{padding:10px}}
+
+/* Codex mobile reading polish: accessible search, recovery and compact results. */
+.wikiFilterBox .wikiClearFilter{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;padding:0;border-radius:9px;color:var(--soft);font-size:23px}
+.wikiFilterBox .wikiClearFilter:hover,.wikiFilterBox .wikiClearFilter:focus-visible{background:var(--theme-highlight-soft);color:var(--theme-accent-text)}
+.wikiLoading{align-items:center;flex-wrap:wrap}
+.wikiLoading span{flex:1;min-width:140px;line-height:1.5}
+.wikiRetry{min-height:44px;min-width:85px;padding:9px 13px;border:1px solid var(--theme-highlight-border);border-radius:9px;background:var(--theme-highlight-soft);color:var(--theme-accent-text);font-size:12px;font-weight:700}
+.wikiRetry:disabled{opacity:.6;cursor:progress}
+.wikiEmptyActions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.wikiEmptyActions .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;text-decoration:none;font-size:12px}
+.wikiRecordText{min-height:56px}
+@media(max-width:700px){.wikiTextList .wikiRecordContent strong{font-size:13px}.wikiTextList .wikiRecordContent small{font-size:11px;white-space:normal;overflow:visible;text-overflow:clip}.wikiRecordVisual .wikiRecordContent small{font-size:11px}.wikiResultHead strong{font-size:12px}.wikiResultHead small{font-size:11px}.wikiShelfTab{min-height:46px}}

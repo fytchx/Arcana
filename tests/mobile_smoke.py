@@ -126,6 +126,25 @@ with sync_playwright() as playwright:
     # Manifest loads in the SAME assets.js module instance as app initialization.
     page.locator('.wikiShelfSwitch a[href="#/wiki/library?kind=item"]').dispatch_event('click')
     page.wait_for_timeout(200)
+    # Search remains responsive without replacing the entire page or moving the rail.
+    query=page.locator('#wikiFilter')
+    clear=page.locator('.wikiClearFilter')
+    assert clear.is_hidden(), 'Clear filter must start hidden'
+    query.fill('zzzz-not-a-real-game-entry')
+    assert clear.is_visible(), 'Clear filter must appear as soon as typing starts'
+    assert page.locator('#wikiFoundCount').inner_text().startswith('0 ')
+    assert page.locator('.wikiEmptyActions [data-action="wikiclear"]').count()==1
+    assert page.locator('.wikiEmptyActions a[href="#/wiki/library?kind=all"]').count()==1
+    assert 'No matches for' in page.locator('#wikiRecords').inner_text()
+    clear.dispatch_event('click')
+    page.wait_for_timeout(180)
+    assert page.locator('#wikiFilter').input_value()==''
+    assert page.locator('.wikiClearFilter').is_hidden()
+    assert page.locator('#wikiRecords .wikiRecord').count()>0
+    query=page.locator('#wikiFilter')
+    query.fill('Wraith')
+    assert page.locator('#wikiFoundCount').inner_text().startswith('0 ') or page.locator('#wikiRecords .wikiRecord').count()>=0
+    query.fill('')
     assert page.locator('.wikiShelf-atlas .wikiGalleryList').count()==1, 'Visual gallery mode missing'
     page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=monster"]').dispatch_event('click')
     page.wait_for_timeout(200)

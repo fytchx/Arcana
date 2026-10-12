@@ -64,3 +64,14 @@ test('signature inherits the live theme highlight, rather than hardcoding violet
  assert.match(signature,/\.arcanaSigInfo summary\{[^}]*var\(--sigAccent\)/);
  assert.equal(signature.includes('var(--highlight,#b99cff)'),false);
 });
+
+test('Codex search remains clearable, gives helpful empty results and retries a failed index',async()=>{
+ const views=await read('../src/wiki-views.js');
+ const app=await read('../src/app.js');
+ assert.match(views,/class="wikiClearFilter"/);
+ assert.match(views,/No matches for/);
+ assert.match(views,/data-action="wikiretry"/);
+ assert.match(views,/id="wikiShowing"/);
+ assert.match(app,/case 'wikiretry':/);
+ assert.match(app,/if\(clear\)clear.hidden=!wikiState.query/);
+});
