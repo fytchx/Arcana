@@ -110,7 +110,9 @@ test('Local autosave round-trips and gracefully handles blocked storage',()=>{
  const storage={setItem:(key,value)=>saved.set(key,value),getItem:key=>saved.get(key)||null};
  const plan={...buildTo(80,23),boost:1.25};
  assert.deepEqual(readGuildTree(storage),freshGuildTree());
- assert.deepEqual(readGuildTree(storage),saveGuildTree(plan,storage));
+ const savedPlan=saveGuildTree(plan,storage);
+ assert.deepEqual(savedPlan,plan);
+ assert.deepEqual(readGuildTree(storage),savedPlan);
  assert.deepEqual(readGuildTree({getItem:()=>{throw Error('blocked')}}),freshGuildTree());
 });
 
