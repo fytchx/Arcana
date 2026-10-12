@@ -713,3 +713,46 @@ body,.shell{background:var(--theme-main)}
 @media(prefers-reduced-motion:reduce){
  .guildTreeMeter span{transition:none}
 }
+
+
+/* Connected Arcana: deliberately compact navigation shared by all ten themes. */
+.arcanaStart,.arcanaNext,.wikiCollectionNext,.wikiConnections{margin:18px 0 24px;min-width:0}
+.arcanaNext{border-top:1px solid var(--theme-border,var(--line,#34394d));padding-top:22px}
+.arcanaNextHead{margin:0 0 12px;min-width:0}
+.arcanaNextHead .eyebrow,.wikiConnectionHeading .wikiEyebrow,.wikiCollectionNext .wikiEyebrow{display:block;margin-bottom:5px}
+.arcanaNextHead h2,.wikiConnectionHeading h2,.wikiCollectionNext h2{font-size:clamp(16px,4vw,20px);line-height:1.25;margin:0 0 5px;color:var(--text)}
+.arcanaNextHead p,.wikiConnectionHeading p{margin:0;font-size:11px;line-height:1.6;color:var(--soft)}
+.arcanaConnections,.arcanaStartGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.arcanaConnection{display:flex;align-items:center;text-align:left;gap:10px;min-width:0;min-height:76px;width:100%;padding:12px;border:1px solid var(--theme-border,var(--line,#34394d));background:var(--theme-secondary,var(--panel,#171b28));border-radius:12px;color:var(--text);cursor:pointer;touch-action:manipulation}
+.arcanaConnection:hover,.arcanaConnection:focus-visible,.wikiConnectionRow:hover,.wikiConnectionChip:hover{border-color:var(--theme-highlight,var(--accent));background:var(--theme-highlight-soft,var(--panel))}
+.arcanaConnection:focus-visible,.wikiConnectionRow:focus-visible,.wikiConnectionChip:focus-visible,.arcanaCrumbs button:focus-visible{outline:2px solid var(--theme-highlight,var(--accent));outline-offset:2px}
+.arcanaConnectionIcon{width:38px;height:38px;display:grid;place-items:center;flex:none;color:var(--theme-accent-text,var(--accent));border-radius:10px;background:var(--theme-highlight-soft,transparent)}
+.arcanaConnectionText{flex:1;min-width:0;display:grid;gap:4px}
+.arcanaConnectionText strong{font-size:12px;font-weight:750;line-height:1.35;color:var(--text)}
+.arcanaConnectionText small{font-size:10px;line-height:1.55;color:var(--soft);overflow-wrap:anywhere}
+.arcanaConnectionArrow{flex:none;display:flex;color:var(--theme-accent-text,var(--accent));opacity:.8}
+.arcanaConnection.compact{min-height:53px;padding:9px 10px}
+.arcanaConnection.compact .arcanaConnectionIcon{width:30px;height:30px}
+.arcanaConnection.compact .arcanaConnectionText strong{font-size:11px}
+.arcanaStart{padding:0;margin-top:15px}
+.arcanaStartGrid .arcanaConnection{min-height:58px}
+.arcanaCrumbs{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 12px;font-size:11px;color:var(--soft)}
+.arcanaCrumbs button{background:transparent;border:0;padding:7px 2px;color:var(--theme-accent-text,var(--accent));cursor:pointer;text-align:left}
+.arcanaCrumbs span[aria-current="page"]{color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px}
+.arcanaShortcutGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 18px}
+.wikiCollectionNext{padding:15px 0 0;border-top:1px solid var(--theme-border,var(--line,#34394d))}
+.wikiCollectionNext h2{margin:4px 0 13px}
+.wikiConnections{margin:20px 0 26px;padding:16px;border:1px solid var(--theme-border,var(--line,#34394d));background:var(--theme-secondary,var(--panel,#171b28));border-radius:14px}
+.wikiConnectionHeading h2{font-size:18px}
+.wikiConnectionRows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:13px}
+.wikiConnectionRow{display:flex;align-items:center;gap:9px;min-width:0;padding:11px;border:1px solid var(--theme-border,var(--line,#34394d));border-radius:10px;background:var(--theme-main,var(--bg));color:var(--theme-accent-text,var(--accent));text-align:left;cursor:pointer}
+.wikiConnectionRow>span{display:grid;gap:4px;min-width:0;flex:1}
+.wikiConnectionRow strong{color:var(--text);font-size:12px;line-height:1.4}
+.wikiConnectionRow small{color:var(--soft);font-size:10px;line-height:1.5}
+.wikiConnectionChips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.wikiConnectionChip{display:inline-flex;gap:6px;align-items:center;min-height:44px;padding:9px 11px;border:1px solid var(--theme-border,var(--line,#34394d));border-radius:10px;background:var(--theme-main,var(--bg));color:var(--text);font-size:11px;cursor:pointer}
+.wikiConnectionTools{margin-top:12px}
+@media(max-width:830px){.arcanaConnections,.arcanaStartGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.arcanaConnections{grid-template-columns:1fr}.arcanaConnection{min-height:59px}.arcanaConnectionText small{font-size:11px}.wikiConnectionRows{grid-template-columns:1fr}.wikiConnections{padding:13px}}
+@media(max-width:360px){.arcanaStartGrid,.arcanaShortcutGrid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.arcanaConnection,.wikiConnectionRow,.wikiConnectionChip{scroll-behavior:auto}}
