@@ -4,7 +4,7 @@ import {WIKI_ARTICLES} from './wiki-data.js';
 import {STUDIO_VERSION,WIKI_STUDIO_CATEGORIES,MAX_IMAGE_BYTES,MAX_ARTICLE_IMAGES,newWikiDraft,normalizeWikiDraft,validateWikiDraft,publicWikiArticle,slugify} from './wiki-studio-model.js';
 import {listWikiDrafts,getWikiDraft,putWikiDraft,deleteWikiDraft} from './wiki-studio-storage.js';
 
-const s={loaded:false,entries:[],draft:null,mode:'list',error:'',message:'',timer:null,dirty:false,publishing:false,publishEnabled:false};
+const s={loaded:false,entries:[],published:[],publishedError:'',draft:null,mode:'list',error:'',message:'',timer:null,dirty:false,publishing:false,publishEnabled:false};
 const $=id=>document.getElementById(id);
 const getRoot=()=>document.querySelector('#wikiStudioRoot');
 const status=message=>{s.message=message;const el=$('wikiStudioStatus');if(el)el.textContent=message;};
@@ -41,10 +41,10 @@ function preview(){
 function editor(){
  const d=s.draft,validation=validateWikiDraft(d,{existingIds:WIKI_ARTICLES.map(a=>a.id)});
  return toolbar+'<div class="studioEditor"><div class="studioControlBar"><button class="btn primary" data-ws-action="preview">'+icon('book',16)+' Preview article</button><button class="btn secondary" data-ws-action="export">'+icon('arrow',16)+' Export backup</button><button class="btn secondary" data-ws-action="publish" '+(s.publishing?'disabled':'')+'>'+icon('check',16)+' '+(s.publishing?'Publishing…':'Publish')+'</button></div>'+
- '<p class="studioWorkflow"><strong>Draft → Preview → Publish.</strong> Saving is automatic. Publishing requires an owner key and configured server access; export gives you a portable backup at any time.</p>'+
+ '<p class="studioWorkflow"><strong>Draft → Preview → Publish.</strong> Saving is automatic. '+(d.baseRevision?'You are editing a published page. Its URL is locked and conflicting changes will be rejected.':'Publishing requires an owner key and configured server access.')+' Export gives you a portable backup at any time.</p>'+
  '<div class="studioEditorGrid"><div class="studioEditorMain"><section class="studioFieldset"><h2>Article details</h2>'+
  '<label>Title<input data-ws-field="title" maxlength="125" value="'+esc(d.title)+'" placeholder="e.g. Pet Compound explained"></label>'+
- '<label>Page URL slug<input data-ws-field="id" maxlength="70" value="'+esc(d.id)+'" placeholder="pet-compound-guide" autocapitalize="none" spellcheck="false"><small>Permanent public page URL. Choose a unique slug.</small></label>'+
+ '<label>Page URL slug<input data-ws-field="id" maxlength="70" value="'+esc(d.id)+'" '+(d.baseRevision?'readonly title="Published page URLs cannot be changed while editing"':'')+' placeholder="pet-compound-guide" autocapitalize="none" spellcheck="false"><small>Permanent public page URL. Choose a unique slug.</small></label>'+
  '<label>Category<select data-ws-field="category">'+WIKI_STUDIO_CATEGORIES.map(c=>'<option '+(c===d.category?'selected':'')+'>'+esc(c)+'</option>').join('')+'</select></label>'+
  '<label>Short summary<textarea data-ws-field="summary" maxlength="350" rows="3" placeholder="A concise explanation of why someone should read this.">'+esc(d.summary)+'</textarea></label>'+
  '<label>Search keywords<input data-ws-field="keywords" maxlength="400" value="'+esc(d.keywords)+'" placeholder="separate keywords with commas"></label></section>'+
@@ -61,10 +61,24 @@ function listing(){
  return toolbar+'<div class="studioHome"><div class="studioHomeActions"><button class="btn primary" data-ws-action="new">'+icon('plus',17)+' New Wiki page</button><label class="btn secondary studioUpload">Import backup<input id="wikiStudioImport" type="file" accept=".json,application/json"></label></div>'+
  '<p class="studioWorkflow">Create guides or articles with screenshots, source links, and connected tools. Drafts save locally and cannot change the public Wiki until approved and published.</p>'+
  '<div class="studioDraftList">'+(s.entries.length?s.entries.map(d=>'<article class="studioDraft"><div><span class="eyebrow">'+esc(d.category||'Guide')+' · '+esc(d.updatedAt?new Date(d.updatedAt).toLocaleDateString():'Draft')+'</span><h2>'+esc(d.title||'Untitled draft')+'</h2><p>'+esc(d.summary||'No summary yet.')+'</p></div><div><button class="btn secondary" data-ws-action="open" data-key="'+esc(d.recordId)+'">Edit draft '+icon('arrow',15)+'</button><button class="studioDanger" data-ws-action="delete" data-key="'+esc(d.recordId)+'">Delete</button></div></article>').join(''):'<div class="studioZero"><span>'+icon('book',28)+'</span><h2>Your Wiki starts here</h2><p>Create your first guide, add screenshots, and preview it just like a real ArcanaWiki article.</p><button class="btn primary" data-ws-action="new">Create first article</button></div>')+'</div>'+
+ '<section class="studioFieldset studioPublished"><div class="studioSectionHead"><h2>Published pages</h2><span class="eyebrow">'+s.published.length+' pages</span></div><p class="mutedSmall">Open an article to read it, or use your owner key to load a copy into Wiki Studio for safe editing. Existing pictures and links stay attached.</p>'+
+ (s.publishedError?'<p class="studioAlert">'+esc(s.publishedError)+'</p>':'')+
+ '<div class="studioDraftList">'+s.published.map(d=>'<article class="studioDraft"><div><span class="eyebrow">'+esc(d.category||'Guide')+' · Published</span><h2>'+esc(d.title)+'</h2><p>'+esc(d.summary||'')+'</p></div><div><button class="btn secondary" data-ws-action="revise" data-key="'+esc(d.id)+'">Edit published</button><button class="btn secondary" data-route="wiki/article" data-params="id='+encodeURIComponent(d.id)+'">Read page</button></div></article>').join('')+'</div></section>'+
  '<p id="wikiStudioStatus" role="status">'+esc(s.message)+'</p></div>';
 }
 function repaint(){const root=getRoot();if(root)root.innerHTML=s.mode==='list'?listing():s.mode==='preview'?preview():editor();}
-async function refresh(){try{s.entries=await listWikiDrafts();s.loaded=true;s.error='';}catch(err){message(err);s.entries=[];s.loaded=true;}repaint();}
+async function refresh(){
+ try{s.entries=await listWikiDrafts();s.loaded=true;s.error='';}
+ catch(err){message(err);s.entries=[];s.loaded=true;}
+ try{
+  const res=await fetch('/api/wiki/articles',{cache:'no-store'});
+  if(!res.ok)throw Error('Could not load the published article list.');
+  const index=await res.json();
+  s.published=Array.isArray(index.articles)?index.articles.filter(a=>a&&a.id&&a.title):[];
+  s.publishedError='';
+ }catch(err){s.published=[];s.publishedError=String(err?.message||err);}
+ repaint();
+}
 export const wikiStudioView=()=>'<div id="wikiStudioRoot" class="wikiStudio"><p role="status">Opening Wiki Studio…</p></div>';
 export async function mountWikiStudio(){if(!getRoot())return;if(!s.loaded)await refresh();else repaint();}
 function schedule(){
@@ -121,6 +135,19 @@ async function act(btn){
   if(action==='list'){await flush();s.mode='list';await refresh();return;}
   if(action==='new'){s.draft={...newWikiDraft(),recordId:'draft-'+Date.now()+'-'+Math.random().toString(36).slice(2,8)};s.mode='edit';schedule();repaint();return;}
   if(action==='open'){await flush();s.draft=await getWikiDraft(key);s.mode='edit';repaint();return;}
+  if(action==='revise'){
+   await flush();
+   if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(key||''))throw Error('Invalid article URL.');
+   const owner=prompt('Owner key to edit this published page (never saved):');
+   if(!owner)return;
+   const res=await fetch('/api/wiki/edit/'+encodeURIComponent(key),{headers:{'x-arcana-wiki-key':owner},cache:'no-store'});
+   const out=await res.json();
+   if(!res.ok)throw Error(out.error||'Could not open the published article.');
+   const draft=normalizeWikiDraft({...out.draft,baseRevision:out.revision});
+   s.draft=await putWikiDraft({...draft,recordId:'draft-'+Date.now()+'-'+Math.random().toString(36).slice(2,8)});
+   s.mode='edit';s.message='Published page loaded as a local draft. Your changes are private until you publish.';
+   repaint();return;
+  }
   if(action==='delete'){if(!confirm('Delete this local draft? Export a backup first if you need it.'))return;await deleteWikiDraft(key);await refresh();return;}
   if(action==='preview'||action==='edit'){await flush();s.mode=action==='preview'?'preview':'edit';repaint();return;}
   if(action==='section-add'){if(s.draft.sections.length>=35){status('Maximum 35 sections.');return;}s.draft.sections.push({id:'section-'+(s.draft.sections.length+1),title:'',body:'',imageId:''});schedule();repaint();return;}
@@ -141,7 +168,11 @@ async function act(btn){
    if(!config.enabled){status('Direct publishing is not configured yet. Export the draft JSON so it can be reviewed and added to GitHub.');return;}
    const key=prompt('Owner publishing key (never saved on this device):');if(!key)return;
    s.publishing=true;repaint();
-   try{const res=await fetch('/api/wiki/publish',{method:'POST',headers:{'content-type':'application/json','x-arcana-wiki-key':key},body:JSON.stringify({draft:check.draft})});const out=await res.json();if(!res.ok)throw Error(out.error||'Publishing failed.');status('Published successfully. Your article is now available in ArcanaWiki.');window.dispatchEvent(new Event('arcana:wiki-published'));}
+   try{const res=await fetch('/api/wiki/publish',{method:'POST',headers:{'content-type':'application/json','x-arcana-wiki-key':key},body:JSON.stringify({draft:check.draft,baseRevision:check.draft.baseRevision})});const out=await res.json();if(!res.ok)throw Error(out.error||'Publishing failed.');
+    s.draft.baseRevision=out.revision;
+    try{s.draft=await putWikiDraft(s.draft);status('Published successfully. Your article is live and this draft can now be revised safely.');}
+    catch {status('Published successfully, but the updated draft could not be saved to this device. Export a backup.');}
+    window.dispatchEvent(new Event('arcana:wiki-published'));}
    finally{s.publishing=false;repaint();}
    return;
   }
