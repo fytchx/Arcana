@@ -8,7 +8,7 @@ import {wikiPublishingEnabled,wikiPublicIndex} from '../src/wiki-server.mjs';
 import {wikiStudioView} from '../src/wiki-studio.js';
 import {NAV_DESTINATIONS} from '../src/context-nav.js';
 const artwork='data:image/webp;base64,'+Buffer.from('small webp example').toString('base64');
-const sample=()=>({id:'guide-original',title:'A practical Guild Skill Guide',summary:'A practical introduction to allocating guild points while comparing bonuses.',category:'Guilds',keywords:'guild, bonuses, skill tree',sourceLabel:'In-game verification',sourceUrl:'https://idlearc.com/patch-notes/1-3-1',sections:[{id:'section-1',title:'Getting started',body:'Guild points can be allocated across different rows.\n\n- Compare the impact\n- Confirm the unlock requirements',imageId:'image-guide'}],images:[{id:'image-guide',name:'Guild setup.png',alt:'Guild skill tree overview',caption:'Current layout',dataUrl:artwork}],relatedTools:['guildtree','guildtree','raids'],relatedArticles:['season-2']});
+const sample=()=>({id:'guide-original',title:'A practical Guild Skill Guide',summary:'A practical introduction to allocating guild points while comparing bonuses.',category:'Guilds',keywords:'guild, bonuses, skill tree',sourceLabel:'In-game verification',sourceUrl:'https://idlearc.com/patch-notes/1-3-1',sections:[{id:'section-1',title:'Getting started',body:'Guild points can be allocated across different rows.\n\n- Compare the impact\n- Confirm the unlock requirements',imageId:'image-guide'}],images:[{id:'image-guide',name:'Guild setup.png',alt:'Guild skill tree overview',caption:'Current layout',dataUrl:artwork}],relatedTools:['guildtree','guildtree','raids'],relatedArticles:['season-2'],relatedCollections:['pet','pet','all','nonexistent']});
 
 test('Initial empty Studio draft is safe and incomplete until a writer provides content',()=>{
  const d=newWikiDraft();
@@ -23,6 +23,8 @@ test('Article normalization preserves images, limits fields and de-duplicates to
  assert.equal(out.sections[0].imageId,'image-guide');
  assert.deepEqual(out.relatedTools,['guildtree','raids']);
  assert.equal(out.status,'draft');
+ assert.deepEqual(out.relatedCollections,['pet']);
+ assert.equal(out.baseRevision,'');
  assert.equal(out.category,'Guilds');
  assert.equal(validImageDataURL(out.images[0].dataUrl),true);
  assert.equal(validImageDataURL('javascript:alert(1)'),false);
@@ -42,6 +44,8 @@ test('Normalized article contents are plain text, with safe images and validated
  const article=publicWikiArticle(sample());
  assert.equal(article.sections[0].imageId,'image-guide');
  assert.equal(article.images[0].alt,'Guild skill tree overview');
+ assert.deepEqual(article.connections.collections,['pet']);
+ assert.match(wikiArticleView(article),/wikiConnectionChip/);
  assert.deepEqual(article.connections.tools,['guildtree','raids']);
  assert.equal(article.actions[0].route,NAV_DESTINATIONS.guildtree.route);
  assert.match(wikiArticleView(article),/wikiArticleFigure/);
