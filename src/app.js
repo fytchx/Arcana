@@ -443,3 +443,4 @@ void loadPublicLfg();
 void loadGuilds();
 void loadVerifiedIndex();
 void loadPublishedWikiArticles();
+window.addEventListener('arcana:wiki-published',()=>void loadPublishedWikiArticles());
