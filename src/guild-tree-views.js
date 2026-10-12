@@ -1,6 +1,7 @@
 import {esc,icon} from './ui.js';
 import {GUILD_TREE,GUILD_GROUPS,GUILD_BASE_NODES,GUILD_NODE_LABELS,GUILD_BONUS_BOOSTS,guildPointBudget,guildTreeCounts,guildTreeSpent,guildTreeRule,guildBonusTotals,remainingGuildPoints} from './guild-tree-engine.js';
 import {GUILD_TREE_SOURCE} from './guild-tree-data.js';
+import {guildCompareView} from './guild-tree-compare.js';
 const fmt=n=>Number(n.toFixed(3)).toLocaleString('en-US',{maximumFractionDigits:3});
 const flat=id=>id.startsWith('flat_');
 const asValue=(id,n)=>fmt(n)+(flat(id)?'':'%');
@@ -19,9 +20,9 @@ function ascension(key,label,description,count,plan,perRank,cap=null){
  <div class="guildTreeAscStats">${Object.entries(perRank).map(([id,num])=>`<div><span>${esc(GUILD_NODE_LABELS[id])}</span><strong>${more(id,num)}/rank</strong></div>`).join('')}</div>
  ${why?`<small class="guildTreeWhy">${esc(why)}</small>`:''}${controls(key,plan,count,label)}</article>`;
 }
-export function guildTreeView(plan,active='vanguard',history={}){
+export function guildTreeView(plan,active='vanguard',history={},baseline=null){
  const counts=guildTreeCounts(plan.events),budget=guildPointBudget(plan.level),spent=guildTreeSpent(plan),left=remainingGuildPoints(plan),totals=guildBonusTotals(plan);
- const tab=GUILD_GROUPS.some(g=>g.id===active)||['ascension','totals'].includes(active)?active:'vanguard';
+ const tab=GUILD_GROUPS.some(g=>g.id===active)||['ascension','totals','comparison'].includes(active)?active:'vanguard';
  const hint=spent<15?'Spend '+(15-spent)+' more to unlock ranks 4–6':spent<35?'Spend '+(35-spent)+' more to unlock ranks 7–10':spent<68?'Spend '+(68-spent)+' more to unlock Ascension':'Every tier is unlocked';
  let content='';
  if(GUILD_GROUPS.some(g=>g.id===tab)){
@@ -34,6 +35,8 @@ export function guildTreeView(plan,active='vanguard',history={}){
    ${ascension('mastery','Mastery','One rank per guild level past 68',counts.mastery||0,plan,GUILD_TREE.mastery.per_rank,Math.max(0,plan.level-68))}
    ${GUILD_TREE.endgame.families.map(f=>ascension('family:'+f.id,f.id[0].toUpperCase()+f.id.slice(1)+' Family','Raises all bonuses in this family',counts['family:'+f.id]||0,plan,f.per_rank)).join('')}</div>
    <p class="guildTreeWhy">Family staircase: to pass rank 10, another family must have 10 ranks. To pass 20, another needs 20 and the third needs 10.</p>`;
+ }else if(tab==='comparison'){
+   content=guildCompareView(plan,baseline);
  }else{
    content=`<div class="guildTreeSectionTitle"><h3>Guild bonuses</h3><p>Totals include Mastery, Family ranks, and Bonus Boost when selected.</p></div>${GUILD_GROUPS.map(g=>`<section class="guildTreeTotals"><h4>${esc(g.title)}</h4>${GUILD_BASE_NODES.filter(n=>n.family===g.id).map(n=>`<div><span>${esc(GUILD_NODE_LABELS[n.id])}</span><strong>${asValue(n.id,totals[n.id].total)}</strong></div>`).join('')}</section>`).join('')}`;
  }
@@ -49,7 +52,7 @@ export function guildTreeView(plan,active='vanguard',history={}){
  <button data-action="guildlink">${icon('link',16)} Share plan</button>
  <button data-action="guildreset">${icon('refresh',16)} Reset</button>
  </div><p class="guildTreeSavedHint">Saved automatically on this device. Sharing creates a link to the current allocation.</p>
- <nav class="guildTreeTabs" aria-label="Guild tree branches">${[...GUILD_GROUPS.map(g=>[g.id,g.title]),['ascension','Ascension'],['totals','Bonuses']].map(([id,label])=>`<button class="${tab===id?'active':''}" aria-current="${tab===id?'page':'false'}" data-action="guildtreetab" data-arg="${id}">${esc(label)}</button>`).join('')}</nav>
+ <nav class="guildTreeTabs" aria-label="Guild tree branches">${[...GUILD_GROUPS.map(g=>[g.id,g.title]),['ascension','Ascension'],['totals','Bonuses'],['comparison','Compare']].map(([id,label])=>`<button class="${tab===id?'active':''}" aria-current="${tab===id?'page':'false'}" data-action="guildtreetab" data-arg="${id}">${esc(label)}</button>`).join('')}</nav>
  <div class="guildTreeMain">${content}</div><p class="guildTreeDisclosure">Rules from the October 9, 2026 IdleArc game configuration. A real in-game reset costs ${GUILD_TREE.reset.cost.toLocaleString('en-US')} Guild Arcstone and has a ${GUILD_TREE.reset.cooldown_hours}-hour cooldown. Resetting this simulation is free. <a href="https://idlearc.com/guild-tree#l=25" rel="noopener noreferrer" target="_blank">Official simulator</a>.</p>
  </section>`;
 }
