@@ -50,3 +50,8 @@
 .communityModeration{margin-top:25px;border-top:1px solid var(--line,#34394d);padding-top:15px;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .communityModeration h2{width:100%;font-size:17px}
 @media(max-width:640px){.accountProfileForm,.communityCreateForm{grid-template-columns:1fr}.playerAvatar{width:56px;height:56px;flex-basis:56px}.communityAccountActions>.btn{flex:1}.communityPostActions>.btn{flex:1}}
+
+.accountRoleSelect{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:9px;margin:0;padding:12px;border:1px solid var(--line,#34394d);border-radius:10px}
+.accountRoleSelect legend{padding:0 6px;color:var(--muted,#afb0c5);font-size:12px}
+.accountRoleSelect label{display:inline-flex;flex-direction:row;align-items:center;gap:7px;padding:9px 12px;border:1px solid var(--line,#34394d);border-radius:10px;background:var(--bg,#0b0e16);font-size:13px}
+.accountRoleSelect input[type=checkbox]{width:17px;height:17px;accent-color:var(--theme-highlight,var(--accent,#957cdd));margin:0}
