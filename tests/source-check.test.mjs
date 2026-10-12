@@ -75,3 +75,12 @@ test('Codex search remains clearable, gives helpful empty results and retries a 
  assert.match(app,/case 'wikiretry':/);
  assert.match(app,/if\(clear\)clear.hidden=!wikiState.query/);
 });
+
+test('Codex references return to the user-selected collection',async()=>{
+ const {wikiRecordView}=await import('../src/wiki-views.js');
+ const sample={id:'game:item:broken-sword',title:'Broken Sword',gameKind:'item',description:'Practice weapon'};
+ const html=wikiRecordView(sample,[], 'all');
+ assert.match(html,/data-params="kind=all"/);
+ const material=wikiRecordView(sample,[], 'material');
+ assert.match(material,/data-params="kind=material"/);
+});
