@@ -63,4 +63,10 @@ const server=http.createServer(async(req,res)=>{
   }catch{send(res,404,'Not found');}
  }catch(error){console.error('Arcana server error:',error);json(res,500,{error:'Internal error'});}
 });
-server.listen(PORT,'0.0.0.0',()=>console.log(`Arcana ${REVISION} listening on port ${PORT}`));
+server.listen(PORT,'0.0.0.0',()=>{
+ console.log(`Arcana ${REVISION} listening on port ${PORT}`);
+ if(process.env.ARCANA_ART_AUDIT==='1'){
+  import('./scripts/art-audit.mjs').then(({runArtAudit})=>runArtAudit({catalogOrigin:BASES.catalog,officialOrigin:BASES.officialArt}))
+   .catch(e=>console.error('ARCANA_STAGING_ART_AUDIT_ERROR',String(e)));
+ }
+});

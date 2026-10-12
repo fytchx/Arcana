@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "check": "node --test tests/source-check.test.mjs",
+    "check": "node --test tests/*.test.mjs",
     "test:mobile": "python tests/mobile_smoke.py"
   }
 }

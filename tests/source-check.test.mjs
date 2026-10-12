@@ -29,3 +29,11 @@ test('every local JS module import resolves to a local file', async()=>{
   for(const imp of imports){assert.equal((await stat(resolve(dirname(resolve(src,name)),imp))).isFile(),true,`${name}: ${imp}`);}
  }
 });
+
+test('all importers share one asset module instance (no URL query aliases)',async()=>{
+ const app=await read('../src/app.js');
+ const views=await read('../src/wiki-views.js');
+ assert.match(app,/from '\.\/assets\.js'/);
+ assert.match(views,/from '\.\/assets\.js'/);
+ assert.equal(/from ['"]\.\/assets\.js\?/.test(app+views),false);
+});

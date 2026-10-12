@@ -62,6 +62,8 @@ export function canonicalArtReference(entry){const d=spriteFor(entry);return d?{
 export async function initGameAssets(){
   if(assetState==='ready'||assetState==='loading')return;
   assetState='loading';lastError='';
+  // Separate requests: official art must never depend on the legacy atlas.
+  const officialRequest=initOfficialCodexAtlas();
   try{
     const response=await fetch('/game-assets/map',{cache:'no-store',signal:AbortSignal.timeout(10000)});
     if(!response.ok)throw new Error(`HTTP ${response.status}`);
@@ -71,43 +73,94 @@ export async function initGameAssets(){
     manifest={...data,mapping:Object.fromEntries(Object.entries(data.mapping).filter(([k])=>/^(?:item:[A-Za-z0-9 .’\'-]+:(?:T[1-6]|A\d+)|[a-z][a-z0-9-]*:[a-z0-9-]+)$/.test(k)))};
     assetState='ready';
   }catch(error){assetState='unavailable';lastError=String(error.message||error).slice(0,110)}
-  await initOfficialCodexAtlas();if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:assets-loaded'));
+  await officialRequest;
+  if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:assets-loaded'));
 }
 
 
+/* Official Codex art is resolved here in source, never injected by a gateway.
+   Ambiguous or missing art is left unmapped rather than showing the wrong item.
+   The legacy atlas remains available independently to the other Arcana Labs. */
 let officialCodexAtlas=null;
-const officialSlug=v=>String(v||'').toLowerCase().replace(/['’]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-export async function initOfficialCodexAtlas(){
- try {
-  const r=await fetch('/codex-art/manifest.json',{cache:'no-store',signal:AbortSignal.timeout(12000)});
-  if(!r.ok)throw Error('Artwork server HTTP '+r.status);
-  const m=await r.json();
-  if(!m?.categories?.skills?.mapping||!m?.categories?.monsters?.mapping||!m?.categories?.biomes?.mapping)throw Error('Invalid artwork manifest');
-  officialCodexAtlas=m.categories;
- } catch(e){console.warn('Codex official art unavailable',String(e));}
+let officialManifest=null;
+let officialState='pending';
+const officialSlug=v=>String(v??'').toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const ART_KIND_CATEGORIES=Object.freeze({
+  item:['items','equipment'], material:['materials'], currency:['currency','currencies','icons'],
+  pet:['pets'], 'class-skill':['skills'], monster:['monsters','tower-monsters'], biome:['biomes'],
+  rune:['runes'], passive:['passives']
+});
+export const officialArtStatus=()=>({state:officialState,categories:Object.keys(officialCodexAtlas||{}),hasManifest:!!officialCodexAtlas});
+const escapeAttribute=str=>String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+function validGroup(group){
+ return !!group&&Number.isInteger(group.cols)&&group.cols>0&&Number.isInteger(group.rows)&&group.rows>0&&
+        group.mapping&&typeof group.mapping==='object'&&!Array.isArray(group.mapping);
 }
-export function codexOfficialArt(entry,size=44){
- const kind=entry.gameKind||entry.kind;
- if(kind==='item')return gameArt(entry,size);
- const cat={'class-skill':'skills',monster:'monsters',biome:'biomes',material:'materials'}[kind];
- if(!cat)return gameArt(entry,size);
- const grp=officialCodexAtlas?.[cat];
- if(!grp)return kind==='material'?gameArt(entry,size):'<span class="gameArt gameArt-missing" title="Loading official in-game art" aria-label="Official art loading">◇</span>';
- const slug=officialSlug(entry.title);
- let key=null;
- if(cat==='skills'){
-  let cls=officialSlug(entry.className||(entry.facts||[]).find(([k])=>String(k).toLowerCase()==='class')?.[1]||'');
-  if(cls.includes('-'))cls=cls.split('-')[0];
-  const exact=cls+':'+slug;
-  const possibilities=Object.keys(grp.mapping).filter(k=>k.replace(/_/g,'-')===exact);
-  if(possibilities.length===1)key=possibilities[0];
-  if(!key){const variants=Object.keys(grp.mapping).filter(k=>k.split(':').pop().replace(/_/g,'-')===slug);if(variants.length===1)key=variants[0];}
- }else{
-  key=Object.keys(grp.mapping).find(k=>k.replace(/_/g,'-')===slug)||null;
+const keySuffix=key=>officialSlug(String(key).split(':').pop().replace(/_/g,'-'));
+const classSlug=entry=>officialSlug(entry?.className||(entry?.facts||[]).find(f=>Array.isArray(f)&&String(f[0]).toLowerCase()==='class')?.[1]||'').split('-')[0];
+/** Pure matching helper. Can be audited on the backend with the same game data. */
+export function resolveOfficialSprite(entry,categories=officialCodexAtlas){
+ if(!entry||!categories)return null;
+ const kind=entry.gameKind||entry.kind, title=officialSlug(entry.title);
+ const groups=ART_KIND_CATEGORIES[kind];if(!title||!groups)return null;
+ const preferredClass=kind==='class-skill'?classSlug(entry):'';
+ const matches=[];
+ for(const category of groups){
+  const group=categories[category];if(!validGroup(group))continue;
+  for(const [key,index] of Object.entries(group.mapping)){
+   if(keySuffix(key)!==title||!Number.isInteger(index)||index<0||index>=group.cols*group.rows)continue;
+   const parts=key.split(':');
+   if(preferredClass&&kind==='class-skill'&&parts.length>1&&officialSlug(parts[0])!==preferredClass)continue;
+   matches.push({category,key,index,cols:group.cols,rows:group.rows});
+  }
  }
- if(!key){return kind==='material'?gameArt(entry,size):'<span class="gameArt gameArt-missing" data-art-status="unmatched" title="Official game art not mapped" aria-label="Official artwork not available">◇</span>'}
- const idx=grp.mapping[key], cols=grp.cols, rows=grp.rows;
- const x=idx%cols,y=Math.floor(idx/cols);
- const bx=cols>1?100*x/(cols-1):0,by=rows>1?100*y/(rows-1):0;
- return '<span class="gameArt gameArt-original codexOfficialArt" data-art-status="official" data-official-key="'+key.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" title="Official IdleArc artwork" style="background-image:url(\'/codex-art/'+cat+'.webp\');background-size:'+(cols*100)+'% '+(rows*100)+'%;background-position:'+bx.toFixed(6)+'% '+by.toFixed(6)+'%"></span>';
+ if(matches.length===1)return matches[0];
+ // Equivalent duplicate map keys across overlapping atlases are not assumed
+ // interchangeable. Prefer a single official item artwork only if unambiguous.
+ if(kind==='item'&&matches.length>1){
+  const primary=matches.filter(m=>m.category==='items');
+  if(primary.length===1&&matches.every(m=>m.key===primary[0].key))return primary[0];
+ }
+ return null;
+}
+export async function initOfficialCodexAtlas(){
+ if(officialState==='ready'||officialState==='loading')return;
+ officialState='loading';
+ try{
+  const response=await fetch('/official-art/manifest.json',{cache:'no-store',signal:AbortSignal.timeout(12000)});
+  if(!response.ok)throw Error('Artwork manifest HTTP '+response.status);
+  const payload=await response.json(),groups=payload?.categories;
+  if(!groups||typeof groups!=='object'||!Object.keys(groups).length)throw Error('Invalid official artwork manifest');
+  const validated=Object.fromEntries(Object.entries(groups).filter(([k,v])=>/^[a-z][a-z0-9-]*$/.test(k)&&validGroup(v)));
+  if(!Object.keys(validated).length)throw Error('No valid artwork groups');
+  officialCodexAtlas=validated;
+  officialManifest={categories:validated,categoryEmblems:payload.categoryEmblems||{}};
+  officialState='ready';
+ }catch(e){officialState='unavailable';console.warn('Official Codex artwork unavailable; using verified legacy sprites where possible',String(e));}
+}
+/** Returns an official game-art sprite only for uniquely verified mappings.
+ * Existing legacy artwork may be used for equipment and materials. */
+export function resolveOfficialEmblem(entry,manifest=officialManifest){
+ const kind=entry?.gameKind||entry?.kind;
+ const emblem=manifest?.categoryEmblems?.[kind];
+ if(!Array.isArray(emblem)||emblem.length!==2)return null;
+ const [category,key]=emblem;
+ const group=manifest.categories?.[category];
+ if(!validGroup(group))return null;
+ const index=group.mapping[key];
+ if(!Number.isInteger(index)||index<0||index>=group.cols*group.rows)return null;
+ return {category,key,index,cols:group.cols,rows:group.rows,isCategoryEmblem:true};
+}
+export const hasCodexOfficialArt=entry=>!!(resolveOfficialSprite(entry)||resolveOfficialEmblem(entry));
+export function codexOfficialArt(entry,size=44){
+ const kind=entry?.gameKind||entry?.kind;
+ const sprite=resolveOfficialSprite(entry)||resolveOfficialEmblem(entry);
+ if(sprite){
+  const x=sprite.index%sprite.cols,y=Math.floor(sprite.index/sprite.cols);
+  const bx=sprite.cols>1?100*x/(sprite.cols-1):0,by=sprite.rows>1?100*y/(sprite.rows-1):0;
+  return '<span class="gameArt gameArt-original codexOfficialArt" data-art-status="'+(sprite.isCategoryEmblem?'category-emblem':'official')+'" data-asset-key="'+escapeAttribute(sprite.category+':'+sprite.key)+'" title="'+(sprite.isCategoryEmblem?'Category artwork · not item-specific':'IdleArc artwork')+'" style="background-image:url(\'/official-art/'+sprite.category+'.webp\');background-size:'+(sprite.cols*100)+'% '+(sprite.rows*100)+'%;background-position:'+bx.toFixed(6)+'% '+by.toFixed(6)+'%"></span>';
+ }
+ // Keep correct existing tier art rather than an unrelated generic picture.
+ if(['item','material','currency','pet'].includes(kind)&&spriteFor(entry))return gameArt(entry,size);
+ return '<span class="gameArt gameArt-missing" data-art-status="'+(officialState==='loading'?'loading':'unmatched')+'" title="No verified art mapping" aria-label="Artwork unavailable">◇</span>';
 }

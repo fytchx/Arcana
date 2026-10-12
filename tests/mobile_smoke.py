@@ -22,16 +22,37 @@ for module in sorted((ROOT/'src').glob('*.js')):
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
 HTML=HTML.replace('<link rel="stylesheet" href="/styles.css">','<style>'+STYLE+'</style>')
 HTML=HTML.replace('</head>', '<script type="importmap">'+json.dumps({'imports': IMPORTS})+'</script></head>')
+# Controlled game references verify rendering independently of real API availability.
+MOCK_ART={"categories": {
+    "monsters":{"cols":2,"rows":1,"mapping":{"elder-wraith":0}},
+    "biomes":{"cols":2,"rows":1,"mapping":{"umbral-rift":0}},
+    "skills":{"cols":2,"rows":1,"mapping":{"warrior:retaliation":0}},
+    "materials":{"cols":2,"rows":1,"mapping":{"mithril-ore":0}},
+    "pets":{"cols":2,"rows":1,"mapping":{"shadow-wolf":0}},
+    "items":{"cols":2,"rows":1,"mapping":{"broken-sword":0}},
+    "icons":{"cols":2,"rows":1,"mapping":{"pet-affix":0}}
+},"categoryEmblems":{"pet-affix":["icons","pet-affix"]}}
+MOCK_ENTRIES={"entries":[
+    {"id":"game:monster:elder-wraith","kind":"monster","title":"Elder Wraith","subtitle":"Monster","description":"Creature","keywords":"wraith"},
+    {"id":"game:biome:umbral-rift","kind":"biome","title":"Umbral Rift","subtitle":"Biome","description":"Zone","keywords":"rift"},
+    {"id":"game:class-skill:warrior-retaliation","kind":"class-skill","title":"Retaliation","className":"Warrior","facts":[["Class","Warrior"]],"subtitle":"Class Skill","description":"Warrior skill","keywords":"warrior"},
+    {"id":"game:material:mithril-ore","kind":"material","title":"Mithril Ore","subtitle":"Material","description":"Ore","keywords":"mithril"},
+    {"id":"game:pet:shadow-wolf","kind":"pet","title":"Shadow Wolf","subtitle":"Pet","description":"Wolf","keywords":"pet"},
+    {"id":"game:item:broken-sword","kind":"item","title":"Broken Sword","subtitle":"Equipment","description":"Sword","keywords":"item"},
+    {"id":"game:pet-affix:sharp-claw","kind":"pet-affix","title":"Sharp Claw","subtitle":"Pet Affix","description":"Affix","keywords":"pet affix"}
+]}
+
 HTML=HTML.replace('</body>', '''<script>
 window.fetch = async function(input) {
  const path = String(input);
- if(path.includes('/api/search/catalog')) return new Response(JSON.stringify({entries:[]}),{status:200,headers:{'content-type':'application/json'}});
+ if(path.includes('/api/search/catalog')) return new Response(JSON.stringify(__MOCK_ENTRIES__),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/guilds')) return new Response(JSON.stringify({guilds:[]}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/lfg/public')) return new Response(JSON.stringify({listings:[],plans:[],issues:[]}),{status:200,headers:{'content-type':'application/json'}});
- if(path.includes('/codex-art/manifest.json')) return new Response(JSON.stringify({categories:{}}),{status:200,headers:{'content-type':'application/json'}});
+ if(path.includes('/official-art/manifest.json')) return new Response(JSON.stringify(__MOCK_ART__),{status:200,headers:{'content-type':'application/json'}});
  return new Response('Unavailable in isolated QA',{status:404});
 };
 </script><script type="module">import '@arcana/app.js';</script></body>''')
+HTML=HTML.replace('__MOCK_ENTRIES__',json.dumps(MOCK_ENTRIES)).replace('__MOCK_ART__',json.dumps(MOCK_ART))
 
 args=['--no-sandbox','--disable-dev-shm-usage']
 executable=shutil.which('chromium') or shutil.which('google-chrome') or None
@@ -59,15 +80,32 @@ with sync_playwright() as playwright:
     assert tabs.count()>=12, f'Category list unexpectedly short: {tabs.count()}'
     all_names=tabs.all_inner_texts()
     for required in ('Materials','Monsters','Biomes','Class Skills','Pet Companions'):
-        assert required in all_names, f'Missing category {required}'
+        assert any(tab.startswith(required) for tab in all_names), f'Missing category {required}'
     rail.evaluate('(e)=>e.scrollLeft=120')
     before=rail.evaluate('(e)=>e.scrollLeft')
-    tabs.get_by_text('Materials',exact=True).dispatch_event('click')
+    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=material"]').dispatch_event('click')
     page.wait_for_timeout(200)
-    assert page.locator('.wikiCategoryScroll .active').inner_text()=='Materials'
+    assert page.locator('.wikiCategoryScroll .active').inner_text().startswith('Materials')
     after=page.locator('.wikiCategoryScroll').evaluate('(e)=>e.scrollLeft')
     assert after>0, f'Category rail unexpectedly reset from {before} to {after}'
     page.screenshot(path=str(OUT/'wiki_mobile.png'),full_page=True)
+    # Manifest loads in the SAME assets.js module instance as app initialization.
+    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=monster"]').dispatch_event('click')
+    page.wait_for_timeout(200)
+    images=page.locator('#wikiRecords [data-art-status="official"]')
+    assert images.count()==1, 'Monster image did not render from the official atlas'
+    assert 'monsters:elder-wraith' in images.first.get_attribute('data-asset-key')
+    tabs=page.locator('.wikiCategoryScroll a')
+    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=pet-affix"]').dispatch_event('click')
+    page.wait_for_timeout(200)
+    emblem=page.locator('#wikiRecords [data-art-status="category-emblem"]')
+    assert emblem.count()==1, 'Official category emblem unavailable for pet affixes'
+    tabs=page.locator('.wikiCategoryScroll a')
+    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=class-skill"]').dispatch_event('click')
+    page.wait_for_timeout(200)
+    assert page.locator('#wikiRecords [data-asset-key="skills:warrior:retaliation"]').count()==1, 'Correct class skill art missing'
+    page.screenshot(path=str(OUT/'wiki_official_art_mobile.png'),full_page=True)
+
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
-    print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'live_api_artwork_tested':False},indent=2))
+    print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
     browser.close()
