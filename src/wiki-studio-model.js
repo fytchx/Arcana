@@ -17,7 +17,7 @@ export function normalizeWikiDraft(raw={}){
  sourceUrl: /^https:\/\//i.test(String(raw.sourceUrl||''))?short(raw.sourceUrl,500):'',
  status:'draft',updatedAt:short(raw.updatedAt,40),
  sections:sections.slice(0,MAX_SECTIONS).map((s,i)=>({id:'section-'+(i+1),title:short(s?.title,100),body:short(s?.body,8000),imageId:slugify(s?.imageId)})),
- images:images.slice(0,MAX_ARTICLE_IMAGES).filter(x=>x&&validImageDataURL(x.dataUrl)).map((x,i)=>({id:'image-'+(i+1),name:short(x.name,100),alt:short(x.alt,200),caption:short(x.caption,240),dataUrl:x.dataUrl})),
+ images:images.slice(0,MAX_ARTICLE_IMAGES).filter(x=>x&&validImageDataURL(x.dataUrl)).map((x,i)=>({id:/^image-[a-z0-9-]{1,60}$/.test(String(x.id))?String(x.id):'image-'+(i+1),name:short(x.name,100),alt:short(x.alt,200),caption:short(x.caption,240),dataUrl:x.dataUrl})),
  relatedTools:unique((Array.isArray(raw.relatedTools)?raw.relatedTools:[]).filter(k=>typeof k==='string'&&NAV_DESTINATIONS[k]?.route)).slice(0,10),
  relatedArticles:unique((Array.isArray(raw.relatedArticles)?raw.relatedArticles:[]).map(slugify).filter(Boolean)).slice(0,10)
  };
