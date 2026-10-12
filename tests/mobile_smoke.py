@@ -301,6 +301,25 @@ with sync_playwright() as playwright:
     page.wait_for_timeout(130)
     assert page.locator('.farmWinner').count()==0, 'Clearing farm timings did not reset the result'
 
+    # Guild comparison: save a baseline, allocate one point, inspect the delta.
+    page.evaluate("location.hash='#/labs/guild-tree'")
+    page.wait_for_timeout(180)
+    page.locator('.guildTreeTabs [data-arg="comparison"]').dispatch_event('click')
+    page.wait_for_timeout(100)
+    assert page.locator('[data-action="guildbaseline"]').count()==1, 'Guild comparison capture missing'
+    page.locator('[data-action="guildbaseline"]').dispatch_event('click')
+    page.wait_for_timeout(130)
+    assert page.locator('.guildCompareTable').count()==3, 'Guild comparison baseline did not render'
+    page.locator('.guildTreeTabs [data-arg="vanguard"]').dispatch_event('click')
+    page.wait_for_timeout(100)
+    page.locator('.guildTreeActions [data-action="guildpointadd"]').first.dispatch_event('click')
+    page.wait_for_timeout(140)
+    page.locator('.guildTreeTabs [data-arg="comparison"]').dispatch_event('click')
+    page.wait_for_timeout(140)
+    assert page.locator('.guildCompareRow strong.up').count()>=1, 'Guild comparison did not detect the changed bonus'
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Guild comparison causes page overflow'
+    page.screenshot(path=str(OUT/'guild_comparison_mobile.png'),full_page=True)
+
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
     print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
     browser.close()
