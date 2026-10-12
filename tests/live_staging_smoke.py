@@ -61,6 +61,10 @@ with sync_playwright() as p:
     page.wait_for_timeout(350)
     assert page.locator("#wikiRecords .wikiRecord").count()>=28, "Pet category empty"
     assert page.locator('#wikiRecords [data-art-status="official"],#wikiRecords [data-art-status="representative"]').count()>0, "Pet artwork not rendered"
+    octopusia=page.locator("#wikiRecords .wikiRecord").filter(has_text="Octopusia")
+    assert octopusia.count()==1, "Octopusia pet record missing"
+    assert octopusia.locator('[data-asset-key="pets:octopussy"][data-art-status="name-alias"]').count()==1, "Octopusia does not show the verified blue octopus sprite"
+
     active=page.locator(".wikiCategoryScroll a.active")
     pos=active.evaluate("(e)=>{const a=e.getBoundingClientRect(),p=e.parentElement.getBoundingClientRect();return {left:a.left,right:a.right,viewLeft:p.left,viewRight:p.right}}")
     assert pos["left"]>=pos["viewLeft"]-2 and pos["right"]<=pos["viewRight"]+2, "Active tab offscreen: "+repr(pos)
