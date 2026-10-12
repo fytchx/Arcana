@@ -48,14 +48,14 @@ function ensureDraft(){if(!state.draft){const tmpl=buildTemplate('warrior-retali
 function persistDraft(){if(state.draft){state.draft=normalizeBuild(state.draft);saveDraft(state.draft)}}
 const searchExtras=()=>[...(savedBuild()?[{id:'my-build',kind:'build',title:state.draft.title||'My Build',subtitle:'Saved locally · Build Studio',keywords:'my build custom saved planner equipment runes skills',description:'Your locally saved build.'}]:[]),{id:'guild-tree-planner',kind:'tool',title:'Guild Skill Tree Planner',subtitle:'Arcana Labs · Guilds',keywords:'guild tree bonus skill guildstone mastery ascension guild planner',description:'Plan guild points, bonuses, and share guild builds.',route:'labs/guild-tree'}];
 function track(id){if(!id)return;state.recent=remember(id)}
-function crumbTrail(){
+function crumbTrail(title){
  const route=parseRoute().route,section=route.split('/')[0];
  const parent={labs:['Arcana Labs','labs'],calculators:['Calculators','calculators'],lfg:['ArcanaLFG','lfg'],wiki:['ArcanaWiki','wiki']}[section];
  if(!parent||route===parent[1])return '';
- return `<nav class="arcanaCrumbs" aria-label="Breadcrumbs"><button data-route="home">Home</button><span aria-hidden="true">›</span><button data-route="${parent[1]}">${parent[0]}</button><span aria-hidden="true">›</span><span aria-current="page">Current tool</span></nav>`;
+ return `<nav class="arcanaCrumbs" aria-label="Breadcrumbs"><button data-route="home">Home</button><span aria-hidden="true">›</span><button data-route="${parent[1]}">${parent[0]}</button><span aria-hidden="true">›</span><span aria-current="page">${esc(title)}</span></nav>`;
 }
 function layout(title,kicker,inner,mark='gem'){
- return `${crumbTrail()}<div class="pageHead"><button class="backLink" data-action="back">${icon('back',17)} Back</button><div class="pageHeadline"><span class="pageIcon">${icon(mark,24)}</span><div><span class="eyebrow">${esc(kicker)}</span><h1>${esc(title)}</h1></div></div></div>${inner}`;
+ return `${crumbTrail(title)}<div class="pageHead"><button class="backLink" data-action="back">${icon('back',17)} Back</button><div class="pageHeadline"><span class="pageIcon">${icon(mark,24)}</span><div><span class="eyebrow">${esc(kicker)}</span><h1>${esc(title)}</h1></div></div></div>${inner}`;
 }
 function portal(route,title,desc,tag,symbol,number){return `<button class="portal" data-route="${esc(route)}"><span class="portalTop"><span class="glyph">${icon(symbol,24)}</span><span class="serial">${number}</span></span><span><h2>${esc(title)}</h2><p>${esc(desc)}</p></span><span class="portalFoot">${esc(tag)}<span>${icon('arrow',16)}</span></span></button>`}
 function home(){const rec=state.recent.map(x=>entityById.get(x)).filter(Boolean).slice(0,3);
