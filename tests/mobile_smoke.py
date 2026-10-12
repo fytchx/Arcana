@@ -142,8 +142,10 @@ with sync_playwright() as playwright:
     assert page.locator('.wikiClearFilter').is_hidden()
     assert page.locator('#wikiRecords .wikiRecord').count()>0
     query=page.locator('#wikiFilter')
-    query.fill('Wraith')
-    assert page.locator('#wikiFoundCount').inner_text().startswith('0 ') or page.locator('#wikiRecords .wikiRecord').count()>=0
+    query.fill('Broken Sword')
+    assert page.locator('#wikiFoundCount').inner_text().startswith('1 ')
+    assert page.locator('#wikiRecords .wikiRecord').count()==1
+    assert page.locator('#wikiShowing').inner_text()=='Showing 1 of 1'
     query.fill('')
     assert page.locator('.wikiShelf-atlas .wikiGalleryList').count()==1, 'Visual gallery mode missing'
     page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=monster"]').dispatch_event('click')
