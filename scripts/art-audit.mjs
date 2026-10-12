@@ -21,6 +21,7 @@ export async function runArtAudit({catalogOrigin,officialOrigin}) {
   else if(emblem)++stat.emblem;
   else {++stat.unmatched;if(stat.examples.length<6)stat.examples.push(entry.title)}
  }
+ console.log('ARCANA_STAGING_ART_MAPPINGS '+JSON.stringify(Object.fromEntries(Object.entries(manifest.categories).map(([name,g])=>[name,Object.keys(g.mapping||{})]))));
  const imageChecks=[];
  for(const {name} of groups){
   try {

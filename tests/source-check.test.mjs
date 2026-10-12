@@ -37,3 +37,11 @@ test('all importers share one asset module instance (no URL query aliases)',asyn
  assert.match(views,/from '\.\/assets\.js'/);
  assert.equal(/from ['"]\.\/assets\.js\?/.test(app+views),false);
 });
+
+test('verified catalog supplements only real pet and currency sprite records',async()=>{
+ const server=await read('../server.mjs');
+ assert.match(server,/async function verifiedCatalog\(/);
+ assert.match(server,/const match=key\.match\(\/\^\(currency\|pet\):/);
+ assert.match(server,/if\(existing\.has\(id\)\)continue/);
+ assert.match(server,/catalogCache=\{\.\.\.payload,entries:/);
+});
