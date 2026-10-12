@@ -22,7 +22,7 @@ const sectionCard=(section,i)=>'<article class="studioSection"><header><span cla
  '<label>Content<textarea data-ws-section="'+i+'" data-ws-property="body" maxlength="8000" rows="6" placeholder="Write clear explanations. Separate paragraphs with blank lines. Use - for bullet points.">'+esc(section.body)+'</textarea></label>'+
  '<label>Illustration<select data-ws-section="'+i+'" data-ws-property="imageId">'+imageOptions(section.imageId)+'</select></label>'+ 
  (section.imageRef?'<label>Original imported image reference (clear only if intentionally omitting it)<input data-ws-section="'+i+'" data-ws-property="imageRef" value="'+esc(section.imageRef)+'"></label>':'')+
- '<label>Table (optional: rows on separate lines, tab-separated columns)<textarea data-ws-section="'+i+'" data-ws-property="table" rows="'+(section.table?.length?Math.min(10,section.table.length+1):2)+'" placeholder="Column 1\tColumn 2">'+esc((section.table||[]).map(row=>row.join('\t')).join('\n'))+'</textarea></label></article>';
+ (section.table?.length?'<label>Table (tab-separated columns, one row per line)<textarea data-ws-section="'+i+'" data-ws-property="table" rows="'+Math.min(10,section.table.length+1)+'">'+esc(section.table.map(row=>row.join('\t')).join('\n'))+'</textarea></label><button type="button" class="btn secondary" data-ws-action="table-remove" data-idx="'+i+'">Remove table</button>':'<button type="button" class="btn secondary" data-ws-action="table-add" data-idx="'+i+'">Add table</button>')+'</article>';
 const imageCard=(image,i)=>'<article class="studioImage"><img src="'+esc(image.dataUrl)+'" alt="'+esc(image.alt||'Image preview')+'" loading="lazy"><div><strong>'+esc(image.name)+'</strong><label>Alt text<input data-ws-image="'+i+'" data-ws-property="alt" maxlength="200" value="'+esc(image.alt)+'" placeholder="Describe the image for screen readers"></label><label>Caption<input data-ws-image="'+i+'" data-ws-property="caption" maxlength="240" value="'+esc(image.caption)+'" placeholder="Optional caption"></label><button type="button" class="studioDanger" data-ws-action="image-remove" data-idx="'+i+'">Remove image</button></div></article>';
 const articleOptions=()=>[...WIKI_ARTICLES,...s.published].filter(a=>a.id!==s.draft?.id).map(a=>'<option value="'+esc(a.id)+'">'+esc(a.title)+'</option>').join('');
 const collectionOptions=()=>WIKI_CATEGORY_LIST.filter(([id])=>id!=='all').map(([id,label])=>'<option value="'+esc(id)+'">'+esc(label)+'</option>').join('');
@@ -186,6 +186,11 @@ async function act(btn){
   if(action==='delete'){if(!confirm('Delete this local draft? Export a backup first if you need it.'))return;await deleteWikiDraft(key);await refresh();return;}
   if(action==='preview'||action==='edit'){await flush();s.mode=action==='preview'?'preview':'edit';repaint();return;}
   if(action==='section-add'){if(s.draft.sections.length>=35){status('Maximum 35 sections.');return;}s.draft.sections.push({id:'section-'+(s.draft.sections.length+1),title:'',body:'',imageId:''});schedule();repaint();return;}
+  if(action==='table-add'||action==='table-remove'){
+   const i=sectionIndex(btn);if(!Number.isInteger(i)||i<0||i>=s.draft.sections.length)return;
+   s.draft.sections[i].table=action==='table-add'?[['Column 1','Column 2'],['Value','Value']]:[];
+   schedule();repaint();return;
+  }
   if(['section-remove','section-up','section-down'].includes(action)){
    const i=sectionIndex(btn);if(!Number.isInteger(i)||i<0||i>=s.draft.sections.length)return;
    if(action==='section-remove'){if(s.draft.sections.length===1){status('Keep at least one section.');return;}s.draft.sections.splice(i,1);}
