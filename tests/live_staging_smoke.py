@@ -65,6 +65,33 @@ with sync_playwright() as p:
     assert octopusia.count()==1, "Octopusia pet record missing"
     assert octopusia.locator('[data-asset-key="pets:octopussy"][data-art-status="name-alias"]').count()==1, "Octopusia does not show the verified blue octopus sprite"
 
+
+    assert page.locator(".wikiShelf-atlas .wikiGalleryList").count()==1, "Atlas must use artwork gallery"
+    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=class-skill"]').dispatch_event("click")
+    page.wait_for_timeout(400)
+    skill_names={"Counterstrike":"counterstrike","Keen Edge":"keen-edge","Lethal Blow":"lethal-blow","Strong pet bound":"strong-pet-bound"}
+    for display,slug in skill_names.items():
+        page.locator("#wikiFilter").fill(display)
+        page.wait_for_timeout(130)
+        icon=page.locator('#wikiRecords [data-asset-key="skill-override:'+slug+'"][data-art-status="user-confirmed"]')
+        assert icon.count()==1, "Missing verified skill art "+display
+        resp=page.request.get(BASE+"/assets/skill-overrides/"+slug+".webp",timeout=18000)
+        assert resp.status==200 and resp.body()[:4]==b"RIFF", "Invalid skill image "+display
+    page.locator("#wikiFilter").fill("")
+    page.wait_for_timeout(200)
+    page.screenshot(path=str(OUT/"arcana-staging-skills.png"),full_page=True)
+    page.locator('.wikiShelfSwitch a[href="#/wiki/library?kind=material"]').dispatch_event("click")
+    page.wait_for_timeout(280)
+    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=pet-bonus"]').dispatch_event("click")
+    page.wait_for_timeout(250)
+    assert page.locator(".wikiShelf-reference .wikiTextList").count()==1,"Game Systems mode missing"
+    assert page.locator('#wikiRecords .wikiRecordText').count()>0,"Expected concise reference rows"
+    assert page.locator('#wikiRecords [data-art-status="category-emblem"]').count()==0,"Mechanics still showing generic repeated pictures"
+    page.screenshot(path=str(OUT/"arcana-staging-mechanics.png"),full_page=True)
+    page.locator('.wikiShelfSwitch a[href="#/wiki/library?kind=item"]').dispatch_event("click")
+    page.wait_for_timeout(200)
+    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=pet"]').dispatch_event("click")
+    page.wait_for_timeout(200)
     active=page.locator(".wikiCategoryScroll a.active")
     pos=active.evaluate("(e)=>{const a=e.getBoundingClientRect(),p=e.parentElement.getBoundingClientRect();return {left:a.left,right:a.right,viewLeft:p.left,viewRight:p.right}}")
     assert pos["left"]>=pos["viewLeft"]-2 and pos["right"]<=pos["viewRight"]+2, "Active tab offscreen: "+repr(pos)

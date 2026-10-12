@@ -27,5 +27,5 @@ jobs:
         if: always()
         with:
           name: arcana-staging-browser-screenshot
-          path: qa-output/arcana-staging-mobile.png
+          path: qa-output/arcana-staging-*.png
           if-no-files-found: ignore
