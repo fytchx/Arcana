@@ -119,6 +119,22 @@ with sync_playwright() as p:
         assert resp.status==200 and resp.body()[:4]==b"RIFF", "Invalid skill image "+display
     page.locator("#wikiFilter").fill("")
     page.wait_for_timeout(200)
+    # A long illustrated class-skill list should expand without a whole-page rerender.
+    assert page.locator("#wikiRecords .wikiRecord").count()==36
+    page.evaluate("window.scrollTo({top:610,behavior:'instant'})")
+    before_more=page.evaluate("window.scrollY")
+    page.locator('#wikiMore [data-action="wikimore"]').dispatch_event("click")
+    page.wait_for_timeout(130)
+    assert page.locator("#wikiRecords .wikiRecord").count()>36, "Show-more failed to reveal more skills"
+    assert page.evaluate("window.scrollY")>=before_more-12,"Show-more scrolled back to top"
+    reading_pos=page.evaluate("window.scrollY")
+    page.locator("#wikiRecords .wikiRecord").nth(40).dispatch_event("click")
+    page.wait_for_timeout(140)
+    assert page.locator(".wikiReferencePage").count()==1
+    page.locator(".wikiReferencePage .wikiBack").dispatch_event("click")
+    page.wait_for_timeout(210)
+    assert page.locator("#wikiRecords .wikiRecord").count()>36, "Return lost expanded list"
+    assert abs(page.evaluate("window.scrollY")-reading_pos)<=24, "Reference return did not restore reading position"
     page.screenshot(path=str(OUT/"arcana-staging-skills.png"),full_page=True)
     page.locator('.wikiShelfSwitch a[href="#/wiki/library?kind=material"]').dispatch_event("click")
     page.wait_for_timeout(280)
