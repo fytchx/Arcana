@@ -3,6 +3,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { resolve, sep, extname } from 'node:path';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import {publishingStatus,ownerKeyValid,localWikiArticles,publishWikiDraft} from './src/wiki-publish-server.js';
 
 const ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)));
 const PORT = Number(process.env.PORT || 3000);
@@ -86,8 +87,26 @@ async function verifiedCatalog(){
 }
 const server=http.createServer(async(req,res)=>{
  try {
-  if(req.method!=='GET'&&req.method!=='HEAD'){send(res,405,'Method not allowed');return;}
   const {pathname}=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
+  if(pathname==='/api/wiki/publish'){
+    if(req.method!=='POST'){send(res,405,'Method not allowed');return;}
+    if(!publishingStatus().enabled){json(res,503,{error:'Publishing is not configured.'},{'cache-control':'no-store'});return;}
+    const origin=req.headers.origin;
+    if(origin&&new URL(origin).host!==req.headers.host){json(res,403,{error:'Cross-origin publishing is blocked.'});return;}
+    if(!ownerKeyValid(req.headers['x-arcana-wiki-key'])){json(res,403,{error:'Owner key is not valid.'},{'cache-control':'no-store'});return;}
+    if(!String(req.headers['content-type']||'').startsWith('application/json')){json(res,415,{error:'JSON only'});return;}
+    try{
+      const pieces=[];let size=0;
+      for await (const chunk of req){size+=chunk.length;if(size>9500000)throw Error('Article exceeds 9.5 MB.');pieces.push(chunk);}
+      const payload=JSON.parse(Buffer.concat(pieces).toString('utf8'));
+      const result=await publishWikiDraft(payload.draft);
+      json(res,201,result,{'cache-control':'no-store'});
+    }catch(error){json(res,422,{error:String(error.message||error).slice(0,250)},{'cache-control':'no-store'});}
+    return;
+  }
+  if(req.method!=='GET'&&req.method!=='HEAD'){send(res,405,'Method not allowed');return;}
+  if(pathname==='/api/wiki/articles'){json(res,200,await localWikiArticles(ROOT),{'cache-control':'no-store'});return;}
+  if(pathname==='/api/wiki/publishing'){json(res,200,publishingStatus(),{'cache-control':'no-store'});return;}
   if(pathname==='/health'||pathname==='/__health') {const art=await localArtAudit;const ok=!REQUIRE_LOCAL_ART||art.ready;json(res,ok?200:503,{ok,release:REVISION,source:'tracked frontend files',artwork:{local:art.ready,groups:art.groups,version:art.version||null},dependencyEndpoints:Object.keys(BASES)});return;}
   if(pathname==='/api/lfg/public'){await lfgFeed(res);return;}
   if(pathname==='/api/search/catalog'){try{json(res,200,await verifiedCatalog(),{'cache-control':'no-store'});}catch(e){json(res,502,{error:'Verified catalog unavailable'});}return;}
