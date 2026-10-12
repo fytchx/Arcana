@@ -100,8 +100,9 @@ test('Account and community routes enforce identity and hide vs permanent delete
   assert.equal((await (await fetch(base+'/api/community/posts?includeHidden=true',{headers:headers(2)})).json()).posts.length,0);
   const log=await readFile(join(directory,'community','moderation.jsonl'),'utf8');
   assert.match(log,/"action":"hide"/);assert.match(log,/"action":"delete"/);
-  response=await fetch(base+'/api/account/callback?code=anything');
-  assert.equal(response.status,200); // Fetch follows redirect to '/', the test server responds 404 unless redirected URI intercepted.
+  response=await fetch(base+'/api/account/callback?code=anything',{redirect:'manual'});
+  assert.equal(response.status,303,'A callback without a matching OAuth state must be rejected');
+  assert.match(response.headers.get('location'),/error=sign-in/);
  }finally{
   server.close();await rm(directory,{recursive:true,force:true});
   for(const [k,v] of Object.entries({ARCANA_ACCOUNT_DATA_DIR:old.dir,ARCANA_AUTH_BASE_URL:old.base,
