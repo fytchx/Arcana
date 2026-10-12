@@ -77,6 +77,9 @@ with sync_playwright() as playwright:
     page.on('pageerror',lambda e:errors.append(str(e)))
     page.set_content(HTML,wait_until='domcontentloaded')
     page.wait_for_timeout(700)
+    assert page.locator('.skipMain').count()==1, 'Accessible skip navigation missing'
+    page.locator('.skipMain').dispatch_event('click')
+    assert page.evaluate('document.activeElement.id')=='content', 'Skip navigation did not focus the main content'
     assert page.locator('.arcanaSignature').count()==1, 'Footer must appear exactly once'
     footer=page.locator('.arcanaSignature').inner_text()
     assert 'Made by Zane' in footer and 'PDX & OVK' in footer, footer
@@ -210,6 +213,7 @@ with sync_playwright() as playwright:
     page.locator('#wikiRecords .wikiRecord').nth(40).dispatch_event('click')
     page.wait_for_timeout(120)
     assert page.locator('.wikiReferencePage').count()==1
+    assert page.locator('.wikiShareBtn[data-action="wikirefshare"]').count()==1, 'Codex reference is missing its share action'
     page.locator('.wikiReferencePage .wikiBack').dispatch_event('click')
     page.wait_for_timeout(170)
     assert page.locator('.wikiCategoryScroll a.active').inner_text().startswith('Class Skills')
@@ -256,6 +260,70 @@ with sync_playwright() as playwright:
     assert page.locator('.arcanaNext').count()==1, 'Calculator follow-up links missing'
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Connected tool has horizontal overflow'
     page.screenshot(path=str(OUT/'connected_wiki_mobile.png'),full_page=True)
+
+    # New guide pages expose exact content routes and focusable in-article navigation.
+    page.evaluate("location.hash='#/wiki/guides'")
+    page.wait_for_timeout(180)
+    assert page.locator('.wikiGuideGroup').count()>=5, 'Guides are not grouped by topic'
+    assert page.locator('[data-route="wiki/article"][data-params="id=forge"]').count()>=1, 'Forge guide missing'
+    page.evaluate("location.hash='#/wiki/article?id=guild-planning'")
+    page.wait_for_timeout(180)
+    assert page.locator('.wikiShareBtn[data-action="wikishare"]').count()==1, 'Wiki guide is missing its share action'
+    toc=page.locator('.wikiArticleToc')
+    assert toc.count()==1 and toc.locator('button').count()==4, 'Guide contents navigation unavailable'
+    page.locator('[data-action="wikisection"][data-arg="rank-unlocks"]').dispatch_event('click')
+    page.wait_for_timeout(180)
+    assert page.locator('#section-rank-unlocks h2').count()==1, 'Guide section jump did not resolve'
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Wiki article has horizontal overflow'
+    page.screenshot(path=str(OUT/'wiki_guides_connected_mobile.png'),full_page=True)
+
+    # Actual user-entered measurements drive the farming calculator. No assumed HP or XP.
+    page.evaluate("location.hash='#/calculators/ml-farm'")
+    page.wait_for_timeout(180)
+    assert page.locator('.farmCompare').count()==1, 'ML farming comparator failed to open'
+    assert page.locator('.farmWinner').count()==0, 'ML comparator should not invent a winner'
+    page.locator('[data-farm-time="0"]').fill('0.7')
+    page.locator('[data-farm-time="0"]').press('Tab')
+    page.wait_for_timeout(130)
+    page.locator('[data-farm-time="1"]').fill('1.1')
+    page.locator('[data-farm-time="1"]').press('Tab')
+    page.wait_for_timeout(160)
+    assert page.locator('.farmWinner').count()==1, 'ML calculator did not evaluate measured times'
+    assert 'Weakest monster' in page.locator('.farmWinner').inner_text(), 'ML comparison chose wrong result'
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'ML calculator has horizontal overflow'
+    page.screenshot(path=str(OUT/'ml_farm_mobile.png'),full_page=True)
+
+    page.evaluate("location.hash='#/home'")
+    page.wait_for_timeout(160)
+    assert page.locator('.arcanaResume [data-route="calculators/ml-farm"]').count()==1, 'Home failed to resume saved farm times'
+    page.locator('.arcanaResume [data-route="calculators/ml-farm"]').dispatch_event('click')
+    page.wait_for_timeout(160)
+    assert page.locator('[data-farm-time="0"]').input_value()=='0.7', 'Saved ML timing was lost'
+    page.locator('[data-farm-mode][value="earlier"]').check()
+    page.wait_for_timeout(140)
+    assert page.locator('.farmRow small').first.inner_text()=='Normal XP', 'Earlier biome XP factor was not applied'
+    page.locator('[data-action="farmreset"]').dispatch_event('click')
+    page.wait_for_timeout(130)
+    assert page.locator('.farmWinner').count()==0, 'Clearing farm timings did not reset the result'
+
+    # Guild comparison: save a baseline, allocate one point, inspect the delta.
+    page.evaluate("location.hash='#/labs/guild-tree'")
+    page.wait_for_timeout(180)
+    page.locator('.guildTreeTabs [data-arg="comparison"]').dispatch_event('click')
+    page.wait_for_timeout(100)
+    assert page.locator('[data-action="guildbaseline"]').count()==1, 'Guild comparison capture missing'
+    page.locator('[data-action="guildbaseline"]').dispatch_event('click')
+    page.wait_for_timeout(130)
+    assert page.locator('.guildCompareTable').count()==3, 'Guild comparison baseline did not render'
+    page.locator('.guildTreeTabs [data-arg="vanguard"]').dispatch_event('click')
+    page.wait_for_timeout(100)
+    page.locator('.guildTreeActions [data-action="guildpointadd"]').first.dispatch_event('click')
+    page.wait_for_timeout(140)
+    page.locator('.guildTreeTabs [data-arg="comparison"]').dispatch_event('click')
+    page.wait_for_timeout(140)
+    assert page.locator('.guildCompareRow strong.up').count()>=1, 'Guild comparison did not detect the changed bonus'
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Guild comparison causes page overflow'
+    page.screenshot(path=str(OUT/'guild_comparison_mobile.png'),full_page=True)
 
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
     print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))

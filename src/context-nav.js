@@ -7,6 +7,7 @@ export const NAV_DESTINATIONS=Object.freeze({
  reference:{label:'Explore game references',detail:'Browse all verified entries',route:'wiki/library',params:{kind:'all'},icon:'search'},
  search:{label:'Search Arcana',detail:'Find items, tools and guides',action:'search',icon:'search'},
  upgrade:{label:'Calculate upgrade costs',detail:'Open the equipment calculator',route:'calculators/upgrade',icon:'calculator'},
+ farm:{label:'Compare ML farming speed',detail:'Compare your actual ML XP per second',route:'calculators/ml-farm',icon:'sword'},
  compare:{label:'Compare equipment',detail:'Review two equipment bases',route:'calculators/compare',icon:'compare'},
  build:{label:'Open Build Studio',detail:'Plan gear, pets, skills and runes',route:'labs/build',icon:'flask'},
  runes:{label:'Open Rune Forge',detail:'Build and save rune layouts',route:'labs/runes',icon:'gem'},
@@ -29,28 +30,35 @@ export const NAV_DESTINATIONS=Object.freeze({
  runewords:{label:'Browse runewords',detail:'Read rune combinations',route:'wiki/library',params:{kind:'runeword'},icon:'gem'},
  skillRecords:{label:'Browse class skills',detail:'Find individual skills',route:'wiki/library',params:{kind:'class-skill'},icon:'git'},
  biomeRecords:{label:'Browse biomes',detail:'Explore areas and monsters',route:'wiki/library',params:{kind:'biome'},icon:'layers'},
- materials:{label:'Browse materials',detail:'Find materials and their descriptions',route:'wiki/library',params:{kind:'material'},icon:'box'}
+ materials:{label:'Browse materials',detail:'Find materials and their descriptions',route:'wiki/library',params:{kind:'material'},icon:'box'},
+ guildGuide:{label:'Guild Skill Tree guide',detail:'Understand points, rank gates and Ascension',route:'wiki/article',params:{id:'guild-planning'},icon:'book'},
+ affixGuide:{label:'Pet Affix upgrade guide',detail:'Learn shard costs and affix limits',route:'wiki/article',params:{id:'pet-affix-costs'},icon:'book'},
+ forgeGuide:{label:'Learn the Forge',detail:'How slot-based upgrades work',route:'wiki/article',params:{id:'forge'},icon:'book'},
+ gemGuide:{label:'Learn sockets and gems',detail:'Gem locations, fusing and recutting',route:'wiki/article',params:{id:'gems'},icon:'gem'},
+ raidGuide:{label:'Rift Raid basics',detail:'Prepare for Titan fights and team play',route:'wiki/article',params:{id:'rift-raids'},icon:'users'},
+ rarityGuide:{label:'Equipment rarity guide',detail:'Drop thresholds and reforging',route:'wiki/article',params:{id:'drop-rarities'},icon:'shield'}
 });
 
 export const NAV_FLOWS=Object.freeze({
- calculators:['upgrade','compound','affixes','compare'],
+ calculators:['upgrade','compound','affixes','compare','farm'],
  labs:['build','runes','skills','guildtree'],
- 'calculators/upgrade':['items','compare','build'],
- 'calculators/compare':['items','upgrade','build'],
+ 'calculators/ml-farm':['monsterGuide','biomeRecords','skillRecords'],
+ 'calculators/upgrade':['items','compare','forgeGuide','build'],
+ 'calculators/compare':['items','upgrade','rarityGuide','build'],
  'calculators/pet':['compoundGuide','petlab','petBonuses'],
- 'calculators/affixes':['petAffixes','petlab','compoundGuide'],
- 'labs/build':['guides','items','runes'],
+ 'calculators/affixes':['petAffixes','petlab','affixGuide'],
+ 'labs/build':['guides','items','gemGuide','runes'],
  'labs/runes':['runeGuide','runewords','build'],
  'labs/skills':['skillRecords','passives','build'],
  'labs/passives':['seasonGuide','skills','build'],
- 'labs/pets':['compound','affixes','pets'],
- 'labs/guild-tree':['guilds','raids','seasonGuide'],
- 'lfg/raids':['guilds','guildtree','seasonGuide'],
+ 'labs/pets':['compound','affixes','affixGuide','pets'],
+ 'labs/guild-tree':['guilds','raids','guildGuide','seasonGuide'],
+ 'lfg/raids':['guilds','guildtree','raidGuide'],
  'lfg/guilds':['guildtree','raids','guides'],
  'lfg/guild':['guildtree','guilds','raids'],
  'lfg/guild/new':['guildtree','guilds','raids'],
  'lfg/guild/edit':['guildtree','guilds','raids'],
- 'wiki/guides':['build','reference','search'],
+ 'wiki/guides':['build','reference','guildGuide','search'],
  'wiki/library':['guides','build','search']
 });
 export const HOME_START=['items','build','guildtree','guides','raids','upgrade'];
