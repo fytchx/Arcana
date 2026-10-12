@@ -105,6 +105,24 @@ test('New navigational destinations resolve and sourced guides exist',()=>{
  }
 });
 
+test('Source-backed Wiki guides and game references expose safe share actions',()=>{
+ const article=wikiArticleView(wikiArticleById('forge'));
+ assert.match(article,/data-action="wikishare" data-arg="forge"/);
+ const record=wikiRecordView({id:'game:item:sample',gameKind:'item',title:'Item',facts:[]},[],'item');
+ assert.match(record,/data-action="wikirefshare" data-arg="game:item:sample"/);
+});
+
+test('Skip navigation and neutral public brand are present',async()=>{
+ const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+ const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+ assert.match(html,/class="skipMain" data-action="skipmain"/);
+ assert.match(app,/case 'skipmain'/);
+ assert.match(app,/case 'wikishare'/);
+ assert.match(app,/case 'wikirefshare'/);
+ assert.doesNotMatch(html,/CONNECTED PREVIEW/);
+ assert.doesNotMatch(app,/Arcana 3\\.0/);
+});
+
 test('Integration respects mobile keyboard and removes legacy XP misinformation',async()=>{
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
  assert.match(app,/resumableWorkspaces\(/);
