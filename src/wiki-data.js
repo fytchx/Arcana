@@ -45,8 +45,8 @@ export function recordKindLabel(kind){return ({item:'Equipment',material:'Materi
    without changing routing or hardcoding UI components. */
 export const WIKI_CONNECTIONS=Object.freeze({
  'pet-compound':{articles:['season-2','guide-builds'],collections:['pet','pet-bonus','pet-affix'],tools:['compound','petlab','affixes'],sectionLinks:{'The quick answer':['compound'],'Seasonal versus Permanent':['petlab'],'Affixes are a different system':['affixes','petAffixes']}},
- 'rune-grid':{articles:['season-2','guide-builds'],collections:['rune','runeword'],tools:['runes','build'],sectionLinks:{'Progression milestones':['runes'],'Plan without losing your work':['build']},
- 'monster-level':{articles:['season-2'],collections:['biome','monster'],tools:['skills','passives'],sectionLinks:{'Choose efficiently':['biomeRecords']},
- 'season-2':{articles:['monster-level','pet-compound','rune-grid'],collections:['item','class-skill','pet'],tools:['build','guildtree','raids'],sectionLinks:{'Your character':['skills','passives'],'Equipment and upgrades':['upgrade','items'],'Runes and pets':['runes','compound'],'Raids and community':['raids','guildtree']},
- 'guide-builds':{articles:['rune-grid','pet-compound'],collections:['item','rune','pet'],tools:['build','runes','compare'],sectionLinks:{'Inspect, then make a copy':['build'],'Learn while experimenting':['compare','runes','petlab']}
+ 'rune-grid':{articles:['season-2','guide-builds'],collections:['rune','runeword'],tools:['runes','build'],sectionLinks:{'Progression milestones':['runes'],'Plan without losing your work':['build']}},
+ 'monster-level':{articles:['season-2'],collections:['biome','monster'],tools:['skills','passives'],sectionLinks:{'Choose efficiently':['biomeRecords']}},
+ 'season-2':{articles:['monster-level','pet-compound','rune-grid'],collections:['item','class-skill','pet'],tools:['build','guildtree','raids'],sectionLinks:{'Your character':['skills','passives'],'Equipment and upgrades':['upgrade','items'],'Runes and pets':['runes','compound'],'Raids and community':['raids','guildtree']}},
+ 'guide-builds':{articles:['rune-grid','pet-compound'],collections:['item','rune','pet'],tools:['build','runes','compare'],sectionLinks:{'Inspect, then make a copy':['build'],'Learn while experimenting':['compare','runes','petlab']}}
 });
