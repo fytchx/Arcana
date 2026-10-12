@@ -350,9 +350,12 @@ with sync_playwright() as playwright:
     page.locator('[data-ws-image="0"][data-ws-property="alt"]').fill('An illustrated example of a guild plan')
     page.locator('[data-ws-image="0"][data-ws-property="caption"]').fill('Guild strategy image')
     page.locator('[data-ws-section="0"][data-ws-property="imageId"]').select_option(index=1)
+    image_selected=page.locator('[data-ws-section="0"][data-ws-property="imageId"]').input_value()
+    assert image_selected.startswith('image-'), 'Section image picker did not retain image ID'
     page.locator('[data-ws-action="preview"]').dispatch_event('click')
-    page.wait_for_timeout(300)
-    assert page.locator('.studioPreviewSection figure img').count()==1, 'Article image missing in preview'
+    page.wait_for_timeout(650)
+    assert page.locator('.studioPreview').count()==1, 'Wiki preview not opened: '+(page.locator('#wikiStudioStatus').inner_text() if page.locator('#wikiStudioStatus').count() else 'missing status')
+    assert page.locator('.studioPreviewSection figure img').count()==1, 'Article image missing in preview: '+page.locator('.studioPreview').inner_text()[-500:]
     assert page.locator('.studioReady').count()>=1, 'Valid draft failed Wiki Studio quality checks'
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Wiki Studio preview has horizontal overflow'
     page.screenshot(path=str(OUT/'wiki_studio_preview_mobile.png'),full_page=True)
