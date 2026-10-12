@@ -111,6 +111,8 @@ export function resolveOfficialSprite(entry,categories=officialCodexAtlas){
  const aliases=[];
  if(kind==='item'&&/[’']s\b/i.test(entry.title))aliases.push({slug:officialSlug(entry.title.replace(/[’']s\b/gi,'')),matchType:'name-alias'});
  if(kind==='currency'&&title.endsWith('ies'))aliases.push({slug:title.slice(0,-3)+'y',matchType:'name-alias'});
+ // The game labels this pet Octopusia, while its exact original art key is octopussy.
+ if(kind==='pet'&&title==='octopusia')aliases.push({slug:'octopussy',matchType:'name-alias'});
  if(kind==='pet')aliases.push({slug:title+'-1',matchType:'representative-pet'});
  const candidateSets=[{slug:title,matchType:'exact'},...aliases];
  for(const {slug,matchType} of candidateSets){

@@ -52,6 +52,18 @@ test('first-pet variant is intentionally representative, while unrelated names s
  assert.equal(a?.matchType,'representative-pet');
  assert.equal(resolveOfficialSprite({gameKind:'pet',title:'Octopusia'},groups),null);
 });
+test('Octopusia maps to the user-identified original octopus, not another pet',async()=>{
+ const {readFile}=await import('node:fs/promises');
+ const manifest=JSON.parse(await readFile(new URL('../assets/official-art/manifest.json',import.meta.url),'utf8'));
+ const sprite=resolveOfficialSprite({gameKind:'pet',title:'Octopusia'},manifest.categories);
+ assert.equal(sprite?.category,'pets');
+ assert.equal(sprite?.key,'octopussy');
+ assert.equal(sprite?.index,23);
+ assert.equal(sprite?.matchType,'name-alias');
+ // No invented alternate spellings: unrelated pets must remain unmatched.
+ assert.equal(resolveOfficialSprite({gameKind:'pet',title:'Octopusina'},manifest.categories),null);
+});
+
 test('verified plural currency alias maps Rubies to ruby, not Gold to an invented coin',()=>{
  const groups={currency:{cols:2,rows:1,mapping:{ruby:0,coin:1}}};
  assert.equal(resolveOfficialSprite({gameKind:'currency',title:'Rubies'},groups)?.key,'ruby');
