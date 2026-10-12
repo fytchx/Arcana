@@ -38,7 +38,7 @@ export function guildCompareView(plan,baseline){
   const rows=diff.changes.filter(x=>x.group===group.id);
   return `<section class="guildCompareGroup"><h4>${esc(group.title)}</h4><div class="guildCompareTable" role="table" aria-label="${esc(group.title)} bonus changes">
    <div class="guildCompareRow header" role="row"><span>Bonus</span><span>Baseline</span><span>Current</span><span>Change</span></div>
-   ${rows.map(x=>`<div class="guildCompareRow" role="row"><span>${esc(x.label)}</span><span>${format(x.id,x.before)}</span><span>${format(x.id,x.after)}</span><strong class="${x.delta>0?'up':x.delta<0?'down':'even'}">${x.delta>0?'+':''}${format(x.id,x.delta)}</strong></div>`).join('')}
+   ${rows.map(x=>`<div class="guildCompareRow" role="row"><span>${esc(x.label)}</span><span><small>Baseline</small>${format(x.id,x.before)}</span><span><small>Current</small>${format(x.id,x.after)}</span><strong class="${x.delta>0?'up':x.delta<0?'down':'even'}"><small>Change</small>${x.delta>0?'+':''}${format(x.id,x.delta)}</strong></div>`).join('')}
    </div></section>`;
  }).join('');
  return `<div class="guildCompare"><div class="guildTreeSectionTitle"><h3>Plan versus baseline</h3><p>Compare all eleven bonus categories. Values include each plan's selected Bonus Boost.</p></div>
