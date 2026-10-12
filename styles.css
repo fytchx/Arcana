@@ -931,3 +931,14 @@ body,.shell{background:var(--theme-main)}
 @media(max-width:870px){.studioEditorGrid{grid-template-columns:1fr}.studioEditorAside{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:610px){.studioHeader{align-items:flex-start;flex-direction:column}.studioEditorAside{grid-template-columns:1fr}.studioFieldset{padding:12px}.studioImage{grid-template-columns:1fr}.studioImage>img{max-height:220px}.studioDraft{align-items:flex-start;flex-direction:column}.studioControlBar .btn{flex:1 1 120px}.studioHeader>.btn{min-height:44px}.wikiContribution .btn{width:100%}}
 @media(prefers-reduced-motion:reduce){.wikiStudio *{scroll-behavior:auto!important}}
+
+
+.studioTemplatePicker{margin:17px 0 19px}
+.studioTemplatePicker .eyebrow{display:block;margin:0 0 9px}
+.studioTemplateGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.studioTemplateGrid button{min-width:0;min-height:82px;display:grid;align-content:center;gap:8px;text-align:left;padding:12px;border-radius:11px;border:1px solid var(--theme-border,var(--line));background:var(--theme-secondary,var(--panel));color:var(--text);cursor:pointer;touch-action:manipulation}
+.studioTemplateGrid button strong{font-size:12px;line-height:1.4}
+.studioTemplateGrid button small{font-size:10px;color:var(--soft);line-height:1.4}
+.studioTemplateGrid button:hover,.studioTemplateGrid button:focus-visible{border-color:var(--theme-highlight,var(--accent));outline:2px solid var(--theme-highlight,var(--accent));outline-offset:2px}
+@media(max-width:960px){.studioTemplateGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:560px){.studioTemplateGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
