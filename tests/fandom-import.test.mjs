@@ -60,3 +60,21 @@ test('Review notes stay private and imported inline links are escaped',()=>{
  assert.equal(imageKey('File:Pet_Compound_Screen.PNG'),imageKey('pet compound screen.webp'));
  assert.equal(suggestedImageMatch('Pet_Compound_Screen.png',[{name:'pet compound screen.webp'}]).length,1);
 });
+
+test('Oversize Fandom pages retain complete source and cannot be published until explicitly reconciled',()=>{
+ const original=['A character build uses this reference to understand item interactions and choose the right progression priorities.',
+  '== Long section ==',...Array.from({length:320},(_,i)=>'Line '+i+' is one of many details from the source page and must not be silently deleted.')].join('\n');
+ const {drafts}=convertFandomPages([page('Oversized Item Reference',original)]);
+ const draft=drafts[0].draft;
+ assert.ok(draft.importSource.truncated);
+ assert.equal(draft.importSource.rawWikitext,original);
+ assert.ok(draft.importSource.warnings.some(w=>w.includes('8,000-character')));
+ assert.ok(validateWikiDraft(draft).errors.some(x=>x.includes('Incomplete Fandom conversion')));
+ const restored=normalizeWikiDraft({...draft,importSource:{...draft.importSource,reviewed:true}});
+ assert.equal(restored.importSource.reviewed,true);
+ assert.equal(validateWikiDraft(restored).valid,true);
+ const article=publicWikiArticle(restored);
+ assert.equal(Object.hasOwn(article,'importSource'),false);
+ assert.equal(Object.hasOwn(article,'rawWikitext'),false);
+ assert.ok(!JSON.stringify(article).includes('Line 319 is one of many details'),'Private raw source is never exposed in the public index');
+});
