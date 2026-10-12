@@ -7,6 +7,7 @@ export const NAV_DESTINATIONS=Object.freeze({
  reference:{label:'Explore game references',detail:'Browse all verified entries',route:'wiki/library',params:{kind:'all'},icon:'search'},
  search:{label:'Search Arcana',detail:'Find items, tools and guides',action:'search',icon:'search'},
  upgrade:{label:'Calculate upgrade costs',detail:'Open the equipment calculator',route:'calculators/upgrade',icon:'calculator'},
+ farm:{label:'Compare ML farming speed',detail:'Compare your actual ML XP per second',route:'calculators/ml-farm',icon:'sword'},
  compare:{label:'Compare equipment',detail:'Review two equipment bases',route:'calculators/compare',icon:'compare'},
  build:{label:'Open Build Studio',detail:'Plan gear, pets, skills and runes',route:'labs/build',icon:'flask'},
  runes:{label:'Open Rune Forge',detail:'Build and save rune layouts',route:'labs/runes',icon:'gem'},
@@ -39,8 +40,9 @@ export const NAV_DESTINATIONS=Object.freeze({
 });
 
 export const NAV_FLOWS=Object.freeze({
- calculators:['upgrade','compound','affixes','compare'],
+ calculators:['upgrade','compound','affixes','compare','farm'],
  labs:['build','runes','skills','guildtree'],
+ 'calculators/ml-farm':['monsterGuide','biomeRecords','skillRecords'],
  'calculators/upgrade':['items','compare','forgeGuide','build'],
  'calculators/compare':['items','upgrade','rarityGuide','build'],
  'calculators/pet':['compoundGuide','petlab','petBonuses'],
