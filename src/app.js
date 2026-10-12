@@ -47,11 +47,20 @@ const savedBuild=()=>state.draft&&state.draft.equipment?normalizeBuild(state.dra
 function ensureDraft(){if(!state.draft){const tmpl=buildTemplate('warrior-retaliation-demo');state.draft=normalizeBuild(deepCopy(tmpl));state.draft.title='My Build Draft';state.draft.id='local-draft';state.draft.version='LOCAL';}else state.draft=normalizeBuild(state.draft);return state.draft;}
 function persistDraft(){if(state.draft){state.draft=normalizeBuild(state.draft);saveDraft(state.draft)}}
 const SEARCHABLE_TOOLS=['items','guides','upgrade','compare','build','runes','skills','passives','petlab','compound','affixes','guildtree','guilds','raids'];
+const TOOL_SEARCH_ALIASES={
+ items:'item codex art equipment weapons',guides:'wiki player guide article',
+ upgrade:'item upgrade calculator forge materials',compare:'item comparison equipment stats',
+ build:'build studio character loadout planner',runes:'rune forge grid placement',
+ skills:'class skill tree planner',passives:'passive skill tree planner',
+ petlab:'pet lab pet loadout companion',compound:'pet compound calculator equalisation',
+ affixes:'pet affix cost calculator shard',guildtree:'guild skill tree planner guild bonuses',
+ guilds:'guild finder recruitment',raids:'lfg raid finder'
+};
 const searchExtras=()=>[
  ...(savedBuild()?[{id:'my-build',kind:'build',title:state.draft.title||'My Build',subtitle:'Saved locally · Build Studio',keywords:'my build custom saved planner equipment runes skills',description:'Your locally saved build.'}]:[]),
  ...SEARCHABLE_TOOLS.map(key=>{
   const destination=NAV_DESTINATIONS[key];
-  return {id:'arcana-tool:'+key,kind:'tool',title:destination.label,subtitle:'Arcana · '+destination.detail,keywords:key+' '+destination.label+' '+destination.detail,description:destination.detail,route:destination.route+(destination.params?'?'+new URLSearchParams(destination.params):'')};
+  return {id:'arcana-tool:'+key,kind:'tool',title:destination.label,subtitle:'Arcana · '+destination.detail,keywords:key+' '+(TOOL_SEARCH_ALIASES[key]||'')+' '+destination.label+' '+destination.detail,description:destination.detail,route:destination.route+(destination.params?'?'+new URLSearchParams(destination.params):'')};
  })
 ];
 function track(id){if(!id)return;state.recent=remember(id)}
