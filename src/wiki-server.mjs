@@ -1,6 +1,6 @@
 import { readdir, readFile, mkdir, writeFile, rename, unlink } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { timingSafeEqual, randomUUID } from 'node:crypto';
+import { timingSafeEqual, randomUUID, createHash } from 'node:crypto';
 import { publicWikiArticle, validateWikiDraft } from './wiki-studio-model.js';
 import { WIKI_ARTICLES } from './wiki-data.js';
 
@@ -9,6 +9,14 @@ const IMAGE = /^image-[a-z0-9-]{1,60}$/;
 const ROOT = resolve(process.env.ARCANA_WIKI_DATA_DIR || '.arcana-wiki-data');
 const LIMIT = 12 * 1024 * 1024;
 const RESERVED = new Set(WIKI_ARTICLES.map(a => a.id));
+const revisionOf = content => createHash('sha256').update(content).digest('hex');
+// Serialize writes in this Node process so concurrent editor requests cannot silently overwrite each other.
+let publicationQueue = Promise.resolve();
+const queuedPublish = operation => {
+  const running = publicationQueue.then(operation);
+  publicationQueue = running.then(() => undefined, () => undefined);
+  return running;
+};
 export const wikiPublishingEnabled = () => Boolean(process.env.ARCANA_WIKI_OWNER_KEY && process.env.ARCANA_WIKI_DATA_DIR);
 const send = (res, status, value, headers = {}) => {
   res.writeHead(status, {'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff',...headers});
@@ -55,17 +63,35 @@ async function bodyJSON(req) {
   try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}
   catch{throw Object.assign(Error('Invalid article JSON'),{status:400});}
 }
-async function persist(raw) {
+async function persist(raw, expectedRevision='') {
   if(!wikiPublishingEnabled())throw Object.assign(Error('Publishing not configured'),{status:503});
   const check=validateWikiDraft(raw,{existingIds:[...RESERVED]});
   if(!check.valid)throw Object.assign(Error(check.errors.join(' ')),{status:422});
   const draft=check.draft;
-  await mkdir(ROOT,{recursive:true});
-  const temporary=resolve(ROOT,'.'+draft.id+'-'+randomUUID()+'.tmp');
-  await writeFile(temporary,JSON.stringify(draft),{flag:'wx',mode:0o600});
-  try { await rename(temporary,resolve(ROOT,draft.id+'.json')); }
-  catch(e){await unlink(temporary).catch(()=>{});throw e;}
-  return draft;
+  return queuedPublish(async()=>{
+    await mkdir(ROOT,{recursive:true});
+    const file=resolve(ROOT,draft.id+'.json');
+    let previous=null;
+    try { previous=await readFile(file,'utf8'); }
+    catch(e) { if(e.code!=='ENOENT')throw e; }
+    const previousRevision=previous?revisionOf(previous):'';
+    if(previousRevision!==expectedRevision){
+      throw Object.assign(Error(previous?'Article changed since this draft was opened. Reload the published version before saving.':'This article URL has already changed or is no longer published. Reload before publishing.'),{status:409});
+    }
+    // Keep the exact previously published bytes as an on-volume rollback snapshot.
+    if(previous){
+      const historyDir=resolve(ROOT,'history',draft.id);
+      await mkdir(historyDir,{recursive:true});
+      try { await writeFile(resolve(historyDir,previousRevision+'.json'),previous,{flag:'wx',mode:0o600}); }
+      catch(e) { if(e.code!=='EEXIST')throw e; }
+    }
+    const serialized=JSON.stringify(draft);
+    const temporary=resolve(ROOT,'.'+draft.id+'-'+randomUUID()+'.tmp');
+    await writeFile(temporary,serialized,{flag:'wx',mode:0o600});
+    try { await rename(temporary,file); }
+    catch(e){await unlink(temporary).catch(()=>{});throw e;}
+    return {draft,revision:revisionOf(serialized)};
+  });
 }
 export async function handleWikiRequest(req,res,pathname) {
   const method=req.method;
@@ -75,6 +101,19 @@ export async function handleWikiRequest(req,res,pathname) {
   if (pathname==='/api/wiki/articles' && (method==='GET'||method==='HEAD')) {
     try { send(res,200,await wikiPublicIndex()); }
     catch(e){console.error('Wiki index unavailable:',e);send(res,503,{error:'Wiki storage unavailable'});}
+    return true;
+  }
+  const editPath=pathname.match(/^\/api\/wiki\/edit\/([a-z0-9-]+)$/);
+  if(editPath && method==='GET'){
+    if(!authorized(req)){send(res,401,{error:'Invalid owner publishing key'});return true;}
+    const id=editPath[1];
+    if(!SLUG.test(id)||id.length>70||RESERVED.has(id)){send(res,404,{error:'Article not found'});return true;}
+    try {
+      const file=await readFile(resolve(ROOT,id+'.json'),'utf8');
+      send(res,200,{draft:JSON.parse(file),revision:revisionOf(file)});
+    } catch(e) {
+      send(res,e.code==='ENOENT'?404:503,{error:e.code==='ENOENT'?'Article not found':'Wiki storage unavailable'});
+    }
     return true;
   }
   const imagePath=pathname.match(/^\/content\/wiki\/images\/([a-z0-9-]+)\/(image-[a-z0-9-]+)\.webp$/);
@@ -97,8 +136,10 @@ export async function handleWikiRequest(req,res,pathname) {
     if(!String(req.headers['content-type']||'').startsWith('application/json')){send(res,415,{error:'JSON required'});return true;}
     try{
       const input=await bodyJSON(req);
-      const draft=await persist(input?.draft);
-      send(res,200,{ok:true,id:draft.id,url:'#/wiki/article?id='+encodeURIComponent(draft.id)});
+      const expectedRevision=String(input?.baseRevision||input?.draft?.baseRevision||'');
+      if(expectedRevision&&!/^[a-f0-9]{64}$/.test(expectedRevision))throw Object.assign(Error('Invalid revision token'),{status:422});
+      const {draft,revision}=await persist(input?.draft,expectedRevision);
+      send(res,200,{ok:true,id:draft.id,revision,url:'#/wiki/article?id='+encodeURIComponent(draft.id)});
     }catch(e){console.error('Wiki publish failed:',e.message);send(res,e.status||500,{error:e.status?e.message:'Could not save article'});}
     return true;
   }
