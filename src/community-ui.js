@@ -42,7 +42,10 @@ function accountView(){
  if(!state.me)return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">ARCANA MEMBERSHIP</span><h1>Your Arcana identity</h1><p>Every player gets full access to Arcana tools, with or without a login.</p></div>'+signInPanel()+'</div>';
  const p=state.me;
  return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">ARCANA MEMBER</span><h1>My player card</h1><p>Make it easy for other IdleArc players to find and recognize you.</p></div>'+
- profileCard(p,{full:true})+profileForm(p)+'<div class="communityAccountActions"><button class="btn secondary" data-route="community/create">Create a community post</button>'+
+ profileCard(p,{full:true})+profileForm(p)+
+ (p.permissions?.manageRoles?'<form class="accountProfileForm" data-community-form="roles"><h2>Manage approved roles</h2><p class="mutedSmall">Enter the player ID from their public profile URL. Wiki Editors may publish official pages. Moderators can hide contributions; only Admins and the Creator can delete.</p><label>Player ID<input name="id" required placeholder="Account ID from their player-card link" maxlength="36"></label><label>Approved roles<select name="roles" multiple size="4"><option value="wiki-editor">Arcana Wiki Editor</option><option value="moderator">Moderator</option>'+(
+ p.roles?.some(r=>r.id==='creator')?'<option value="admin">Admin</option><option value="developer">Developer</option>':'')+'</select></label><button class="btn primary" type="submit">Set member roles</button><p class="mutedSmall">Hold Ctrl/Command to select multiple roles on desktop. Leave empty to revoke additional roles. Creator assignments cannot be modified.</p></form>':'')+
+ '<div class="communityAccountActions"><button class="btn secondary" data-route="community/create">Create a community post</button>'+
  (p.permissions?.publishWiki?'<button class="btn secondary" data-route="wiki/studio">Open Wiki Studio</button>':'')+
  '<button class="btn secondary" data-community-action="logout">Sign out</button></div></div>';
 }
@@ -115,7 +118,7 @@ export function wireCommunityUI({go,getBuild,applyBuild,refresh,toast}){
   const action=el.dataset.communityAction,id=el.dataset.id;
   (async()=>{
    if(action==='copy-profile'){await navigator.clipboard.writeText(location.origin+'/#/profile?id='+encodeURIComponent(id));toast('Player card copied.');return;}
-   if(action==='logout'){await getJSON('/api/account/logout',{method:'POST'});state.me=null;state.requested='';go('account');return;}
+   if(action==='logout'){await getJSON('/api/account/logout',{method:'POST'});state.me=null;state.requested='';go('account');refresh();return;}
    if(action==='use-build'){if(!state.post?.build)throw Error('This build is unavailable.');applyBuild(state.post.build);toast('Build copied to your local workspace.');go('labs/build');return;}
    if(action==='visibility'){
     const next=state.post?.status==='hidden'?'public':'hidden';
@@ -138,6 +141,13 @@ export function wireCommunityUI({go,getBuild,applyBuild,refresh,toast}){
    if(form.dataset.communityForm==='profile'){
     const out=await getJSON('/api/account/profile',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({profile:data})});
     state.me=out.profile;toast('Player card updated.');refresh();return;
+   }
+   if(form.dataset.communityForm==='roles'){
+    const id=String(data.id||'').trim();
+    if(!/^[a-f0-9-]{36}$/.test(id))throw Error('Use the player ID from their public profile URL.');
+    const roles=new FormData(form).getAll('roles');
+    await getJSON('/api/admin/roles/'+encodeURIComponent(id),{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({roles})});
+    toast('Approved roles updated.');return;
    }
    if(form.dataset.communityForm==='post'){
     const snapshot=data.kind==='build'?getBuild():null;
