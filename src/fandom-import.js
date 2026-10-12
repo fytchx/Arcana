@@ -191,7 +191,7 @@ export function convertFandomPages(pages,{existingIds=[]}={}){
    keywords:unique([...cats.categories,...page.title.split(/\s+/)]).join(', ').slice(0,390),
    sourceLabel:'Original Fandom article (edit history and attribution)',sourceUrl,
    sections:converted,
-   relatedArticles:unique([...bodyText.matchAll(/\[\[arcana:([a-z0-9-]+)\|/g)].map(x=>x[1])).filter(x=>x!==slug).slice(0,10),
+   relatedArticles:unique(sections.flatMap(section=>[...String(section.body).matchAll(/\[\[arcana:([a-z0-9-]+)\|/g)].map(x=>x[1]))).filter(x=>x!==slug)).slice(0,10),
    importSource:{sourceTitle:page.title,sourceUrl,revisionAt:page.revisionAt,contributors:page.contributors,
     siteName:page.siteName,images:imageNames,unresolvedLinks:missingLinks,warnings:notes.warnings}
   });
