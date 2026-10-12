@@ -1,6 +1,7 @@
 import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve, sep, extname } from 'node:path';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)));
@@ -13,6 +14,24 @@ const BASES = Object.freeze({
   officialArt: 'https://arcana-v4-official-art-production.up.railway.app',
   codexArt: 'https://arcana-v3-preview-production.up.railway.app',
 });
+const LOCAL_ART = resolve(ROOT,'assets','official-art');
+const REQUIRE_LOCAL_ART=process.env.ARCANA_REQUIRE_LOCAL_ART==='1';
+const localArtAudit=(async()=>{
+ try{
+  const manifestBytes=await readFile(resolve(LOCAL_ART,'manifest.json'));
+  const manifest=JSON.parse(manifestBytes.toString('utf8'));
+  const checksums=JSON.parse(await readFile(resolve(LOCAL_ART,'checksums.json'),'utf8'));
+  const categories=Object.keys(manifest.categories||{});
+  if(categories.length<10)throw Error('Incomplete local image manifest');
+  for(const name of ['manifest.json',...categories.map(c=>c+'.webp')]){
+   if(!/^[a-z][a-z0-9.-]*$/.test(name)||!checksums[name])throw Error('Missing checksum for '+name);
+   const bytes=name==='manifest.json'?manifestBytes:await readFile(resolve(LOCAL_ART,name));
+   if(bytes.length!==checksums[name].bytes||createHash('sha256').update(bytes).digest('hex')!==checksums[name].sha256)throw Error('Artwork checksum mismatch '+name);
+  }
+  console.log('ARCANA_LOCAL_ART_VERIFIED',categories.length,'sprite sheets');
+  return {ready:true,groups:categories.length,version:manifest.version};
+ }catch(e){console.warn('ARCANA_LOCAL_ART_UNAVAILABLE',String(e));return {ready:false,groups:0,error:String(e)};}
+})();
 const TYPES = Object.freeze({'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.webp':'image/webp','.png':'image/png','.jpg':'image/jpeg','.json':'application/json; charset=utf-8'});
 function send(res,status,body,headers={}) {res.writeHead(status,{'x-content-type-options':'nosniff',...headers});res.end(body);}
 function json(res,status,payload,headers={}) {send(res,status,JSON.stringify(payload),{'content-type':'application/json; charset=utf-8',...headers});}
@@ -69,7 +88,7 @@ const server=http.createServer(async(req,res)=>{
  try {
   if(req.method!=='GET'&&req.method!=='HEAD'){send(res,405,'Method not allowed');return;}
   const {pathname}=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
-  if(pathname==='/health'||pathname==='/__health') {json(res,200,{ok:true,release:REVISION,source:'tracked frontend files',dependencyEndpoints:Object.keys(BASES)});return;}
+  if(pathname==='/health'||pathname==='/__health') {const art=await localArtAudit;const ok=!REQUIRE_LOCAL_ART||art.ready;json(res,ok?200:503,{ok,release:REVISION,source:'tracked frontend files',artwork:{local:art.ready,groups:art.groups,version:art.version||null},dependencyEndpoints:Object.keys(BASES)});return;}
   if(pathname==='/api/lfg/public'){await lfgFeed(res);return;}
   if(pathname==='/api/search/catalog'){try{json(res,200,await verifiedCatalog(),{'cache-control':'no-store'});}catch(e){json(res,502,{error:'Verified catalog unavailable'});}return;}
   if(pathname==='/api/guilds'){await pipe(res,BASES.catalog+pathname,{mime:'application/json; charset=utf-8',limit:500000});return;}
@@ -81,6 +100,13 @@ const server=http.createServer(async(req,res)=>{
     await pipe(res,BASES.codexArt+pathname,{timeout:10000,cache:'public,max-age=180'});return;
   }
   if(/^\/official-art\/(?:manifest\.json|[a-z][a-z0-9-]*\.webp)$/.test(pathname)) {
+    const art=await localArtAudit;
+    if(art.ready){
+      const name=pathname.slice('/official-art/'.length), bytes=await readFile(resolve(LOCAL_ART,name));
+      send(res,200,req.method==='HEAD'?null:bytes,{'content-type':TYPES[extname(name)]||'application/octet-stream','x-arcana-art-origin':'verified-git-source','cache-control':name.endsWith('.json')?'no-store':'public,max-age=300'});
+      return;
+    }
+    if(REQUIRE_LOCAL_ART){json(res,503,{error:'Validated artwork bundle unavailable'});return;}
     await pipe(res,BASES.officialArt+pathname.slice('/official-art'.length),{timeout:14000,cache:'public,max-age=180'});return;
   }
   const normalized=pathname==='/'?'/index.html':pathname;

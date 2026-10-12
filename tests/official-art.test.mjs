@@ -57,3 +57,22 @@ test('verified plural currency alias maps Rubies to ruby, not Gold to an invente
  assert.equal(resolveOfficialSprite({gameKind:'currency',title:'Rubies'},groups)?.key,'ruby');
  assert.equal(resolveOfficialSprite({gameKind:'currency',title:'Gold'},groups),null);
 });
+
+test('all vendored sprite sheets exactly match the pinned SHA256 inventory',async()=>{
+ const {readFile}=await import('node:fs/promises');
+ const {createHash}=await import('node:crypto');
+ const path=new URL('../assets/official-art/',import.meta.url);
+ const manifest=JSON.parse(await readFile(new URL('manifest.json',path),'utf8'));
+ const checksums=JSON.parse(await readFile(new URL('checksums.json',path),'utf8'));
+ assert.equal(Object.keys(manifest.categories).length,19);
+ for(const name of ['manifest.json',...Object.keys(manifest.categories).map(g=>g+'.webp')]){
+  const content=await readFile(new URL(name,path));
+  assert.equal(content.length,checksums[name]?.bytes,`${name} length`);
+  assert.equal(createHash('sha256').update(content).digest('hex'),checksums[name]?.sha256,`${name} SHA256`);
+ }
+});
+
+test('verified Gold can fall back to an existing legacy currency sprite without guessing a sheet',async()=>{
+ const {spriteCandidates}=await import('../src/assets.js');
+ assert.ok(spriteCandidates({id:'game:currency:gold',kind:'currency',title:'Gold'}).includes('currency:gold'));
+});

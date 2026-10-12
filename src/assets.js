@@ -15,6 +15,7 @@ export function spriteCandidates(entry){
   const fromTitle=String(entry.title||'').toLowerCase().replace(/['’]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
   const prefixes=entry.kind==='item'?['item','gear','equipment','armor','weapon','jewelry','offhand']:
     entry.kind==='material'?['material','currency']:
+    entry.kind==='currency'?['currency']:
     entry.kind==='pet'?['pet']:
     entry.kind==='rune'?['rune']:
     entry.kind==='skill'?['skill']:[];
