@@ -2,6 +2,7 @@ import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve, sep, extname } from 'node:path';
 import { createHash } from 'node:crypto';
+import { handleWikiRequest } from './src/wiki-server.mjs';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)));
@@ -86,8 +87,9 @@ async function verifiedCatalog(){
 }
 const server=http.createServer(async(req,res)=>{
  try {
-  if(req.method!=='GET'&&req.method!=='HEAD'){send(res,405,'Method not allowed');return;}
   const {pathname}=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
+  if(await handleWikiRequest(req,res,pathname))return;
+  if(req.method!=='GET'&&req.method!=='HEAD'){send(res,405,'Method not allowed');return;}
   if(pathname==='/health'||pathname==='/__health') {const art=await localArtAudit;const ok=!REQUIRE_LOCAL_ART||art.ready;json(res,ok?200:503,{ok,release:REVISION,source:'tracked frontend files',artwork:{local:art.ready,groups:art.groups,version:art.version||null},dependencyEndpoints:Object.keys(BASES)});return;}
   if(pathname==='/api/lfg/public'){await lfgFeed(res);return;}
   if(pathname==='/api/search/catalog'){try{json(res,200,await verifiedCatalog(),{'cache-control':'no-store'});}catch(e){json(res,502,{error:'Verified catalog unavailable'});}return;}
