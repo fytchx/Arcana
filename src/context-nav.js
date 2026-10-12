@@ -4,6 +4,7 @@ import {esc,icon} from './ui.js';
 export const NAV_DESTINATIONS=Object.freeze({
  items:{label:'Browse equipment',detail:'Find an item in the Codex',route:'wiki/library',params:{kind:'item'},icon:'shield'},
  guides:{label:'Read player guides',detail:'Practical Season 2 walkthroughs',route:'wiki/guides',icon:'book'},
+ studio:{label:'Write a Wiki guide',detail:'Create illustrated articles with Wiki Studio',route:'wiki/studio',icon:'edit'},
  reference:{label:'Explore game references',detail:'Browse all verified entries',route:'wiki/library',params:{kind:'all'},icon:'search'},
  search:{label:'Search Arcana',detail:'Find items, tools and guides',action:'search',icon:'search'},
  upgrade:{label:'Calculate upgrade costs',detail:'Open the equipment calculator',route:'calculators/upgrade',icon:'calculator'},
