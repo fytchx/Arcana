@@ -31,13 +31,14 @@ export function normalizePetAffixPlan(raw){
  return {affix:requested.name,level:Math.max(1,Math.min(cap,integer(raw?.level,1)))};
 }
 export const defaultPetAffixPlan=()=>({affix:PET_AFFIX_SNAPSHOT.affixes[0].name,level:1});
-export function readPetAffixPlan(store=globalThis.localStorage){
- try{return normalizePetAffixPlan(JSON.parse(store.getItem(AFFIX_PLANNER_STORAGE)||'null'))}
+export function readPetAffixPlan(store=null){
+ // Read storage inside try: access itself can throw in sandboxed/private contexts.
+ try{const target=store||globalThis.localStorage;return normalizePetAffixPlan(JSON.parse(target.getItem(AFFIX_PLANNER_STORAGE)||'null'))}
  catch{return defaultPetAffixPlan()}
 }
-export function savePetAffixPlan(plan,store=globalThis.localStorage){
+export function savePetAffixPlan(plan,store=null){
  const normalized=normalizePetAffixPlan(plan);
- try{store.setItem(AFFIX_PLANNER_STORAGE,JSON.stringify(normalized))}catch{}
+ try{const target=store||globalThis.localStorage;target.setItem(AFFIX_PLANNER_STORAGE,JSON.stringify(normalized))}catch{}
  return normalized;
 }
 export function projectPetAffix(name,level){
