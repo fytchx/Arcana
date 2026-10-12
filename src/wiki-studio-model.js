@@ -35,7 +35,7 @@ export function validateWikiDraft(raw,{existingIds=[]}={}){
  if(!d.sections.some(s=>s.title.length>=3&&s.body.length>=30))errors.push('Add at least one section with a heading and 30 characters of useful content.');
  if(d.sections.some(s=>s.title&&!s.body.trim()))errors.push('Each named section needs content.');
  if(d.images.some(x=>!x.alt.trim()))errors.push('Every uploaded image needs alternative text.');
- if(d.sourceUrl&&!/^https:\/\[^\s]+$/i.test(d.sourceUrl))errors.push('Source link must be HTTPS.');
+ if(d.sourceUrl&&!/^https:\/\/[^\s]+$/i.test(d.sourceUrl))errors.push('Source link must be HTTPS.');
  return {draft:d,errors,valid:errors.length===0};
 }
 export function publicWikiArticle(raw){
