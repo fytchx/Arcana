@@ -133,7 +133,8 @@ export async function handleAccountRequest(req,res,url){
  }
  if(pathname==='/api/account/callback'&&method==='GET'){
   const clear=stateName()+'=; '+cookieFlags(0);
-  if(!authAvailable()||!url.searchParams.get('code')||!equal(url.searchParams.get('state')||'',cookies(req)[stateName()]||'')){
+  const callbackState=url.searchParams.get('state'),cookieState=cookies(req)[stateName()];
+  if(!authAvailable()||!url.searchParams.get('code')||!callbackState||!cookieState||!equal(callbackState,cookieState)){
    redirect(res,'/#/account?error=sign-in',clear);return true;
   }
   try{
