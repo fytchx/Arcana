@@ -824,3 +824,31 @@ body,.shell{background:var(--theme-main)}
 .farmActions button:focus-visible{outline:2px solid var(--theme-highlight,var(--accent));outline-offset:2px}
 .farmDisclosure{font-size:10px;color:var(--soft);line-height:1.7;margin:0}
 @media(max-width:380px){.farmRow{align-items:flex-start;flex-wrap:wrap}.farmInput{flex:1 1 120px;justify-items:stretch}.farmInput input{max-width:none}}
+
+
+/* Guild before/after planning compares configured values, not speculative build outcomes. */
+.guildCompare{display:grid;gap:14px;min-width:0}
+.guildCompareSummary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.guildCompareSummary>div{border:1px solid var(--theme-border,var(--line));background:var(--theme-main,var(--bg));padding:11px;border-radius:10px;display:grid;gap:5px;min-width:0}
+.guildCompareSummary small,.guildCompareSummary span{color:var(--soft);font-size:10px;line-height:1.45}
+.guildCompareSummary strong{color:var(--theme-accent-text,var(--accent));font-size:15px}
+.guildComparePulse{margin:0;line-height:1.5;font-size:12px;color:var(--soft)}
+.guildComparePulse strong{color:var(--text)}
+.guildCompareCaution{border-left:3px solid var(--theme-highlight,var(--accent));background:var(--theme-highlight-soft,var(--panel));padding:10px;font-size:11px;line-height:1.6;margin:0}
+.guildCompareGroup{min-width:0}
+.guildCompareGroup h4{font-size:15px;color:var(--text);margin:0 0 8px}
+.guildCompareTable{border:1px solid var(--theme-border,var(--line));border-radius:10px;overflow:hidden}
+.guildCompareRow{display:grid;grid-template-columns:minmax(0,1.45fr) repeat(3,minmax(0,1fr));gap:6px;align-items:center;min-height:42px;padding:10px;line-height:1.45;background:var(--theme-main,var(--bg));border-bottom:1px solid var(--theme-border,var(--line));font-size:11px}
+.guildCompareRow:last-child{border-bottom:0}
+.guildCompareRow.header{color:var(--soft);font-weight:750;font-size:10px;background:var(--theme-secondary,var(--panel))}
+.guildCompareRow>span:first-child{color:var(--text);font-weight:650}
+.guildCompareRow>span,.guildCompareRow strong{min-width:0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.guildCompareRow strong.up{color:var(--theme-accent-text,var(--accent))}
+.guildCompareRow strong.down{color:var(--soft)}
+.guildCompareRow strong.even{color:var(--soft)}
+.guildCompareRow small{display:none}
+.guildCompareActions{display:flex;gap:8px;flex-wrap:wrap}
+.guildCompareActions button{min-height:44px;flex:1 1 170px;border-radius:10px;border:1px solid var(--theme-highlight-border,var(--line));background:var(--theme-highlight-soft,var(--panel));color:var(--theme-accent-text,var(--accent));font-size:12px;padding:9px 12px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+.guildCompareActions button:focus-visible{outline:2px solid var(--theme-highlight,var(--accent));outline-offset:2px}
+@media(max-width:650px){.guildCompareRow.header{display:none}.guildCompareRow{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:9px;padding:11px}.guildCompareRow>span:first-child{grid-column:1/-1;font-size:12px}.guildCompareRow small{display:block;font-size:9px;font-weight:600;color:var(--soft);margin-bottom:5px}.guildCompareRow>span:not(:first-child),.guildCompareRow strong{font-size:11px}}
+@media(max-width:350px){.guildCompareSummary{grid-template-columns:1fr}}
