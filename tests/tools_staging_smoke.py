@@ -13,7 +13,7 @@ ROUTES=[
  ('calculators/affixes','Pet Affix Planner'),
  ('labs/build','My Build Studio'),
  ('labs/runes','Rune Forge'),
- ('labs/pets','Pet Loadout'),
+ ('labs/pets','My Build Studio'),
  ('labs/skills','Class Skill Tree'),
  ('labs/passives','Passive Skill Tree'),
  ('lfg/raids','ArcanaLFG'),
@@ -66,32 +66,59 @@ with sync_playwright() as p:
     assert page.locator('.verifiedUpgradeRow').count()==5
     assert '5,250,000 base gold' in page.locator('.verifiedUpgradeReference').inner_text()
     page.screenshot(path=str(out/'arcana-verified-equipment-mobile.png'),full_page=True)
-    # Verify the nine config-backed Pet Affixes against the deployed mobile UI.
+    # Verify streamlined Compound→Drop Bonus math and targeted Pet Shard costs.
+    page.goto(BASE+'/#/calculators/pet',wait_until='domcontentloaded',timeout=30000)
+    page.wait_for_selector('#petCompoundRarity',timeout=12000)
+    assert page.locator('#petCompoundRarity option').count()==4
+    assert page.locator('#petCompoundBonus').input_value()=='pet_damage'
+    assert page.locator('.petMiniComparison').inner_text().count('101%')==1,"Legendary Pet Damage C10 should be 101%"
+    page.locator('#petCompoundRarity').select_option('uncommon')
+    page.wait_for_timeout(90)
+    page.locator('#petCompoundBonus').select_option('dodge')
+    page.locator('#petCompoundLevel').fill('10')
+    page.locator('#petCompoundLevel').press('Tab')
+    page.wait_for_timeout(100)
+    assert '12%' in page.locator('.petMiniComparison').inner_text()
+    page.reload(wait_until='domcontentloaded')
+    assert page.locator('#petCompoundRarity').input_value()=='uncommon'
+    assert page.locator('#petCompoundLevel').input_value()=='10'
+    page.screenshot(path=str(out/'arcana-pet-compound-mobile.png'),full_page=True)
     page.goto(BASE+'/#/calculators/affixes',wait_until='domcontentloaded',timeout=30000)
     page.wait_for_selector('#petAffixType',timeout=12000)
-    assert page.locator('#petAffixType option').count()==9, 'Affix reference inventory incomplete'
-    assert page.locator('.petAffixReferenceRow').count()==9
-    page.locator('#petAffixType').select_option('all_skills')
-    page.wait_for_timeout(80)
-    assert page.locator('#petAffixLevel').get_attribute('max')=='2', 'All Skills level cap missing'
-    page.locator('[data-action="petaffixstep"][data-arg="100"]').dispatch_event('click')
-    page.wait_for_timeout(70)
-    assert page.locator('#petAffixLevel').input_value()=='2', 'All Skills overflowed its cap'
-    assert '2' in page.locator('.petAffixProjection strong').inner_text()
-    page.locator('#petAffixType').select_option('extra_kill_chance')
-    assert page.locator('#petAffixLevel').input_value()=='1'
-    assert page.locator('.petAffixProjection strong').inner_text()=='3%'
-    page.locator('#petAffixType').select_option('exp_gain')
-    page.locator('#petAffixLevel').fill('11')
-    page.locator('#petAffixLevel').press('Tab')
+    assert page.locator('#petAffixType option').count()==9
+    page.locator('#petAffixType').select_option('item_quantity')
+    page.locator('#petAffixCurrent').fill('95')
+    page.locator('#petAffixCurrent').press('Tab')
+    page.locator('#petAffixTarget').fill('96')
+    page.locator('#petAffixTarget').press('Tab')
     page.wait_for_timeout(100)
-    assert page.locator('#petAffixLevel').input_value()=='11'
-    assert page.locator('.petAffixProjection strong').inner_text()=='3%'
+    assert '5 Pet Shards' in page.locator('.petMiniBig').inner_text(),"Lv95→96 costs five shards"
+    page.locator('#petAffixType').select_option('all_skills')
+    assert page.locator('#petAffixTarget').input_value()=='2'
+    assert '1,000 Pet Shards' in page.locator('.petMiniBig').inner_text()
+    page.locator('[data-action="petaffixstep"][data-arg="100"]').dispatch_event('click')
+    assert page.locator('#petAffixTarget').input_value()=='2'
+    page.locator('#petAffixType').select_option('extra_kill_chance')
+    assert page.locator('#petAffixTarget').input_value()=='1'
+    assert '0 Pet Shards' in page.locator('.petMiniBig').inner_text()
+    page.locator('#petAffixType').select_option('gold_gain')
+    page.locator('#petAffixTarget').fill('35')
+    page.locator('#petAffixTarget').press('Tab')
     page.reload(wait_until='domcontentloaded')
-    page.wait_for_selector('#petAffixType')
-    assert page.locator('#petAffixType').input_value()=='exp_gain', 'Planner affix not persisted'
-    assert page.locator('#petAffixLevel').input_value()=='11', 'Planner level not persisted'
-    assert page.locator('.petAffixDisclosure').count()==1
+    assert page.locator('#petAffixType').input_value()=='gold_gain'
+    assert page.locator('#petAffixTarget').input_value()=='35'
+    assert page.locator('.petMiniFoot').count()==1
+    page.screenshot(path=str(out/'arcana-pet-affix-cost-mobile.png'),full_page=True)
+    page.goto(BASE+'/#/labs/build',wait_until='domcontentloaded',timeout=30000)
+    page.wait_for_selector('[data-pet-bonus-target="0"]',timeout=15000)
+    assert page.locator('[data-pet-bonus-target]').count()==4
+    assert page.locator('[data-pet-name]').count()==0
+    assert page.locator('[data-pet-equipped]').count()==0
+    assert page.locator('[data-pet-drop]').count()==0
+    page.locator('[data-pet-bonus-target="0"]').select_option('pet_damage')
+    assert '1/4 selected' in page.locator('.petBuildHead').inner_text()
+    page.reload(wait_until='domcontentloaded')
+    assert page.locator('[data-pet-bonus-target="0"]').input_value()=='pet_damage'
     page.screenshot(path=str(out/'arcana-pet-affix-planner-mobile.png'),full_page=True)
     page.screenshot(path=str(out/'arcana-tools-staging-mobile.png'),full_page=True)
     assert not errors, 'Uncaught JS exceptions '+repr(errors[:6])

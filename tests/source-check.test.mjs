@@ -101,11 +101,16 @@ test('verified item comparison comes from configured stat snapshot only',async()
  assert.match(views,/not a character’s rolled stats/);
 });
 
-test('Pet Affix Planner uses the verified snapshot, not a placeholder',async()=>{
- const app=await read('../src/app.js'),views=await read('../src/verified-pet-affix-views.js');
- assert.match(app,/petAffixPlannerView\(state\.petAffixPlan\)/);
+test('Pet tools show only Compound→Drop Bonus and target level shard cost',async()=>{
+ const app=await read('../src/app.js'),views=await read('../src/pet-simple-views.js'),studio=await read('../src/labs-views.js');
+ assert.match(app,/simpleCompoundCalculatorView\(state\.compoundQuick\)/);
+ assert.match(app,/simpleAffixCostView\(state\.affixCostQuick\)/);
+ assert.match(app,/case 'petcompoundstep'/);
  assert.match(app,/case 'petaffixstep'/);
- assert.match(app,/readPetAffixPlan\(\)/);
- assert.match(views,/planning projection/);
- assert.match(views,/Pity, reroll probabilities/);
+ assert.match(app,/data-pet-bonus-target/);
+ assert.match(views,/Compound → Drop Bonus/);
+ assert.match(views,/Upgrade cost to target/);
+ assert.match(views,/Pet Shards/);
+ assert.doesNotMatch(studio,/\['pets','labs\/pets'/);
+ assert.match(studio,/Four desired pet Drop Bonuses/);
 });
