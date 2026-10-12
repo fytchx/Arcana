@@ -5,7 +5,7 @@ function db(){
  if(!('indexedDB' in globalThis))return Promise.reject(Error('IndexedDB unavailable. Export your draft before closing this tab.'));
  if(!dbPromise)dbPromise=new Promise((resolve,reject)=>{
   const request=indexedDB.open(DB_NAME,DB_VERSION);
-  request.onupgradeneeded=()=>{const d=request.result;if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE,{keyPath:'id'});};
+  request.onupgradeneeded=()=>{const d=request.result;if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE,{keyPath:'recordId'});};
   request.onsuccess=()=>resolve(request.result);
   request.onerror=()=>reject(request.error||Error('Could not open draft storage.'));
  }).catch(e=>{dbPromise=null;throw e;});
@@ -23,6 +23,6 @@ export const listWikiDrafts=()=>transaction('list').then(rows=>rows.sort((a,b)=>
 export const getWikiDraft=id=>transaction('get',id);
 export const deleteWikiDraft=id=>transaction('delete',id);
 export const putWikiDraft=raw=>{
- const normalized=normalizeWikiDraft(raw),id=normalized.id||'untitled-'+Date.now();
- return transaction('put',null,{...normalized,id,updatedAt:new Date().toISOString()});
+ const normalized=normalizeWikiDraft(raw),recordId=String(raw?.recordId||'draft-'+Date.now()+'-'+Math.random().toString(36).slice(2,8));
+ return transaction('put',null,{...normalized,recordId,updatedAt:new Date().toISOString()});
 };
