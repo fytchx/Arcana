@@ -84,3 +84,29 @@ export const normalizedPetBonusTargets=build=>{
  const raw=Array.isArray(build?.petBonusTargets)?build.petBonusTargets:Array.from({length:4},(_,i)=>build?.petSetup?.[i]?.hatchBonus||'');
  return Array.from({length:4},(_,i)=>PET_HATCH_BONUSES.includes(raw[i])?raw[i]:'');
 };
+
+// Both calculators save separate local preferences. Existing pet loadouts remain untouched.
+const COMPOUND_KEY='arcana-pet-compound-quick-v1';
+const AFFIX_COST_KEY='arcana-pet-affix-target-v1';
+export function readCompoundPlan(store=null){
+ try{const s=store||globalThis.localStorage;return normalizeCompoundPlan(JSON.parse(s.getItem(COMPOUND_KEY)||'null')||defaultCompoundPlan())}
+ catch{return defaultCompoundPlan()}
+}
+export function saveCompoundPlan(plan,store=null){
+ const p=normalizeCompoundPlan(plan);try{(store||globalThis.localStorage).setItem(COMPOUND_KEY,JSON.stringify(p))}catch{}
+ return p;
+}
+export function readAffixCostPlan(store=null){
+ try{
+  const s=store||globalThis.localStorage;
+  const latest=s.getItem(AFFIX_COST_KEY);
+  if(latest)return normalizeAffixCostPlan(JSON.parse(latest));
+  const prior=s.getItem('arcana-affix-planner-v1');
+  if(prior){const old=JSON.parse(prior);return normalizeAffixCostPlan({affix:old.affix,currentLevel:1,targetLevel:old.level||1});}
+  return defaultAffixCostPlan();
+ }catch{return defaultAffixCostPlan()}
+}
+export function saveAffixCostPlan(raw,store=null){
+ const p=normalizeAffixCostPlan(raw);try{(store||globalThis.localStorage).setItem(AFFIX_COST_KEY,JSON.stringify(p))}catch{}
+ return p;
+}
