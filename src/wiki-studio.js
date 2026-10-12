@@ -1,7 +1,7 @@
 import {esc,icon} from './ui.js';
 import {navCards,NAV_DESTINATIONS} from './context-nav.js';
 import {WIKI_ARTICLES} from './wiki-data.js';
-import {STUDIO_VERSION,WIKI_STUDIO_CATEGORIES,MAX_IMAGE_BYTES,MAX_ARTICLE_IMAGES,newWikiDraft,normalizeWikiDraft,validateWikiDraft,publicWikiArticle,slugify} from './wiki-studio-model.js';
+import {STUDIO_VERSION,WIKI_STUDIO_CATEGORIES,MAX_IMAGE_BYTES,MAX_ARTICLE_IMAGES,newWikiDraft,wikiDraftFromTemplate,WIKI_PAGE_TEMPLATES,normalizeWikiDraft,validateWikiDraft,publicWikiArticle,slugify} from './wiki-studio-model.js';
 import {listWikiDrafts,getWikiDraft,putWikiDraft,deleteWikiDraft} from './wiki-studio-storage.js';
 
 const s={loaded:false,entries:[],draft:null,mode:'list',error:'',message:'',timer:null,dirty:false,publishing:false,publishEnabled:false};
@@ -60,6 +60,7 @@ function editor(){
 function listing(){
  return toolbar+'<div class="studioHome"><div class="studioHomeActions"><button class="btn primary" data-ws-action="new">'+icon('plus',17)+' New Wiki page</button><label class="btn secondary studioUpload">Import backup<input id="wikiStudioImport" type="file" accept=".json,application/json"></label></div>'+
  '<p class="studioWorkflow">Create guides or articles with screenshots, source links, and connected tools. Drafts save locally and cannot change the public Wiki until approved and published.</p>'+
+ '<div class="studioTemplatePicker" aria-label="Choose article template"><span class="eyebrow">START WITH A TEMPLATE</span><div class="studioTemplateGrid">'+Object.entries(WIKI_PAGE_TEMPLATES).map(([id,template])=>'<button type="button" data-ws-action="new" data-template="'+esc(id)+'"><strong>'+esc(template.label)+'</strong><small>'+template.headings.length+' starter sections</small></button>').join('')+'</div></div>'+
  '<div class="studioDraftList">'+(s.entries.length?s.entries.map(d=>'<article class="studioDraft"><div><span class="eyebrow">'+esc(d.category||'Guide')+' · '+esc(d.updatedAt?new Date(d.updatedAt).toLocaleDateString():'Draft')+'</span><h2>'+esc(d.title||'Untitled draft')+'</h2><p>'+esc(d.summary||'No summary yet.')+'</p></div><div><button class="btn secondary" data-ws-action="open" data-key="'+esc(d.recordId)+'">Edit draft '+icon('arrow',15)+'</button><button class="studioDanger" data-ws-action="delete" data-key="'+esc(d.recordId)+'">Delete</button></div></article>').join(''):'<div class="studioZero"><span>'+icon('book',28)+'</span><h2>Your Wiki starts here</h2><p>Create your first guide, add screenshots, and preview it just like a real ArcanaWiki article.</p><button class="btn primary" data-ws-action="new">Create first article</button></div>')+'</div>'+
  '<p id="wikiStudioStatus" role="status">'+esc(s.message)+'</p></div>';
 }
@@ -119,7 +120,7 @@ async function act(btn){
  const action=btn.dataset.wsAction,key=btn.dataset.key;
  try{
   if(action==='list'){await flush();s.mode='list';await refresh();return;}
-  if(action==='new'){s.draft={...newWikiDraft(),recordId:'draft-'+Date.now()+'-'+Math.random().toString(36).slice(2,8)};s.mode='edit';schedule();repaint();return;}
+  if(action==='new'){s.draft={...wikiDraftFromTemplate(btn.dataset.template||'blank'),recordId:'draft-'+Date.now()+'-'+Math.random().toString(36).slice(2,8)};s.mode='edit';schedule();repaint();return;}
   if(action==='open'){await flush();s.draft=await getWikiDraft(key);s.mode='edit';repaint();return;}
   if(action==='delete'){if(!confirm('Delete this local draft? Export a backup first if you need it.'))return;await deleteWikiDraft(key);await refresh();return;}
   if(action==='preview'||action==='edit'){await flush();s.mode=action==='preview'?'preview':'edit';repaint();return;}
