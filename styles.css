@@ -532,3 +532,25 @@ body,.shell{background:var(--theme-main)}
 .wikiVariant{flex:none;width:80px;display:grid;place-items:center;gap:6px;background:var(--theme-card);border:1px solid var(--theme-border);border-radius:12px;padding:10px 7px}
 .wikiVariantImage{width:55px;height:55px;display:block}
 .wikiVariant strong{font-size:10px;color:var(--theme-accent-text)}
+
+/* Arcana Codex: visual game atlas / readable game-systems reference. */
+.wikiShelfSwitch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 13px}
+.wikiShelfTab{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;min-height:43px;border-radius:12px;border:1px solid var(--theme-border);background:var(--theme-card);color:var(--soft);text-decoration:none;font-size:11px;font-weight:750;padding:8px}
+.wikiShelfTab.active{background:var(--theme-highlight-soft);border-color:var(--theme-highlight);color:var(--theme-accent-text)}
+.wikiShelfTab span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wikiGalleryList{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.wikiGalleryList .wikiRecordVisual{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:7px;min-height:152px;padding:13px;border-radius:15px}
+.wikiRecordVisual .wikiRecordArt{width:78px;height:78px;flex-shrink:0;margin:0 auto 2px;border:none;background:transparent}
+.wikiRecordVisual .wikiRecordArt .gameArt{width:76px;height:76px}
+.wikiRecordVisual .wikiRecordContent{text-align:center;min-width:0;width:100%}
+.wikiRecordVisual .wikiRecordContent strong{font-size:12px;line-height:1.3;overflow-wrap:anywhere}
+.wikiRecordVisual .wikiRecordContent small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal;line-height:1.3;font-size:10px}
+.wikiVisualArrow{position:absolute;top:10px;right:10px;opacity:.55;color:var(--theme-accent-text)}
+.wikiRecordText{min-height:55px;padding:10px 12px;gap:10px}
+.wikiTextIcon{display:grid;place-items:center;width:23px;height:23px;flex:0 0 23px;border-radius:7px;background:var(--theme-highlight-soft);color:var(--theme-accent-text)}
+.wikiRecordText .wikiRecordContent strong{font-size:12px}
+.wikiRecordText .wikiRecordContent small{font-size:10px;line-height:1.3}
+.wikiReferenceArtText{width:52px;height:52px;flex-basis:52px}
+.wikiReferenceArtText svg{width:27px;height:27px}
+.wikiReferenceTopics .wikiTopic{min-height:118px}
+@media(max-width:360px){.wikiShelfTab{font-size:10px;gap:4px}.wikiShelfSwitch{gap:5px}.wikiGalleryList{gap:7px}.wikiGalleryList .wikiRecordVisual{padding:10px}}

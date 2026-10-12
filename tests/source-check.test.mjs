@@ -45,3 +45,12 @@ test('verified catalog supplements only real pet and currency sprite records',as
  assert.match(server,/if\(existing\.has\(id\)\)continue/);
  assert.match(server,/catalogCache=\{\.\.\.payload,entries:/);
 });
+
+test('Codex presents visual atlas separately from compact mechanics rows', async()=>{
+ const views=await read('../src/wiki-views.js');
+ assert.match(views,/wikiShelfSwitch/);
+ assert.match(views,/wikiGalleryList/);
+ assert.match(views,/wikiRecordText/);
+ assert.match(views,/wikiReferenceTopics/);
+ assert.match(views,/wikiAtlasTopics/);
+});

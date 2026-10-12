@@ -111,7 +111,6 @@ export function resolveOfficialSprite(entry,categories=officialCodexAtlas){
  const aliases=[];
  if(kind==='item'&&/[’']s\b/i.test(entry.title))aliases.push({slug:officialSlug(entry.title.replace(/[’']s\b/gi,'')),matchType:'name-alias'});
  if(kind==='currency'&&title.endsWith('ies'))aliases.push({slug:title.slice(0,-3)+'y',matchType:'name-alias'});
- // The game labels this pet Octopusia, while its exact original art key is octopussy.
  if(kind==='pet'&&title==='octopusia')aliases.push({slug:'octopussy',matchType:'name-alias'});
  if(kind==='pet')aliases.push({slug:title+'-1',matchType:'representative-pet'});
  const candidateSets=[{slug:title,matchType:'exact'},...aliases];
@@ -167,6 +166,19 @@ export function resolveOfficialEmblem(entry,manifest=officialManifest){
 export const hasCodexOfficialArt=entry=>!!(resolveOfficialSprite(entry)||resolveOfficialEmblem(entry));
 export function codexOfficialArt(entry,size=44){
  const kind=entry?.gameKind||entry?.kind;
+ // Four verified game skill icons were absent from the supplied official sprite atlas.
+ // Scoped to Codex class-skill entries, not the interactive Skills planner.
+ const skillById=Object.freeze({
+  'game:class-skill:48':'counterstrike',
+  'game:class-skill:26':'keen-edge',
+  'game:class-skill:27':'lethal-blow',
+  'game:class-skill:1':'strong-pet-bound'
+ });
+ const verifiedSkill=kind==='class-skill'?skillById[entry?.id]:null;
+ if(verifiedSkill){
+  return '<span class="gameArt gameArt-original codexSkillIcon" data-art-status="user-confirmed" data-asset-key="skill-override:'+verifiedSkill+'" title="Verified in-game skill artwork" style="background-image:url(\'/assets/skill-overrides/'+verifiedSkill+'.webp\');background-size:cover;background-position:center"></span>';
+ }
+
  const sprite=resolveOfficialSprite(entry)||resolveOfficialEmblem(entry);
  if(sprite){
   const x=sprite.index%sprite.cols,y=Math.floor(sprite.index/sprite.cols);

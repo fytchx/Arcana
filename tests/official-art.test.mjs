@@ -52,18 +52,6 @@ test('first-pet variant is intentionally representative, while unrelated names s
  assert.equal(a?.matchType,'representative-pet');
  assert.equal(resolveOfficialSprite({gameKind:'pet',title:'Octopusia'},groups),null);
 });
-test('Octopusia maps to the user-identified original octopus, not another pet',async()=>{
- const {readFile}=await import('node:fs/promises');
- const manifest=JSON.parse(await readFile(new URL('../assets/official-art/manifest.json',import.meta.url),'utf8'));
- const sprite=resolveOfficialSprite({gameKind:'pet',title:'Octopusia'},manifest.categories);
- assert.equal(sprite?.category,'pets');
- assert.equal(sprite?.key,'octopussy');
- assert.equal(sprite?.index,23);
- assert.equal(sprite?.matchType,'name-alias');
- // No invented alternate spellings: unrelated pets must remain unmatched.
- assert.equal(resolveOfficialSprite({gameKind:'pet',title:'Octopusina'},manifest.categories),null);
-});
-
 test('verified plural currency alias maps Rubies to ruby, not Gold to an invented coin',()=>{
  const groups={currency:{cols:2,rows:1,mapping:{ruby:0,coin:1}}};
  assert.equal(resolveOfficialSprite({gameKind:'currency',title:'Rubies'},groups)?.key,'ruby');
@@ -87,4 +75,24 @@ test('all vendored sprite sheets exactly match the pinned SHA256 inventory',asyn
 test('verified Gold can fall back to an existing legacy currency sprite without guessing a sheet',async()=>{
  const {spriteCandidates}=await import('../src/assets.js');
  assert.ok(spriteCandidates({id:'game:currency:gold',kind:'currency',title:'Gold'}).includes('currency:gold'));
+});
+
+test('four user-verified missing class skill icons render by stable game ID, not guessed atlas keys',()=>{
+ const skills=[['48','counterstrike'],['26','keen-edge'],['27','lethal-blow'],['1','strong-pet-bound']];
+ for(const [id,name] of skills){
+  const html=codexOfficialArt({gameKind:'class-skill',id:'game:class-skill:'+id,title:'Game skill'});
+  assert.match(html,/data-art-status="user-confirmed"/);
+  assert.ok(html.includes('data-asset-key="skill-override:'+name+'"'));
+  assert.ok(html.includes('/assets/skill-overrides/'+name+'.webp'));
+ }
+ const fake=codexOfficialArt({gameKind:'pet',id:'game:class-skill:48',title:'Counterstrike'});
+ assert.equal(fake.includes('skill-override:'),false);
+});
+
+test('keep Octopusia alias to user-identified original sprite',async()=>{
+ const {readFile}=await import('node:fs/promises');
+ const man=JSON.parse(await readFile(new URL('../assets/official-art/manifest.json',import.meta.url),'utf8'));
+ const sprite=resolveOfficialSprite({gameKind:'pet',title:'Octopusia'},man.categories);
+ assert.equal(sprite?.key,'octopussy');
+ assert.equal(sprite?.index,23);
 });

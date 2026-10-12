@@ -39,7 +39,11 @@ MOCK_ENTRIES={"entries":[
     {"id":"game:material:mithril-ore","kind":"material","title":"Mithril Ore","subtitle":"Material","description":"Ore","keywords":"mithril"},
     {"id":"game:pet:shadow-wolf","kind":"pet","title":"Shadow Wolf","subtitle":"Pet","description":"Wolf","keywords":"pet"},
     {"id":"game:item:broken-sword","kind":"item","title":"Broken Sword","subtitle":"Equipment","description":"Sword","keywords":"item"},
-    {"id":"game:pet-affix:sharp-claw","kind":"pet-affix","title":"Sharp Claw","subtitle":"Pet Affix","description":"Affix","keywords":"pet affix"}
+    {"id":"game:pet-affix:sharp-claw","kind":"pet-affix","title":"Sharp Claw","subtitle":"Pet Affix","description":"Affix","keywords":"pet affix"},
+    {"id":"game:class-skill:48","kind":"class-skill","title":"Counterstrike","subtitle":"Class Skill","description":"Warrior skill","keywords":"warrior"},
+    {"id":"game:class-skill:26","kind":"class-skill","title":"Keen Edge","subtitle":"Class Skill","description":"Rogue skill","keywords":"rogue"},
+    {"id":"game:class-skill:27","kind":"class-skill","title":"Lethal Blow","subtitle":"Class Skill","description":"Rogue skill","keywords":"rogue"},
+    {"id":"game:class-skill:1","kind":"class-skill","title":"Strong pet bound","subtitle":"Class Skill","description":"Archer skill","keywords":"archer"}
 ]}
 
 HTML=HTML.replace('</body>', '''<script>
@@ -77,33 +81,42 @@ with sync_playwright() as playwright:
     rail=page.locator('.wikiCategoryScroll')
     assert rail.count()==1, 'Category carousel missing'
     tabs=rail.locator('a')
-    assert tabs.count()>=12, f'Category list unexpectedly short: {tabs.count()}'
+    assert tabs.count()==6, f'Illustrated Atlas should have exactly 6 collections: {tabs.count()}'
     all_names=tabs.all_inner_texts()
-    for required in ('Materials','Monsters','Biomes','Class Skills','Pet Companions'):
-        assert any(tab.startswith(required) for tab in all_names), f'Missing category {required}'
+    for required in ('Monsters','Biomes','Class Skills','Pet Companions','Currencies','Equipment'):
+        assert any(tab.startswith(required) for tab in all_names), f'Missing illustrated category {required}'
+    assert page.locator('.wikiShelfSwitch .wikiShelfTab').count()==3, 'Separate Atlas and System collections missing'
     rail.evaluate('(e)=>e.scrollLeft=120')
     before=rail.evaluate('(e)=>e.scrollLeft')
-    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=material"]').dispatch_event('click')
+    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=monster"]').dispatch_event('click')
     page.wait_for_timeout(200)
-    assert page.locator('.wikiCategoryScroll .active').inner_text().startswith('Materials')
+    assert page.locator('.wikiCategoryScroll .active').inner_text().startswith('Monsters')
     after=page.locator('.wikiCategoryScroll').evaluate('(e)=>e.scrollLeft')
     assert after>0, f'Category rail unexpectedly reset from {before} to {after}'
     page.screenshot(path=str(OUT/'wiki_mobile.png'),full_page=True)
     # Manifest loads in the SAME assets.js module instance as app initialization.
+    page.locator('.wikiShelfSwitch a[href="#/wiki/library?kind=item"]').dispatch_event('click')
+    page.wait_for_timeout(200)
+    assert page.locator('.wikiShelf-atlas .wikiGalleryList').count()==1, 'Visual gallery mode missing'
     page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=monster"]').dispatch_event('click')
     page.wait_for_timeout(200)
     images=page.locator('#wikiRecords [data-art-status="official"]')
     assert images.count()==1, 'Monster image did not render from the official atlas'
     assert 'monsters:elder-wraith' in images.first.get_attribute('data-asset-key')
-    tabs=page.locator('.wikiCategoryScroll a')
+    page.locator('.wikiShelfSwitch a[href="#/wiki/library?kind=material"]').dispatch_event('click')
+    page.wait_for_timeout(200)
     page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=pet-affix"]').dispatch_event('click')
     page.wait_for_timeout(200)
-    emblem=page.locator('#wikiRecords [data-art-status="category-emblem"]')
-    assert emblem.count()==1, 'Official category emblem unavailable for pet affixes'
-    tabs=page.locator('.wikiCategoryScroll a')
+    assert page.locator('#wikiRecords .wikiRecordText').count()==1, 'Mechanics should use concise text rows'
+    assert page.locator('#wikiRecords [data-art-status="category-emblem"]').count()==0, 'Repeated generic sprite art must not clutter reference rows'
+    page.locator('.wikiShelfSwitch a[href="#/wiki/library?kind=item"]').dispatch_event('click')
+    page.wait_for_timeout(200)
     page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=class-skill"]').dispatch_event('click')
     page.wait_for_timeout(200)
     assert page.locator('#wikiRecords [data-asset-key="skills:warrior:retaliation"]').count()==1, 'Correct class skill art missing'
+    for key in ('counterstrike','keen-edge','lethal-blow','strong-pet-bound'):
+        assert page.locator(f'#wikiRecords [data-asset-key="skill-override:{key}"][data-art-status="user-confirmed"]').count()==1, f'Provided skill artwork missing: {key}'
+    assert page.locator('.wikiShelf-atlas .wikiGalleryList').count()==1, 'Visual skills must render as gallery cards' 
     active=page.locator('.wikiCategoryScroll a.active')
     position=active.evaluate('(e)=>{const a=e.getBoundingClientRect(),p=e.parentElement.getBoundingClientRect();return {left:a.left,right:a.right,viewLeft:p.left,viewRight:p.right}}')
     assert position['left']>=position['viewLeft']-2 and position['right']<=position['viewRight']+2, f'Active category not visible: {position}'
