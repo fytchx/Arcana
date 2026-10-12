@@ -43,6 +43,29 @@ with sync_playwright() as p:
         assert metrics['hasBottomNavigation'] and metrics['hasHeader'], route+' lost app navigation'
         screens.append({'route':route,'label':title,'contentChars':len(content),
                         'pageOverflowPx':max(0,metrics['fullWidth']-metrics['viewport'])})
+    # Sourced equipment comparisons have real values, not placeholder claims.
+    from urllib.parse import quote
+    catalog=page.request.get(BASE+'/api/search/catalog',timeout=25000).json()['entries']
+    item_ids={r.get('title'):r.get('id') for r in catalog if r.get('kind')=='item'}
+    assert 'Rags' in item_ids and 'Wardplate' in item_ids and 'Claws' in item_ids
+    def equip_link(left,right):
+        return BASE+'/#/calculators/compare?left='+quote(item_ids[left],safe='')+'&right='+quote(item_ids[right],safe='')
+    page.goto(equip_link('Rags','Wardplate'),wait_until='domcontentloaded',timeout=30000)
+    page.wait_for_function("""() => [...document.querySelectorAll('.verifiedStatCard strong')].some(e=>e.textContent==='Wardplate')""",timeout=15000)
+    summary=page.locator('.verifiedComparePanel').inner_text()
+    assert 'Rags' in summary and 'Wardplate' in summary and 'Defense' in summary, 'Verified comparison missing'
+    assert 'Same primary stat' in summary, 'Identical stat types not comparable'
+    assert '-11 minimum / -29 maximum' in summary, 'Base range delta incorrect'
+    page.locator('[data-action="comparetier"][data-arg="3"]').dispatch_event('click')
+    assert page.locator('.verifiedTierChip.active').inner_text().startswith('T3'), 'Tier selection reset'
+    page.goto(equip_link('Claws','Wardplate'),wait_until='domcontentloaded',timeout=30000)
+    page.wait_for_function("""() => [...document.querySelectorAll('.verifiedStatCard strong')].some(e=>e.textContent==='Claws')""",timeout=15000)
+    assert 'Different primary stats' in page.locator('.verifiedComparePanel').inner_text()
+    page.goto(BASE+'/#/calculators/upgrade?item='+quote(item_ids['Claws'],safe=''),wait_until='domcontentloaded',timeout=30000)
+    page.wait_for_selector('.verifiedUpgradeReference .verifiedUpgradeRow',timeout=15000)
+    assert page.locator('.verifiedUpgradeRow').count()==5
+    assert '5,250,000 base gold' in page.locator('.verifiedUpgradeReference').inner_text()
+    page.screenshot(path=str(out/'arcana-verified-equipment-mobile.png'),full_page=True)
     page.screenshot(path=str(out/'arcana-tools-staging-mobile.png'),full_page=True)
     assert not errors, 'Uncaught JS exceptions '+repr(errors[:6])
     (out/'arcana-tools-audit.json').write_text(json.dumps({'status':'PASS','routes':screens,'uncaughtErrors':errors},indent=2)+'\n')
