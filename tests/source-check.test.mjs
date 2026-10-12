@@ -107,7 +107,7 @@ test('Pet tools show only Compound→Drop Bonus and target level shard cost',asy
  assert.match(app,/simpleAffixCostView\(state\.affixCostQuick\)/);
  assert.match(app,/case 'petcompoundstep'/);
  assert.match(app,/case 'petaffixstep'/);
- assert.match(app,/data-pet-bonus-target/);
+ assert.match(studio,/data-pet-bonus-target/);
  assert.match(views,/Compound → Drop Bonus/);
  assert.match(views,/Upgrade cost to target/);
  assert.match(views,/Pet Shards/);
