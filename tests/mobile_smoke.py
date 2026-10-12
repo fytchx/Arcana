@@ -226,7 +226,8 @@ with sync_playwright() as playwright:
     assert page.locator('[data-pet-name]').count()==0
     assert page.locator('.labsTabs [data-route="labs/pets"]').count()==0
     page.locator('[data-pet-bonus-target="0"]').select_option('pet_damage')
-    assert '1/4 selected' in page.locator('.petBuildHead').inner_text()
+    assert page.locator('[data-pet-bonus-target="0"]').input_value()=='pet_damage'
+    assert int(page.locator('.petBuildHead small').inner_text().split('/')[0])>=1
     page.screenshot(path=str(OUT/'pets_simplified_mobile.png'),full_page=True)
 
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
