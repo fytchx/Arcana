@@ -3,6 +3,8 @@ import { readFile, stat } from 'node:fs/promises';
 import { resolve, sep, extname } from 'node:path';
 import { createHash } from 'node:crypto';
 import { handleWikiRequest } from './src/wiki-server.mjs';
+import { safeAccountRequest } from './src/account-server.mjs';
+import { safeCommunityRequest } from './src/community-server.mjs';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)));
@@ -87,7 +89,10 @@ async function verifiedCatalog(){
 }
 const server=http.createServer(async(req,res)=>{
  try {
-  const {pathname}=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
+  const parsedUrl=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
+  const {pathname}=parsedUrl;
+  if((pathname.startsWith('/api/account/')||pathname.startsWith('/api/profiles/')||pathname.startsWith('/api/admin/roles/'))&&await safeAccountRequest(req,res,parsedUrl))return;
+  if(pathname.startsWith('/api/community/')&&await safeCommunityRequest(req,res,parsedUrl))return;
   if(await handleWikiRequest(req,res,pathname))return;
   if(req.method!=='GET'&&req.method!=='HEAD'){send(res,405,'Method not allowed');return;}
   if(pathname==='/health'||pathname==='/__health') {const art=await localArtAudit;const ok=!REQUIRE_LOCAL_ART||art.ready;json(res,ok?200:503,{ok,release:REVISION,source:'tracked frontend files',artwork:{local:art.ready,groups:art.groups,version:art.version||null},dependencyEndpoints:Object.keys(BASES)});return;}
@@ -112,6 +117,11 @@ const server=http.createServer(async(req,res)=>{
     await pipe(res,BASES.officialArt+pathname.slice('/official-art'.length),{timeout:14000,cache:'public,max-age=180'});return;
   }
   const normalized=pathname==='/'?'/index.html':pathname;
+  // Serve only public frontend assets. Never expose account/session files or local Wiki data.
+  const publicPage=new Set(['/index.html','/styles.css','/wiki-studio.css','/community.css']).has(normalized);
+  const publicModule=/^\/src\/[a-z][a-z0-9-]*\.js$/.test(normalized);
+  const publicAsset=/^\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.(?:webp|svg|png|jpg|jpeg|json)$/.test(normalized);
+  if(!publicPage&&!publicModule&&!publicAsset){send(res,404,'Not found');return;}
   const filename=resolve(ROOT,'.'+normalized);
   if(filename!==ROOT&&!filename.startsWith(ROOT+sep)){send(res,403,'Forbidden');return;}
   try {

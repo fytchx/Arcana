@@ -3,6 +3,8 @@ import { resolve } from 'node:path';
 import { timingSafeEqual, randomUUID, createHash } from 'node:crypto';
 import { publicWikiArticle, validateWikiDraft } from './wiki-studio-model.js';
 import { WIKI_ARTICLES } from './wiki-data.js';
+import { accountUser, checkOrigin, authAvailable } from './account-server.mjs';
+import { can } from './account-policy.js';
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const IMAGE = /^image-[a-z0-9-]{1,60}$/;
@@ -17,7 +19,7 @@ const queuedPublish = operation => {
   publicationQueue = running.then(() => undefined, () => undefined);
   return running;
 };
-export const wikiPublishingEnabled = () => Boolean(process.env.ARCANA_WIKI_OWNER_KEY && process.env.ARCANA_WIKI_DATA_DIR);
+export const wikiPublishingEnabled = () => Boolean(process.env.ARCANA_WIKI_DATA_DIR && (process.env.ARCANA_WIKI_OWNER_KEY || authAvailable()));
 const send = (res, status, value, headers = {}) => {
   res.writeHead(status, {'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff',...headers});
   res.end(JSON.stringify(value));
@@ -28,6 +30,13 @@ const authorized = req => {
   if (!secret || !provided || Buffer.byteLength(secret)!==Buffer.byteLength(provided)) return false;
   return timingSafeEqual(Buffer.from(secret), Buffer.from(provided));
 };
+async function allowedEditor(req,mutation=false){
+ if(authorized(req))return true; // Transitional private key, removable after account migration.
+ const account=await accountUser(req);
+ if(!can(account,'wiki:publish'))return false;
+ if(mutation){try{checkOrigin(req);}catch{return false;}}
+ return true;
+}
 async function rawArticle(id) {
   if (!SLUG.test(id) || id.length > 70) return null;
   try { return JSON.parse(await readFile(resolve(ROOT,id+'.json'),'utf8')); }
@@ -105,7 +114,7 @@ export async function handleWikiRequest(req,res,pathname) {
   }
   const editPath=pathname.match(/^\/api\/wiki\/edit\/([a-z0-9-]+)$/);
   if(editPath && method==='GET'){
-    if(!authorized(req)){send(res,401,{error:'Invalid owner publishing key'});return true;}
+    if(!await allowedEditor(req)){send(res,401,{error:'Wiki Editor role required'});return true;}
     const id=editPath[1];
     if(!SLUG.test(id)||id.length>70||RESERVED.has(id)){send(res,404,{error:'Article not found'});return true;}
     try {
@@ -132,7 +141,7 @@ export async function handleWikiRequest(req,res,pathname) {
     return true;
   }
   if(pathname==='/api/wiki/publish' && method==='POST'){
-    if(!authorized(req)){send(res,401,{error:'Invalid owner publishing key'});return true;}
+    if(!await allowedEditor(req,true)){send(res,401,{error:'Wiki Editor role required'});return true;}
     if(!String(req.headers['content-type']||'').startsWith('application/json')){send(res,415,{error:'JSON required'});return true;}
     try{
       const input=await bodyJSON(req);
