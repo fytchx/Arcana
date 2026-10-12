@@ -59,7 +59,7 @@ const item=id=>entityById.get(id)||(verifiedState.entries.find(e=>e.id===id&&e.g
 const savedBuild=()=>state.draft&&state.draft.equipment?normalizeBuild(state.draft):null;
 function ensureDraft(){if(!state.draft){const tmpl=buildTemplate('warrior-retaliation-demo');state.draft=normalizeBuild(deepCopy(tmpl));state.draft.title='My Build Draft';state.draft.id='local-draft';state.draft.version='LOCAL';}else state.draft=normalizeBuild(state.draft);return state.draft;}
 function persistDraft(){if(state.draft){state.draft=normalizeBuild(state.draft);saveDraft(state.draft)}}
-const SEARCHABLE_TOOLS=['items','guides','upgrade','compare','build','runes','skills','passives','petlab','compound','affixes','guildtree','guilds','raids','farm'];
+const SEARCHABLE_TOOLS=['items','guides','upgrade','compare','build','runes','skills','passives','petlab','compound','affixes','guildtree','guilds','raids','farm','studio'];
 const TOOL_SEARCH_ALIASES={
  items:'item codex art equipment weapons',guides:'wiki player guide article',
  upgrade:'item upgrade calculator forge materials',compare:'item comparison equipment stats',
@@ -67,7 +67,7 @@ const TOOL_SEARCH_ALIASES={
  skills:'class skill tree planner',passives:'passive skill tree planner',
  petlab:'pet lab pet loadout companion',compound:'pet compound calculator equalisation',
  affixes:'pet affix cost calculator shard',guildtree:'guild skill tree planner guild bonuses',
- guilds:'guild finder recruitment',raids:'lfg raid finder',farm:'monster level xp farm comparator fastest kills per second ml xp'
+ guilds:'guild finder recruitment',raids:'lfg raid finder',farm:'monster level xp farm comparator fastest kills per second ml xp',studio:'wiki studio editor write guide upload pictures add screenshot create article'
 };
 const searchExtras=()=>[
  ...(savedBuild()?[{id:'my-build',kind:'build',title:state.draft.title||'My Build',subtitle:'Saved locally · Build Studio',keywords:'my build custom saved planner equipment runes skills',description:'Your locally saved build.'}]:[]),
@@ -271,7 +271,7 @@ const __nextWikiRail=node('content').querySelector('.wikiCategoryScroll');if(__n
     else if(bounds.right>view.right-pad)__nextWikiRail.scrollLeft+=bounds.right-(view.right-pad);
   }
  }const currentTab=node('content').querySelector('.labsTab.active');if(currentTab){const rail=currentTab.parentElement;rail.scrollLeft=Math.max(0,currentTab.offsetLeft-rail.offsetLeft-(rail.clientWidth-currentTab.clientWidth)/2)}const nav=node('bottomNav');nav.innerHTML=`<button data-route="home" class="navItem ${dest==='home'?'selected':''}">${icon('home',21)}<small>Home</small></button><button data-action="quick" class="navItem">${icon('clock',21)}<small>Shortcuts</small></button><button data-action="search" class="navSearch" aria-label="Search all of Arcana"><span>${icon('search',25)}</span><small>Search</small></button><button data-route="labs" class="navItem ${dest.startsWith('labs')?'selected':''}">${icon('flask',21)}<small>Labs</small></button><button data-action="menu" class="navItem">${icon('menu',21)}<small>Menu</small></button>`;
- node('sideNav').innerHTML=`<span class="eyebrow navEyebrow">ARCANA</span>${LINKS.map(([href,label,ico])=>`<button data-route="${href}" class="sideItem ${dest===href||dest.startsWith(href+'/')?'selected':''}">${icon(ico,20)} ${esc(label)}</button>`).join('')}<div class="sideDivider"></div><span class="eyebrow navEyebrow">SHORTCUTS</span><button class="sideItem" data-action="search">${icon('search',19)} Universal Search</button><button class="sideItem" data-action="quick">${icon('clock',19)} Recent & Quick</button><button class="sideItem" data-route="labs/guild-tree">${icon('shield',19)} Guild Skill Tree</button>`;
+ node('sideNav').innerHTML=`<span class="eyebrow navEyebrow">ARCANA</span>${LINKS.map(([href,label,ico])=>`<button data-route="${href}" class="sideItem ${dest===href||dest.startsWith(href+'/')?'selected':''}">${icon(ico,20)} ${esc(label)}</button>`).join('')}<div class="sideDivider"></div><span class="eyebrow navEyebrow">SHORTCUTS</span><button class="sideItem" data-action="search">${icon('search',19)} Universal Search</button><button class="sideItem" data-action="quick">${icon('clock',19)} Recent & Quick</button><button class="sideItem" data-route="labs/guild-tree">${icon('shield',19)} Guild Skill Tree</button><button class="sideItem" data-route="wiki/studio">${icon('edit',19)} Write Wiki Guide</button>`;
  document.title=(dest==='home'?'Arcana':(node('content').querySelector('h1')?.textContent||'Arcana'))+' | Arcana';}
 function showLayer(kicker,body,type='panel'){state.layer={type};node('layerKicker').textContent=kicker;node('layerContent').innerHTML=body;node('layer').hidden=false;document.body.classList.add('noScroll')}
 function closeLayer(){node('layer').hidden=true;state.layer=null;document.body.classList.remove('noScroll')}
