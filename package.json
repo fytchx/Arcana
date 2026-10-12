@@ -7,6 +7,7 @@
     "start": "node server.mjs",
     "check": "node --test tests/*.test.mjs",
     "test:mobile": "python tests/mobile_smoke.py",
-    "build": "npm run check"
+    "build": "npm run check",
+    "test:guild": "node --test tests/guild-tree.test.mjs"
   }
 }
