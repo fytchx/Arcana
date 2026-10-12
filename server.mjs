@@ -117,6 +117,11 @@ const server=http.createServer(async(req,res)=>{
     await pipe(res,BASES.officialArt+pathname.slice('/official-art'.length),{timeout:14000,cache:'public,max-age=180'});return;
   }
   const normalized=pathname==='/'?'/index.html':pathname;
+  // Serve only public frontend assets. Never expose account/session files or local Wiki data.
+  const publicPage=new Set(['/index.html','/styles.css','/wiki-studio.css','/community.css']).has(normalized);
+  const publicModule=/^\/src\/[a-z][a-z0-9-]*\.js$/.test(normalized);
+  const publicAsset=/^\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.(?:webp|svg|png|jpg|jpeg|json)$/.test(normalized);
+  if(!publicPage&&!publicModule&&!publicAsset){send(res,404,'Not found');return;}
   const filename=resolve(ROOT,'.'+normalized);
   if(filename!==ROOT&&!filename.startsWith(ROOT+sep)){send(res,403,'Forbidden');return;}
   try {
