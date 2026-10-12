@@ -91,7 +91,7 @@ function parseTable(lines,start){
  }
  if(i===lines.length)commit();
  if(header)rows.unshift(header);
- return {rows:rows.slice(0,35).map(row=>row.slice(0,12)),end:i};
+ return {rows:rows.slice(0,35).map(row=>row.slice(0,12)),end:i,truncated:rows.length>35||rows.some(row=>row.length>12)};
 }
 export const importLinkMarkup=(value,escapeFn)=>{
  const s=String(value||''),parts=/\[\[arcana:([a-z0-9]+(?:-[a-z0-9]+)*)\|([^\]]{1,125})\]\]/g;
@@ -127,7 +127,7 @@ const wikiPageUrl=(root,title)=>{
  try{const url=new URL(root);if(url.protocol!=='https:')return '';
   const index=url.pathname.indexOf('/wiki/');
   if(index<0)return '';
-  url.pathname=url.pathname.slice(0,index)+'/wiki/'+encodeURIComponent(title.replace(/ /g,'_'));
+  url.pathname=url.pathname.slice(0,index)+'/wiki/'+title.replace(/ /g,'_').split('/').map(encodeURIComponent).join('/');
   url.search='';url.hash='';return url.href.slice(0,500);
  }catch{return '';}
 };
@@ -146,6 +146,7 @@ export function convertFandomPages(pages,{existingIds=[]}={}){
   const cats=extractCategories(page.text);notes.categories=cats.categories;
   const extracted=stripTemplates(cats.text,notes.warnings),raw=extracted.text;
   const lines=raw.split(/\r?\n/),sections=[];
+  let lossy=false;
   let current={title:'Overview',body:[],table:null,imageNames:[]};
   const finish=()=>{
    if(current.body.length||current.table?.length||current.imageNames.length)
@@ -160,6 +161,7 @@ export function convertFandomPages(pages,{existingIds=[]}={}){
    if(heading){finish();current={title:clean(heading[2]).slice(0,100),body:[],table:null,imageNames:[]};continue;}
    if(/^\s*\{\|/.test(line)){
     const parsed=parseTable(lines,i);i=parsed.end;
+    if(parsed.truncated){lossy=true;notes.warnings.push('Table exceeds 35 rows or 12 columns; compare against the preserved original source.');}
     if(current.table){finish();current={title:(current.title+' (table)').slice(0,100),body:[],table:null,imageNames:[]};}
     current.table=parsed.rows;
     if(!current.body.length)current.body.push('Reference table from the original article.');
@@ -169,7 +171,7 @@ export function convertFandomPages(pages,{existingIds=[]}={}){
   }
   finish();
   if(!sections.length)sections.push({title:'Overview',body:'',imageNames:[]});
-  if(sections.length>MAX_SECTIONS)notes.warnings.push('More than 35 sections: additional sections were not imported.');
+  if(sections.length>MAX_SECTIONS){lossy=true;notes.warnings.push('More than 35 sections: additional sections were not imported.');}
   const imageNames=unique(sections.flatMap(s=>s.imageNames));
   const missingLinks=unique(notes.unresolvedLinks);
   if(missingLinks.length)notes.warnings.push(missingLinks.length+' internal link target(s) not found in this XML batch or existing guide list.');
@@ -180,7 +182,7 @@ export function convertFandomPages(pages,{existingIds=[]}={}){
    id:'section-'+(i+1),title:sec.title||'Details',
    body:sec.body.slice(0,8000),table:sec.table||[],imageId:'',imageRef:sec.imageNames[0]||''
   }));
-  if(sections.some(x=>x.body?.length>8000))notes.warnings.push('At least one section exceeds the 8,000-character Studio limit. Full source must be checked.');
+  if(sections.some(x=>x.body?.length>8000)){lossy=true;notes.warnings.push('At least one section exceeds the 8,000-character Studio limit. Full source must be checked.');}
   if(sections.some(x=>x.imageNames.length>1))notes.warnings.push('Multiple images in one section require manual placement.');
   const bodyText=sections.map(s=>s.body).join(' ').replace(/\[\[arcana:[^\]|]+\|([^\]]+)\]\]/g,'$1');
   const summary=clean(bodyText).replace(/\s+/g,' ').slice(0,330);
@@ -193,7 +195,7 @@ export function convertFandomPages(pages,{existingIds=[]}={}){
    sections:converted,
    relatedArticles:unique(sections.flatMap(section=>[...String(section.body).matchAll(/\[\[arcana:([a-z0-9-]+)\|/g)].map(x=>x[1])).filter(x=>x!==slug)).slice(0,10),
    importSource:{sourceTitle:page.title,sourceUrl,revisionAt:page.revisionAt,contributors:page.contributors,
-    siteName:page.siteName,images:imageNames,unresolvedLinks:missingLinks,warnings:notes.warnings}
+    siteName:page.siteName,images:imageNames,unresolvedLinks:missingLinks,warnings:notes.warnings,rawWikitext:page.text,truncated:lossy,reviewed:false}
   });
   return {draft,issues:notes.warnings,sourceTitle:page.title,images:imageNames,unresolvedLinks:missingLinks};
  });
