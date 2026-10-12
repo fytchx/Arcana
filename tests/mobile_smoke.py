@@ -77,6 +77,9 @@ with sync_playwright() as playwright:
     page.on('pageerror',lambda e:errors.append(str(e)))
     page.set_content(HTML,wait_until='domcontentloaded')
     page.wait_for_timeout(700)
+    assert page.locator('.skipMain').count()==1, 'Accessible skip navigation missing'
+    page.locator('.skipMain').dispatch_event('click')
+    assert page.evaluate('document.activeElement.id')=='content', 'Skip navigation did not focus the main content'
     assert page.locator('.arcanaSignature').count()==1, 'Footer must appear exactly once'
     footer=page.locator('.arcanaSignature').inner_text()
     assert 'Made by Zane' in footer and 'PDX & OVK' in footer, footer
@@ -210,6 +213,7 @@ with sync_playwright() as playwright:
     page.locator('#wikiRecords .wikiRecord').nth(40).dispatch_event('click')
     page.wait_for_timeout(120)
     assert page.locator('.wikiReferencePage').count()==1
+    assert page.locator('.wikiShareBtn[data-action="wikirefshare"]').count()==1, 'Codex reference is missing its share action'
     page.locator('.wikiReferencePage .wikiBack').dispatch_event('click')
     page.wait_for_timeout(170)
     assert page.locator('.wikiCategoryScroll a.active').inner_text().startswith('Class Skills')
@@ -264,6 +268,7 @@ with sync_playwright() as playwright:
     assert page.locator('[data-route="wiki/article"][data-params="id=forge"]').count()>=1, 'Forge guide missing'
     page.evaluate("location.hash='#/wiki/article?id=guild-planning'")
     page.wait_for_timeout(180)
+    assert page.locator('.wikiShareBtn[data-action="wikishare"]').count()==1, 'Wiki guide is missing its share action'
     toc=page.locator('.wikiArticleToc')
     assert toc.count()==1 and toc.locator('button').count()==4, 'Guide contents navigation unavailable'
     page.locator('[data-action="wikisection"][data-arg="rank-unlocks"]').dispatch_event('click')
