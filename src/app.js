@@ -305,6 +305,21 @@ function go(route,params={}){
  }
 }
 function action(name,arg,btn){switch(name){
+ case 'wikishare':{
+  if(!wikiArticleById(arg)){toast('Guide unavailable');break;}
+  const url=location.origin+location.pathname+location.search+'#/wiki/article?id='+encodeURIComponent(arg);
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Guide link copied')).catch(()=>window.prompt('Copy guide link',url));
+  else window.prompt('Copy guide link',url);
+  break;
+ }
+ case 'wikirefshare':{
+  const id=String(arg||'');
+  if(!verifiedState.entries.some(x=>x.id===id)){toast('Reference unavailable');break;}
+  const url=location.origin+location.pathname+location.search+'#/wiki/reference?id='+encodeURIComponent(id);
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Reference link copied')).catch(()=>window.prompt('Copy reference link',url));
+  else window.prompt('Copy reference link',url);
+  break;
+ }
  case 'wikisection':{const slug=String(arg||'');if(!/^[a-z0-9-]{1,100}$/.test(slug))break;const target=document.getElementById('section-'+slug);if(target){target.scrollIntoView({behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});target.querySelector('h2')?.focus({preventScroll:true});}break;}
  case 'wikitop':window.scrollTo({top:0,behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});break;
  case 'guildtreetab':state.guildTreeTab=arg;render();node('content').querySelector('.guildTreeTabs button.active')?.focus({preventScroll:true});break;
