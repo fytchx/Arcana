@@ -75,7 +75,9 @@ with sync_playwright() as playwright:
     page.set_default_timeout(3000)
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
-    page.set_content(HTML,wait_until='domcontentloaded')
+    # Use a genuine HTTPS test origin. about:blank is opaque and cannot persist IndexedDB Wiki drafts.
+    page.route('https://arcana-qa.test/',lambda route:route.fulfill(status=200,content_type='text/html',body=HTML))
+    page.goto('https://arcana-qa.test/',wait_until='domcontentloaded')
     page.wait_for_timeout(700)
     assert page.locator('.skipMain').count()==1, 'Accessible skip navigation missing'
     page.locator('.skipMain').dispatch_event('click')
