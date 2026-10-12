@@ -170,6 +170,28 @@ with sync_playwright() as playwright:
     active=page.locator('.wikiCategoryScroll a.active')
     position=active.evaluate('(e)=>{const a=e.getBoundingClientRect(),p=e.parentElement.getBoundingClientRect();return {left:a.left,right:a.right,viewLeft:p.left,viewRight:p.right}}')
     assert position['left']>=position['viewLeft']-2 and position['right']<=position['viewRight']+2, f'Active category not visible: {position}'
+    # Large skill lists expand in place rather than replacing the page and jumping to the top.
+    page.locator('#wikiFilter').fill('')
+    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=class-skill"]').dispatch_event('click')
+    page.wait_for_timeout(180)
+    assert page.locator('#wikiRecords .wikiRecord').count()==36
+    page.evaluate("window.scrollTo({top:520,behavior:'instant'})")
+    before_more=page.evaluate("window.scrollY")
+    page.locator('#wikiMore [data-action="wikimore"]').dispatch_event('click')
+    page.wait_for_timeout(80)
+    assert page.locator('#wikiRecords .wikiRecord').count()>36
+    assert page.evaluate("window.scrollY")>=before_more-8, "Show more unexpectedly reset scroll"
+    # Opening a reference and using the in-page Back button restores the previous reading spot.
+    page.evaluate("window.scrollTo({top:610,behavior:'instant'})")
+    read_top=page.evaluate("window.scrollY")
+    page.locator('#wikiRecords .wikiRecord').nth(40).dispatch_event('click')
+    page.wait_for_timeout(120)
+    assert page.locator('.wikiReferencePage').count()==1
+    page.locator('.wikiReferencePage .wikiBack').dispatch_event('click')
+    page.wait_for_timeout(170)
+    assert page.locator('.wikiCategoryScroll a.active').inner_text().startswith('Class Skills')
+    assert page.locator('#wikiRecords .wikiRecord').count()>36
+    assert abs(page.evaluate("window.scrollY")-read_top)<=24, "Returning from Codex reference did not restore scroll"
     page.screenshot(path=str(OUT/'wiki_official_art_mobile.png'),full_page=True)
 
     assert errors==[], 'JavaScript exceptions: '+repr(errors)

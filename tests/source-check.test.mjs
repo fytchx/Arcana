@@ -84,3 +84,11 @@ test('Codex references return to the user-selected collection',async()=>{
  const material=wikiRecordView(sample,[], 'material');
  assert.match(material,/data-params="kind=material"/);
 });
+
+test('Codex show-more expands in place and details remember reading position',async()=>{
+ const app=await read('../src/app.js');
+ assert.match(app,/case 'wikimore':\{/);
+ assert.match(app,/const container=node\('wikiRecords'\)/);
+ assert.match(app,/wikiState\.returnPosition=\{kind:/);
+ assert.match(app,/requestAnimationFrame\(\(\)=>window\.scrollTo\(\{top:saved\.top/);
+});
