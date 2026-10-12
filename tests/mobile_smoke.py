@@ -76,7 +76,12 @@ with sync_playwright() as playwright:
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
     # Use a genuine HTTPS test origin. about:blank is opaque and cannot persist IndexedDB Wiki drafts.
-    page.route('https://arcana-qa.test/',lambda route:route.fulfill(status=200,content_type='text/html',body=HTML))
+    def qa_origin(route):
+        if route.request.url.rstrip('/')=='https://arcana-qa.test':
+            route.fulfill(status=200,content_type='text/html',body=HTML)
+        else:
+            route.fulfill(status=404,body='offline QA resource')
+    page.route('https://arcana-qa.test/**',qa_origin)
     page.goto('https://arcana-qa.test/',wait_until='domcontentloaded')
     page.wait_for_timeout(700)
     assert page.locator('.skipMain').count()==1, 'Accessible skip navigation missing'
