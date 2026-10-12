@@ -1,0 +1,52 @@
+/* Community and accounts. Uses the same theme variables as the Arcana interface. */
+.communityPage{max-width:1100px;margin:auto;padding:clamp(8px,2vw,20px) 0 40px;color:var(--text,#f2f1f8)}
+.communityHero{border-bottom:1px solid var(--line,#34394d);padding:12px 0 22px;margin-bottom:22px}
+.communityHero h1,.communityPage h1{font-size:clamp(27px,5vw,38px);line-height:1.15;letter-spacing:-.035em;margin:10px 0}
+.communityHero p,.communityPage .lead{color:var(--muted,#afb0c5);font-size:14px;line-height:1.6;max-width:66ch}
+.communityHero>.btn{margin-top:12px}
+.communityWelcome,.communityPostCard,.communityArticle,.playerCard,.accountProfileForm,.communityCreateForm{
+ border:1px solid var(--line,#34394d);border-radius:16px;
+ background:var(--panel,#161925);padding:clamp(14px,3vw,23px);min-width:0
+}
+.communityWelcome{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.communityWelcome h2,.accountProfileForm h2{margin:0;font-size:19px}
+.communityWelcome p{margin:0;color:var(--muted,#afb0c5);line-height:1.55}
+.communityNotice{color:var(--muted,#afb0c5);line-height:1.6;padding:20px 0}
+.playerCardHead{display:flex;align-items:center;gap:14px;min-width:0}
+.playerCardHead>div{min-width:0}
+.playerCardHead h2{font-size:clamp(20px,4vw,28px);margin:5px 0 8px;overflow-wrap:anywhere}
+.playerAvatar{display:grid;place-items:center;flex:0 0 64px;width:64px;height:64px;border:1px solid var(--theme-highlight,var(--accent,#957cdd));border-radius:17px;font-size:26px;background:color-mix(in srgb,var(--theme-highlight,var(--accent,#957cdd)) 15%,transparent)}
+.roleBadges{display:flex;flex-wrap:wrap;gap:5px}
+.accountRole{border:1px solid var(--line,#34394d);border-radius:999px;padding:4px 9px;font-size:11px;line-height:1.3;white-space:nowrap;color:var(--text,#eae9f4);background:color-mix(in srgb,var(--theme-highlight,var(--accent,#957cdd)) 8%,transparent)}
+.role-creator,.role-admin{border-color:color-mix(in srgb,var(--theme-highlight,var(--accent,#957cdd)) 65%,transparent)}
+.playerFacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:9px;margin:18px 0}
+.playerFacts>div{display:flex;flex-direction:column;gap:5px;min-width:0;border-radius:10px;border:1px solid var(--line,#34394d);padding:10px;background:color-mix(in srgb,var(--panel,#161925) 70%,black)}
+.playerFacts small{color:var(--muted,#afb0c5);font-size:10px;letter-spacing:.05em}
+.playerFacts strong{font-size:13px;overflow-wrap:anywhere}
+.playerBio{font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.accountProfileForm,.communityCreateForm{margin-top:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.accountProfileForm>h2,.accountProfileForm>p,.accountProfileForm>button,.communityCreateForm>p,.communityCreateForm>button{grid-column:1/-1}
+.accountProfileForm label,.communityCreateForm label{display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:600;min-width:0}
+.accountProfileForm label:has(textarea),.communityCreateForm label:has(textarea){grid-column:1/-1}
+.accountProfileForm input,.accountProfileForm textarea,.communityCreateForm input,.communityCreateForm textarea,.communityCreateForm select{
+ width:100%;box-sizing:border-box;min-width:0;max-width:100%;border:1px solid var(--line,#34394d);border-radius:10px;
+ background:var(--bg,#0b0e16);color:var(--text,#efedf6);font:inherit;font-size:16px;padding:11px;outline-offset:2px
+}
+.accountProfileForm input:focus,.accountProfileForm textarea:focus,.communityCreateForm input:focus,.communityCreateForm textarea:focus{
+ border-color:var(--theme-highlight,var(--accent,#957cdd))
+}
+.communityAccountActions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.communityPostGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:13px}
+.communityPostCard{display:flex;flex-direction:column;gap:8px}
+.communityPostCard h3{margin:3px 0;font-size:17px;overflow-wrap:anywhere}
+.communityPostCard p{font-size:13px;line-height:1.55;color:var(--muted,#afb0c5);margin:0;flex:1}
+.communityPostCard small{color:var(--muted,#afb0c5)}
+.communityPostActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.communityArticle{margin-top:15px}
+.communityArticle h1{overflow-wrap:anywhere}
+.communityArticle>.btn{margin:10px 0}
+.communityBody{padding:15px 0;margin:14px 0;border-top:1px solid var(--line,#34394d);white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7}
+.communityBody p{margin:0 0 15px}
+.communityModeration{margin-top:25px;border-top:1px solid var(--line,#34394d);padding-top:15px;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.communityModeration h2{width:100%;font-size:17px}
+@media(max-width:640px){.accountProfileForm,.communityCreateForm{grid-template-columns:1fr}.playerAvatar{width:56px;height:56px;flex-basis:56px}.communityAccountActions>.btn{flex:1}.communityPostActions>.btn{flex:1}}
