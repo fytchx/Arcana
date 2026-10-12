@@ -49,7 +49,7 @@ MOCK_ENTRIES={"entries":[
 # Long-list testing needs enough mock class skills to exercise pagination.
 # Keep these clearly synthetic fixtures; they never enter game data or deployment.
 MOCK_ENTRIES['entries'].extend(
-    {'id':f'test:class-skill:sample-{i:03}', 'kind':'class-skill',
+    {'id':f'game:class-skill:qa-sample-{i:03}', 'kind':'class-skill',
      'title':f'Test Skill {i:03}', 'subtitle':'QA fixture', 'description':'QA only',
      'keywords':'test'}
     for i in range(75)
