@@ -39,8 +39,8 @@ with sync_playwright() as p:
         metrics=page.evaluate("""() => ({viewport:window.innerWidth,
           fullWidth:document.documentElement.scrollWidth,
           hasBottomNavigation:!!document.querySelector('#bottomNav .navItem'),
-          hasSignature:!!document.querySelector('.arcanaSignature')})""")
-        assert metrics['hasBottomNavigation'] and metrics['hasSignature'], route+' lost shell'
+          hasHeader:!!document.querySelector('#brandHome')})""")
+        assert metrics['hasBottomNavigation'] and metrics['hasHeader'], route+' lost app navigation'
         screens.append({'route':route,'label':title,'contentChars':len(content),
                         'pageOverflowPx':max(0,metrics['fullWidth']-metrics['viewport'])})
     page.screenshot(path=str(out/'arcana-tools-staging-mobile.png'),full_page=True)
