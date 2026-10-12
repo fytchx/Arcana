@@ -257,6 +257,50 @@ with sync_playwright() as playwright:
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Connected tool has horizontal overflow'
     page.screenshot(path=str(OUT/'connected_wiki_mobile.png'),full_page=True)
 
+    # New guide pages expose exact content routes and focusable in-article navigation.
+    page.evaluate("location.hash='#/wiki/guides'")
+    page.wait_for_timeout(180)
+    assert page.locator('.wikiGuideGroup').count()>=5, 'Guides are not grouped by topic'
+    assert page.locator('[data-route="wiki/article"][data-params="id=forge"]').count()>=1, 'Forge guide missing'
+    page.evaluate("location.hash='#/wiki/article?id=guild-planning'")
+    page.wait_for_timeout(180)
+    toc=page.locator('.wikiArticleToc')
+    assert toc.count()==1 and toc.locator('button').count()==4, 'Guide contents navigation unavailable'
+    page.locator('[data-action="wikisection"][data-arg="rank-unlocks"]').dispatch_event('click')
+    page.wait_for_timeout(180)
+    assert page.locator('#section-rank-unlocks h2').count()==1, 'Guide section jump did not resolve'
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Wiki article has horizontal overflow'
+    page.screenshot(path=str(OUT/'wiki_guides_connected_mobile.png'),full_page=True)
+
+    # Actual user-entered measurements drive the farming calculator. No assumed HP or XP.
+    page.evaluate("location.hash='#/calculators/ml-farm'")
+    page.wait_for_timeout(180)
+    assert page.locator('.farmCompare').count()==1, 'ML farming comparator failed to open'
+    assert page.locator('.farmWinner').count()==0, 'ML comparator should not invent a winner'
+    page.locator('[data-farm-time="0"]').fill('0.7')
+    page.locator('[data-farm-time="0"]').press('Tab')
+    page.wait_for_timeout(130)
+    page.locator('[data-farm-time="1"]').fill('1.1')
+    page.locator('[data-farm-time="1"]').press('Tab')
+    page.wait_for_timeout(160)
+    assert page.locator('.farmWinner').count()==1, 'ML calculator did not evaluate measured times'
+    assert 'Weakest monster' in page.locator('.farmWinner').inner_text(), 'ML comparison chose wrong result'
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'ML calculator has horizontal overflow'
+    page.screenshot(path=str(OUT/'ml_farm_mobile.png'),full_page=True)
+
+    page.evaluate("location.hash='#/home'")
+    page.wait_for_timeout(160)
+    assert page.locator('.arcanaResume [data-route="calculators/ml-farm"]').count()==1, 'Home failed to resume saved farm times'
+    page.locator('.arcanaResume [data-route="calculators/ml-farm"]').dispatch_event('click')
+    page.wait_for_timeout(160)
+    assert page.locator('[data-farm-time="0"]').input_value()=='0.7', 'Saved ML timing was lost'
+    page.locator('[data-farm-mode][value="earlier"]').check()
+    page.wait_for_timeout(140)
+    assert page.locator('.farmRow small').first.inner_text()=='Normal XP', 'Earlier biome XP factor was not applied'
+    page.locator('[data-action="farmreset"]').dispatch_event('click')
+    page.wait_for_timeout(130)
+    assert page.locator('.farmWinner').count()==0, 'Clearing farm timings did not reset the result'
+
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
     print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
     browser.close()
