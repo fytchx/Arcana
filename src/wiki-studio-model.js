@@ -5,7 +5,7 @@ export const MAX_IMAGE_BYTES=650000;
 export const MAX_ARTICLE_IMAGES=10;
 export const MAX_SECTIONS=35;
 export const slugify=value=>String(value||'').trim().toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,70);
-export const newWikiDraft=()=>({id:'',title:'',category:'Getting Started',summary:'',keywords:'',sourceLabel:'',sourceUrl:'',sections:[{id:'section-1',title:'Overview',body:'',imageId:''}],images:[],relatedTools:[],relatedArticles:[],updatedAt:'',status:'draft'});
+export const newWikiDraft=()=>({id:'',title:'',category:'Getting Started',summary:'',keywords:'',sourceLabel:'',sourceUrl:'',sections:[{id:'section-1',title:'Overview',body:'',imageId:''}],images:[],relatedTools:[],relatedArticles:[],updatedAt:'',status:'draft',baseRevision:''});
 const short=(s,n)=>String(s||'').trim().slice(0,n);
 const unique=a=>[...new Set(a)];
 export const validImageDataURL=s=>typeof s==='string'&&/^data:image\/(webp|png|jpeg);base64,[a-z0-9+/=]+$/i.test(s)&&s.length<=MAX_IMAGE_BYTES*1.5;
@@ -16,6 +16,7 @@ export function normalizeWikiDraft(raw={}){
  keywords:short(raw.keywords,400),sourceLabel:short(raw.sourceLabel,100),
  sourceUrl: /^https:\/\//i.test(String(raw.sourceUrl||''))?short(raw.sourceUrl,500):'',
  status:'draft',updatedAt:short(raw.updatedAt,40),
+ baseRevision:/^[a-f0-9]{64}$/.test(String(raw.baseRevision||''))?String(raw.baseRevision):'',
  sections:sections.slice(0,MAX_SECTIONS).map((s,i)=>({id:'section-'+(i+1),title:short(s?.title,100),body:short(s?.body,8000),imageId:slugify(s?.imageId)})),
  images:images.slice(0,MAX_ARTICLE_IMAGES).filter(x=>x&&validImageDataURL(x.dataUrl)).map((x,i)=>({id:/^image-[a-z0-9-]{1,60}$/.test(String(x.id))?String(x.id):'image-'+(i+1),name:short(x.name,100),alt:short(x.alt,200),caption:short(x.caption,240),dataUrl:x.dataUrl})),
  relatedTools:unique((Array.isArray(raw.relatedTools)?raw.relatedTools:[]).filter(k=>typeof k==='string'&&NAV_DESTINATIONS[k]?.route)).slice(0,10),
