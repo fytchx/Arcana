@@ -3,6 +3,8 @@ import {navCards,NAV_DESTINATIONS} from './context-nav.js';
 import {WIKI_ARTICLES,WIKI_CATEGORY_LIST} from './wiki-data.js';
 import {STUDIO_VERSION,WIKI_STUDIO_CATEGORIES,MAX_IMAGE_BYTES,MAX_ARTICLE_IMAGES,newWikiDraft,normalizeWikiDraft,validateWikiDraft,publicWikiArticle,slugify} from './wiki-studio-model.js';
 import {listWikiDrafts,getWikiDraft,putWikiDraft,deleteWikiDraft} from './wiki-studio-storage.js';
+import {importLinkMarkup} from './fandom-import.js';
+import {fandomImportView,fandomImportFile,fandomImportAction,fandomImportToggle,fandomImportFilter} from './fandom-import-ui.js';
 
 const s={loaded:false,entries:[],published:[],publishedError:'',draft:null,mode:'list',error:'',message:'',timer:null,dirty:false,publishing:false,publishEnabled:false};
 const $=id=>document.getElementById(id);
@@ -18,7 +20,9 @@ const toolbar='<div class="studioHeader"><div><span class="eyebrow">ARCANAWIKI �
 const sectionCard=(section,i)=>'<article class="studioSection"><header><span class="eyebrow">SECTION '+(i+1)+'</span><div class="studioSectionTools"><button type="button" data-ws-action="section-up" data-idx="'+i+'" '+(i===0?'disabled':'')+' aria-label="Move section up">↑</button><button type="button" data-ws-action="section-down" data-idx="'+i+'" '+(i===s.draft.sections.length-1?'disabled':'')+' aria-label="Move section down">↓</button><button type="button" data-ws-action="section-remove" data-idx="'+i+'" aria-label="Remove section">×</button></div></header>'+
  '<label>Heading<input type="text" data-ws-section="'+i+'" data-ws-property="title" maxlength="100" value="'+esc(section.title)+'" placeholder="What players should know"></label>'+
  '<label>Content<textarea data-ws-section="'+i+'" data-ws-property="body" maxlength="8000" rows="6" placeholder="Write clear explanations. Separate paragraphs with blank lines. Use - for bullet points.">'+esc(section.body)+'</textarea></label>'+
- '<label>Illustration<select data-ws-section="'+i+'" data-ws-property="imageId">'+imageOptions(section.imageId)+'</select></label></article>';
+ '<label>Illustration<select data-ws-section="'+i+'" data-ws-property="imageId">'+imageOptions(section.imageId)+'</select></label>'+ 
+ (section.imageRef?'<label>Original imported image reference (clear only if intentionally omitting it)<input data-ws-section="'+i+'" data-ws-property="imageRef" value="'+esc(section.imageRef)+'"></label>':'')+
+ '<label>Table (optional: rows on separate lines, tab-separated columns)<textarea data-ws-section="'+i+'" data-ws-property="table" rows="'+(section.table?.length?Math.min(10,section.table.length+1):2)+'" placeholder="Column 1\tColumn 2">'+esc((section.table||[]).map(row=>row.join('\t')).join('\n'))+'</textarea></label></article>';
 const imageCard=(image,i)=>'<article class="studioImage"><img src="'+esc(image.dataUrl)+'" alt="'+esc(image.alt||'Image preview')+'" loading="lazy"><div><strong>'+esc(image.name)+'</strong><label>Alt text<input data-ws-image="'+i+'" data-ws-property="alt" maxlength="200" value="'+esc(image.alt)+'" placeholder="Describe the image for screen readers"></label><label>Caption<input data-ws-image="'+i+'" data-ws-property="caption" maxlength="240" value="'+esc(image.caption)+'" placeholder="Optional caption"></label><button type="button" class="studioDanger" data-ws-action="image-remove" data-idx="'+i+'">Remove image</button></div></article>';
 const articleOptions=()=>[...WIKI_ARTICLES,...s.published].filter(a=>a.id!==s.draft?.id).map(a=>'<option value="'+esc(a.id)+'">'+esc(a.title)+'</option>').join('');
 const collectionOptions=()=>WIKI_CATEGORY_LIST.filter(([id])=>id!=='all').map(([id,label])=>'<option value="'+esc(id)+'">'+esc(label)+'</option>').join('');
@@ -29,10 +33,10 @@ function preview(){
   const img=d.images.find(x=>x.id===sec.imageId);
   const paragraphs=String(sec.body||'').split(/\n\s*\n/).filter(Boolean).map(part=>{
    const lines=part.split('\n').map(x=>x.trim()).filter(Boolean);
-   if(lines.length&&lines.every(x=>x.startsWith('- ')))return '<ul>'+lines.map(x=>'<li>'+esc(x.slice(2))+'</li>').join('')+'</ul>';
-   return '<p>'+lines.map(esc).join(' ')+'</p>';
+   if(lines.length&&lines.every(x=>x.startsWith('- ')))return '<ul>'+lines.map(x=>'<li>'+importLinkMarkup(x.slice(2),esc)+'</li>').join('')+'</ul>';
+   return '<p>'+lines.map(line=>importLinkMarkup(line,esc)).join(' ')+'</p>';
   }).join('');
-  return '<section class="studioPreviewSection"><h2>'+esc(sec.title||'Untitled section')+'</h2>'+paragraphs+(img?'<figure><img src="'+esc(img.dataUrl)+'" alt="'+esc(img.alt)+'"><figcaption>'+esc(img.caption)+'</figcaption></figure>':'')+'</section>';
+  return '<section class="studioPreviewSection"><h2>'+esc(sec.title||'Untitled section')+'</h2>'+paragraphs+(img?'<figure><img src="'+esc(img.dataUrl)+'" alt="'+esc(img.alt)+'"><figcaption>'+esc(img.caption)+'</figcaption></figure>':'')+(sec.table?.length?'<div class="wikiTableFrame"><table><thead><tr>'+sec.table[0].map(x=>'<th>'+esc(x)+'</th>').join('')+'</tr></thead><tbody>'+sec.table.slice(1).map(row=>'<tr>'+row.map(x=>'<td>'+esc(x)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>':'')+'</section>';
  }).join('');
  return toolbar+'<div class="studioPreview"><div class="studioPreviewActions"><button class="btn secondary" data-ws-action="edit">'+icon('back',16)+' Back to editor</button><button class="btn primary" data-ws-action="export">Export backup</button></div>'+
  (errs.length?'<p class="studioAlert">Still needs work: '+errs.map(esc).join(' · ')+'</p>':'<p class="studioReady">Ready for publishing review.</p>')+
@@ -55,6 +59,7 @@ function editor(){
  '<section class="studioFieldset"><div class="studioSectionHead"><h2>Images & screenshots</h2><label class="studioUpload">'+icon('plus',18)+' Upload images<input id="wikiStudioUpload" type="file" accept="image/png,image/jpeg,image/webp" multiple></label></div><p class="mutedSmall">Images are optimized for phones and saved inside your draft. Max '+MAX_ARTICLE_IMAGES+' images. Add alt text and assign each image to a section above.</p>'+
  '<div class="studioImageList">'+(d.images.map(imageCard).join('')||'<p class="studioEmptyMini">No images yet. Upload screenshots, diagrams or artwork.</p>')+'</div></section>'+
  '</div><aside class="studioEditorAside"><section class="studioFieldset"><h2>Page quality</h2><div class="studioValidation">'+(validation.errors.length?validation.errors.map(x=>'<p>'+icon('info',15)+' '+esc(x)+'</p>').join(''):'<p class="studioReady">'+icon('check',16)+' All required fields are complete.</p>')+'</div></section>'+
+ (d.importSource?'<section class="studioFieldset"><h2>Migration review</h2><p class="mutedSmall">Source: '+esc(d.importSource.sourceTitle)+' · '+esc(d.importSource.revisionAt||'Unknown revision')+'</p>'+d.importSource.warnings.map(w=>'<p class="studioAlert">'+esc(w)+'</p>').join('')+'</section>':'')+
  '<section class="studioFieldset"><h2>Sources</h2><label>Source description<input data-ws-field="sourceLabel" value="'+esc(d.sourceLabel)+'" placeholder="Official patch notes / in-game verification"></label><label>Optional HTTPS link<input type="url" data-ws-field="sourceUrl" value="'+esc(d.sourceUrl)+'" placeholder="https://…"></label></section>'+
  '<section class="studioFieldset"><h2>Connected Arcana</h2><p class="mutedSmall">Connect the article directly to relevant tools.</p><div class="studioAddLink"><select id="wikiStudioToolSelect"><option value="">Choose tool…</option>'+relatedOptions()+'</select><button data-ws-action="tool-add">Add</button></div><div class="studioTagList">'+d.relatedTools.map(key=>'<button data-ws-action="tool-remove" data-key="'+esc(key)+'" aria-label="Remove '+esc(NAV_DESTINATIONS[key]?.label||key)+'">'+esc(NAV_DESTINATIONS[key]?.label||key)+' ×</button>').join('')+'</div><label>Related guide or article</label><div class="studioAddLink"><select id="wikiStudioArticleSelect"><option value="">Choose an existing article…</option>'+articleOptions()+'</select><button data-ws-action="article-add">Add</button></div>'+
  '<div class="studioTagList">'+d.relatedArticles.map(id=>'<button data-ws-action="article-remove" data-key="'+esc(id)+'" aria-label="Remove related article '+esc(id)+'">'+esc([...WIKI_ARTICLES,...s.published].find(a=>a.id===id)?.title||id)+' ×</button>').join('')+'</div>'+
@@ -64,7 +69,7 @@ function editor(){
  '<section class="studioFieldset"><h2>Draft backups</h2><p class="mutedSmall">Drafts stay in this browser. Export regularly, particularly before clearing browser data or changing devices.</p><button class="btn secondary full" data-ws-action="export">Download article backup</button><button class="btn secondary full" data-ws-action="list">Back to all drafts</button></section></aside></div></div><p id="wikiStudioStatus" role="status">'+esc(s.message)+'</p>';
 }
 function listing(){
- return toolbar+'<div class="studioHome"><div class="studioHomeActions"><button class="btn primary" data-ws-action="new">'+icon('plus',17)+' New Wiki page</button><label class="btn secondary studioUpload">Import backup<input id="wikiStudioImport" type="file" accept=".json,application/json"></label></div>'+
+ return toolbar+'<div class="studioHome"><div class="studioHomeActions"><button class="btn primary" data-ws-action="new">'+icon('plus',17)+' New Wiki page</button><label class="btn secondary studioUpload">Import backup<input id="wikiStudioImport" type="file" accept=".json,application/json"></label><button class="btn secondary" data-ws-action="import-manager">Fandom Import Manager</button></div>'+
  '<p class="studioWorkflow">Create guides or articles with screenshots, source links, and connected tools. Drafts save locally and cannot change the public Wiki until approved and published.</p>'+
  '<div class="studioDraftList">'+(s.entries.length?s.entries.map(d=>'<article class="studioDraft"><div><span class="eyebrow">'+esc(d.category||'Guide')+' · '+esc(d.updatedAt?new Date(d.updatedAt).toLocaleDateString():'Draft')+'</span><h2>'+esc(d.title||'Untitled draft')+'</h2><p>'+esc(d.summary||'No summary yet.')+'</p></div><div><button class="btn secondary" data-ws-action="open" data-key="'+esc(d.recordId)+'">Edit draft '+icon('arrow',15)+'</button><button class="studioDanger" data-ws-action="delete" data-key="'+esc(d.recordId)+'">Delete</button></div></article>').join(''):'<div class="studioZero"><span>'+icon('book',28)+'</span><h2>Your Wiki starts here</h2><p>Create your first guide, add screenshots, and preview it just like a real ArcanaWiki article.</p><button class="btn primary" data-ws-action="new">Create first article</button></div>')+'</div>'+
  '<section class="studioFieldset studioPublished"><div class="studioSectionHead"><h2>Published pages</h2><span class="eyebrow">'+s.published.length+' pages</span></div><p class="mutedSmall">Open an article to read it, or use your owner key to load a copy into Wiki Studio for safe editing. Existing pictures and links stay attached.</p>'+
@@ -72,7 +77,7 @@ function listing(){
  '<div class="studioDraftList">'+s.published.map(d=>'<article class="studioDraft"><div><span class="eyebrow">'+esc(d.category||'Guide')+' · Published</span><h2>'+esc(d.title)+'</h2><p>'+esc(d.summary||'')+'</p></div><div><button class="btn secondary" data-ws-action="revise" data-key="'+esc(d.id)+'">Edit published</button><button class="btn secondary" data-route="wiki/article" data-params="id='+encodeURIComponent(d.id)+'">Read page</button></div></article>').join('')+'</div></section>'+
  '<p id="wikiStudioStatus" role="status">'+esc(s.message)+'</p></div>';
 }
-function repaint(){const root=getRoot();if(root)root.innerHTML=s.mode==='list'?listing():s.mode==='preview'?preview():editor();}
+function repaint(){const root=getRoot();if(root)root.innerHTML=s.mode==='list'?listing():s.mode==='import'?fandomImportView():s.mode==='preview'?preview():editor();}
 async function refresh(){
  try{s.entries=await listWikiDrafts();s.loaded=true;s.error='';}
  catch(err){message(err);s.entries=[];s.loaded=true;}
@@ -154,7 +159,14 @@ async function act(btn){
  const action=btn.dataset.wsAction,key=btn.dataset.key;
  try{
   if(action==='list'){await flush();s.mode='list';await refresh();return;}
-  if(action==='new'){s.draft={...newWikiDraft(),recordId:'draft-'+Date.now()+'-'+Math.random().toString(36).slice(2,8)};s.mode='edit';schedule();repaint();return;}
+  if(action==='import-manager'){
+    const auth=await fetch('/api/wiki/import-access',{cache:'no-store'}).then(r=>r.ok).catch(()=>false);
+    let allowed=auth;
+    if(!allowed){const key=prompt('Creator/Admin migration key (never stored):');if(!key)return;allowed=await fetch('/api/wiki/import-access',{headers:{'x-arcana-wiki-key':key},cache:'no-store'}).then(r=>r.ok).catch(()=>false);}
+    if(!allowed){status('Bulk Fandom import is restricted to the Creator/Admin.');return;}
+    await flush();s.mode='import';repaint();return;
+   }
+   if(action==='new'){s.draft={...newWikiDraft(),recordId:'draft-'+Date.now()+'-'+Math.random().toString(36).slice(2,8)};s.mode='edit';schedule();repaint();return;}
   if(action==='open'){await flush();s.draft=await getWikiDraft(key);s.mode='edit';repaint();return;}
   if(action==='revise'){
    await flush();
@@ -233,11 +245,18 @@ export function wireWikiStudio(){
    schedule();
   }else if(el.dataset.wsSection!==undefined){
    const item=s.draft.sections[Number(el.dataset.wsSection)];
-   if(item&&['title','body','imageId'].includes(el.dataset.wsProperty)){item[el.dataset.wsProperty]=el.value;schedule();}
+   if(item&&['title','body','imageId','imageRef','table'].includes(el.dataset.wsProperty)){item[el.dataset.wsProperty]=el.dataset.wsProperty==='table'?el.value.split('\n').filter(x=>x.trim()).slice(0,35).map(line=>line.split('\t').slice(0,12)):el.value;schedule();}
   }else if(el.dataset.wsImage!==undefined){
    const item=s.draft.images[Number(el.dataset.wsImage)];
    if(item&&['alt','caption'].includes(el.dataset.wsProperty)){item[el.dataset.wsProperty]=el.value;schedule();}
   }
  });
- document.addEventListener('change',e=>{if(!getRoot())return;if(['wikiStudioImport','wikiStudioUpload'].includes(e.target.id))void handleFile(e);});
+ document.addEventListener('change',e=>{if(!getRoot())return;if(['wikiStudioImport','wikiStudioUpload'].includes(e.target.id))void handleFile(e);
+   if(['fandomXmlInput','fandomImageInput','fandomZipInput'].includes(e.target.id))void fandomImportFile(e.target,{existingIds:[...WIKI_ARTICLES,...s.published,...s.entries].map(x=>x.id).filter(Boolean),repaint});
+   if(e.target.dataset.fandomSelect!==undefined)fandomImportToggle(Number(e.target.dataset.fandomSelect),e.target.checked);
+   if(e.target.id==='fandomImportFilter')fandomImportFilter(e.target.value);
+  });
+  document.addEventListener('click',e=>{const btn=e.target.closest('[data-fandom-action]');if(!btn||!getRoot()||s.mode!=='import')return;e.preventDefault();
+   void fandomImportAction(btn,{convertImage:chooseFile,openDraft:draft=>{s.draft=draft;s.mode='edit';repaint();},repaint});
+  });
 }
