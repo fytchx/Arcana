@@ -141,7 +141,7 @@ export async function handleWikiRequest(req,res,pathname) {
     return true;
   }
   if(pathname==='/api/wiki/publish' && method==='POST'){
-    if(!await allowedEditor(req,true)){send(res,403,{error:'Wiki Editor role required'});return true;}
+    if(!await allowedEditor(req,true)){send(res,401,{error:'Wiki Editor role required'});return true;}
     if(!String(req.headers['content-type']||'').startsWith('application/json')){send(res,415,{error:'JSON required'});return true;}
     try{
       const input=await bodyJSON(req);
