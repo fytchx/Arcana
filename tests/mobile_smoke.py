@@ -203,6 +203,32 @@ with sync_playwright() as playwright:
     assert abs(page.evaluate("window.scrollY")-read_top)<=24, "Returning from Codex reference did not restore scroll"
     page.screenshot(path=str(OUT/'wiki_official_art_mobile.png'),full_page=True)
 
+    # Pet tools are now two simple calculators plus four bonus choices inside Build Studio.
+    page.evaluate("location.hash='#/calculators/pet'")
+    page.wait_for_timeout(220)
+    assert page.locator('#petCompoundRarity').count()==1
+    assert '101%' in page.locator('.petMiniComparison').inner_text(), 'Pet Damage C10 should be 101%'
+    page.locator('#petCompoundRarity').select_option('uncommon')
+    page.locator('#petCompoundBonus').select_option('dodge')
+    page.locator('#petCompoundLevel').fill('10')
+    page.locator('#petCompoundLevel').press('Tab')
+    page.wait_for_timeout(90)
+    assert '12%' in page.locator('.petMiniComparison').inner_text(), 'Uncommon Dodge C10 should be 12%'
+    page.evaluate("location.hash='#/calculators/affixes'")
+    page.wait_for_timeout(200)
+    assert page.locator('#petAffixType option').count()==9
+    page.locator('#petAffixType').select_option('all_skills')
+    assert page.locator('#petAffixTarget').input_value()=='2'
+    assert '1,000' in page.locator('.petMiniBig').inner_text()
+    page.evaluate("location.hash='#/labs/build'")
+    page.wait_for_timeout(230)
+    assert page.locator('[data-pet-bonus-target]').count()==4
+    assert page.locator('[data-pet-name]').count()==0
+    assert page.locator('.labsTabs [data-route="labs/pets"]').count()==0
+    page.locator('[data-pet-bonus-target="0"]').select_option('pet_damage')
+    assert '1/4 selected' in page.locator('.petBuildHead').inner_text()
+    page.screenshot(path=str(OUT/'pets_simplified_mobile.png'),full_page=True)
+
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
     print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
     browser.close()
