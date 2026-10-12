@@ -27,5 +27,5 @@ jobs:
         if: always()
         with:
           name: arcana-tools-regression-report
-          path: qa-output/arcana-tools-*
+          path: qa-output/arcana-*
           if-no-files-found: ignore
