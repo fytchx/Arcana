@@ -42,6 +42,28 @@ with sync_playwright() as p:
     page.wait_for_selector(".arcanaSignature",timeout=20000)
     assert page.locator(".arcanaSignature").count()==1
     assert "PDX & OVK" in page.locator(".arcanaSignature").inner_text()
+    # Theme bridge writes --theme-highlight; footer must follow it on the deployed app.
+    swatches=['#00FF88','#A98BFF','#13C5F4','#F062BE','#FFC14D',
+              '#EC464D','#80F0E6','#B8FF29','#6964E8','#E8E9ED']
+    for accent in swatches:
+        result=page.evaluate("""accent => {
+            const root=document.documentElement, sign=document.querySelector('.arcanaSignature');
+            root.style.setProperty('--theme-highlight',accent);
+            root.style.setProperty('--accent',accent);
+            return {
+                text:getComputedStyle(sign.querySelector('.arcanaSigText em')).color,
+                info:getComputedStyle(sign.querySelector('.arcanaSigInfo summary')).color
+            };
+        }""",accent)
+        expected=tuple(int(accent[i:i+2],16) for i in (1,3,5))
+        import re
+        for field in ('text','info'):
+            rgb=tuple(int(x) for x in re.findall(r'\d+',result[field])[:3])
+            assert rgb==expected, "Signature not synchronized with theme: "+accent+" "+repr(result)
+    page.evaluate("""() => {
+        document.documentElement.style.removeProperty('--theme-highlight');
+        document.documentElement.style.removeProperty('--accent');
+    }""")
     page.get_by_text("ArcanaWiki",exact=True).first.dispatch_event("click")
     page.locator('[data-route="wiki/library"]').first.dispatch_event("click")
     page.wait_for_selector(".wikiCategoryScroll")
