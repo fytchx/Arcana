@@ -141,7 +141,7 @@ async function act(btn){
    if(!config.enabled){status('Direct publishing is not configured yet. Export the draft JSON so it can be reviewed and added to GitHub.');return;}
    const key=prompt('Owner publishing key (never saved on this device):');if(!key)return;
    s.publishing=true;repaint();
-   try{const res=await fetch('/api/wiki/publish',{method:'POST',headers:{'content-type':'application/json','x-arcana-wiki-key':key},body:JSON.stringify({draft:check.draft})});const out=await res.json();if(!res.ok)throw Error(out.error||'Publishing failed.');status('Published to the Wiki source branch. The deployment will update after the build passes.');}
+   try{const res=await fetch('/api/wiki/publish',{method:'POST',headers:{'content-type':'application/json','x-arcana-wiki-key':key},body:JSON.stringify({draft:check.draft})});const out=await res.json();if(!res.ok)throw Error(out.error||'Publishing failed.');status('Published successfully. Your article is now available in ArcanaWiki.');window.dispatchEvent(new Event('arcana:wiki-published'));}
    finally{s.publishing=false;repaint();}
    return;
   }
