@@ -1,0 +1,11 @@
+{
+  "name": "arcana-stabilized",
+  "private": true,
+  "version": "0.1.0-recovery",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "check": "node --test tests/source-check.test.mjs",
+    "test:mobile": "python tests/mobile_smoke.py"
+  }
+}
