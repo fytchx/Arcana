@@ -66,6 +66,33 @@ with sync_playwright() as p:
     assert page.locator('.verifiedUpgradeRow').count()==5
     assert '5,250,000 base gold' in page.locator('.verifiedUpgradeReference').inner_text()
     page.screenshot(path=str(out/'arcana-verified-equipment-mobile.png'),full_page=True)
+    # Verify the nine config-backed Pet Affixes against the deployed mobile UI.
+    page.goto(BASE+'/#/calculators/affixes',wait_until='domcontentloaded',timeout=30000)
+    page.wait_for_selector('#petAffixType',timeout=12000)
+    assert page.locator('#petAffixType option').count()==9, 'Affix reference inventory incomplete'
+    assert page.locator('.petAffixReferenceRow').count()==9
+    page.locator('#petAffixType').select_option('all_skills')
+    page.wait_for_timeout(80)
+    assert page.locator('#petAffixLevel').get_attribute('max')=='2', 'All Skills level cap missing'
+    page.locator('[data-action="petaffixstep"][data-arg="100"]').dispatch_event('click')
+    page.wait_for_timeout(70)
+    assert page.locator('#petAffixLevel').input_value()=='2', 'All Skills overflowed its cap'
+    assert '2' in page.locator('.petAffixProjection strong').inner_text()
+    page.locator('#petAffixType').select_option('extra_kill_chance')
+    assert page.locator('#petAffixLevel').input_value()=='1'
+    assert page.locator('.petAffixProjection strong').inner_text()=='3%'
+    page.locator('#petAffixType').select_option('exp_gain')
+    page.locator('#petAffixLevel').fill('11')
+    page.locator('#petAffixLevel').press('Tab')
+    page.wait_for_timeout(100)
+    assert page.locator('#petAffixLevel').input_value()=='11'
+    assert page.locator('.petAffixProjection strong').inner_text()=='3%'
+    page.reload(wait_until='domcontentloaded')
+    page.wait_for_selector('#petAffixType')
+    assert page.locator('#petAffixType').input_value()=='exp_gain', 'Planner affix not persisted'
+    assert page.locator('#petAffixLevel').input_value()=='11', 'Planner level not persisted'
+    assert page.locator('.petAffixDisclosure').count()==1
+    page.screenshot(path=str(out/'arcana-pet-affix-planner-mobile.png'),full_page=True)
     page.screenshot(path=str(out/'arcana-tools-staging-mobile.png'),full_page=True)
     assert not errors, 'Uncaught JS exceptions '+repr(errors[:6])
     (out/'arcana-tools-audit.json').write_text(json.dumps({'status':'PASS','routes':screens,'uncaughtErrors':errors},indent=2)+'\n')
