@@ -39,3 +39,21 @@ test('Codex references direct official-art images, while Labs retain legacy spri
  assert.match(codexOfficialArt({gameKind:'monster',title:'Missing Monster'}),/data-art-status="unmatched"/);
  assert.equal(hasCodexOfficialArt({gameKind:'pet-affix'}),false);
 });
+
+test('possessive item names use a labeled alias, never confuse numbered variants',()=>{
+ const groups={equipment:{cols:2,rows:2,mapping:{'warrior-belt':0,'warrior-belt-2':1}}};
+ const result=resolveOfficialSprite({gameKind:'item',title:"Warrior's Belt"},groups);
+ assert.equal(result?.key,'warrior-belt');
+ assert.equal(result?.matchType,'name-alias');
+});
+test('first-pet variant is intentionally representative, while unrelated names stay unmatched',()=>{
+ const groups={pets:{cols:2,rows:1,mapping:{'bober-1':0}}};
+ const a=resolveOfficialSprite({gameKind:'pet',title:'Bober'},groups);
+ assert.equal(a?.matchType,'representative-pet');
+ assert.equal(resolveOfficialSprite({gameKind:'pet',title:'Octopusia'},groups),null);
+});
+test('verified plural currency alias maps Rubies to ruby, not Gold to an invented coin',()=>{
+ const groups={currency:{cols:2,rows:1,mapping:{ruby:0,coin:1}}};
+ assert.equal(resolveOfficialSprite({gameKind:'currency',title:'Rubies'},groups)?.key,'ruby');
+ assert.equal(resolveOfficialSprite({gameKind:'currency',title:'Gold'},groups),null);
+});

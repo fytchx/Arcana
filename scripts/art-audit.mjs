@@ -13,11 +13,13 @@ export async function runArtAudit({catalogOrigin,officialOrigin}) {
  const categoryStats={};
  for(const entry of catalog.entries){
   if(!entry?.kind||!entry.title)continue;
-  const stat=categoryStats[entry.kind]??={total:0,exact:0,emblem:0,unmatched:0,examples:[]};
+  const stat=categoryStats[entry.kind]??={total:0,exact:0,alias:0,representative:0,emblem:0,unmatched:0,examples:[]};
   ++stat.total;
   const resolved=resolveOfficialSprite(entry,manifest.categories);
   const emblem=!resolved&&resolveOfficialEmblem(entry,manifest);
-  if(resolved)++stat.exact;
+  if(resolved?.matchType==='name-alias')++stat.alias;
+  else if(resolved?.matchType==='representative-pet')++stat.representative;
+  else if(resolved)++stat.exact;
   else if(emblem)++stat.emblem;
   else {++stat.unmatched;if(stat.examples.length<6)stat.examples.push(entry.title)}
  }

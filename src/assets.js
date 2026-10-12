@@ -104,22 +104,32 @@ export function resolveOfficialSprite(entry,categories=officialCodexAtlas){
  const kind=entry.gameKind||entry.kind, title=officialSlug(entry.title);
  const groups=ART_KIND_CATEGORIES[kind];if(!title||!groups)return null;
  const preferredClass=kind==='class-skill'?classSlug(entry):'';
- const matches=[];
- for(const category of groups){
-  const group=categories[category];if(!validGroup(group))continue;
-  for(const [key,index] of Object.entries(group.mapping)){
-   if(keySuffix(key)!==title||!Number.isInteger(index)||index<0||index>=group.cols*group.rows)continue;
-   const parts=key.split(':');
-   if(preferredClass&&kind==='class-skill'&&parts.length>1&&officialSlug(parts[0])!==preferredClass)continue;
-   matches.push({category,key,index,cols:group.cols,rows:group.rows});
+ // A possessive in a game item title is omitted in some original icon keys.
+ // Pet sheets sometimes suffix the species with -1 for its first skin.
+ // These are explicit, distinct match types rather than fabricated exact hits.
+ const aliases=[];
+ if(kind==='item'&&/[’']s\b/i.test(entry.title))aliases.push({slug:officialSlug(entry.title.replace(/[’']s\b/gi,'')),matchType:'name-alias'});
+ if(kind==='currency'&&title.endsWith('ies'))aliases.push({slug:title.slice(0,-3)+'y',matchType:'name-alias'});
+ if(kind==='pet')aliases.push({slug:title+'-1',matchType:'representative-pet'});
+ const candidateSets=[{slug:title,matchType:'exact'},...aliases];
+ for(const {slug,matchType} of candidateSets){
+  const matches=[];
+  for(const category of groups){
+   const group=categories[category];if(!validGroup(group))continue;
+   for(const [key,index] of Object.entries(group.mapping)){
+    if(keySuffix(key)!==slug||!Number.isInteger(index)||index<0||index>=group.cols*group.rows)continue;
+    const parts=key.split(':');
+    if(preferredClass&&kind==='class-skill'&&parts.length>1&&officialSlug(parts[0])!==preferredClass)continue;
+    matches.push({category,key,index,cols:group.cols,rows:group.rows,matchType});
+   }
   }
- }
- if(matches.length===1)return matches[0];
- // Equivalent duplicate map keys across overlapping atlases are not assumed
- // interchangeable. Prefer a single official item artwork only if unambiguous.
- if(kind==='item'&&matches.length>1){
-  const primary=matches.filter(m=>m.category==='items');
-  if(primary.length===1&&matches.every(m=>m.key===primary[0].key))return primary[0];
+  if(matches.length===1)return matches[0];
+  // Two overlapping atlases can contain the same item. Never choose a
+  // conflicting sprite without an explicit original-game preference.
+  if(kind==='item'&&matches.length>1){
+   const primary=matches.filter(m=>m.category==='items');
+   if(primary.length===1&&matches.every(m=>m.key===primary[0].key))return primary[0];
+  }
  }
  return null;
 }
@@ -158,7 +168,7 @@ export function codexOfficialArt(entry,size=44){
  if(sprite){
   const x=sprite.index%sprite.cols,y=Math.floor(sprite.index/sprite.cols);
   const bx=sprite.cols>1?100*x/(sprite.cols-1):0,by=sprite.rows>1?100*y/(sprite.rows-1):0;
-  return '<span class="gameArt gameArt-original codexOfficialArt" data-art-status="'+(sprite.isCategoryEmblem?'category-emblem':'official')+'" data-asset-key="'+escapeAttribute(sprite.category+':'+sprite.key)+'" title="'+(sprite.isCategoryEmblem?'Category artwork · not item-specific':'IdleArc artwork')+'" style="background-image:url(\'/official-art/'+sprite.category+'.webp\');background-size:'+(sprite.cols*100)+'% '+(sprite.rows*100)+'%;background-position:'+bx.toFixed(6)+'% '+by.toFixed(6)+'%"></span>';
+  return '<span class="gameArt gameArt-original codexOfficialArt" data-art-status="'+(sprite.isCategoryEmblem?'category-emblem':sprite.matchType==='representative-pet'?'representative':sprite.matchType==='name-alias'?'name-alias':'official')+'" data-asset-key="'+escapeAttribute(sprite.category+':'+sprite.key)+'" title="'+(sprite.isCategoryEmblem?'Category artwork · not item-specific':sprite.matchType==='representative-pet'?'Representative pet artwork · variant unspecified':'IdleArc artwork')+'" style="background-image:url(\'/official-art/'+sprite.category+'.webp\');background-size:'+(sprite.cols*100)+'% '+(sprite.rows*100)+'%;background-position:'+bx.toFixed(6)+'% '+by.toFixed(6)+'%"></span>';
  }
  // Keep correct existing tier art rather than an unrelated generic picture.
  if(['item','material','currency','pet'].includes(kind)&&spriteFor(entry))return gameArt(entry,size);
