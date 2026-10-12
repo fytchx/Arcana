@@ -78,7 +78,7 @@ function layout(title,kicker,inner,mark='gem'){
 }
 function portal(route,title,desc,tag,symbol,number){return `<button class="portal" data-route="${esc(route)}"><span class="portalTop"><span class="glyph">${icon(symbol,24)}</span><span class="serial">${number}</span></span><span><h2>${esc(title)}</h2><p>${esc(desc)}</p></span><span class="portalFoot">${esc(tag)}<span>${icon('arrow',16)}</span></span></button>`}
 function home(){const rec=state.recent.map(x=>entityById.get(x)).filter(Boolean).slice(0,3);
- return `<section class="hero"><span class="eyebrow">IDLEARC COMPANION <i>·</i> ARCANA 3.0</span><h1>Everything connected.<br><em>Nothing in your way.</em></h1><p>Find an item. Understand a mechanic. Inspect a build. Continue straight into the tools that matter.</p><span class="heroFacet" aria-hidden="true">${icon('gem',38)}</span></section>
+ return `<section class="hero"><span class="eyebrow">IDLEARC COMPANION <i>·</i> ARCANA</span><h1>Everything connected.<br><em>Nothing in your way.</em></h1><p>Find an item. Understand a mechanic. Inspect a build. Continue straight into the tools that matter.</p><span class="heroFacet" aria-hidden="true">${icon('gem',38)}</span></section>
  ${resumableWorkspaces({draft:savedBuild(),guild:state.guildTreePlan,compound:state.compoundQuick,affix:state.affixCostQuick,farm:state.farmPlan,recent:state.recent.map(id=>id.startsWith('wiki:article:')?wikiArticleById(id.slice(13)):null).filter(Boolean)})}
  ${homeStart()}
  <div class="sectionLabel"><div><span class="eyebrow">BUILD & PLAN</span><h2>Your workspaces</h2></div><small>One connected ecosystem</small></div>
@@ -262,7 +262,7 @@ const __nextWikiRail=node('content').querySelector('.wikiCategoryScroll');if(__n
   }
  }const currentTab=node('content').querySelector('.labsTab.active');if(currentTab){const rail=currentTab.parentElement;rail.scrollLeft=Math.max(0,currentTab.offsetLeft-rail.offsetLeft-(rail.clientWidth-currentTab.clientWidth)/2)}const nav=node('bottomNav');nav.innerHTML=`<button data-route="home" class="navItem ${dest==='home'?'selected':''}">${icon('home',21)}<small>Home</small></button><button data-action="quick" class="navItem">${icon('clock',21)}<small>Shortcuts</small></button><button data-action="search" class="navSearch" aria-label="Search all of Arcana"><span>${icon('search',25)}</span><small>Search</small></button><button data-route="labs" class="navItem ${dest.startsWith('labs')?'selected':''}">${icon('flask',21)}<small>Labs</small></button><button data-action="menu" class="navItem">${icon('menu',21)}<small>Menu</small></button>`;
  node('sideNav').innerHTML=`<span class="eyebrow navEyebrow">ARCANA</span>${LINKS.map(([href,label,ico])=>`<button data-route="${href}" class="sideItem ${dest===href||dest.startsWith(href+'/')?'selected':''}">${icon(ico,20)} ${esc(label)}</button>`).join('')}<div class="sideDivider"></div><span class="eyebrow navEyebrow">SHORTCUTS</span><button class="sideItem" data-action="search">${icon('search',19)} Universal Search</button><button class="sideItem" data-action="quick">${icon('clock',19)} Recent & Quick</button><button class="sideItem" data-route="labs/guild-tree">${icon('shield',19)} Guild Skill Tree</button>`;
- document.title=(dest==='home'?'Arcana':(node('content').querySelector('h1')?.textContent||'Arcana'))+' | Arcana 3.0';}
+ document.title=(dest==='home'?'Arcana':(node('content').querySelector('h1')?.textContent||'Arcana'))+' | Arcana';}
 function showLayer(kicker,body,type='panel'){state.layer={type};node('layerKicker').textContent=kicker;node('layerContent').innerHTML=body;node('layer').hidden=false;document.body.classList.add('noScroll')}
 function closeLayer(){node('layer').hidden=true;state.layer=null;document.body.classList.remove('noScroll')}
 function overlayTitle(text,iconName='search'){return `<h2 class="sheetTitle">${icon(iconName,24)} ${esc(text)}</h2>`}
@@ -305,6 +305,7 @@ function go(route,params={}){
  }
 }
 function action(name,arg,btn){switch(name){
+ case 'skipmain':node('content')?.focus({preventScroll:false});break;
  case 'wikishare':{
   if(!wikiArticleById(arg)){toast('Guide unavailable');break;}
   const url=location.origin+location.pathname+location.search+'#/wiki/article?id='+encodeURIComponent(arg);
