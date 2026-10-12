@@ -693,3 +693,23 @@ body,.shell{background:var(--theme-main)}
 .guildTreeDisclosure{padding:11px 13px;color:var(--soft);font-size:10px;line-height:1.7;margin:0}
 .guildTreeDisclosure a{color:var(--theme-accent-text,var(--accent))}
 @media(max-width:390px){.guildTreeSetup{grid-template-columns:1fr}.guildTreeNodeGrid{grid-template-columns:1fr}}
+
+/* Planner controls stay usable on narrow phones and with text scaling. */
+.guildTreeToolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.guildTreeToolbar button{min-width:0;white-space:nowrap;font-size:12px;padding:8px 6px}
+.guildTreeToolbar button:disabled{opacity:.35;cursor:not-allowed}
+.guildTreeSavedHint{margin:-6px 2px 1px;color:var(--soft);font-size:11px;line-height:1.5}
+.guildTreeNodeBottom{flex-wrap:wrap}
+.guildTreeNodeBottom>div:first-child{flex:1 1 90px}
+.guildTreeActions{flex:0 1 auto;flex-wrap:wrap}
+.guildTreeTabs{scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x}
+.guildTreeTabs::-webkit-scrollbar{display:none}
+.guildTreeToolbar button:focus-visible,.guildTreeActions button:focus-visible,.guildTreeTabs button:focus-visible,.guildTreeLevel button:focus-visible{outline:2px solid var(--theme-highlight,var(--accent));outline-offset:2px}
+@media(max-width:620px){
+ .guildTreeToolbar{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .guildTreeNodeGrid{grid-template-columns:1fr}
+ .guildTreeActions button{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){
+ .guildTreeMeter span{transition:none}
+}
