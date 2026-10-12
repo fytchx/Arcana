@@ -23,12 +23,13 @@ import {normalizePetAffixPlan,readPetAffixPlan,savePetAffixPlan,projectPetAffix}
 import {petAffixPlannerView} from './verified-pet-affix-views.js';
 import {freshGuildTree,readGuildTree,saveGuildTree,guildTreeFromLink,guildTreeWithLevel,guildTreeLinkParams,allocateGuildPoint,removeGuildPoint,maxGuildPoints} from './guild-tree-engine.js';
 import {guildTreeView} from './guild-tree-views.js';
+import {readGuildBaseline,saveGuildBaseline,clearGuildBaseline} from './guild-tree-compare.js';
 import {connectedNext,homeStart,navCards,NAV_DESTINATIONS} from './context-nav.js';
 import {resumableWorkspaces} from './workspace-hub.js';
 import {readFarmPlan,saveFarmPlan,farmCompareView} from './farm-compare.js';
 
 const $=s=>document.querySelector(s);const node=id=>document.getElementById(id);
-const state={treeData:null,treeStatus:'loading',treeClassId:null,treeBranchId:null,passiveTier:0,passivePage:0,classTierIndex:0,characterLevel:1,passiveAlloc:{},classAlloc:{},classAllocById:{},layer:null,search:'',lastSearch:'',recent:loadRecent(),draft:loadDraft(),compareLeft:null,compareRight:null,compareTier:1,runeIndex:0,runeFamily:'Fury',runeSecondary:'critical_damage',runeShape:'small',runeSelected:null,runeHistory:[],petLevels:[0,0,0,0],petCalcMode:'seasonal',petAffixPlan:readPetAffixPlan(),compoundQuick:readCompoundPlan(),affixCostQuick:readAffixCostPlan(),slotTarget:null,returnTo:null,guildTreePlan:readGuildTree(),guildTreeTab:'vanguard',guildTreeLinkKey:'',guildUndo:[],guildRedo:[],farmPlan:readFarmPlan()};
+const state={treeData:null,treeStatus:'loading',treeClassId:null,treeBranchId:null,passiveTier:0,passivePage:0,classTierIndex:0,characterLevel:1,passiveAlloc:{},classAlloc:{},classAllocById:{},layer:null,search:'',lastSearch:'',recent:loadRecent(),draft:loadDraft(),compareLeft:null,compareRight:null,compareTier:1,runeIndex:0,runeFamily:'Fury',runeSecondary:'critical_damage',runeShape:'small',runeSelected:null,runeHistory:[],petLevels:[0,0,0,0],petCalcMode:'seasonal',petAffixPlan:readPetAffixPlan(),compoundQuick:readCompoundPlan(),affixCostQuick:readAffixCostPlan(),slotTarget:null,returnTo:null,guildTreePlan:readGuildTree(),guildTreeTab:'vanguard',guildTreeLinkKey:'',guildUndo:[],guildRedo:[],guildBaseline:readGuildBaseline(),farmPlan:readFarmPlan()};
 const verifiedState={entries:[],loading:false,loaded:false,error:''};
 const guildState={guilds:[],loaded:false,loading:false,error:'',updatedAt:0,query:''};
 const wikiState={category:'all',query:'',limit:36,returnPosition:null};
@@ -223,7 +224,7 @@ function guildTree(){
   state.guildUndo=[];state.guildRedo=[];
   state.guildTreeLinkKey=link;
  }
- return layout('Guild Skill Tree','ARCANA LABS · GUILDS',guildTreeView(state.guildTreePlan,state.guildTreeTab,{canUndo:state.guildUndo.length>0,canRedo:state.guildRedo.length>0}),'shield');
+ return layout('Guild Skill Tree','ARCANA LABS · GUILDS',guildTreeView(state.guildTreePlan,state.guildTreeTab,{canUndo:state.guildUndo.length>0,canRedo:state.guildRedo.length>0},state.guildBaseline),'shield');
 }
 function updateGuildTree(plan,{recordHistory=true}={}){
  const prev=state.guildTreePlan;
@@ -308,6 +309,8 @@ function action(name,arg,btn){switch(name){
  case 'wikitop':window.scrollTo({top:0,behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});break;
  case 'guildtreetab':state.guildTreeTab=arg;render();node('content').querySelector('.guildTreeTabs button.active')?.focus({preventScroll:true});break;
  case 'farmreset':state.farmPlan=saveFarmPlan({mode:state.farmPlan.mode,times:[null,null,null]});render();break;
+ case 'guildbaseline':state.guildBaseline=saveGuildBaseline(state.guildTreePlan);state.guildTreeTab='comparison';render();toast('Guild comparison baseline saved.');break;
+ case 'guildbaselineclear':if(window.confirm('Clear this locally saved comparison baseline?')){state.guildBaseline=clearGuildBaseline();render();toast('Comparison baseline cleared.')}break;
  case 'guildundo':{const prev=state.guildUndo.pop();if(!prev){toast('No earlier guild changes');break;}state.guildRedo.push({...state.guildTreePlan});updateGuildTree(prev,{recordHistory:false});break;}
  case 'guildredo':{const next=state.guildRedo.pop();if(!next){toast('Nothing to redo');break;}state.guildUndo.push({...state.guildTreePlan});updateGuildTree(next,{recordHistory:false});break;}
  case 'guildlevelminus':updateGuildTree(guildTreeWithLevel(state.guildTreePlan,state.guildTreePlan.level-1));break;
