@@ -591,3 +591,26 @@ body,.shell{background:var(--theme-main)}
 .verifiedUpgradeRow small{font-size:11px;color:var(--soft)}
 .verifiedSelectedNote{font-size:12px;line-height:1.6}
 @media(max-width:420px){.verifiedStatCard{padding:10px}.verifiedStatCard dd{font-size:13px}.verifiedStatCard>strong{font-size:12px}}
+
+/* Source-backed Pet Affix Planner, responsive to all ten theme palettes. */
+.petAffixPlanner{margin-top:2px;display:grid;gap:15px}
+.petAffixHero,.petAffixControls,.petAffixSnapshot,.petAffixEvolve{padding:16px;border:1px solid var(--theme-border,var(--line,#363b50));background:var(--theme-secondary,var(--panel,#171b28));border-radius:15px}
+.petAffixHero h2{margin:5px 0 7px;font-size:21px}.petAffixHero p,.petAffixEvolve p{font-size:12px;line-height:1.65;color:var(--soft);margin:4px 0}
+.petAffixControls{display:grid;gap:8px}.petAffixControls label{font-size:12px;font-weight:700;color:var(--soft)}
+.petAffixControls select,.petAffixControls input{min-width:0;width:100%;border:1px solid var(--theme-border,var(--line));color:var(--text);background:var(--theme-main,var(--bg));border-radius:10px;min-height:48px;padding:12px;font-size:15px}
+.petAffixSteps{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:5px}
+.petAffixSteps button{flex:1 1 49px;min-height:44px;padding:8px;border-radius:10px;background:var(--theme-main,var(--bg));color:var(--theme-accent-text,var(--accent));border:1px solid var(--theme-highlight-border,var(--line));font-size:12px;font-weight:750}
+.petAffixSteps button:focus-visible,.petAffixControls select:focus-visible,.petAffixControls input:focus-visible{outline:2px solid var(--theme-highlight,var(--accent));outline-offset:2px}
+.petAffixSteps .petAffixReset{color:var(--text)}
+.petAffixProjection{border:1px solid var(--theme-highlight-border,var(--line));border-radius:15px;background:var(--theme-highlight-soft,var(--panel));padding:16px;display:grid;gap:5px}
+.petAffixProjection>span{text-transform:uppercase;font-size:10px;letter-spacing:.07em;color:var(--soft);font-weight:700}
+.petAffixProjection>strong{font-size:30px;color:var(--theme-accent-text,var(--accent));font-variant-numeric:tabular-nums}
+.petAffixProjection>small{font-size:11px;line-height:1.55;color:var(--soft)}
+.petAffixSnapshot h3,.petAffixEvolve h3{margin:0 0 12px;font-size:15px}
+.petAffixReferenceList{display:grid;gap:7px}.petAffixReferenceRow{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:10px;row-gap:3px;padding:10px;border:1px solid var(--theme-border,var(--line));border-radius:10px;background:var(--theme-main,var(--bg))}
+.petAffixReferenceRow.selected{border-color:var(--theme-highlight,var(--accent))}.petAffixReferenceRow strong{font-size:12px;line-height:1.45;overflow-wrap:anywhere}
+.petAffixReferenceRow span{font-weight:700;font-variant-numeric:tabular-nums;font-size:12px;white-space:nowrap}.petAffixReferenceRow small{grid-column:1/-1;font-size:10px;line-height:1.5;color:var(--soft)}
+.petAffixMetaGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:11px 0}.petAffixMetaGrid span{padding:12px;background:var(--theme-main,var(--bg));border-radius:10px;border:1px solid var(--theme-border,var(--line));display:grid;gap:6px}
+.petAffixMetaGrid b{font-size:19px;color:var(--theme-accent-text,var(--accent))}.petAffixMetaGrid small{font-size:10px;color:var(--soft)}
+.petAffixDisclosure{display:flex;align-items:start;gap:7px;margin:0;color:var(--soft);font-size:11px;line-height:1.7}
+@media(max-width:370px){.petAffixControls,.petAffixSnapshot,.petAffixEvolve,.petAffixHero{padding:12px}}

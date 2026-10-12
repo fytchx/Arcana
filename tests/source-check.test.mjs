@@ -100,3 +100,12 @@ test('verified item comparison comes from configured stat snapshot only',async()
  assert.match(app,/verifiedUpgradeReferencePanel\(e\?\.title\)/);
  assert.match(views,/not a character’s rolled stats/);
 });
+
+test('Pet Affix Planner uses the verified snapshot, not a placeholder',async()=>{
+ const app=await read('../src/app.js'),views=await read('../src/verified-pet-affix-views.js');
+ assert.match(app,/petAffixPlannerView\(state\.petAffixPlan\)/);
+ assert.match(app,/case 'petaffixstep'/);
+ assert.match(app,/readPetAffixPlan\(\)/);
+ assert.match(views,/planning projection/);
+ assert.match(views,/Pity, reroll probabilities/);
+});
