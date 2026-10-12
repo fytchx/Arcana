@@ -6,6 +6,17 @@ export const MAX_ARTICLE_IMAGES=10;
 export const MAX_SECTIONS=35;
 export const slugify=value=>String(value||'').trim().toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,70);
 export const newWikiDraft=()=>({id:'',title:'',category:'Getting Started',summary:'',keywords:'',sourceLabel:'',sourceUrl:'',sections:[{id:'section-1',title:'Overview',body:'',imageId:''}],images:[],relatedTools:[],relatedArticles:[],updatedAt:'',status:'draft'});
+export const WIKI_PAGE_TEMPLATES=Object.freeze({
+ blank:{label:'Blank article',category:'Getting Started',headings:['Overview']},
+ guide:{label:'Player guide',category:'Build Guides',headings:['Overview','Getting started','What to focus on','Advanced tips']},
+ mechanic:{label:'Game mechanic',category:'Mechanics',headings:['What it does','How it works','Example','Related systems']},
+ item:{label:'Item or equipment',category:'Equipment',headings:['Overview','Where to find it','Stats and modifiers','When to use it']},
+ guild:{label:'Guild strategy',category:'Guilds',headings:['Overview','Planning priorities','Point allocation','Practical recommendations']}
+});
+export const wikiDraftFromTemplate=key=>{
+ const template=WIKI_PAGE_TEMPLATES[key]||WIKI_PAGE_TEMPLATES.blank;
+ return {...newWikiDraft(),category:template.category,sections:template.headings.map((title,i)=>({id:'section-'+(i+1),title,body:'',imageId:''}))};
+};
 const short=(s,n)=>String(s||'').trim().slice(0,n);
 const unique=a=>[...new Set(a)];
 export const validImageDataURL=s=>typeof s==='string'&&/^data:image\/(webp|png|jpeg);base64,[a-z0-9+/=]+$/i.test(s)&&s.length<=MAX_IMAGE_BYTES*1.5;
