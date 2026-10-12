@@ -34,17 +34,20 @@ test('Guest access stays unrestricted; specialized roles do not inherit unrelate
 test('Account and community routes enforce identity and hide vs permanent delete',async()=>{
  const directory=await mkdtemp(join(tmpdir(),'arcana-accounts-'));
  const old={dir:process.env.ARCANA_ACCOUNT_DATA_DIR,base:process.env.ARCANA_AUTH_BASE_URL,
- id:process.env.ARCANA_DISCORD_CLIENT_ID,secret:process.env.ARCANA_DISCORD_CLIENT_SECRET,creator:process.env.ARCANA_CREATOR_DISCORD_ID};
+ id:process.env.ARCANA_DISCORD_CLIENT_ID,secret:process.env.ARCANA_DISCORD_CLIENT_SECRET,creator:process.env.ARCANA_CREATOR_DISCORD_ID,wiki:process.env.ARCANA_WIKI_DATA_DIR};
  process.env.ARCANA_ACCOUNT_DATA_DIR=directory;
+ process.env.ARCANA_WIKI_DATA_DIR=join(directory,'wiki');
  process.env.ARCANA_DISCORD_CLIENT_ID='123456789123456789';
  process.env.ARCANA_DISCORD_CLIENT_SECRET='test-only-secret';
  process.env.ARCANA_CREATOR_DISCORD_ID='222222222222222222';
  const {saveAtomic,safeAccountRequest}=await import('../src/account-server.mjs');
  const {safeCommunityRequest}=await import('../src/community-server.mjs');
+ const {handleWikiRequest}=await import('../src/wiki-server.mjs');
  const server=createServer(async(req,res)=>{
   const url=new URL(req.url,'http://localhost');
   if(url.pathname.startsWith('/api/community/')){await safeCommunityRequest(req,res,url);return;}
   if(await safeAccountRequest(req,res,url))return;
+  if(await handleWikiRequest(req,res,url.pathname))return;
   res.writeHead(404);res.end();
  });
  const id1=randomUUID(),id2=randomUUID(),id3=randomUUID();
@@ -91,10 +94,16 @@ test('Account and community routes enforce identity and hide vs permanent delete
   assert.equal((await response.json()).posts.length,0,'Hidden posts are not public');
   response=await fetch(base+'/api/community/posts/'+post.id,{method:'DELETE',headers:headers(1,'DELETE')});
   assert.equal(response.status,403,'Moderators may not delete posts');
+  const wikiDraft={id:'community-edited-article',title:'An editor-approved guide',summary:'Official content should only be published by an approved editor.',category:'Pets',sections:[{title:'Overview',body:'This is a test article written solely to check the Editor authorization boundary.'}],images:[],relatedTools:[],relatedArticles:[]};
+  const beforeEditor=await fetch(base+'/api/wiki/publish',{method:'POST',headers:headers(0,'POST'),body:JSON.stringify({draft:wikiDraft})});
+  assert.equal(beforeEditor.status,401,'A regular member cannot publish to the Wiki');
   response=await fetch(base+'/api/admin/roles/'+id1,{method:'PATCH',headers:headers(2,'PATCH'),body:JSON.stringify({roles:['wiki-editor']})});
   assert.equal(response.status,200);
   response=await fetch(base+'/api/account/me',{headers:headers(0)});
   assert.equal((await response.json()).user.permissions.publishWiki,true,'Roles refresh on the next request');
+  response=await fetch(base+'/api/wiki/publish',{method:'POST',headers:headers(0,'POST'),body:JSON.stringify({draft:wikiDraft})});
+  assert.equal(response.status,200,'The same member can publish only after Editor approval');
+  assert.equal((await (await fetch(base+'/api/wiki/articles')).json()).articles[0].id,wikiDraft.id);
   response=await fetch(base+'/api/community/posts/'+post.id,{method:'DELETE',headers:headers(2,'DELETE')});
   assert.equal(response.status,200);
   assert.equal((await (await fetch(base+'/api/community/posts?includeHidden=true',{headers:headers(2)})).json()).posts.length,0);
@@ -106,7 +115,7 @@ test('Account and community routes enforce identity and hide vs permanent delete
  }finally{
   server.close();await rm(directory,{recursive:true,force:true});
   for(const [k,v] of Object.entries({ARCANA_ACCOUNT_DATA_DIR:old.dir,ARCANA_AUTH_BASE_URL:old.base,
-   ARCANA_DISCORD_CLIENT_ID:old.id,ARCANA_DISCORD_CLIENT_SECRET:old.secret,ARCANA_CREATOR_DISCORD_ID:old.creator})){
+   ARCANA_DISCORD_CLIENT_ID:old.id,ARCANA_DISCORD_CLIENT_SECRET:old.secret,ARCANA_CREATOR_DISCORD_ID:old.creator,ARCANA_WIKI_DATA_DIR:old.wiki})){
    if(v===undefined)delete process.env[k];else process.env[k]=v;
   }
  }
