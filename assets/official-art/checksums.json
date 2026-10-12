@@ -1,0 +1,103 @@
+{
+  "biomes.webp": {
+    "bytes": 28710,
+    "sha256": "4d05b926237addbbbde671ca0c9ce898c3b0fd26cba3c3e21f9acf419346876f",
+    "spriteKeys": 26
+  },
+  "currency.webp": {
+    "bytes": 12810,
+    "sha256": "f8733fc858867c9d8b8107c01591956e5c9083ea7508d4a491d87a79e3fd03f2",
+    "spriteKeys": 7
+  },
+  "dungeons.webp": {
+    "bytes": 6592,
+    "sha256": "3a67112c67b2b3b1c1f5bb28f4977ac38f18b670c96f569e8823522ae0a09c02",
+    "spriteKeys": 8
+  },
+  "effects.webp": {
+    "bytes": 6166,
+    "sha256": "bf5baeea40017e266ef9e10a25d36d7e8019c464ad6a63c9828b412d2015bf82",
+    "spriteKeys": 3
+  },
+  "equipment.webp": {
+    "bytes": 347582,
+    "sha256": "0072b1871dc42b32a0807a5c152f773167f5beea5d559e5a99afac930da44e94",
+    "spriteKeys": 218
+  },
+  "gems.webp": {
+    "bytes": 58348,
+    "sha256": "15c1a9e234bae9b2b4c60b1ac46297bcb0dcf3f3bd91253e6383f463faee198a",
+    "spriteKeys": 41
+  },
+  "goblins.webp": {
+    "bytes": 22428,
+    "sha256": "044917210432fd2a049f0ebb65d97c1aad1b925847324bcf43639de1ccefd50d",
+    "spriteKeys": 10
+  },
+  "icons.webp": {
+    "bytes": 80850,
+    "sha256": "04731d7493f704258f920af2cad1345f18b376bc1706b0828faa85a5cf36fa09",
+    "spriteKeys": 36
+  },
+  "items.webp": {
+    "bytes": 40830,
+    "sha256": "f69c8cf29f52797f63c07f342c06ef770c0e8767e472723ef897164300a08e10",
+    "spriteKeys": 12
+  },
+  "manifest.json": {
+    "bytes": 18198,
+    "categories": 19,
+    "sha256": "d8da8d09e5c67a8d3c7823ae18484466fc889fcc4892b55df219ec667e319dec",
+    "version": "official-inventory-2026-10-11-v4"
+  },
+  "materials.webp": {
+    "bytes": 69296,
+    "sha256": "3a87e3de22740b5a6cc8a93be3b89f2850192e9c07a9cbe5cd71742858b652d5",
+    "spriteKeys": 50
+  },
+  "monsters.webp": {
+    "bytes": 188752,
+    "sha256": "d9c7e1b3db559f4c2dbe6cfd4e9339a780da0f35935d656eac195037c78b0f06",
+    "spriteKeys": 80
+  },
+  "pets.webp": {
+    "bytes": 66286,
+    "sha256": "2fc4fb623e73213726d37259e0e97ec2895da79f745e63c05ede0c73833dc675",
+    "spriteKeys": 32
+  },
+  "season.webp": {
+    "bytes": 11906,
+    "sha256": "9454656dfb57fde33271becdf0fdbf70b51196a1fb81ad6e28364e1e775b6dbd",
+    "spriteKeys": 5
+  },
+  "skills.webp": {
+    "bytes": 80414,
+    "sha256": "d364eec530114ab8413369e54caa2d3d58da9f365ccd63888c876f9a14c4a42a",
+    "spriteKeys": 90
+  },
+  "skins.webp": {
+    "bytes": 224448,
+    "sha256": "f9d4e41f343733ccb191ffaadff519327ac8f0d8708cc8a069bce41cf590aeaf",
+    "spriteKeys": 123
+  },
+  "tower-backgrounds.webp": {
+    "bytes": 67904,
+    "sha256": "6c7af3fc30dcb45d10a1bf28570fe8cb8a320ca6ef54805bb2a4751ea83d32a7",
+    "spriteKeys": 78
+  },
+  "tower-bosses.webp": {
+    "bytes": 29024,
+    "sha256": "ec306b5343bd3ab64d38a8e2aed2503a9799b65b82725e8f47bfcdb79f8bb932",
+    "spriteKeys": 10
+  },
+  "tower-monsters.webp": {
+    "bytes": 55240,
+    "sha256": "77047b034b29e807d6124c49c0b29b2c3e827cf8420539ffd4ab580ff9c49347",
+    "spriteKeys": 24
+  },
+  "world-bosses.webp": {
+    "bytes": 21674,
+    "sha256": "7f5bb7bedbfeba48e055096cd1b7fcf374f8138dc031cac18ae56629ba13a61c",
+    "spriteKeys": 7
+  }
+}
