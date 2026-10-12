@@ -58,6 +58,7 @@ MOCK_ENTRIES['entries'].extend(
 HTML=HTML.replace('</body>', '''<script>
 window.fetch = async function(input) {
  const path = String(input);
+ if(path.includes('/api/wiki/import-access')) return new Response(JSON.stringify({allowed:true}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/search/catalog')) return new Response(JSON.stringify(__MOCK_ENTRIES__),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/guilds')) return new Response(JSON.stringify({guilds:[]}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/lfg/public')) return new Response(JSON.stringify({listings:[],plans:[],issues:[]}),{status:200,headers:{'content-type':'application/json'}});
@@ -325,6 +326,26 @@ with sync_playwright() as playwright:
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Guild comparison causes page overflow'
     page.screenshot(path=str(OUT/'guild_comparison_mobile.png'),full_page=True)
 
+    # Import Manager is an owner-only, browser-local XML conversion workflow.
+    page.evaluate("location.hash='#/wiki/studio'")
+    page.wait_for_timeout(300)
+    assert page.locator('[data-ws-action="import-manager"]').count()==1, 'Fandom Import Manager shortcut missing'
+    page.locator('[data-ws-action="import-manager"]').dispatch_event('click')
+    page.wait_for_timeout(150)
+    assert page.locator('#fandomXmlInput').count()==1, 'XML upload control did not open'
+    sample_xml=('<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.11/">'
+      '<siteinfo><sitename>IdleArc Wiki</sitename><base>https://idlearc.fandom.com/wiki/IdleArc_Wiki</base></siteinfo>'
+      '<page><title>Test Pet Guide</title><ns>0</ns><revision><timestamp>2026-10-01T00:00:00Z</timestamp>'
+      '<text>Every player can use this guide to plan the right combination of pets and bonuses.\n\n'
+      '== How it works ==\nThis is a test of the imported guide data and the source attribution link.\n'
+      '[[File:Pet Screenshot.png|thumb]]</text></revision></page></mediawiki>')
+    page.locator('#fandomXmlInput').set_input_files({'name':'test-export.xml','mimeType':'text/xml','buffer':sample_xml.encode()})
+    page.wait_for_timeout(250)
+    assert page.locator('.fandomImportRow').count()==1, 'XML did not convert into a review row'
+    assert 'Test Pet Guide' in page.locator('.fandomImportRow').inner_text()
+    assert 'image reference' in page.locator('.fandomImportRow').inner_text().lower()
+    assert page.locator('[data-fandom-action="save"]').count()==1, 'Private-draft save control missing'
+    page.screenshot(path=str(OUT/'fandom_import_mobile.png'),full_page=True)
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
     print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
     browser.close()

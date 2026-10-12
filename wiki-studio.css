@@ -27,3 +27,30 @@
 @media(max-width:850px){.studioEditorGrid{grid-template-columns:minmax(0,1fr)}.studioEditorAside{grid-template-columns:repeat(2,minmax(0,1fr))}.studioEditorAside .studioFieldset:last-child{grid-column:1/-1}}
 @media(max-width:600px){.wikiContribution,.wikiAuthorShortcut{align-items:stretch;flex-direction:column}.wikiContribution .btn,.wikiAuthorShortcut .btn{width:100%}.studioHeader{align-items:stretch;flex-direction:column}.studioHeader>button{align-self:flex-start}.studioEditorAside{grid-template-columns:minmax(0,1fr)}.studioEditorAside .studioFieldset:last-child{grid-column:auto}.studioFieldset{padding:13px}.studioSection{padding:12px}.studioSectionHead{flex-wrap:wrap}.studioSectionHead .btn{width:100%}.studioImage{grid-template-columns:95px minmax(0,1fr);gap:9px}.studioImage img{max-height:120px}.studioDraft{align-items:stretch;flex-direction:column}.studioDraft>div:last-child{justify-content:flex-start}.studioDraft>div:last-child .btn{flex:1}.studioControlBar .btn{flex:1}.studioPreview .studioArticle{padding:13px}}
 @media(max-width:380px){.studioImage{grid-template-columns:1fr}.studioImage img{max-width:180px}.studioHomeActions .btn,.studioHomeActions .studioUpload{width:100%}.studioControlBar .btn{width:100%;flex:auto}}
+
+/* Fandom migration dashboard. Shares Arcana native UI variables. */
+.fandomImporter{display:flex;flex-direction:column;gap:14px;margin-top:14px;min-width:0}
+.fandomStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.fandomStats>div{display:flex;flex-direction:column;gap:4px;padding:12px;border:1px solid var(--line,#33384a);border-radius:12px;background:var(--panel,#181b28)}
+.fandomStats strong{font-size:clamp(16px,4vw,24px);font-variant-numeric:tabular-nums}
+.fandomStats span{font-size:11px;color:var(--muted,#b1b1c2)}
+.fandomImportBar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fandomImportBar>label{font-size:12px;display:flex;align-items:center;gap:7px}
+.fandomImportBar select{background:var(--panel,#181b28);border:1px solid var(--line,#33384a);color:var(--text,#fff);border-radius:10px;font-size:15px;padding:9px}
+.fandomImportEntries{display:flex;flex-direction:column;gap:9px}
+.fandomImportRow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:12px;padding:12px;border:1px solid var(--line,#33384a);border-radius:12px;background:var(--panel,#181b28)}
+.fandomImportRow[hidden]{display:none!important}
+.fandomImportRow>div{min-width:0;overflow-wrap:anywhere}
+.fandomImportRow strong{font-size:14px;display:block;margin-bottom:4px}
+.fandomImportRow small{display:block;font-size:11px;color:var(--muted,#b1b1c2)}
+.fandomImportRow p{margin:5px 0;font-size:12px;color:var(--muted,#b1b1c2);line-height:1.4}
+.fandomSelect{display:flex;align-items:center;min-height:40px}
+.fandomSelect input{width:19px;height:19px;accent-color:var(--theme-highlight,var(--accent,#aa91ff))}
+.fandomRowStatus{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px}
+.fandomReady,.fandomIssues{display:inline-flex;border:1px solid var(--line,#33384a);border-radius:12px;padding:3px 8px;font-size:11px}
+.fandomIssues{border-color:var(--theme-highlight,var(--accent,#aa91ff))}
+.fandomImportRow details{font-size:12px;color:var(--muted,#b1b1c2);margin-top:8px}
+.fandomImportRow details summary{cursor:pointer;padding:4px 0}
+.fandomImportRow details p{padding-left:8px;border-left:1px solid var(--line,#33384a)}
+.wikiImportedInlineLink{text-decoration:underline;text-underline-offset:3px;color:var(--theme-highlight,var(--accent,#aa91ff))}
+@media(max-width:600px){.fandomStats{grid-template-columns:repeat(2,minmax(0,1fr))}.fandomImportRow{grid-template-columns:24px minmax(0,1fr)}.fandomImportRow>.btn{grid-column:2;justify-self:start}.fandomImportBar .btn{flex:1}}

@@ -112,6 +112,12 @@ export async function handleWikiRequest(req,res,pathname) {
     catch(e){console.error('Wiki index unavailable:',e);send(res,503,{error:'Wiki storage unavailable'});}
     return true;
   }
+  if(pathname==='/api/wiki/import-access'&&method==='GET'){
+    const user=await accountUser(req);
+    const permitted=(user&&can(user,'roles:manage'))||authorized(req);
+    send(res,permitted?200:403,{allowed:!!permitted});
+    return true;
+  }
   const editPath=pathname.match(/^\/api\/wiki\/edit\/([a-z0-9-]+)$/);
   if(editPath && method==='GET'){
     if(!await allowedEditor(req)){send(res,401,{error:'Wiki Editor role required'});return true;}
