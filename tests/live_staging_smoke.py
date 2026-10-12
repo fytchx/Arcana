@@ -68,6 +68,24 @@ with sync_playwright() as p:
     page.locator('[data-route="wiki/library"]').first.dispatch_event("click")
     page.wait_for_selector(".wikiCategoryScroll")
     page.wait_for_selector("#wikiRecords .wikiRecord",timeout=25000)
+    # Mobile Codex live-search never destroys input focus or loses the reset affordance.
+    assert page.locator('.wikiClearFilter').is_hidden()
+    page.locator('#wikiFilter').fill('no-such-entry-in-idlearc-2026')
+    assert page.locator('.wikiClearFilter').is_visible(), "Clear search missing while typing"
+    assert page.locator('#wikiFoundCount').inner_text().startswith('0 ')
+    assert page.locator('.wikiEmptyActions [data-action="wikiclear"]').count()==1
+    page.locator('.wikiEmptyActions [data-action="wikiclear"]').dispatch_event('click')
+    page.wait_for_timeout(120)
+    assert page.locator('#wikiFilter').input_value()==''
+    assert page.locator('.wikiClearFilter').is_hidden()
+    assert page.locator('#wikiRecords .wikiRecord').count()>0
+    page.locator('#wikiRecords .wikiRecord').first.dispatch_event('click')
+    page.wait_for_timeout(150)
+    assert page.locator('.wikiReferencePage').count()==1
+    assert page.locator('.wikiReferencePage .wikiBack[data-params="kind=item"]').count()==1, "Back link lost Codex collection"
+    page.locator('.wikiReferencePage .wikiBack').dispatch_event('click')
+    page.wait_for_timeout(150)
+    assert page.locator('.wikiShelf-atlas #wikiRecords .wikiRecord').count()>0
     rail=page.locator(".wikiCategoryScroll")
     rail.evaluate("(e)=>e.scrollLeft=140")
     page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=monster"]').dispatch_event("click")
@@ -118,6 +136,18 @@ with sync_playwright() as p:
     pos=active.evaluate("(e)=>{const a=e.getBoundingClientRect(),p=e.parentElement.getBoundingClientRect();return {left:a.left,right:a.right,viewLeft:p.left,viewRight:p.right}}")
     assert pos["left"]>=pos["viewLeft"]-2 and pos["right"]<=pos["viewRight"]+2, "Active tab offscreen: "+repr(pos)
     page.screenshot(path=str(OUT/"arcana-staging-mobile.png"),full_page=True)
+    # Simulate a temporary catalog outage and verify one-tap recovery.
+    retry_page=browser.new_page(viewport={"width":390,"height":844})
+    retry_page.route("**/api/search/catalog", lambda route: route.fulfill(status=503,body="Service unavailable"))
+    retry_page.goto(BASE+"/",wait_until="domcontentloaded",timeout=30000)
+    retry_page.get_by_text("ArcanaWiki",exact=True).first.dispatch_event("click")
+    retry_page.locator('[data-route="wiki/library"]').first.dispatch_event("click")
+    retry_page.locator('[data-action="wikiretry"]').wait_for(timeout=20000)
+    retry_page.unroute("**/api/search/catalog")
+    retry_page.locator('[data-action="wikiretry"]').dispatch_event("click")
+    retry_page.wait_for_selector('#wikiRecords .wikiRecord',timeout=30000)
+    assert retry_page.locator('[data-action="wikiretry"]').count()==0,"Retry message persisted after recovery"
+    retry_page.close()
     assert not errors, "Browser exceptions "+repr(errors)
     print(json.dumps({"result":"PASS","staging":BASE,"localArtSheets":len(categories),"catalogTotal":len(entries),"currencies":counts["currency"],"pets":counts["pet"],"browserErrors":len(errors),"categoryScroll":after},indent=2))
     browser.close()
