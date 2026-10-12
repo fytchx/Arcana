@@ -4,9 +4,9 @@ import {esc,icon} from './ui.js';
 // No absolute XP values, monster HP or time-to-kill values are assumed.
 export const FARM_MODES=['later','earlier'];
 export const FARM_TIERS=Object.freeze([
- {id:'weakest',label:'Lowest-HP monster',factor:.9},
+ {id:'weakest',label:'Weakest monster',factor:.9},
  {id:'normal',label:'Other monster',factor:1},
- {id:'strongest',label:'Highest-HP monster',factor:1.1}
+ {id:'strongest',label:'Strongest monster',factor:1.1}
 ]);
 const STORAGE_KEY='arcana-ml-farm-compare-v1';
 const parseTime=v=>{
@@ -53,7 +53,7 @@ export function farmCompareView(raw){
  </fieldset>
  <div class="farmRows">${data.rows.map((tier,i)=>`<label class="farmRow"><span><strong>${esc(tier.label)}</strong><small>${data.mode==='later'?(tier.factor===1?'Normal XP':'×'+format(tier.factor)+' ML XP'):'Normal XP'}</small></span><span class="farmInput"><input type="number" data-farm-time="${i}" inputmode="decimal" min=".01" max="300" step=".01" placeholder="Your time" value="${tier.time??''}" aria-label="Average seconds per kill: ${esc(tier.label)}"><small>seconds / kill</small></span></label>`).join('')}</div>
  ${data.leader?`<section class="farmWinner" role="status"><span class="eyebrow">BEST OF YOUR MEASURED OPTIONS</span><h3>${esc(data.leader.label)}</h3><p>Relative ML XP per second: <strong>${format(data.leader.rate)}</strong>. ${data.advantage===null?'':`About <strong>${format(data.advantage)}%</strong> more ML XP per second than your next-fastest measured option.`}</p></section>`: `<div class="farmPrompt" role="status">${icon('info',18)} Enter average kill times for at least two monsters to compare them.</div>`}
- ${data.strongestBreakEven!==null?`<div class="farmBreakEven"><strong>Break-even insight</strong><p>At ${format(data.rows[0].time)} seconds for the lowest-HP monster, the highest-HP monster must die in under <strong>${format(data.strongestBreakEven)} seconds</strong> to gain more ML XP per second.</p></div>`:`<div class="farmBreakEven"><strong>Break-even insight</strong><p>From Murky Depths onward, the strongest monster can take about 22.2% longer than the weakest and still match its ML XP per second. Actual results depend on your measured kill times.</p></div>`}
+ ${data.strongestBreakEven!==null?`<div class="farmBreakEven"><strong>Break-even insight</strong><p>At ${format(data.rows[0].time)} seconds for the weakest monster, the strongest monster must die in under <strong>${format(data.strongestBreakEven)} seconds</strong> to gain more ML XP per second.</p></div>`:`<div class="farmBreakEven"><strong>Break-even insight</strong><p>${data.mode==='later'?'From Murky Depths onward, the strongest monster can take about 22.2% longer than the weakest and still match its ML XP per second.':'Before Murky Depths, the listed monster groups use equal ML XP factors, so the quickest kill wins.'} Actual results depend on your measured kill times.</p></div>`}
  <div class="farmActions"><button type="button" data-action="farmreset">${icon('back',16)} Clear times</button><button type="button" data-route="wiki/article" data-params="id=monster-level">${icon('book',16)} Read ML farming guide ${icon('arrow',14)}</button><button type="button" data-route="wiki/library" data-params="kind=monster">${icon('search',16)} Browse monsters ${icon('arrow',14)}</button></div>
  <p class="farmDisclosure">The October 2026 Season 2 patch notes specify −10% ML XP for the weakest and +10% for the strongest monster from Murky Depths onward. Times are entered by you and stored on this device. Earlier biomes use equal XP factors in this comparison.</p>
  </section>`;
