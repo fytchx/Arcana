@@ -1,6 +1,6 @@
 import {esc,icon} from './ui.js';
 import {navCards,NAV_DESTINATIONS} from './context-nav.js';
-import {WIKI_ARTICLES} from './wiki-data.js';
+import {WIKI_ARTICLES,WIKI_CATEGORY_LIST} from './wiki-data.js';
 import {STUDIO_VERSION,WIKI_STUDIO_CATEGORIES,MAX_IMAGE_BYTES,MAX_ARTICLE_IMAGES,newWikiDraft,normalizeWikiDraft,validateWikiDraft,publicWikiArticle,slugify} from './wiki-studio-model.js';
 import {listWikiDrafts,getWikiDraft,putWikiDraft,deleteWikiDraft} from './wiki-studio-storage.js';
 
@@ -20,6 +20,8 @@ const sectionCard=(section,i)=>'<article class="studioSection"><header><span cla
  '<label>Content<textarea data-ws-section="'+i+'" data-ws-property="body" maxlength="8000" rows="6" placeholder="Write clear explanations. Separate paragraphs with blank lines. Use - for bullet points.">'+esc(section.body)+'</textarea></label>'+
  '<label>Illustration<select data-ws-section="'+i+'" data-ws-property="imageId">'+imageOptions(section.imageId)+'</select></label></article>';
 const imageCard=(image,i)=>'<article class="studioImage"><img src="'+esc(image.dataUrl)+'" alt="'+esc(image.alt||'Image preview')+'" loading="lazy"><div><strong>'+esc(image.name)+'</strong><label>Alt text<input data-ws-image="'+i+'" data-ws-property="alt" maxlength="200" value="'+esc(image.alt)+'" placeholder="Describe the image for screen readers"></label><label>Caption<input data-ws-image="'+i+'" data-ws-property="caption" maxlength="240" value="'+esc(image.caption)+'" placeholder="Optional caption"></label><button type="button" class="studioDanger" data-ws-action="image-remove" data-idx="'+i+'">Remove image</button></div></article>';
+const articleOptions=()=>[...WIKI_ARTICLES,...s.published].filter(a=>a.id!==s.draft?.id).map(a=>'<option value="'+esc(a.id)+'">'+esc(a.title)+'</option>').join('');
+const collectionOptions=()=>WIKI_CATEGORY_LIST.filter(([id])=>id!=='all').map(([id,label])=>'<option value="'+esc(id)+'">'+esc(label)+'</option>').join('');
 const relatedOptions=()=>Object.entries(NAV_DESTINATIONS).filter(([_,v])=>v.route&&!['wiki/article','wiki/library'].includes(v.route)).map(([key,v])=>'<option value="'+esc(key)+'">'+esc(v.label)+'</option>').join('');
 function preview(){
  const d=s.draft,errs=validateWikiDraft(d,{existingIds:WIKI_ARTICLES.map(a=>a.id)}).errors;
@@ -54,7 +56,11 @@ function editor(){
  '<div class="studioImageList">'+(d.images.map(imageCard).join('')||'<p class="studioEmptyMini">No images yet. Upload screenshots, diagrams or artwork.</p>')+'</div></section>'+
  '</div><aside class="studioEditorAside"><section class="studioFieldset"><h2>Page quality</h2><div class="studioValidation">'+(validation.errors.length?validation.errors.map(x=>'<p>'+icon('info',15)+' '+esc(x)+'</p>').join(''):'<p class="studioReady">'+icon('check',16)+' All required fields are complete.</p>')+'</div></section>'+
  '<section class="studioFieldset"><h2>Sources</h2><label>Source description<input data-ws-field="sourceLabel" value="'+esc(d.sourceLabel)+'" placeholder="Official patch notes / in-game verification"></label><label>Optional HTTPS link<input type="url" data-ws-field="sourceUrl" value="'+esc(d.sourceUrl)+'" placeholder="https://…"></label></section>'+
- '<section class="studioFieldset"><h2>Connected Arcana</h2><p class="mutedSmall">Connect the article directly to relevant tools.</p><div class="studioAddLink"><select id="wikiStudioToolSelect"><option value="">Choose tool…</option>'+relatedOptions()+'</select><button data-ws-action="tool-add">Add</button></div><div class="studioTagList">'+d.relatedTools.map(key=>'<button data-ws-action="tool-remove" data-key="'+esc(key)+'" aria-label="Remove '+esc(NAV_DESTINATIONS[key]?.label||key)+'">'+esc(NAV_DESTINATIONS[key]?.label||key)+' ×</button>').join('')+'</div><label>Related article slugs (comma-separated)<input data-ws-field="relatedArticles" value="'+esc(d.relatedArticles.join(', '))+'" placeholder="season-2, pet-compound"></label></section>'+
+ '<section class="studioFieldset"><h2>Connected Arcana</h2><p class="mutedSmall">Connect the article directly to relevant tools.</p><div class="studioAddLink"><select id="wikiStudioToolSelect"><option value="">Choose tool…</option>'+relatedOptions()+'</select><button data-ws-action="tool-add">Add</button></div><div class="studioTagList">'+d.relatedTools.map(key=>'<button data-ws-action="tool-remove" data-key="'+esc(key)+'" aria-label="Remove '+esc(NAV_DESTINATIONS[key]?.label||key)+'">'+esc(NAV_DESTINATIONS[key]?.label||key)+' ×</button>').join('')+'</div><label>Related guide or article</label><div class="studioAddLink"><select id="wikiStudioArticleSelect"><option value="">Choose an existing article…</option>'+articleOptions()+'</select><button data-ws-action="article-add">Add</button></div>'+
+ '<div class="studioTagList">'+d.relatedArticles.map(id=>'<button data-ws-action="article-remove" data-key="'+esc(id)+'" aria-label="Remove related article '+esc(id)+'">'+esc([...WIKI_ARTICLES,...s.published].find(a=>a.id===id)?.title||id)+' ×</button>').join('')+'</div>'+
+ '<label>Additional article URLs (comma-separated)<input data-ws-field="relatedArticles" value="'+esc(d.relatedArticles.join(', '))+'" placeholder="season-2, pet-compound"></label>'+
+ '<label>Linked Codex collection</label><div class="studioAddLink"><select id="wikiStudioCollectionSelect"><option value="">Choose a collection…</option>'+collectionOptions()+'</select><button data-ws-action="collection-add">Add</button></div>'+
+ '<div class="studioTagList">'+d.relatedCollections.map(id=>'<button data-ws-action="collection-remove" data-key="'+esc(id)+'" aria-label="Remove Codex collection '+esc(id)+'">'+esc(WIKI_CATEGORY_LIST.find(([key])=>key===id)?.[1]||id)+' ×</button>').join('')+'</div></section>'+
  '<section class="studioFieldset"><h2>Draft backups</h2><p class="mutedSmall">Drafts stay in this browser. Export regularly, particularly before clearing browser data or changing devices.</p><button class="btn secondary full" data-ws-action="export">Download article backup</button><button class="btn secondary full" data-ws-action="list">Back to all drafts</button></section></aside></div></div><p id="wikiStudioStatus" role="status">'+esc(s.message)+'</p>';
 }
 function listing(){
@@ -160,6 +166,20 @@ async function act(btn){
   if(action==='image-remove'){const i=sectionIndex(btn);if(!Number.isInteger(i)||i<0||i>=s.draft.images.length)return;const removed=s.draft.images.splice(i,1)[0];for(const section of s.draft.sections)if(section.imageId===removed.id)section.imageId='';schedule();repaint();return;}
   if(action==='tool-add'){const key=$('wikiStudioToolSelect')?.value;if(key&&!s.draft.relatedTools.includes(key)&&NAV_DESTINATIONS[key]?.route){s.draft.relatedTools.push(key);schedule();repaint();}return;}
   if(action==='tool-remove'){s.draft.relatedTools=s.draft.relatedTools.filter(x=>x!==key);schedule();repaint();return;}
+  if(action==='article-add'){
+   const id=$('wikiStudioArticleSelect')?.value;
+   if(id&&id!==s.draft.id&&!s.draft.relatedArticles.includes(id)&&[...WIKI_ARTICLES,...s.published].some(a=>a.id===id)){
+    s.draft.relatedArticles.push(id);schedule();repaint();
+   }return;
+  }
+  if(action==='article-remove'){s.draft.relatedArticles=s.draft.relatedArticles.filter(id=>id!==key);schedule();repaint();return;}
+  if(action==='collection-add'){
+   const id=$('wikiStudioCollectionSelect')?.value;
+   if(id&&id!=='all'&&!s.draft.relatedCollections.includes(id)&&WIKI_CATEGORY_LIST.some(([k])=>k===id)){
+    s.draft.relatedCollections.push(id);schedule();repaint();
+   }return;
+  }
+  if(action==='collection-remove'){s.draft.relatedCollections=s.draft.relatedCollections.filter(id=>id!==key);schedule();repaint();return;}
   if(action==='export'){await flush();fileDownload('arcana-wiki-'+(slugify(s.draft.title)||'draft')+'.json',JSON.stringify({format:'arcana-wiki-draft',version:STUDIO_VERSION,exportedAt:new Date().toISOString(),draft:normalizeWikiDraft(s.draft)},null,2));status('Backup downloaded.');return;}
   if(action==='publish'){
    await flush();const check=validateWikiDraft(s.draft,{existingIds:WIKI_ARTICLES.map(a=>a.id)});
