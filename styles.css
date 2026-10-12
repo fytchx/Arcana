@@ -646,3 +646,50 @@ body,.shell{background:var(--theme-main)}
 .petBuildGrid label{display:grid;gap:5px;min-width:0;color:var(--soft);font-size:11px;font-weight:700}
 .petBuildGrid select{font-size:12px;padding:8px 7px}
 @media(max-width:370px){.petBuildGrid{grid-template-columns:1fr}.petMiniInputs{grid-template-columns:1fr}.petMiniInputs>label:first-child{grid-column:1}}
+
+/* Guild tree simulator: compact native Arcana layout, shared ten-theme palette. */
+.guildTreePlanner{display:grid;gap:13px;min-width:0}
+.guildTreeIntro,.guildTreeSetup,.guildTreeMain,.guildTreeDisclosure{background:var(--theme-secondary,var(--panel));border:1px solid var(--theme-border,var(--line));border-radius:14px}
+.guildTreeIntro{padding:17px}.guildTreeIntro h2{font-size:22px;margin:6px 0}.guildTreeIntro p{font-size:12px;color:var(--soft);line-height:1.65;margin:0}
+.guildTreeSetup{padding:13px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:13px}
+.guildTreeSetup>div{min-width:0}.guildTreeSetup label{font-size:11px;font-weight:700;color:var(--soft);display:block;margin-bottom:6px}
+.guildTreeSetup select,.guildTreeSetup input{min-height:45px;min-width:0;width:100%;font-size:13px;color:var(--text);background:var(--theme-main,var(--bg));border:1px solid var(--theme-border,var(--line));border-radius:9px;padding:8px}
+.guildTreeLevel{display:flex;gap:6px}.guildTreeLevel button{min-width:43px;min-height:45px;border:1px solid var(--theme-highlight-border,var(--line));border-radius:9px;background:var(--theme-highlight-soft,transparent);color:var(--theme-accent-text,var(--accent));font-size:22px}
+.guildTreeLevel input{text-align:center;font-size:15px;font-variant-numeric:tabular-nums}
+.guildTreeCounters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.guildTreeCounters>div{padding:12px 7px;display:grid;gap:3px;text-align:center;border-radius:12px;background:var(--theme-secondary,var(--panel));border:1px solid var(--theme-border,var(--line))}
+.guildTreeCounters strong{font-size:24px;line-height:1.1;color:var(--theme-accent-text,var(--accent));font-variant-numeric:tabular-nums}
+.guildTreeCounters small{font-size:10px;color:var(--soft)}
+.guildTreeHint{display:flex;align-items:center;gap:8px;color:var(--soft);font-size:11px;line-height:1.55;margin:0;min-height:24px}
+.guildTreeToolbar{display:flex;gap:8px}.guildTreeToolbar button{display:flex;align-items:center;justify-content:center;gap:7px;flex:1;min-height:44px;border-radius:10px;border:1px solid var(--theme-border,var(--line));background:var(--theme-secondary,var(--panel));color:var(--text);font-size:12px}
+.guildTreeToolbar button:first-child{border-color:var(--theme-highlight-border,var(--line));color:var(--theme-accent-text,var(--accent))}
+.guildTreeTabs{display:flex;overflow:auto;gap:7px;scrollbar-width:thin;overscroll-behavior-x:contain;padding:2px 0 9px}
+.guildTreeTabs button{flex:0 0 auto;min-height:44px;padding:10px 13px;border-radius:11px;border:1px solid var(--theme-border,var(--line));background:var(--theme-main,var(--bg));color:var(--soft);font-size:12px}
+.guildTreeTabs button.active{color:var(--theme-accent-text,var(--accent));border-color:var(--theme-highlight,var(--accent));background:var(--theme-highlight-soft,transparent);font-weight:750}
+.guildTreeMain{padding:13px;min-width:0}
+.guildTreeSectionTitle{margin:2px 0 13px}.guildTreeSectionTitle h3{font-size:18px;margin:0 0 3px}.guildTreeSectionTitle p{font-size:11px;line-height:1.55;color:var(--soft);margin:0}
+.guildTreeNodeGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:10px}
+.guildTreeNode{padding:13px;min-width:0;border-radius:12px;border:1px solid var(--theme-border,var(--line));background:var(--theme-main,var(--bg));display:grid;gap:11px}
+.guildTreeNode header{display:flex;align-items:start;justify-content:space-between;gap:10px}
+.guildTreeNode header>div{display:grid;gap:5px;min-width:0}.guildTreeNode header strong{font-size:13px;line-height:1.35}.guildTreeNode header small{font-size:10px;color:var(--soft);line-height:1.5;text-transform:capitalize}
+.guildTreeNode header>b{white-space:nowrap;font-size:12px;color:var(--theme-accent-text,var(--accent));font-variant-numeric:tabular-nums}
+.guildTreeMeter{height:5px;overflow:hidden;border-radius:20px;background:var(--theme-secondary,var(--panel))}
+.guildTreeMeter span{height:100%;display:block;background:var(--theme-highlight,var(--accent));transition:width .13s}
+.guildTreeNodeBottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.guildTreeNodeBottom>div:first-child{display:grid;gap:5px;min-width:0}.guildTreeNodeBottom>div:first-child>strong{font-size:16px;color:var(--theme-accent-text,var(--accent));font-variant-numeric:tabular-nums}
+.guildTreeNodeBottom small{font-size:10px;line-height:1.4;color:var(--soft);max-width:175px}
+.guildTreeActions{display:flex;gap:5px;align-items:center;justify-content:end}
+.guildTreeActions button{min-height:43px;min-width:43px;border:1px solid var(--theme-highlight-border,var(--line));border-radius:9px;color:var(--theme-accent-text,var(--accent));background:var(--theme-highlight-soft,transparent);font-size:18px}
+.guildTreeActions button:last-child{font-size:12px;font-weight:750;min-width:49px}
+.guildTreeActions button:disabled{opacity:.28;cursor:not-allowed}
+.guildTreeNode>.guildTreeActions{justify-content:end}
+.guildTreeAscStats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px}
+.guildTreeAscStats>div{display:grid;gap:4px;font-size:10px;padding:7px;border:1px solid var(--theme-border,var(--line));border-radius:7px}
+.guildTreeAscStats span{color:var(--soft)}.guildTreeAscStats strong{color:var(--theme-accent-text,var(--accent));font-variant-numeric:tabular-nums}
+.guildTreeWhy{font-size:11px;line-height:1.6;color:var(--soft);margin:8px 0}
+.guildTreeTotals{border-top:1px solid var(--theme-border,var(--line));padding-top:12px;margin-top:12px}
+.guildTreeTotals h4{font-size:13px;margin:0 0 7px;color:var(--theme-accent-text,var(--accent))}
+.guildTreeTotals>div{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;line-height:1.5;padding:6px 1px}.guildTreeTotals strong{font-variant-numeric:tabular-nums}
+.guildTreeDisclosure{padding:11px 13px;color:var(--soft);font-size:10px;line-height:1.7;margin:0}
+.guildTreeDisclosure a{color:var(--theme-accent-text,var(--accent))}
+@media(max-width:390px){.guildTreeSetup{grid-template-columns:1fr}.guildTreeNodeGrid{grid-template-columns:1fr}}
