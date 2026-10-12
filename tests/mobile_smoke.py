@@ -93,7 +93,7 @@ with sync_playwright() as playwright:
         }""",accent)
         expected=tuple(int(accent[j:j+2],16) for j in (1,3,5))
         for key in ('text','icon'):
-            found=tuple(int(x) for x in re.findall(r'\\d+',evaluated[key])[:3])
+            found=tuple(int(x) for x in re.findall(r'\d+',evaluated[key])[:3])
             assert found==expected, f'Signature {key} did not follow {accent}: {evaluated[key]}'
     # Return to the default current theme after the color-switch regression test.
     page.evaluate("""() => {
