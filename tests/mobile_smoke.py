@@ -104,6 +104,9 @@ with sync_playwright() as playwright:
     page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=class-skill"]').dispatch_event('click')
     page.wait_for_timeout(200)
     assert page.locator('#wikiRecords [data-asset-key="skills:warrior:retaliation"]').count()==1, 'Correct class skill art missing'
+    active=page.locator('.wikiCategoryScroll a.active')
+    position=active.evaluate('(e)=>{const a=e.getBoundingClientRect(),p=e.parentElement.getBoundingClientRect();return {left:a.left,right:a.right,viewLeft:p.left,viewRight:p.right}}')
+    assert position['left']>=position['viewLeft']-2 and position['right']<=position['viewRight']+2, f'Active category not visible: {position}'
     page.screenshot(path=str(OUT/'wiki_official_art_mobile.png'),full_page=True)
 
     assert errors==[], 'JavaScript exceptions: '+repr(errors)

@@ -61,6 +61,9 @@ with sync_playwright() as p:
     page.wait_for_timeout(350)
     assert page.locator("#wikiRecords .wikiRecord").count()>=28, "Pet category empty"
     assert page.locator('#wikiRecords [data-art-status="official"],#wikiRecords [data-art-status="representative"]').count()>0, "Pet artwork not rendered"
+    active=page.locator(".wikiCategoryScroll a.active")
+    pos=active.evaluate("(e)=>{const a=e.getBoundingClientRect(),p=e.parentElement.getBoundingClientRect();return {left:a.left,right:a.right,viewLeft:p.left,viewRight:p.right}}")
+    assert pos["left"]>=pos["viewLeft"]-2 and pos["right"]<=pos["viewRight"]+2, "Active tab offscreen: "+repr(pos)
     page.screenshot(path=str(OUT/"arcana-staging-mobile.png"),full_page=True)
     assert not errors, "Browser exceptions "+repr(errors)
     print(json.dumps({"result":"PASS","staging":BASE,"localArtSheets":len(categories),"catalogTotal":len(entries),"currencies":counts["currency"],"pets":counts["pet"],"browserErrors":len(errors),"categoryScroll":after},indent=2))
