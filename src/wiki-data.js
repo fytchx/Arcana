@@ -39,3 +39,14 @@ export const matchingRecords=(entries,kind='all',query='')=>{
  return filtered.sort((a,b)=>relevance(b)-relevance(a)||a.title.localeCompare(b.title));
 };
 export function recordKindLabel(kind){return ({item:'Equipment',material:'Materials',currency:'Currencies',pet:'Pet Companions',biome:'Biomes',monster:'Monsters','class-skill':'Class Skills',passive:'Passives',rune:'Rune Families',runeword:'Runewords','pet-affix':'Pet Affixes','pet-bonus':'Pet Hatch Bonuses','item-affix':'Gear Affixes'})[kind]||'Reference';}
+
+/* Editorial cross-links. Keep these specific and evidence-backed.
+   Future articles can add related guide IDs, Codex categories, and tool links
+   without changing routing or hardcoding UI components. */
+export const WIKI_CONNECTIONS=Object.freeze({
+ 'pet-compound':{articles:['season-2','guide-builds'],collections:['pet','pet-bonus','pet-affix'],tools:['compound','petlab','affixes']},
+ 'rune-grid':{articles:['season-2','guide-builds'],collections:['rune','runeword'],tools:['runes','build']},
+ 'monster-level':{articles:['season-2'],collections:['biome','monster'],tools:['skills','passives']},
+ 'season-2':{articles:['monster-level','pet-compound','rune-grid'],collections:['item','class-skill','pet'],tools:['build','guildtree','raids']},
+ 'guide-builds':{articles:['rune-grid','pet-compound'],collections:['item','rune','pet'],tools:['build','runes','compare']}
+});
