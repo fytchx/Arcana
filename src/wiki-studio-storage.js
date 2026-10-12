@@ -24,5 +24,6 @@ export const getWikiDraft=id=>transaction('get',id);
 export const deleteWikiDraft=id=>transaction('delete',id);
 export const putWikiDraft=raw=>{
  const normalized=normalizeWikiDraft(raw),recordId=String(raw?.recordId||'draft-'+Date.now()+'-'+Math.random().toString(36).slice(2,8));
- return transaction('put',null,{...normalized,recordId,updatedAt:new Date().toISOString()});
+ const saved={...normalized,recordId,updatedAt:new Date().toISOString()};
+ return transaction('put',null,saved).then(()=>saved);
 };
