@@ -88,7 +88,7 @@ export function relatedDestinations(route){
  return (NAV_FLOWS[route]||[]).map(navDestination).filter(Boolean);
 }
 export function connectedNext(route){
- if(route==='home'||route.startsWith('wiki/')||route==='wiki'||route==='lfg'||route==='reference/detail')return '';
+ if(['home','labs','calculators','wiki','lfg'].includes(route)||route.startsWith('wiki/')||route==='reference/detail')return '';
  const related=relatedDestinations(route);
  if(!related.length)return '';
  return '<section class="arcanaNext" aria-label="Recommended next steps"><div class="arcanaNextHead"><span class="eyebrow">CONNECTED ARCANA</span><h2>Where to next?</h2><p>Jump to a relevant guide, reference or tool. Your current work stays saved.</p></div>'+
