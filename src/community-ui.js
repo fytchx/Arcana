@@ -1,0 +1,150 @@
+import {esc,icon} from './ui.js';
+const state={me:undefined,enabled:false,posts:[],post:null,profile:null,loading:null,error:'',lastRoute:'',requested:''};
+const titleProfile=p=>esc(p?.displayName||'Arcana player');
+const labels=roles=>(roles||[]).map(r=>'<span class="accountRole role-'+esc(r.id)+'">'+esc(r.label)+'</span>').join('');
+const notice=t=>'<p class="communityNotice">'+esc(t)+'</p>';
+const getJSON=async(url,options)=>{
+ const res=await fetch(url,{credentials:'same-origin',cache:'no-store',...options});
+ const out=await res.json();
+ if(!res.ok)throw Error(out.error||'Arcana account service unavailable.');
+ return out;
+};
+const fields=[
+ ['displayName','Display name','text',50],['inGameName','IdleArc character name','text',48],
+ ['guild','Guild','text',70],['favoriteClass','Favorite class or build','text',45],
+ ['raidStatus','Daily raid teams','text',90],['guildStatus','Guild recruitment','text',90]
+];
+const profileCard=(p,{full=false}={})=>{
+ if(!p)return notice('Player profile not available.');
+ return '<article class="playerCard"><div class="playerCardHead"><span class="playerAvatar">'+esc((p.displayName||'?').slice(0,1).toUpperCase())+'</span><div><span class="eyebrow">ARCANA PLAYER CARD</span><h2>'+titleProfile(p)+'</h2><div class="roleBadges">'+labels(p.roles)+'</div></div></div>'+
+ '<div class="playerFacts">'+[
+  ['IN-GAME NAME',p.inGameName],['GUILD',p.guild],['FAVORITE CLASS',p.favoriteClass],
+  ['RAID TEAM STATUS',p.raidStatus],['GUILD STATUS',p.guildStatus]
+ ].filter(([,v])=>v).map(([k,v])=>'<div><small>'+k+'</small><strong>'+esc(v)+'</strong></div>').join('')+'</div>'+
+ (p.description?'<p class="playerBio">'+esc(p.description)+'</p>':'')+
+ (full?'<button type="button" class="btn secondary" data-community-action="copy-profile" data-id="'+esc(p.id)+'">'+icon('link',16)+' Copy player-card link</button>':'<button class="btn secondary" data-route="profile" data-params="id='+esc(p.id)+'">View player card '+icon('arrow',15)+'</button>')+
+ '</article>';
+};
+const signInPanel=()=>{
+ return '<section class="communityWelcome"><h2>Join Arcana, keep the freedom.</h2><p>Your calculators, Build Studio and shareable planner links stay completely free without an account. An account adds your player card and lets you publish community builds and guides.</p>'+
+ (state.enabled?'<a class="btn primary" href="/api/account/login">'+icon('users',17)+' Continue with Discord</a>':
+ '<p class="mutedSmall">Account sign-in is not enabled on this preview. All guest tools remain available.</p>')+
+ '</section>';
+};
+const profileForm=p=>{
+ return '<form class="accountProfileForm" data-community-form="profile"><h2>Edit player card</h2>'+
+ fields.map(([key,label,type,max])=>'<label>'+label+'<input name="'+key+'" type="'+type+'" maxlength="'+max+'" value="'+esc(p[key]||'')+'"></label>').join('')+
+ '<label>About your character and what you are looking for<textarea name="description" maxlength="500" rows="5" placeholder="Builds you enjoy, raid team goals, or guild details">'+esc(p.description||'')+'</textarea></label>'+
+ '<button class="btn primary" type="submit">Save player card</button><p class="mutedSmall">Everything on this card is public. Only share details you want other players to see. Guild and class information is self-reported.</p></form>';
+};
+function accountView(){
+ if(state.me===undefined)return notice('Loading your Arcana account…');
+ if(!state.me)return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">ARCANA MEMBERSHIP</span><h1>Your Arcana identity</h1><p>Every player gets full access to Arcana tools, with or without a login.</p></div>'+signInPanel()+'</div>';
+ const p=state.me;
+ return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">ARCANA MEMBER</span><h1>My player card</h1><p>Make it easy for other IdleArc players to find and recognize you.</p></div>'+
+ profileCard(p,{full:true})+profileForm(p)+'<div class="communityAccountActions"><button class="btn secondary" data-route="community/create">Create a community post</button>'+
+ (p.permissions?.publishWiki?'<button class="btn secondary" data-route="wiki/studio">Open Wiki Studio</button>':'')+
+ '<button class="btn secondary" data-community-action="logout">Sign out</button></div></div>';
+}
+const communityPostCard=p=>'<article class="communityPostCard"><span class="eyebrow">'+esc(p.kind==='build'?'PLAYER BUILD':'PLAYER GUIDE')+'</span>'+
+ '<h3>'+esc(p.title)+'</h3><p>'+esc(p.summary)+'</p><small>'+esc(p.createdAt?new Date(p.createdAt).toLocaleDateString():'')+'</small>'+
+ '<div class="communityPostActions"><button class="btn secondary" data-route="community/post" data-params="id='+esc(p.id)+'">Open '+icon('arrow',15)+'</button>'+
+ (p.authorId?'<button class="btn secondary" data-route="profile" data-params="id='+esc(p.authorId)+'">Player card</button>':'')+'</div></article>';
+function communityView(){
+ return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">MADE BY THE COMMUNITY</span><h1>Player builds & guides</h1><p>Share how you actually play. These are member contributions, separate from the curated ArcanaWiki.</p>'+
+ (state.me?'<button class="btn primary" data-route="community/create">'+icon('plus',17)+' Share a build or guide</button>':'<button class="btn secondary" data-route="account">Get a player card</button>')+'</div>'+
+ '<div class="communityPostGrid">'+(state.posts.length?state.posts.map(communityPostCard).join(''):notice('No community contributions here yet. The tools and Wiki remain free to browse.'))+'</div></div>';
+}
+const niceParagraphs=body=>String(body||'').split(/\n\s*\n/).filter(Boolean).map(p=>'<p>'+esc(p)+'</p>').join('');
+function detailView(){
+ const p=state.post;
+ if(!p)return notice('Loading community post…');
+ const mine=state.me?.id===p.authorId,mod=state.me?.permissions?.hideContent,admin=state.me?.permissions?.deleteContent;
+ return '<div class="communityPage"><button class="wikiBack" data-route="community">'+icon('back',16)+' Community library</button>'+
+ '<article class="communityArticle"><span class="eyebrow">'+esc(p.kind==='build'?'PLAYER BUILD':'PLAYER GUIDE')+' · '+esc(p.status==='hidden'?'HIDDEN':'COMMUNITY')</span>'+
+ '<h1>'+esc(p.title)+'</h1><p class="lead">'+esc(p.summary)+'</p>'+
+ '<button class="btn secondary" data-route="profile" data-params="id='+esc(p.authorId)+'">View creator profile</button>'+
+ '<div class="communityBody">'+niceParagraphs(p.body)+'</div>'+
+ (p.kind==='build'&&p.build?'<button class="btn primary" data-community-action="use-build">'+icon('flask',18)+' Copy build into Build Studio</button>':'')+
+ ((mod||admin)?'<div class="communityModeration"><h2>Moderation</h2>'+
+ (mod?'<button class="btn secondary" data-community-action="visibility" data-id="'+esc(p.id)+'">'+(p.status==='hidden'?'Restore public visibility':'Hide this post')+'</button>':'')+
+ (admin?'<button class="studioDanger" data-community-action="delete" data-id="'+esc(p.id)+'">Delete post permanently</button>':'')+'</div>':'')+
+ (mine?'<p class="mutedSmall">You published this contribution. Changes to the article editor are coming in a later update.</p>':'')+'</article></div>';
+}
+function createView(query){
+ if(!state.me)return '<div class="communityPage"><h1>Share with the community</h1>'+signInPanel()+'</div>';
+ const kind=query.get('kind')==='build'?'build':'guide';
+ return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">PLAYER CONTENT</span><h1>Publish a community contribution</h1><p>These posts appear in the community area, not ArcanaWiki. Your player card is credited automatically.</p></div>'+
+ '<form class="communityCreateForm" data-community-form="post">'+
+ '<label>Contribution type<select name="kind"><option value="guide" '+(kind==='guide'?'selected':'')+'>Guide</option><option value="build" '+(kind==='build'?'selected':'')+'>Build Studio snapshot</option></select></label>'+
+ '<label>Title<input name="title" maxlength="110" required placeholder="A useful title for other players"></label>'+
+ '<label>Short summary<textarea name="summary" maxlength="300" rows="3" required placeholder="What will other players learn?"></textarea></label>'+
+ '<label>Details<textarea name="body" maxlength="12000" rows="10" placeholder="Explain your choices, goals and tradeoffs"></textarea></label>'+
+ '<p class="mutedSmall">Build posts attach your current locally saved Build Studio draft. Guests can still share normal planner links without publishing anything.</p>'+
+ '<button class="btn primary" type="submit">Publish to community</button></form></div>';
+}
+export function communityPage(route,query){
+ if(route==='account')return accountView();
+ if(route==='profile')return '<div class="communityPage"><button class="wikiBack" data-route="community">'+icon('back',16)+' Community</button>'+profileCard(state.profile,{full:true})+'</div>';
+ if(route==='community')return communityView();
+ if(route==='community/post')return detailView();
+ if(route==='community/create')return createView(query);
+ return '';
+}
+export async function refreshAccount(){
+ try{const data=await getJSON('/api/account/me');state.me=data.user;state.enabled=Boolean(data.enabled);}
+ catch{state.me=null;state.enabled=false;}
+}
+export async function loadCommunityPage(route,query,refresh){
+ const key=route+'?'+query.toString();
+ if(state.requested===key)return;
+ state.requested=key;
+ try{
+  if(state.me===undefined)await refreshAccount();
+  if(route==='community'){state.posts=(await getJSON('/api/community/posts')).posts||[];}
+  else if(route==='community/post'){state.post=(await getJSON('/api/community/posts/'+encodeURIComponent(query.get('id')||''))).post;}
+  else if(route==='profile'){state.profile=(await getJSON('/api/profiles/'+encodeURIComponent(query.get('id')||''))).profile;}
+  state.error='';
+ }catch(e){state.error=e.message;state.post=null;state.profile=null;}
+ if(location.hash.replace(/^#\/?/,'').split('?')[0]===route)refresh();
+}
+export function wireCommunityUI({go,getBuild,applyBuild,refresh,toast}){
+ document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-community-action]');if(!el)return;
+  e.preventDefault();
+  const action=el.dataset.communityAction,id=el.dataset.id;
+  (async()=>{
+   if(action==='copy-profile'){await navigator.clipboard.writeText(location.origin+'/#/profile?id='+encodeURIComponent(id));toast('Player card copied.');return;}
+   if(action==='logout'){await getJSON('/api/account/logout',{method:'POST'});state.me=null;state.requested='';go('account');return;}
+   if(action==='use-build'){if(!state.post?.build)throw Error('This build is unavailable.');applyBuild(state.post.build);toast('Build copied to your local workspace.');go('labs/build');return;}
+   if(action==='visibility'){
+    const next=state.post?.status==='hidden'?'public':'hidden';
+    if(next==='hidden'&&!confirm('Hide this community contribution from public viewing?'))return;
+    await getJSON('/api/community/posts/'+encodeURIComponent(id)+'/visibility',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({status:next,reason:'Moderator action'})});
+    state.requested='';await loadCommunityPage('community/post',new URLSearchParams({id}),refresh);return;
+   }
+   if(action==='delete'){
+    if(!confirm('Permanently delete this post? This action cannot be undone.'))return;
+    await getJSON('/api/community/posts/'+encodeURIComponent(id),{method:'DELETE'});
+    state.requested='';go('community');return;
+   }
+  })().catch(err=>toast(err.message));
+ });
+ document.addEventListener('submit',e=>{
+  const form=e.target.closest('[data-community-form]');if(!form)return;
+  e.preventDefault();
+  (async()=>{
+   const data=Object.fromEntries(new FormData(form));
+   if(form.dataset.communityForm==='profile'){
+    const out=await getJSON('/api/account/profile',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({profile:data})});
+    state.me=out.profile;toast('Player card updated.');refresh();return;
+   }
+   if(form.dataset.communityForm==='post'){
+    const snapshot=data.kind==='build'?getBuild():null;
+    if(data.kind==='build'&&!snapshot)throw Error('Create and save a build in Build Studio first.');
+    const out=await getJSON('/api/community/posts',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...data,build:snapshot})});
+    state.requested='';go('community/post',{id:out.post.id});return;
+   }
+  })().catch(err=>toast(err.message));
+ });
+}
