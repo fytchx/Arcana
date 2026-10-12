@@ -15,7 +15,9 @@ const normImport=raw=>{
  const texts=name=>unique((Array.isArray(raw[name])?raw[name]:[]).map(x=>short(x,240)).filter(Boolean)).slice(0,60);
  return {sourceTitle:short(raw.sourceTitle,160),sourceUrl:/^https:\/\//.test(String(raw.sourceUrl||''))?short(raw.sourceUrl,500):'',
  revisionAt:short(raw.revisionAt,40),siteName:short(raw.siteName,100),contributors:texts('contributors'),
- images:texts('images'),unresolvedLinks:texts('unresolvedLinks'),warnings:texts('warnings')};
+ images:texts('images'),unresolvedLinks:texts('unresolvedLinks'),warnings:texts('warnings'),
+ rawWikitext:typeof raw.rawWikitext==='string'?raw.rawWikitext.slice(0,350000):'',
+ truncated:raw.truncated===true,reviewed:raw.reviewed===true};
 };
 export const validImageDataURL=s=>typeof s==='string'&&/^data:image\/(webp|png|jpeg);base64,[a-z0-9+/=]+$/i.test(s)&&s.length<=MAX_IMAGE_BYTES*1.5;
 export function normalizeWikiDraft(raw={}){
@@ -48,6 +50,7 @@ export function validateWikiDraft(raw,{existingIds=[]}={}){
  if(d.sections.some(s=>s.title&&!s.body.trim()))errors.push('Each named section needs content.');
  if(d.images.some(x=>!x.alt.trim()))errors.push('Every uploaded image needs alternative text.');
  if(d.importSource?.sourceTitle&&!d.sourceUrl)errors.push('Add the original Fandom article URL for attribution before publishing.');
+ if(d.importSource?.truncated&&!d.importSource.reviewed)errors.push('Incomplete Fandom conversion: compare against the original source and confirm the page has been fully restored.');
  if(d.sections.some(x=>x.imageRef&&!x.imageId))errors.push('Match each imported image, or clear its original image reference before publishing.');
  if(d.sourceUrl&&!/^https:\/\/[^\s]+$/i.test(d.sourceUrl))errors.push('Source link must be HTTPS.');
  return {draft:d,errors,valid:errors.length===0};
