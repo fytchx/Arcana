@@ -110,10 +110,24 @@ with sync_playwright() as playwright:
       document.documentElement.style.removeProperty('--accent');
     }""")
     assert page.get_by_text('ArcanaWiki',exact=True).count()>0, 'ArcanaWiki navigation missing'
+    # New intent-first navigation stays tappable at common Android widths.
+    assert page.locator('.arcanaStartGrid .arcanaConnection').count()==6, 'Home quick-start should have six clear routes'
+    for btn in page.locator('.arcanaStartGrid .arcanaConnection').all():
+        assert btn.bounding_box()['height']>=44, 'A quick-start touch target is undersized'
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Home has horizontal overflow'
+    page.locator('.arcanaStartGrid [data-route="labs/guild-tree"]').dispatch_event('click')
+    page.wait_for_timeout(150)
+    assert page.locator('.guildTreePlanner').count()==1, 'Home Guild Planner shortcut is broken'
+    assert page.locator('.arcanaCrumbs button[data-route="labs"]').count()==1, 'Tool breadcrumb is missing'
+    assert page.locator('.arcanaNext [data-route="lfg/guilds"]').count()==1, 'Guild Planner has no route to guilds'
+    page.evaluate("location.hash='#/home'")
+    page.wait_for_timeout(150)
     page.screenshot(path=str(OUT/'home_mobile.png'),full_page=True)
     page.get_by_text('ArcanaWiki',exact=True).first.dispatch_event('click')
     page.wait_for_timeout(250)
     assert 'wiki' in page.url or page.locator('body').inner_text().find('ARCANAWIKI')>=0, 'Wiki did not open'
+    assert page.locator('.wikiPortalShortcuts .arcanaConnection').count()==4, 'Wiki shortcuts are missing'
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Wiki landing has horizontal overflow'
     page.locator('[data-route="wiki/library"]').first.dispatch_event('click')
     page.wait_for_timeout(250)
     rail=page.locator('.wikiCategoryScroll')
@@ -229,6 +243,19 @@ with sync_playwright() as playwright:
     assert page.locator('[data-pet-bonus-target="0"]').input_value()=='pet_damage'
     assert int(page.locator('.petBuildHead small').inner_text().split('/')[0])>=1
     page.screenshot(path=str(OUT/'pets_simplified_mobile.png'),full_page=True)
+
+    # Editorial cross-links should open their tools and preserve the site theme.
+    page.evaluate("location.hash='#/wiki/article?id=pet-compound'")
+    page.wait_for_timeout(180)
+    assert page.locator('.wikiConnections .wikiConnectionRow').count()>=1, 'Related Wiki guides missing'
+    assert page.locator('.wikiSectionActions .arcanaConnection').count()>=2, 'Inline article links missing'
+    assert page.locator('.wikiConnections [data-route="calculators/affixes"]').count()==1, 'Article does not link Pet Affix Cost'
+    page.locator('.wikiConnections [data-route="calculators/affixes"]').dispatch_event('click')
+    page.wait_for_timeout(180)
+    assert page.locator('#petAffixType').count()==1, 'Related Pet Affix link is broken'
+    assert page.locator('.arcanaNext').count()==1, 'Calculator follow-up links missing'
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Connected tool has horizontal overflow'
+    page.screenshot(path=str(OUT/'connected_wiki_mobile.png'),full_page=True)
 
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
     print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
