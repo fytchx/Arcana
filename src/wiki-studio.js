@@ -86,7 +86,22 @@ async function refresh(){
  repaint();
 }
 export const wikiStudioView=()=>'<div id="wikiStudioRoot" class="wikiStudio"><p role="status">Opening Wiki Studio…</p></div>';
-export async function mountWikiStudio(){if(!getRoot())return;if(!s.loaded)await refresh();else repaint();}
+export async function mountWikiStudio(){
+ if(!getRoot())return;
+ try{
+  const res=await fetch('/api/account/me',{cache:'no-store'});
+  if(res.ok){
+   const account=await res.json();
+   if(account.enabled&&!account.user?.permissions?.publishWiki){
+    const root=getRoot();
+    if(root)root.innerHTML='<div class="studioHeader"><div><span class="eyebrow">APPROVED CONTRIBUTORS</span><h1>ArcanaWiki Editor Access</h1><p>Only approved Wiki Editors, Admins and the Creator can write or revise official wiki pages. Everyone can read the wiki and use the connected tools.</p></div></div><div class="studioHomeActions"><button class="btn primary" data-route="account">My Arcana account</button><button class="btn secondary" data-route="community">Browse player-made guides</button></div>';
+    return;
+   }
+  }
+ }catch(e){console.warn('Editor access check unavailable:',e);}
+ if(!getRoot())return;
+ if(!s.loaded)await refresh();else repaint();
+}
 function schedule(){
  s.dirty=true;status('Saving draft…');clearTimeout(s.timer);
  s.timer=setTimeout(async()=>{if(!s.draft)return;try{s.draft=await putWikiDraft(s.draft);s.dirty=false;status('Saved on this device');}catch(e){message(e)}},500);
@@ -144,9 +159,11 @@ async function act(btn){
   if(action==='revise'){
    await flush();
    if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(key||''))throw Error('Invalid article URL.');
-   const owner=prompt('Owner key to edit this published page (never saved):');
-   if(!owner)return;
-   const res=await fetch('/api/wiki/edit/'+encodeURIComponent(key),{headers:{'x-arcana-wiki-key':owner},cache:'no-store'});
+   const auth=await fetch('/api/account/me',{cache:'no-store'}).then(r=>r.json()).catch(()=>({}));
+   const editor=Boolean(auth.user?.permissions?.publishWiki);
+   const owner=editor?'':prompt('Owner key to edit this published page (never saved):');
+   if(!editor&&!owner)return;
+   const res=await fetch('/api/wiki/edit/'+encodeURIComponent(key),{headers:owner?{'x-arcana-wiki-key':owner}:{},cache:'no-store'});
    const out=await res.json();
    if(!res.ok)throw Error(out.error||'Could not open the published article.');
    const draft=normalizeWikiDraft({...out.draft,baseRevision:out.revision});
@@ -186,9 +203,12 @@ async function act(btn){
    if(!check.valid){status('Complete the checklist before publishing: '+check.errors[0]);s.mode='edit';repaint();return;}
    let config=await fetch('/api/wiki/publishing').then(r=>r.json()).catch(()=>({enabled:false}));
    if(!config.enabled){status('Direct publishing is not configured yet. Export the draft JSON so it can be reviewed and added to GitHub.');return;}
-   const key=prompt('Owner publishing key (never saved on this device):');if(!key)return;
+   const auth=await fetch('/api/account/me',{cache:'no-store'}).then(r=>r.json()).catch(()=>({}));
+   const editor=Boolean(auth.user?.permissions?.publishWiki);
+   const key=editor?'':prompt('Owner publishing key (never saved on this device):');
+   if(!editor&&!key)return;
    s.publishing=true;repaint();
-   try{const res=await fetch('/api/wiki/publish',{method:'POST',headers:{'content-type':'application/json','x-arcana-wiki-key':key},body:JSON.stringify({draft:check.draft,baseRevision:check.draft.baseRevision})});const out=await res.json();if(!res.ok)throw Error(out.error||'Publishing failed.');
+   try{const res=await fetch('/api/wiki/publish',{method:'POST',headers:{'content-type':'application/json',...(key?{'x-arcana-wiki-key':key}:{})},body:JSON.stringify({draft:check.draft,baseRevision:check.draft.baseRevision})});const out=await res.json();if(!res.ok)throw Error(out.error||'Publishing failed.');
     s.draft.baseRevision=out.revision;
     try{s.draft=await putWikiDraft(s.draft);status('Published successfully. Your article is live and this draft can now be revised safely.');}
     catch {status('Published successfully, but the updated draft could not be saved to this device. Export a backup.');}
