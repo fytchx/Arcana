@@ -71,6 +71,35 @@ with sync_playwright() as playwright:
     assert page.locator('.arcanaSignature').count()==1, 'Footer must appear exactly once'
     footer=page.locator('.arcanaSignature').inner_text()
     assert 'Made by Zane' in footer and 'PDX & OVK' in footer, footer
+    # Check actual computed footer styling as Arcana's theme bridge changes color.
+    # Do not mutate production theme settings. Only exercise local CSS variables.
+    accents=[
+        '#00FF88','#A98BFF','#13C5F4','#F062BE','#FFC14D',
+        '#EC464D','#80F0E6','#B8FF29','#6964E8','#E8E9ED'
+    ]
+    for accent in accents:
+        evaluated=page.evaluate("""accent => {
+          const root=document.documentElement;
+          root.style.setProperty('--theme-highlight',accent);
+          root.style.setProperty('--accent',accent);
+          const footer=document.querySelector('.arcanaSignature');
+          const signature=footer.querySelector('.arcanaSigText em');
+          const info=footer.querySelector('.arcanaSigInfo summary');
+          return {
+            text:getComputedStyle(signature).color,
+            icon:getComputedStyle(info).color,
+            border:getComputedStyle(footer).borderTopColor
+          };
+        }""",accent)
+        expected=tuple(int(accent[j:j+2],16) for j in (1,3,5))
+        for key in ('text','icon'):
+            found=tuple(int(x) for x in re.findall(r'\\d+',evaluated[key])[:3])
+            assert found==expected, f'Signature {key} did not follow {accent}: {evaluated[key]}'
+    # Return to the default current theme after the color-switch regression test.
+    page.evaluate("""() => {
+      document.documentElement.style.removeProperty('--theme-highlight');
+      document.documentElement.style.removeProperty('--accent');
+    }""")
     assert page.get_by_text('ArcanaWiki',exact=True).count()>0, 'ArcanaWiki navigation missing'
     page.screenshot(path=str(OUT/'home_mobile.png'),full_page=True)
     page.get_by_text('ArcanaWiki',exact=True).first.dispatch_event('click')

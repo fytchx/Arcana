@@ -54,3 +54,13 @@ test('Codex presents visual atlas separately from compact mechanics rows', async
  assert.match(views,/wikiReferenceTopics/);
  assert.match(views,/wikiAtlasTopics/);
 });
+
+test('signature inherits the live theme highlight, rather than hardcoding violet',async()=>{
+ const html=await read('../index.html');
+ const signature=html.split('.arcanaSignature{')[1]?.split('.wikiCategoryScroll{')[0]||'';
+ assert.ok(signature,'Signature CSS should be present');
+ assert.match(signature,/--sigAccent:var\(--theme-highlight/);
+ assert.match(signature,/\.arcanaSigText em\{[^}]*var\(--sigAccent\)/);
+ assert.match(signature,/\.arcanaSigInfo summary\{[^}]*var\(--sigAccent\)/);
+ assert.equal(signature.includes('var(--highlight,#b99cff)'),false);
+});
