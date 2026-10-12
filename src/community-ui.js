@@ -61,7 +61,7 @@ function detailView(){
  if(!p)return notice('Loading community post…');
  const mine=state.me?.id===p.authorId,mod=state.me?.permissions?.hideContent,admin=state.me?.permissions?.deleteContent;
  return '<div class="communityPage"><button class="wikiBack" data-route="community">'+icon('back',16)+' Community library</button>'+
- '<article class="communityArticle"><span class="eyebrow">'+esc(p.kind==='build'?'PLAYER BUILD':'PLAYER GUIDE')+' · '+esc(p.status==='hidden'?'HIDDEN':'COMMUNITY')</span>'+
+ '<article class="communityArticle"><span class="eyebrow">'+esc(p.kind==='build'?'PLAYER BUILD':'PLAYER GUIDE')+' · '+esc(p.status==='hidden'?'HIDDEN':'COMMUNITY')+'</span>'+
  '<h1>'+esc(p.title)+'</h1><p class="lead">'+esc(p.summary)+'</p>'+
  '<button class="btn secondary" data-route="profile" data-params="id='+esc(p.authorId)+'">View creator profile</button>'+
  '<div class="communityBody">'+niceParagraphs(p.body)+'</div>'+
