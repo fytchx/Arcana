@@ -75,7 +75,14 @@ with sync_playwright() as playwright:
     page.set_default_timeout(3000)
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
-    page.set_content(HTML,wait_until='domcontentloaded')
+    # Use a genuine HTTPS test origin. about:blank is opaque and cannot persist IndexedDB Wiki drafts.
+    def qa_origin(route):
+        if route.request.url.rstrip('/')=='https://arcana-qa.test':
+            route.fulfill(status=200,content_type='text/html',body=HTML)
+        else:
+            route.fulfill(status=404,body='offline QA resource')
+    page.route('https://arcana-qa.test/**',qa_origin)
+    page.goto('https://arcana-qa.test/',wait_until='domcontentloaded')
     page.wait_for_timeout(700)
     assert page.locator('.skipMain').count()==1, 'Accessible skip navigation missing'
     page.locator('.skipMain').dispatch_event('click')
@@ -324,6 +331,47 @@ with sync_playwright() as playwright:
     assert page.locator('.guildCompareRow strong.up').count()>=1, 'Guild comparison did not detect the changed bonus'
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Guild comparison causes page overflow'
     page.screenshot(path=str(OUT/'guild_comparison_mobile.png'),full_page=True)
+
+    # Wiki Studio: create a local draft, upload an actual browser-decoded PNG and preview it.
+    import struct, zlib
+    def png_chunk(tag, data):
+        return struct.pack('!I', len(data)) + tag + data + struct.pack('!I', zlib.crc32(tag+data)&0xffffffff)
+    png_scanline=bytes([0,255,0,128,255,0,128])
+    test_png=(bytes([137,80,78,71,13,10,26,10])
+              +png_chunk(b'IHDR', struct.pack('!IIBBBBB', 2, 2, 8, 2, 0, 0, 0))
+              +png_chunk(b'IDAT', zlib.compress(png_scanline*2))
+              +png_chunk(b'IEND', b''))
+    page.evaluate("location.hash='#/wiki/studio'")
+    page.wait_for_timeout(300)
+    assert page.locator('[data-ws-action="new"]').count()>=1, 'Wiki Studio new-draft action missing'
+    page.locator('[data-ws-action="new"]').first.dispatch_event('click')
+    page.wait_for_timeout(180)
+    assert page.locator('[data-ws-field="title"]').count()==1, 'Wiki Studio editor failed to open'
+    page.locator('[data-ws-field="title"]').fill('My Guild Strategy Guide')
+    page.locator('[data-ws-field="id"]').fill('my-guild-strategy')
+    page.locator('[data-ws-field="summary"]').fill('An example article about planning guild points and how players can use this information.')
+    page.locator('[data-ws-section="0"][data-ws-property="body"]').fill('Track the guild point budget before you decide on rank priorities.\\n\\n- Test your baseline\\n- Compare the available bonuses')
+    page.locator('#wikiStudioUpload').set_input_files({'name':'guild.png','mimeType':'image/png','buffer':test_png})
+    page.wait_for_timeout(400)
+    assert page.locator('.studioImage').count()==1, 'Uploaded Wiki image not displayed'
+    page.locator('[data-ws-image="0"][data-ws-property="alt"]').fill('An illustrated example of a guild plan')
+    page.locator('[data-ws-image="0"][data-ws-property="caption"]').fill('Guild strategy image')
+    page.locator('[data-ws-section="0"][data-ws-property="imageId"]').select_option(index=1)
+    image_selected=page.locator('[data-ws-section="0"][data-ws-property="imageId"]').input_value()
+    assert image_selected.startswith('image-'), 'Section image picker did not retain image ID'
+    page.locator('[data-ws-action="preview"]').dispatch_event('click')
+    page.wait_for_timeout(650)
+    assert page.locator('.studioPreview').count()==1, 'Wiki preview not opened: '+(page.locator('#wikiStudioStatus').inner_text() if page.locator('#wikiStudioStatus').count() else 'missing status')
+    assert page.locator('.studioPreviewSection figure img').count()==1, 'Article image missing in preview: '+page.locator('.studioPreview').inner_text()[-500:]
+    assert page.locator('.studioReady').count()>=1, 'Valid draft failed Wiki Studio quality checks'
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Wiki Studio preview has horizontal overflow'
+    page.screenshot(path=str(OUT/'wiki_studio_preview_mobile.png'),full_page=True)
+    page.locator('[data-ws-action="edit"]').dispatch_event('click')
+    page.wait_for_timeout(120)
+    page.locator('[data-ws-action="list"]').first.dispatch_event('click')
+    page.wait_for_timeout(180)
+    assert page.locator('.studioDraft').count()==1, 'Local Wiki draft did not survive navigation'
+    page.screenshot(path=str(OUT/'wiki_studio_drafts_mobile.png'),full_page=True)
 
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
     print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))

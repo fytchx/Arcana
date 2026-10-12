@@ -60,8 +60,16 @@ export const WIKI_ARTICLES=Object.freeze([
 export const WIKI_CATEGORY_LIST=Object.freeze([
  ['all','Everything','book'],['item','Equipment','shield'],['material','Materials','gem'],['currency','Currencies','gem'],['class-skill','Class Skills','git'],['passive','Passives','layers'],['rune','Runes','gem'],['runeword','Runewords','link'],['pet','Pet Companions','paw'],['pet-bonus','Pet Bonuses','paw'],['pet-affix','Pet Affixes','paw'],['biome','Biomes','layers'],['monster','Monsters','sword'],['item-affix','Gear Affixes','spark']
 ]);
-export const wikiArticleById=id=>WIKI_ARTICLES.find(x=>x.id===id)||null;
-export const wikiArticleEntries=()=>WIKI_ARTICLES.map(a=>({id:'wiki:article:'+a.id,kind:'wikiarticle',title:a.title,subtitle:'ArcanaWiki · '+a.category,description:a.summary,keywords:a.keywords,route:'wiki/article?id='+a.id}));
+let publishedWikiArticles=[];
+export function setPublishedWikiArticles(input){
+ const values=Array.isArray(input?.articles)?input.articles:Array.isArray(input)?input:[];
+ const reserved=new Set(WIKI_ARTICLES.map(article=>article.id));
+ publishedWikiArticles=values.filter(x=>x&&typeof x.id==='string'&&/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(x.id)&&!reserved.has(x.id)&&typeof x.title==='string'&&Array.isArray(x.sections)&&x.sections.length).slice(0,1000);
+ return publishedWikiArticles.length;
+}
+export const allWikiArticles=()=>[...WIKI_ARTICLES,...publishedWikiArticles];
+export const wikiArticleById=id=>allWikiArticles().find(x=>x.id===id)||null;
+export const wikiArticleEntries=()=>allWikiArticles().map(a=>({id:'wiki:article:'+a.id,kind:'wikiarticle',title:a.title,subtitle:'ArcanaWiki · '+a.category,description:a.summary,keywords:a.keywords,route:'wiki/article?id='+a.id}));
 export const matchingRecords=(entries,kind='all',query='')=>{
  const q=String(query).toLowerCase().replace(/[_-]/g,' ').trim(),ts=q.split(/\s+/).filter(Boolean);
  const filtered=entries.filter(e=>(kind==='all'||e.gameKind===kind)&&ts.every(t=>(e.title+' '+e.description+' '+e.keywords+' '+e.subtitle).toLowerCase().replace(/[_-]/g,' ').includes(t)));

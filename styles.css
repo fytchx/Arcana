@@ -861,3 +861,84 @@ body,.shell{background:var(--theme-main)}
 /* Keyboard-first navigation stays invisible during ordinary touch use. */
 .skipMain{position:fixed;top:12px;left:12px;z-index:100000;transform:translateY(-180%);padding:12px 17px;min-height:44px;background:var(--theme-secondary,var(--panel));color:var(--text);border:2px solid var(--theme-highlight,var(--accent));border-radius:10px;font-weight:800;box-shadow:0 8px 28px #0009;cursor:pointer}
 .skipMain:focus-visible{transform:translateY(0);outline:2px solid var(--theme-highlight,var(--accent));outline-offset:2px}
+
+
+/* ArcanaWiki Studio. Mobile-first, local drafts with authenticated publication. */
+.wikiStudio{min-width:0;width:100%;max-width:1340px;margin:0 auto;padding-bottom:20px;color:var(--text)}
+.studioHeader{display:flex;justify-content:space-between;gap:15px;align-items:center;padding:6px 0 18px;border-bottom:1px solid var(--theme-border,var(--line));margin-bottom:17px}
+.studioHeader h1{font-size:clamp(25px,5vw,36px);letter-spacing:-.035em;line-height:1.15;margin:6px 0}
+.studioHeader p{color:var(--soft);font-size:12px;line-height:1.65;margin:0;max-width:680px}
+.studioHeader>.btn{flex:none}
+.studioHomeActions,.studioControlBar,.studioPreviewActions{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 13px;align-items:center}
+.studioWorkflow{border-left:3px solid var(--theme-highlight,var(--accent));padding:12px 14px;font-size:12px;line-height:1.65;background:var(--theme-highlight-soft,var(--panel));color:var(--soft);border-radius:0 10px 10px 0;margin:12px 0 18px}
+.studioWorkflow strong{color:var(--text)}
+.studioEditorGrid{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(240px,1fr);gap:16px;align-items:start}
+.studioEditorMain,.studioEditorAside{display:grid;gap:15px;min-width:0}
+.studioFieldset{background:var(--theme-secondary,var(--panel));border:1px solid var(--theme-border,var(--line));padding:16px;border-radius:14px;min-width:0}
+.studioFieldset>h2,.studioSectionHead h2{font-size:17px;line-height:1.35;margin:0 0 14px;color:var(--text)}
+.studioFieldset>p{font-size:11px;line-height:1.65;color:var(--soft);margin:0 0 12px}
+.studioFieldset label,.studioSection label,.studioImage label{font-size:12px;line-height:1.45;font-weight:680;display:grid;gap:7px;margin:0 0 13px;min-width:0}
+.studioFieldset label>small{color:var(--soft);font-size:10px;font-weight:400}
+.studioFieldset input:not([type=file]),.studioFieldset textarea,.studioFieldset select{width:100%;min-width:0;min-height:44px;border-radius:9px;padding:10px 12px;font:inherit;font-size:14px;line-height:1.55;color:var(--text);background:var(--theme-main,var(--bg));border:1px solid var(--theme-border,var(--line));box-shadow:none;outline:none}
+.studioFieldset textarea{resize:vertical;min-height:90px}
+.studioFieldset input:focus-visible,.studioFieldset textarea:focus-visible,.studioFieldset select:focus-visible{border-color:var(--theme-highlight,var(--accent));outline:2px solid var(--theme-highlight,var(--accent));outline-offset:1px}
+.studioSectionHead,.studioSection header{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.studioSectionHead{margin-bottom:12px}
+.studioSectionHead h2{margin:0}
+.studioSection{background:var(--theme-main,var(--bg));padding:12px;border-radius:12px;border:1px solid var(--theme-border,var(--line));margin-bottom:11px}
+.studioSection header{margin-bottom:12px}
+.studioSectionTools{display:flex;gap:5px}
+.studioSectionTools button{min-width:36px;min-height:36px;border:1px solid var(--theme-border,var(--line));background:var(--theme-secondary,var(--panel));border-radius:8px;color:var(--text);font-size:17px;cursor:pointer}
+.studioSectionTools button:disabled{opacity:.4}
+.studioImageList{display:grid;gap:12px}
+.studioImage{display:grid;grid-template-columns:minmax(90px,170px) minmax(0,1fr);gap:14px;align-items:start;padding:12px;border-radius:11px;border:1px solid var(--theme-border,var(--line));background:var(--theme-main,var(--bg))}
+.studioImage>img{width:100%;max-height:200px;object-fit:contain;border-radius:8px;background:#090b14}
+.studioImage>div{min-width:0}.studioImage strong{font-size:12px;word-break:break-word;display:block;margin-bottom:11px}
+.studioImage label{margin-bottom:8px}
+.studioUpload{position:relative;display:inline-flex!important;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:9px 13px;background:var(--theme-highlight-soft,var(--panel));border:1px solid var(--theme-border,var(--line));border-radius:10px;color:var(--text);font-size:12px!important;font-weight:750;cursor:pointer;overflow:hidden}
+.studioUpload input[type=file]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.studioImage .studioDanger,.studioDraft .studioDanger{min-height:36px;border:1px solid var(--theme-border,var(--line));background:transparent;border-radius:8px;padding:7px 10px;color:var(--soft);font-size:11px;cursor:pointer}
+.studioEmptyMini{font-size:12px;color:var(--soft);padding:25px;text-align:center;border:1px dashed var(--theme-border,var(--line));border-radius:10px}
+.studioAddLink{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}
+.studioAddLink select{margin:0}.studioAddLink button{min-height:44px;padding:9px 13px;border:1px solid var(--theme-highlight,var(--accent));border-radius:9px;color:var(--theme-accent-text,var(--accent));background:var(--theme-highlight-soft,var(--panel));cursor:pointer}
+.studioTagList{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0 13px}
+.studioTagList button{font-size:11px;line-height:1.4;border-radius:12px;border:1px solid var(--theme-border,var(--line));padding:7px 10px;background:var(--theme-main,var(--bg));color:var(--text);cursor:pointer}
+.studioValidation p{display:flex;align-items:start;gap:7px;font-size:11px;color:var(--soft);line-height:1.6}
+.studioValidation svg{flex:none;color:var(--theme-accent-text,var(--accent))}
+.studioReady{color:var(--theme-accent-text,var(--accent));font-size:12px;font-weight:720;line-height:1.6}
+.studioAlert{color:var(--text);padding:13px;background:var(--theme-highlight-soft,var(--panel));border-radius:9px;font-size:12px;line-height:1.7}
+.studioDraftList{display:grid;gap:12px}
+.studioDraft{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;border:1px solid var(--theme-border,var(--line));border-radius:13px;background:var(--theme-secondary,var(--panel))}
+.studioDraft>div:first-child{min-width:0;flex:1}.studioDraft h2{font-size:18px;margin:7px 0}.studioDraft p{font-size:11px;color:var(--soft);line-height:1.6;margin:0}
+.studioDraft>div:last-child{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.studioZero{text-align:center;padding:42px 18px;border:1px dashed var(--theme-border,var(--line));border-radius:13px}
+.studioZero>span{color:var(--theme-accent-text,var(--accent))}
+.studioZero h2{font-size:19px;margin:12px 0 7px}.studioZero p{color:var(--soft);font-size:12px;line-height:1.7}
+.studioPreview{margin:0 auto;max-width:920px}.studioPreview .wikiArticle{max-width:none}
+.studioArticle .wikiArticleIntro{padding-bottom:14px}
+.studioPreviewSection{padding:15px 0;border-bottom:1px solid var(--theme-border,var(--line))}
+.studioPreviewSection h2{font-size:19px}.studioPreviewSection p,.studioPreviewSection li{font-size:13px;line-height:1.8;color:var(--text)}
+.studioPreviewSection ul{padding-left:22px}
+.studioPreviewSection figure,.wikiArticleFigure{margin:17px 0}
+.studioPreviewSection figure img,.wikiArticleFigure img{max-width:100%;max-height:550px;width:auto;height:auto;object-fit:contain;border:1px solid var(--theme-border,var(--line));border-radius:11px}
+.studioPreviewSection figcaption,.wikiArticleFigure figcaption{font-size:11px;color:var(--soft);margin-top:6px}
+.studioPreviewLinks{margin:22px 0}
+#wikiStudioStatus{font-size:11px;color:var(--soft);padding:9px 0;line-height:1.6;min-height:28px}
+.wikiContribution,.wikiAuthorShortcut{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:13px;padding:16px;margin:15px 0 22px;border:1px solid var(--theme-border,var(--line));border-radius:13px;background:var(--theme-secondary,var(--panel))}
+.wikiContribution strong{display:block;font-size:15px;margin:5px 0;color:var(--text)}.wikiContribution p,.wikiAuthorShortcut p{font-size:11px;line-height:1.65;color:var(--soft);margin:0}
+.wikiContribution .btn{flex:none}
+.wikiAuthorShortcut{margin-bottom:19px}
+@media(max-width:870px){.studioEditorGrid{grid-template-columns:1fr}.studioEditorAside{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:610px){.studioHeader{align-items:flex-start;flex-direction:column}.studioEditorAside{grid-template-columns:1fr}.studioFieldset{padding:12px}.studioImage{grid-template-columns:1fr}.studioImage>img{max-height:220px}.studioDraft{align-items:flex-start;flex-direction:column}.studioControlBar .btn{flex:1 1 120px}.studioHeader>.btn{min-height:44px}.wikiContribution .btn{width:100%}}
+@media(prefers-reduced-motion:reduce){.wikiStudio *{scroll-behavior:auto!important}}
+
+
+.studioTemplatePicker{margin:17px 0 19px}
+.studioTemplatePicker .eyebrow{display:block;margin:0 0 9px}
+.studioTemplateGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.studioTemplateGrid button{min-width:0;min-height:82px;display:grid;align-content:center;gap:8px;text-align:left;padding:12px;border-radius:11px;border:1px solid var(--theme-border,var(--line));background:var(--theme-secondary,var(--panel));color:var(--text);cursor:pointer;touch-action:manipulation}
+.studioTemplateGrid button strong{font-size:12px;line-height:1.4}
+.studioTemplateGrid button small{font-size:10px;color:var(--soft);line-height:1.4}
+.studioTemplateGrid button:hover,.studioTemplateGrid button:focus-visible{border-color:var(--theme-highlight,var(--accent));outline:2px solid var(--theme-highlight,var(--accent));outline-offset:2px}
+@media(max-width:960px){.studioTemplateGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:560px){.studioTemplateGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
