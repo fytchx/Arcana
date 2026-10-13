@@ -19,7 +19,7 @@ function sameOrigin(req){
  const host=String(req.headers['x-forwarded-host']||req.headers.host||'');
  if(!origin||!host) return false;
  try{const url=new URL(origin);
-  return (url.protocol==='https:'||url.hostname==='localhost')&&url.host===host&&url.pathname==='/'&&url.search===''&&url.hash==='';
+  return (url.protocol==='https:'||((url.hostname==='localhost'||url.hostname==='127.0.0.1')&&url.protocol==='http:'))&&url.host===host&&url.pathname==='/'&&url.search===''&&url.hash==='';
  }catch{return false;}
 }
 function ownerKey(req){
