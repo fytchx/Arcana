@@ -102,17 +102,16 @@ test('Wiki collection and home include obvious connected destinations',()=>{
  assert.match(library,/Compare equipment/);
 });
 
-test('Application includes shared recommendations without removing existing navigation',async()=>{
+test('Application keeps connected destinations and exposes a universal home path',async()=>{
  const code=await app();
- assert.match(code,/routeView\(\)\+connectedNext\(dest\)\+siteSignature\(\)/);
- assert.match(code,/homeStart\(\{compact:true\}\)/);
- assert.match(code,/homeGateway\('wiki','ArcanaWiki'/);
- assert.match(code,/homeGateway\('labs','Arcana Labs'/);
- assert.match(code,/homeGateway\('calculators','Calculators'/);
- assert.match(code,/homeGateway\('wiki\/guides','Player Guides'/);
- assert.match(code,/homeDisclosure\('quick'/);
- assert.match(code,/homeDisclosure\('actions'/);
- assert.match(code,/crumbTrail\(title\)/);
+ assert.match(code,/globalHomeBar\(dest\)/);
+ assert.match(code,/homeScreen\(\)/);
+ assert.match(code,/case 'directory':return directoryView\(\)/);
+ assert.match(code,/case 'wiki\/topic':return wikiTopicView/);
+ assert.match(code,/case 'homemenu':showHomeMenu\(arg\)/);
+ assert.match(code,/case 'labs':return buildStudio\(\)/);
+ assert.match(code,/node\('searchBtn'\)\.onclick/);
+ assert.match(code,/data-route="home"/);
  assert.match(code,/SEARCHABLE_TOOLS/);
  assert.match(code,/searchExtras\(\)\.find\(x=>x\.id===id\)/);
  assert.match(code,/__prevWikiX/);
