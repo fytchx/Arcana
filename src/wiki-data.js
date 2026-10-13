@@ -91,6 +91,7 @@ export function recordKindLabel(kind){return ({item:'Equipment',material:'Materi
    Future articles can add related guide IDs, Codex categories, and tool links
    without changing routing or hardcoding UI components. */
 export const WIKI_CONNECTIONS=Object.freeze({
+ 'retaliation-warrior-zane':{articles:['gems','rune-grid','pet-compound'],collections:['class-skill','runeword','pet-bonus'],tools:['build','runes','petlab']},
  'pet-compound':{articles:['season-2','guide-builds'],collections:['pet','pet-bonus','pet-affix'],tools:['compound','petlab','affixes'],sectionLinks:{'The quick answer':['compound'],'Seasonal versus Permanent':['petlab'],'Affixes are a different system':['affixes','petAffixes']}},
  'rune-grid':{articles:['season-2','guide-builds'],collections:['rune','runeword'],tools:['runes','build'],sectionLinks:{'Progression milestones':['runes'],'Plan without losing your work':['build']}},
  'monster-level':{articles:['season-2'],collections:['biome','monster'],tools:['farm','biomeRecords','skills'],sectionLinks:{'Choose efficiently':['farm','biomeRecords']}},
