@@ -55,3 +55,21 @@
 .accountRoleSelect legend{padding:0 6px;color:var(--muted,#afb0c5);font-size:12px}
 .accountRoleSelect label{display:inline-flex;flex-direction:row;align-items:center;gap:7px;padding:9px 12px;border:1px solid var(--line,#34394d);border-radius:10px;background:var(--bg,#0b0e16);font-size:13px}
 .accountRoleSelect input[type=checkbox]{width:17px;height:17px;accent-color:var(--theme-highlight,var(--accent,#957cdd));margin:0}
+
+/* Persistent beta identity and actual account-owned Build Studio saves. */
+.accountRole.role-beta-tester{border-color:var(--theme-highlight,var(--accent,#aa91ff));background:var(--theme-highlight-soft,rgba(170,145,255,.08));color:var(--theme-accent-text,var(--accent,#aa91ff))}
+.playerAvatar{overflow:hidden}
+.playerAvatar img{width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}
+.accountCloudBuilds,.communityMyPosts{border:1px solid var(--theme-border,var(--line,#34394d));background:var(--theme-secondary,var(--panel,#171b28));padding:clamp(14px,3vw,21px);border-radius:14px;min-width:0;margin:18px 0}
+.accountCloudHead h2,.communityMyPosts h2{font-size:19px;line-height:1.3;margin:5px 0 7px}
+.accountCloudHead p{font-size:12px;color:var(--soft);line-height:1.65;margin:0 0 16px}
+.accountCloudList{display:grid;grid-template-columns:1fr;gap:9px;margin:14px 0}
+.accountCloudRow{display:flex;gap:14px;justify-content:space-between;align-items:center;flex-wrap:wrap;border:1px solid var(--theme-border,var(--line,#34394d));background:var(--theme-main,var(--bg));border-radius:11px;padding:12px}
+.accountCloudRow>div:first-child{display:grid;gap:5px;min-width:0;flex:1}
+.accountCloudRow strong{font-size:13px;overflow-wrap:anywhere}
+.accountCloudRow small{color:var(--soft);font-size:10px;line-height:1.5}
+.accountCloudRow .communityPostActions{display:flex;flex-wrap:wrap;gap:6px}
+.accountCloudRow .btn{min-height:42px;padding:9px 11px;font-size:11px}
+.accountProfileForm #arcanaAvatarFile{font-size:13px}
+.accountProfileForm #arcanaAvatarStatus{margin:0;min-height:16px}
+@media(max-width:600px){.accountCloudRow{align-items:stretch}.accountCloudRow .communityPostActions{width:100%}.accountCloudRow .btn{flex:1}.accountCloudBuilds,.communityMyPosts{padding:13px}}

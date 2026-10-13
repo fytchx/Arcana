@@ -40,10 +40,15 @@ async function audit(event){
 }
 export async function handleCommunityRequest(req,res,url){
  const path=url.pathname,method=req.method;
+ if(path==='/api/community/mine'&&method==='GET'){
+  const me=await requireCapability(req);
+  const posts=(await recentPosts()).filter(p=>p.authorId===me.id).sort((a,b)=>String(b.updatedAt).localeCompare(String(a.updatedAt)));
+  sendJSON(res,200,{posts:posts.slice(0,100).map(p=>{const {build,body,...light}=publicPost(p);return {...light,excerpt:clean(body,170)};}),total:posts.length});return true;
+ }
  if(path==='/api/community/posts'&&method==='GET'){
   const viewer=await accountUser(req),canModerate=can(viewer,'community:hide');
   const showHidden=url.searchParams.get('includeHidden')==='true'&&canModerate;
-  let posts=(await recentPosts()).filter(p=>(p.status==='public'||showHidden)&&(!url.searchParams.get('kind')||p.kind===url.searchParams.get('kind')));
+  let posts=(await recentPosts()).filter(p=>(p.status==='public'||showHidden)&&(!url.searchParams.get('kind')||p.kind===url.searchParams.get('kind'))&&(!url.searchParams.get('authorId')||p.authorId===url.searchParams.get('authorId')));
   posts.sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
   const page=posts.slice(0,100).map(p=>{const {build,body,...light}=publicPost(p);return {...light,excerpt:clean(body,170)};});
   sendJSON(res,200,{posts:page,total:posts.length});return true;
@@ -84,6 +89,22 @@ export async function handleCommunityRequest(req,res,url){
    post.updatedAt=new Date().toISOString();await saveAtomic(file(post.id),post);return post;
   });
   sendJSON(res,200,{post:publicPost(updated)});return true;
+ }
+ const archive=path.match(/^\/api\/community\/posts\/([0-9a-f-]{36})\/archive$/);
+ if(archive&&method==='PATCH'){
+  checkOrigin(req);const author=await requireCapability(req);
+  const input=await parseJSON(req);
+  if(typeof input.archived!=='boolean')throw failure(422,'Choose whether to archive the contribution.');
+  const post=await queued(async()=>{
+   const item=await readJSON(file(archive[1]));
+   if(!item)throw failure(404,'Contribution not found.');
+   if(item.authorId!==author.id)throw failure(403,'Only the author can unpublish their content.');
+   if(!['public','archived'].includes(item.status))throw failure(403,'A moderator has restricted this contribution.');
+   item.status=input.archived?'archived':'public';
+   item.updatedAt=new Date().toISOString();
+   await saveAtomic(file(item.id),item);return item;
+  });
+  sendJSON(res,200,{post:publicPost(post)});return true;
  }
  const visibility=path.match(/^\/api\/community\/posts\/([0-9a-f-]{36})\/visibility$/);
  if(visibility&&method==='PATCH'){

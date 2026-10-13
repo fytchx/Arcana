@@ -4,6 +4,7 @@ import { resolve, sep, extname } from 'node:path';
 import { createHash } from 'node:crypto';
 import { handleWikiRequest } from './src/wiki-server.mjs';
 import { safeAccountRequest } from './src/account-server.mjs';
+import { safeAccountBuildRequest } from './src/account-builds.mjs';
 import { safeCommunityRequest } from './src/community-server.mjs';
 import { betaFeedbackRequest } from './src/beta-feedback-server.mjs';
 import { fileURLToPath } from 'node:url';
@@ -92,6 +93,7 @@ const server=http.createServer(async(req,res)=>{
  try {
   const parsedUrl=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
   const {pathname}=parsedUrl;
+  if(pathname.startsWith('/api/account/builds')&&await safeAccountBuildRequest(req,res,parsedUrl))return;
   if((pathname.startsWith('/api/account/')||pathname.startsWith('/api/profiles/')||pathname.startsWith('/api/admin/roles/'))&&await safeAccountRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/community/')&&await safeCommunityRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/beta/')&&await betaFeedbackRequest(req,res,parsedUrl))return;
@@ -120,7 +122,7 @@ const server=http.createServer(async(req,res)=>{
   }
   const normalized=pathname==='/'?'/index.html':pathname;
   // Serve only public frontend assets. Never expose account/session files or local Wiki data.
-  const publicPage=new Set(['/index.html','/styles.css','/wiki-studio.css','/community.css','/beta.css']).has(normalized);
+  const publicPage=new Set(['/index.html','/privacy.html','/beta-rules.html','/styles.css','/wiki-studio.css','/community.css','/beta.css']).has(normalized);
   const publicModule=/^\/src\/[a-z][a-z0-9-]*\.js$/.test(normalized);
   const publicAsset=/^\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.(?:webp|svg|png|jpg|jpeg|json)$/.test(normalized);
   if(!publicPage&&!publicModule&&!publicAsset){send(res,404,'Not found');return;}

@@ -1,8 +1,8 @@
 // Arcana permissions are capabilities, not client-side labels.
 // Every server mutation must call can() using a server-authenticated identity.
-export const ARCANA_ROLES = Object.freeze(['member','wiki-editor','moderator','admin','developer','creator']);
+export const ARCANA_ROLES = Object.freeze(['member','beta-tester','wiki-editor','moderator','admin','developer','creator']);
 export const ROLE_NAMES = Object.freeze({
- member:'Arcana Member','wiki-editor':'Arcana Wiki Editor',moderator:'Moderator',
+ member:'Arcana Member','beta-tester':'Founding Beta Tester','wiki-editor':'Arcana Wiki Editor',moderator:'Moderator',
  admin:'Admin',developer:'Developer',creator:'Creator'
 });
 const CAPABILITIES = Object.freeze({
@@ -18,6 +18,9 @@ export function rolesOf(user){
  if(!user||user.suspended)return [];
  const granted=Array.isArray(user.roles)?user.roles:[];
  const set=new Set(['member',...granted.filter(r=>ARCANA_ROLES.includes(r)&&r!=='creator'&&r!=='member')]);
+ // The Founding Beta Tester award is derived from permanent server enrollment,
+ // never from client-submitted role lists or a current beta feature toggle.
+ if(user.betaTesterSince)set.add('beta-tester');
  // Creator identity can only be established server-side from the configured Discord snowflake.
  if(user.isCreator===true)set.add('creator');
  return ARCANA_ROLES.filter(role=>set.has(role));
