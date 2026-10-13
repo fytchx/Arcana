@@ -77,10 +77,11 @@ test('free allocation: jump to tier 20, exceed budget, select alternatives, stil
 test('free allocation toggle defaults to strict for old builds and persists on save/share',async()=>{
  const legacy=normalizeBuild({equipment:{},runes:[],passiveAlloc:{'199:0':1}});
  assert.equal(legacy.passiveFreeMode,false);
- const relaxed=normalizeBuild({...legacy,passiveFreeMode:true});
+ const relaxed=normalizeBuild({...legacy,passiveFreeMode:true,characterLevel:225});
  assert.equal(relaxed.passiveFreeMode,true);
  const copied=await openBuildToken(await shareBuildToken(relaxed));
  assert.equal(copied.passiveFreeMode,true);
+ assert.equal(copied.characterLevel,225);
  assert.equal(copied.passiveAlloc['199:0'],1);
 });
 test('UI keeps all tiers browsable and clearly marks strict/free modes',()=>{
@@ -98,4 +99,16 @@ test('UI keeps all tiers browsable and clearly marks strict/free modes',()=>{
  assert.match(free,/role="switch"[^>]*aria-checked="true"/);
  assert.match(free,/checked/);
  assert.doesNotMatch(free,/class="passiveRow [^"]*rowLocked/);
+});
+
+test('shared passive preview remains read-only while allowing all tier tabs',()=>{
+ const readonly={passiveTier:19,passiveAlloc:{'199:1':1},characterLevel:225,treeStatus:'ready',passiveFreeMode:true,passiveReadOnly:true};
+ const html=passiveBoard(readonly,tree);
+ assert.match(html,/Shared passive tree · view only/);
+ assert.match(html,/passiveReadonlyRank/);
+ assert.match(html,/Free Allocation/);
+ assert.equal((html.match(/data-action="passivetier"/g)||[]).length,20);
+ assert.equal((html.match(/data-action="passiveadjust"/g)||[]).length,0,'no point editing controls');
+ assert.doesNotMatch(html,/data-action="sharepassives"/,'viewer cannot re-share as owner');
+ assert.match(html,/data-route="labs\/passives"/);
 });
