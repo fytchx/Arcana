@@ -101,6 +101,15 @@ test('Real beta enrollment, public player card, editable community posts and clo
   assert.equal((await result.json()).posts.length,1);
   result=await fetch(root+'/api/community/posts?authorId='+id);
   assert.equal((await result.json()).posts[0].title,'Updated tester farming guide');
+  result=await fetch(root+'/api/community/posts/'+post.id+'/archive',{method:'PATCH',headers:mutation(session),body:JSON.stringify({archived:true})});
+  assert.equal(result.status,200,'Author can unpublish a guide');
+  result=await fetch(root+'/api/community/posts?authorId='+id);
+  assert.equal((await result.json()).posts.length,0,'Archived guides are not visible publicly');
+  result=await fetch(root+'/api/community/mine',{headers:{cookie:session}});
+  assert.equal((await result.json()).posts[0].status,'archived','Authors can still find archived guides');
+  result=await fetch(root+'/api/community/posts/'+post.id+'/archive',{method:'PATCH',headers:mutation(session),body:JSON.stringify({archived:false})});
+  assert.equal(result.status,200,'Author can restore publication');
+
   const publicFile=JSON.parse(await readFile(join(dir,'users',id+'.json'),'utf8'));
   assert.ok(publicFile.betaTesterSince,'Beta role must be stored on disk');
   process.env.ARCANA_BETA_COHORT_OPEN='0';
