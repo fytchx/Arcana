@@ -51,7 +51,8 @@ export function wireBetaUI({go,refresh,toast}){
   e.preventDefault();if(state.submitting)return;
   void (async()=>{
    state.submitting=true;state.notice='';const fields=Object.fromEntries(new FormData(form));
-   const from=location.hash.startsWith('#/beta')?(sessionStorage.getItem('arcana-beta-last-route')||'#/beta'):location.hash;
+   let last='#/beta';try{last=sessionStorage.getItem('arcana-beta-last-route')||last;}catch{}
+   const from=location.hash.startsWith('#/beta')?last:location.hash;
    const payload={...fields,page:from.slice(0,180),clientVersion:state.status?.release||''};
    try{
     const r=await fetch('/api/beta/feedback',{method:'POST',headers:{'content-type':'application/json'},credentials:'same-origin',body:JSON.stringify(payload)});
