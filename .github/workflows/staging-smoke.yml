@@ -1,0 +1,41 @@
+name: Arcana candidate live release gate
+on:
+  push:
+    branches: [arcana-wiki-studio-integrated-2026-10-12]
+    paths:
+      - 'src/**'
+      - 'server.mjs'
+      - 'index.html'
+      - '*.css'
+      - 'tests/*staging_smoke.py'
+      - 'tests/beta_live_smoke.py'
+      - '.github/workflows/staging-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: arcana-candidate-live-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'playwright>=1.55,<2'
+      - run: python -m playwright install --with-deps chromium
+      - name: Wait for the deployed candidate and verify real browser, content and feedback routes
+        run: python tests/beta_live_smoke.py
+      - name: Verify real Codex artwork and mobile navigation
+        run: python tests/live_staging_smoke.py
+      - name: Verify real calculators, planners, sharing and reference values
+        run: python tests/tools_staging_smoke.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arcana-real-staging-evidence
+          path: qa-output/*
+          if-no-files-found: ignore

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-label="Concept: Death mask" viewBox="0 0 96 96" width="96" height="96"><defs><radialGradient id="bg" cx="49%" cy="40%" r="64%"><stop stop-color="#263e47" stop-opacity=".55"/><stop offset="1" stop-color="#0a141b"/></radialGradient></defs><circle cx="48" cy="48" r="45" fill="url(#bg)"/><circle cx="48" cy="48" r="44" fill="none" stroke="#528778" stroke-width="1.2" opacity=".65"/><circle cx="48" cy="48" r="37.5" fill="none" stroke="#528778" stroke-width="1.2" opacity=".38"/><g stroke-linecap="round" stroke-linejoin="round"><path d="M26 23 48 13l22 10 4 21-11 26-15 11-15-11-11-26Z" fill="#263e47" stroke="#dcfff2" stroke-width="2.8" stroke-linejoin="round"/>
+<path d="M27 38 48 30l21 8-4 18-17 16-17-16Z" fill="#0b151b" stroke="#5DEBC0" stroke-width="2"/>
+<path d="m31 43 13 5-6 7-7-2Zm34 0-13 5 6 7 7-2Z" fill="#5DEBC0"/><path d="m44 59 4-5 4 5-4 4Z" fill="#dcfff2"/>
+<path d="m48 12 0 14M19 35l15 5M77 35l-15 5" stroke="#5DEBC0" stroke-width="3"/>
+<path d="M37 78 48 72l11 6" fill="none" stroke="#5DEBC0" stroke-width="2.5"/></g></svg>

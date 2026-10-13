@@ -1,0 +1,38 @@
+/* Native Arcana beta and feedback workspace. Retains per-user theme tokens. */
+.betaCenter{display:flex;flex-direction:column;gap:21px;max-width:980px;margin:0 auto;padding:8px 0 34px}
+.betaHero{border:1px solid var(--line,#34394d);border-radius:18px;padding:clamp(16px,4vw,27px);background:var(--panel,#171b28)}
+.betaHero h1{font-size:clamp(26px,5vw,40px);letter-spacing:-.04em;line-height:1.16;margin:10px 0}
+.betaHero p,.betaCapabilities p,.betaFeedback>p{font-size:14px;line-height:1.6;color:var(--muted,#b1b1c2);max-width:72ch}
+.betaActions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.betaActions>.btn{max-width:100%}
+.betaHero .betaActions{margin-top:16px}
+.betaCapabilities,.betaFeedback,.betaReport{border:1px solid var(--line,#34394d);border-radius:16px;padding:clamp(15px,3vw,22px);background:var(--panel,#171b28);min-width:0}
+.betaCapabilities h2,.betaFeedback h2{margin:0 0 10px;font-size:20px}
+.betaFeatureGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px;margin:13px 0}
+.betaFeature{border:1px solid var(--line,#34394d);border-radius:12px;background:var(--bg,#0d0f18);padding:12px}
+.betaFeature h3{font-size:14px;margin:8px 0 6px}
+.betaFeature p{font-size:12px;margin:0}
+.betaDot{width:8px;height:8px;border-radius:999px;display:inline-block;background:var(--muted,#889)}
+.betaDot.active{background:var(--theme-highlight,var(--accent,#a98bff))}
+.betaFeedback form{display:grid;grid-template-columns:1fr;gap:15px;margin:16px 0}
+.betaFeedback label{display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:600;min-width:0}
+.betaFeedback input:not(.betaHoneypot),.betaFeedback select,.betaFeedback textarea{
+ width:100%;min-width:0;box-sizing:border-box;border:1px solid var(--line,#34394d);border-radius:10px;
+ background:var(--bg,#0d0f18);color:var(--text,#fff);font:inherit;font-size:16px;line-height:1.45;padding:11px;
+}
+.betaFeedback :is(input,select,textarea):focus{border-color:var(--theme-highlight,var(--accent,#a98bff));outline-offset:2px}
+.betaFeedback form .btn{justify-self:start}
+.betaHoneypot{position:absolute!important;left:-10000px!important;opacity:0!important;width:1px;height:1px;pointer-events:none}
+.betaNotice{color:var(--text,#fff);font-size:13px;line-height:1.5;padding:12px;border-left:3px solid var(--theme-highlight,var(--accent,#a98bff));background:var(--bg,#0d0f18);border-radius:5px}
+.betaReport{display:flex;flex-direction:column;gap:9px}
+.betaReportHeading{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.betaReport small{font-size:12px;color:var(--muted,#b1b1c2)}
+.betaReport p{font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere;margin:5px 0}
+@media(max-width:600px){.betaActions>.btn{flex:1}.betaFeatureGrid{grid-template-columns:1fr}}
+
+.buildIdentityEditor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:15px 0}
+.buildIdentityEditor label{display:flex;flex-direction:column;gap:6px;min-width:0;font-size:12px;font-weight:600;color:var(--text,#fff)}
+.buildIdentityEditor label:has(textarea){grid-column:1/-1}
+.buildIdentityEditor :is(input,select,textarea){min-width:0;width:100%;box-sizing:border-box;background:var(--panel,#171b28);border:1px solid var(--line,#34394d);border-radius:10px;color:var(--text,#fff);padding:11px;font:inherit;font-size:16px}
+.buildIdentityEditor :is(input,select,textarea):focus{border-color:var(--theme-highlight,var(--accent,#a98bff));outline-offset:2px}
+@media(max-width:520px){.buildIdentityEditor{grid-template-columns:1fr}}

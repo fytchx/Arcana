@@ -1,0 +1,43 @@
+name: Mirror official Codex artwork
+on:
+  workflow_dispatch:
+  push:
+    branches: [stabilization-recovery-2026-10-12]
+    paths:
+      - .github/workflows/art-mirror.yml
+
+permissions:
+  contents: write
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: stabilization-recovery-2026-10-12
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download and verify original sprite sheets
+        run: python scripts/mirror-official-art.py
+      - name: Preserve verified artwork package
+        uses: actions/upload-artifact@v4
+        with:
+          name: arcana-official-art-source
+          path: assets/official-art/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Commit verified artwork to recovery branch
+        run: |
+          git config user.name "Arcana Recovery"
+          git config user.email "actions@users.noreply.github.com"
+          git add assets/official-art/
+          if git diff --cached --quiet; then
+            echo "No changes to sprite sheets."
+            exit 0
+          fi
+          git commit -m "Vendor verified official Codex sprite sheets for stable releases"
+          git push origin HEAD:stabilization-recovery-2026-10-12
