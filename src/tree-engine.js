@@ -1,4 +1,5 @@
-/* Rules and adapters: pull actual tree nodes from the game export; never manufacture ranks. */
+/* Skill allocations use verified Season 2 class rules; passive tree remains separate and pending correction. */
+import {VERIFIED_CLASS_SKILL_TREES,VERIFIED_CLASS_SKILL_SOURCE} from './verified-class-skills.js';
 const num=(x,f=0)=>Number.isFinite(Number(x))?Number(x):f;
 const arr=x=>Array.isArray(x)?x:Object.values(x||{});
 const text=x=>String(x??'');
@@ -17,9 +18,17 @@ function normalizeRows(p){const raw=first(p,'rows','tree','nodes');if(!raw)retur
  if(Array.isArray(raw)&&raw.length&&(raw[0]?.nodes||raw[0]?.passives||raw[0]?.skills)){return raw.map((record,r)=>({index:num(first(record,'index','row','row_number'),r),nodes:arr(first(record,'nodes','passives','skills')).map((n,i)=>normalizeNode(n,num(first(record,'index','row','row_number'),r),i))}))}
  if(Array.isArray(raw)&&raw[0]&&(raw[0]?.row!=null||raw[0]?.row_index!=null)){const map=new Map;raw.forEach((node,i)=>{const row=num(first(node,'row','row_index','row_number'));if(!map.has(row))map.set(row,[]);map.get(row).push(normalizeNode(node,row,map.get(row).length))});return [...map].map(([index,nodes])=>({index,nodes})).sort((a,b)=>a.index-b.index)}
  return []}
-export function normalizeTree(raw){const cls=arr(first(raw,'classes','class_skills','classSkills')||first(raw?.class,'classes'));const p=first(raw,'passive','passive_tree','passiveTree')||{};const rows=normalizeRows(p);let tiers=arr(first(p,'tiers','tier_config','tierConfig')).map((t,i)=>({index:i,start:num(first(t,'start_row','startRow'),i*10),end:num(first(t,'end_row','endRow'),i*10+9),required:i===0?0:num(first(t,'unlock_threshold','unlockThreshold'),20),milestone:!!first(t,'is_milestone','milestone')}));
- if(!tiers.length&&rows.length){tiers=Array.from({length:Math.ceil(rows.length/10)},(_,i)=>({index:i,start:i*10,end:i*10+9,required:i===0?0:20,milestone:false}));}
- return {classes:cls.map(normalizeClass),passive:{tiers,rows},source:'legacy skill-tree.json',verifiedVersion:false,raw};
+const CLASS_LABELS={1:'Warrior',2:'Archer',3:'Mage',4:'Rogue',5:'Druid'};
+export function verifiedClassTrees(){
+ return Object.entries(VERIFIED_CLASS_SKILL_TREES).map(([id,branches])=>normalizeClass({
+  id,name:CLASS_LABELS[id],branches:branches.map(b=>({...b,skills:b.skills.map(s=>({...s,tier:Number(s.points_required_to_unlock)/5}))}))
+ },Number(id)-1));
+}
+export function normalizeTree(raw){
+ const p=first(raw,'passive','passive_tree','passiveTree')||{},rows=normalizeRows(p);
+ let tiers=arr(first(p,'tiers','tier_config','tierConfig')).map((t,i)=>({index:i,start:num(first(t,'start_row','startRow'),i*10),end:num(first(t,'end_row','endRow'),i*10+9),required:i===0?0:num(first(t,'unlock_threshold','unlockThreshold'),20),milestone:!!first(t,'is_milestone','milestone')}));
+ if(!tiers.length&&rows.length)tiers=Array.from({length:Math.ceil(rows.length/10)},(_,i)=>({index:i,start:i*10,end:i*10+9,required:i===0?0:20,milestone:false}));
+ return {classes:verifiedClassTrees(),classSource:VERIFIED_CLASS_SKILL_SOURCE,passive:{tiers,rows},source:'Class skill data: '+VERIFIED_CLASS_SKILL_SOURCE+' · Passive tree: external legacy export (not yet corrected)',verifiedVersion:true,raw};
 }
 export function getClass(tree,id){return tree.classes.find(c=>c.id===String(id))||tree.classes[0]}
 export function getBranch(cls,id){return cls?.branches?.find(b=>b.id===String(id))||cls?.branches?.[0]}
