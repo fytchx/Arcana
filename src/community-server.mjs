@@ -90,6 +90,22 @@ export async function handleCommunityRequest(req,res,url){
   });
   sendJSON(res,200,{post:publicPost(updated)});return true;
  }
+ const archive=path.match(/^\/api\/community\/posts\/([0-9a-f-]{36})\/archive$/);
+ if(archive&&method==='PATCH'){
+  checkOrigin(req);const author=await requireCapability(req);
+  const input=await parseJSON(req);
+  if(typeof input.archived!=='boolean')throw failure(422,'Choose whether to archive the contribution.');
+  const post=await queued(async()=>{
+   const item=await readJSON(file(archive[1]));
+   if(!item)throw failure(404,'Contribution not found.');
+   if(item.authorId!==author.id)throw failure(403,'Only the author can unpublish their content.');
+   if(!['public','archived'].includes(item.status))throw failure(403,'A moderator has restricted this contribution.');
+   item.status=input.archived?'archived':'public';
+   item.updatedAt=new Date().toISOString();
+   await saveAtomic(file(item.id),item);return item;
+  });
+  sendJSON(res,200,{post:publicPost(post)});return true;
+ }
  const visibility=path.match(/^\/api\/community\/posts\/([0-9a-f-]{36})\/visibility$/);
  if(visibility&&method==='PATCH'){
   checkOrigin(req);const mod=await requireCapability(req,'community:hide');
