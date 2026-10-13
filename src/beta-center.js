@@ -26,7 +26,7 @@ export function betaView(route){
  ['Wiki editing','Editor-only publishing exists, but articles still need careful content review and migration.',!!status?.wikiStorageConfigured]
  ].map(([name,desc,available])=>'<article class="betaFeature"><span class="betaDot '+(available?'active':'setup')+'" aria-hidden="true"></span><h3>'+esc(name)+'</h3><p>'+esc(desc)+'</p></article>').join('')+'</div>'+
  '<p class="mutedSmall">Release '+esc(status?.release||'loading')+' · Status describes configuration, not a guarantee that an external service is up. Game balance and live content should be verified in IdleArc.</p></section>'+
- '<section class="betaFeedback" id="report-issue"><h2>Report an issue or share an idea</h2><p>Your report goes to Arcana's private feedback inbox. No account required. Include what you were doing and what you expected to happen.</p>'+
+ '<section class="betaFeedback" id="report-issue"><h2>Report an issue or share an idea</h2><p>Your report goes to Arcana’s private feedback inbox. No account required. Include what you were doing and what you expected to happen.</p>'+
  '<form '+formTag+'><label>What is this about?<select name="category" required>'+choices.map(([value,label])=>'<option value="'+value+'">'+esc(label)+'</option>').join('')+'</select></label>'+
  '<label>Short title<input name="title" maxlength="110" minlength="6" required placeholder="Example: Codex jumps to the top on category change"></label>'+
  '<label>What happened?<textarea name="details" maxlength="2400" minlength="15" rows="6" required placeholder="Which tool or page, what you tapped, what happened, and what you expected instead"></textarea></label>'+
