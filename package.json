@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "check": "node --check src/app.js && node --check src/community-ui.js && node --check src/account-server.mjs && node --check src/community-server.mjs && node --check src/wiki-server.mjs && node --test tests/*.test.mjs",
+    "check": "node --check src/app.js && node --check src/community-ui.js && node --check src/account-server.mjs && node --check src/community-server.mjs && node --check src/wiki-server.mjs && node --check src/beta-feedback-server.mjs && node --check src/beta-center.js && node --test tests/*.test.mjs",
     "test:mobile": "python tests/mobile_smoke.py",
     "build": "npm run check",
     "test:guild": "node --test tests/guild-tree.test.mjs"
