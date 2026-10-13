@@ -30,7 +30,7 @@ test('exact source stats, rank caps, and milestone bonuses are preserved',()=>{
 });
 test('20 points in previous tier are required to unlock the next one',()=>{
  const tier2Node=rows[10].nodes[0];
- assert.match(passiveAllowed(tree,{},tier2Node,1,100).reason,/20 points spent/);
+ assert.match(passiveAllowed(tree,{},tier2Node,1,100).reason,/20 points in Tier 1/);
  const allocated={};let remaining=20;
  for(const row of rows.slice(0,10))for(const n of row.nodes){
   const v=Math.min(remaining,n.maxRank);
