@@ -419,6 +419,39 @@ with sync_playwright() as playwright:
     assert page.locator('[data-build-field="className"]').input_value()=='Druid', 'Build class changes did not persist'
 
 
+    # Authenticated UI fixture: verify account pages render genuine member features.
+    page.evaluate("""() => {
+      const previous=window.fetch;
+      const member={id:'11111111-1111-4111-8111-111111111111',displayName:'Arcana Beta Player',
+        inGameName:'Hero',guild:'PDX',favoriteClass:'Druid',description:'Testing Arcana.',
+        roles:[{id:'member',label:'Arcana Member'},{id:'beta-tester',label:'Founding Beta Tester'}],
+        betaTesterSince:'2026-10-12T00:00:00Z',
+        permissions:{createCommunity:true,publishWiki:false,hideContent:false,deleteContent:false,manageRoles:false}};
+      window.fetch=async (url,opts={})=>{
+        const path=String(url);
+        const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json'}});
+        if(path==='/api/account/me')return json({enabled:true,betaEnrollmentOpen:true,user:member});
+        if(path==='/api/community/mine')return json({posts:[]});
+        if(path==='/api/account/builds'&&opts.method==='POST')return json({build:{id:'22222222-2222-4222-8222-222222222222',title:'My actual beta build',className:'Druid',updatedAt:'2026-10-12T00:00:00Z'}},201);
+        if(path==='/api/account/builds')return json({builds:[]});
+        return previous(url,opts);
+      };
+    }""")
+    page.evaluate("""async () => {
+      const {refreshAccount}=await import('@arcana/community-ui.js');
+      await refreshAccount();
+      location.hash='#/account';
+    }""")
+    page.locator('.playerCard').wait_for(timeout=5000)
+    assert 'Founding Beta Tester' in page.locator('.playerCard').inner_text(), 'Permanent beta badge not visible on profile'
+    assert page.locator('.accountCloudBuilds').count()==1, 'Account-owned cloud build management missing'
+    assert page.locator('#arcanaAvatarFile').count()==1, 'Custom player card picture not available'
+    page.locator('[data-cloud-action="new"]').dispatch_event('click')
+    page.wait_for_timeout(240)
+    assert page.locator('.accountCloudRow').count()==1, 'Account build save did not render in profile'
+    page.screenshot(path=str(OUT/'account_beta_member_mobile.png'),full_page=True)
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Authenticated account screen horizontal overflow'
+
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
     print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
     browser.close()
