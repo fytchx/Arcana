@@ -41,8 +41,8 @@ export function buildLoadout(equipment,itemLookup,inspecting){
 export function dataNotice(status){return `<div class="treeProvenance" role="status">${status==='ready'?'IdleArc Season 2 snapshot · October 9, 2026 · 200 rows / 500 source-backed passive nodes. Values and limits are taken from the game configuration.':'Loading verified Season 2 tree data.'}</div>`}
 function spending(state,kind){const a=kind==='passive'?state.passiveAlloc:state.classAlloc;return `${allocatedTotal(a)} / ${kind==='passive'?passivePointBudget(state.characterLevel):classPointBudget(state.characterLevel)}`}
 function controls(state,mode){
- const used=allocatedTotal(mode==='passive'?state.passiveAlloc:state.classAlloc),budget=mode==='passive'?passivePointBudget(state.characterLevel):classPointBudget(state.characterLevel);
- return `<section class="levelStudio" aria-label="Character level and allocation budget"><div class="levelHead"><div><span class="eyebrow">CHARACTER PROGRESSION</span><label for="treeLevel">Character level</label></div><div class="levelNumber"><input type="number" id="treeLevel" value="${state.characterLevel}" min="1" max="1000" step="1" inputmode="numeric" aria-label="Type character level"><span>LVL</span></div></div><input id="treeLevelRange" type="range" min="1" max="1000" step="1" value="${state.characterLevel}" aria-label="Slide to set character level" style="--level-progress:${(state.characterLevel-1)/999*100}%"><div class="levelBottom"><span>1 <span class="muted">to</span> 1000</span><div class="pointCounter" aria-live="polite"><span>${mode==='passive'?'Passive':'Class'} points</span> <strong>${used} / ${budget}</strong> <small>${Math.max(0,budget-used)} remaining</small></div></div></section>`;
+ const used=allocatedTotal(mode==='passive'?state.passiveAlloc:state.classAlloc),budget=mode==='passive'?passivePointBudget(state.characterLevel):classPointBudget(state.characterLevel),readOnly=mode==='passive'&&state.passiveReadOnly===true;
+ return `<section class="levelStudio" aria-label="Character level and allocation budget"><div class="levelHead"><div><span class="eyebrow">CHARACTER PROGRESSION</span><label for="treeLevel">Character level</label></div><div class="levelNumber"><input type="number" id="treeLevel" value="${state.characterLevel}" min="1" max="1000" step="1" inputmode="numeric" aria-label="Type character level" ${readOnly?'disabled':''}><span>LVL</span></div></div><input id="treeLevelRange" type="range" min="1" max="1000" step="1" value="${state.characterLevel}" aria-label="Slide to set character level" ${readOnly?'disabled':''} style="--level-progress:${(state.characterLevel-1)/999*100}%"><div class="levelBottom"><span>1 <span class="muted">to</span> 1000</span><div class="pointCounter" aria-live="polite"><span>${mode==='passive'?'Passive':'Class'} points</span> <strong>${used} / ${budget}</strong> <small>${Math.max(0,budget-used)} remaining</small></div></div></section>`;
 }
 const rowWithin=(r,t)=>r>=t.start&&r<=t.end;
 const safeTitle=s=>esc(String(s||'').slice(0,150));
@@ -51,7 +51,7 @@ function inlineStepper(kind,id,name,rank,max,minus,plus){return `<div class="inl
 function nodeButton(node,state,tree){
  const rank=Number(state.passiveAlloc[node.key]||0);
  const plus=passiveAllowed(tree,state.passiveAlloc,node,1,state.characterLevel,state.passiveFreeMode),minus=passiveAllowed(tree,state.passiveAlloc,node,-1,state.characterLevel,state.passiveFreeMode);
- const locked=rank===0&&!plus.ok,mode=rank>0?'allocated':locked?'locked':'available',label=passiveTitle(node.name);
+ const locked=rank===0&&!plus.ok,mode=rank>0?'allocated':locked?'locked':'available',label=passiveTitle(node.name),readOnly=state.passiveReadOnly===true;
  return `<div class="passiveNode ${mode}" data-node="${esc(node.key)}">
   <button type="button" class="passiveInspect" data-action="passiveinspect" data-arg="${esc(node.key)}" aria-label="Inspect ${safeTitle(label)}">
    <span class="passiveSymbol">${passiveIcon(node)}</span>
@@ -59,7 +59,7 @@ function nodeButton(node,state,tree){
    <span class="passiveStatGain">${esc(passiveValue(node,1))} <small>/pt</small></span>
    ${rank? `<span class="passiveInvested">${esc(passiveValue(node,rank))} total</span>` : ''}
   </button>
-  ${inlineStepper('passive',node.key,label,rank,node.maxRank,minus,plus)}
+  ${readOnly?`<div class="passiveReadonlyRank">${rank} / ${node.maxRank} points</div>`:inlineStepper('passive',node.key,label,rank,node.maxRank,minus,plus)}
  </div>`;
 }
 export function passiveBoard(state,tree){
@@ -71,10 +71,11 @@ export function passiveBoard(state,tree){
  const current=passiveTierSpend(tree,state.passiveAlloc,ti),nextThreshold=tiers[ti+1]?.required||0,points=allocatedTotal(state.passiveAlloc);
  const maxProgress=Math.min(100,Math.round(100*(required?previous/required:1)));
  const investedCount=Object.values(state.passiveAlloc||{}).filter(x=>x>0).length;
- const free=!!state.passiveFreeMode,issues=passiveViolations(tree,state.passiveAlloc,state.characterLevel);
+ const free=!!state.passiveFreeMode,readOnly=state.passiveReadOnly===true,issues=passiveViolations(tree,state.passiveAlloc,state.characterLevel);
  return `${boardSwitch('passive')}${dataNotice('ready')}${controls(state,'passive')}
- <section class="passiveAllocationMode" aria-label="Passive point allocation rules"><div class="passiveModeText"><strong>${free?'Free Allocation':'Strict Allocation'}</strong><p>${free?'Preview any configuration. Row, tier, milestone and level restrictions are ignored, but node rank caps still apply.':'Follows the in-game row progression, tier spending, milestone and character-level rules.'}</p></div><label class="passiveModeSwitch" for="passiveFreeMode"><span>Free Allocation</span><input type="checkbox" id="passiveFreeMode" data-passive-free-mode role="switch" aria-label="Free Allocation mode" aria-checked="${free}" ${free?'checked':''}><span class="passiveSwitchTrack" aria-hidden="true"></span></label></section>
+ <section class="passiveAllocationMode" aria-label="Passive point allocation rules"><div class="passiveModeText"><strong>${free?'Free Allocation':'Strict Allocation'}</strong><p>${free?'Preview any configuration. Row, tier, milestone and level restrictions are ignored, but node rank caps still apply.':'Follows the in-game row progression, tier spending, milestone and character-level rules.'}</p></div><label class="passiveModeSwitch" for="passiveFreeMode"><span>Free Allocation</span><input type="checkbox" id="passiveFreeMode" data-passive-free-mode role="switch" aria-label="Free Allocation mode" aria-checked="${free}" ${free?'checked':''} ${readOnly?'disabled':''}><span class="passiveSwitchTrack" aria-hidden="true"></span></label></section>
  ${!free&&issues.length?`<div class="passiveRuleWarning" role="status"><strong>${issues.length} rule issue${issues.length===1?'':'s'} in saved plan</strong><p>Older sandbox or shared allocations are preserved. Correct the highlighted issues or switch to Free Allocation. ${esc(issues[0].reason)}</p></div>`:''}
+ ${readOnly?`<div class="passiveSharedBanner"><strong>Shared passive tree · view only</strong><small>Tier selection is available. Skill points and allocation mode cannot be changed in this shared copy.</small></div>`:''}
  <section class="coreTreePanel passivePanel ${free?'passiveFreePreview':'passiveStrict'}" aria-label="Complete Season 2 Passive Skill Tree">
   <div class="passiveTreeLead"><div><span class="eyebrow">CHARACTER PASSIVE TREE</span><h2>20 tiers. 200 rows.</h2><p>${points} / ${passivePointBudget(state.characterLevel)} points spent · ${investedCount} nodes invested</p></div><span class="passiveHeroSymbol">${icon('layers',28)}</span></div>
   <div class="treeRail passiveTierRail" role="tablist" aria-label="Choose passive tier">${tiers.map((t,i)=>{
@@ -91,7 +92,7 @@ export function passiveBoard(state,tree){
   </div>
   <div class="treePaging passivePaging"><button type="button" data-action="passiveprev" ${ti===0?'disabled':''}>${ico('back')} T${ti||1}</button><span>${current} points in this tier${nextThreshold?' · '+Math.max(0,nextThreshold-current)+' to next':''}</span><button type="button" data-action="passivenext" ${ti===tiers.length-1?'disabled':''}>T${ti+2} ${ico('arrow')}</button></div>
  </section>
- <div class="treeFootControls"><button class="btn secondary" data-action="passivefirst">${ico('home')} Tier 1</button><button class="btn secondary" data-action="passivemilestone">✦ Milestones</button><button class="btn secondary" data-action="resetpassives">Reset passives</button></div>
+ <div class="treeFootControls"><button class="btn secondary" data-action="passivefirst">${ico('home')} Tier 1</button><button class="btn secondary" data-action="passivemilestone">✦ Milestones</button>${readOnly?'<button class="btn secondary" data-route="labs/passives">Open my planner</button>':'<button class="btn secondary" data-action="resetpassives">Reset passives</button><button class="btn primary" data-action="sharepassives">Share this tree</button>'}</div>
  <p class="boardCaveat">Strict Allocation follows row-by-row progression: 1 point in the prior row to continue, one milestone choice per tier, and 20 points in the previous tier to unlock the next. Free Allocation is for sharing previews, not in-game legal builds. All 20 tiers remain browsable in either mode.</p>`;
 }
 export function skillTierGroups(branch){const skills=branch?.skills||[];const thresholds=[...new Set(skills.map(s=>s.pointsToUnlock).filter(x=>Number.isFinite(x)&&x>=0))].sort((a,b)=>a-b);
