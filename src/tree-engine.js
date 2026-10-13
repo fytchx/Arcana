@@ -1,4 +1,4 @@
-/* Skill allocations use verified Season 2 class rules; passive tree remains separate and pending correction. */
+/* Verified IdleArc Season 2 class/passive skill rules and source-backed data adapters. */
 import {VERIFIED_CLASS_SKILL_TREES,VERIFIED_CLASS_SKILL_SOURCE} from './verified-class-skills.js';
 import {VERIFIED_PASSIVE_TREE,VERIFIED_PASSIVE_SOURCE} from './verified-passive-tree.js';
 const num=(x,f=0)=>Number.isFinite(Number(x))?Number(x):f;
@@ -61,15 +61,71 @@ export function getClass(tree,id){return tree.classes.find(c=>c.id===String(id))
 export function getBranch(cls,id){return cls?.branches?.find(b=>b.id===String(id))||cls?.branches?.[0]}
 export function rowTier(tree,row){return tree.passive.tiers.findIndex(t=>row>=t.start&&row<=t.end)}
 export function passiveTierSpend(tree,allocation,i){const t=tree.passive.tiers[i];if(!t)return 0;return Object.entries(allocation||{}).reduce((sum,[key,v])=>{const row=+key.split(':')[0];return sum+(row>=t.start&&row<=t.end?Math.max(0,num(v)):0)},0)}
-export function passiveAllowed(tree,allocation,node,delta,level){if(!node||!Number.isInteger(delta)||Math.abs(delta)!==1)return {ok:false,reason:'Invalid node or adjustment'};
- if(node.maxRank<=0)return {ok:false,reason:'Point limit unavailable in source data'};
- const a={...allocation},old=num(a[node.key]);const next=old+delta;if(next<0||next>node.maxRank)return {ok:false,reason:'Node point cap reached'};
- if(delta>0&&allocatedTotal(a)>=passivePointBudget(level))return {ok:false,reason:'No passive points remaining for this level'};
+/** Returns every game-rule violation in an allocation.
+ * All rows remain inspectable regardless of lock status; only point edits are restricted.
+ * A tier's first row is gated by the prior tier's 20-point threshold, NOT by
+ * selecting that prior tier's milestone (milestones are optional).
+ */
+export function passiveViolations(tree,allocation,level=Infinity){
+ const rows=tree?.passive?.rows||[],tiers=tree?.passive?.tiers||[],a=allocation||{},issues=[];
+ for(const tier of tiers){
+  const activeRows=rows.filter(row=>row.index>=tier.start&&row.index<=tier.end);
+  if(tier.index>0&&activeRows.some(row=>row.nodes.some(node=>num(a[node.key])>0))){
+   const previous=passiveTierSpend(tree,a,tier.index-1);
+   if(previous<tier.required)issues.push({id:'tier:'+tier.index,reason:`Tier ${tier.index+1} requires ${tier.required} points in Tier ${tier.index}`});
+  }
+  for(let i=1;i<activeRows.length;i++){
+   const current=activeRows[i],previous=activeRows[i-1];
+   if(current.nodes.some(node=>num(a[node.key])>0)&&!previous.nodes.some(node=>num(a[node.key])>0)){
+    issues.push({id:'row:'+current.index,reason:`Row ${current.index+1} requires at least 1 point in Row ${previous.index+1}`});
+   }
+  }
+  const chosen=activeRows.filter(row=>row.milestone).flatMap(row=>row.nodes).filter(node=>num(a[node.key])>0);
+  if(chosen.length>1)issues.push({id:'milestone:'+tier.index,reason:`Only one milestone can be selected in Tier ${tier.index+1}`});
+ }
+ if(Number.isFinite(level)&&allocatedTotal(a)>passivePointBudget(level)){
+  issues.push({id:'budget',reason:`The allocation exceeds the ${passivePointBudget(level)} passive points available at character level ${level}`});
+ }
+ return issues;
+}
+/** In Free Allocation mode skip all progression rules and the level budget.
+ * Still honor source-backed per-node rank caps. In Strict mode, forbid any
+ * newly introduced invalid state while allowing players to repair an older
+ * sandbox build one removal at a time without discarding their setup.
+ */
+export function passiveAllowed(tree,allocation,node,delta,level,free=false){
+ if(!tree?.passive?.tiers?.length||!node||!Number.isInteger(delta)||Math.abs(delta)!==1)return {ok:false,reason:'Invalid node or adjustment'};
+ if(!Number.isInteger(node.maxRank)||node.maxRank<=0)return {ok:false,reason:'Point limit unavailable in source data'};
+ const a={...allocation},old=num(a[node.key]),next=old+delta;
+ if(next<0||next>node.maxRank)return {ok:false,reason:'Node point cap reached'};
  if(next)a[node.key]=next;else delete a[node.key];
- const tiers=tree.passive.tiers;
- for(let i=1;i<tiers.length;i++){const spent=passiveTierSpend(tree,a,i);if(spent===0)continue;const previous=passiveTierSpend(tree,a,i-1);const required=tiers[i].required;
-  if(previous<required)return {ok:false,reason:`Tier ${i+1} requires ${required} points spent in tier ${i}`};}
- return {ok:true,allocation:a};}
+ if(free)return {ok:true,allocation:a};
+ const before=passiveViolations(tree,allocation,level),after=passiveViolations(tree,a,level);
+ if(delta>0){
+  if(allocatedTotal(a)>passivePointBudget(level))return {ok:false,reason:'No passive points remaining for this level'};
+  const tierIndex=rowTier(tree,node.row),tier=tree.passive.tiers[tierIndex];
+  if(!tier)return {ok:false,reason:'Passive row has no verified tier'};
+  if(tierIndex>0&&passiveTierSpend(tree,allocation,tierIndex-1)<tier.required){
+   return {ok:false,reason:`Tier ${tierIndex+1} requires ${tier.required} points in Tier ${tierIndex}`};
+  }
+  if(node.row>tier.start){
+   const previous=tree.passive.rows.find(row=>row.index===node.row-1);
+   if(!previous?.nodes.some(n=>num(allocation?.[n.key])>0)){
+    return {ok:false,reason:`Allocate at least 1 point in Row ${node.row} before unlocking Row ${node.row+1}`};
+   }
+  }
+  if(node.milestone&&old===0){
+   const row=tree.passive.rows.find(row=>row.index===node.row);
+   if(row?.nodes.some(n=>n.key!==node.key&&num(allocation?.[n.key])>0)){
+    return {ok:false,reason:`Only one milestone can be selected in Tier ${tierIndex+1}`};
+   }
+  }
+ }
+ const existing=new Set(before.map(issue=>issue.id));
+ const newlyInvalid=after.find(issue=>!existing.has(issue.id));
+ if(newlyInvalid)return {ok:false,reason:newlyInvalid.reason};
+ return {ok:true,allocation:a};
+}
 export function classAllowed(cls,allocation,skill,delta,level){if(!cls||!skill||!Number.isInteger(delta)||Math.abs(delta)!==1)return {ok:false,reason:'Invalid skill or adjustment'};
  const a={...allocation},old=num(a[skill.id]);if(!skill.maxRank)return {ok:false,reason:'Skill cap unavailable in source data'};
  const next=old+delta;if(next<0||next>skill.maxRank)return {ok:false,reason:'Skill rank cap reached'};
