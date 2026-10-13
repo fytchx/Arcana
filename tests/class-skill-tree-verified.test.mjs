@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {VERIFIED_CLASS_SKILL_TREES,VERIFIED_CLASS_SKILL_SOURCE} from '../src/verified-class-skills.js';
 import {normalizeTree,verifiedClassTrees,classPointBudget,classAllowed,allocatedTotal,getClass,getBranch} from '../src/tree-engine.js';
+import {classBoard} from '../src/core-boards.js';
 
 const tree=normalizeTree({});
 const byName=n=>tree.classes.find(x=>x.name===n);
@@ -71,4 +72,25 @@ test('source nodes use unique IDs across classes and match raw snapshot keys',()
  assert.equal(new Set(raw.map(x=>x[1])).size,90);
  assert.equal(allocatedTotal({7:5,22:3}),8);
  assert.equal(getClass(tree,'5').name,'Druid');
+});
+
+test('full class tree renders all six verified nodes and three tiers without paginating',()=>{
+ const state={treeClassId:'1',treeBranchId:'7',classAlloc:{},characterLevel:100,treeStatus:'partial'};
+ const markup=classBoard(state,tree);
+ assert.equal((markup.match(/classTierBlock /g)||[]).length,3);
+ assert.equal((markup.match(/classSkillNode /g)||[]).length,6);
+ assert.ok(markup.includes('Counterstrike'));
+ assert.ok(markup.includes('Culling strike'));
+ assert.ok(markup.includes('game:class-skill:48'));
+ assert.ok(markup.includes('classTierCards'));
+ assert.ok(markup.includes('5 points required')||markup.includes('5 more points'));
+ assert.ok(markup.includes('Official skill reference'));
+});
+test('every class can render a full branch independently of legacy passive API',()=>{
+ for(const cls of tree.classes){
+  const state={treeClassId:cls.id,treeBranchId:cls.branches[0].id,classAlloc:{},characterLevel:100,treeStatus:'partial'};
+  const html=classBoard(state,tree);
+  assert.equal((html.match(/classSkillNode /g)||[]).length,6,cls.name);
+  assert.ok(html.includes('Class Skill Simulator')||html.includes('CLASS SKILL SIMULATOR'),cls.name);
+ }
 });
