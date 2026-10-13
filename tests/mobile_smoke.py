@@ -117,11 +117,33 @@ with sync_playwright() as playwright:
       document.documentElement.style.removeProperty('--accent');
     }""")
     assert page.get_by_text('ArcanaWiki',exact=True).count()>0, 'ArcanaWiki navigation missing'
-    # New intent-first navigation stays tappable at common Android widths.
-    assert page.locator('.arcanaStartGrid .arcanaConnection').count()==6, 'Home quick-start should have six clear routes'
-    for btn in page.locator('.arcanaStartGrid .arcanaConnection').all():
-        assert btn.bounding_box()['height']>=44, 'A quick-start touch target is undersized'
+    # Four primary destinations must appear before any optional shortcuts.
+    gateway=page.locator('.arcanaHomeGateway')
+    assert gateway.count()==4, 'Homepage needs exactly four primary gateways'
+    assert gateway.all_inner_texts()[0].startswith('ArcanaWiki'), 'Wiki must be the first gateway'
+    for path in ('wiki','labs','calculators','wiki/guides'):
+        target=page.locator('.arcanaHomeGateway[data-route="'+path+'"]')
+        assert target.count()==1, 'Missing homepage gateway '+path
+        assert target.bounding_box()['height']>=120, 'Featured destination too small on mobile'
+    quick=page.locator('details[data-home-panel="quick"]')
+    tasks=page.locator('details[data-home-panel="actions"]')
+    assert quick.count()==1 and tasks.count()==1, 'Both optional sections must be expandable'
+    assert not quick.evaluate('(el)=>el.open') and not tasks.evaluate('(el)=>el.open'), 'Home quick panels should start closed'
+    assert not page.locator('details[data-home-panel="actions"] .arcanaStartGrid').is_visible(), 'Closed actions must not take homepage space'
+    quick.locator('summary').dispatch_event('click')
+    assert quick.evaluate('(el)=>el.open'), 'Quick Access did not expand'
+    assert quick.locator('.arcanaConnection').count()>=4, 'Quick Access lost common shortcuts'
+    quick.locator('summary').dispatch_event('click')
+    assert not quick.evaluate('(el)=>el.open'), 'Quick Access did not collapse'
+    tasks.locator('summary').dispatch_event('click')
+    assert tasks.evaluate('(el)=>el.open'), 'What do you want to do? did not expand'
+    assert tasks.locator('.arcanaStartGrid .arcanaConnection').count()==6, 'Task shortcuts must preserve all six actions'
+    for btn in tasks.locator('.arcanaStartGrid .arcanaConnection').all():
+        assert btn.bounding_box()['height']>=44, 'A task shortcut touch target is undersized'
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Home has horizontal overflow'
+    page.set_viewport_size({'width':320,'height':720})
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Homepage overflows a narrow Android screen'
+    page.set_viewport_size({'width':390,'height':844})
     page.locator('.arcanaStartGrid [data-route="labs/guild-tree"]').dispatch_event('click')
     page.wait_for_timeout(150)
     assert page.locator('.guildTreePlanner').count()==1, 'Home Guild Planner shortcut is broken'
@@ -129,7 +151,13 @@ with sync_playwright() as playwright:
     assert page.locator('.arcanaNext [data-route="lfg/guilds"]').count()==1, 'Guild Planner has no route to guilds'
     page.evaluate("location.hash='#/home'")
     page.wait_for_timeout(150)
+    assert page.locator('details[data-home-panel="actions"]').evaluate('(el)=>el.open'), 'Expanded task panel lost its state on returning home'
     page.screenshot(path=str(OUT/'home_mobile.png'),full_page=True)
+    page.locator('.arcanaHomeGateway[data-route="wiki/guides"]').dispatch_event('click')
+    page.wait_for_timeout(160)
+    assert page.locator('.wikiGuidesPage').count()==1, 'Featured Player Guides button did not open guides'
+    page.evaluate("location.hash='#/home'")
+    page.wait_for_timeout(160)
     page.get_by_text('ArcanaWiki',exact=True).first.dispatch_event('click')
     page.wait_for_timeout(250)
     assert 'wiki' in page.url or page.locator('body').inner_text().find('ARCANAWIKI')>=0, 'Wiki did not open'
