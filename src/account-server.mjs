@@ -6,6 +6,7 @@ import {can, rolesOf, publicRoles, mayChangeRoles} from './account-policy.js';
 const ACCOUNT_ID=/^[0-9a-f]{8}-[0-9a-f-]{27,36}$/;
 const DISCORD_ID=/^[0-9]{16,22}$/;
 const SESSION_LIFETIME=14*86400;
+export const betaEnrollmentOpen=()=>process.env.ARCANA_BETA_COHORT_OPEN==='1';
 const MAX_PROFILE_BYTES=18000;
 let writeQueue=Promise.resolve();
 export const dataRoot=()=>resolve(process.env.ARCANA_ACCOUNT_DATA_DIR || resolve(process.env.ARCANA_WIKI_DATA_DIR||'.arcana-wiki-data','accounts'));
@@ -58,7 +59,7 @@ export function publicProfile(account){
  return {id:a.id,displayName:a.profile?.displayName||a.discordName||'Arcana player',
  inGameName:a.profile?.inGameName||'',guild:a.profile?.guild||'',favoriteClass:a.profile?.favoriteClass||'',
  description:a.profile?.description||'',raidStatus:a.profile?.raidStatus||'',guildStatus:a.profile?.guildStatus||'',
- roles:publicRoles(a),joinedAt:a.joinedAt||'',suspended:!!a.suspended};
+ roles:publicRoles(a),joinedAt:a.joinedAt||'',betaTesterSince:a.betaTesterSince||'',suspended:!!a.suspended};
 }
 export const selfProfile=account=>({...publicProfile(account),permissions:{
  createCommunity:can(asCreator(account),'community:create'),publishWiki:can(asCreator(account),'wiki:publish'),
@@ -93,12 +94,15 @@ async function discordIdentity(user){
   const indexed=await readJSON(indexPath);
   let account=indexed&&ACCOUNT_ID.test(indexed.id)?await readJSON(accountFile(indexed.id)):null;
   if(!account){
-   account={id:randomUUID(),discordId:user.id,discordName:safeText(user.global_name||user.username,70),roles:[],
+   account={id:randomUUID(),discordId:user.id,discordName:safeText(user.global_name||user.username,70),roles:[],betaTesterSince:betaEnrollmentOpen()?new Date().toISOString():'',
     profile:{displayName:safeText(user.global_name||user.username,50),inGameName:'',guild:'',favoriteClass:'',description:'',raidStatus:'',guildStatus:''},
     joinedAt:new Date().toISOString(),suspended:false};
    await saveAtomic(accountFile(account.id),account);
    await saveAtomic(indexPath,{id:account.id});
   } else {
+   // Returning members who first join during the beta receive the permanent
+   // award once. Turning off enrollment never removes previously earned roles.
+   if(betaEnrollmentOpen()&&!account.betaTesterSince)account.betaTesterSince=new Date().toISOString();
    account.discordName=safeText(user.global_name||user.username,70);
    await saveAtomic(accountFile(account.id),account);
   }
@@ -118,7 +122,7 @@ export async function handleAccountRequest(req,res,url){
  const {pathname}=url, method=req.method;
  if(pathname==='/api/account/me'&&method==='GET'){
   const user=await accountUser(req);
-  sendJSON(res,200,{enabled:authAvailable(),user:user?selfProfile(user):null});return true;
+  sendJSON(res,200,{enabled:authAvailable(),betaEnrollmentOpen:betaEnrollmentOpen(),user:user?selfProfile(user):null});return true;
  }
  if(pathname==='/api/account/login'&&method==='GET'){
   if(!authAvailable()){sendJSON(res,503,{error:'Account sign-in is not configured on this environment.'});return true;}
