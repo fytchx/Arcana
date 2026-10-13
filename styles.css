@@ -1000,3 +1000,91 @@ body,.shell{background:var(--theme-main)}
 .classTreeOverview .classSkillNode.locked .classSkillImage{filter:grayscale(.85)}
 @media(max-width:420px){.classTreeOverview{padding:9px}.classTreeOverview .classRail button{min-width:74px;font-size:10px}.classSpendRail{gap:4px}.classSpendRail>div{flex-direction:column;align-items:flex-start;font-size:9px}.classTierBlock{padding:10px 8px 12px}.classTierCards{gap:7px}.classTreeOverview .classSkillNode{padding:9px 5px;min-height:190px}.classTreeOverview .classSkillNode strong{font-size:11px}.classTreeOverview .classSkillImage{width:53px;height:53px}.classTreeOverview .classSkillImage .gameArt{width:47px;height:47px}.classTreeOverview .inlineStepper button{width:34px;height:34px;min-height:34px}.classBranchIntro .btn{padding:7px}}
 @media(min-width:850px){.classTierCards{gap:15px}.classTreeOverview .classSkillNode{min-height:210px}.classTierBlock{padding:18px}}
+
+
+/* 2026-10-13 verified passive + class trees visual refinement.
+   Everything below is scoped to the two planners and follows the active Arcana theme. */
+.passivePanel{padding:clamp(9px,2vw,17px);overflow:visible}
+.passiveTreeLead{display:flex;justify-content:space-between;align-items:center;gap:10px;border-radius:13px;background:linear-gradient(135deg,var(--theme-highlight-soft),var(--theme-card) 65%);border:1px solid var(--theme-highlight-border);padding:16px;margin-bottom:13px}
+.passiveTreeLead h2{margin:5px 0 7px;font-size:clamp(18px,4vw,26px);letter-spacing:-.035em}
+.passiveTreeLead p{font-size:11px;color:var(--soft);margin:0}
+.passiveHeroSymbol{display:grid;place-items:center;flex:none;color:var(--theme-accent-text);width:46px;height:46px;border-radius:12px;border:1px solid var(--theme-highlight-border);background:var(--theme-overlay)}
+.passiveTierRail{gap:6px;padding:5px 1px 14px}
+.passiveTierRail button{min-height:55px;min-width:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 10px;border-radius:11px}
+.passiveTierRail button>span{font-size:13px;line-height:1;font-weight:850}
+.passiveTierRail button>small{font-size:8px;font-weight:650;letter-spacing:.03em;white-space:nowrap;color:var(--soft)}
+.passiveTierRail button.hasPoints:not(.selected){border-color:var(--theme-highlight-border)}
+.passiveTierRail button.selected{border-color:var(--theme-highlight)!important;background:var(--theme-highlight-soft)}
+.passiveTierRail button.selected>small{color:var(--theme-accent-text)}
+.passiveTierSummary{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:6px 2px 13px}
+.passiveTierTitle h3{font-size:20px;letter-spacing:-.03em;margin:5px 0}
+.passiveTierTitle p{font-size:11px;line-height:1.5;color:var(--soft);margin:0}
+.passiveTierCount{flex:none;display:grid;place-items:center;border-radius:10px;min-width:55px;min-height:37px;padding:8px;background:var(--theme-highlight-soft);border:1px solid var(--theme-highlight-border);font-size:12px;font-weight:800;color:var(--theme-accent-text)}
+.passiveProgress{height:5px;border-radius:99px;background:var(--theme-overlay);overflow:hidden;margin:0 1px 14px;border:1px solid var(--theme-border)}
+.passiveProgress>i{display:block;height:100%;background:var(--theme-highlight);border-radius:99px;transition:width .18s ease}
+.passiveTierRows{display:grid;gap:10px;min-height:0;touch-action:pan-y}
+.passiveTierRows .passiveRow{padding:13px 9px 12px;border:1px solid var(--theme-border);border-radius:13px;background:var(--theme-overlay)}
+.passiveTierRows .passiveRow:nth-child(even){background:color-mix(in srgb,var(--theme-card) 85%,var(--theme-overlay))}
+.passiveTierRows .passiveRow.milestoneRow{border-color:var(--theme-highlight-border);background:linear-gradient(160deg,var(--theme-highlight-soft),var(--theme-overlay))}
+.passiveTierRows .passiveRowLabel{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:0 3px 10px;margin:0;text-align:left}
+.passiveTierRows .passiveRowLabel>span{font-size:10px;letter-spacing:.1em;color:var(--theme-accent-text);font-weight:900}
+.passiveTierRows .passiveRowLabel small{color:var(--soft);font-size:9px;letter-spacing:0;font-weight:550;text-align:right}
+.passiveTierRows .passiveRowNodes{display:grid;grid-template-columns:repeat(var(--row-nodes),minmax(0,1fr));align-items:stretch;gap:7px;min-height:0}
+.passiveTierRows .passiveNode{width:auto;max-width:none;min-width:0;min-height:161px;display:flex;flex-direction:column;gap:8px;padding:11px 5px 9px;border-radius:11px;background:var(--theme-card);border:1px solid var(--theme-border);opacity:1}
+.passiveTierRows .passiveNode.locked{opacity:.66}
+.passiveTierRows .passiveNode.allocated{border-color:var(--theme-highlight);background:var(--theme-highlight-soft);box-shadow:inset 0 0 0 1px var(--theme-highlight-border)}
+.passiveTierRows .passiveInspect{width:100%;min-width:0;display:flex;flex:1;align-items:center;flex-direction:column;gap:6px;background:transparent;color:var(--text);border:0;padding:0;text-align:center;cursor:pointer}
+.passiveTierRows .passiveInspect:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:2px;border-radius:6px}
+.passiveTierRows .passiveSymbol{width:39px;height:39px;flex:none;display:grid;place-items:center;border:1px solid var(--theme-highlight-border);border-radius:11px;background:var(--theme-highlight-soft)}
+.passiveTierRows .passiveName{font-size:11px;line-height:1.25;min-height:27px;max-width:100%;display:grid;place-items:center;overflow-wrap:anywhere}
+.passiveTierRows .passiveStatGain{font-size:11px;line-height:1.2;color:var(--theme-accent-text);font-weight:850;font-variant-numeric:tabular-nums}
+.passiveTierRows .passiveStatGain small{color:var(--soft);font-size:9px;font-weight:550}
+.passiveTierRows .passiveInvested{font-size:9px;line-height:1.2;color:var(--soft)}
+.passiveTierRows .inlineStepper{display:flex;gap:4px;align-items:center;justify-content:center;margin-top:auto;width:100%}
+.passiveTierRows .inlineStepper button{flex:none;min-width:29px;min-height:31px;display:grid;place-items:center;padding:0;border-radius:8px;background:var(--theme-card-raised);border:1px solid var(--theme-border);color:var(--text);font-size:17px;font-weight:750}
+.passiveTierRows .inlineStepper button:disabled{opacity:.32}
+.passiveTierRows .inlineStepper .stepPlus:not(:disabled){color:var(--theme-accent-text);border-color:var(--theme-highlight-border)}
+.passiveTierRows .inlineStepper output{font-size:11px;font-variant-numeric:tabular-nums;white-space:nowrap;min-width:31px;font-weight:850;display:flex;align-items:baseline;gap:1px;justify-content:center}
+.passiveTierRows .inlineStepper output>span{opacity:.5}
+.passivePaging{margin-top:14px}
+.passivePaging>span{font-size:10px}
+.passiveInspectorEffect{display:grid;gap:5px;border:1px solid var(--theme-highlight-border);background:var(--theme-highlight-soft);border-radius:11px;padding:12px;margin:11px 0}
+.passiveInspectorEffect strong{font-size:15px;color:var(--theme-accent-text)}
+.passiveInspectorEffect small{font-size:11px;color:var(--soft)}
+/* Shared class planner polish: calmer surfaces, legible details and clear focus. */
+.classTreeOverview{border-color:var(--theme-highlight-border)}
+.classTreeOverview .classHeading{padding:9px 2px 13px;margin:2px 0 10px;border-bottom:1px solid var(--theme-border)}
+.classTreeOverview .classHeading h2{font-size:22px;letter-spacing:-.03em}
+.classTreeOverview .classTierBlock{background:color-mix(in srgb,var(--theme-card) 60%,var(--theme-overlay));border-radius:14px}
+.classTreeOverview .classTierCards{align-items:stretch}
+.classTreeOverview .classSkillNode{transition:border-color .16s ease,background-color .16s ease,transform .12s ease}
+.classTreeOverview .classSkillNode.available{border-color:var(--theme-highlight-border)}
+.classTreeOverview .classSkillNode.allocated{box-shadow:inset 0 0 0 1px var(--theme-highlight-border)}
+.classTreeOverview .classSkillNode .classSkillInspect:hover strong{color:var(--theme-accent-text)}
+.classTreeOverview .classNodeFoot .inlineStepper{margin:7px 0 3px}
+.classSkillInspectorArt{display:grid;place-items:center;width:79px;height:79px;padding:9px;margin-bottom:14px;border:1px solid var(--theme-highlight-border);background:var(--theme-highlight-soft);border-radius:14px}
+.classSkillInspectorArt .gameArt{width:64px;height:64px}
+.classTreeOverview .classRail button:focus-visible,.passiveTierRail button:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:2px}
+@media(max-width:700px){
+ .passivePanel{padding:10px 7px}
+ .passiveTierRail{position:sticky;top:69px;z-index:9;padding:7px 1px;background:var(--theme-card);border-top:1px solid var(--theme-border);border-bottom:1px solid var(--theme-border);margin:0 -1px 14px}
+ .passiveTierRows .passiveRow{padding:11px 5px}
+ .passiveTierRows .passiveRowNodes{gap:5px}
+ .passiveTierRows .passiveNode{min-height:164px;padding:9px 2px 8px}
+ .passiveTierRows .passiveName{font-size:10px}
+ .passiveTierRows .passiveSymbol{width:35px;height:35px}
+ .passiveTierRows .inlineStepper button{min-width:27px;min-height:30px}
+ .passiveTierRows .inlineStepper output{min-width:24px;font-size:10px}
+ .passiveTreeLead{padding:13px}
+ .classTreeOverview .classRail{scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x}
+ .classTreeOverview .classRail button{scroll-snap-align:start}
+}
+@media(max-width:370px){
+ .passiveTierRows .passiveStatGain{font-size:10px}
+ .passiveTierRows .passiveRowLabel small{display:none}
+ .passiveTierRows .inlineStepper{gap:2px}
+ .passiveTierRows .inlineStepper button{min-width:25px}
+ .passiveTierRows .inlineStepper output{min-width:22px;font-size:9px}
+ .passiveTierRows .passiveName{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.passiveProgress>i,.classTreeOverview .classSkillNode{transition:none}}
