@@ -1120,3 +1120,12 @@ body,.shell{background:var(--theme-main)}
  .passiveModeSwitch input:checked+.passiveSwitchTrack:after{transform:translateX(19px)}
 }
 @media(prefers-reduced-motion:reduce){.passiveSwitchTrack,.passiveSwitchTrack:after{transition:none}}
+
+
+/* Read-only passive links preserve the chosen tier and Free Allocation flag. */
+.passiveSharedBanner{border:1px solid var(--theme-highlight-border);border-radius:13px;margin:0 0 12px;padding:12px 15px;background:var(--theme-highlight-soft);display:grid;gap:4px}
+.passiveSharedBanner strong{font-size:12px;color:var(--theme-accent-text)}
+.passiveSharedBanner small{font-size:11px;color:var(--soft);line-height:1.5}
+.passiveTierRows .passiveReadonlyRank{margin-top:auto;border:1px solid var(--theme-border);background:var(--theme-overlay);color:var(--theme-accent-text);border-radius:8px;min-height:31px;min-width:78px;padding:8px;font-size:11px;font-weight:800;text-align:center}
+.passivePanel .passiveNode .passiveReadonlyRank{white-space:nowrap}
+@media(max-width:430px){.passiveTierRows .passiveReadonlyRank{min-width:0;font-size:10px;padding:7px 4px}}
