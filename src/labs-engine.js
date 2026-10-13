@@ -74,6 +74,7 @@ export function normalizeBuild(build){
  b.petBonusTargets=normalizedPetBonusTargets(b);
  b.petMode=b.petMode==='permanent'?'permanent':'seasonal';b.schemaVersion=9;
  b.passiveAlloc=b.passiveAlloc&&typeof b.passiveAlloc==='object'?b.passiveAlloc:{};
+ b.passiveFreeMode=b.passiveFreeMode===true;
  b.classAllocById=b.classAllocById&&typeof b.classAllocById==='object'?b.classAllocById:{};
  return b;
 }
