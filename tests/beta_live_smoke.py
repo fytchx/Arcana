@@ -11,7 +11,7 @@ from playwright.sync_api import sync_playwright
 
 BASE=os.environ.get('ARCANA_STAGING_URL','https://arcana-stable-app-staging.up.railway.app').rstrip('/')
 assert urlparse(BASE).hostname.endswith('.up.railway.app'),'Only isolated Railway staging is permitted'
-RELEASE='arcana-beta-candidate-2026-10-12'
+RELEASE='arcana-real-accounts-beta-2026-10-13'
 def call(path,timeout=15):
  try:
   with urlopen(Request(BASE+path,headers={'accept':'application/json'}),timeout=timeout) as res:

@@ -63,7 +63,7 @@ function checkRate(req){
 }
 export async function betaFeedbackRequest(req,res,url){
  if(url.pathname==='/api/beta/status'&&req.method==='GET'){
-  send(res,200,{release:'arcana-beta-candidate-2026-10-12',guestTools:true,
+  send(res,200,{release:'arcana-real-accounts-beta-2026-10-13',guestTools:true,
    accountsConfigured:!!(process.env.ARCANA_DISCORD_CLIENT_ID&&process.env.ARCANA_DISCORD_CLIENT_SECRET&&process.env.ARCANA_AUTH_BASE_URL&&process.env.ARCANA_CREATOR_DISCORD_ID),
    wikiStorageConfigured:!!process.env.ARCANA_WIKI_DATA_DIR,
    betaEnrollmentOpen:betaEnrollmentOpen(),accountSignInEnabled:authAvailable(),feedbackEnabled:true,contentDate:'2026-10-09',note:'Game configuration snapshots and external directories may change independently of this release.'});return true;
