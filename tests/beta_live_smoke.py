@@ -65,6 +65,20 @@ with sync_playwright() as playwright:
  page.locator('.arcanaSignature').wait_for(timeout=20000)
  assert 'PDX & OVK' in page.locator('.arcanaSignature').inner_text()
  assert page.locator('[data-route="beta"]').count()>0,'Guest cannot discover Beta Center'
+ assert page.locator('.arcanaHomeGateway').count()==4,'Home missing four primary destinations'
+ for route in ('wiki','labs','calculators','wiki/guides'):
+  assert page.locator('.arcanaHomeGateway[data-route="'+route+'"]').count()==1,'Missing '+route
+ actions=page.locator('details[data-home-panel="actions"]')
+ quick=page.locator('details[data-home-panel="quick"]')
+ assert actions.count()==1 and quick.count()==1,'Homepage expandable panels are missing'
+ assert not actions.evaluate('(el)=>el.open') and not quick.evaluate('(el)=>el.open')
+ actions.locator('summary').click()
+ assert actions.evaluate('(el)=>el.open')
+ assert actions.locator('.arcanaConnection').count()==6
+ quick.locator('summary').click()
+ assert quick.evaluate('(el)=>el.open')
+ assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+4'),'Home has horizontal overflow'
+
  page.goto(BASE+'/#/beta',wait_until='domcontentloaded',timeout=30000)
  page.locator('[data-beta-form="feedback"]').wait_for(timeout=20000)
  assert page.locator('.betaFeature').count()>=4
