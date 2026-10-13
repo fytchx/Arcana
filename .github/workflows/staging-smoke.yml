@@ -1,7 +1,7 @@
-name: Arcana candidate live release gate
+name: Arcana Live Release Checks
 on:
   push:
-    branches: [arcana-wiki-studio-integrated-2026-10-12]
+    branches: [main]
     paths:
       - 'src/**'
       - 'server.mjs'
