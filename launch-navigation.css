@@ -118,3 +118,7 @@ html[data-launch-reduce-motion="true"] *,html[data-launch-reduce-motion="true"] 
  .launchHeroPills span{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){.launchQuickCard{transition:none}}
+
+/* Home is one tap away even halfway through a long Wiki article. */
+.launchReturnHome{position:sticky;top:68px;z-index:15;background:var(--theme-main,var(--bg));padding:9px 0 11px;box-shadow:0 3px 12px color-mix(in srgb,var(--theme-main,var(--bg)) 86%,transparent)}
+@media(max-width:700px){.launchReturnHome{top:60px}}
