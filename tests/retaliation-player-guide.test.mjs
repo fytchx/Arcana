@@ -7,7 +7,8 @@ test('Retaliation Warrior guide and build stay consistent with the submitted in-
  const guide=WIKI_ARTICLES.find(x=>x.id==='retaliation-warrior-zane');
  assert.ok(guide,'Player guide must be published to ArcanaWiki guide directory');
  assert.equal(guide.category,'Build Guides');
- assert.equal(guide.source,'player-submitted');
+ assert.equal(guide.source,'player-authored');
+ assert.equal(guide.author,'Zane');
  const content=guide.sections.map(s=>(s.body||'')+' '+(s.table||[]).flat().join(' ')).join(' ');
  for(const expected of ['Retaliation %','Defense','Block Chance','Strength','8.21B','6.76B','9.66B','2,145','7.67M','84%','Increased Strength','Legendary','Crit Chance','Crit Damage','Torch','Red','Blue','Bulwark Stance']){
   assert.ok(content.includes(expected),'Guide dropped source detail: '+expected);
@@ -25,5 +26,6 @@ test('Retaliation Warrior guide and build stay consistent with the submitted in-
  const normalized=normalizeBuild(build);
  assert.equal(normalized.petSetup.filter(x=>x.equipped).length,4);
  assert.deepEqual(validateBuildData(normalized),[]);
- assert.match(build.notes,/unset planner default/,'Unprovided compound levels must not be represented as verified');
+ assert.match(build.notes,/left the specific gear choices, pet Compound levels/,'Unknown equipment and pet levels must not be filled with fictitious stats');
+ assert.doesNotMatch(content,/submitted|screenshot|not supplied|not provided|verified|source data/i,'Public guide should read like the author’s own build guide');
 });
