@@ -3,7 +3,7 @@ import {loadDraft,saveDraft,deepCopy,remember,loadRecent} from './session.js';
 import {navigate,parseRoute,navigateBack} from './routing.js';
 import {esc,icon,boxIcon,chip,button,cardEntity} from './ui.js';
 import {ADMIN_URL,initTheme,applyTheme,themeStatus,refreshTheme} from './theme.js';
-import {gameArt,initGameAssets,loadStatus,canonicalArtReference} from './assets.js';
+import {gameArt,initGameAssets,loadStatus,canonicalArtReference,codexOfficialArt} from './assets.js';
 import {TREE_DATA_URL,normalizeTree,getClass,getBranch,passiveAllowed,classAllowed,allocatedTotal,passivePointBudget,classPointBudget,passiveTierSpend} from './tree-engine.js';
 import {LOADOUT_LAYOUT,boardSwitch,buildLoadout,passiveBoard,classBoard,activePassiveNode,activeClassSkill,passivePageCount,skillTierGroups} from './core-boards.js';
 import {passiveTitle} from './tree-art.js';
@@ -223,11 +223,31 @@ function skills(){return layout('Class Skill Tree','ARCANA LABS',labsTabs('skill
 function passives(){return layout('Passive Skill Tree','ARCANA LABS',labsTabs('passives')+passiveBoard(state,state.treeData),'layers')}
 function storeTreePlan(){const plan={characterLevel:state.characterLevel,treeClassId:state.treeClassId,treeBranchId:state.treeBranchId,passiveAlloc:state.passiveAlloc,classAlloc:state.classAlloc,classAllocById:state.classAllocById};try{localStorage.setItem('arcana-v4-tree-plan',JSON.stringify(plan))}catch{}if(state.draft){Object.assign(state.draft,{characterLevel:state.characterLevel,passiveAlloc:structuredClone(state.passiveAlloc),classAllocById:structuredClone(state.classAllocById)});persistDraft()}}
 function restoreTreePlan(){try{const p=JSON.parse(localStorage.getItem('arcana-v4-tree-plan')||'{}');state.characterLevel=Math.max(1,Math.floor(Number(p.characterLevel)||1));state.treeClassId=p.treeClassId||null;state.treeBranchId=p.treeBranchId||null;state.passiveAlloc=p.passiveAlloc&&typeof p.passiveAlloc==='object'?p.passiveAlloc:{};state.classAlloc=p.classAlloc&&typeof p.classAlloc==='object'?p.classAlloc:{};state.classAllocById=p.classAllocById&&typeof p.classAllocById==='object'?p.classAllocById:{}}catch{}}
-async function loadTrees(){state.treeStatus='loading';try{const r=await fetch(TREE_DATA_URL,{cache:'no-store',signal:AbortSignal.timeout(12000)});if(!r.ok)throw new Error('HTTP '+r.status);const d=normalizeTree(await r.json());if(!d.passive.rows.length&&!d.classes.length)throw new Error('No compatible tree data in export');state.treeData=d;state.treeStatus='ready';if(!state.treeClassId&&d.classes.length)state.treeClassId=d.classes[0].id;}catch(e){state.treeData=null;state.treeStatus='unavailable';console.warn('Arcana skill data:',e.message)}if(parseRoute().route.startsWith('labs/skill')||parseRoute().route.startsWith('labs/passive'))render()}
+async function loadTrees(){
+ state.treeStatus='loading';
+ let base=null;
+ try{
+  const response=await fetch(TREE_DATA_URL,{cache:'no-store',signal:AbortSignal.timeout(12000)});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  base=normalizeTree(await response.json());
+  state.treeStatus=base.passive.rows.length?'ready':'partial';
+ }catch(e){
+  console.warn('Arcana passive export unavailable:',e.message);
+  base=normalizeTree({});
+  state.treeStatus='partial'; // Verified class skills still function independently of the legacy passive feed.
+ }
+ state.treeData=base;
+ if(!state.treeClassId||!base.classes.some(x=>x.id===state.treeClassId)){
+  const match=base.classes.find(c=>c.name===state.draft?.className);
+  state.treeClassId=match?.id||base.classes[0]?.id||null;
+ }
+ state.classAlloc=state.classAllocById[state.treeClassId]||{};
+ if(parseRoute().route.startsWith('labs/skill')||parseRoute().route.startsWith('labs/passive'))render();
+}
 function adjustPassive(key,delta){const n=activePassiveNode(state.treeData,key),res=passiveAllowed(state.treeData,state.passiveAlloc,n,delta,state.characterLevel);if(!res.ok){toast(res.reason);return}state.passiveAlloc=res.allocation;storeTreePlan();rerenderTreeKeepingFocus('passive',key,delta)}
 function adjustClass(id,delta){const {cls,skill}=activeClassSkill(state.treeData,state.treeClassId,id);const res=classAllowed(cls,state.classAlloc,skill,delta,state.characterLevel);if(!res.ok){toast(res.reason);return}state.classAlloc=res.allocation;state.classAllocById[state.treeClassId||'default']=state.classAlloc;storeTreePlan();rerenderTreeKeepingFocus('class',id,delta)}
 function inspectPassive(key){const node=activePassiveNode(state.treeData,key);if(!node)return;const rank=+(state.passiveAlloc[key]||0);const plus=passiveAllowed(state.treeData,state.passiveAlloc,node,1,state.characterLevel),minus=passiveAllowed(state.treeData,state.passiveAlloc,node,-1,state.characterLevel);showLayer('PASSIVE NODE',`<section class="skillInspector"><span class="eyebrow">ROW ${node.row+1} · ${node.milestone?'MILESTONE':'PASSIVE'}</span><h2>${esc(passiveTitle(node.name))}</h2><p>${esc(node.description||'Stat node from the game tree export.')}</p><div class="rank"><button data-action="passiveadjust" data-arg="${esc(key)}|-1" ${minus.ok?'':'disabled'} aria-label="Refund point">−</button><strong>${rank} / ${node.maxRank||'?'}</strong><button data-action="passiveadjust" data-arg="${esc(key)}|1" ${plus.ok?'':'disabled'} aria-label="Allocate point">+</button></div><p class="reason">${esc(!plus.ok?plus.reason:`${state.characterLevel} character level · passive points remaining: ${Math.max(0,passivePointBudget(state.characterLevel)-allocatedTotal(state.passiveAlloc))}`)}</p></section>`,'passive-inspector')}
-function inspectClass(id){const {cls,skill}=activeClassSkill(state.treeData,state.treeClassId,id);if(!skill)return;const rank=+(state.classAlloc[id]||0);const plus=classAllowed(cls,state.classAlloc,skill,1,state.characterLevel),minus=classAllowed(cls,state.classAlloc,skill,-1,state.characterLevel);showLayer('CLASS SKILL',`<section class="skillInspector"><span class="eyebrow">${esc(cls.name.toUpperCase())} · VERIFIED SKILL ID ${esc(id)}</span><h2>${esc(skill.name)}</h2><p>${esc(skill.description||skill.effect||'Details available from the game tree export.')}</p>${skill.prereqs.length?`<p>Requires: ${esc(skill.prereqs.join(', '))}</p>`:''}<div class="rank"><button data-action="classadjust" data-arg="${esc(id)}|-1" ${minus.ok?'':'disabled'} aria-label="Refund skill point">−</button><strong>${rank} / ${skill.maxRank||'?'}</strong><button data-action="classadjust" data-arg="${esc(id)}|1" ${plus.ok?'':'disabled'} aria-label="Allocate skill point">+</button></div><p class="reason">${esc(!plus.ok?plus.reason:`${Math.max(0,classPointBudget(state.characterLevel)-allocatedTotal(state.classAlloc))} class points available`)}</p></section>`,'class-inspector')}
+function inspectClass(id){const {cls,skill}=activeClassSkill(state.treeData,state.treeClassId,id);if(!skill)return;const rank=+(state.classAlloc[id]||0);const plus=classAllowed(cls,state.classAlloc,skill,1,state.characterLevel),minus=classAllowed(cls,state.classAlloc,skill,-1,state.characterLevel);showLayer('CLASS SKILL',`<section class="skillInspector"><div class="classSkillInspectorArt">${codexOfficialArt({id:'game:class-skill:'+skill.id,gameKind:'class-skill',title:skill.name,className:cls.name},76)}</div><span class="eyebrow">${esc(cls.name.toUpperCase())} · SKILL #${esc(id)}</span><h2>${esc(skill.name)}</h2><p>${esc(skill.description||skill.effect||'Details available from the game configuration.')}</p>${skill.prereqs.length?`<p>Requires: ${esc(skill.prereqs.join(', '))}</p>`:''}<div class="rank"><button data-action="classadjust" data-arg="${esc(id)}|-1" ${minus.ok?'':'disabled'} aria-label="Refund skill point">−</button><strong>${rank} / ${skill.maxRank||'?'}</strong><button data-action="classadjust" data-arg="${esc(id)}|1" ${plus.ok?'':'disabled'} aria-label="Allocate skill point">+</button></div><p class="reason">${esc(!plus.ok?plus.reason:`${Math.max(0,classPointBudget(state.characterLevel)-allocatedTotal(state.classAlloc))} class points available`)}</p></section>`,'class-inspector')}
 function rerenderTreeKeepingFocus(kind,key,delta){
  const scrolled=window.scrollY;
  const oldRail=document.querySelector(kind==='passive'?'.coreTreePanel .treeRail':'.classTierRail');
@@ -444,7 +464,34 @@ function action(name,arg,btn){switch(name){
   else window.prompt('Copy your guild tree link',link);
   break;
  }
-case 'searchcategory':state.searchCategory=arg;refreshLiveSearch();break;case 'guildrefresh':void loadGuilds(true);break;case 'guildcopykey':navigator.clipboard?.writeText(arg).then(()=>toast('Recovery key copied')).catch(()=>toast('Copy the key manually'));break;case 'guildrecover':{const key=node('guildRecovery')?.value?.trim();if(!key||key.length<30){toast('Enter the full recovery key');break;}saveGuildOwner(arg,key);closeLayer();go('lfg/guild/edit',{id:arg});break;}case 'guilddelete':{if(!window.confirm('Delete this guild listing? This cannot be undone.'))break;const key=readGuildOwner(arg);fetch(V11_GUILD_ENDPOINT+'/'+encodeURIComponent(arg),{method:'DELETE',headers:{'x-owner-key':key}}).then(async r=>{const b=await r.json();if(!r.ok)throw Error(b.error||'Delete failed');await loadGuilds(true);go('lfg/guilds');toast('Guild listing deleted')}).catch(e=>toast(e.message));break;}case 'lfgtab':lfgState.tab=arg;render();break;case 'lfgrefresh':void loadPublicLfg(true);break;case 'lfgclear':Object.assign(lfgState,{query:'',tier:'',characterClass:'',mightAmount:'',mightUnit:'M'});render();break;case 'lfgguild':lfgState.query=arg;lfgState.tab='all';go('lfg/raids');break;case 'passiveinspect':inspectPassive(arg);break;case 'classinspect':inspectClass(arg);break;case 'passiveadjust':{const [key,d]=arg.split('|');adjustPassive(key,+d);break;}case 'classadjust':{const [key,d]=arg.split('|');adjustClass(key,+d);break;}case 'passivetier':state.passiveTier=+arg;state.passivePage=0;render();break;case 'passiveprev':passiveMove(-1);break;case 'passivenext':passiveMove(1);break;case 'passivefirst':state.passiveTier=0;state.passivePage=0;render();break;case 'passivemilestone':{const t=state.treeData?.passive?.tiers?.findIndex(x=>x.milestone);if(t>=0){state.passiveTier=t;state.passivePage=0;render()}else toast('No milestone tier identified in this export');break;}case 'classselect':{if(state.treeClassId)state.classAllocById[state.treeClassId]=state.classAlloc;state.treeClassId=arg;state.treeBranchId=null;state.classAlloc=state.classAllocById[arg]||{};state.classTierIndex=0;storeTreePlan();render();break;}case 'branchselect':state.treeBranchId=arg;state.classTierIndex=0;storeTreePlan();render();break;case 'classtier':state.classTierIndex=+arg;render();break;case 'classprev':classMove(-1);break;case 'classnext':classMove(1);break;case 'resetpassives':state.passiveAlloc={};storeTreePlan();render();break;case 'resetclasses':state.classAlloc={};state.classAllocById[state.treeClassId||'default']={};storeTreePlan();render();break;case 'reloadtree':void loadTrees();
+case 'searchcategory':state.searchCategory=arg;refreshLiveSearch();break;case 'guildrefresh':void loadGuilds(true);break;case 'guildcopykey':navigator.clipboard?.writeText(arg).then(()=>toast('Recovery key copied')).catch(()=>toast('Copy the key manually'));break;case 'guildrecover':{const key=node('guildRecovery')?.value?.trim();if(!key||key.length<30){toast('Enter the full recovery key');break;}saveGuildOwner(arg,key);closeLayer();go('lfg/guild/edit',{id:arg});break;}case 'guilddelete':{if(!window.confirm('Delete this guild listing? This cannot be undone.'))break;const key=readGuildOwner(arg);fetch(V11_GUILD_ENDPOINT+'/'+encodeURIComponent(arg),{method:'DELETE',headers:{'x-owner-key':key}}).then(async r=>{const b=await r.json();if(!r.ok)throw Error(b.error||'Delete failed');await loadGuilds(true);go('lfg/guilds');toast('Guild listing deleted')}).catch(e=>toast(e.message));break;}case 'lfgtab':lfgState.tab=arg;render();break;case 'lfgrefresh':void loadPublicLfg(true);break;case 'lfgclear':Object.assign(lfgState,{query:'',tier:'',characterClass:'',mightAmount:'',mightUnit:'M'});render();break;case 'lfgguild':lfgState.query=arg;lfgState.tab='all';go('lfg/raids');break;case 'passiveinspect':inspectPassive(arg);break;case 'classinspect':inspectClass(arg);break;case 'passiveadjust':{const [key,d]=arg.split('|');adjustPassive(key,+d);break;}case 'classadjust':{const [key,d]=arg.split('|');adjustClass(key,+d);break;}case 'passivetier':state.passiveTier=+arg;state.passivePage=0;render();break;case 'passiveprev':passiveMove(-1);break;case 'passivenext':passiveMove(1);break;case 'passivefirst':state.passiveTier=0;state.passivePage=0;render();break;case 'passivemilestone':{const t=state.treeData?.passive?.tiers?.findIndex(x=>x.milestone);if(t>=0){state.passiveTier=t;state.passivePage=0;render()}else toast('No milestone tier identified in this export');break;}case 'classselect':{
+ const target=state.treeData?.classes?.find(x=>x.id===arg);if(!target)break;
+ if(state.treeClassId)state.classAllocById[state.treeClassId]=state.classAlloc;
+ state.treeClassId=arg;state.treeBranchId=null;state.classAlloc=state.classAllocById[arg]||{};
+ state.classTierIndex=0;
+ if(state.draft){
+  const previous=state.draft.className;
+  state.draft.className=target.name;
+  if(previous!==target.name){
+   for(const [slot,itemValue] of Object.entries(state.draft.equipment||{})){
+    if(itemValue&&!allowedItem(itemValue,slot,target.name))state.draft.equipment[slot]=null;
+   }
+  }
+ }
+ storeTreePlan();render();break;
+}case 'branchselect':state.treeBranchId=arg;state.classTierIndex=0;storeTreePlan();render();break;case 'classtier':state.classTierIndex=+arg;render();break;case 'classprev':classMove(-1);break;case 'classnext':classMove(1);break;case 'resetpassives':state.passiveAlloc={};storeTreePlan();render();break;case 'resetclasses':{
+ if(allocatedTotal(state.classAlloc)>0&&!window.confirm('Reset all allocated class skill points for this class?'))break;
+ state.classAlloc={};state.classAllocById[state.treeClassId||'default']={};storeTreePlan();render();break;
+}
+case 'resetbranch':{
+ const cls=getClass(state.treeData,state.treeClassId),b=getBranch(cls,state.treeBranchId);
+ if(!b)break;const count=b.skills.reduce((sum,s)=>sum+Number(state.classAlloc[s.id]||0),0);
+ if(!count)break;
+ if(!window.confirm('Refund '+count+' points from '+b.name+'?'))break;
+ // A full branch reset can invalidate skill prerequisites in this class; rebuild allocation conservatively.
+ const candidate={...state.classAlloc};for(const sk of b.skills)delete candidate[sk.id];
+ state.classAlloc=candidate;state.classAllocById[cls.id]=candidate;storeTreePlan();render();break;
+}case 'reloadtree':void loadTrees();
 void loadPublicLfg();break;case 'search':showSearch(arg||'');break;case 'wikicat':navigate('wiki/library',{kind:arg});break;case 'wikimore':{
  const before=wikiState.limit;
  wikiState.limit+=36;
@@ -509,6 +556,10 @@ function wireBuildIdentity(){
   if(!['title','className','summary'].includes(key)||parseRoute().route!=='labs/build'||parseRoute().query.get('share')||parseRoute().query.get('build'))return;
   const b=ensureDraft();b[key]=String(e.target.value||'').slice(0,key==='summary'?350:100);
   if(key==='className'&&e.type==='change'){
+   if(state.treeData?.classes?.length){
+    const target=state.treeData.classes.find(cls=>cls.name===b.className);
+    if(target){state.classAllocById[state.treeClassId||target.id]=state.classAlloc;state.treeClassId=target.id;state.treeBranchId=null;state.classAlloc=state.classAllocById[target.id]||{};state.classTierIndex=0;}
+   }
    let removed=0;
    for(const [slot,raw] of Object.entries(b.equipment)){if(raw&&!allowedItem(raw,slot,b.className)){b.equipment[slot]=null;removed++;}}
    if(removed)toast(removed+' incompatible item(s) unequipped for '+b.className);
