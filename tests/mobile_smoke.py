@@ -308,9 +308,9 @@ with sync_playwright() as playwright:
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'ML calculator has horizontal overflow'
     page.screenshot(path=str(OUT/'ml_farm_mobile.png'),full_page=True)
 
-    page.evaluate("location.hash='#/home'")
+    page.evaluate("location.hash='#/recent'")
     page.wait_for_timeout(160)
-    assert page.locator('.arcanaResume [data-route="calculators/ml-farm"]').count()==1, 'Home failed to resume saved farm times'
+    assert page.locator('.arcanaResume [data-route="calculators/ml-farm"]').count()==1, 'Recent Activity failed to resume saved farm times'
     page.locator('.arcanaResume [data-route="calculators/ml-farm"]').dispatch_event('click')
     page.wait_for_timeout(160)
     assert page.locator('[data-farm-time="0"]').input_value()=='0.7', 'Saved ML timing was lost'
