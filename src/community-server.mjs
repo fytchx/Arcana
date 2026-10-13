@@ -48,7 +48,7 @@ export async function handleCommunityRequest(req,res,url){
  if(path==='/api/community/posts'&&method==='GET'){
   const viewer=await accountUser(req),canModerate=can(viewer,'community:hide');
   const showHidden=url.searchParams.get('includeHidden')==='true'&&canModerate;
-  let posts=(await recentPosts()).filter(p=>(p.status==='public'||showHidden)&&(!url.searchParams.get('kind')||p.kind===url.searchParams.get('kind')));
+  let posts=(await recentPosts()).filter(p=>(p.status==='public'||showHidden)&&(!url.searchParams.get('kind')||p.kind===url.searchParams.get('kind'))&&(!url.searchParams.get('authorId')||p.authorId===url.searchParams.get('authorId')));
   posts.sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
   const page=posts.slice(0,100).map(p=>{const {build,body,...light}=publicPost(p);return {...light,excerpt:clean(body,170)};});
   sendJSON(res,200,{posts:page,total:posts.length});return true;
