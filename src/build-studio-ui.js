@@ -1,8 +1,8 @@
 import {esc,icon} from './ui.js';
-import {gameArt} from './assets.js';
+import {gameArt,hasGameSprite} from './assets.js';
 import {RARITIES,GEAR_ITEMS,DROP_BONUSES,GEAR_SOURCE,baseItem,allowedGearForSlot,asGear,gearLabel,bonusRange,bonusUnit} from './build-studio-data.js';
 
-const art=(g,entry)=>gameArt({id:g.id,kind:'item',title:g.name,tier:entry?.awaken?'A'+entry.awaken:entry?.rarity?'T'+entry.rarity:undefined},72);
+const art=(g,entry)=>{const visual={id:g.id,kind:'item',title:g.name,tier:entry?.awaken?'A'+entry.awaken:entry?.rarity?'T'+entry.rarity:undefined};return gameArt(hasGameSprite(visual)?visual:{...visual,tier:undefined},72);};
 const niceStat=s=>String(s||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
 export function gearPickerMarkup(slot,className,query=''){
  const q=String(query||'').trim().toLowerCase();
