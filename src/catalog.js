@@ -7,7 +7,7 @@ export const demoBuilds = {
     owner:'Zane (kiffens_)',
     version:'PLAYER GUIDE',
     monsterLevel:208,
-    summary:'Retaliation → Defense → Block Chance → Strength. Player-sourced setup with a real damage snapshot.',
+    summary:'My retaliation-focused Warrior build: Defense, Block Chance, Strength and a four-pet setup.',
     equipment:{},
     skills:['Deflection','Bulwark Stance'],
     runes:['Fury','Fortitude','Vitality','Wisdom','Precision'],
@@ -19,7 +19,7 @@ export const demoBuilds = {
       {equipped:true,name:'Retaliation target 1',hatchBonus:'retaliation'},
       {equipped:true,name:'Retaliation target 2',hatchBonus:'retaliation'}
     ],
-    notes:'Player-submitted guide snapshot: character Lv 196; ML 208; GS 2145; 7.67M Defense; 84% Block; 1.96K STR; 6.76B–9.66B retaliation per enemy attack, average 8.21B. Gear names, actual socketed gems, pet rarity/Compound levels, exact rune positions and skill-point allocations were not provided, so the corresponding planner fields are not reconstructed. Any displayed pet Compound 0 is an unset planner default, not the player’s actual in-game level. Recommendations: red belt/jewelry/armor/helm/gloves/boots, blue weapon, flexible torch; 1 Defense + 1 Increased Strength + 2 Retaliation pets.'
+    notes:'My priorities are Retaliation %, Defense, Block Chance and Strength, in that order. I aim for red gems in armor and jewelry, blue in the weapon and whatever is useful on the Torch. My four pet targets are Defense, Increased Strength and two Retaliation bonuses. Current example: Lv 196, ML 208, 2,145 GS, 7.67M Defense, 84% Block and about 8.21B average retaliation per enemy attack. I have left the specific gear choices, pet Compound levels, rune positions and skill-point allocations open in the planner so you can customize them for your own character.'
   },
   'warrior-retaliation-demo': {
     id:'warrior-retaliation-demo', title:'Warrior Retaliation · demonstration build', className:'Warrior', owner:'Arcana Demo', version:'DEMO',
