@@ -31,6 +31,7 @@ const signInPanel=()=>{
  return '<section class="communityWelcome"><h2>Join Arcana, keep the freedom.</h2><p>Your calculators, Build Studio and shareable planner links stay completely free without an account. An account adds your player card and lets you publish community builds and guides.</p>'+
  (state.enabled?'<a class="btn primary" href="/api/account/login">'+icon('users',17)+' Create account / Sign in with Discord</a>'+(state.betaEnrollmentOpen?'<p class="mutedSmall">Accounts created during beta receive the permanent Founding Beta Tester badge. Your account and contributions are intended to remain after full launch.</p>':''):
  '<p class="mutedSmall">Account sign-in is not enabled on this preview. All guest tools remain available.</p>')+
+  '<p class="mutedSmall">By signing in, you can review our <a href="/privacy.html">Privacy Notice</a> and <a href="/beta-rules.html">Beta Guidelines</a>. Your profile and published contributions are public.</p>'+
  '</section>';
 };
 const profileForm=p=>{
