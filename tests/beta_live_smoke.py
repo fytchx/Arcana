@@ -74,6 +74,18 @@ with sync_playwright() as playwright:
  page.locator('.studioHero').wait_for(timeout=20000)
  assert page.locator('.equipmentSection').count()==1,'Build Studio broken'
  assert page.locator('[data-route="beta"]').count()>0,'Planner has no feedback path'
+ token=page.evaluate("""async ()=> {
+   const {shareBuildToken}=await import('/src/build-links.js');
+   return await shareBuildToken({title:'Staging beta shared build',className:'Warrior',
+     equipment:{weapon:'game:item:claws'},runes:[],pets:[],skills:[],monsterLevel:45});
+ }""")
+ page.evaluate("(token)=>location.hash='#/labs/build?share='+encodeURIComponent(token)",token)
+ page.locator('[data-action="clonebuild"]').wait_for(timeout=12000)
+ assert 'Staging beta shared build' in page.locator('.studioHero').inner_text(),'Anonymous share could not open'
+ assert page.locator('[data-action="sharebuild"]').count()==0,'Shared build is not read-only'
+ page.locator('[data-action="clonebuild"]').click()
+ page.locator('[data-action="sharebuild"]').wait_for(timeout=8000)
+
  assert not errors,'Real deployed JS exceptions: '+repr(errors)
  browser.close()
 print(json.dumps({'result':'PASS','release':RELEASE,'artworkSheets':health['artwork']['groups'],
