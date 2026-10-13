@@ -76,7 +76,7 @@ function detailView(){
  ((mod||admin)?'<div class="communityModeration"><h2>Moderation</h2>'+
  (mod?'<button class="btn secondary" data-community-action="visibility" data-id="'+esc(p.id)+'">'+(p.status==='hidden'?'Restore public visibility':'Hide this post')+'</button>':'')+
  (admin?'<button class="studioDanger" data-community-action="delete" data-id="'+esc(p.id)+'">Delete post permanently</button>':'')+'</div>':'')+
- (mine?'<div class="communityPostActions"><button class="btn secondary" data-community-action="edit" data-id="'+esc(p.id)+'">Edit my contribution</button></div>':'')+'</article></div>';
+ (mine?'<div class="communityPostActions">'+(p.status==='public'?'<button class="btn secondary" data-community-action="edit" data-id="'+esc(p.id)+'">Edit my contribution</button>':'')+(p.status==='public'||p.status==='archived'?'<button class="btn secondary" data-community-action="archive" data-id="'+esc(p.id)+'">'+(p.status==='archived'?'Restore publication':'Unpublish temporarily')+'</button>':'')+'</div>':'')+'</article></div>';
 }
 function createView(query){
  if(!state.me)return '<div class="communityPage"><h1>Share with the community</h1>'+signInPanel()+'</div>';
@@ -148,6 +148,12 @@ export function wireCommunityUI({go,getBuild,applyBuild,refresh,toast}){
   const action=el.dataset.communityAction,id=el.dataset.id;
   (async()=>{
    if(action==='edit'){go('community/create',{edit:id});return;}
+    if(action==='archive'){
+     const archived=state.post?.status!=='archived';
+     if(archived&&!confirm('Unpublish this contribution? You can restore it later from your account.'))return;
+     const result=await getJSON('/api/community/posts/'+encodeURIComponent(id)+'/archive',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({archived})});
+     state.post=result.post;state.requested='';toast(archived?'Contribution unpublished.':'Contribution restored.');refresh();return;
+    }
     if(action==='clear-avatar'){avatarPending='';const el=document.getElementById('arcanaAvatarStatus');if(el)el.textContent='Picture will be removed when you save your player card.';return;}
     if(action==='copy-profile'){await navigator.clipboard.writeText(location.origin+'/#/profile?id='+encodeURIComponent(id));toast('Player card copied.');return;}
    if(action==='logout'){await getJSON('/api/account/logout',{method:'POST'});state.me=null;state.requested='';go('account');refresh();return;}
