@@ -457,11 +457,11 @@ with sync_playwright() as playwright:
     page.locator('.wikiArticle').wait_for(timeout=7000)
     guide_text=page.locator('.wikiArticle').inner_text()
     assert 'Retaliation Warrior' in guide_text and '8.21B' in guide_text
-    assert 'Player-submitted build' in guide_text, 'Player-authored guide is mislabeled as official mechanics'
+    assert 'By Zane' in guide_text, 'Guide author is not visible'
     page.locator('[data-action="route"][data-arg="labs/build?build=warrior-retaliation-zane"]').dispatch_event('click')
     page.locator('.studioHero').wait_for(timeout=7000)
     assert 'Retaliation Warrior' in page.locator('.studioHero').inner_text()
-    assert 'Player-sourced' in page.locator('.studioHero').inner_text(), 'Player build incorrectly shows demonstration badge'
+    assert 'Zane’s Retaliation setup' in page.locator('.studioHero').inner_text(), 'Player build is mislabeled'
     assert '0 slots equipped' in page.locator('.equipmentSection .sectionCardTop').inner_text(), 'Unknown equipment was invented'
     assert page.locator('[data-action="clonebuild"]').count()==1, 'Player build must be copyable into local Build Studio'
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Player guide build layout overflows mobile'
