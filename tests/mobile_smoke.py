@@ -364,6 +364,21 @@ with sync_playwright() as playwright:
     page.wait_for_selector('.studioHero')
     assert 'My Build' in page.locator('.studioHero').inner_text()
     assert page.locator('.equipmentSection .sectionCardTop').inner_text().find('0 slots equipped')>=0, 'New user must start with empty build, not invented demo gear'
+    assert page.locator('[data-action="sharebuild"]').count()==1, 'Guest build sharing is not available'
+    token=page.evaluate("""async () => {
+      const {shareBuildToken}=await import('@arcana/build-links.js');
+      return await shareBuildToken({title:'Shared beta Warrior',className:'Warrior',
+        equipment:{weapon:'game:item:claws',head:null},runes:[],pets:[],skills:[],monsterLevel:100});
+    }""")
+    assert len(token)<7500
+    page.evaluate("(token) => {location.hash='#/labs/build?share='+encodeURIComponent(token)}",token)
+    page.locator('[data-action="clonebuild"]').wait_for(timeout=7000)
+    assert 'Shared beta Warrior' in page.locator('.studioHero').inner_text(), 'Read-only shared build failed'
+    assert page.locator('[data-action="sharebuild"]').count()==0, 'Shared build should be read-only'
+    page.locator('[data-action="clonebuild"]').dispatch_event('click')
+    page.wait_for_timeout(200)
+    assert page.locator('[data-action="sharebuild"]').count()==1, 'Cloned build is not editable'
+
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
     print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
     browser.close()
