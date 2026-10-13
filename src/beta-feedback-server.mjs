@@ -3,7 +3,7 @@
 import {randomUUID,createHash,timingSafeEqual} from 'node:crypto';
 import {mkdir,readdir,readFile,rename,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
-import {accountUser} from './account-server.mjs';
+import {accountUser,authAvailable,betaEnrollmentOpen} from './account-server.mjs';
 import {can} from './account-policy.js';
 
 const categories=new Set(['bug','usability','incorrect-data','missing-art','feature-request','other']);
@@ -66,7 +66,7 @@ export async function betaFeedbackRequest(req,res,url){
   send(res,200,{release:'arcana-beta-candidate-2026-10-12',guestTools:true,
    accountsConfigured:!!(process.env.ARCANA_DISCORD_CLIENT_ID&&process.env.ARCANA_DISCORD_CLIENT_SECRET&&process.env.ARCANA_AUTH_BASE_URL&&process.env.ARCANA_CREATOR_DISCORD_ID),
    wikiStorageConfigured:!!process.env.ARCANA_WIKI_DATA_DIR,
-   feedbackEnabled:true,contentDate:'2026-10-09',note:'Game configuration snapshots and external directories may change independently of this release.'});return true;
+   betaEnrollmentOpen:betaEnrollmentOpen(),accountSignInEnabled:authAvailable(),feedbackEnabled:true,contentDate:'2026-10-09',note:'Game configuration snapshots and external directories may change independently of this release.'});return true;
  }
  if(url.pathname==='/api/beta/feedback'&&req.method==='POST'){
   if(!sameOrigin(req)){send(res,403,{error:'Submit feedback from Arcana itself.'});return true;}
