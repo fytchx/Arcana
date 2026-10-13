@@ -83,7 +83,16 @@ async function resolveShared(token){
  if(parseRoute().query.get('share')===token&&['labs/build','labs/runes','labs/passives'].includes(parseRoute().route))render();
 }
 const newPersonalBuild=()=>normalizeBuild({id:'local-draft',title:'My Build',className:'Warrior',owner:'You',version:'LOCAL',summary:'Create a build with your own equipment, rune layout, skills and pets.',notes:'Your changes stay on this device until you share your build.',equipment:{weapon:null,offhand:null,head:null,chest:null,hands:null,feet:null,belt:null,ring:null,neck:null},skills:[],runes:[],pets:[],runeBoard:[],monsterLevel:1,passiveAlloc:{},classAllocById:{}});
-function ensureDraft(){if(!state.draft)state.draft=newPersonalBuild();else state.draft=normalizeBuild(state.draft);return state.draft;}
+function ensureDraft(){
+ if(!state.draft){
+  state.draft=newPersonalBuild();
+  state.draft.characterLevel=state.characterLevel;
+  state.draft.passiveAlloc=structuredClone(state.passiveAlloc);
+  state.draft.passiveFreeMode=state.passiveFreeMode===true;
+  state.draft.classAllocById=structuredClone(state.classAllocById);
+ }else state.draft=normalizeBuild(state.draft);
+ return state.draft;
+}
 function persistDraft(){if(state.draft){state.draft=normalizeBuild(state.draft);saveDraft(state.draft)}}
 const SEARCHABLE_TOOLS=['items','guides','upgrade','compare','build','runes','skills','passives','petlab','compound','affixes','guildtree','guilds','raids','farm'];
 const TOOL_SEARCH_ALIASES={
