@@ -357,7 +357,8 @@ with sync_playwright() as playwright:
     page.locator('[name="title"]').fill('Codex issue on Android')
     page.locator('[name="details"]').fill('Changing categories moves the scroll unexpectedly; expected the selected category to stay visible.')
     page.locator('[data-beta-form="feedback"] button[type="submit"]').click()
-    page.get_by_text('Feedback received.',exact=False).wait_for(timeout=5000)
+    page.wait_for_timeout(350)
+    assert 'Feedback received.' in page.locator('.betaCenter').inner_text(), 'Beta submission did not confirm: '+repr(page.locator('.betaCenter').inner_text()[-900:])+' JS errors '+repr(errors)
     assert page.locator('[data-beta-form="feedback"]').count()==1
     page.evaluate("location.hash='#/labs/build'")
     page.wait_for_selector('.studioHero')
