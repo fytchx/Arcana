@@ -95,8 +95,8 @@ const server=http.createServer(async(req,res)=>{
   const {pathname}=parsedUrl;
   // One canonical customer-facing origin. Keep preview health checks available,
   // but prevent www sessions and staging logins from creating separate identities.
-  const host=String(req.headers.host||'').toLowerCase().replace(/:\\d+$/,'');
-  const primary=String(process.env.ARCANA_AUTH_BASE_URL||'').replace(/\\/$/,'');
+  const host=String(req.headers.host||'').toLowerCase().replace(/:[0-9]+$/,'');
+  const primary=String(process.env.ARCANA_AUTH_BASE_URL||'').replace(/[/]$/,'');
   const isPublicDomain=primary==='https://arcanacompanion.xyz';
   if(isPublicDomain&&host==='www.arcanacompanion.xyz'){
    res.writeHead(308,{'location':primary+(req.url||'/'),'cache-control':'no-store'});res.end();return;
