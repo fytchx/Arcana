@@ -37,9 +37,12 @@ export function betaView(route){
  '<div class="betaActions"><button class="btn secondary" data-beta-action="copy-diagnostics">'+icon('copy',16)+' Copy basic diagnostics</button><button class="btn secondary" data-route="home">Return home</button></div></div>';
 }
 export async function loadBetaStatus(refresh){
+ if(state.loading||state.status)return;
+ state.loading=true;
  try{const r=await fetch('/api/beta/status',{cache:'no-store'});if(!r.ok)throw Error('Beta status unavailable');
   state.status=await r.json();
  }catch{state.status={release:'unavailable',accountsConfigured:false,wikiStorageConfigured:false};}
+ state.loading=false;
  if(location.hash.includes('#/beta'))refresh();
 }
 export function wireBetaUI({go,refresh,toast}){
