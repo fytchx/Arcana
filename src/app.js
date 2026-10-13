@@ -241,7 +241,8 @@ async function loadTrees(){
   const match=base.classes.find(c=>c.name===state.draft?.className);
   state.treeClassId=match?.id||base.classes[0]?.id||null;
  }
- state.classAlloc=state.classAllocById[state.treeClassId]||{};
+ state.classAlloc=state.classAllocById[state.treeClassId]||state.classAlloc||{};
+ if(!state.classAllocById[state.treeClassId])state.classAllocById[state.treeClassId]={...state.classAlloc};
  if(parseRoute().route.startsWith('labs/skill')||parseRoute().route.startsWith('labs/passive'))render();
 }
 function adjustPassive(key,delta){const n=activePassiveNode(state.treeData,key),res=passiveAllowed(state.treeData,state.passiveAlloc,n,delta,state.characterLevel);if(!res.ok){toast(res.reason);return}state.passiveAlloc=res.allocation;storeTreePlan();rerenderTreeKeepingFocus('passive',key,delta)}
