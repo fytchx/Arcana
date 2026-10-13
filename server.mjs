@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)));
 const PORT = Number(process.env.PORT || 3000);
-const REVISION = 'arcana-beta-candidate-2026-10-12';
+const REVISION = 'arcana-real-accounts-beta-2026-10-13';
 const BASES = Object.freeze({
   catalog: 'https://arcana-guild-directory-beta-production.up.railway.app',
   lfg: 'https://lfg.arcanacompanion.xyz',
