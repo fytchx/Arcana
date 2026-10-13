@@ -59,6 +59,8 @@ HTML=HTML.replace('</body>', '''<script>
 window.fetch = async function(input) {
  const path = String(input);
  if(path.includes('/api/wiki/import-access')) return new Response(JSON.stringify({allowed:true}),{status:200,headers:{'content-type':'application/json'}});
+ if(path.includes('/api/beta/status')) return new Response(JSON.stringify({release:'arcana-beta-candidate-2026-10-12',feedbackEnabled:true,accountsConfigured:false,wikiStorageConfigured:true}),{status:200,headers:{'content-type':'application/json'}});
+ if(path.includes('/api/beta/feedback')) return new Response(JSON.stringify({ok:true,reference:'test1234'}),{status:201,headers:{'content-type':'application/json'}});
  if(path.includes('/api/search/catalog')) return new Response(JSON.stringify(__MOCK_ENTRIES__),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/guilds')) return new Response(JSON.stringify({guilds:[]}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/lfg/public')) return new Response(JSON.stringify({listings:[],plans:[],issues:[]}),{status:200,headers:{'content-type':'application/json'}});
@@ -77,7 +79,8 @@ with sync_playwright() as playwright:
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
     page.set_content(HTML,wait_until='domcontentloaded')
-    page.wait_for_timeout(700)
+    page.wait_for_selector('.arcanaSignature',timeout=15000)
+    assert errors==[], 'App failed to initialize: '+repr(errors)
     assert page.locator('.skipMain').count()==1, 'Accessible skip navigation missing'
     page.locator('.skipMain').dispatch_event('click')
     assert page.evaluate('document.activeElement.id')=='content', 'Skip navigation did not focus the main content'
@@ -346,6 +349,48 @@ with sync_playwright() as playwright:
     assert 'image reference' in page.locator('.fandomImportRow').inner_text().lower()
     assert page.locator('[data-fandom-action="save"]').count()==1, 'Private-draft save control missing'
     page.screenshot(path=str(OUT/'fandom_import_mobile.png'),full_page=True)
+    # The beta must have an actual feedback form and account-free entry.
+    page.evaluate("location.hash='#/beta'")
+    page.wait_for_selector('[data-beta-form="feedback"]',timeout=10000)
+    assert page.locator('.betaFeature').count()>=4, 'Beta availability information missing'
+    assert 'not enabled' in page.locator('.betaCapabilities').inner_text(), 'Unconfigured account sign-in must not appear operational'
+    page.locator('[name="title"]').fill('Codex issue on Android')
+    page.locator('[name="details"]').fill('Changing categories moves the scroll unexpectedly; expected the selected category to stay visible.')
+    page.locator('[data-beta-form="feedback"] button[type="submit"]').click()
+    page.wait_for_timeout(350)
+    assert 'Feedback received.' in page.locator('.betaCenter').inner_text(), 'Beta submission did not confirm: '+repr(page.locator('.betaCenter').inner_text()[-900:])+' JS errors '+repr(errors)
+    assert page.locator('[data-beta-form="feedback"]').count()==1
+    page.evaluate("location.hash='#/labs/build'")
+    page.wait_for_selector('.studioHero')
+    assert 'My Build' in page.locator('.studioHero').inner_text()
+    assert page.locator('.equipmentSection .sectionCardTop').inner_text().find('0 slots equipped')>=0, 'New user must start with empty build, not invented demo gear'
+    assert page.locator('[data-action="sharebuild"]').count()==1, 'Guest build sharing is not available'
+    token=page.evaluate("""async () => {
+      const {shareBuildToken}=await import('@arcana/build-links.js');
+      return await shareBuildToken({title:'Shared beta Warrior',className:'Warrior',
+        equipment:{weapon:'game:item:claws',head:null},runes:[],pets:[],skills:[],monsterLevel:100});
+    }""")
+    assert len(token)<7500
+    page.evaluate("(token) => {location.hash='#/labs/build?share='+encodeURIComponent(token)}",token)
+    page.locator('[data-action="clonebuild"]').wait_for(timeout=7000)
+    assert 'Shared beta Warrior' in page.locator('.studioHero').inner_text(), 'Read-only shared build failed'
+    assert page.locator('[data-action="sharebuild"]').count()==0, 'Shared build should be read-only'
+    page.locator('[data-action="clonebuild"]').dispatch_event('click')
+    page.wait_for_timeout(200)
+    assert page.locator('[data-action="sharebuild"]').count()==1, 'Cloned build is not editable'
+    assert page.locator('[data-build-field="title"]').count()==1, 'Build name editor missing'
+    page.locator('[data-build-field="title"]').fill('My actual beta build')
+    page.locator('[data-build-field="className"]').select_option('Druid')
+    assert 'My actual beta build' in page.locator('.studioHero h2').inner_text()
+    assert 'Druid' in page.locator('.studioHero p').inner_text()
+    page.evaluate("location.hash='#/home'")
+    page.wait_for_timeout(120)
+    page.evaluate("location.hash='#/labs/build'")
+    page.wait_for_timeout(120)
+    assert page.locator('[data-build-field="title"]').input_value()=='My actual beta build', 'Build title changes did not persist'
+    assert page.locator('[data-build-field="className"]').input_value()=='Druid', 'Build class changes did not persist'
+
+
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
     print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
     browser.close()

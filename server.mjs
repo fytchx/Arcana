@@ -5,11 +5,12 @@ import { createHash } from 'node:crypto';
 import { handleWikiRequest } from './src/wiki-server.mjs';
 import { safeAccountRequest } from './src/account-server.mjs';
 import { safeCommunityRequest } from './src/community-server.mjs';
+import { betaFeedbackRequest } from './src/beta-feedback-server.mjs';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)));
 const PORT = Number(process.env.PORT || 3000);
-const REVISION = 'arcana-stabilization-2026-10-12';
+const REVISION = 'arcana-beta-candidate-2026-10-12';
 const BASES = Object.freeze({
   catalog: 'https://arcana-guild-directory-beta-production.up.railway.app',
   lfg: 'https://lfg.arcanacompanion.xyz',
@@ -93,6 +94,7 @@ const server=http.createServer(async(req,res)=>{
   const {pathname}=parsedUrl;
   if((pathname.startsWith('/api/account/')||pathname.startsWith('/api/profiles/')||pathname.startsWith('/api/admin/roles/'))&&await safeAccountRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/community/')&&await safeCommunityRequest(req,res,parsedUrl))return;
+  if(pathname.startsWith('/api/beta/')&&await betaFeedbackRequest(req,res,parsedUrl))return;
   if(await handleWikiRequest(req,res,pathname))return;
   if(req.method!=='GET'&&req.method!=='HEAD'){send(res,405,'Method not allowed');return;}
   if(pathname==='/health'||pathname==='/__health') {const art=await localArtAudit;const ok=!REQUIRE_LOCAL_ART||art.ready;json(res,ok?200:503,{ok,release:REVISION,source:'tracked frontend files',artwork:{local:art.ready,groups:art.groups,version:art.version||null},dependencyEndpoints:Object.keys(BASES)});return;}
@@ -118,7 +120,7 @@ const server=http.createServer(async(req,res)=>{
   }
   const normalized=pathname==='/'?'/index.html':pathname;
   // Serve only public frontend assets. Never expose account/session files or local Wiki data.
-  const publicPage=new Set(['/index.html','/styles.css','/wiki-studio.css','/community.css']).has(normalized);
+  const publicPage=new Set(['/index.html','/styles.css','/wiki-studio.css','/community.css','/beta.css']).has(normalized);
   const publicModule=/^\/src\/[a-z][a-z0-9-]*\.js$/.test(normalized);
   const publicAsset=/^\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.(?:webp|svg|png|jpg|jpeg|json)$/.test(normalized);
   if(!publicPage&&!publicModule&&!publicAsset){send(res,404,'Not found');return;}
