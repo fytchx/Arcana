@@ -81,7 +81,7 @@ test('full class tree renders all six verified nodes and three tiers without pag
  assert.equal((markup.match(/classSkillNode /g)||[]).length,6);
  assert.ok(markup.includes('Counterstrike'));
  assert.ok(markup.includes('Culling strike'));
- assert.ok(markup.includes('game:class-skill:48'));
+ assert.ok(markup.includes('data-node="48"'));
  assert.ok(markup.includes('classTierCards'));
  assert.ok(markup.includes('5 points required')||markup.includes('5 more points'));
  assert.ok(markup.includes('Official skill reference'));
