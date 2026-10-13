@@ -1,6 +1,7 @@
 import {allocatedTotal,classPointBudget,passivePointBudget,getClass,getBranch,passiveTierSpend,passiveAllowed,classAllowed} from './tree-engine.js';
 import {esc,icon} from './ui.js';
 import {gameArt} from './assets.js';
+import {asGear,gearLabel,baseItem,equipmentId} from './build-studio-data.js';
 import {motifArt,passiveTitle,safeGameAsset,classTheme} from './tree-art.js';
 const btn=(label,route)=>`<button class="boardJump" data-route="${route}">${label}</button>`;
 const ico=(name)=>icon(name,19);
@@ -25,7 +26,17 @@ export function boardSwitch(active='equipment'){
  const entries=[['equipment','Equipment','labs/build'],['passive','Passive Tree','labs/passives'],['class','Class Skills','labs/skills']];
  return `<nav class="coreSwitch" aria-label="Build Studio boards">${entries.map(([id,n,r])=>`<button data-route="${r}" class="${active===id?'active':''}" aria-current="${active===id?'page':'false'}">${esc(n)}</button>`).join('')}</nav>`;
 }
-export function buildLoadout(equipment,itemLookup,inspecting){return `<section class="loadoutFrame" aria-label="In-game-inspired equipment layout"><div class="loadoutHead"><span>CHARACTER LOADOUT</span><span>${Object.values(equipment).filter(Boolean).length} EQUIPPED</span></div><div class="loadoutStage">${LOADOUT_LAYOUT.map(slot=>{let e=itemLookup(equipment[slot.key]);const empty=!e;return `<button type="button" class="loadoutSlot ${empty?'empty':''}" data-pos="${slot.group}" data-action="${inspecting?'inspectgear':'pickgear'}" data-arg="${slot.key}" data-item="${esc(e?.id||'')}" aria-label="${esc(slot.label)}: ${esc(e?.title||'empty')}"><span class="loadoutSprite">${e?gameArt(e,100):icon('plus',24)}</span><span class="loadoutMeta"><small>${esc(slot.label)}</small><strong>${esc(e?.title||'Empty')}</strong></span>${e?'<i class="loadoutEquipped" aria-hidden="true"></i>':''}</button>`}).join('')}</div><p class="boardCaveat">Real atlas sprites where mapped. Slot art is unchanged by themes. Item rarity, awakening and gem markers appear only when supplied by a verified character record.</p></section>`;}
+export function buildLoadout(equipment,itemLookup,inspecting){
+ const count=Object.values(equipment||{}).filter(Boolean).length;
+ const twoHanded=!!baseItem(equipment?.weapon)?.twoHanded;
+ return `<section class="loadoutFrame" aria-label="Equipment manager"><div class="loadoutHead"><span>CHARACTER LOADOUT</span><span>${count} EQUIPPED</span></div><div class="loadoutStage">${LOADOUT_LAYOUT.map(slot=>{
+  const raw=equipment?.[slot.key],item=itemLookup(raw),configuration=asGear(raw),base=baseItem(raw);
+  const locked=slot.key==='offhand'&&twoHanded&&!raw;
+  const displayName=item?.title||base?.name||'',tier=configuration?.rarity?gearLabel(configuration):'';
+  const art=item?gameArt({...item,tier:configuration?.awaken?'A'+configuration.awaken:configuration?.rarity?'T'+configuration.rarity:undefined},100):icon(locked?'close':'plus',24);
+  return `<button type="button" class="loadoutSlot ${item?'':'empty'} ${locked?'gearLocked':''}" data-pos="${slot.group}" data-action="${inspecting?'inspectgear':'pickgear'}" data-arg="${slot.key}" data-item="${esc(equipmentId(raw)||'')}" aria-label="${esc(slot.label)}: ${esc(displayName|| (locked?'blocked by two-handed weapon':'empty'))}${tier?' · '+esc(tier):''}"><span class="loadoutSprite">${art}</span><span class="loadoutMeta"><small>${esc(slot.label)}</small><strong>${esc(displayName|| (locked?'Blocked':'Empty'))}</strong>${tier?`<em class="gearTierMark">${esc(tier)}</em>`:''}</span>${item?'<i class="loadoutEquipped" aria-hidden="true"></i>':''}</button>`;
+ }).join('')}</div><p class="boardCaveat">Tap an equipment slot to choose its base item, rarity, awakening and Drop Bonus. Saved builds retain their individual gear configurations.</p></section>`;
+}
 export function dataNotice(status){return `<div class="treeProvenance" role="status">${status==='ready'?'Reading the existing IdleArc tree export. Verify against the newest Season 2 configuration before publishing builds.':status==='loading'?'Loading IdleArc skill data…':'Tree data unavailable. Allocation is disabled rather than guessing skills or unlocks.'}</div>`}
 function spending(state,kind){const a=kind==='passive'?state.passiveAlloc:state.classAlloc;return `${allocatedTotal(a)} / ${kind==='passive'?passivePointBudget(state.characterLevel):classPointBudget(state.characterLevel)}`}
 function controls(state,mode){
