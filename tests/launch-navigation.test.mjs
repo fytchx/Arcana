@@ -12,7 +12,7 @@ test('six home cards open real submenu groups',()=>{
  assert.match(html,/data-route="labs\/build"/);
  assert.match(html,/Useful &amp; Featured/);
  assert.match(html,/data-route="directory"/);
- for(const card of HOME_CARDS){const popup=homeSubmenu(card.id);assert.ok(popup.includes(card.title));assert.match(popup,/launchNavRow/);}
+ for(const card of HOME_CARDS){const popup=homeSubmenu(card.id);assert.ok(popup.includes(card.title.replaceAll('&','&amp;')));assert.match(popup,/launchNavRow/);}
 });
 test('all submenu and A-Z destinations are resolvable routes',()=>{
  for(const [id,group] of Object.entries(HOME_MENUS)){
