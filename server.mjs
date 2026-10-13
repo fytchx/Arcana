@@ -93,6 +93,17 @@ const server=http.createServer(async(req,res)=>{
  try {
   const parsedUrl=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
   const {pathname}=parsedUrl;
+  // One canonical customer-facing origin. Keep preview health checks available,
+  // but prevent www sessions and staging logins from creating separate identities.
+  const host=String(req.headers.host||'').toLowerCase().replace(/:[0-9]+$/,'');
+  const primary=String(process.env.ARCANA_AUTH_BASE_URL||'').replace(/[/]$/,'');
+  const isPublicDomain=primary==='https://arcanacompanion.xyz';
+  if(isPublicDomain&&host==='www.arcanacompanion.xyz'){
+   res.writeHead(308,{'location':primary+(req.url||'/'),'cache-control':'no-store'});res.end();return;
+  }
+  if(isPublicDomain&&host==='arcana-stable-app-staging.up.railway.app'&&pathname==='/api/account/login'){
+   res.writeHead(302,{'location':primary+'/#/account','cache-control':'no-store'});res.end();return;
+  }
   if(pathname.startsWith('/api/account/builds')&&await safeAccountBuildRequest(req,res,parsedUrl))return;
   if((pathname.startsWith('/api/account/')||pathname.startsWith('/api/profiles/')||pathname.startsWith('/api/admin/roles/'))&&await safeAccountRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/community/')&&await safeCommunityRequest(req,res,parsedUrl))return;
