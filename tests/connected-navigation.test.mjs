@@ -105,7 +105,13 @@ test('Wiki collection and home include obvious connected destinations',()=>{
 test('Application includes shared recommendations without removing existing navigation',async()=>{
  const code=await app();
  assert.match(code,/routeView\(\)\+connectedNext\(dest\)\+siteSignature\(\)/);
- assert.match(code,/homeStart\(\)/);
+ assert.match(code,/homeStart\(\{compact:true\}\)/);
+ assert.match(code,/homeGateway\('wiki','ArcanaWiki'/);
+ assert.match(code,/homeGateway\('labs','Arcana Labs'/);
+ assert.match(code,/homeGateway\('calculators','Calculators'/);
+ assert.match(code,/homeGateway\('wiki\/guides','Player Guides'/);
+ assert.match(code,/homeDisclosure\('quick'/);
+ assert.match(code,/homeDisclosure\('actions'/);
  assert.match(code,/crumbTrail\(title\)/);
  assert.match(code,/SEARCHABLE_TOOLS/);
  assert.match(code,/searchExtras\(\)\.find\(x=>x\.id===id\)/);
