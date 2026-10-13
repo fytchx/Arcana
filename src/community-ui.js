@@ -1,5 +1,6 @@
 import {esc,icon} from './ui.js';
-const state={me:undefined,enabled:false,posts:[],post:null,profile:null,loading:null,error:'',lastRoute:'',requested:''};
+import {cloudBuildView,loadAccountBuilds,wireCloudBuildUI} from './account-builds-ui.js';
+const state={me:undefined,enabled:false,posts:[],myPosts:[],post:null,profile:null,loading:null,error:'',lastRoute:'',requested:''};
 const titleProfile=p=>esc(p?.displayName||'Arcana player');
 const labels=roles=>(roles||[]).map(r=>'<span class="accountRole role-'+esc(r.id)+'">'+esc(r.label)+'</span>').join('');
 const notice=t=>'<p class="communityNotice">'+esc(t)+'</p>';
@@ -42,7 +43,8 @@ function accountView(){
  if(!state.me)return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">ARCANA MEMBERSHIP</span><h1>Your Arcana identity</h1><p>Every player gets full access to Arcana tools, with or without a login.</p></div>'+signInPanel()+'</div>';
  const p=state.me;
  return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">ARCANA MEMBER</span><h1>My player card</h1><p>Make it easy for other IdleArc players to find and recognize you.</p></div>'+
- profileCard(p,{full:true})+profileForm(p)+
+ profileCard(p,{full:true})+profileForm(p)+cloudBuildView()+
+ (state.myPosts.length?'<section class="communityMyPosts"><h2>My published guides & builds</h2><div class="communityPostGrid">'+state.myPosts.map(communityPostCard).join('')+'</div></section>':'')+
  (p.permissions?.manageRoles?'<form class="accountProfileForm" data-community-form="roles"><h2>Manage approved roles</h2><p class="mutedSmall">Enter the player ID from their public profile URL. Wiki Editors may publish official pages. Moderators can hide contributions; only Admins and the Creator can delete.</p><label>Player ID<input name="id" required placeholder="Account ID from their player-card link" maxlength="36"></label><fieldset class="accountRoleSelect"><legend>Approved roles</legend><label><input type="checkbox" name="roles" value="wiki-editor"> Arcana Wiki Editor</label><label><input type="checkbox" name="roles" value="moderator"> Moderator</label>'+(
  p.roles?.some(r=>r.id==='creator')?'<label><input type="checkbox" name="roles" value="admin"> Admin</label><label><input type="checkbox" name="roles" value="developer"> Developer</label>':'')+'</fieldset><button class="btn primary" type="submit">Set member roles</button><p class="mutedSmall">Select the roles to grant. Leave every checkbox unchecked to revoke additional roles. Creator assignments cannot be modified.</p></form>':'')+
  '<div class="communityAccountActions"><button class="btn secondary" data-route="community/create">Create a community post</button>'+
@@ -72,19 +74,20 @@ function detailView(){
  ((mod||admin)?'<div class="communityModeration"><h2>Moderation</h2>'+
  (mod?'<button class="btn secondary" data-community-action="visibility" data-id="'+esc(p.id)+'">'+(p.status==='hidden'?'Restore public visibility':'Hide this post')+'</button>':'')+
  (admin?'<button class="studioDanger" data-community-action="delete" data-id="'+esc(p.id)+'">Delete post permanently</button>':'')+'</div>':'')+
- (mine?'<p class="mutedSmall">You published this contribution. Changes to the article editor are coming in a later update.</p>':'')+'</article></div>';
+ (mine?'<div class="communityPostActions"><button class="btn secondary" data-community-action="edit" data-id="'+esc(p.id)+'">Edit my contribution</button></div>':'')+'</article></div>';
 }
 function createView(query){
  if(!state.me)return '<div class="communityPage"><h1>Share with the community</h1>'+signInPanel()+'</div>';
- const kind=query.get('kind')==='build'?'build':'guide';
- return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">PLAYER CONTENT</span><h1>Publish a community contribution</h1><p>These posts appear in the community area, not ArcanaWiki. Your player card is credited automatically.</p></div>'+
- '<form class="communityCreateForm" data-community-form="post">'+
- '<label>Contribution type<select name="kind"><option value="guide" '+(kind==='guide'?'selected':'')+'>Guide</option><option value="build" '+(kind==='build'?'selected':'')+'>Build Studio snapshot</option></select></label>'+
- '<label>Title<input name="title" maxlength="110" required placeholder="A useful title for other players"></label>'+
- '<label>Short summary<textarea name="summary" maxlength="300" rows="3" required placeholder="What will other players learn?"></textarea></label>'+
- '<label>Details<textarea name="body" maxlength="12000" rows="10" placeholder="Explain your choices, goals and tradeoffs"></textarea></label>'+
+ const editing=query.get('edit')&&state.post?.id===query.get('edit')?state.post:null;
+ const kind=editing?.kind||(query.get('kind')==='build'?'build':'guide');
+ return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">PLAYER CONTENT</span><h1>'+(editing?'Edit my contribution':'Publish a community contribution')+'</h1><p>These posts appear in the community area, not ArcanaWiki. Your player card is credited automatically.</p></div>'+
+ '<form class="communityCreateForm" data-community-form="post" data-edit-id="'+esc(editing?.id||'')+'">'+
+ '<label>Contribution type<select name="kind" '+(editing?'disabled':'')+'><option value="guide" '+(kind==='guide'?'selected':'')+'>Guide</option><option value="build" '+(kind==='build'?'selected':'')+'>Build Studio snapshot</option></select></label>'+
+ '<label>Title<input name="title" maxlength="110" value="'+esc(editing?.title||'')+'" required placeholder="A useful title for other players"></label>'+
+ '<label>Short summary<textarea name="summary" maxlength="300" rows="3" required placeholder="What will other players learn?">'+esc(editing?.summary||'')+'</textarea></label>'+
+ '<label>Details<textarea name="body" maxlength="12000" rows="10" placeholder="Explain your choices, goals and tradeoffs">'+esc(editing?.body||'')+'</textarea></label>'+
  '<p class="mutedSmall">Build posts attach your current locally saved Build Studio draft. Guests can still share normal planner links without publishing anything.</p>'+
- '<button class="btn primary" type="submit">Publish to community</button></form></div>';
+ '<button class="btn primary" type="submit">'+(editing?'Save changes':'Publish to community')+'</button></form></div>';
 }
 export function communityPage(route,query){
  if(route==='account')return accountView();
@@ -106,18 +109,22 @@ export async function loadCommunityPage(route,query,refresh){
   if(state.me===undefined)await refreshAccount();
   if(route==='community'){state.posts=(await getJSON('/api/community/posts')).posts||[];}
   else if(route==='community/post'){state.post=(await getJSON('/api/community/posts/'+encodeURIComponent(query.get('id')||''))).post;}
+  else if(route==='community/create'&&query.get('edit')){state.post=(await getJSON('/api/community/posts/'+encodeURIComponent(query.get('edit')))).post;}
+  else if(route==='account'&&state.me){state.myPosts=(await getJSON('/api/community/mine')).posts||[];await loadAccountBuilds();}
   else if(route==='profile'){state.profile=(await getJSON('/api/profiles/'+encodeURIComponent(query.get('id')||''))).profile;}
   state.error='';
  }catch(e){state.error=e.message;state.post=null;state.profile=null;}
  if(location.hash.replace(/^#\/?/,'').split('?')[0]===route)refresh();
 }
 export function wireCommunityUI({go,getBuild,applyBuild,refresh,toast}){
+ wireCloudBuildUI({go,getBuild,applyBuild,refresh,toast});
  document.addEventListener('click',e=>{
   const el=e.target.closest('[data-community-action]');if(!el)return;
   e.preventDefault();
   const action=el.dataset.communityAction,id=el.dataset.id;
   (async()=>{
-   if(action==='copy-profile'){await navigator.clipboard.writeText(location.origin+'/#/profile?id='+encodeURIComponent(id));toast('Player card copied.');return;}
+   if(action==='edit'){go('community/create',{edit:id});return;}
+    if(action==='copy-profile'){await navigator.clipboard.writeText(location.origin+'/#/profile?id='+encodeURIComponent(id));toast('Player card copied.');return;}
    if(action==='logout'){await getJSON('/api/account/logout',{method:'POST'});state.me=null;state.requested='';go('account');refresh();return;}
    if(action==='use-build'){if(!state.post?.build)throw Error('This build is unavailable.');applyBuild(state.post.build);toast('Build copied to your local workspace.');go('labs/build');return;}
    if(action==='visibility'){
@@ -152,8 +159,14 @@ export function wireCommunityUI({go,getBuild,applyBuild,refresh,toast}){
    if(form.dataset.communityForm==='post'){
     const snapshot=data.kind==='build'?getBuild():null;
     if(data.kind==='build'&&!snapshot)throw Error('Create and save a build in Build Studio first.');
-    const out=await getJSON('/api/community/posts',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...data,build:snapshot})});
-    state.requested='';go('community/post',{id:out.post.id});return;
+    const editId=form.dataset.editId;
+    if(editId&&state.post?.id!==editId)throw Error('Reload the contribution before editing.');
+    const endpoint=editId?'/api/community/posts/'+encodeURIComponent(editId):'/api/community/posts';
+    const payload={...data,...(editId?{baseRevision:state.post.revision}:{}),
+     ...(data.kind==='build'||(editId&&state.post.kind==='build')?{build:editId?state.post.build:snapshot}:{})};
+    if(editId)payload.kind=state.post.kind;
+    const out=await getJSON(endpoint,{method:editId?'PATCH':'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+    state.post=out.post;state.requested='';go('community/post',{id:out.post.id});return;
    }
   })().catch(err=>toast(err.message));
  });
