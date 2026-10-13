@@ -37,7 +37,7 @@ assert health.get('artwork',{}).get('groups',0)>=10,'Missing official sprites'
 code,status,headers=call('/api/beta/status')
 assert code==200 and status.get('release')==RELEASE,'Beta status endpoint not running'
 assert status.get('feedbackEnabled') is True,'Public issue reporting disabled'
-assert headers.get('cache-control')=='no-store','Beta status incorrectly cached'
+assert {k.lower():v for k,v in headers.items()}.get('cache-control')=='no-store','Beta status cache-control missing: '+repr(headers)
 code,account,_=call('/api/account/me')
 assert code==200 and 'enabled' in account
 code,_,_=call('/api/beta/reports')
