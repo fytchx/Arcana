@@ -1,5 +1,26 @@
 /* Single public object registry for the connected demo. Real-data ingestion comes later. */
 export const demoBuilds = {
+  'warrior-retaliation-zane': {
+    id:'warrior-retaliation-zane',
+    title:'Zane’s Retaliation Warrior · Season 2',
+    className:'Warrior',
+    owner:'Zane (kiffens_)',
+    version:'PLAYER GUIDE',
+    monsterLevel:208,
+    summary:'Retaliation → Defense → Block Chance → Strength. Player-sourced setup with a real damage snapshot.',
+    equipment:{},
+    skills:['Deflection','Bulwark Stance'],
+    runes:['Fury','Fortitude','Vitality','Wisdom','Precision'],
+    runeBoard:[],
+    pets:['Defense','Increased Strength','Retaliation','Retaliation'],
+    petSetup:[
+      {equipped:true,name:'Defense target',hatchBonus:'defense'},
+      {equipped:true,name:'% Strength target',hatchBonus:'increased_strength'},
+      {equipped:true,name:'Retaliation target 1',hatchBonus:'retaliation'},
+      {equipped:true,name:'Retaliation target 2',hatchBonus:'retaliation'}
+    ],
+    notes:'Player-submitted guide snapshot: character Lv 196; ML 208; GS 2145; 7.67M Defense; 84% Block; 1.96K STR; 6.76B–9.66B retaliation per enemy attack, average 8.21B. Gear names, actual socketed gems, pet rarity/Compound levels, exact rune positions and skill-point allocations were not provided, so the corresponding planner fields are not reconstructed. Any displayed pet Compound 0 is an unset planner default, not the player’s actual in-game level. Recommendations: red belt/jewelry/armor/helm/gloves/boots, blue weapon, flexible torch; 1 Defense + 1 Increased Strength + 2 Retaliation pets.'
+  },
   'warrior-retaliation-demo': {
     id:'warrior-retaliation-demo', title:'Warrior Retaliation · demonstration build', className:'Warrior', owner:'Arcana Demo', version:'DEMO',
     summary:'An illustrative, editable example showing how an entire guide build opens inside Build Studio. Not a recommended or verified build.',
