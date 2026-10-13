@@ -102,6 +102,7 @@ export function connectedNext(route){
  return '<section class="arcanaNext" aria-label="Recommended next steps"><div class="arcanaNextHead"><span class="eyebrow">CONNECTED ARCANA</span><h2>Where to next?</h2><p>Jump to a relevant guide, reference or tool. Your current work stays saved.</p></div>'+
  '<div class="arcanaConnections">'+related.map(dest=>navCard(dest)).join('')+'</div></section>';
 }
-export function homeStart(){
- return '<section class="arcanaStart" aria-label="Start with a task"><div class="arcanaNextHead"><span class="eyebrow">QUICK START</span><h2>What do you want to do?</h2></div><div class="arcanaStartGrid">'+navCards(HOME_START,{compact:true})+'</div></section>';
+export function homeStart({compact=false}={}){
+ const heading=compact?'':'<div class="arcanaNextHead"><span class="eyebrow">QUICK START</span><h2>What do you want to do?</h2></div>';
+ return '<section class="arcanaStart" aria-label="Task shortcuts">'+heading+'<div class="arcanaStartGrid">'+navCards(HOME_START,{compact:true})+'</div></section>';
 }
