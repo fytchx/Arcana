@@ -1,6 +1,6 @@
 import {allocatedTotal,classPointBudget,passivePointBudget,getClass,getBranch,passiveTierSpend,passiveAllowed,classAllowed} from './tree-engine.js';
 import {esc,icon} from './ui.js';
-import {gameArt,hasGameSprite} from './assets.js';
+import {gameArt,hasGameSprite,codexOfficialArt} from './assets.js';
 import {asGear,gearLabel,baseItem,equipmentId} from './build-studio-data.js';
 import {motifArt,passiveTitle,safeGameAsset,classTheme} from './tree-art.js';
 const btn=(label,route)=>`<button class="boardJump" data-route="${route}">${label}</button>`;
@@ -74,28 +74,56 @@ export function passiveBoard(state,tree){
 }
 export function skillTierGroups(branch){const skills=branch?.skills||[];const thresholds=[...new Set(skills.map(s=>s.pointsToUnlock).filter(x=>Number.isFinite(x)&&x>=0))].sort((a,b)=>a-b);
  const groups=new Map();skills.forEach((s,i)=>{const tier=s.tier>=0?s.tier:thresholds.length>1?thresholds.indexOf(s.pointsToUnlock):0;if(!groups.has(tier))groups.set(tier,[]);groups.get(tier).push(s)});return [...groups].sort((a,b)=>a[0]-b[0]);}
-function skillIcon(s,cls,branch){const src=safeGameAsset(s.icon||s.icon_url||s.icon_path||s.image||'');if(src)return `<img class="skillGameIcon" src="${esc(src)}" alt="" loading="lazy" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="skillFallback" hidden>${motifArt(s.name,{role:'skill',cls:cls.name,size:58})}</span>`;return `<span class="skillFallback">${motifArt(s.name,{role:'skill',cls:cls.name,size:58})}</span>`}
-function skillRows(skills){const rows=new Map();skills.forEach((s,i)=>{const row=Number.isInteger(s.row)&&s.row>=0?s.row:Math.floor(i/2);if(!rows.has(row))rows.set(row,[]);rows.get(row).push(s)});return [...rows].sort((a,b)=>a[0]-b[0])}
+function skillIcon(s,cls){
+ // Prefer exact official skill sprite or user-confirmed exception; never substitute a made-up skill picture.
+ const result=codexOfficialArt({id:'game:class-skill:'+s.id,gameKind:'class-skill',title:s.name,className:cls.name},64);
+ return result;
+}
 function classNode(s,cls,state,branch){
  const rank=Number(state.classAlloc[s.id]||0),plus=classAllowed(cls,state.classAlloc,s,1,state.characterLevel),minus=classAllowed(cls,state.classAlloc,s,-1,state.characterLevel);
  const mode=rank?'allocated':plus.ok?'available':'locked';
- return `<div class="classSkillNode ${mode}" data-node="${esc(s.id)}" title="${safeTitle(plus.ok?s.name:plus.reason)}"><button class="classSkillInspect" data-action="classinspect" data-arg="${esc(s.id)}" aria-label="Inspect ${safeTitle(s.name)}"><span class="classSkillImage">${skillIcon(s,cls,branch)}</span><strong>${esc(s.name)}</strong>${mode==='locked'?'<span class="skillLock" aria-hidden="true">⌁</span>':''}</button>${inlineStepper('class',s.id,s.name,rank,s.maxRank,minus,plus)}</div>`
+ return `<div class="classSkillNode ${mode}" data-node="${esc(s.id)}">
+  <button class="classSkillInspect" type="button" data-action="classinspect" data-arg="${esc(s.id)}" aria-label="Details for ${esc(s.name)}" title="Inspect ${esc(s.name)}">
+   <span class="classSkillImage">${skillIcon(s,cls)}</span>
+   <strong>${esc(s.name)}</strong>
+   <span class="classSkillEffect">${esc(s.description||'Skill description unavailable')}</span>
+  </button>
+  <div class="classNodeFoot">
+   ${inlineStepper('class',s.id,s.name,rank,s.maxRank,minus,plus)}
+   ${rank?'<span class="skillInvested">Active</span>':!plus.ok?`<span class="skillRequirement">${esc(s.pointsToUnlock?'Needs '+s.pointsToUnlock+' in branch':plus.reason)}</span>`:'<span class="skillRequirement">Available</span>'}
+  </div>
+ </div>`;
 }
 export function classBoard(state,tree){
  const classes=tree?.classes||[];
- if(!classes.length)return `${boardSwitch('class')}${dataNotice(state.treeStatus)}<div class="emptyCard"><h3>Waiting for class skill data</h3><p>Skill tiers require actual game data, not invented nodes.</p><button class="btn secondary" data-action="reloadtree">Retry skill data</button></div>`;
+ if(!classes.length)return `${boardSwitch('class')}<div class="emptyCard"><h3>Class data not loaded</h3><p>Retry the verified class data. No substitute skills are generated.</p><button class="btn secondary" data-action="reloadtree">Retry</button></div>`;
  const cls=getClass(tree,state.treeClassId),branch=getBranch(cls,state.treeBranchId),groups=skillTierGroups(branch);
- const index=Math.min(Math.max(0,state.classTierIndex),Math.max(0,groups.length-1));state.classTierIndex=index;
- const [tier,skills]=groups[index]||[0,[]],rows=skillRows(skills),allocated=state.classAlloc;
- return `${boardSwitch('class')}${dataNotice('ready')}${controls(state,'class')}<section class="coreTreePanel classPanel classTone-${classTheme(cls.name)}">
- <div class="treeRail classRail" role="tablist" aria-label="Choose class">${classes.map(c=>`<button role="tab" aria-selected="${cls.id===c.id}" class="${cls.id===c.id?'selected':''}" data-action="classselect" data-arg="${esc(c.id)}">${realClassIcon(c)}<span>${esc(c.name)}</span></button>`).join('')}</div>
- <div class="classHeading"><div class="classMark">${realClassIcon(cls)}</div><div><h2>${esc(cls.name)}</h2><p>Class Skill Planner · ${cls.branches.length} branches</p></div></div>
- <div class="branchRail">${cls.branches.map(b=>`<button class="${b.id===branch.id?'selected':''}" data-action="branchselect" data-arg="${esc(b.id)}">${esc(b.name)}</button>`).join('')}</div>
- <div class="treeRail classTierRail" role="tablist" aria-label="Class skill tier quick navigation">${groups.map(([n],i)=>`<button class="${i===index?'selected':''}" role="tab" aria-selected="${i===index}" data-action="classtier" data-arg="${i}">Tier ${n+1}</button>`).join('')}</div>
- <div class="treeContext"><div><span class="eyebrow">${esc(branch.name.toUpperCase())} · TIER ${tier+1}</span><h2>Tier ${tier+1} · ${skills.length} skills</h2><p>${allocatedTotal(allocated)} class points allocated · ${skills.length} skills</p></div><span class="pageCounter">${index+1} / ${groups.length}</span></div>
- <div class="tierSwipe classTierSwipe" id="classSwipe" aria-label="All class skills in tier ${tier+1} on one page">${rows.map(([row,skills])=>`<div class="classTierRow"><span class="classRowTitle">${rows.length>1?'ROW '+(row+1):''}</span><div class="classTierNodes">${skills.map(s=>classNode(s,cls,state,branch)).join('')}</div></div>`).join('')}</div>
- <div class="treePaging"><button data-action="classprev" ${index===0?'disabled':''}>${ico('back')} Previous tier</button><span>Swipe to change tiers</span><button data-action="classnext" ${index===groups.length-1?'disabled':''}>Next tier ${ico('arrow')}</button></div></section>
- <div class="treeFootControls"><button class="btn secondary" data-route="labs/passives">${ico('git')} Passive tree</button><button class="btn secondary" data-action="resetclasses">Reset class points</button></div><p class="boardCaveat">Game class art is used when mapped. Unavailable art keeps an Arcana placeholder.</p>`;
+ const used=allocatedTotal(state.classAlloc),budget=classPointBudget(state.characterLevel);
+ const allBranchSpent=cls.branches.map(b=>({name:b.name,used:b.skills.reduce((t,s)=>t+Math.max(0,Number(state.classAlloc[s.id]||0)),0)}));
+ const spentInBranch=allBranchSpent.find(b=>b.name===branch.name)?.used||0;
+ return `${boardSwitch('class')}<div class="treeProvenance">All 90 class skills across five classes are from the verified October 9, 2026 IdleArc Season 2 configuration. Passive tree verification is a separate task. <a href="https://idlearc.com/classes" target="_blank" rel="noopener noreferrer">Official skill reference</a>.</div>
+ ${controls(state,'class')}
+ <section class="coreTreePanel classPanel classTreeOverview classTone-${classTheme(cls.name)}" aria-label="${esc(cls.name)} class skill planner">
+  <div class="treeRail classRail" role="tablist" aria-label="Character class">
+   ${classes.map(x=>`<button type="button" role="tab" aria-selected="${cls.id===x.id}" class="${cls.id===x.id?'selected':''}" data-action="classselect" data-arg="${esc(x.id)}">${realClassIcon(x)}<span>${esc(x.name)}</span></button>`).join('')}
+  </div>
+  <div class="classHeading"><div class="classMark">${realClassIcon(cls)}</div><div><span class="eyebrow">CLASS SKILL SIMULATOR</span><h2>${esc(cls.name)}</h2><p>${used} / ${budget} points spent · ${Math.max(0,budget-used)} available at level ${state.characterLevel}</p></div></div>
+  <div class="classSpendRail" aria-label="Points spent in each class branch">${allBranchSpent.map(x=>`<div><span>${esc(x.name)}</span><strong>${x.used} pt</strong></div>`).join('')}</div>
+  <div class="branchRail" role="tablist" aria-label="Class skill branches">
+   ${cls.branches.map(x=>`<button type="button" role="tab" aria-selected="${x.id===branch.id}" class="${x.id===branch.id?'selected':''}" data-action="branchselect" data-arg="${esc(x.id)}">${esc(x.name)}</button>`).join('')}
+  </div>
+  <div class="classBranchIntro"><div><span class="eyebrow">${esc(branch.name.toUpperCase())} SKILL TREE</span><h3>${esc(branch.name)} <small>${spentInBranch} spent</small></h3><p>All three tiers visible. Tap a skill to view its full effect, or use + and − to allocate points.</p></div><button type="button" class="btn secondary" data-action="resetbranch">Reset branch</button></div>
+  <div class="classTierStack" id="classTreeStack" aria-label="${esc(branch.name)} full three-tier skill tree">
+   ${groups.map(([tier,skills])=>{
+    const gate=Math.max(0,tier*5),available=spentInBranch>=gate;
+    return `<section class="classTierBlock ${available?'tierUnlocked':'tierLocked'}" aria-label="Tier ${tier+1}">
+     <div class="classTierHeader"><span class="classTierBadge">T${tier+1}</span><div><strong>Tier ${tier+1}</strong><small>${gate?available?'Unlocked · '+gate+' points required':Math.max(0,gate-spentInBranch)+' more points needed in '+branch.name:'Available at the start'}</small></div></div>
+     <div class="classTierCards">${skills.map(skill=>classNode(skill,cls,state,branch)).join('')}</div>
+    </section>`;
+   }).join('')}
+  </div>
+ </section>
+ <div class="treeFootControls"><button class="btn secondary" data-route="labs/build">Back to Build Studio</button><button class="btn secondary" data-action="resetclasses">Reset ${esc(cls.name)} skills</button></div>`;
 }
 export function activePassiveNode(tree,key){for(const row of tree?.passive?.rows||[])for(const node of row.nodes||[])if(node.key===key)return node;return null}
 export function activeClassSkill(tree,clsId,skillId){const cls=getClass(tree,clsId);return {cls,skill:cls?.branches.flatMap(b=>b.skills).find(s=>s.id===skillId)}}
