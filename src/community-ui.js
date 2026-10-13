@@ -1,6 +1,6 @@
 import {esc,icon} from './ui.js';
 import {cloudBuildView,loadAccountBuilds,wireCloudBuildUI} from './account-builds-ui.js';
-const state={me:undefined,enabled:false,posts:[],myPosts:[],post:null,profile:null,loading:null,error:'',lastRoute:'',requested:''};
+const state={me:undefined,enabled:false,betaEnrollmentOpen:false,posts:[],myPosts:[],profilePosts:[],post:null,profile:null,loading:null,error:'',lastRoute:'',requested:''};
 const titleProfile=p=>esc(p?.displayName||'Arcana player');
 const labels=roles=>(roles||[]).map(r=>'<span class="accountRole role-'+esc(r.id)+'">'+esc(r.label)+'</span>').join('');
 const notice=t=>'<p class="communityNotice">'+esc(t)+'</p>';
@@ -28,7 +28,7 @@ const profileCard=(p,{full=false}={})=>{
 };
 const signInPanel=()=>{
  return '<section class="communityWelcome"><h2>Join Arcana, keep the freedom.</h2><p>Your calculators, Build Studio and shareable planner links stay completely free without an account. An account adds your player card and lets you publish community builds and guides.</p>'+
- (state.enabled?'<a class="btn primary" href="/api/account/login">'+icon('users',17)+' Continue with Discord</a>':
+ (state.enabled?'<a class="btn primary" href="/api/account/login">'+icon('users',17)+' Create account / Sign in with Discord</a>'+(state.betaEnrollmentOpen?'<p class="mutedSmall">Accounts created during beta receive the permanent Founding Beta Tester badge. Your account and contributions are intended to remain after full launch.</p>':''):
  '<p class="mutedSmall">Account sign-in is not enabled on this preview. All guest tools remain available.</p>')+
  '</section>';
 };
@@ -91,14 +91,14 @@ function createView(query){
 }
 export function communityPage(route,query){
  if(route==='account')return accountView();
- if(route==='profile')return '<div class="communityPage"><button class="wikiBack" data-route="community">'+icon('back',16)+' Community</button>'+profileCard(state.profile,{full:true})+'</div>';
+ if(route==='profile')return '<div class="communityPage"><button class="wikiBack" data-route="community">'+icon('back',16)+' Community</button>'+profileCard(state.profile,{full:true})+(state.profilePosts.length?'<section class="communityMyPosts"><h2>Builds & guides by this player</h2><div class="communityPostGrid">'+state.profilePosts.map(communityPostCard).join('')+'</div></section>':'')+'</div>';
  if(route==='community')return communityView();
  if(route==='community/post')return detailView();
  if(route==='community/create')return createView(query);
  return '';
 }
 export async function refreshAccount(){
- try{const data=await getJSON('/api/account/me');state.me=data.user;state.enabled=Boolean(data.enabled);}
+ try{const data=await getJSON('/api/account/me');state.me=data.user;state.enabled=Boolean(data.enabled);state.betaEnrollmentOpen=Boolean(data.betaEnrollmentOpen);}
  catch{state.me=null;state.enabled=false;}
 }
 export async function loadCommunityPage(route,query,refresh){
@@ -111,7 +111,7 @@ export async function loadCommunityPage(route,query,refresh){
   else if(route==='community/post'){state.post=(await getJSON('/api/community/posts/'+encodeURIComponent(query.get('id')||''))).post;}
   else if(route==='community/create'&&query.get('edit')){state.post=(await getJSON('/api/community/posts/'+encodeURIComponent(query.get('edit')))).post;}
   else if(route==='account'&&state.me){state.myPosts=(await getJSON('/api/community/mine')).posts||[];await loadAccountBuilds();}
-  else if(route==='profile'){state.profile=(await getJSON('/api/profiles/'+encodeURIComponent(query.get('id')||''))).profile;}
+  else if(route==='profile'){const id=query.get('id')||'';state.profile=(await getJSON('/api/profiles/'+encodeURIComponent(id))).profile;state.profilePosts=(await getJSON('/api/community/posts?authorId='+encodeURIComponent(id))).posts||[];}
   state.error='';
  }catch(e){state.error=e.message;state.post=null;state.profile=null;}
  if(location.hash.replace(/^#\/?/,'').split('?')[0]===route)refresh();
