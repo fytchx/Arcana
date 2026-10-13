@@ -1,4 +1,4 @@
-import {allocatedTotal,classPointBudget,passivePointBudget,getClass,getBranch,passiveTierSpend,passiveAllowed,classAllowed} from './tree-engine.js';
+import {allocatedTotal,classPointBudget,passivePointBudget,getClass,getBranch,passiveTierSpend,passiveAllowed,classAllowed,passiveValue} from './tree-engine.js';
 import {esc,icon} from './ui.js';
 import {gameArt,hasGameSprite,codexOfficialArt} from './assets.js';
 import {asGear,gearLabel,baseItem,equipmentId} from './build-studio-data.js';
@@ -38,7 +38,7 @@ export function buildLoadout(equipment,itemLookup,inspecting){
   return `<button type="button" class="loadoutSlot ${item?'':'empty'} ${locked?'gearLocked':''}" data-pos="${slot.group}" data-action="${inspecting?'inspectgear':'pickgear'}" data-arg="${slot.key}" data-item="${esc(equipmentId(raw)||'')}" aria-label="${esc(slot.label)}: ${esc(displayName|| (locked?'blocked by two-handed weapon':'empty'))}${tier?' · '+esc(tier):''}"><span class="loadoutSprite">${art}</span><span class="loadoutMeta"><small>${esc(slot.label)}</small><strong>${esc(displayName|| (locked?'Blocked':'Empty'))}</strong>${tier?`<em class="gearTierMark">${esc(tier)}</em>`:''}</span>${item?'<i class="loadoutEquipped" aria-hidden="true"></i>':''}</button>`;
  }).join('')}</div><p class="boardCaveat">Tap an equipment slot to choose its base item, rarity, awakening and Drop Bonus. Saved builds retain their individual gear configurations.</p></section>`;
 }
-export function dataNotice(status){return `<div class="treeProvenance" role="status">${status==='ready'?'Reading the existing IdleArc tree export. Verify against the newest Season 2 configuration before publishing builds.':status==='loading'?'Loading IdleArc skill data…':'Tree data unavailable. Allocation is disabled rather than guessing skills or unlocks.'}</div>`}
+export function dataNotice(status){return `<div class="treeProvenance" role="status">${status==='ready'?'IdleArc Season 2 snapshot · October 9, 2026 · 200 rows / 500 source-backed passive nodes. Values and limits are taken from the game configuration.':'Loading verified Season 2 tree data.'}</div>`}
 function spending(state,kind){const a=kind==='passive'?state.passiveAlloc:state.classAlloc;return `${allocatedTotal(a)} / ${kind==='passive'?passivePointBudget(state.characterLevel):classPointBudget(state.characterLevel)}`}
 function controls(state,mode){
  const used=allocatedTotal(mode==='passive'?state.passiveAlloc:state.classAlloc),budget=mode==='passive'?passivePointBudget(state.characterLevel):classPointBudget(state.characterLevel);
@@ -49,28 +49,47 @@ const safeTitle=s=>esc(String(s||'').slice(0,150));
 function passiveIcon(node){return motifArt(node.name,{role:'passive',size:29})}
 function inlineStepper(kind,id,name,rank,max,minus,plus){return `<div class="inlineStepper" aria-label="${safeTitle(name)} points"><button type="button" class="stepMinus" data-action="${kind}adjust" data-arg="${esc(id)}|-1" aria-label="Remove one point from ${safeTitle(name)}" title="${safeTitle(minus.ok?'Remove point':minus.reason)}" ${minus.ok?'':'disabled'}>−</button><output aria-live="off" aria-label="${rank} of ${max||'?'}">${rank}<span>/</span>${max||'?'}</output><button type="button" class="stepPlus" data-action="${kind}adjust" data-arg="${esc(id)}|1" aria-label="Add one point to ${safeTitle(name)}" title="${safeTitle(plus.ok?'Add point':plus.reason)}" ${plus.ok?'':'disabled'}>+</button></div>`}
 function nodeButton(node,state,tree){
- const a=state.passiveAlloc,rank=Number(a[node.key]||0);
- const tier=tree.passive.tiers.findIndex(t=>rowWithin(node.row,t));
- const plus=passiveAllowed(tree,a,node,1,state.characterLevel),minus=passiveAllowed(tree,a,node,-1,state.characterLevel);
- const locked=rank===0&&!plus.ok,dot=rank>0?'allocated':locked?'locked':'available',label=passiveTitle(node.name);
- return `<div class="passiveNode ${dot}" data-node="${esc(node.key)}" title="${safeTitle(plus.ok?node.name:plus.reason)}"><button type="button" class="passiveInspect" data-action="passiveinspect" data-arg="${esc(node.key)}" aria-label="Inspect ${safeTitle(label)}"><span class="passiveSymbol">${passiveIcon(node)}</span><span class="passiveName">${esc(label)}</span>${node.value!=null?`<small>${esc(node.value)}/pt</small>`:''}</button>${inlineStepper('passive',node.key,label,rank,node.maxRank,minus,plus)}</div>`;
+ const rank=Number(state.passiveAlloc[node.key]||0);
+ const plus=passiveAllowed(tree,state.passiveAlloc,node,1,state.characterLevel),minus=passiveAllowed(tree,state.passiveAlloc,node,-1,state.characterLevel);
+ const locked=rank===0&&!plus.ok,mode=rank>0?'allocated':locked?'locked':'available',label=passiveTitle(node.name);
+ return `<div class="passiveNode ${mode}" data-node="${esc(node.key)}">
+  <button type="button" class="passiveInspect" data-action="passiveinspect" data-arg="${esc(node.key)}" aria-label="Inspect ${safeTitle(label)}">
+   <span class="passiveSymbol">${passiveIcon(node)}</span>
+   <strong class="passiveName">${esc(label)}</strong>
+   <span class="passiveStatGain">${esc(passiveValue(node,1))} <small>/pt</small></span>
+   ${rank? `<span class="passiveInvested">${esc(passiveValue(node,rank))} total</span>` : ''}
+  </button>
+  ${inlineStepper('passive',node.key,label,rank,node.maxRank,minus,plus)}
+ </div>`;
 }
 export function passiveBoard(state,tree){
  const tiers=tree?.passive?.tiers||[],rows=tree?.passive?.rows||[];
- if(!tiers.length||!rows.length)return `${boardSwitch('passive')}${dataNotice(state.treeStatus)}<div class="emptyCard"><h3>Waiting for verified passive-node data</h3><p>The planner won't invent passive nodes or their caps.</p><button class="btn secondary" data-action="reloadtree">Retry skill data</button></div>`;
- const ti=Math.min(Math.max(0,state.passiveTier),tiers.length-1),tier=tiers[ti];
+ if(!tiers.length||!rows.length)return `${boardSwitch('passive')}<div class="emptyCard"><h3>Verified passives are unavailable</h3><p>Source-backed nodes are required before you can allocate points.</p><button class="btn secondary" data-action="reloadtree">Reload passives</button></div>`;
+ const ti=Math.min(Math.max(0,state.passiveTier||0),tiers.length-1),tier=tiers[ti];
  const group=rows.filter(r=>rowWithin(r.index,tier)).sort((a,b)=>a.index-b.index);
  const previous=ti?passiveTierSpend(tree,state.passiveAlloc,ti-1):0,required=tier.required,locked=ti>0&&previous<required;
- const density=group.length>=8?'density-high':group.length>=5?'density-medium':'density-low';
- const current=passiveTierSpend(tree,state.passiveAlloc,ti);
- const nextThreshold=ti<tiers.length-1?tiers[ti+1].required:0;
- return `${boardSwitch('passive')}${dataNotice('ready')}${controls(state,'passive')}<section class="coreTreePanel passivePanel">
- <div class="treeRail" role="tablist" aria-label="Jump to passive tier">${tiers.map((t,i)=>`<button role="tab" aria-selected="${ti===i}" class="${ti===i?'selected':''}" data-action="passivetier" data-arg="${i}" aria-label="Passive tier ${i+1}${t.milestone?', milestone':''}">T${i+1}${t.milestone?' ★':''}</button>`).join('')}</div>
- <div class="treeContext"><div><span class="eyebrow">PASSIVE TREE · TIER ${ti+1} OF ${tiers.length}</span><h2>${tier.milestone?'★ Milestone · ':''}Rows ${group[0]?.index+1||tier.start+1}–${group.at(-1)?.index+1||tier.end+1}</h2><p>${locked?`Tier locked · ${previous}/${required} points spent in previous tier`:nextThreshold?`${current}/${nextThreshold} points toward next tier`:`${current} points allocated in this tier`}</p></div><span class="pageCounter">${ti+1} / ${tiers.length}</span></div>
- <div class="tierSwipe ${density}" id="passiveSwipe" data-tier="${ti}" aria-label="Passive tier ${ti+1}, all ${group.length} rows on one page">
- ${group.length?group.map(row=>`<div class="passiveRow ${row.nodes.some(n=>n.milestone)?'milestoneRow':''}"><div class="passiveRowLabel">${row.nodes.some(n=>n.milestone)?'★ ':' '}R${row.index+1}</div><div class="passiveRowNodes" style="--row-nodes:${Math.max(1,row.nodes.length)}">${row.nodes.map(n=>nodeButton(n,state,tree)).join('')}</div></div>`).join(''):'<p class="notice">No rows mapped for this tier in this export.</p>'}</div>
- <div class="treePaging"><button data-action="passiveprev" ${ti===0?'disabled':''}>${ico('back')} Previous tier</button><span>Swipe to change tiers</span><button data-action="passivenext" ${ti===tiers.length-1?'disabled':''}>Next tier ${ico('arrow')}</button></div></section>
- <div class="treeFootControls"><button class="btn secondary" data-action="passivefirst">${ico('home')} Tier 1</button><button class="btn secondary" data-action="passivemilestone">★ Milestones</button><button class="btn secondary" data-action="resetpassives">Reset passives</button></div>`;
+ const current=passiveTierSpend(tree,state.passiveAlloc,ti),nextThreshold=tiers[ti+1]?.required||0,points=allocatedTotal(state.passiveAlloc);
+ const maxProgress=Math.min(100,Math.round(100*(required?previous/required:1)));
+ const investedCount=Object.values(state.passiveAlloc||{}).filter(x=>x>0).length;
+ return `${boardSwitch('passive')}${dataNotice('ready')}${controls(state,'passive')}
+ <section class="coreTreePanel passivePanel" aria-label="Complete Season 2 Passive Skill Tree">
+  <div class="passiveTreeLead"><div><span class="eyebrow">CHARACTER PASSIVE TREE</span><h2>20 tiers. 200 rows.</h2><p>${points} / ${passivePointBudget(state.characterLevel)} points spent · ${investedCount} nodes invested</p></div><span class="passiveHeroSymbol">${icon('layers',28)}</span></div>
+  <div class="treeRail passiveTierRail" role="tablist" aria-label="Choose passive tier">${tiers.map((t,i)=>{
+   const p=passiveTierSpend(tree,state.passiveAlloc,i),can=i===0||passiveTierSpend(tree,state.passiveAlloc,i-1)>=t.required;
+   return `<button type="button" role="tab" aria-selected="${ti===i}" class="${ti===i?'selected':''} ${p?'hasPoints':''}" data-action="passivetier" data-arg="${i}" aria-label="Tier ${i+1}, ${p} points allocated${can?'':' (locked)'}"><span>T${i+1}</span><small>${p? p+' pt':can?'OPEN':'LOCKED'}</small></button>`;
+  }).join('')}</div>
+  <div class="passiveTierSummary"><div class="passiveTierTitle"><span class="eyebrow">TIER ${ti+1} OF ${tiers.length}</span><h3>Rows ${tier.start+1}–${tier.end+1}</h3><p>${locked?'Allocate '+Math.max(0,required-previous)+' more points in Tier '+ti+' to unlock this tier':ti===0?'Available from the start':`Unlocked · ${previous}/${required} points in previous tier`}</p></div><span class="passiveTierCount">${current} pt</span></div>
+  <div class="passiveProgress" aria-label="${maxProgress}% toward tier unlock"><i style="width:${maxProgress}%"></i></div>
+  <div class="passiveTierRows" id="passiveSwipe" aria-label="All ten rows in passive tier ${ti+1}">
+   ${group.map(row=>`<section class="passiveRow ${row.milestone?'milestoneRow':''}" aria-label="Row ${row.index+1}${row.milestone?' milestone':''}">
+    <div class="passiveRowLabel"><span>${row.milestone?'✦ MILESTONE':'ROW'} ${row.index+1}</span><small>${row.milestone?'Choose one of these powerful bonuses':'Choose the stats that fit your build'}</small></div>
+    <div class="passiveRowNodes" style="--row-nodes:${Math.max(1,row.nodes.length)}">${row.nodes.map(n=>nodeButton(n,state,tree)).join('')}</div>
+   </section>`).join('')}
+  </div>
+  <div class="treePaging passivePaging"><button type="button" data-action="passiveprev" ${ti===0?'disabled':''}>${ico('back')} T${ti||1}</button><span>${current} points in this tier${nextThreshold?' · '+Math.max(0,nextThreshold-current)+' to next':''}</span><button type="button" data-action="passivenext" ${ti===tiers.length-1?'disabled':''}>T${ti+2} ${ico('arrow')}</button></div>
+ </section>
+ <div class="treeFootControls"><button class="btn secondary" data-action="passivefirst">${ico('home')} Tier 1</button><button class="btn secondary" data-action="passivemilestone">✦ Milestones</button><button class="btn secondary" data-action="resetpassives">Reset passives</button></div>
+ <p class="boardCaveat">Every node, rank cap, milestone and per-point value comes from the October 9, 2026 game configuration. This is an editable build planner, not a live character sync.</p>`;
 }
 export function skillTierGroups(branch){const skills=branch?.skills||[];const thresholds=[...new Set(skills.map(s=>s.pointsToUnlock).filter(x=>Number.isFinite(x)&&x>=0))].sort((a,b)=>a-b);
  const groups=new Map();skills.forEach((s,i)=>{const tier=s.tier>=0?s.tier:thresholds.length>1?thresholds.indexOf(s.pointsToUnlock):0;if(!groups.has(tier))groups.set(tier,[]);groups.get(tier).push(s)});return [...groups].sort((a,b)=>a[0]-b[0]);}
