@@ -42,6 +42,15 @@ code,account,_=call('/api/account/me')
 assert code==200 and 'enabled' in account
 code,_,_=call('/api/beta/reports')
 assert code==403,'Private feedback reports should reject guests'
+# One explicitly labeled QA report verifies real guest POST behavior on isolated staging.
+qa={'category':'other','title':'QA release gate feedback verification',
+ 'details':'Automated staging verification of the anonymous beta feedback submission endpoint. This is not a user issue.',
+ 'page':'#/beta','contact':'','clientVersion':RELEASE}
+with urlopen(Request(BASE+'/api/beta/feedback',data=json.dumps(qa).encode(),
+ headers={'content-type':'application/json','origin':BASE},method='POST'),timeout=18) as response:
+ assert response.status==201,'Real staging feedback submission failed'
+ confirmation=json.load(response)
+ assert confirmation.get('reference'),'No feedback receipt returned'
 code,wiki,_=call('/api/wiki/articles')
 assert code==200 and isinstance(wiki.get('articles'),list),'Wiki articles unavailable'
 code,catalog,_=call('/api/search/catalog',timeout=20)
