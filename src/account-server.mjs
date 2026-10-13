@@ -7,7 +7,7 @@ const ACCOUNT_ID=/^[0-9a-f]{8}-[0-9a-f-]{27,36}$/;
 const DISCORD_ID=/^[0-9]{16,22}$/;
 const SESSION_LIFETIME=14*86400;
 export const betaEnrollmentOpen=()=>process.env.ARCANA_BETA_COHORT_OPEN==='1';
-const MAX_PROFILE_BYTES=18000;
+const MAX_PROFILE_BYTES=80000;
 let writeQueue=Promise.resolve();
 export const dataRoot=()=>resolve(process.env.ARCANA_ACCOUNT_DATA_DIR || resolve(process.env.ARCANA_WIKI_DATA_DIR||'.arcana-wiki-data','accounts'));
 export const authAvailable=()=>{
@@ -58,7 +58,7 @@ export function publicProfile(account){
  const a=asCreator(account);
  return {id:a.id,displayName:a.profile?.displayName||a.discordName||'Arcana player',
  inGameName:a.profile?.inGameName||'',guild:a.profile?.guild||'',favoriteClass:a.profile?.favoriteClass||'',
- description:a.profile?.description||'',raidStatus:a.profile?.raidStatus||'',guildStatus:a.profile?.guildStatus||'',
+ description:a.profile?.description||'',avatarDataUrl:a.profile?.avatarDataUrl||'',raidStatus:a.profile?.raidStatus||'',guildStatus:a.profile?.guildStatus||'',
  roles:publicRoles(a),joinedAt:a.joinedAt||'',betaTesterSince:a.betaTesterSince||'',suspended:!!a.suspended};
 }
 export const selfProfile=account=>({...publicProfile(account),permissions:{
@@ -118,6 +118,19 @@ const equal=(a,b)=>{
 };
 const profileFields=['displayName','inGameName','guild','favoriteClass','description','raidStatus','guildStatus'];
 const fieldLengths={displayName:50,inGameName:48,guild:70,favoriteClass:45,description:500,raidStatus:90,guildStatus:90};
+function validAvatar(value){
+ if(value==='')return '';
+ if(typeof value!=='string'||value.length>64000)throw error(422,'Avatar is too large (maximum 45 KB).');
+ const match=value.match(/^data:image\/(webp|png|jpeg);base64,([A-Za-z0-9+/]+={0,2})$/);
+ if(!match)throw error(422,'Upload a JPG, PNG or WebP image.');
+ const b=Buffer.from(match[2],'base64');
+ if(b.length>46000||b.length<16)throw error(422,'Avatar must be smaller than 45 KB.');
+ const mime=match[1],valid=mime==='png'?b.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])):
+ mime==='webp'?b.toString('ascii',0,4)==='RIFF'&&b.toString('ascii',8,12)==='WEBP':
+ b[0]===0xff&&b[1]===0xd8&&b[2]===0xff;
+ if(!valid)throw error(422,'Image format is not valid.');
+ return value;
+}
 export async function handleAccountRequest(req,res,url){
  const {pathname}=url, method=req.method;
  if(pathname==='/api/account/me'&&method==='GET'){
@@ -175,6 +188,7 @@ export async function handleAccountRequest(req,res,url){
   if(!fields||typeof fields!=='object'||Array.isArray(fields))throw error(400,'Profile object required.');
   const profile={...user.profile};
   for(const key of profileFields)if(Object.hasOwn(fields,key))profile[key]=safeText(fields[key],fieldLengths[key]);
+  if(Object.hasOwn(fields,'avatarDataUrl'))profile.avatarDataUrl=validAvatar(fields.avatarDataUrl);
   if(profile.displayName.length<2)throw error(422,'Display name needs at least two characters.');
   const updated=await queued(async()=>{
    const current=await readJSON(accountFile(user.id));
