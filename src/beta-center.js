@@ -23,7 +23,8 @@ export function betaView(route){
  ['Reference content','The Wiki and Codex are open for browsing. Some data comes from earlier verified game snapshots.',true],
  ['Raid and guild discovery','Public directories are available, but the separate listing services may be temporarily unavailable.',true],
  ['Member publishing',status?.accountsConfigured?'Account sign-in has been configured; individual sign-in still requires testing.':'Account sign-in and member-only publishing are not enabled on this beta yet.',!!status?.accountsConfigured],
- ['Wiki editing','Editor-only publishing exists, but articles still need careful content review and migration.',!!status?.wikiStorageConfigured]
+ ['Wiki editing','Editor-only publishing exists, but articles still need careful content review and migration.',!!status?.wikiStorageConfigured],
+ ['Founding Beta Tester badge',status?.accountsConfigured&&status?.betaEnrollmentOpen?'New Discord members joining during beta receive a permanent Founding Beta Tester badge.':'The permanent beta tester cohort will open when official Discord account registration is configured.',!!(status?.accountsConfigured&&status?.betaEnrollmentOpen)]
  ].map(([name,desc,available])=>'<article class="betaFeature"><span class="betaDot '+(available?'active':'setup')+'" aria-hidden="true"></span><h3>'+esc(name)+'</h3><p>'+esc(desc)+'</p></article>').join('')+'</div>'+
  '<p class="mutedSmall">Release '+esc(status?.release||'loading')+' · Status describes configuration, not a guarantee that an external service is up. Game balance and live content should be verified in IdleArc.</p></section>'+
  '<section class="betaFeedback" id="report-issue"><h2>Report an issue or share an idea</h2><p>Your report goes to Arcana’s private feedback inbox. No account required. Include what you were doing and what you expected to happen.</p>'+
