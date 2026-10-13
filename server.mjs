@@ -4,6 +4,7 @@ import { resolve, sep, extname } from 'node:path';
 import { createHash } from 'node:crypto';
 import { handleWikiRequest } from './src/wiki-server.mjs';
 import { safeAccountRequest } from './src/account-server.mjs';
+import { safeAccountBuildRequest } from './src/account-builds.mjs';
 import { safeCommunityRequest } from './src/community-server.mjs';
 import { betaFeedbackRequest } from './src/beta-feedback-server.mjs';
 import { fileURLToPath } from 'node:url';
@@ -92,6 +93,7 @@ const server=http.createServer(async(req,res)=>{
  try {
   const parsedUrl=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
   const {pathname}=parsedUrl;
+  if(pathname.startsWith('/api/account/builds')&&await safeAccountBuildRequest(req,res,parsedUrl))return;
   if((pathname.startsWith('/api/account/')||pathname.startsWith('/api/profiles/')||pathname.startsWith('/api/admin/roles/'))&&await safeAccountRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/community/')&&await safeCommunityRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/beta/')&&await betaFeedbackRequest(req,res,parsedUrl))return;
