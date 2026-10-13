@@ -378,6 +378,18 @@ with sync_playwright() as playwright:
     page.locator('[data-action="clonebuild"]').dispatch_event('click')
     page.wait_for_timeout(200)
     assert page.locator('[data-action="sharebuild"]').count()==1, 'Cloned build is not editable'
+    assert page.locator('[data-build-field="title"]').count()==1, 'Build name editor missing'
+    page.locator('[data-build-field="title"]').fill('My actual beta build')
+    page.locator('[data-build-field="className"]').select_option('Druid')
+    assert 'My actual beta build' in page.locator('.studioHero h2').inner_text()
+    assert 'Druid' in page.locator('.studioHero p').inner_text()
+    page.evaluate("location.hash='#/home'")
+    page.wait_for_timeout(120)
+    page.evaluate("location.hash='#/labs/build'")
+    page.wait_for_timeout(120)
+    assert page.locator('[data-build-field="title"]').input_value()=='My actual beta build', 'Build title changes did not persist'
+    assert page.locator('[data-build-field="className"]').input_value()=='Druid', 'Build class changes did not persist'
+
 
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
     print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
