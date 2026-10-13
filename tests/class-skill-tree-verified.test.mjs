@@ -7,11 +7,11 @@ import {classBoard} from '../src/core-boards.js';
 const tree=normalizeTree({});
 const byName=n=>tree.classes.find(x=>x.name===n);
 const findSkill=(cls,name)=>cls.branches.flatMap(b=>b.skills).find(s=>s.name===name);
-test('complete source-backed class trees survive a missing passive export',()=>{
+test('complete source-backed class trees coexist with verified passive dataset',()=>{
  assert.equal(VERIFIED_CLASS_SKILL_SOURCE,'IdleArc 2026-10-09 config');
  assert.equal(tree.classes.length,5);
  assert.equal(verifiedClassTrees().length,5);
- assert.equal(tree.passive.rows.length,0);
+ assert.equal(tree.passive.rows.length,200);
  assert.deepEqual(tree.classes.map(c=>c.name),['Warrior','Archer','Mage','Rogue','Druid']);
  assert.equal(new Set(tree.classes.flatMap(c=>c.branches.flatMap(b=>b.skills.map(s=>s.id)))).size,90);
  for(const cls of tree.classes){
