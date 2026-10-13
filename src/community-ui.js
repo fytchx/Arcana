@@ -2,6 +2,7 @@ import {esc,icon} from './ui.js';
 import {cloudBuildView,loadAccountBuilds,wireCloudBuildUI} from './account-builds-ui.js';
 const state={me:undefined,enabled:false,betaEnrollmentOpen:false,posts:[],myPosts:[],profilePosts:[],post:null,profile:null,loading:null,error:'',lastRoute:'',requested:''};
 const titleProfile=p=>esc(p?.displayName||'Arcana player');
+let avatarPending=null;
 const labels=roles=>(roles||[]).map(r=>'<span class="accountRole role-'+esc(r.id)+'">'+esc(r.label)+'</span>').join('');
 const notice=t=>'<p class="communityNotice">'+esc(t)+'</p>';
 const getJSON=async(url,options)=>{
@@ -17,7 +18,7 @@ const fields=[
 ];
 const profileCard=(p,{full=false}={})=>{
  if(!p)return notice('Player profile not available.');
- return '<article class="playerCard"><div class="playerCardHead"><span class="playerAvatar">'+esc((p.displayName||'?').slice(0,1).toUpperCase())+'</span><div><span class="eyebrow">ARCANA PLAYER CARD</span><h2>'+titleProfile(p)+'</h2><div class="roleBadges">'+labels(p.roles)+'</div></div></div>'+
+ return '<article class="playerCard"><div class="playerCardHead"><span class="playerAvatar">'+(p.avatarDataUrl?'<img src="'+esc(p.avatarDataUrl)+'" alt="" loading="lazy">':esc((p.displayName||'?').slice(0,1).toUpperCase()))+'</span><div><span class="eyebrow">ARCANA PLAYER CARD</span><h2>'+titleProfile(p)+'</h2><div class="roleBadges">'+labels(p.roles)+'</div></div></div>'+
  '<div class="playerFacts">'+[
   ['IN-GAME NAME',p.inGameName],['GUILD',p.guild],['FAVORITE CLASS',p.favoriteClass],
   ['RAID TEAM STATUS',p.raidStatus],['GUILD STATUS',p.guildStatus]
@@ -35,6 +36,7 @@ const signInPanel=()=>{
 const profileForm=p=>{
  return '<form class="accountProfileForm" data-community-form="profile"><h2>Edit player card</h2>'+
  fields.map(([key,label,type,max])=>'<label>'+label+'<input name="'+key+'" type="'+type+'" maxlength="'+max+'" value="'+esc(p[key]||'')+'"></label>').join('')+
+ '<label>Player card picture (optional)<input id="arcanaAvatarFile" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" class="btn secondary" data-community-action="clear-avatar">Remove picture</button><p id="arcanaAvatarStatus" class="mutedSmall" role="status"></p>'+ 
  '<label>About your character and what you are looking for<textarea name="description" maxlength="500" rows="5" placeholder="Builds you enjoy, raid team goals, or guild details">'+esc(p.description||'')+'</textarea></label>'+
  '<button class="btn primary" type="submit">Save player card</button><p class="mutedSmall">Everything on this card is public. Only share details you want other players to see. Guild and class information is self-reported.</p></form>';
 };
@@ -116,14 +118,37 @@ export async function loadCommunityPage(route,query,refresh){
  }catch(e){state.error=e.message;state.post=null;state.profile=null;}
  if(location.hash.replace(/^#\/?/,'').split('?')[0]===route)refresh();
 }
+async function shrinkAvatar(file){
+ if(!/^image\/(?:png|jpeg|webp)$/.test(file.type)||file.size>4000000)throw Error('Choose a PNG, JPG or WebP under 4 MB.');
+ const url=URL.createObjectURL(file);
+ try{
+  const picture=new Image();
+  await new Promise((resolve,reject)=>{picture.onload=resolve;picture.onerror=reject;picture.src=url;});
+  const side=Math.min(picture.width,picture.height);
+  if(!side)throw Error('Image is empty.');
+  const canvas=document.createElement('canvas');canvas.width=144;canvas.height=144;
+  const ctx=canvas.getContext('2d');if(!ctx)throw Error('Image processing is unavailable in this browser.');
+  ctx.drawImage(picture,(picture.width-side)/2,(picture.height-side)/2,side,side,0,0,144,144);
+  const data=canvas.toDataURL('image/webp',0.72);
+  if(!data.startsWith('data:image/webp;base64,')||data.length>62000)throw Error('Picture is too large after resizing.');
+  return data;
+ }finally{URL.revokeObjectURL(url);}
+}
 export function wireCommunityUI({go,getBuild,applyBuild,refresh,toast}){
  wireCloudBuildUI({go,getBuild,applyBuild,refresh,toast});
+ document.addEventListener('change',e=>{
+  if(e.target.id!=='arcanaAvatarFile')return;
+  const file=e.target.files?.[0];if(!file)return;
+  const status=document.getElementById('arcanaAvatarStatus');if(status)status.textContent='Resizing picture…';
+  void shrinkAvatar(file).then(data=>{avatarPending=data;if(status)status.textContent='Picture ready. Save your player card to publish it.';}).catch(err=>{avatarPending=null;if(status)status.textContent=err.message;});
+ });
  document.addEventListener('click',e=>{
   const el=e.target.closest('[data-community-action]');if(!el)return;
   e.preventDefault();
   const action=el.dataset.communityAction,id=el.dataset.id;
   (async()=>{
    if(action==='edit'){go('community/create',{edit:id});return;}
+    if(action==='clear-avatar'){avatarPending='';const el=document.getElementById('arcanaAvatarStatus');if(el)el.textContent='Picture will be removed when you save your player card.';return;}
     if(action==='copy-profile'){await navigator.clipboard.writeText(location.origin+'/#/profile?id='+encodeURIComponent(id));toast('Player card copied.');return;}
    if(action==='logout'){await getJSON('/api/account/logout',{method:'POST'});state.me=null;state.requested='';go('account');refresh();return;}
    if(action==='use-build'){if(!state.post?.build)throw Error('This build is unavailable.');applyBuild(state.post.build);toast('Build copied to your local workspace.');go('labs/build');return;}
@@ -146,7 +171,9 @@ export function wireCommunityUI({go,getBuild,applyBuild,refresh,toast}){
   (async()=>{
    const data=Object.fromEntries(new FormData(form));
    if(form.dataset.communityForm==='profile'){
-    const out=await getJSON('/api/account/profile',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({profile:data})});
+    if(avatarPending!==null)data.avatarDataUrl=avatarPending;
+     const out=await getJSON('/api/account/profile',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({profile:data})});
+     avatarPending=null;
     state.me=out.profile;toast('Player card updated.');refresh();return;
    }
    if(form.dataset.communityForm==='roles'){
