@@ -569,9 +569,11 @@ case 'comparetier':{const tier=Number(arg);if(!Number.isInteger(tier)||tier<1||t
 case 'resetbuild':{if(!confirm('Start a new blank build? This replaces your current local Build Studio draft. Save or share it first if you want to keep a copy.'))break;state.draft=newPersonalBuild();saveDraft(state.draft);state.runeSelected=null;state.runeHistory=[];go('labs/build');toast('New blank build created.');break;}
 case 'savecloud':{persistDraft();void saveNewAccountBuild(ensureDraft()).then(b=>toast('Saved '+b.title+' to your account.')).catch(err=>toast(err.message||'Sign in to your account first.'));break;}
 case 'sharepassives':{
- ensureDraft();
  storeTreePlan();
- const plan=ensureDraft();
+ // Share only the passive preview: never leak private notes, gear, pet details or other build data.
+ const plan={id:'passive-tree-preview',title:'Passive Skill Tree Preview',className:state.draft?.className||'Warrior',
+  characterLevel:state.characterLevel,passiveAlloc:structuredClone(state.passiveAlloc),
+  passiveFreeMode:state.passiveFreeMode===true,equipment:{},runes:[]};
  void shareBuildToken(plan).then(token=>{
   const url=location.origin+location.pathname+'#/labs/passives?share='+encodeURIComponent(token)+'&tier='+state.passiveTier;
   if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Passive tree link copied')).catch(()=>window.prompt('Copy passive tree link',url));
