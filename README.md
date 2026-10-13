@@ -1,6 +1,6 @@
 # Arcana · Stabilized recovery source
 
-**Status:** Tested local recovery build. Not deployed to `arcanacompanion.xyz`.
+**Status:** Arcana source of truth. The live domain is `https://arcanacompanion.xyz/`; the Railway service `Arcana Stable App` retains the existing `/data` volume for user accounts, builds, community content and Wiki articles.
 
 Recovered from the latest successful Arcana V3 Preview Railway Function and its external stylesheet, on 2026-10-12. Unlike the current live gateway architecture, this build keeps the front-end source as actual editable files and does not inject code into JavaScript responses at runtime.
 
@@ -43,7 +43,17 @@ Until a fully self-contained art catalog is imported, the server forwards these 
 
 This is a substantial improvement over rewriting the app on every request, but it is **not yet completely independent** of existing live services. Data volumes for guild listings and design settings are **not** contained in this archive and must not be deleted.
 
-## Production release rule
+## One website, one release path
+The only public homepage for the Arcana app is **https://arcanacompanion.xyz/** (www redirects to apex).
+The source-of-truth branch is `main` in `fytchx/Arcana`.
+The only primary Arcana deployment is **Arcana Clean Staging → staging → Arcana Stable App** on Railway, with automatic deploy on each approved push to `main`.
+Despite the historic Railway project/environment names, this is the production-hosted application. Do not make a second app service, copy the account volume, or deploy gateway patches to release website updates.
+The originally named staging URL may remain as a temporary diagnostic address, not a second place to create accounts. Discord OAuth and all account writes use the canonical HTTPS origin.
+Keep the existing `/data` volume and the public ArcanaLFG subdomain distinct. ArcanaLFG's independent service and external catalog/art APIs are still dependencies, not alternate Arcana homepages.
+Register `https://arcanacompanion.xyz/api/account/callback` in Discord OAuth2 redirects before expecting real sign-in to work. The former staging callback can remain until all users have moved.
+For final verification, run `npm run check`, Android responsive smoke, health, and read-only live route checks. Do not write synthetic test accounts or guides into production as part of automated QA.
+
+## Historical production release rule
 
 1. Create a dedicated, writable **private** GitHub repository and commit this source.
 2. Deploy a new Railway staging service from that repository, with `npm start`, healthcheck `/health`, Node 22+.
