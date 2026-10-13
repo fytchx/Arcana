@@ -40,6 +40,11 @@ async function audit(event){
 }
 export async function handleCommunityRequest(req,res,url){
  const path=url.pathname,method=req.method;
+ if(path==='/api/community/mine'&&method==='GET'){
+  const me=await requireCapability(req);
+  const posts=(await recentPosts()).filter(p=>p.authorId===me.id).sort((a,b)=>String(b.updatedAt).localeCompare(String(a.updatedAt)));
+  sendJSON(res,200,{posts:posts.slice(0,100).map(p=>{const {build,body,...light}=publicPost(p);return {...light,excerpt:clean(body,170)};}),total:posts.length});return true;
+ }
  if(path==='/api/community/posts'&&method==='GET'){
   const viewer=await accountUser(req),canModerate=can(viewer,'community:hide');
   const showHidden=url.searchParams.get('includeHidden')==='true'&&canModerate;
