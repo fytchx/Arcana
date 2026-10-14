@@ -149,7 +149,18 @@ with sync_playwright() as playwright:
     assert page.locator('.launchHero').evaluate('(e)=>getComputedStyle(e).display')=='flex', 'Build Studio hero CSS missing'
     assert page.locator('.launchQuickGrid').evaluate('(e)=>getComputedStyle(e).display')=='grid', 'Homepage cards are not using responsive grid CSS'
     positions=page.locator('.launchQuickCard').evaluate_all('(els)=>els.slice(0,2).map(e=>({x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y}))')
-    assert positions[1]['y']>positions[0]['y']+40 and abs(positions[0]['x']-positions[1]['x'])<3, 'Slate navigation must be a compact single column'
+    assert abs(positions[0]['y']-positions[1]['y'])<3 and positions[1]['x']>positions[0]['x']+75, 'Quick Access must be two cards side by side'
+    assert page.locator('.launchHeroCTA').inner_text().find('Enter Build Studio')>=0, 'Hero does not have a special Build Studio call to action'
+    assert page.locator('.launchHeroArcaneSeal').count()==1 and page.locator('.launchHeroCTASigil').count()==1, 'Arcane hero detailing missing'
+    assert page.locator('.launchHeroCTA').evaluate("(e)=>getComputedStyle(e).gridTemplateColumns!='none'"), 'Mystical CTA CSS was not loaded'
+    assert page.locator('.launchQuickGrid').evaluate("(e)=>getComputedStyle(e).gridTemplateColumns.split(' ').length==2"), 'Quick Access grid must have exactly two columns'
+    assert page.locator('.launchQuickCard').evaluate_all("(els)=>els.every(e=>e.getBoundingClientRect().height>=80)"), 'Quick Access tap targets are too small'
+    assert page.locator('.launchFeaturedGrid').evaluate("(e)=>getComputedStyle(e).gridTemplateColumns.split(' ').length==2"), 'Featured cards must be laid out two across'
+    features=page.locator('.launchFeatureRow').evaluate_all("(els)=>els.map(e=>({x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y,w:e.getBoundingClientRect().width}))")
+    assert len(features)==3, 'All featured destinations must be preserved'
+    assert abs(features[0]['y']-features[1]['y'])<3 and features[1]['x']>features[0]['x']+75, 'Featured first pair must be side by side'
+    assert features[2]['y']>features[0]['y']+65 and features[2]['w']>features[0]['w']*1.8, 'Last featured card must span the entire row'
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Two-column home has horizontal overflow'
 
     for menu_id in ('wiki','tools','guides','builds','codex','social'):
         assert page.locator('.launchQuickCard[data-arg="'+menu_id+'"]').count()==1, 'Missing home card '+menu_id
