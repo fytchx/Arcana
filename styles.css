@@ -919,3 +919,213 @@ body,.shell{background:var(--theme-main)}
 @media(max-width:600px){.arcanaHomePrimary{margin-top:20px}.arcanaHomePrimaryHeading h2{font-size:20px}.arcanaHomeGatewayGrid{gap:9px}.arcanaHomeGateway{min-height:170px;padding:13px;gap:10px;border-radius:14px}.arcanaHomeGatewayIcon{width:39px;height:39px}.arcanaHomeGatewayIcon svg{width:21px;height:21px}.arcanaHomeGatewayCopy strong{font-size:15px}.arcanaHomeGatewayCopy small{font-size:10px}.arcanaHomeGatewayFoot{font-size:9px}.arcanaHomeDisclosureBody{padding:0 12px 13px}.arcanaHomeDisclosureTrigger{padding:12px 13px}.arcanaHomeDisclosureBody .arcanaStartGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.arcanaHomeSecondary{padding:11px;gap:8px}.arcanaHomeSecondaryIcon{width:33px;height:33px}.arcanaHomeBeta{flex-direction:column;align-items:stretch;padding:15px}.arcanaHomeBeta .btn{align-self:flex-start}}
 @media(max-width:355px){.arcanaHomeGateway{min-height:181px;padding:11px}.arcanaHomeGatewayCopy strong{font-size:14px}.arcanaHomeGatewayCopy small{font-size:9.5px}.arcanaHomeGatewayFoot{font-size:8px}.arcanaHomeCommunityGrid{grid-template-columns:1fr}.arcanaHomeDisclosureBody .arcanaStartGrid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.arcanaHomeGateway,.arcanaHomeDisclosureToggle{transition:none}}
+
+
+/* ARCANA BUILD STUDIO SLOT EDITOR: isolated preview branch */
+.gearPickRow{min-height:64px;display:flex;align-items:center;gap:12px;text-align:left;width:100%;border-radius:12px;padding:10px 12px;cursor:pointer}
+.gearPickRow .resultText{min-width:0;flex:1}
+.gearPickRow strong{font-size:13px}
+.gearPickRow .tinyGameArt{width:45px;height:45px;flex:none}
+.gearEditor{display:grid;gap:15px;padding:0 2px 9px}
+.gearEditHero{display:flex;align-items:center;gap:14px;border-radius:15px;border:1px solid var(--theme-border);background:var(--theme-card);padding:13px;min-height:90px}
+.gearEditArt{width:68px;height:68px;flex:none;display:grid;place-items:center;border-radius:11px;background:var(--theme-highlight-soft);border:1px solid var(--theme-highlight-border)}
+.gearEditArt .gameArt{width:60px;height:60px}
+.gearEditHero h3{margin:4px 0;font-size:17px;color:var(--text);line-height:1.2}
+.gearEditHero small{display:block;color:var(--soft);font-size:11px;line-height:1.5}
+.gearChangeBase{width:100%}
+.gearEditFields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gearEditFields label,.gearRangeCard label{display:grid;gap:7px;color:var(--soft);font-size:11px;font-weight:700}
+.gearEditFields select,.gearRangeCard input{width:100%;min-width:0;min-height:45px;border-radius:10px;border:1px solid var(--theme-border);background:var(--theme-card-raised);color:var(--text);font:inherit;font-weight:650;font-size:13px;padding:10px 11px;appearance:auto}
+.gearEditFields select:focus-visible,.gearRangeCard input:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:2px}
+.gearEditFields select:disabled{opacity:.45;cursor:not-allowed}
+.gearRangeCard{display:grid;gap:8px;padding:15px;border:1px solid var(--theme-highlight-border);background:var(--theme-highlight-soft);border-radius:12px;color:var(--text)}
+.gearRangeCard strong{font-size:13px}
+.gearRangeCard .gearRange{font-size:22px;line-height:1.3;font-weight:850;font-variant-numeric:tabular-nums;color:var(--theme-accent-text)}
+.gearRangeCard small{font-size:11px;color:var(--soft);line-height:1.5}
+.gearRangeCard label{margin-top:7px}
+.gearRangeCard input{background:var(--theme-overlay)}
+.gearSourceNote{margin:0;line-height:1.55;color:var(--soft);font-size:11px}
+.gearEditButtons{display:flex;align-items:stretch;gap:9px;flex-wrap:wrap}
+.gearEditButtons .btn{flex:1 1 auto;min-height:46px}
+.gearEditButtons .btn.primary{flex:2 0 45%}
+.gearTierMark{font:700 9px/1.2 inherit;font-style:normal;color:var(--theme-accent-text);border:1px solid var(--theme-highlight-border);padding:2px 5px;border-radius:5px;white-space:nowrap}
+.loadoutSlot.gearLocked{opacity:.45}
+@media(max-width:440px){.gearEditHero{gap:9px;padding:10px}.gearEditArt{width:58px;height:58px}.gearEditArt .gameArt{width:51px;height:51px}.gearEditFields{gap:10px}.gearEditFields select{padding:9px 7px;font-size:12px}.gearEditButtons{display:grid;grid-template-columns:1fr 1fr}.gearEditButtons .btn.primary{grid-column:1/-1}.gearTierMark{font-size:7px;padding:1px 3px}}
+
+
+/* Verified complete class skill tree simulator, 2026-10-13 preview */
+.classTreeOverview{padding:14px;overflow:visible}
+.classTreeOverview .classRail{gap:8px;padding:4px 0 12px}
+.classTreeOverview .classRail button{flex:1 0 auto;min-width:82px;justify-content:center;transition:border-color .12s;min-height:43px}
+.classTreeOverview .classRail button[aria-selected="true"]{box-shadow:0 0 0 1px var(--theme-highlight-border) inset}
+.classSpendRail{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:-1px 0 18px}
+.classSpendRail>div{display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--theme-overlay);border:1px solid var(--theme-border);border-radius:9px;padding:9px 8px;font-size:10px;min-width:0}
+.classSpendRail span{min-width:0;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.classSpendRail strong{color:var(--theme-accent-text);white-space:nowrap}
+.classTreeOverview .branchRail{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;overflow:visible;border:0}
+.classTreeOverview .branchRail button{min-width:0;background:var(--theme-overlay);border:1px solid var(--theme-border);border-radius:10px;padding:10px 5px;white-space:normal;line-height:1.25;min-height:49px;font-size:11px;font-weight:750}
+.classTreeOverview .branchRail button.selected{color:var(--theme-accent-text);border-color:var(--theme-highlight);background:var(--theme-highlight-soft)}
+.classBranchIntro{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:15px 0 14px}
+.classBranchIntro h3{font-size:18px;margin:5px 0}
+.classBranchIntro h3 small{font-size:11px;margin-left:6px;color:var(--theme-accent-text)}
+.classBranchIntro p{color:var(--soft);font-size:11px;line-height:1.4;margin:4px 0;max-width:520px}
+.classBranchIntro>.btn{flex:none;min-width:0;min-height:36px;font-size:11px}
+.classTierStack{display:grid;gap:17px;position:relative;padding:2px}
+.classTierBlock{position:relative;padding:13px 12px 15px;border:1px solid var(--theme-border);background:var(--theme-overlay);border-radius:15px}
+.classTierBlock:after{content:"";position:absolute;left:50%;bottom:-18px;width:1px;height:18px;background:var(--theme-highlight-border)}
+.classTierBlock:last-child:after{display:none}
+.classTierHeader{display:flex;align-items:center;gap:10px;padding:0 0 11px}
+.classTierHeader>div{display:flex;flex-direction:column;gap:3px}
+.classTierHeader strong{font-size:12px;color:var(--text)}
+.classTierHeader small{font-size:10px;color:var(--soft);line-height:1.35}
+.classTierBadge{display:grid;place-items:center;border:1px solid var(--theme-highlight-border);background:var(--theme-highlight-soft);color:var(--theme-accent-text);width:34px;height:34px;border-radius:10px;font-weight:900;font-size:11px;flex:none}
+.classTierBlock.tierLocked .classTierBadge{color:var(--soft);border-color:var(--theme-border);background:var(--theme-card)}
+.classTierCards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.classTreeOverview .classSkillNode{width:auto;max-width:none;min-width:0;min-height:195px;display:flex;flex-direction:column;gap:5px;padding:11px;border-width:1px;border-radius:13px}
+.classTreeOverview .classSkillInspect{display:flex;align-items:center;flex-direction:column;text-align:center;background:transparent;border:0;padding:0;gap:7px;width:100%;color:inherit;cursor:pointer}
+.classTreeOverview .classSkillInspect:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:3px;border-radius:8px}
+.classTreeOverview .classSkillImage{width:62px;height:62px;flex:none;border-radius:12px;background:var(--theme-card);border:1px solid var(--theme-border);display:grid;place-items:center}
+.classTreeOverview .classSkillImage .gameArt{width:56px;height:56px;max-width:100%;max-height:100%}
+.classTreeOverview .classSkillNode strong{font-size:12px;line-height:1.3;min-height:30px;display:grid;place-items:center}
+.classSkillEffect{font-size:10px;line-height:1.35;color:var(--soft);text-align:center;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;max-width:100%}
+.classNodeFoot{display:flex;align-items:center;flex-direction:column;gap:5px;margin-top:auto;width:100%}
+.classTreeOverview .inlineStepper{display:flex;align-items:center;justify-content:center;gap:6px;width:100%}
+.classTreeOverview .inlineStepper output{display:flex;align-items:baseline;gap:2px;font-size:13px;font-weight:750;min-width:38px;justify-content:center}
+.classTreeOverview .inlineStepper button{width:37px;height:37px;min-height:37px;background:var(--theme-card-raised);border:1px solid var(--theme-border);border-radius:9px;color:var(--text);font-size:18px}
+.classTreeOverview .inlineStepper button:disabled{opacity:.35}
+.classTreeOverview .inlineStepper .stepPlus:not(:disabled){color:var(--theme-accent-text);border-color:var(--theme-highlight-border)}
+.classTreeOverview .skillRequirement,.classTreeOverview .skillInvested{font-size:9px;color:var(--soft);text-align:center;line-height:1.3}
+.classTreeOverview .skillInvested{color:var(--theme-accent-text)}
+.classTreeOverview .classSkillNode.locked{opacity:.72}
+.classTreeOverview .classSkillNode.locked .classSkillImage{filter:grayscale(.85)}
+@media(max-width:420px){.classTreeOverview{padding:9px}.classTreeOverview .classRail button{min-width:74px;font-size:10px}.classSpendRail{gap:4px}.classSpendRail>div{flex-direction:column;align-items:flex-start;font-size:9px}.classTierBlock{padding:10px 8px 12px}.classTierCards{gap:7px}.classTreeOverview .classSkillNode{padding:9px 5px;min-height:190px}.classTreeOverview .classSkillNode strong{font-size:11px}.classTreeOverview .classSkillImage{width:53px;height:53px}.classTreeOverview .classSkillImage .gameArt{width:47px;height:47px}.classTreeOverview .inlineStepper button{width:34px;height:34px;min-height:34px}.classBranchIntro .btn{padding:7px}}
+@media(min-width:850px){.classTierCards{gap:15px}.classTreeOverview .classSkillNode{min-height:210px}.classTierBlock{padding:18px}}
+
+
+/* 2026-10-13 verified passive + class trees visual refinement.
+   Everything below is scoped to the two planners and follows the active Arcana theme. */
+.passivePanel{padding:clamp(9px,2vw,17px);overflow:visible}
+.passiveTreeLead{display:flex;justify-content:space-between;align-items:center;gap:10px;border-radius:13px;background:linear-gradient(135deg,var(--theme-highlight-soft),var(--theme-card) 65%);border:1px solid var(--theme-highlight-border);padding:16px;margin-bottom:13px}
+.passiveTreeLead h2{margin:5px 0 7px;font-size:clamp(18px,4vw,26px);letter-spacing:-.035em}
+.passiveTreeLead p{font-size:11px;color:var(--soft);margin:0}
+.passiveHeroSymbol{display:grid;place-items:center;flex:none;color:var(--theme-accent-text);width:46px;height:46px;border-radius:12px;border:1px solid var(--theme-highlight-border);background:var(--theme-overlay)}
+.passiveTierRail{gap:6px;padding:5px 1px 14px}
+.passiveTierRail button{min-height:55px;min-width:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 10px;border-radius:11px}
+.passiveTierRail button>span{font-size:13px;line-height:1;font-weight:850}
+.passiveTierRail button>small{font-size:8px;font-weight:650;letter-spacing:.03em;white-space:nowrap;color:var(--soft)}
+.passiveTierRail button.hasPoints:not(.selected){border-color:var(--theme-highlight-border)}
+.passiveTierRail button.selected{border-color:var(--theme-highlight)!important;background:var(--theme-highlight-soft)}
+.passiveTierRail button.selected>small{color:var(--theme-accent-text)}
+.passiveTierSummary{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:6px 2px 13px}
+.passiveTierTitle h3{font-size:20px;letter-spacing:-.03em;margin:5px 0}
+.passiveTierTitle p{font-size:11px;line-height:1.5;color:var(--soft);margin:0}
+.passiveTierCount{flex:none;display:grid;place-items:center;border-radius:10px;min-width:55px;min-height:37px;padding:8px;background:var(--theme-highlight-soft);border:1px solid var(--theme-highlight-border);font-size:12px;font-weight:800;color:var(--theme-accent-text)}
+.passiveProgress{height:5px;border-radius:99px;background:var(--theme-overlay);overflow:hidden;margin:0 1px 14px;border:1px solid var(--theme-border)}
+.passiveProgress>i{display:block;height:100%;background:var(--theme-highlight);border-radius:99px;transition:width .18s ease}
+.passiveTierRows{display:grid;gap:10px;min-height:0;touch-action:pan-y}
+.passiveTierRows .passiveRow{padding:13px 9px 12px;border:1px solid var(--theme-border);border-radius:13px;background:var(--theme-overlay)}
+.passiveTierRows .passiveRow:nth-child(even){background:color-mix(in srgb,var(--theme-card) 85%,var(--theme-overlay))}
+.passiveTierRows .passiveRow.milestoneRow{border-color:var(--theme-highlight-border);background:linear-gradient(160deg,var(--theme-highlight-soft),var(--theme-overlay))}
+.passiveTierRows .passiveRowLabel{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:0 3px 10px;margin:0;text-align:left}
+.passiveTierRows .passiveRowLabel>span{font-size:10px;letter-spacing:.1em;color:var(--theme-accent-text);font-weight:900}
+.passiveTierRows .passiveRowLabel small{color:var(--soft);font-size:9px;letter-spacing:0;font-weight:550;text-align:right}
+.passiveTierRows .passiveRowNodes{display:grid;grid-template-columns:repeat(var(--row-nodes),minmax(0,1fr));align-items:stretch;gap:7px;min-height:0}
+.passiveTierRows .passiveNode{width:auto;max-width:none;min-width:0;min-height:161px;display:flex;flex-direction:column;gap:8px;padding:11px 5px 9px;border-radius:11px;background:var(--theme-card);border:1px solid var(--theme-border);opacity:1}
+.passiveTierRows .passiveNode.locked{opacity:.66}
+.passiveTierRows .passiveNode.allocated{border-color:var(--theme-highlight);background:var(--theme-highlight-soft);box-shadow:inset 0 0 0 1px var(--theme-highlight-border)}
+.passiveTierRows .passiveInspect{width:100%;min-width:0;display:flex;flex:1;align-items:center;flex-direction:column;gap:6px;background:transparent;color:var(--text);border:0;padding:0;text-align:center;cursor:pointer}
+.passiveTierRows .passiveInspect:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:2px;border-radius:6px}
+.passiveTierRows .passiveSymbol{width:39px;height:39px;flex:none;display:grid;place-items:center;border:1px solid var(--theme-highlight-border);border-radius:11px;background:var(--theme-highlight-soft)}
+.passiveTierRows .passiveName{font-size:11px;line-height:1.25;min-height:27px;max-width:100%;display:grid;place-items:center;overflow-wrap:anywhere}
+.passiveTierRows .passiveStatGain{font-size:11px;line-height:1.2;color:var(--theme-accent-text);font-weight:850;font-variant-numeric:tabular-nums}
+.passiveTierRows .passiveStatGain small{color:var(--soft);font-size:9px;font-weight:550}
+.passiveTierRows .passiveInvested{font-size:9px;line-height:1.2;color:var(--soft)}
+.passiveTierRows .inlineStepper{display:flex;gap:4px;align-items:center;justify-content:center;margin-top:auto;width:100%}
+.passiveTierRows .inlineStepper button{flex:none;min-width:29px;min-height:31px;display:grid;place-items:center;padding:0;border-radius:8px;background:var(--theme-card-raised);border:1px solid var(--theme-border);color:var(--text);font-size:17px;font-weight:750}
+.passiveTierRows .inlineStepper button:disabled{opacity:.32}
+.passiveTierRows .inlineStepper .stepPlus:not(:disabled){color:var(--theme-accent-text);border-color:var(--theme-highlight-border)}
+.passiveTierRows .inlineStepper output{font-size:11px;font-variant-numeric:tabular-nums;white-space:nowrap;min-width:31px;font-weight:850;display:flex;align-items:baseline;gap:1px;justify-content:center}
+.passiveTierRows .inlineStepper output>span{opacity:.5}
+.passivePaging{margin-top:14px}
+.passivePaging>span{font-size:10px}
+.passiveInspectorEffect{display:grid;gap:5px;border:1px solid var(--theme-highlight-border);background:var(--theme-highlight-soft);border-radius:11px;padding:12px;margin:11px 0}
+.passiveInspectorEffect strong{font-size:15px;color:var(--theme-accent-text)}
+.passiveInspectorEffect small{font-size:11px;color:var(--soft)}
+/* Shared class planner polish: calmer surfaces, legible details and clear focus. */
+.classTreeOverview{border-color:var(--theme-highlight-border)}
+.classTreeOverview .classHeading{padding:9px 2px 13px;margin:2px 0 10px;border-bottom:1px solid var(--theme-border)}
+.classTreeOverview .classHeading h2{font-size:22px;letter-spacing:-.03em}
+.classTreeOverview .classTierBlock{background:color-mix(in srgb,var(--theme-card) 60%,var(--theme-overlay));border-radius:14px}
+.classTreeOverview .classTierCards{align-items:stretch}
+.classTreeOverview .classSkillNode{transition:border-color .16s ease,background-color .16s ease,transform .12s ease}
+.classTreeOverview .classSkillNode.available{border-color:var(--theme-highlight-border)}
+.classTreeOverview .classSkillNode.allocated{box-shadow:inset 0 0 0 1px var(--theme-highlight-border)}
+.classTreeOverview .classSkillNode .classSkillInspect:hover strong{color:var(--theme-accent-text)}
+.classTreeOverview .classNodeFoot .inlineStepper{margin:7px 0 3px}
+.classSkillInspectorArt{display:grid;place-items:center;width:79px;height:79px;padding:9px;margin-bottom:14px;border:1px solid var(--theme-highlight-border);background:var(--theme-highlight-soft);border-radius:14px}
+.classSkillInspectorArt .gameArt{width:64px;height:64px}
+.classTreeOverview .classRail button:focus-visible,.passiveTierRail button:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:2px}
+@media(max-width:700px){
+ .passivePanel{padding:10px 7px}
+ .passiveTierRail{position:sticky;top:69px;z-index:9;padding:7px 1px;background:var(--theme-card);border-top:1px solid var(--theme-border);border-bottom:1px solid var(--theme-border);margin:0 -1px 14px}
+ .passiveTierRows .passiveRow{padding:11px 5px}
+ .passiveTierRows .passiveRowNodes{gap:5px}
+ .passiveTierRows .passiveNode{min-height:164px;padding:9px 2px 8px}
+ .passiveTierRows .passiveName{font-size:10px}
+ .passiveTierRows .passiveSymbol{width:35px;height:35px}
+ .passiveTierRows .inlineStepper button{min-width:27px;min-height:30px}
+ .passiveTierRows .inlineStepper output{min-width:24px;font-size:10px}
+ .passiveTreeLead{padding:13px}
+ .classTreeOverview .classRail{scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x}
+ .classTreeOverview .classRail button{scroll-snap-align:start}
+}
+@media(max-width:370px){
+ .passiveTierRows .passiveStatGain{font-size:10px}
+ .passiveTierRows .passiveRowLabel small{display:none}
+ .passiveTierRows .inlineStepper{gap:2px}
+ .passiveTierRows .inlineStepper button{min-width:25px}
+ .passiveTierRows .inlineStepper output{min-width:22px;font-size:9px}
+ .passiveTierRows .passiveName{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.passiveProgress>i,.classTreeOverview .classSkillNode{transition:none}}
+
+
+/* Passive Skill Tree: explicit Strict Allocation and Free Allocation preview states. */
+.passiveAllocationMode{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 15px;margin:0 0 12px;border:1px solid var(--theme-highlight-border);background:linear-gradient(120deg,var(--theme-highlight-soft),var(--theme-card) 72%);border-radius:14px}
+.passiveModeText{flex:1;min-width:0}
+.passiveModeText>strong{display:block;font-size:13px;line-height:1.3;color:var(--text)}
+.passiveModeText p{margin:4px 0 0;max-width:620px;font-size:11px;line-height:1.5;color:var(--soft)}
+.passiveModeSwitch{flex:none;display:flex;align-items:center;gap:10px;cursor:pointer;color:var(--text);font-size:11px;font-weight:800}
+.passiveModeSwitch input{position:absolute;opacity:0;width:1px;height:1px}
+.passiveSwitchTrack{display:block;position:relative;flex:none;width:47px;height:27px;background:var(--theme-overlay);border:1px solid var(--theme-border);border-radius:99px;transition:background-color .15s ease,border-color .15s ease}
+.passiveSwitchTrack:after{content:"";position:absolute;left:3px;top:3px;width:19px;height:19px;border-radius:50%;background:var(--soft);transition:transform .15s ease,background-color .15s ease}
+.passiveModeSwitch input:checked+.passiveSwitchTrack{background:var(--theme-highlight-soft);border-color:var(--theme-highlight)}
+.passiveModeSwitch input:checked+.passiveSwitchTrack:after{background:var(--theme-highlight);transform:translateX(19px)}
+.passiveModeSwitch input:focus-visible+.passiveSwitchTrack{outline:2px solid var(--theme-highlight);outline-offset:3px}
+.passiveRuleWarning{border:1px solid #e5ab55;background:color-mix(in srgb,#a66319 13%,var(--theme-card));border-radius:12px;padding:11px 13px;margin:0 0 12px}
+.passiveRuleWarning strong{font-size:12px;color:#ffd38e}
+.passiveRuleWarning p{margin:4px 0 0;font-size:11px;line-height:1.5;color:var(--text)}
+.passiveTierRows .passiveRow.rowLocked:not(.rowUsed){border-style:dashed}
+.passiveTierRows .passiveRow.rowLocked:not(.rowUsed) .passiveRowLabel>span{color:var(--soft)}
+.passiveTierRows .passiveRow.rowReady .passiveRowLabel>small{color:var(--theme-accent-text)}
+.passiveFreePreview .passiveTierRows .passiveRow.rowReady .passiveRowLabel>small{color:var(--soft)}
+.passiveFreePreview .passiveTierCount{outline:1px dashed var(--theme-highlight-border)}
+.passiveModeSwitch input:disabled+.passiveSwitchTrack{opacity:.45}
+@media(max-width:510px){
+ .passiveAllocationMode{padding:12px 11px;gap:9px}
+ .passiveModeSwitch{flex-direction:column-reverse;gap:6px;text-align:center;font-size:10px}
+ .passiveModeText p{font-size:10px}
+ .passiveSwitchTrack{width:45px;height:26px}
+ .passiveSwitchTrack:after{width:18px;height:18px}
+ .passiveModeSwitch input:checked+.passiveSwitchTrack:after{transform:translateX(19px)}
+}
+@media(prefers-reduced-motion:reduce){.passiveSwitchTrack,.passiveSwitchTrack:after{transition:none}}
+
+
+/* Read-only passive links preserve the chosen tier and Free Allocation flag. */
+.passiveSharedBanner{border:1px solid var(--theme-highlight-border);border-radius:13px;margin:0 0 12px;padding:12px 15px;background:var(--theme-highlight-soft);display:grid;gap:4px}
+.passiveSharedBanner strong{font-size:12px;color:var(--theme-accent-text)}
+.passiveSharedBanner small{font-size:11px;color:var(--soft);line-height:1.5}
+.passiveTierRows .passiveReadonlyRank{margin-top:auto;border:1px solid var(--theme-border);background:var(--theme-overlay);color:var(--theme-accent-text);border-radius:8px;min-height:31px;min-width:78px;padding:8px;font-size:11px;font-weight:800;text-align:center}
+.passivePanel .passiveNode .passiveReadonlyRank{white-space:nowrap}
+@media(max-width:430px){.passiveTierRows .passiveReadonlyRank{min-width:0;font-size:10px;padding:7px 4px}}
