@@ -42,6 +42,7 @@ function materialTable(report,plan){
  return '<div class="pfMaterials">'+report.materials.map(m=>
   '<div class="pfMaterial"><div class="pfMaterialTitle"><strong>'+esc(m.name)+'</strong><span>'+ (m.missing===0n?'Ready':formatCost(m.missing)+' remaining')+'</span></div>'+
   '<small>Required '+formatCost(m.required)+' · owned '+formatCost(m.owned)+(m.sourceMonster?' · '+esc(m.sourceMonster)+(m.sourceBiome?' ('+esc(m.sourceBiome)+')':''):'')+'</small>'+
+  '<button class="btn secondary" type="button" data-route="wiki/reference" data-params="id='+esc(encodeURIComponent('game:material:'+m.slug))+'">Wiki reference ↗</button>'+
   '<div class="pfMaterialFields"><label>Owned<input type="number" min="0" inputmode="numeric" data-pf-owned="'+esc(m.slug)+'" value="'+esc(plan.inventory[m.slug]||'0')+'"></label>'+
   '<label>Measured material/min<input type="number" min="0" step="any" inputmode="decimal" data-pf-rate="'+esc(m.slug)+'" placeholder="Optional" value="'+(plan.rates[m.slug]?.perMinute||'')+'"></label><label>ML XP / minute here<input type="number" min="0" step="any" inputmode="decimal" data-pf-xp="'+esc(m.slug)+'" placeholder="Optional" value="'+(plan.rates[m.slug]?.mlXpPerMinute||'')+'"></label></div></div>'
  ).join('')+'</div>';
