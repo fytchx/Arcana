@@ -38,9 +38,12 @@ with sync_playwright() as p:
         assert len(content)>40,route+' rendered empty page'
         metrics=page.evaluate("""() => ({viewport:window.innerWidth,
           fullWidth:document.documentElement.scrollWidth,
+          hasHomeButton:!!document.querySelector('.launchReturnHome button[data-route="home"]'),
+          hasSearch:!!document.querySelector('#searchBtn'),
+          hasAccount:!!document.querySelector('#accountBtn'),
           hasBottomNavigation:!!document.querySelector('#bottomNav .navItem'),
           hasHeader:!!document.querySelector('#brandHome')})""")
-        assert metrics['hasBottomNavigation'] and metrics['hasHeader'], route+' lost app navigation'
+        assert metrics['hasHeader'] and metrics['hasHomeButton'] and metrics['hasSearch'] and metrics['hasAccount'] and not metrics['hasBottomNavigation'], route+' lost the launch header and direct Home path'
         screens.append({'route':route,'label':title,'contentChars':len(content),
                         'pageOverflowPx':max(0,metrics['fullWidth']-metrics['viewport'])})
     # Sourced equipment comparisons have real values, not placeholder claims.

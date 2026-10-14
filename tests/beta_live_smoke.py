@@ -57,18 +57,20 @@ with sync_playwright() as playwright:
  page.locator('.arcanaSignature').wait_for(timeout=20000)
  assert 'PDX & OVK' in page.locator('.arcanaSignature').inner_text()
  assert page.locator('[data-route="beta"]').count()>0,'Guest cannot discover Beta Center'
- assert page.locator('.arcanaHomeGateway').count()==4,'Home missing four primary destinations'
- for route in ('wiki','labs','calculators','wiki/guides'):
-  assert page.locator('.arcanaHomeGateway[data-route="'+route+'"]').count()==1,'Missing '+route
- actions=page.locator('details[data-home-panel="actions"]')
- quick=page.locator('details[data-home-panel="quick"]')
- assert actions.count()==1 and quick.count()==1,'Homepage expandable panels are missing'
- assert not actions.evaluate('(el)=>el.open') and not quick.evaluate('(el)=>el.open')
- actions.locator('summary').click()
- assert actions.evaluate('(el)=>el.open')
- assert actions.locator('.arcanaConnection').count()==6
- quick.locator('summary').click()
- assert quick.evaluate('(el)=>el.open')
+ assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1,'Build Studio must headline the home page'
+ assert page.locator('.launchQuickCard').count()==6,'Home must show the six primary destinations'
+ for menu_id in ('wiki','tools','guides','builds','codex','social'):
+  assert page.locator('.launchQuickCard[data-arg="'+menu_id+'"]').count()==1,'Missing '+menu_id+' home menu'
+ assert page.locator('#accountBtn').is_visible() and page.locator('#searchBtn').is_visible(),'Account or search missing from top header'
+ assert page.locator('#bottomNav').count()==0,'Bottom navigation must be removed at launch'
+ page.locator('.launchQuickCard[data-arg="wiki"]').click()
+ assert page.locator('#layer .launchNavRow').count()>=6,'Wiki submenu missing its routes'
+ page.locator('#layer .scrim').dispatch_event('click')
+ assert page.locator('#layer').is_hidden(),'Tapping outside did not dismiss the submenu'
+ page.locator('.launchSeeAll[data-route="directory"]').click()
+ assert page.locator('.launchAlphabetGroup').count()>0,'Alphabetical directory failed to open'
+ assert page.locator('.launchReturnHome [data-route="home"]').count()==1,'Directory has no direct home path'
+ page.locator('.launchReturnHome [data-route="home"]').click()
  assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+4'),'Home has horizontal overflow'
 
  page.goto(BASE+'/#/beta',wait_until='domcontentloaded',timeout=30000)
