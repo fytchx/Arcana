@@ -21,7 +21,7 @@ for module in sorted((ROOT/'src').glob('*.js')):
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
 # Offline browser must render EVERY stylesheet in the real entry point, not just
 # styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
-for css_name in ('styles.css','wiki-studio.css','community.css','beta.css','launch-navigation.css'):
+for css_name in ('styles.css','wiki-studio.css','community.css','beta.css','launch-navigation.css','arcana-contour.css'):
     css=(ROOT/css_name).read_text()
     pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\?[^"]*)?">'
     HTML,count=re.subn(pattern,lambda _: '<style>\n'+css+'\n</style>',HTML)
@@ -85,7 +85,11 @@ with sync_playwright() as playwright:
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
     page.set_content(HTML,wait_until='domcontentloaded')
-    page.wait_for_selector('.arcanaSignature',timeout=15000)
+    page.wait_for_selector('.launchHero',timeout=15000)
+    assert page.locator('#arcanaDock button').count()==5, 'All five navigation tabs must exist'
+    assert page.locator('#generalChatBtn').is_visible(), 'General chat launcher missing'
+    page.evaluate("location.hash='#/settings'")
+    page.wait_for_selector('.arcanaSignature',timeout=8000)
     assert errors==[], 'App failed to initialize: '+repr(errors)
     assert page.locator('.skipMain').count()==1, 'Accessible skip navigation missing'
     page.locator('.skipMain').dispatch_event('click')
@@ -122,10 +126,14 @@ with sync_playwright() as playwright:
       document.documentElement.style.removeProperty('--theme-highlight');
       document.documentElement.style.removeProperty('--accent');
     }""")
-    # The new launch UI has a permanent logo/home, account portal and top search.
-    assert page.locator('#accountBtn').is_visible(), 'User portal missing'
+    # Home has a stable five-tab dock, top-left chat and top-right search.
+    page.evaluate("location.hash='#/home'")
+    page.wait_for_selector('.launchHero',timeout=8000)
+    assert page.locator('#arcanaDock [data-dock="home"]').get_attribute('aria-current')=='page', 'Home tab not selected'
+    assert page.locator('#generalChatBtn').is_visible(), 'General chat launcher missing'
     assert page.locator('#searchBtn').is_visible(), 'Search must live in the header'
-    assert page.locator('#bottomNav').count()==0, 'Launch must not have a bottom task bar'
+    assert page.locator('#bottomNav').count()==0, 'Legacy bottom navigation must stay removed'
+    assert page.locator('#arcanaDock button').count()==5, 'Persistent five-tab dock missing'
     assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1, 'Build Studio is not featured'
     assert page.locator('.launchQuickCard').count()==6, 'Exactly six launch navigation cards are required'
     assert page.locator('.launchQuickCard .arcanaIcon').count()>=12, 'Themeable SVG icons missing from launch navigation'
