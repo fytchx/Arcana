@@ -619,3 +619,115 @@ html[data-arcana-surface] .studioPrimaryEquipment{
 html[data-arcana-surface] .arcanaIconCatalogSection .arcanaIconCatalogItem:hover{
  border-color:var(--theme-highlight);background:var(--theme-highlight-soft)
 }
+
+
+/* ════════════════════════════════════════════════════════════════════
+   ARCANA / FACETED BRAND + ETCHED SURFACES
+   Tiny neutral grain, edge glints and theme-tinted matte graphite,
+   not fantasy wallpaper. Accent changes affect every layer instantly.
+   Scoped to the launch homepage; Wiki and Build Studio stay stable.
+   ════════════════════════════════════════════════════════════════════ */
+img[src$="/assets/arcana-logo.webp"]{
+ filter:var(--arcana-logo-filter,none)
+        drop-shadow(0 2px 4px color-mix(in srgb,var(--theme-highlight) 16%,transparent));
+ transition:filter .2s ease;
+}
+#brandHome img[src$="/assets/arcana-logo.webp"]{
+ filter:var(--arcana-logo-filter,none)
+        drop-shadow(0 1px 4px color-mix(in srgb,var(--theme-highlight) 18%,transparent));
+}
+#content:has(.launchHero){
+ position:relative;
+ isolation:isolate;
+ background:
+  radial-gradient(ellipse 80% 235px at 95% 3%,
+     color-mix(in srgb,var(--theme-highlight) 4%,transparent),transparent 78%),
+  radial-gradient(ellipse 67% 490px at -18% 55%,
+     color-mix(in srgb,var(--theme-secondary) 30%,transparent),transparent 86%);
+}
+#content:has(.launchHero)::before{
+ content:"";
+ position:absolute;inset:0;
+ z-index:0;pointer-events:none;
+ background-image:
+  url('/assets/arcana-etched-grain.svg'),
+  radial-gradient(circle at 2px 2px,rgba(255,255,255,.09) .42px,transparent .72px);
+ background-size:192px 192px,28px 28px;
+ background-repeat:repeat;
+ opacity:.23;
+}
+#content:has(.launchHero)>*{position:relative;z-index:1}
+#content:has(.launchHero) .launchHero{
+ isolation:isolate;
+ background:
+  radial-gradient(ellipse 63% 118% at 4% 0%,
+    color-mix(in srgb,var(--theme-highlight) 12%,transparent),transparent 89%),
+  linear-gradient(132deg,rgba(255,255,255,.038),transparent 38%),
+  linear-gradient(116deg,
+    color-mix(in srgb,var(--theme-secondary) 92%,var(--theme-highlight) 8%),
+    color-mix(in srgb,var(--theme-main) 35%,var(--theme-secondary) 65%) 96%);
+ border-color:color-mix(in srgb,var(--theme-border) 88%,var(--theme-highlight) 12%);
+ box-shadow:0 10px 22px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.09),
+            inset 0 -1px rgba(0,0,0,.13);
+}
+#content:has(.launchHero) .launchHero::after{
+ content:"";position:absolute;inset:0;z-index:0;
+ pointer-events:none;
+ background-image:
+  url('/assets/arcana-etched-grain.svg'),
+  repeating-linear-gradient(137deg,
+    rgba(255,255,255,.065) 0px,rgba(255,255,255,.065) .45px,
+    transparent .5px,transparent 28px);
+ background-size:192px 192px,auto;
+ background-repeat:repeat;
+ opacity:.29;
+}
+#content:has(.launchHero) .launchHero:before{z-index:2}
+#content:has(.launchHero) .launchHeroText,
+#content:has(.launchHero) .launchHeroArt{z-index:1}
+#content:has(.launchHero) .launchQuickCard,
+#content:has(.launchHero) .launchFeatureRow{
+ position:relative;overflow:hidden;isolation:isolate;
+ background:
+  radial-gradient(ellipse 77% 140% at 0% -26%,
+    color-mix(in srgb,var(--theme-highlight) 6%,transparent),transparent 78%),
+  linear-gradient(172deg,rgba(255,255,255,.024),transparent 52%),
+  linear-gradient(112deg,
+    color-mix(in srgb,var(--theme-secondary) 96%,var(--theme-main) 4%),
+    color-mix(in srgb,var(--theme-secondary) 91%,var(--theme-main) 9%));
+ border-color:color-mix(in srgb,var(--theme-border) 96%,#aab4d8 4%);
+ box-shadow:inset 0 1px rgba(255,255,255,.048),0 3px 10px rgba(0,0,0,.095);
+}
+#content:has(.launchHero) .launchQuickCard::after,
+#content:has(.launchHero) .launchFeatureRow::after{
+ content:"";pointer-events:none;
+ position:absolute;inset:0;z-index:0;
+ background-image:url('/assets/arcana-etched-grain.svg');
+ background-size:192px 192px;
+ background-repeat:repeat;
+ opacity:.42;
+}
+#content:has(.launchHero) .launchQuickCard>*,
+#content:has(.launchHero) .launchFeatureRow>*{position:relative;z-index:1}
+#content:has(.launchHero) .launchQuickCard::before,
+#content:has(.launchHero) .launchFeatureRow::before{
+ content:"";position:absolute;z-index:0;pointer-events:none;
+ left:14px;right:14px;top:0;height:1px;
+ background:linear-gradient(90deg,
+    color-mix(in srgb,var(--theme-highlight) 20%,rgba(255,255,255,.12)),
+    rgba(255,255,255,.08) 54%,transparent);
+ opacity:.6;
+}
+#content:has(.launchHero) .launchQuickCard:hover,
+#content:has(.launchHero) .launchQuickCard:focus-visible,
+#content:has(.launchHero) .launchFeatureRow:hover,
+#content:has(.launchHero) .launchFeatureRow:focus-visible{
+ border-color:color-mix(in srgb,var(--theme-highlight) 45%,var(--theme-border));
+ box-shadow:inset 0 1px rgba(255,255,255,.07),0 4px 13px rgba(0,0,0,.16);
+}
+#content:has(.launchHero) .launchSectionTop h2{
+ text-shadow:0 1px 1px rgba(0,0,0,.2);
+}
+@media (prefers-reduced-motion:reduce){
+ img[src$="/assets/arcana-logo.webp"]{transition:none}
+}
