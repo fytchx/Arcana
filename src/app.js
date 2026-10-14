@@ -111,7 +111,7 @@ function ensureDraft(){
  return state.draft;
 }
 function persistDraft(){if(state.draft){state.draft=normalizeBuild(state.draft);saveDraft(state.draft)}}
-const SEARCHABLE_TOOLS=['items','guides','upgrade','compare','build','runes','skills','passives','petlab','compound','affixes','guildtree','guilds','raids','farm'];
+const SEARCHABLE_TOOLS=['items','guides','upgrade','compare','build','runes','skills','passives','petlab','compound','affixes','guildtree','guilds','raids','farm','pathfinder'];
 const TOOL_SEARCH_ALIASES={
  items:'item codex art equipment weapons',guides:'wiki player guide article',
  upgrade:'item upgrade calculator forge materials',compare:'item comparison equipment stats',
@@ -119,7 +119,7 @@ const TOOL_SEARCH_ALIASES={
  skills:'class skill tree planner',passives:'passive skill tree planner',
  petlab:'pet lab pet loadout companion',compound:'pet compound calculator equalisation',
  affixes:'pet affix cost calculator shard',guildtree:'guild skill tree planner guild bonuses',
- guilds:'guild finder recruitment',raids:'lfg raid finder',farm:'monster level xp farm comparator fastest kills per second ml xp'
+ guilds:'guild finder recruitment',raids:'lfg raid finder',farm:'monster level xp farm comparator fastest kills per second ml xp',pathfinder:'Arcana Pathfinder all gear equipment upgrade target material farming efficiency monster level route planner'
 };
 const searchExtras=()=>[
  ...(savedBuild()?[{id:'my-build',kind:'build',title:state.draft.title||'My Build',subtitle:'Saved locally · Build Studio',keywords:'my build custom saved planner equipment runes skills',description:'Your locally saved build.'}]:[]),
