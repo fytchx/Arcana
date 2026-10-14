@@ -27,7 +27,7 @@ test('every game-art reference resolves to an actual source sprite and stable ti
    assert.equal(reference.category,category);
    assert.equal(reference.key,key);
    assert.equal(reference.index,atlasCategory.mapping[key]);
-   assert.equal(reference.atlas,'/assets/official-art/'+(atlasCategory.file||category+'.webp'));
+   assert.equal(reference.atlas,'/assets/official-art/'+(atlasCategory.file||category+'.webp').replace(/^\//,''));
    assert.equal(reference.cols,atlasCategory.cols);
    assert.equal(reference.rows,atlasCategory.rows);
    assert.equal(reference.tile,atlasCategory.tile);
