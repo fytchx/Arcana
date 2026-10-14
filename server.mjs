@@ -104,21 +104,7 @@ async function sourceBackedRecipes(){
  codex:{tiers:Object.fromEntries(Object.entries(cd.tiers).map(([k,v])=>[k,{name:v.name,max_level:v.max_level,rows:v.rows}])),
  tier_upgrades:cd.tier_upgrades,awaken:{rows:Object.fromEntries(Object.entries(cd.awaken.rows).filter(([k])=>Number(k)>=1&&Number(k)<=30)),transitions:cd.awaken.transitions.filter(x=>Number(x.rank)<=30)}},
  materials:data.materials.map(m=>({slug:m.slug,name:m.name,type:m.type,monster_id:m.monster_id??null}))};
- // Join only source-backed monster references. Keyword matching is accepted
- // solely when exactly one catalog monster identifies the material.
- try{
-  const catalog=await verifiedCatalog();
-  const monsters=catalog.entries.filter(x=>x.kind==='monster');
-  const indexed=new Map(monsters.map(x=>[x.id,x]));
-  previewRecipe.materials=previewRecipe.materials.map(m=>{
-   const byId=m.monster_id?indexed.get('game:monster:'+m.monster_id):null;
-   const candidates=byId?[byId]:monsters.filter(x=>String(x.keywords||'').split(/\\s+/).includes(m.slug));
-   if(candidates.length!==1)return m;
-   const hit=candidates[0],biome=(hit.facts||[]).find(x=>x[0]==='Biome')?.[1]||'';
-   return {...m,sourceMonster:hit.title,sourceBiome:biome,monsterRef:hit.id};
-  });
- }catch(e){console.warn('PATHFINDER_MONSTER_JOIN_FAILED',String(e))}
-
+ // Pathfinder costs are independent of the remote monster catalog.
  previewRecipeTime=Date.now();return previewRecipe;
 }
 
