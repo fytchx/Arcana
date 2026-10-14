@@ -1,0 +1,48 @@
+{
+  "version": "2026-10-14",
+  "name": "IdleArc Refined",
+  "source": "User-approved IdleArc Refined board; original hand-authored vector illustrations, not pasted game sprites",
+  "colors": "metallic materials with an accented gemstone detail; interface chrome remains themeable",
+  "categories": {
+    "equipment": [
+      "equipment-torch",
+      "equipment-head",
+      "equipment-chest",
+      "equipment-neck",
+      "equipment-weapon",
+      "equipment-offhand",
+      "equipment-ring",
+      "equipment-ring2",
+      "equipment-belt",
+      "equipment-hands",
+      "equipment-feet",
+      "equipment-charm",
+      "equipment-charm2"
+    ],
+    "classes": [
+      "class-warrior",
+      "class-archer",
+      "class-mage",
+      "class-rogue",
+      "class-druid"
+    ],
+    "features": [
+      "feature-build-studio",
+      "feature-rune-forge",
+      "feature-class-skills",
+      "feature-passive-tree",
+      "feature-codex",
+      "feature-wiki",
+      "feature-guides",
+      "feature-guild-raid",
+      "feature-tools",
+      "feature-builds",
+      "feature-pet-lab",
+      "feature-upgrade",
+      "feature-community",
+      "feature-feedback"
+    ]
+  },
+  "iconCount": 32,
+  "viewBox": "0 0 100 100"
+}
