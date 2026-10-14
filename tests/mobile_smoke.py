@@ -13,14 +13,20 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'qa-output'
 OUT.mkdir(exist_ok=True)
 HTML=(ROOT/'index.html').read_text()
-STYLE=(ROOT/'styles.css').read_text()
 IMPORTS={}
 for module in sorted((ROOT/'src').glob('*.js')):
     source=module.read_text()
     source=re.sub(r"from\s*(['\"])\.\/([a-z0-9-]+\.js)(?:\?[^'\"]*)?\1",lambda m:"from "+m.group(1)+"@arcana/"+m.group(2)+m.group(1),source)
     IMPORTS[f'@arcana/{module.name}']='data:text/javascript;base64,'+base64.b64encode(source.encode()).decode()
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
-HTML=HTML.replace('<link rel="stylesheet" href="/styles.css">','<style>'+STYLE+'</style>')
+# Offline browser must render EVERY stylesheet in the real entry point, not just
+# styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
+for css_name in ('styles.css','wiki-studio.css','community.css','beta.css','launch-navigation.css'):
+    css=(ROOT/css_name).read_text()
+    pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\\?[^\"]*)?">'
+    HTML,count=re.subn(pattern,lambda _: '<style>\\n'+css+'\\n</style>',HTML)
+    assert count==1, 'Homepage missing required CSS reference '+css_name
+
 HTML=HTML.replace('</head>', '<script type="importmap">'+json.dumps({'imports': IMPORTS})+'</script></head>')
 # Controlled game references verify rendering independently of real API availability.
 MOCK_ART={"categories": {
@@ -122,6 +128,11 @@ with sync_playwright() as playwright:
     assert page.locator('#bottomNav').count()==0, 'Launch must not have a bottom task bar'
     assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1, 'Build Studio is not featured'
     assert page.locator('.launchQuickCard').count()==6, 'Exactly six launch navigation cards are required'
+    assert page.locator('.launchHero').evaluate('(e)=>getComputedStyle(e).display')=='flex', 'Build Studio hero CSS missing'
+    assert page.locator('.launchQuickGrid').evaluate('(e)=>getComputedStyle(e).display')=='grid', 'Homepage cards are not using responsive grid CSS'
+    positions=page.locator('.launchQuickCard').evaluate_all('(els)=>els.slice(0,2).map(e=>({x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y}))')
+    assert abs(positions[0]['y']-positions[1]['y'])<3 and positions[1]['x']>positions[0]['x']+40, 'Mobile cards stacked instead of two-column layout'
+
     for menu_id in ('wiki','tools','guides','builds','codex','social'):
         assert page.locator('.launchQuickCard[data-arg="'+menu_id+'"]').count()==1, 'Missing home card '+menu_id
     page.locator('.launchQuickCard[data-arg="wiki"]').click()
