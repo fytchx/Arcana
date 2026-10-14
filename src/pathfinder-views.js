@@ -32,7 +32,7 @@ function controls(plan){
 export function buildProgressionView(equipment,plan,snapshot,error=''){
  const p=normalizePathfinderPlan(plan);
  return '<section class="pfPanel" aria-label="Build Studio upgrade planning"><h2>Upgrade your entire loadout</h2><p>Configure each equipped item’s current enhancement and target. Sharing builds stays separate from your personal farming inventory.</p>'+
- (!snapshot?'<p class="pfWarning">'+esc(error||'Loading source-backed upgrade recipes…')+'</p>':
+ (!snapshot?'<p class="pfWarning">'+esc(error||'Loading source-backed upgrade recipes…')+'</p><button class="btn secondary" data-action="pf-refresh">Retry recipe connection</button>':
  controls(p)+gearRows(equipment,p,snapshot)+headline(planGearUpgrades(equipment,p,snapshot),p))+
  '<button class="btn primary" data-route="calculators/pathfinder">Open Pathfinder · All materials & farming</button></section>';
 }
@@ -63,7 +63,7 @@ function farmTable(report,plan){
 }
 export function pathfinderView(equipment,raw,snapshot,error=''){
  const p=normalizePathfinderPlan(raw);
- if(!snapshot)return '<div class="pfPage"><h1>Arcana Pathfinder</h1><p class="pfWarning">'+esc(error||'Loading verified upgrade recipes…')+'</p></div>';
+ if(!snapshot)return '<div class="pfPage"><h1>Arcana Pathfinder</h1><p class="pfWarning">'+esc(error||'Loading verified upgrade recipes…')+'</p><button class="btn secondary" data-action="pf-refresh">Retry recipe connection</button></div>';
  const result=planGearUpgrades(equipment,p,snapshot);
  return '<div class="pfPage"><header><span class="eyebrow">ARCANA PATHFINDER</span><h1>One loadout. One material plan.</h1><p>Set target levels for every equipped item, subtract your inventory and identify your next farms.</p></header>'+
  '<div class="pfNav"><button class="btn secondary" data-route="labs/build">Edit Build Studio equipment</button><button class="btn secondary" data-route="wiki/library" data-params="kind=material">Wiki materials</button></div>'+
