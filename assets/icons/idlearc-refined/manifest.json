@@ -1,0 +1,82 @@
+{
+  "version": "2026-10-14",
+  "name": "IdleArc Refined",
+  "source": "User-approved IdleArc Refined board; original hand-authored vector illustrations, not pasted game sprites",
+  "colors": "metallic materials with an accented gemstone detail; interface chrome remains themeable",
+  "categories": {
+    "equipment": [
+      "equipment-torch",
+      "equipment-head",
+      "equipment-chest",
+      "equipment-neck",
+      "equipment-weapon",
+      "equipment-offhand",
+      "equipment-ring",
+      "equipment-ring2",
+      "equipment-belt",
+      "equipment-hands",
+      "equipment-feet",
+      "equipment-charm",
+      "equipment-charm2"
+    ],
+    "classes": [
+      "class-warrior",
+      "class-archer",
+      "class-mage",
+      "class-rogue",
+      "class-druid"
+    ],
+    "features": [
+      "feature-build-studio",
+      "feature-rune-forge",
+      "feature-class-skills",
+      "feature-passive-tree",
+      "feature-codex",
+      "feature-wiki",
+      "feature-guides",
+      "feature-guild-raid",
+      "feature-tools",
+      "feature-builds",
+      "feature-pet-lab",
+      "feature-upgrade",
+      "feature-community",
+      "feature-feedback"
+    ],
+    "tokens": [
+      "token-arcstone",
+      "token-ruby",
+      "token-gold",
+      "token-guildstone",
+      "token-pet-egg",
+      "token-pet-shard",
+      "token-rune-dust",
+      "token-rune-reforge",
+      "token-runic-core",
+      "token-upgrade-catalyst",
+      "token-gem",
+      "token-gem-dust"
+    ],
+    "stats": [
+      "stat-attack-damage",
+      "stat-flat-damage",
+      "stat-crit-chance",
+      "stat-crit-damage",
+      "stat-defense",
+      "stat-block-chance",
+      "stat-retaliation",
+      "stat-pet-damage",
+      "stat-strength",
+      "stat-dexterity",
+      "stat-intelligence",
+      "stat-gold-gain",
+      "stat-exp-gain",
+      "stat-drop-bonus",
+      "stat-extra-kill",
+      "stat-boss-damage",
+      "stat-all-class-skills",
+      "stat-armor"
+    ]
+  },
+  "iconCount": 62,
+  "viewBox": "0 0 100 100"
+}
