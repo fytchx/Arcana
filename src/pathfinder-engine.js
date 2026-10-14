@@ -2,6 +2,7 @@
  * verified, versioned game-cost snapshot. No price, drop rate or ML XP guesses.
  * UI consumes this output; it never reimplements upgrade math. */
 export const PATHFINDER_LIMIT=30;
+export const REAL_EQUIPMENT_SLOTS=Object.freeze(['torch','head','neck','weapon','chest','offhand','ring','belt','ring2','hands','feet']);
 const SCALE=1000000n;
 const toCount=v=>{try{const x=BigInt(String(v??0));return x>0n?x:0n}catch{return 0n}};
 const safeNumber=(n,fallback=0)=>Number.isFinite(Number(n))?Number(n):fallback;
@@ -97,7 +98,7 @@ export function planGearUpgrades(equipment,plan,snapshot){
  const p=normalizePathfinderPlan(plan),stages=stagesFor(snapshot),all=[],requirements={},errors=[];
  let gold=0n,goldBase=0n,steps=0;
  for(const [slot,gear] of Object.entries(equipment||{})){
-  if(!gear)continue;
+  if(!gear||!REAL_EQUIPMENT_SLOTS.includes(slot))continue;
   const from=stageForGear(gear),level=p.currentLevels[slot]??Math.floor(safeNumber(gear.level)),selected=p.targets[slot];
   if(!from){all.push({slot,name:gear.id||slot,unconfigured:true});continue;}
   const target=selected?.stage||from,targetLevel=selected?.level??level;
