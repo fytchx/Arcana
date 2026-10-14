@@ -7,6 +7,7 @@ import { handleWikiRequest } from './src/wiki-server.mjs';
 import { safeAccountRequest } from './src/account-server.mjs';
 import { safeAccountBuildRequest } from './src/account-builds.mjs';
 import { safeCommunityRequest } from './src/community-server.mjs';
+import { safeGeneralChatRequest } from './src/general-chat-server.mjs';
 import { betaFeedbackRequest } from './src/beta-feedback-server.mjs';
 import { fileURLToPath } from 'node:url';
 
@@ -127,6 +128,7 @@ const server=http.createServer(async(req,res)=>{
   if(pathname.startsWith('/api/account/builds')&&await safeAccountBuildRequest(req,res,parsedUrl))return;
   if((pathname.startsWith('/api/account/')||pathname.startsWith('/api/profiles/')||pathname.startsWith('/api/admin/roles/'))&&await safeAccountRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/community/')&&await safeCommunityRequest(req,res,parsedUrl))return;
+   if(pathname.startsWith('/api/chat/')&&await safeGeneralChatRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/beta/')&&await betaFeedbackRequest(req,res,parsedUrl))return;
   if(await handleWikiRequest(req,res,pathname))return;
   if(req.method!=='GET'&&req.method!=='HEAD'){send(res,405,'Method not allowed');return;}
