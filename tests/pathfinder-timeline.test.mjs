@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {PATHFINDER_SLOTS,readQuickView,saveQuickView,normalizeQuickView,timelineStages,timelineModel,stepCost,chapterTotal,stageStepLabel} from '../src/pathfinder-timeline.js';
-import {pathfinderView,pathfinderStepDetail} from '../src/pathfinder-timeline-view.js';
+import {pathfinderView,pathfinderStepDetail,pathfinderRangeContent} from '../src/pathfinder-timeline-view.js';
+import {quoteRange,readRange,saveRange} from '../src/pathfinder-range.js';
 import {readFile} from 'node:fs/promises';
 
 const fixture={
@@ -107,4 +108,69 @@ test('preview HTML and server serve timeline stylesheet; main logo remains intac
  assert.match(server,/pathfinder-timeline\.css/);
  assert.match(page,/brandHome/);
  assert.match(css,/var\(--theme-highlight/);
+});
+
+test('From → To combines all listed materials and gold in one rank',()=>{
+ const q=quoteRange(fixture,{fromStage:'T1',fromLevel:0,toStage:'T1',toLevel:2});
+ assert.equal(q.complete,true);
+ assert.equal(q.steps,2);
+ assert.equal(q.gold,3000n);
+ assert.equal(q.materials.find(m=>m.slug==='iron-fragment').quantity,13n);
+ assert.equal(q.materials.find(m=>m.slug==='spider-fang').quantity,22n);
+ assert.equal(q.materials.find(m=>m.slug==='stormglass-shard').quantity,2n);
+});
+test('range includes tier changes and the intervening enhancement steps',()=>{
+ const q=quoteRange(fixture,{fromStage:'T1',fromLevel:2,toStage:'T2',toLevel:1});
+ assert.equal(q.complete,true);
+ assert.equal(q.gold,6000n);
+ assert.equal(q.materials.find(m=>m.slug==='rare-essence').quantity,3n);
+ assert.equal(q.materials.find(m=>m.slug==='ogre-bone').quantity,4n);
+});
+test('total may cross Infernal to A1 and continue to A2',()=>{
+ const q=quoteRange(fixture,{fromStage:'T6',fromLevel:2,toStage:'A2',toLevel:1});
+ assert.equal(q.complete,true);
+ assert.equal(q.gold,4900000n);
+ assert.equal(q.materials.find(m=>m.slug==='primeval-core').quantity,4n);
+ assert.equal(q.materials.find(m=>m.slug==='infernal-fragment').quantity,42n);
+});
+test('zero-distance totals and backwards selections are handled',()=>{
+ const same=quoteRange(fixture,{fromStage:'A2',fromLevel:1,toStage:'A2',toLevel:1});
+ assert.equal(same.steps,0);
+ assert.equal(same.gold,0n);
+ const backward=quoteRange(fixture,{fromStage:'A2',fromLevel:1,toStage:'A1',toLevel:2});
+ assert.ok(backward.error.includes('target must be after'));
+});
+test('missing recipes prevent misleading partial route totals',()=>{
+ const broken=structuredClone(fixture);
+ broken.codex.tiers['1'].rows.splice(0,1);
+ const q=quoteRange(broken,{fromStage:'T1',fromLevel:0,toStage:'T2',toLevel:1});
+ assert.equal(q.complete,false);
+ assert.ok(q.error.includes('missing'));
+ const html=pathfinderRangeContent(broken,{},q.range);
+ assert.match(html,/Some verified upgrade costs are missing/);
+ assert.doesNotMatch(html,/class="pathRangeSummary"/);
+});
+test('full range UI preserves mobile-friendly quick reference and independent preferences',()=>{
+ const html=pathfinderView({mode:'awakened',stage:'A2',level:1},fixture);
+ assert.match(html,/Calculate From → To/);
+ assert.match(html,/data-path-from-stage/);
+ assert.match(html,/data-path-to-level/);
+ assert.match(html,/id="pathRangeContent"/);
+ const memory=new Map();
+ const store={getItem:k=>memory.get(k),setItem:(k,v)=>memory.set(k,v)};
+ const val=saveRange({fromStage:'T3',fromLevel:2,toStage:'A12',toLevel:1},store);
+ assert.deepEqual(readRange(store),val);
+});
+test('changing slider steps shares cached stage recipes',()=>{
+ const one=timelineModel(fixture,{mode:'awakened',stage:'A1',level:1});
+ const two=timelineModel(fixture,{mode:'awakened',stage:'A1',level:2});
+ assert.strictEqual(one.steps,two.steps);
+ assert.strictEqual(one.chapter,two.chapter);
+});
+test('performance safeguards avoid rerendering entire application and compress responses',async()=>{
+ const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+ const server=await readFile(new URL('../server.mjs',import.meta.url),'utf8');
+ assert.match(app,/oldPage\.replaceWith\(next\)/);
+ assert.match(server,/gzipSync/);
+ assert.match(server,/content-encoding':'gzip'/);
 });
