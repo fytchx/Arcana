@@ -415,8 +415,14 @@ with sync_playwright() as playwright:
     assert page.locator('.studioClassControl select').input_value()=='Druid'
     assert page.locator('.studioProfileVisual .arcanaSilhouette').get_attribute('data-kind')=='druid', 'Class icon must update with the selected class'
     # Build profile picture uploads are local to the browser. A tiny valid PNG exercises compression, storage, removal.
-    import base64
-    tiny_png=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO5qjKkAAAAASUVORK5CYII=')
+    import struct,zlib
+    def png_chunk(typ,data):
+        return struct.pack('>I',len(data))+typ+data+struct.pack('>I',zlib.crc32(typ+data)&0xffffffff)
+    png_raw=b''.join(b'\\x00'+b'\\x93\\x47\\xcb\\xff'*32 for _ in range(32))
+    tiny_png=(b'\\x89PNG\\r\\n\\x1a\\n'+
+       png_chunk(b'IHDR',struct.pack('>IIBBBBB',32,32,8,6,0,0,0))+
+       png_chunk(b'IDAT',zlib.compress(png_raw))+
+       png_chunk(b'IEND',b''))
     page.locator('#studioPortraitUpload').set_input_files({'name':'portrait.png','mimeType':'image/png','buffer':tiny_png})
     page.locator('.studioPortraitImg').wait_for(timeout=7000)
     assert page.evaluate("localStorage.getItem('arcana-studio-portrait-local-v1')?.startsWith('data:image/')"), 'Picture not persisted locally'
