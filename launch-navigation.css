@@ -122,3 +122,159 @@ html[data-launch-reduce-motion="true"] *,html[data-launch-reduce-motion="true"] 
 /* Home is one tap away even halfway through a long Wiki article. */
 .launchReturnHome{position:sticky;top:68px;z-index:15;background:var(--theme-main,var(--bg));padding:9px 0 11px;box-shadow:0 3px 12px color-mix(in srgb,var(--theme-main,var(--bg)) 86%,transparent)}
 @media(max-width:700px){.launchReturnHome{top:60px}}
+
+/* ─────────────────────────────────────────────────────────────
+   ARCANA SLATE · COMPACT MOBILE-FIRST DESIGN (2026-10-13)
+   Neutral graphite surfaces, discreet accent, and genuine
+   single-column navigation. Built on the existing route/overlay
+   system rather than replacing any app pages or saved state.
+   ───────────────────────────────────────────────────────────── */
+:root{--slate-ink:#f1f2f7;--slate-muted:#9da5b6;--slate-line:color-mix(in srgb,var(--theme-secondary) 72%,#66708b 28%)}
+body,.shell{background:var(--theme-main);color:var(--slate-ink)}
+.shell{max-width:1680px}
+.top{
+ height:60px;min-height:60px;
+ border-bottom:1px solid var(--slate-line);
+ background:color-mix(in srgb,var(--theme-main) 97%,var(--theme-secondary));
+ padding:0 clamp(14px,3vw,25px);
+ backdrop-filter:none;
+}
+.launchBrand{gap:7px;display:flex;align-items:center;justify-self:center;color:var(--slate-ink)}
+.launchBrand img{width:28px;height:28px;filter:none}
+.launchBrandName{font-size:14px;font-weight:730;letter-spacing:.16em;line-height:1}
+.launchAccount,.launchSearchBtn{width:39px;min-width:39px;height:39px;border-radius:10px;background:transparent;border:1px solid var(--slate-line);color:var(--theme-accent-text);box-shadow:none}
+.launchSearchBtn{border-color:transparent;color:var(--slate-ink)}
+#content{max-width:850px;padding:21px 22px 72px}
+.launchHero{
+ min-height:148px;display:flex;align-items:center;gap:15px;
+ border:1px solid color-mix(in srgb,var(--slate-line) 82%,var(--theme-highlight) 18%);
+ border-radius:13px;padding:18px 23px 18px 85px;
+ background:linear-gradient(108deg,color-mix(in srgb,var(--theme-secondary) 91%,var(--theme-highlight) 9%),var(--theme-secondary) 73%);
+ box-shadow:inset 0 1px rgba(255,255,255,.025);
+ isolation:isolate;
+}
+.launchHero:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--theme-highlight);opacity:.75}
+.launchHeroText{max-width:680px;width:100%}
+.launchHero .launchEyebrow{font-size:9px;letter-spacing:.11em;color:var(--slate-muted);font-weight:700}
+.launchHero h1{font-size:26px;line-height:1.18;letter-spacing:-.04em;font-weight:740;margin:4px 0 5px;color:var(--slate-ink)}
+.launchHero p{font-size:12px;line-height:1.5;color:var(--slate-muted);margin:0 0 11px;max-width:440px}
+.launchHeroCTA{
+ background:transparent;color:var(--theme-accent-text);
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 52%,var(--slate-line));
+ border-radius:9px;padding:5px 12px;min-height:34px;
+ gap:8px;font-size:11px;font-weight:750;
+}
+.launchHeroCTA:hover,.launchHeroCTA:focus-visible{background:var(--theme-highlight-soft);filter:none}
+.launchHeroCTA svg{width:14px;height:14px}
+.launchHeroArt{
+ position:absolute;left:22px;top:20px;right:auto;bottom:auto;
+ opacity:.93;color:var(--theme-accent-text);
+ transform:none;pointer-events:none;display:grid;place-items:center;
+ width:46px;height:46px;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 25%,var(--slate-line));
+ border-radius:11px;background:color-mix(in srgb,var(--theme-highlight) 6%,var(--theme-main));
+}
+.launchHeroArt svg{width:29px;height:29px}
+.launchHeroPills{display:none}
+.launchSectionTop{margin:22px 1px 9px;gap:12px;align-items:center}
+.launchSectionTop h2{font-size:15px;font-weight:730;letter-spacing:-.02em;line-height:1.35}
+.launchSeeAll{min-height:36px;font-size:11px;color:var(--theme-accent-text);padding:4px 0}
+.launchQuickGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+.launchQuickCard{
+ width:100%;display:flex;align-items:center;min-height:65px;
+ padding:10px 13px;gap:13px;
+ border:1px solid var(--slate-line);
+ border-radius:10px;background:var(--theme-secondary);
+ box-shadow:none;color:var(--slate-ink);
+}
+.launchQuickCard:hover,.launchQuickCard:focus-visible{border-color:var(--theme-highlight);background:color-mix(in srgb,var(--theme-highlight) 5%,var(--theme-secondary))}
+.launchQuickIcon{
+ width:31px;min-width:31px;height:32px;
+ display:grid;place-items:center;
+ color:var(--theme-accent-text);
+ border-radius:8px;background:color-mix(in srgb,var(--theme-highlight) 8%,transparent);
+}
+.launchQuickIcon svg{width:20px;height:20px}
+.launchQuickCopy{flex:1;gap:3px;min-width:0}
+.launchQuickCopy strong{font-size:13.5px;line-height:1.2;font-weight:720;letter-spacing:-.015em}
+.launchQuickCopy small{font-size:10px;line-height:1.28;color:var(--slate-muted)}
+.launchQuickArrow{color:var(--slate-muted);opacity:.9;flex:none}
+.launchQuickArrow svg{width:16px;height:16px}
+.launchFeaturedIntro{font-size:11px;line-height:1.45;color:var(--slate-muted);margin:0 2px 10px}
+.launchFeaturedGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+.launchFeatureRow{
+ display:flex;min-height:60px;padding:10px 13px;gap:12px;
+ border:1px solid var(--slate-line);border-radius:10px;
+ background:var(--theme-secondary);color:var(--slate-ink);
+}
+.launchFeatureRow:hover,.launchFeatureRow:focus-visible{border-color:var(--theme-highlight)}
+.launchFeatureIcon{display:grid;place-items:center;color:var(--theme-accent-text);width:31px;min-width:31px}
+.launchFeatureIcon svg{width:19px;height:19px}
+.launchFeatureRow strong{font-size:12px;font-weight:710;line-height:1.35}
+.launchFeatureRow small{font-size:10px;color:var(--slate-muted);margin-top:2px}
+.launchReturnHome{top:60px}
+.launchReturnHome button{border-radius:9px}
+.layer[data-type="home-menu"] .sheet{border-radius:13px}
+.launchNavRow,.launchSetting{border-radius:9px;border-color:var(--slate-line)}
+.launchMenuIntro h2{font-size:22px}
+.launchNavRow{min-height:62px}
+.launchPage h1{font-size:clamp(25px,4vw,32px);font-weight:730}
+html[data-launch-compact="true"] .launchHero{min-height:119px;padding-top:11px;padding-bottom:11px}
+html[data-launch-compact="true"] .launchQuickCard{min-height:52px;padding-block:7px}
+html[data-launch-compact="true"] .launchFeatureRow{min-height:50px;padding-block:7px}
+html[data-launch-compact="true"] .launchSectionTop{margin-top:15px}
+html[data-launch-compact="true"] .launchNavRow{min-height:49px;padding-block:7px}
+/* Ten optional player accents. Palette choices are actual controls, not decorations. */
+.slateSettingsBlock{border:1px solid var(--slate-line);border-radius:13px;background:var(--theme-secondary);padding:17px;margin:0 0 13px}
+.slateSettingsBlock h2{font-size:15px;margin:0 0 6px;font-weight:750}
+.slateSettingsBlock>p{font-size:11px;color:var(--slate-muted);line-height:1.5;margin:0 0 16px}
+.slateAccentGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.slateAccentChoice{
+ display:flex;align-items:center;gap:10px;min-width:0;min-height:49px;padding:9px 10px;
+ border:1px solid var(--slate-line);border-radius:9px;background:var(--theme-main);
+ text-align:left;color:var(--slate-ink);font-size:11px;font-weight:680;
+}
+.slateAccentChoice:hover,.slateAccentChoice.selected,.slateSiteTheme.selected{border-color:var(--theme-highlight)}
+.slateAccentChoice.selected{background:color-mix(in srgb,var(--theme-highlight) 9%,var(--theme-main))}
+.slateAccentChoice b{font-size:12px;margin-left:auto;color:var(--theme-accent-text)}
+.slateAccentSwatch{
+ flex:none;width:22px;height:22px;border-radius:7px;background:var(--swatch);
+ border:1px solid rgba(255,255,255,.32);
+}
+.slateSiteTheme{
+ margin-top:10px;width:100%;padding:11px;border:1px solid var(--slate-line);
+ border-radius:9px;background:var(--theme-main);color:var(--slate-muted);font-size:11px;
+}
+.slateSettings .launchSettingList{gap:8px}
+.slateSettings .launchSetting{background:var(--theme-main);padding:12px;min-height:57px}
+.slateSettings .launchSetting strong{font-size:12px}
+.slateSettings .launchSetting small{font-size:10px}
+@media(max-width:700px){
+ .top{height:58px;min-height:58px;padding:0 13px}
+ .launchBrand img{width:25px;height:25px}
+ .launchBrandName{font-size:12px}
+ .launchAccount,.launchSearchBtn{height:39px;width:39px;min-width:39px}
+ #content{padding:13px 14px calc(38px + env(safe-area-inset-bottom))}
+ .launchHero{min-height:140px;padding:16px 15px 16px 74px;border-radius:11px}
+ .launchHeroArt{left:14px;top:18px;width:46px;height:46px}
+ .launchHero h1{font-size:23px}
+ .launchHero p{font-size:11px;line-height:1.45}
+ .launchSectionTop{margin:18px 1px 8px}
+ .launchSectionTop h2{font-size:15px}
+ .launchQuickGrid{gap:6px}
+ .launchQuickCard{min-height:62px;gap:11px;padding:9px 12px;border-radius:9px}
+ .launchQuickIcon{width:28px;min-width:28px}
+ .launchQuickIcon svg{width:19px;height:19px}
+ .launchQuickCopy strong{font-size:13px}
+ .launchQuickCopy small{font-size:9.5px}
+ .launchFeaturedGrid{grid-template-columns:minmax(0,1fr);gap:6px}
+ .launchFeatureRow{min-height:56px;padding:8px 12px;border-radius:9px}
+ .launchReturnHome{top:58px}
+ .layer[data-type="home-menu"] .sheet{border-radius:12px}
+}
+@media(max-width:365px){
+ .launchHero{padding-left:65px}
+ .launchHeroArt{left:10px;width:42px;height:42px}
+ .launchHero h1{font-size:21px}
+ .slateAccentChoice{font-size:10px;padding:8px 7px;gap:7px}
+}
