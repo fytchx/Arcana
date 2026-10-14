@@ -708,10 +708,19 @@ function refreshPathfinderStep(align=false){
 function updatePathfinderQuick(update,redraw=false){
  state.pathfinderQuick=saveQuickView({...state.pathfinderQuick,...update});
  if(!redraw){refreshPathfinderStep(true);return;}
- const oldY=window.scrollY;
- render();
+ const oldPage=node('content')?.querySelector('.pathPage');
+ if(oldPage&&recipeState.data){
+  const expanded=oldPage.querySelector('#pathRangePanel')?.open||false;
+  const holder=document.createElement('template');
+  holder.innerHTML=pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error,state.pathfinderRange);
+  const next=holder.content.firstElementChild;
+  if(next){
+   const panel=next.querySelector('#pathRangePanel');
+   if(panel)panel.open=expanded;
+   oldPage.replaceWith(next);
+  }
+ }else render();
  requestAnimationFrame(()=>{
-  window.scrollTo({top:oldY,behavior:'instant'});
   centerPathRail('pathStageRail','data-path-stage',state.pathfinderQuick.stage);
   centerPathRail('pathStepRail','data-path-step',state.pathfinderQuick.level);
  });
