@@ -49,3 +49,15 @@ test('global home control is registered and the old bottom nav is absent',async(
  assert.match(app,/showHomeMenu/);
  assert.match(settingsView(),/data-app-pref="reduceMotion"/);
 });
+
+test('every homepage stylesheet is publicly served by the Arcana server',async()=>{
+ const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+ const server=await readFile(new URL('../server.mjs',import.meta.url),'utf8');
+ const whitelist=server.match(/const publicPage=new Set\(\[([^\]]+)\]\)\.has\(normalized\)/);
+ assert.ok(whitelist,'Expected static document allowlist was changed: update this regression check');
+ const styles=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="(\/[^"?]+)(?:\?[^\"]*)?"/g)].map(match=>match[1]);
+ assert.ok(styles.includes('/launch-navigation.css'),'Launch stylesheet is required for mobile navigation');
+ for(const stylesheet of styles){
+  assert.ok(whitelist[1].includes("'"+stylesheet+"'"),stylesheet+' is blocked by server.mjs (HTTP 404)');
+ }
+});
