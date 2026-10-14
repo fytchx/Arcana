@@ -1,16 +1,15 @@
-/* Build Studio profile icons are part of the same Arcana Minimal library as every
- * other site asset; one shared vector language and independent icon colors. */
-import {arcanaIcon} from './arcana-icons.js';
+/* IdleArc Refined game-informed art with stable class and equipment fallbacks.
+ * Build-profile upload takes precedence over this default art. */
+import {refinedIcon} from './idlearc-refined-icons.js';
 export function classEmblem(cls){
  const known=['warrior','archer','mage','rogue','druid'];
- const name=String(cls||'').toLowerCase();
- const id=known.includes(name)?name:'warrior';
- return '<span class="arcanaSilhouette" data-kind="'+id+'">'+arcanaIcon('class-'+id,44)+'</span>';
+ const name=String(cls||'').toLowerCase(),id=known.includes(name)?name:'warrior';
+ return '<span class="arcanaSilhouette" data-kind="'+id+'">'+refinedIcon('classes',id,50)+'</span>';
 }
-export function slotSilhouette(slot){
+export function slotSilhouette(slot,itemName=''){
  const known=['torch','head','neck','weapon','chest','offhand','ring','ring2','belt','charm','charm2','hands','feet'];
  const id=known.includes(slot)?slot:'chest';
- return '<span class="arcanaSilhouette" data-kind="equipment">'+arcanaIcon('equipment-'+id,32)+'</span>';
+ return '<span class="arcanaSilhouette" data-kind="equipment">'+refinedIcon('equipment',id,45,{itemName})+'</span>';
 }
 export const STUDIO_PORTRAIT_KEY='arcana-studio-portrait-local-v1';
 export function readStudioPortrait(){
