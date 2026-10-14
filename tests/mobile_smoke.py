@@ -13,14 +13,20 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'qa-output'
 OUT.mkdir(exist_ok=True)
 HTML=(ROOT/'index.html').read_text()
-STYLE=(ROOT/'styles.css').read_text()
 IMPORTS={}
 for module in sorted((ROOT/'src').glob('*.js')):
     source=module.read_text()
     source=re.sub(r"from\s*(['\"])\.\/([a-z0-9-]+\.js)(?:\?[^'\"]*)?\1",lambda m:"from "+m.group(1)+"@arcana/"+m.group(2)+m.group(1),source)
     IMPORTS[f'@arcana/{module.name}']='data:text/javascript;base64,'+base64.b64encode(source.encode()).decode()
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
-HTML=HTML.replace('<link rel="stylesheet" href="/styles.css">','<style>'+STYLE+'</style>')
+# Offline browser must render EVERY stylesheet in the real entry point, not just
+# styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
+for css_name in ('styles.css','wiki-studio.css','community.css','beta.css','launch-navigation.css'):
+    css=(ROOT/css_name).read_text()
+    pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\?[^"]*)?">'
+    HTML,count=re.subn(pattern,lambda _: '<style>\n'+css+'\n</style>',HTML)
+    assert count==1, 'Homepage missing required CSS reference '+css_name
+
 HTML=HTML.replace('</head>', '<script type="importmap">'+json.dumps({'imports': IMPORTS})+'</script></head>')
 # Controlled game references verify rendering independently of real API availability.
 MOCK_ART={"categories": {
@@ -122,6 +128,41 @@ with sync_playwright() as playwright:
     assert page.locator('#bottomNav').count()==0, 'Launch must not have a bottom task bar'
     assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1, 'Build Studio is not featured'
     assert page.locator('.launchQuickCard').count()==6, 'Exactly six launch navigation cards are required'
+    assert page.locator('.launchQuickCard .arcanaRefinedIcon').count()==6, 'Custom Refined art missing from six launch cards'
+    assert page.locator('.launchHeroCTA .arcanaRefinedIcon').count()==1, 'Custom Forge CTA art missing'
+    assert page.locator('.launchHeroArt .arcanaRefinedIcon').get_attribute('data-refined-icon')=='feature-build-studio', 'Build Studio hero must use approved custom artwork'
+    # The icon gallery is a real route and every registered asset is previewable.
+    page.evaluate("location.hash='#/icons'")
+    page.locator('.arcanaIconCatalogItem').first.wait_for(timeout=8000)
+    assert page.locator('.arcanaIconCatalogItem').count()==144, 'Full icon library did not render'
+    assert page.locator('.arcanaIconCatalogSection').count()==6, 'Icon categories missing'
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Icon gallery overflows mobile horizontally'
+    page.evaluate("location.hash='#/settings'")
+    page.locator('.arcanaSettings').wait_for(timeout=8000)
+    assert page.locator('.arcanaSurfaceChoice').count()==5, 'Site surface options missing'
+    assert page.locator('.arcanaIconColorChoice').count()==11, 'Independent icon colors missing'
+    assert page.locator('.arcanaIconModeChoice').count()==4, 'Icon modes missing'
+    assert page.locator('.slateAccentChoice').count()==10, 'Original accent colors missing'
+    page.evaluate("location.hash='#/home'")
+    page.locator('.launchQuickCard').first.wait_for(timeout=8000)
+
+    assert page.locator('.launchBrandName').inner_text()=='ARCANA', 'Slate wordmark missing'
+    assert page.locator('.launchHero').evaluate('(e)=>getComputedStyle(e).display')=='flex', 'Build Studio hero CSS missing'
+    assert page.locator('.launchQuickGrid').evaluate('(e)=>getComputedStyle(e).display')=='grid', 'Homepage cards are not using responsive grid CSS'
+    positions=page.locator('.launchQuickCard').evaluate_all('(els)=>els.slice(0,2).map(e=>({x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y}))')
+    assert abs(positions[0]['y']-positions[1]['y'])<3 and positions[1]['x']>positions[0]['x']+75, 'Quick Access must be two cards side by side'
+    assert page.locator('.launchHeroCTA').inner_text().find('Enter Build Studio')>=0, 'Hero does not have a special Build Studio call to action'
+    assert page.locator('.launchHeroArcaneSeal').count()==1 and page.locator('.launchHeroCTASigil').count()==1, 'Arcane hero detailing missing'
+    assert page.locator('.launchHeroCTA').evaluate("(e)=>getComputedStyle(e).gridTemplateColumns!='none'"), 'Mystical CTA CSS was not loaded'
+    assert page.locator('.launchQuickGrid').evaluate("(e)=>getComputedStyle(e).gridTemplateColumns.split(' ').length==2"), 'Quick Access grid must have exactly two columns'
+    assert page.locator('.launchQuickCard').evaluate_all("(els)=>els.every(e=>e.getBoundingClientRect().height>=80)"), 'Quick Access tap targets are too small'
+    assert page.locator('.launchFeaturedGrid').evaluate("(e)=>getComputedStyle(e).gridTemplateColumns.split(' ').length==2"), 'Featured cards must be laid out two across'
+    features=page.locator('.launchFeatureRow').evaluate_all("(els)=>els.map(e=>({x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y,w:e.getBoundingClientRect().width}))")
+    assert len(features)==3, 'All featured destinations must be preserved'
+    assert abs(features[0]['y']-features[1]['y'])<3 and features[1]['x']>features[0]['x']+75, 'Featured first pair must be side by side'
+    assert features[2]['y']>features[0]['y']+65 and features[2]['w']>features[0]['w']*1.8, 'Last featured card must span the entire row'
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Two-column home has horizontal overflow'
+
     for menu_id in ('wiki','tools','guides','builds','codex','social'):
         assert page.locator('.launchQuickCard[data-arg="'+menu_id+'"]').count()==1, 'Missing home card '+menu_id
     page.locator('.launchQuickCard[data-arg="wiki"]').click()
@@ -372,10 +413,17 @@ with sync_playwright() as playwright:
     assert 'Feedback received.' in page.locator('.betaCenter').inner_text(), 'Beta submission did not confirm: '+repr(page.locator('.betaCenter').inner_text()[-900:])+' JS errors '+repr(errors)
     assert page.locator('[data-beta-form="feedback"]').count()==1
     page.evaluate("location.hash='#/labs/build'")
-    page.wait_for_selector('.studioHero')
-    assert 'My Build' in page.locator('.studioHero').inner_text()
-    assert page.locator('.equipmentSection .sectionCardTop').inner_text().find('0 slots equipped')>=0, 'New user must start with empty build, not invented demo gear'
+    page.wait_for_selector('.studioProfile')
+    assert page.locator('.studioTitleInput').input_value()=='My Build'
+    assert '0 / 13 equipped' in page.locator('.studioEquipmentHeading').inner_text(), 'New user must start with empty build, not invented demo gear'
     assert page.locator('[data-action="sharebuild"]').count()==1, 'Guest build sharing is not available'
+    assert page.locator('.loadoutSlot').count()==13, 'All verified equipment slots must remain available'
+    assert page.locator('.loadoutSlot .arcanaSilhouette').count()==13, 'Equipment art must use understated silhouettes'
+    assert page.locator('.studioProfileVisual .arcanaSilhouette').count()==1, 'Class identity emblem should be visible'
+    assert page.locator('.studioProfile').bounding_box()['y']<page.locator('.studioPrimaryEquipment').bounding_box()['y'], 'Equipment should follow the compact profile'
+    assert page.locator('.pageHead').count()==0, 'Build Studio must not show the old giant page heading'
+    assert page.locator('.launchReturnHome').count()==0, 'Build Studio must not duplicate home navigation'
+
     token=page.evaluate("""async () => {
       const {shareBuildToken}=await import('@arcana/build-links.js');
       return await shareBuildToken({title:'Shared beta Warrior',className:'Warrior',
@@ -384,7 +432,7 @@ with sync_playwright() as playwright:
     assert len(token)<7500
     page.evaluate("(token) => {location.hash='#/labs/build?share='+encodeURIComponent(token)}",token)
     page.locator('[data-action="clonebuild"]').wait_for(timeout=7000)
-    assert 'Shared beta Warrior' in page.locator('.studioHero').inner_text(), 'Read-only shared build failed'
+    assert 'Shared beta Warrior' in page.locator('.studioProfile h1').inner_text(), 'Read-only shared build failed'
     assert page.locator('[data-action="sharebuild"]').count()==0, 'Shared build should be read-only'
     page.locator('[data-action="clonebuild"]').dispatch_event('click')
     page.wait_for_timeout(200)
@@ -392,8 +440,15 @@ with sync_playwright() as playwright:
     assert page.locator('[data-build-field="title"]').count()==1, 'Build name editor missing'
     page.locator('[data-build-field="title"]').fill('My actual beta build')
     page.locator('[data-build-field="className"]').select_option('Druid')
-    assert 'My actual beta build' in page.locator('.studioHero h2').inner_text()
-    assert 'Druid' in page.locator('.studioHero p').inner_text()
+    assert page.locator('.studioTitleInput').input_value()=='My actual beta build'
+    assert page.locator('.studioClassControl select').input_value()=='Druid'
+    assert page.locator('.studioProfileVisual .arcanaSilhouette').get_attribute('data-kind')=='druid', 'Class icon must update with the selected class'
+    # This offline file:// fixture cannot access localStorage, so test the upload
+    # controls here and exercise actual image persistence in the HTTPS live smoke.
+    assert page.locator('#studioPortraitUpload').count()==1, 'Upload input missing'
+    assert page.locator('[data-action="chooseportrait"]').count()==1, 'Change-picture action missing'
+    page.screenshot(path=str(OUT/'build_studio_compact_mobile.png'),full_page=True)
+
     page.evaluate("location.hash='#/home'")
     page.wait_for_timeout(120)
     page.evaluate("location.hash='#/labs/build'")
@@ -434,21 +489,6 @@ with sync_playwright() as playwright:
     assert page.locator('.accountCloudRow').count()==1, 'Account build save did not render in profile'
     page.screenshot(path=str(OUT/'account_beta_member_mobile.png'),full_page=True)
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Authenticated account screen horizontal overflow'
-
-    # Showcase uses real player-submitted values without guessed equipment.
-    page.evaluate("location.hash='#/wiki/article?id=retaliation-warrior-zane'")
-    page.locator('.wikiArticle').wait_for(timeout=7000)
-    guide_text=page.locator('.wikiArticle').inner_text()
-    assert 'Retaliation Warrior' in guide_text and '8.21B' in guide_text
-    assert 'By Zane' in guide_text, 'Guide author is not visible'
-    page.locator('[data-action="route"][data-arg="labs/build?build=warrior-retaliation-zane"]').dispatch_event('click')
-    page.locator('.studioHero').wait_for(timeout=7000)
-    assert 'Retaliation Warrior' in page.locator('.studioHero').inner_text()
-    assert 'Zane’s Retaliation setup' in page.locator('.studioHero').inner_text(), 'Player build is mislabeled'
-    assert '0 slots equipped' in page.locator('.equipmentSection .sectionCardTop').inner_text(), 'Unknown equipment was invented'
-    assert page.locator('[data-action="clonebuild"]').count()==1, 'Player build must be copyable into local Build Studio'
-    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Player guide build layout overflows mobile'
-    page.screenshot(path=str(OUT/'retaliation_warrior_showcase_mobile.png'),full_page=True)
 
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
     print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))

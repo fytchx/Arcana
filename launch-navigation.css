@@ -122,3 +122,1021 @@ html[data-launch-reduce-motion="true"] *,html[data-launch-reduce-motion="true"] 
 /* Home is one tap away even halfway through a long Wiki article. */
 .launchReturnHome{position:sticky;top:68px;z-index:15;background:var(--theme-main,var(--bg));padding:9px 0 11px;box-shadow:0 3px 12px color-mix(in srgb,var(--theme-main,var(--bg)) 86%,transparent)}
 @media(max-width:700px){.launchReturnHome{top:60px}}
+
+/* ─────────────────────────────────────────────────────────────
+   ARCANA SLATE · COMPACT MOBILE-FIRST DESIGN (2026-10-13)
+   Neutral graphite surfaces, discreet accent, and genuine
+   single-column navigation. Built on the existing route/overlay
+   system rather than replacing any app pages or saved state.
+   ───────────────────────────────────────────────────────────── */
+:root{--slate-ink:#f1f2f7;--slate-muted:#9da5b6;--slate-line:color-mix(in srgb,var(--theme-secondary) 72%,#66708b 28%)}
+body,.shell{background:var(--theme-main);color:var(--slate-ink)}
+.shell{max-width:1680px}
+.top{
+ height:60px;min-height:60px;
+ border-bottom:1px solid var(--slate-line);
+ background:color-mix(in srgb,var(--theme-main) 97%,var(--theme-secondary));
+ padding:0 clamp(14px,3vw,25px);
+ backdrop-filter:none;
+}
+.launchBrand{gap:7px;display:flex;align-items:center;justify-self:center;color:var(--slate-ink)}
+.launchBrand img{width:28px;height:28px;filter:none}
+.launchBrandName{font-size:14px;font-weight:730;letter-spacing:.16em;line-height:1}
+.launchAccount,.launchSearchBtn{width:39px;min-width:39px;height:39px;border-radius:10px;background:transparent;border:1px solid var(--slate-line);color:var(--theme-accent-text);box-shadow:none}
+.launchSearchBtn{border-color:transparent;color:var(--slate-ink)}
+#content{max-width:850px;padding:21px 22px 72px}
+.launchHero{
+ min-height:148px;display:flex;align-items:center;gap:15px;
+ border:1px solid color-mix(in srgb,var(--slate-line) 82%,var(--theme-highlight) 18%);
+ border-radius:13px;padding:18px 23px 18px 85px;
+ background:linear-gradient(108deg,color-mix(in srgb,var(--theme-secondary) 91%,var(--theme-highlight) 9%),var(--theme-secondary) 73%);
+ box-shadow:inset 0 1px rgba(255,255,255,.025);
+ isolation:isolate;
+}
+.launchHero:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--theme-highlight);opacity:.75}
+.launchHeroText{max-width:680px;width:100%}
+.launchHero .launchEyebrow{font-size:9px;letter-spacing:.11em;color:var(--slate-muted);font-weight:700}
+.launchHero h1{font-size:26px;line-height:1.18;letter-spacing:-.04em;font-weight:740;margin:4px 0 5px;color:var(--slate-ink)}
+.launchHero p{font-size:12px;line-height:1.5;color:var(--slate-muted);margin:0 0 11px;max-width:440px}
+.launchHeroCTA{
+ background:transparent;color:var(--theme-accent-text);
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 52%,var(--slate-line));
+ border-radius:9px;padding:5px 12px;min-height:34px;
+ gap:8px;font-size:11px;font-weight:750;
+}
+.launchHeroCTA:hover,.launchHeroCTA:focus-visible{background:var(--theme-highlight-soft);filter:none}
+.launchHeroCTA svg{width:14px;height:14px}
+.launchHeroArt{
+ position:absolute;left:22px;top:20px;right:auto;bottom:auto;
+ opacity:.93;color:var(--theme-accent-text);
+ transform:none;pointer-events:none;display:grid;place-items:center;
+ width:46px;height:46px;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 25%,var(--slate-line));
+ border-radius:11px;background:color-mix(in srgb,var(--theme-highlight) 6%,var(--theme-main));
+}
+.launchHeroArt svg{width:29px;height:29px}
+.launchHeroPills{display:none}
+.launchSectionTop{margin:22px 1px 9px;gap:12px;align-items:center}
+.launchSectionTop h2{font-size:15px;font-weight:730;letter-spacing:-.02em;line-height:1.35}
+.launchSeeAll{min-height:36px;font-size:11px;color:var(--theme-accent-text);padding:4px 0}
+.launchQuickGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+.launchQuickCard{
+ width:100%;display:flex;align-items:center;min-height:65px;
+ padding:10px 13px;gap:13px;
+ border:1px solid var(--slate-line);
+ border-radius:10px;background:var(--theme-secondary);
+ box-shadow:none;color:var(--slate-ink);
+}
+.launchQuickCard:hover,.launchQuickCard:focus-visible{border-color:var(--theme-highlight);background:color-mix(in srgb,var(--theme-highlight) 5%,var(--theme-secondary))}
+.launchQuickIcon{
+ width:31px;min-width:31px;height:32px;
+ display:grid;place-items:center;
+ color:var(--theme-accent-text);
+ border-radius:8px;background:color-mix(in srgb,var(--theme-highlight) 8%,transparent);
+}
+.launchQuickIcon svg{width:20px;height:20px}
+.launchQuickCopy{flex:1;gap:3px;min-width:0}
+.launchQuickCopy strong{font-size:13.5px;line-height:1.2;font-weight:720;letter-spacing:-.015em}
+.launchQuickCopy small{font-size:10px;line-height:1.28;color:var(--slate-muted)}
+.launchQuickArrow{color:var(--slate-muted);opacity:.9;flex:none}
+.launchQuickArrow svg{width:16px;height:16px}
+.launchFeaturedIntro{font-size:11px;line-height:1.45;color:var(--slate-muted);margin:0 2px 10px}
+.launchFeaturedGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+.launchFeatureRow{
+ display:flex;min-height:60px;padding:10px 13px;gap:12px;
+ border:1px solid var(--slate-line);border-radius:10px;
+ background:var(--theme-secondary);color:var(--slate-ink);
+}
+.launchFeatureRow:hover,.launchFeatureRow:focus-visible{border-color:var(--theme-highlight)}
+.launchFeatureIcon{display:grid;place-items:center;color:var(--theme-accent-text);width:31px;min-width:31px}
+.launchFeatureIcon svg{width:19px;height:19px}
+.launchFeatureRow strong{font-size:12px;font-weight:710;line-height:1.35}
+.launchFeatureRow small{font-size:10px;color:var(--slate-muted);margin-top:2px}
+.launchReturnHome{top:60px}
+.launchReturnHome button{border-radius:9px}
+.layer[data-type="home-menu"] .sheet{border-radius:13px}
+.launchNavRow,.launchSetting{border-radius:9px;border-color:var(--slate-line)}
+.launchMenuIntro h2{font-size:22px}
+.launchNavRow{min-height:62px}
+.launchPage h1{font-size:clamp(25px,4vw,32px);font-weight:730}
+html[data-launch-compact="true"] .launchHero{min-height:119px;padding-top:11px;padding-bottom:11px}
+html[data-launch-compact="true"] .launchQuickCard{min-height:52px;padding-block:7px}
+html[data-launch-compact="true"] .launchFeatureRow{min-height:50px;padding-block:7px}
+html[data-launch-compact="true"] .launchSectionTop{margin-top:15px}
+html[data-launch-compact="true"] .launchNavRow{min-height:49px;padding-block:7px}
+/* Ten optional player accents. Palette choices are actual controls, not decorations. */
+.slateSettingsBlock{border:1px solid var(--slate-line);border-radius:13px;background:var(--theme-secondary);padding:17px;margin:0 0 13px}
+.slateSettingsBlock h2{font-size:15px;margin:0 0 6px;font-weight:750}
+.slateSettingsBlock>p{font-size:11px;color:var(--slate-muted);line-height:1.5;margin:0 0 16px}
+.slateAccentGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.slateAccentChoice{
+ display:flex;align-items:center;gap:10px;min-width:0;min-height:49px;padding:9px 10px;
+ border:1px solid var(--slate-line);border-radius:9px;background:var(--theme-main);
+ text-align:left;color:var(--slate-ink);font-size:11px;font-weight:680;
+}
+.slateAccentChoice:hover,.slateAccentChoice.selected,.slateSiteTheme.selected{border-color:var(--theme-highlight)}
+.slateAccentChoice.selected{background:color-mix(in srgb,var(--theme-highlight) 9%,var(--theme-main))}
+.slateAccentChoice b{font-size:12px;margin-left:auto;color:var(--theme-accent-text)}
+.slateAccentSwatch{
+ flex:none;width:22px;height:22px;border-radius:7px;background:var(--swatch);
+ border:1px solid rgba(255,255,255,.32);
+}
+.slateSiteTheme{
+ margin-top:10px;width:100%;padding:11px;border:1px solid var(--slate-line);
+ border-radius:9px;background:var(--theme-main);color:var(--slate-muted);font-size:11px;
+}
+.slateSettings .launchSettingList{gap:8px}
+.slateSettings .launchSetting{background:var(--theme-main);padding:12px;min-height:57px}
+.slateSettings .launchSetting strong{font-size:12px}
+.slateSettings .launchSetting small{font-size:10px}
+@media(max-width:700px){
+ .top{height:58px;min-height:58px;padding:0 13px}
+ .launchBrand img{width:25px;height:25px}
+ .launchBrandName{font-size:12px}
+ .launchAccount,.launchSearchBtn{height:39px;width:39px;min-width:39px}
+ #content{padding:13px 14px calc(38px + env(safe-area-inset-bottom))}
+ .launchHero{min-height:140px;padding:16px 15px 16px 74px;border-radius:11px}
+ .launchHeroArt{left:14px;top:18px;width:46px;height:46px}
+ .launchHero h1{font-size:23px}
+ .launchHero p{font-size:11px;line-height:1.45}
+ .launchSectionTop{margin:18px 1px 8px}
+ .launchSectionTop h2{font-size:15px}
+ .launchQuickGrid{gap:6px}
+ .launchQuickCard{min-height:62px;gap:11px;padding:9px 12px;border-radius:9px}
+ .launchQuickIcon{width:28px;min-width:28px}
+ .launchQuickIcon svg{width:19px;height:19px}
+ .launchQuickCopy strong{font-size:13px}
+ .launchQuickCopy small{font-size:9.5px}
+ .launchFeaturedGrid{grid-template-columns:minmax(0,1fr);gap:6px}
+ .launchFeatureRow{min-height:56px;padding:8px 12px;border-radius:9px}
+ .launchReturnHome{top:58px}
+ .layer[data-type="home-menu"] .sheet{border-radius:12px}
+}
+@media(max-width:365px){
+ .launchHero{padding-left:65px}
+ .launchHeroArt{left:10px;width:42px;height:42px}
+ .launchHero h1{font-size:21px}
+ .slateAccentChoice{font-size:10px;padding:8px 7px;gap:7px}
+}
+
+
+/* ── ARCANA BUILD STUDIO · EDITABLE PROFILE + EQUIPMENT-FIRST  ──
+ * Subtle layered graphite texture, not painterly asset backgrounds.
+ * Component selectors scoped to Studio so Wiki and calculators remain intact.
+ */
+.studioPage{--studio-line:color-mix(in srgb,var(--theme-border) 80%,#798099 20%);--studio-muted:var(--slate-muted,#a4aabb);display:grid;gap:11px;min-width:0}
+.studioPage .arcanaSilhouette{display:block;width:100%;height:100%;stroke:currentColor;fill:none}
+.studioTopNav{display:flex;align-items:center;justify-content:space-between;min-height:30px;gap:9px;margin:0 0 1px;color:var(--studio-muted);font-size:11px}
+.studioTopNav button{display:flex;align-items:center;gap:5px;border:0;background:transparent;padding:4px;color:var(--studio-muted);font-size:11px}
+.studioTopNav button:hover{color:var(--theme-accent-text)}
+.studioProfile,.studioPrimaryEquipment{
+ position:relative;isolation:isolate;min-width:0;overflow:hidden;
+ border:1px solid var(--studio-line);border-radius:14px;
+ background:
+  radial-gradient(ellipse at 0% 0%,color-mix(in srgb,var(--theme-highlight) 9%,transparent),transparent 63%),
+  radial-gradient(circle at 90% 100%,#ffffff04 0,transparent 45%),
+  repeating-linear-gradient(129deg,transparent 0 30px,rgba(255,255,255,.007) 31px 32px),
+  linear-gradient(145deg,color-mix(in srgb,var(--theme-secondary) 94%,#5e6786 6%),var(--theme-main));
+ box-shadow:0 10px 28px #0000002a,inset 0 1px #ffffff0a;
+}
+.studioProfile:before,.studioPrimaryEquipment:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--theme-highlight),transparent 82%);opacity:.55;pointer-events:none}
+.studioProfile{padding:13px 14px 11px;overflow:visible;z-index:4}
+.studioProfileMain{display:flex;gap:13px;min-width:0;align-items:flex-start}
+.studioProfileVisual{flex:0 0 76px;display:flex;flex-direction:column;gap:5px;align-items:center}
+.studioPortraitIcon{
+ display:grid;place-items:center;width:72px;height:72px;border-radius:12px;
+ color:var(--theme-accent-text);overflow:hidden;
+ background:radial-gradient(ellipse at 25% 15%,color-mix(in srgb,var(--theme-highlight) 17%,transparent),transparent 65%),#111624;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 52%,var(--studio-line));
+ box-shadow:0 5px 16px #0003,inset 0 0 12px color-mix(in srgb,var(--theme-highlight) 8%,transparent);
+}
+.studioPortraitIcon .arcanaSilhouette{height:49px;width:49px;filter:drop-shadow(0 2px 8px color-mix(in srgb,var(--theme-highlight) 19%,transparent))}
+.studioPortraitImg{display:block;width:100%;height:100%;object-fit:cover}
+.studioPortraitUpload,.studioPortraitRemove{background:transparent;border:0;color:var(--studio-muted);font-size:9px;line-height:1.35;text-align:center;padding:3px 0;width:100%;display:flex;align-items:center;justify-content:center;gap:2px}
+.studioPortraitUpload:hover,.studioPortraitRemove:hover{color:var(--theme-highlight)}
+.studioPortraitRemove{color:var(--theme-accent-text)}
+.studioHiddenFile{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;clip-path:inset(50%)}
+.studioProfileText{min-width:0;flex:1}
+.studioProfileKicker{font-size:9px;font-weight:770;letter-spacing:.13em;color:var(--theme-accent-text);line-height:1.4;display:block;margin:0 0 3px}
+.studioProfileKicker i{color:var(--studio-muted);font-style:normal}
+.studioTitleInput{width:100%;max-width:100%;min-height:30px;border:1px solid transparent;border-radius:5px;color:var(--text);background:transparent;font-size:clamp(18px,2.9vw,23px);font-weight:750;letter-spacing:-.045em;padding:0 4px 0 0}
+.studioTitleInput:hover,.studioTitleInput:focus{border-color:var(--studio-line);outline:0;background:color-mix(in srgb,var(--theme-secondary) 85%,transparent)}
+.studioProfileText h1{font-size:22px;margin:0 0 5px;line-height:1.2}
+.studioClassControl,.studioClassReadonly{display:block;width:max-content;max-width:100%;margin:2px 0 6px}
+.studioClassControl select,.studioClassReadonly{border:1px solid var(--studio-line);border-radius:7px;padding:5px 28px 5px 9px;min-height:30px;background:var(--theme-secondary);color:var(--text);font-size:12px;font-weight:650}
+.studioClassReadonly{padding-right:10px}
+.studioDescLabel{display:block;min-width:0}
+.studioDescLabel textarea{display:block;resize:vertical;min-height:38px;max-height:110px;width:100%;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--studio-muted);font:inherit;font-size:11px;line-height:1.4;padding:3px 4px 3px 0}
+.studioDescLabel textarea:hover,.studioDescLabel textarea:focus{border-color:var(--studio-line);background:var(--theme-secondary);color:var(--text);outline:none}
+.studioProfileDescription{font-size:11px;line-height:1.4;color:var(--studio-muted);margin:4px 0 0}
+.studioProfileActions{display:grid;grid-template-columns:1.06fr .84fr 1.24fr 40px;gap:6px;margin-top:9px}
+.studioProfileActions>.btn,.studioMoreMenu>summary{
+ display:flex;align-items:center;justify-content:center;gap:4px;
+ min-width:0;min-height:36px;padding:5px 5px;
+ border:1px solid var(--studio-line);border-radius:8px;
+ font-size:11px;font-weight:720;white-space:normal;line-height:1.2;text-align:center;
+}
+.studioProfileActions>.btn svg{flex:0 0 auto;width:14px;height:14px}
+.studioProfileActions>.btn.secondary{background:color-mix(in srgb,var(--theme-secondary) 88%,transparent);color:var(--text)}
+.studioProfileActions>.btn.primary{background:var(--theme-highlight);color:var(--theme-main);border-color:var(--theme-highlight)}
+.studioMoreMenu{position:relative;min-width:0}
+.studioMoreMenu summary{list-style:none;cursor:pointer;height:100%;user-select:none;background:var(--theme-secondary);color:var(--text)}
+.studioMoreMenu summary::-webkit-details-marker{display:none}
+.studioMoreMenu summary svg{display:none}
+.studioMoreMenu>div{position:absolute;top:calc(100% + 4px);right:0;min-width:170px;z-index:20;border:1px solid var(--studio-line);background:var(--theme-secondary);border-radius:9px;box-shadow:0 12px 18px #000b;padding:5px;display:grid;gap:3px}
+.studioMoreMenu[open]{z-index:22}
+.studioMoreMenu>div button{display:flex;align-items:center;gap:8px;min-height:36px;padding:6px 8px;background:transparent;border:0;border-radius:6px;text-align:left;color:var(--text);font-size:11px}
+.studioMoreMenu>div button:hover{background:var(--theme-highlight-soft)}
+.studioPage .labsTabs{margin:0;display:flex;gap:3px;padding:4px;border-radius:10px;background:var(--theme-secondary);border:1px solid var(--studio-line);overflow-x:auto}
+.studioPage .labsTab{min-width:0;flex:1 0 auto;min-height:35px;padding:7px 9px;font-size:11px;white-space:nowrap}
+.studioPage .labsTab.active{background:var(--theme-highlight-soft);color:var(--theme-accent-text);border-radius:7px}
+.studioPrimaryEquipment{padding:12px}
+.studioEquipmentHeading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px}
+.studioEquipmentHeading h2{display:flex;align-items:center;gap:8px;margin:0;font-size:13px;letter-spacing:.06em;font-weight:760;text-transform:uppercase}
+.studioEquipmentHeading h2 svg{color:var(--theme-accent-text)}
+.studioEquipmentHeading>span{color:var(--studio-muted);font-size:10px}
+.studioPrimaryEquipment .loadoutFrame{background:transparent;padding:0;border:0;border-radius:0;box-shadow:none;overflow:visible}
+.studioPrimaryEquipment .loadoutHead{display:none}
+.studioPrimaryEquipment .loadoutStage{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:none;gap:7px;align-items:stretch}
+.studioPrimaryEquipment .loadoutStage:before{display:none}
+.studioPrimaryEquipment .loadoutSlot,.studioPrimaryEquipment .loadoutSlot[data-pos]{
+ grid-area:auto!important;min-height:93px!important;
+ display:flex;flex-direction:column;gap:5px;
+ padding:8px 4px;border:1px solid var(--studio-line);border-radius:9px;
+ background:linear-gradient(145deg,color-mix(in srgb,var(--theme-secondary) 80%,var(--theme-main)),var(--theme-main));
+ box-shadow:inset 0 1px #ffffff0a;color:var(--studio-muted);
+}
+.studioPrimaryEquipment .loadoutSlot:not(.empty){border-color:color-mix(in srgb,var(--theme-highlight) 39%,var(--studio-line));color:var(--theme-accent-text)}
+.studioPrimaryEquipment .loadoutSlot:hover,.studioPrimaryEquipment .loadoutSlot:focus-visible{border-color:var(--theme-highlight);background:var(--theme-highlight-soft)}
+.studioPrimaryEquipment .loadoutSlot .loadoutSprite{
+ width:38px;height:42px;max-width:92%;max-height:none;min-height:0;
+ display:grid;place-items:center;opacity:.83;color:inherit
+}
+.studioPrimaryEquipment .loadoutSprite .arcanaSilhouette{width:31px;height:34px}
+.studioPrimaryEquipment .loadoutSlot .loadoutMeta{gap:2px}
+.studioPrimaryEquipment .loadoutSlot .loadoutMeta small{
+ font-size:9px;white-space:normal;line-height:1.12;
+ color:var(--studio-muted);letter-spacing:0;text-transform:uppercase
+}
+.studioPrimaryEquipment .loadoutSlot .loadoutMeta strong{
+ color:var(--text);font-size:9px;font-weight:600;max-width:100%;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.studioPrimaryEquipment .loadoutSlot.empty .loadoutMeta strong{color:var(--studio-muted)}
+.studioPrimaryEquipment .loadoutSlot .gearTierMark{font-size:8px;color:var(--theme-accent-text);font-style:normal}
+.studioPrimaryEquipment .loadoutSlot[data-pos^="charm"] .loadoutMeta strong{display:block}
+.studioPrimaryEquipment .loadoutSlot[data-pos^="charm"] .loadoutSprite{width:38px;height:42px}
+.studioPrimaryEquipment .loadoutSlot[data-pos^="charm"] .loadoutMeta small{font-size:9px}
+.studioPrimaryEquipment .loadoutSlot.empty{border-style:solid}
+.studioPrimaryEquipment .loadoutSlot.gearLocked{opacity:.52}
+.studioPrimaryEquipment .boardCaveat{display:none}
+.studioEquipmentHint{font-size:10px;line-height:1.4;color:var(--studio-muted);margin:9px 1px 0}
+.studioProgressDetails{padding:9px 12px;border:1px solid var(--studio-line);border-radius:10px;background:var(--theme-secondary);font-size:11px}
+.studioProgressDetails summary{display:flex;align-items:center;gap:8px;cursor:pointer;min-height:27px;list-style:none;color:var(--text);font-weight:700}
+.studioProgressDetails summary::-webkit-details-marker{display:none}
+.studioProgressDetails summary svg{color:var(--theme-accent-text)}
+.studioProgressDetails summary span{margin-left:auto;font-size:10px;color:var(--studio-muted)}
+.studioProgressDetails .studioML{margin:10px 0 0;padding:9px;border-radius:9px}
+.studioSecondaryGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;align-items:start}
+.studioSecondaryGrid .sectionCard{margin:0;border-color:var(--studio-line);background:var(--theme-secondary);padding:13px;border-radius:10px;min-width:0}
+.studioSecondaryGrid .actionsGroup{margin-top:12px}
+.studioSecondaryGrid .btn{font-size:10px;padding:8px}
+.studioOverviewFold{padding:10px 12px;border:1px solid var(--studio-line);background:var(--theme-secondary);border-radius:10px}
+.studioOverviewFold summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none;min-height:24px;color:var(--text);font-size:11px;font-weight:700}
+.studioOverviewFold summary::-webkit-details-marker{display:none}
+.studioOverviewFold summary svg{color:var(--theme-accent-text)}
+.studioBuildNotice{margin:0;font-size:10px;color:var(--studio-muted);line-height:1.5}
+.srOnly{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+@media(max-width:760px){
+ .studioPrimaryEquipment .loadoutStage{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+ .studioPrimaryEquipment .loadoutSlot,.studioPrimaryEquipment .loadoutSlot[data-pos]{min-height:85px!important;padding:6px 2px}
+ .studioSecondaryGrid{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:440px){
+ .studioPage{gap:9px}
+ .studioTopNav{min-height:25px}
+ .studioProfile{padding:10px 11px 9px;border-radius:11px}
+ .studioProfileMain{gap:10px}
+ .studioProfileVisual{flex-basis:68px}
+ .studioPortraitIcon{width:64px;height:64px;border-radius:10px}
+ .studioPortraitIcon .arcanaSilhouette{width:44px;height:44px}
+ .studioProfileKicker{font-size:8px;letter-spacing:.11em}
+ .studioTitleInput{font-size:19px}
+ .studioClassControl select{min-height:28px;font-size:11px;padding:4px 24px 4px 8px}
+ .studioDescLabel textarea{font-size:10px;min-height:38px}
+ .studioPortraitUpload,.studioPortraitRemove{font-size:8px}
+ .studioProfileActions{grid-template-columns:1.1fr .85fr 1.25fr 39px;gap:4px;margin-top:6px}
+ .studioProfileActions>.btn,.studioMoreMenu>summary{font-size:9.5px;padding:5px 3px;min-height:35px}
+ .studioProfileActions>.btn svg{width:13px;height:13px}
+ .studioPage .labsTab{font-size:10px;padding:6px}
+ .studioPage .labsTab svg{width:13px;height:13px}
+ .studioPrimaryEquipment{padding:10px;border-radius:11px}
+ .studioEquipmentHeading{margin-bottom:8px}
+ .studioEquipmentHeading h2{font-size:11px}
+ .studioPrimaryEquipment .loadoutStage{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+ .studioPrimaryEquipment .loadoutSlot,.studioPrimaryEquipment .loadoutSlot[data-pos]{min-height:81px!important;border-radius:8px}
+ .studioPrimaryEquipment .loadoutSlot .loadoutSprite{width:35px;height:36px}
+ .studioPrimaryEquipment .loadoutSprite .arcanaSilhouette{width:29px;height:30px}
+ .studioPrimaryEquipment .loadoutSlot .loadoutMeta small{font-size:8px}
+ .studioPrimaryEquipment .loadoutSlot .loadoutMeta strong{font-size:8.4px}
+ .studioProgressDetails,.studioOverviewFold{padding:8px 10px}
+}
+@media(prefers-reduced-motion:reduce){.studioPage *{animation:none!important;transition:none!important}}
+
+/* ═══════════════════ ARCANA MINIMAL ICON SYSTEM ═══════════════════
+   Color only, never substitute fixed-color icon raster assets.
+   The same theme choices repaint UI, classes, equipment and stats.
+   Different site surface color schemes remain fully independent.
+   Glyphs use vector strokes and protect legibility at 16–24px.
+   ═════════════════════════════════════════════════════════════════ */
+.arcanaIcon{
+ display:inline-block;flex:none;vertical-align:middle;
+ stroke:currentColor;fill:none;overflow:visible;
+ --arcana-icon-detail:currentColor;
+ transition:color .14s ease;
+}
+html[data-arcana-icon-mode="accent"] .arcanaIcon{
+ color:var(--arcana-icon-color,var(--theme-highlight));
+ --arcana-icon-detail:var(--arcana-icon-color,var(--theme-highlight));
+}
+html[data-arcana-icon-mode="two-tone"] .arcanaIcon{
+ --arcana-icon-detail:var(--arcana-icon-color,var(--theme-highlight));
+}
+html[data-arcana-icon-mode="muted"] .arcanaIcon{
+ color:var(--arcana-icon-muted,#9DA5B6);
+ --arcana-icon-detail:var(--arcana-icon-muted,#9DA5B6);
+}
+html[data-arcana-icon-mode="neutral"] .arcanaIcon{
+ color:inherit;--arcana-icon-detail:currentColor;
+}
+/* All new controls use the active graphite surface rather than fixed violet. */
+.arcanaSettings .slateSettingsBlock{
+ background:linear-gradient(140deg,color-mix(in srgb,var(--theme-secondary) 97%,var(--theme-highlight) 3%),var(--theme-secondary));
+ border-color:var(--slate-line);
+}
+.arcanaSettings .slateSettingsBlock h3{
+ color:var(--text);font-size:12px;font-weight:760;letter-spacing:.02em;margin:15px 0 9px;
+}
+.arcanaSurfaceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.arcanaSurfaceChoice{
+ display:flex;align-items:center;gap:9px;min-width:0;
+ min-height:64px;padding:8px;
+ border:1px solid var(--slate-line);border-radius:10px;
+ background:var(--theme-main);color:var(--text);font-size:11px;font-weight:650;text-align:left;
+}
+.arcanaSurfacePreview{
+ display:block;flex:none;width:39px;height:38px;border:1px solid #ffffff33;border-radius:8px;position:relative;
+ background:var(--surface-main);box-shadow:inset 0 2px #ffffff0c;
+}
+.arcanaSurfacePreview:after{
+ content:"";position:absolute;left:6px;right:6px;top:10px;bottom:7px;
+ background:var(--surface-card);border:1px solid #ffffff24;border-radius:5px;
+}
+.arcanaSurfaceChoice:hover,
+.arcanaSurfaceChoice.selected,
+.arcanaIconColorChoice:hover,
+.arcanaIconColorChoice.selected,
+.arcanaIconModeChoice:hover,
+.arcanaIconModeChoice.selected{border-color:var(--theme-highlight)}
+.arcanaSurfaceChoice.selected,
+.arcanaIconColorChoice.selected,
+.arcanaIconModeChoice.selected{background:color-mix(in srgb,var(--theme-highlight) 9%,var(--theme-main))}
+.arcanaIconColorGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.arcanaIconColorChoice{
+ display:flex;align-items:center;gap:9px;min-width:0;min-height:43px;padding:7px 9px;
+ background:var(--theme-main);color:var(--text);border:1px solid var(--slate-line);
+ border-radius:9px;font-size:11px;text-align:left;font-weight:630;
+}
+.arcanaIconModeGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.arcanaIconModeChoice{
+ display:flex;flex-direction:column;gap:4px;min-height:75px;padding:10px;
+ border-radius:9px;border:1px solid var(--slate-line);
+ color:var(--text);background:var(--theme-main);text-align:left;
+}
+.arcanaIconModeChoice strong{font-size:11px;font-weight:760}
+.arcanaIconModeChoice small{font-size:10px;line-height:1.4;color:var(--slate-muted)}
+.arcanaThemePreview{
+ display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;padding:12px 6px;margin:4px 0 10px;
+ background:radial-gradient(ellipse at 10% 0%,color-mix(in srgb,var(--arcana-icon-color) 8%,transparent),transparent 65%),var(--theme-main);
+ border:1px solid var(--slate-line);border-radius:10px;
+}
+.arcanaThemePreviewIcon{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}
+.arcanaThemePreviewIcon small{max-width:100%;font-size:8px;text-transform:capitalize;color:var(--slate-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arcanaThemePreviewIcon .arcanaIcon{width:23px;height:23px}
+.arcanaOpenGallery{
+ display:inline-flex;align-items:center;justify-content:center;gap:8px;
+ min-height:42px;width:100%;margin-top:14px;padding:10px 12px;
+ border-radius:9px;border:1px solid var(--slate-line);
+ background:var(--theme-main);color:var(--theme-accent-text);font-size:12px;font-weight:710;
+}
+.arcanaOpenGallery:hover,.arcanaOpenGallery:focus-visible{border-color:var(--theme-highlight);background:var(--theme-highlight-soft)}
+.arcanaIconCatalog{padding-bottom:30px}
+.arcanaIconCatalogSection{
+ padding:12px;margin:14px 0;
+ border:1px solid var(--slate-line);border-radius:11px;
+ background:linear-gradient(155deg,color-mix(in srgb,var(--theme-secondary) 94%,var(--theme-highlight) 6%),var(--theme-secondary) 65%);
+}
+.arcanaIconCatalogSection header{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px}
+.arcanaIconCatalogSection h2{font-size:15px;margin:0;text-transform:capitalize}
+.arcanaIconCatalogSection small{font-size:10px;color:var(--slate-muted)}
+.arcanaIconCatalogGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(81px,1fr));gap:7px}
+.arcanaIconCatalogItem{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+ min-width:0;min-height:83px;padding:7px 3px;
+ border:1px solid var(--slate-line);border-radius:8px;
+ background:color-mix(in srgb,var(--theme-main) 93%,var(--theme-highlight) 7%);
+ color:var(--theme-accent-text);
+}
+.arcanaIconCatalogItem span{max-width:100%;font-size:9px;line-height:1.3;text-align:center;text-transform:capitalize;color:var(--text);overflow-wrap:anywhere}
+.arcanaIconCatalogItem .arcanaIcon{width:27px;height:27px}
+.arcanaIconCatalog code{color:var(--theme-accent-text)}
+@media(max-width:440px){
+ .arcanaSurfaceGrid{gap:6px}
+ .arcanaSurfaceChoice{font-size:10px;gap:7px}
+ .arcanaSurfacePreview{width:33px;height:35px}
+ .arcanaIconColorChoice{font-size:10px;padding:7px 8px;gap:7px}
+ .arcanaIconModeChoice{padding:8px}
+ .arcanaThemePreview{gap:2px}
+ .arcanaIconCatalogGrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+ .arcanaIconCatalogItem{min-height:77px;padding:6px 3px}
+ .arcanaIconCatalogItem span{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){
+ .arcanaIcon{transition:none}
+}
+
+/* Shared surface and accent tokens are intentionally honored by legacy routes
+   as well as the new minimal navigation. The four site skin choices recolor
+   real panels, not only the settings swatches. */
+html[data-arcana-surface] body,
+html[data-arcana-surface] .shell{background:var(--theme-main)}
+html[data-arcana-surface] .top{background:color-mix(in srgb,var(--theme-main) 96%,var(--theme-secondary));border-bottom-color:var(--theme-border)}
+html[data-arcana-surface] .sheet,
+html[data-arcana-surface] .sectionCard,
+html[data-arcana-surface] .calcWorkspace,
+html[data-arcana-surface] .detailCard,
+html[data-arcana-surface] .articleHeader,
+html[data-arcana-surface] .resultRow,
+html[data-arcana-surface] .toolTile{
+ background:linear-gradient(145deg,color-mix(in srgb,var(--theme-secondary) 97%,var(--theme-highlight) 3%),var(--theme-secondary));
+ border-color:var(--theme-border);
+}
+html[data-arcana-surface] .btn.secondary,
+html[data-arcana-surface] .gearSlot,
+html[data-arcana-surface] .runeSlot,
+html[data-arcana-surface] .selection{
+ background:var(--theme-secondary);border-color:var(--theme-border);color:var(--text);
+}
+html[data-arcana-surface] .btn.primary{
+ background:var(--theme-highlight);border-color:var(--theme-highlight);color:var(--theme-main);
+}
+html[data-arcana-surface] .eyebrow,
+html[data-arcana-surface] .textLink,
+html[data-arcana-surface] .tileMore,
+html[data-arcana-surface] .sectionCard h3 svg,
+html[data-arcana-surface] .launchQuickIcon,
+html[data-arcana-surface] .launchFeatureIcon{
+ color:var(--theme-accent-text);
+}
+html[data-arcana-surface] .glyph,
+html[data-arcana-surface] .tileIcon,
+html[data-arcana-surface] .featureIcon,
+html[data-arcana-surface] .pageIcon,
+html[data-arcana-surface] .tinyIcon:not(.tinyGameArt){
+ background:var(--theme-highlight-soft);
+ border-color:var(--theme-highlight-border);
+ color:var(--theme-accent-text);
+}
+html[data-arcana-surface] .chip{
+ background:color-mix(in srgb,var(--theme-highlight) 8%,var(--theme-secondary));
+ border-color:var(--theme-highlight-border);color:var(--text)
+}
+html[data-arcana-surface] .launchHero,
+html[data-arcana-surface] .studioProfile,
+html[data-arcana-surface] .studioPrimaryEquipment{
+ box-shadow:0 9px 28px #00000029,inset 0 1px #ffffff09;
+}
+html[data-arcana-surface] .arcanaIconCatalogSection .arcanaIconCatalogItem:hover{
+ border-color:var(--theme-highlight);background:var(--theme-highlight-soft)
+}
+
+
+/* ════════════════════════════════════════════════════════════════════
+   ARCANA / FACETED BRAND + ETCHED SURFACES
+   Tiny neutral grain, edge glints and theme-tinted matte graphite,
+   not fantasy wallpaper. Accent changes affect every layer instantly.
+   Scoped to the launch homepage; Wiki and Build Studio stay stable.
+   ════════════════════════════════════════════════════════════════════ */
+img[src$="/assets/arcana-logo.webp"]{
+ filter:var(--arcana-logo-filter,none)
+        drop-shadow(0 2px 4px color-mix(in srgb,var(--theme-highlight) 16%,transparent));
+ transition:filter .2s ease;
+}
+#brandHome img[src$="/assets/arcana-logo.webp"]{
+ filter:var(--arcana-logo-filter,none)
+        drop-shadow(0 1px 4px color-mix(in srgb,var(--theme-highlight) 18%,transparent));
+}
+#content:has(.launchHero){
+ position:relative;
+ isolation:isolate;
+ background:
+  radial-gradient(ellipse 80% 235px at 95% 3%,
+     color-mix(in srgb,var(--theme-highlight) 4%,transparent),transparent 78%),
+  radial-gradient(ellipse 67% 490px at -18% 55%,
+     color-mix(in srgb,var(--theme-secondary) 30%,transparent),transparent 86%);
+}
+#content:has(.launchHero)::before{
+ content:"";
+ position:absolute;inset:0;
+ z-index:0;pointer-events:none;
+ background-image:
+  url('/assets/arcana-etched-grain.svg'),
+  radial-gradient(circle at 2px 2px,rgba(255,255,255,.09) .42px,transparent .72px);
+ background-size:192px 192px,28px 28px;
+ background-repeat:repeat;
+ opacity:.23;
+}
+#content:has(.launchHero)>*{position:relative;z-index:1}
+#content:has(.launchHero) .launchHero{
+ isolation:isolate;
+ background:
+  radial-gradient(ellipse 63% 118% at 4% 0%,
+    color-mix(in srgb,var(--theme-highlight) 12%,transparent),transparent 89%),
+  linear-gradient(132deg,rgba(255,255,255,.038),transparent 38%),
+  linear-gradient(116deg,
+    color-mix(in srgb,var(--theme-secondary) 92%,var(--theme-highlight) 8%),
+    color-mix(in srgb,var(--theme-main) 35%,var(--theme-secondary) 65%) 96%);
+ border-color:color-mix(in srgb,var(--theme-border) 88%,var(--theme-highlight) 12%);
+ box-shadow:0 10px 22px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.09),
+            inset 0 -1px rgba(0,0,0,.13);
+}
+#content:has(.launchHero) .launchHero::after{
+ content:"";position:absolute;inset:0;z-index:0;
+ pointer-events:none;
+ background-image:
+  url('/assets/arcana-etched-grain.svg'),
+  repeating-linear-gradient(137deg,
+    rgba(255,255,255,.065) 0px,rgba(255,255,255,.065) .45px,
+    transparent .5px,transparent 28px);
+ background-size:192px 192px,auto;
+ background-repeat:repeat;
+ opacity:.29;
+}
+#content:has(.launchHero) .launchHero:before{z-index:2}
+#content:has(.launchHero) .launchHeroText,
+#content:has(.launchHero) .launchHeroArt{z-index:1}
+#content:has(.launchHero) .launchQuickCard,
+#content:has(.launchHero) .launchFeatureRow{
+ position:relative;overflow:hidden;isolation:isolate;
+ background:
+  radial-gradient(ellipse 77% 140% at 0% -26%,
+    color-mix(in srgb,var(--theme-highlight) 6%,transparent),transparent 78%),
+  linear-gradient(172deg,rgba(255,255,255,.024),transparent 52%),
+  linear-gradient(112deg,
+    color-mix(in srgb,var(--theme-secondary) 96%,var(--theme-main) 4%),
+    color-mix(in srgb,var(--theme-secondary) 91%,var(--theme-main) 9%));
+ border-color:color-mix(in srgb,var(--theme-border) 96%,#aab4d8 4%);
+ box-shadow:inset 0 1px rgba(255,255,255,.048),0 3px 10px rgba(0,0,0,.095);
+}
+#content:has(.launchHero) .launchQuickCard::after,
+#content:has(.launchHero) .launchFeatureRow::after{
+ content:"";pointer-events:none;
+ position:absolute;inset:0;z-index:0;
+ background-image:url('/assets/arcana-etched-grain.svg');
+ background-size:192px 192px;
+ background-repeat:repeat;
+ opacity:.42;
+}
+#content:has(.launchHero) .launchQuickCard>*,
+#content:has(.launchHero) .launchFeatureRow>*{position:relative;z-index:1}
+#content:has(.launchHero) .launchQuickCard::before,
+#content:has(.launchHero) .launchFeatureRow::before{
+ content:"";position:absolute;z-index:0;pointer-events:none;
+ left:14px;right:14px;top:0;height:1px;
+ background:linear-gradient(90deg,
+    color-mix(in srgb,var(--theme-highlight) 20%,rgba(255,255,255,.12)),
+    rgba(255,255,255,.08) 54%,transparent);
+ opacity:.6;
+}
+#content:has(.launchHero) .launchQuickCard:hover,
+#content:has(.launchHero) .launchQuickCard:focus-visible,
+#content:has(.launchHero) .launchFeatureRow:hover,
+#content:has(.launchHero) .launchFeatureRow:focus-visible{
+ border-color:color-mix(in srgb,var(--theme-highlight) 45%,var(--theme-border));
+ box-shadow:inset 0 1px rgba(255,255,255,.07),0 4px 13px rgba(0,0,0,.16);
+}
+#content:has(.launchHero) .launchSectionTop h2{
+ text-shadow:0 1px 1px rgba(0,0,0,.2);
+}
+@media (prefers-reduced-motion:reduce){
+ img[src$="/assets/arcana-logo.webp"]{transition:none}
+}
+
+
+/* ═════════ ARCANA / THE FORGE · MOBILE HOME V3 ═════════
+   Compact 2-up navigation, independent of active palette. The
+   Build Studio remains one unmistakable artifact-like centerpiece.
+   Texture stays quiet and never competes with words or tap targets.
+   ═════════════════════════════════════════════════════════════ */
+#content:has(.launchHero) .launchQuickGrid,
+#content:has(.launchHero) .launchFeaturedGrid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:9px;
+ align-items:stretch;
+}
+#content:has(.launchHero) .launchQuickCard{
+ display:grid;
+ grid-template-columns:minmax(0,1fr) 20px;
+ grid-template-rows:30px auto;
+ align-content:start;align-items:start;
+ gap:7px 3px;
+ min-width:0;min-height:105px;
+ padding:13px 12px 10px;
+ border-radius:11px;
+ transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease;
+}
+#content:has(.launchHero) .launchQuickIcon{
+ grid-column:1;grid-row:1;
+ width:30px;height:30px;min-width:30px;
+ display:grid;place-items:center;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 15%,transparent);
+ border-radius:8px;
+ background:color-mix(in srgb,var(--theme-highlight) 10%,var(--theme-secondary));
+}
+#content:has(.launchHero) .launchQuickIcon svg{width:21px;height:21px}
+#content:has(.launchHero) .launchQuickCopy{
+ grid-column:1 / -1;grid-row:2;
+ display:flex;flex-direction:column;
+ min-width:0;gap:3px;align-items:flex-start;
+}
+#content:has(.launchHero) .launchQuickCopy strong{
+ display:block;
+ font-size:13px;line-height:1.2;letter-spacing:-.025em;
+ overflow-wrap:anywhere;
+}
+#content:has(.launchHero) .launchQuickCopy small{
+ display:block;font-size:10px;line-height:1.25;
+ color:var(--slate-muted);overflow-wrap:anywhere;
+}
+#content:has(.launchHero) .launchQuickArrow{
+ grid-column:2;grid-row:1;
+ display:grid;place-items:center;
+ justify-self:end;align-self:center;
+ color:var(--theme-accent-text);opacity:.8;
+}
+#content:has(.launchHero) .launchQuickArrow svg{width:17px;height:17px}
+#content:has(.launchHero) .launchFeaturedGrid{gap:9px}
+#content:has(.launchHero) .launchFeatureRow{
+ display:grid;grid-template-columns:minmax(0,1fr) 18px;
+ grid-template-rows:26px auto;
+ align-content:start;align-items:start;
+ gap:7px 4px;
+ min-width:0;min-height:98px;
+ padding:12px 12px 10px;border-radius:11px;
+}
+#content:has(.launchHero) .launchFeatureRow .launchFeatureIcon{
+ grid-column:1;grid-row:1;
+ display:grid;place-items:center;justify-self:start;
+ width:29px;height:27px;min-width:29px;
+ color:var(--theme-accent-text);
+}
+#content:has(.launchHero) .launchFeatureRow>span:nth-child(2){
+ grid-column:1 / -1;grid-row:2;
+ display:flex;flex-direction:column;gap:3px;
+ min-width:0;
+}
+#content:has(.launchHero) .launchFeatureRow strong{
+ font-size:12px;line-height:1.25;
+ overflow-wrap:anywhere;
+}
+#content:has(.launchHero) .launchFeatureRow small{
+ margin:0;font-size:9.5px;line-height:1.3;
+ color:var(--slate-muted);
+}
+#content:has(.launchHero) .launchFeatureRow>svg{
+ grid-column:2;grid-row:1;
+ align-self:center;justify-self:end;
+ color:var(--theme-accent-text);
+ width:17px;height:17px;
+}
+#content:has(.launchHero) .launchFeatureRow:last-child:nth-child(odd){
+ grid-column:1 / -1;
+ min-height:61px;
+ grid-template-columns:29px minmax(0,1fr) 18px;
+ grid-template-rows:auto;
+ align-items:center;gap:10px;
+ padding:11px 12px;
+}
+#content:has(.launchHero) .launchFeatureRow:last-child:nth-child(odd) .launchFeatureIcon{grid-column:1;grid-row:1}
+#content:has(.launchHero) .launchFeatureRow:last-child:nth-child(odd)>span:nth-child(2){grid-column:2;grid-row:1}
+#content:has(.launchHero) .launchFeatureRow:last-child:nth-child(odd)>svg{grid-column:3;grid-row:1}
+/* One intentionally special panel. The concentric sigil is static
+   vector linework, not painted fantasy artwork. */
+#content:has(.launchHero) .launchHero{
+ position:relative;
+ display:flex;
+ flex-direction:column;align-items:stretch;justify-content:center;
+ gap:12px;
+ min-height:188px;
+ padding:18px 17px 16px;
+ border-radius:15px;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 48%,var(--theme-border));
+ background:
+  radial-gradient(ellipse 62% 95% at 3% 0%,color-mix(in srgb,var(--theme-highlight) 18%,transparent),transparent 82%),
+  radial-gradient(ellipse 66% 105% at 97% 0%,color-mix(in srgb,var(--theme-highlight) 11%,transparent),transparent 85%),
+  linear-gradient(125deg,rgba(255,255,255,.045),transparent 56%),
+  linear-gradient(118deg,
+    color-mix(in srgb,var(--theme-secondary) 84%,var(--theme-highlight) 16%),
+    color-mix(in srgb,var(--theme-main) 32%,var(--theme-secondary) 68%) 89%);
+ box-shadow:
+  0 0 0 1px color-mix(in srgb,var(--theme-highlight) 11%,transparent),
+  0 15px 31px rgba(0,0,0,.24),
+  0 0 26px color-mix(in srgb,var(--theme-highlight) 7%,transparent),
+  inset 0 1px color-mix(in srgb,var(--theme-highlight) 28%,#ffffff20);
+}
+#content:has(.launchHero) .launchHero:before{
+ background:linear-gradient(180deg,
+   color-mix(in srgb,var(--theme-highlight) 80%,white 20%) 0%,
+   var(--theme-highlight) 42%,
+   color-mix(in srgb,var(--theme-highlight) 12%,transparent) 100%);
+ width:3px;
+ opacity:.91;
+}
+#content:has(.launchHero) .launchHeroArcaneSeal{
+ position:absolute;top:-32px;right:-23px;
+ width:187px;height:187px;
+ stroke:var(--theme-highlight);
+ stroke-width:.75;opacity:.18;pointer-events:none;
+ transform:rotate(-13deg);
+ z-index:0;
+}
+#content:has(.launchHero) .launchHeroHeader{
+ position:relative;z-index:2;
+ display:flex;align-items:center;
+ gap:13px;min-width:0;
+}
+#content:has(.launchHero) .launchHeroArt{
+ position:relative;
+ left:auto;top:auto;right:auto;bottom:auto;
+ transform:none;
+ flex:0 0 57px;
+ display:grid;place-items:center;
+ width:57px;height:57px;min-width:57px;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 54%,var(--theme-border));
+ border-radius:15px;
+ background:
+  radial-gradient(circle at 50% 48%,color-mix(in srgb,var(--theme-highlight) 22%,transparent),transparent 76%),
+  linear-gradient(140deg,color-mix(in srgb,var(--theme-secondary) 90%,var(--theme-highlight) 10%),var(--theme-main));
+ color:var(--theme-accent-text);
+ opacity:1;
+ box-shadow:0 0 0 4px color-mix(in srgb,var(--theme-highlight) 5%,transparent),inset 0 1px rgba(255,255,255,.075);
+}
+#content:has(.launchHero) .launchHeroArt:before{
+ content:"";
+ position:absolute;inset:5px;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 22%,transparent);
+ transform:rotate(45deg) scale(.72);
+ border-radius:3px;pointer-events:none;
+}
+#content:has(.launchHero) .launchHeroArt svg{width:33px;height:33px;position:relative;z-index:1}
+#content:has(.launchHero) .launchHeroText{flex:1;min-width:0;max-width:none;position:relative;z-index:1}
+#content:has(.launchHero) .launchHero .launchEyebrow{
+ font-size:9px;letter-spacing:.18em;
+ color:var(--theme-accent-text);font-weight:760;
+}
+#content:has(.launchHero) .launchHero h1{
+ margin:4px 0 6px;
+ font-size:clamp(24px,4.5vw,32px);
+ letter-spacing:-.045em;line-height:1.1;
+ color:var(--slate-ink);
+ text-shadow:0 2px 7px rgba(0,0,0,.28);
+}
+#content:has(.launchHero) .launchHero p{
+ margin:0;color:color-mix(in srgb,var(--slate-muted) 88%,white 12%);
+ font-size:11px;line-height:1.42;
+}
+#content:has(.launchHero) .launchHeroCTA{
+ position:relative;z-index:3;
+ display:grid;grid-template-columns:32px minmax(0,1fr) 20px;
+ justify-items:stretch;align-items:center;gap:10px;
+ width:100%;min-height:58px;
+ padding:9px 14px;
+ border-radius:12px;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 60%,white 40%);
+ background:
+  linear-gradient(125deg,rgba(255,255,255,.3),transparent 34%,rgba(0,0,0,.06) 78%),
+  linear-gradient(112deg,
+   color-mix(in srgb,var(--theme-highlight) 78%,white 22%),
+   color-mix(in srgb,var(--theme-highlight) 86%,var(--theme-secondary) 14%));
+ color:var(--theme-main);
+ box-shadow:
+  0 4px 13px rgba(0,0,0,.18),
+  0 0 24px color-mix(in srgb,var(--theme-highlight) 19%,transparent),
+  inset 0 1px rgba(255,255,255,.45),
+  inset 0 -2px rgba(0,0,0,.11);
+ text-align:left;
+ text-shadow:none;
+ transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
+ overflow:hidden;
+}
+#content:has(.launchHero) .launchHeroCTA:before{
+ content:"";position:absolute;inset:-110% auto -110% -60%;
+ width:38%;transform:rotate(23deg);
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.24),transparent);
+ opacity:.72;pointer-events:none;
+ animation:arcanaForgeGlimmer 9s ease-in-out infinite;
+}
+@keyframes arcanaForgeGlimmer{
+ 0%,16%,100%{left:-65%}
+ 28%,36%{left:135%}
+}
+#content:has(.launchHero) .launchHeroCTA:hover,
+#content:has(.launchHero) .launchHeroCTA:focus-visible{
+ filter:brightness(1.08);
+ transform:translateY(-1px);
+ box-shadow:0 8px 18px rgba(0,0,0,.25),0 0 30px color-mix(in srgb,var(--theme-highlight) 26%,transparent),inset 0 1px rgba(255,255,255,.53);
+}
+#content:has(.launchHero) .launchHeroCTASigil{
+ display:grid;place-items:center;
+ width:31px;height:31px;
+ border:1px solid rgba(0,0,0,.19);
+ border-radius:8px;
+ background:rgba(0,0,0,.09);
+}
+#content:has(.launchHero) .launchHeroCTASigil svg{width:22px;height:22px}
+#content:has(.launchHero) .launchHeroCTACopy{
+ display:flex;flex-direction:column;gap:2px;min-width:0;
+}
+#content:has(.launchHero) .launchHeroCTACopy strong{
+ font-size:13px;line-height:1.1;letter-spacing:.01em;font-weight:850;
+}
+#content:has(.launchHero) .launchHeroCTACopy small{
+ font-size:9.5px;line-height:1.2;font-weight:630;opacity:.72;
+}
+#content:has(.launchHero) .launchHeroCTA>svg{width:20px;height:20px}
+html[data-launch-compact="true"] #content:has(.launchHero) .launchQuickCard{min-height:87px;padding:9px}
+html[data-launch-compact="true"] #content:has(.launchHero) .launchHero{min-height:169px;padding:13px 15px;gap:10px}
+html[data-launch-compact="true"] #content:has(.launchHero) .launchFeatureRow{min-height:82px}
+@media(max-width:700px){
+ #content:has(.launchHero) .launchHero{min-height:177px;padding:15px 14px;gap:11px}
+ #content:has(.launchHero) .launchHeroHeader{gap:12px}
+ #content:has(.launchHero) .launchHero h1{font-size:25px}
+ #content:has(.launchHero) .launchQuickGrid,
+ #content:has(.launchHero) .launchFeaturedGrid{gap:8px}
+ #content:has(.launchHero) .launchQuickCard{
+  min-height:100px;
+  padding:11px 11px 10px;
+ }
+ #content:has(.launchHero) .launchQuickCopy strong{font-size:12.5px}
+ #content:has(.launchHero) .launchQuickCopy small{font-size:9.5px}
+ #content:has(.launchHero) .launchFeatureRow{min-height:92px;padding:11px 10px}
+ #content:has(.launchHero) .launchHeroCTA{min-height:56px}
+}
+@media(max-width:360px){
+ #content:has(.launchHero) .launchHeroHeader{gap:9px}
+ #content:has(.launchHero) .launchHeroArt{width:48px;height:48px;min-width:48px;flex-basis:48px}
+ #content:has(.launchHero) .launchHeroArt svg{width:28px;height:28px}
+ #content:has(.launchHero) .launchHero h1{font-size:23px}
+ #content:has(.launchHero) .launchQuickGrid,
+ #content:has(.launchHero) .launchFeaturedGrid{gap:6px}
+ #content:has(.launchHero) .launchQuickCard{padding:10px 9px;min-height:100px}
+ #content:has(.launchHero) .launchQuickCopy strong{font-size:12px}
+ #content:has(.launchHero) .launchQuickCopy small{font-size:9px}
+ #content:has(.launchHero) .launchFeatureRow{padding:10px 9px}
+}
+@media(prefers-reduced-motion:reduce){
+ #content:has(.launchHero) .launchHeroCTA:before{animation:none;display:none}
+ #content:has(.launchHero) .launchHeroCTA{transition:none}
+ #content:has(.launchHero) .launchQuickCard{transition:none}
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   IDLEARC REFINED · ORIGINAL VECTOR ART SYSTEM
+   These are actual per-icon SVGs from assets/icons/idlearc-refined,
+   not the approved *board* used as a cropped or stretched image.
+   Preview-only. Preserve the saved Studio and working mobile UI.
+   ════════════════════════════════════════════════════════════ */
+.arcanaRefinedIcon{
+ display:inline-block;flex:none;
+ width:var(--refined-icon-size,auto);
+ height:var(--refined-icon-size,auto);
+ max-width:100%;max-height:100%;
+ overflow:visible;
+ vertical-align:middle;
+ /* Keep steel/gold artwork intact: only the outer sheen gets user accent. */
+ filter:drop-shadow(0 2px 2px rgba(0,0,0,.27));
+ transform:translateZ(0);
+ pointer-events:none;
+}
+.arcanaRefinedIcon g[filter]{paint-order:stroke fill}
+#content:has(.launchHero) .launchQuickIcon .arcanaRefinedIcon,
+#content:has(.launchHero) .launchFeatureIcon .arcanaRefinedIcon{max-width:100%;max-height:100%}
+#content:has(.launchHero) .launchHeroArt .arcanaRefinedIcon{
+ width:44px;height:44px;
+ filter:drop-shadow(0 3px 5px rgba(0,0,0,.42))
+        drop-shadow(0 0 6px color-mix(in srgb,var(--theme-highlight) 18%,transparent));
+}
+#content:has(.launchHero) .launchHeroCTASigil .arcanaRefinedIcon{width:26px;height:26px}
+#content:has(.launchHero) .launchQuickIcon{width:43px;height:43px;min-width:43px}
+#content:has(.launchHero) .launchQuickIcon .arcanaRefinedIcon{width:39px;height:39px}
+#content:has(.launchHero) .launchQuickCard{
+ min-height:109px;
+ grid-template-rows:44px auto;
+}
+#content:has(.launchHero) .launchFeatureIcon .arcanaRefinedIcon{width:31px;height:31px}
+#content:has(.launchHero) .launchFeatureRow{grid-template-rows:32px auto;min-height:98px}
+#content:has(.launchHero) .launchFeatureRow .launchFeatureIcon{
+ min-width:32px;width:32px;height:32px;display:grid;place-items:center;
+}
+#content:has(.launchHero) .launchFeatureRow:last-child:nth-child(odd) .launchFeatureIcon{width:32px;height:32px}
+.launchMenuLinks{gap:7px}
+.launchNavRow{min-height:61px;padding:9px 11px}
+.launchNavIcon{width:38px;height:39px;min-width:38px;display:grid;place-items:center}
+.launchNavIcon .arcanaRefinedIcon{width:34px;height:34px}
+.launchNavCopy{gap:2px}
+.launchNavCopy strong{font-size:13px}
+.launchNavCopy small{font-size:10px}
+.studioPrimaryEquipment .loadoutSprite{
+ min-height:53px;height:56px;width:58px;max-width:100%;
+ overflow:visible;opacity:1;display:grid;place-items:center;
+}
+.studioPrimaryEquipment .loadoutSprite .arcanaSilhouette{
+ height:55px;width:55px;max-width:100%;max-height:100%;
+ display:grid;place-items:center;stroke:unset;fill:unset;filter:none;
+}
+.studioPrimaryEquipment .loadoutSprite .arcanaRefinedIcon{width:53px;height:53px;max-width:100%;max-height:100%}
+.studioPrimaryEquipment .loadoutSlot,
+.studioPrimaryEquipment .loadoutSlot[data-pos]{
+ min-height:116px!important;gap:4px;
+ padding:9px 4px 7px;
+}
+.studioPrimaryEquipment .loadoutSlot.empty .arcanaRefinedIcon{opacity:.92}
+.studioPrimaryEquipment .loadoutSlot:not(.empty){
+ box-shadow:0 0 0 1px color-mix(in srgb,var(--theme-highlight) 17%,transparent),
+            0 6px 14px rgba(0,0,0,.17),inset 0 1px rgba(255,255,255,.09);
+}
+.studioPrimaryEquipment .loadoutSlot:not(.empty) .arcanaRefinedIcon{
+ filter:drop-shadow(0 2px 3px #0007) drop-shadow(0 0 6px color-mix(in srgb,var(--theme-highlight) 15%,transparent));
+}
+.studioPrimaryEquipment .studioEquipmentHeading h2 .arcanaRefinedIcon{width:26px;height:26px}
+.studioPortraitIcon .arcanaSilhouette{
+ width:59px;height:59px;display:grid;place-items:center;stroke:unset;fill:unset;filter:none;
+}
+.studioPortraitIcon .arcanaRefinedIcon{width:56px;height:56px}
+.studioPage .labsTab{gap:7px;min-height:43px}
+.studioPage .labsTab .arcanaRefinedIcon{width:28px;height:28px}
+.coreSwitch button .arcanaRefinedIcon{width:24px;height:24px;vertical-align:middle;margin-right:6px}
+.studioEquipmentHeading h2 .arcanaRefinedIcon{max-width:none}
+.refinedGalleryPage h1{letter-spacing:-.055em}
+.refinedGallerySection{
+ margin:15px 0;padding:13px;border:1px solid var(--theme-border);
+ border-radius:13px;
+ background:
+  radial-gradient(ellipse 75% 30% at 3% 0%,color-mix(in srgb,var(--theme-highlight) 7%,transparent),transparent),
+  linear-gradient(140deg,var(--theme-secondary),var(--theme-main));
+ box-shadow:inset 0 1px rgba(255,255,255,.06);
+}
+.refinedGallerySection header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+.refinedGallerySection header h2{margin:0;font-size:15px;font-weight:750}
+.refinedGallerySection header span{font-size:11px;color:var(--theme-muted)}
+.refinedGalleryGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.refinedGalleryTile{
+ min-width:0;min-height:112px;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;gap:8px;
+ padding:10px 4px;
+ border:1px solid var(--theme-border);border-radius:10px;
+ background:linear-gradient(150deg,color-mix(in srgb,var(--theme-secondary) 91%,#171a25 9%),var(--theme-main));
+}
+.refinedGalleryTile .arcanaRefinedIcon{width:62px;height:62px}
+.refinedGalleryTile span{text-align:center;line-height:1.25;font-size:10px;color:var(--text);text-transform:capitalize;overflow-wrap:anywhere}
+.refinedGalleryJump{min-height:53px;justify-content:space-between}
+@media(max-width:700px){
+ .refinedGalleryGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ .refinedGalleryTile{min-height:104px;padding:9px 4px}
+ .refinedGalleryTile .arcanaRefinedIcon{width:58px;height:58px}
+ .studioPrimaryEquipment .loadoutSlot,
+ .studioPrimaryEquipment .loadoutSlot[data-pos]{min-height:109px!important;padding:7px 3px}
+ .studioPrimaryEquipment .loadoutSprite{width:49px;height:50px;min-height:50px}
+ .studioPrimaryEquipment .loadoutSprite .arcanaSilhouette,
+ .studioPrimaryEquipment .loadoutSprite .arcanaRefinedIcon{width:48px;height:48px}
+ .studioPage .labsTab{padding:6px 7px;min-height:43px;gap:5px}
+ .studioPage .labsTab .arcanaRefinedIcon{width:25px;height:25px;flex:none}
+ .launchNavRow{min-height:58px;padding:7px 10px}
+}
+@media(max-width:360px){
+ .studioPrimaryEquipment .loadoutSlot,
+ .studioPrimaryEquipment .loadoutSlot[data-pos]{min-height:103px!important}
+ .studioPrimaryEquipment .loadoutSprite{width:43px;height:44px;min-height:44px}
+ .studioPrimaryEquipment .loadoutSprite .arcanaSilhouette,
+ .studioPrimaryEquipment .loadoutSprite .arcanaRefinedIcon{width:43px;height:43px}
+ #content:has(.launchHero) .launchQuickIcon{width:37px;min-width:37px;height:38px}
+ #content:has(.launchHero) .launchQuickIcon .arcanaRefinedIcon{width:35px;height:35px}
+ #content:has(.launchHero) .launchQuickCard{grid-template-rows:39px auto}
+ .refinedGalleryGrid{gap:5px}
+ .refinedGalleryTile .arcanaRefinedIcon{width:51px;height:51px}
+}
+@media(prefers-reduced-motion:reduce){
+ .arcanaRefinedIcon{transition:none}
+}

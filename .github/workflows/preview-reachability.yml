@@ -1,0 +1,41 @@
+name: Arcana Preview Live Reachability
+on:
+  push:
+    branches:
+      - build-studio-overhaul-2026-10-13
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview-http:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check real preview domain and required stylesheet
+        shell: bash
+        run: |
+          set -euo pipefail
+          host="https://arcana-preview-app-preview.up.railway.app"
+          for path in /health / /launch-navigation.css /assets/icons/arcana-minimal/manifest.json /assets/icons/arcana-minimal/classes/class-mage.svg /assets/arcana-etched-grain.svg; do
+            echo "CHECK $host$path"
+            curl --fail --silent --show-error --location --retry 5 --retry-all-errors --retry-delay 5 --connect-timeout 10 --max-time 20 --output /tmp/arcana-response "$host$path"
+            echo "OK $path bytes=$(wc -c </tmp/arcana-response)"
+            test $(wc -c </tmp/arcana-response) -gt 100
+            if [ "$path" = /launch-navigation.css ]; then
+              grep -q 'launchQuickGrid' /tmp/arcana-response
+            fi
+          done
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'playwright>=1.55,<2'
+      - run: python -m playwright install --with-deps chromium
+      - name: Validate real Android-sized browser render and console
+        run: python tests/preview_live_mobile.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arcana-preview-live-screen
+          path: qa-output/*.png
+          if-no-files-found: ignore
