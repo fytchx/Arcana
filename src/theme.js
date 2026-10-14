@@ -5,7 +5,29 @@
 export const ADMIN_URL='https://arcana-design-control-production.up.railway.app/admin';
 export const PUBLIC_THEME_URL='https://arcana-design-control-production.up.railway.app/api/config';
 const HEX=/^#[0-9a-fA-F]{6}$/;
-const DEFAULT={main:'#0B0E16',secondary:'#171B28',highlight:'#BBA4FF'};
+// Slate is the stable neutral surface. Only the accent varies by player choice.
+const DEFAULT={main:'#0D1019',secondary:'#191E2B',highlight:'#A98BFF'};
+export const ACCENT_PRESETS=Object.freeze([
+ {id:'neon-green',name:'Neon Green',hex:'#00FF88'},
+ {id:'arcane-violet',name:'Arcane Violet',hex:'#A98BFF'},
+ {id:'cyan-blue',name:'Cyan Blue',hex:'#13C5F4'},
+ {id:'magenta-pink',name:'Magenta Pink',hex:'#F062BE'},
+ {id:'amber-gold',name:'Amber Gold',hex:'#FFC14D'},
+ {id:'crimson-red',name:'Crimson Red',hex:'#EC464D'},
+ {id:'ice-teal',name:'Ice Teal',hex:'#80F0E6'},
+ {id:'electric-lime',name:'Electric Lime',hex:'#B8FF29'},
+ {id:'royal-indigo',name:'Royal Indigo',hex:'#6964E8'},
+ {id:'white-silver',name:'White Silver',hex:'#E8E9ED'}
+]);
+const PLAYER_ACCENT_KEY='arcana-player-accent-v1';
+export function selectedAccent(){
+ try{const name=localStorage.getItem(PLAYER_ACCENT_KEY);return name==='site'||ACCENT_PRESETS.some(x=>x.id===name)?name:'arcane-violet';}catch{return 'arcane-violet'}
+}
+export function setAccent(name){
+ if(name!=='site'&&!ACCENT_PRESETS.some(x=>x.id===name))return false;
+ try{localStorage.setItem(PLAYER_ACCENT_KEY,name)}catch{return false}
+ applyTheme();return true;
+}
 let config=null;
 let currentScope='home';
 let listeners=new Set();
@@ -22,11 +44,11 @@ export function resolveTheme(settings,scope='home'){
  const chosen=section&&section.inherit===false?colors(section,base):base;
  return {scope,palette:chosen,inherit:!section||section.inherit!==false,radius:Math.min(22,Math.max(8,Number(s.radius)||15)),density:s.density==='comfortable'?'comfortable':'compact',minimal:s.minimal!==false,glow:s.glow===true,available:!!config};
 }
-export function themeStatus(){return resolveTheme(config,currentScope)}
+export function themeStatus(){const remote=resolveTheme(config,currentScope);const choice=selectedAccent();const custom=ACCENT_PRESETS.find(x=>x.id===choice);return {...remote,palette:custom?{...DEFAULT,highlight:custom.hex}:remote.palette,accentChoice:choice,available:remote.available};}
 export function subscribeTheme(cb){listeners.add(cb);return ()=>listeners.delete(cb)}
 export function applyTheme(scope=currentScope){
  currentScope=scopeForRoute(scope);
- const resolved=resolveTheme(config,currentScope);
+ const resolved=themeStatus();
  if(typeof document==='undefined')return resolved;
  const root=document.documentElement;
  root.style.setProperty('--theme-main',resolved.palette.main);
