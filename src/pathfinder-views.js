@@ -41,14 +41,14 @@ function materialTable(report,plan){
  if(!report.materials.length)return '<p class="pfNote">Raise at least one item target to calculate its requirements.</p>';
  return '<div class="pfMaterials">'+report.materials.map(m=>
   '<div class="pfMaterial"><div class="pfMaterialTitle"><strong>'+esc(m.name)+'</strong><span>'+ (m.missing===0n?'Ready':formatCost(m.missing)+' remaining')+'</span></div>'+
-  '<small>Required '+formatCost(m.required)+' · owned '+formatCost(m.owned)+'</small>'+
+  '<small>Required '+formatCost(m.required)+' · owned '+formatCost(m.owned)+(m.sourceMonster?' · '+esc(m.sourceMonster)+(m.sourceBiome?' ('+esc(m.sourceBiome)+')':''):'')+'</small>'+
   '<div class="pfMaterialFields"><label>Owned<input type="number" min="0" inputmode="numeric" data-pf-owned="'+esc(m.slug)+'" value="'+esc(plan.inventory[m.slug]||'0')+'"></label>'+
   '<label>Measured material/min<input type="number" min="0" step="any" inputmode="decimal" data-pf-rate="'+esc(m.slug)+'" placeholder="Optional" value="'+(plan.rates[m.slug]?.perMinute||'')+'"></label></div></div>'
  ).join('')+'</div>';
 }
 function farmTable(report,plan){
  const notes=report.priority.map((m,i)=>
-  '<div class="pfRecommendation"><b>'+(i+1)+'. '+esc(m.name)+'</b><span>'+fmt(m.minutes)+' minutes at '+fmt(m.perMinute)+'/min</span></div>'
+  '<div class="pfRecommendation"><b>'+(i+1)+'. '+esc(m.sourceMonster||m.name)+'</b><span>'+esc(m.name)+' · '+fmt(m.minutes)+' min at '+fmt(m.perMinute)+'/min</span></div>'
  ).join('');
  return '<section class="pfPanel"><h2>3. Farming priorities</h2><p>Your measurements, not fabricated monster drop rates, determine these estimates.</p>'+
  '<label>Route strategy<select data-pf-strategy>'+[
