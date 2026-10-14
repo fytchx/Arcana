@@ -22,7 +22,7 @@ export const HOME_MENUS=Object.freeze({
  ]},
  tools:{title:'Tools',detail:'Calculators and planners. Rune Forge and skill trees live inside Build Studio.',links:[
   link('Upgrade Cost Calculator','Plan equipment upgrades.','calculators/upgrade','calculator'),
-  link('Arcana Pathfinder','All-gear upgrade materials and farming priorities.','calculators/pathfinder','layers'),
+  link('Arcana Pathfinder','Swipe through costs for every rarity and awakened level.','calculators/pathfinder','layers'),
   link('Equipment Comparison','Compare two equipment bases.','calculators/compare','compare'),
   link('Pet Compound Calculator','Inspect pet Compound and Drop Bonus.','calculators/pet','paw'),
   link('Pet Affix Costs','Calculate Pet Shard requirements.','calculators/affixes','calculator'),
@@ -44,8 +44,8 @@ export const HOME_MENUS=Object.freeze({
   link('Community Builds & Guides','Discover setups other players have shared.','community','users'),
   link('Publish a Build','Share a snapshot from your Build Studio.','community/create','edit',{kind:'build'})
  ]},
- pathfinder:{title:'Pathfinder',detail:'Your equipment goals, missing materials, and farming strategy in one place.',links:[
-  link('Pathfinder Planner','Combine every equipped item into one material plan.','calculators/pathfinder','layers'),
+ pathfinder:{title:'Pathfinder',detail:'Quickly browse every equipment upgrade without entering your inventory.',links:[
+  link('Pathfinder Planner','See the exact listed cost of every enhancement.','calculators/pathfinder','layers'),
   link('Build Studio','Set your current gear and share a build.','labs/build','shield'),
   link('Materials · Wiki','Materials and their verified sources.','wiki/library','box',{kind:'material'}),
   link('Monsters · Wiki','Learn about monsters and their drops.','wiki/library','sword',{kind:'monster'}),
@@ -63,7 +63,7 @@ export const HOME_CARDS=Object.freeze([
  {id:'tools',title:'Tools',detail:'Calculators & planners',icon:'feature-calculator'},
  {id:'guides',title:'Guides',detail:'Learn & contribute',icon:'feature-guides'},
  {id:'builds',title:'Builds',detail:'Create & share setups',icon:'feature-build-studio'},
- {id:'pathfinder',title:'Pathfinder',detail:'Materials & progression',icon:'feature-codex'},
+ {id:'pathfinder',title:'Pathfinder',detail:'Swipe through upgrade costs',icon:'feature-codex'},
  {id:'social',title:'Guild & Raid Finder',detail:'Groups & recruitment',icon:'feature-guild-finder'}
 ]);
 const attrs=x=>'data-route="'+esc(x.route)+'"'+(x.params?' data-params="'+esc(new URLSearchParams(x.params).toString())+'"':'');
