@@ -295,7 +295,7 @@ html[data-launch-compact="true"] .launchNavRow{min-height:49px;padding-block:7px
  background:
   radial-gradient(ellipse at 0% 0%,color-mix(in srgb,var(--theme-highlight) 9%,transparent),transparent 63%),
   radial-gradient(circle at 90% 100%,#ffffff04 0,transparent 45%),
-  repeating-linear-gradient(129deg,transparent 0 30px,#ffffff0155 31px 32px),
+  repeating-linear-gradient(129deg,transparent 0 30px,rgba(255,255,255,.007) 31px 32px),
   linear-gradient(145deg,color-mix(in srgb,var(--theme-secondary) 94%,#5e6786 6%),var(--theme-main));
  box-shadow:0 10px 28px #0000002a,inset 0 1px #ffffff0a;
 }
