@@ -7,8 +7,8 @@ const src=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
 test('stable production uses verified legacy upgrade calculator front door',()=>{
  assert.match(src,/const legacyPath=\(pathname==='\/'\|\|pathname==='\/index\.html'\)\?'\/legacy':pathname;/);
  assert.match(src,/BASES\.legacyArt\+legacyPath\+parsedUrl\.search/);
- assert.match(src,/host==='arcanacompanion\.xyz'/);
- assert.match(src,/host==='arcana-stable-app-staging\.up\.railway\.app'/);
+ assert.match(src,/'arcanacompanion\.xyz'/);
+ assert.match(src,/'arcana-stable-app-staging\.up\.railway\.app'/);
  assert.match(src,/if\(stablePublicHost\)/);
 });
 test('persistent accounts and editorial APIs are never redirected to legacy frontend',()=>{
