@@ -861,12 +861,11 @@ const petKeys=['petCompound','petAffix','petAffixLevel','petUnlocked','petHatch'
  if(key!=='petEquipped'&&key!=='petDrop'&&e.target.value&&!(key==='petCompound'&&Number(e.target.value)===0))p.equipped=true;
  if(key==='petDrop'&&e.target.value.trim()!=='')p.equipped=true;
  persistDraft();render();
- }});document.addEventListener('submit',e=>{if(e.target.id==='guildForm'){e.preventDefault();void guildSave(e.target)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLayer();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();showSearch()}});window.addEventListener('arcana:assets-loaded',()=>{if(!state.layer)render();else if(state.layer.type==='search'){node('searchResults').innerHTML=state.search?resultMarkup(state.search):node('searchResults').innerHTML}});window.addEventListener('arcana:navigate',handleRoute);window.addEventListener('popstate',handleRoute);window.addEventListener('hashchange',handleRoute);if(!location.hash)history.replaceState(null,'','#/home');render();}
+ }});document.addEventListener('submit',e=>{if(e.target.id==='guildForm'){e.preventDefault();void guildSave(e.target)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLayer();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();showSearch()}});window.addEventListener('arcana:assets-loaded',()=>{if(parseRoute().route==='calculators/pathfinder')return;if(!state.layer)render();else if(state.layer.type==='search'){node('searchResults').innerHTML=state.search?resultMarkup(state.search):node('searchResults').innerHTML}});window.addEventListener('arcana:navigate',handleRoute);window.addEventListener('popstate',handleRoute);window.addEventListener('hashchange',handleRoute);if(!location.hash)history.replaceState(null,'','#/home');render();}
 init();
 void initGameAssets();
 void loadTrees();
-void loadPublicLfg();
-void loadGuilds();
+// Fetch raids and guild lists only when visiting those sections.
 void loadVerifiedIndex();
 void loadPublishedWikiArticles();
 window.addEventListener('arcana:wiki-published',()=>void loadPublishedWikiArticles());
