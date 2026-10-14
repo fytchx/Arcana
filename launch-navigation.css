@@ -731,3 +731,282 @@ img[src$="/assets/arcana-logo.webp"]{
 @media (prefers-reduced-motion:reduce){
  img[src$="/assets/arcana-logo.webp"]{transition:none}
 }
+
+
+/* ═════════ ARCANA / THE FORGE · MOBILE HOME V3 ═════════
+   Compact 2-up navigation, independent of active palette. The
+   Build Studio remains one unmistakable artifact-like centerpiece.
+   Texture stays quiet and never competes with words or tap targets.
+   ═════════════════════════════════════════════════════════════ */
+#content:has(.launchHero) .launchQuickGrid,
+#content:has(.launchHero) .launchFeaturedGrid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:9px;
+ align-items:stretch;
+}
+#content:has(.launchHero) .launchQuickCard{
+ display:grid;
+ grid-template-columns:minmax(0,1fr) 20px;
+ grid-template-rows:30px auto;
+ align-content:start;align-items:start;
+ gap:7px 3px;
+ min-width:0;min-height:105px;
+ padding:13px 12px 10px;
+ border-radius:11px;
+ transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease;
+}
+#content:has(.launchHero) .launchQuickIcon{
+ grid-column:1;grid-row:1;
+ width:30px;height:30px;min-width:30px;
+ display:grid;place-items:center;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 15%,transparent);
+ border-radius:8px;
+ background:color-mix(in srgb,var(--theme-highlight) 10%,var(--theme-secondary));
+}
+#content:has(.launchHero) .launchQuickIcon svg{width:21px;height:21px}
+#content:has(.launchHero) .launchQuickCopy{
+ grid-column:1 / -1;grid-row:2;
+ display:flex;flex-direction:column;
+ min-width:0;gap:3px;align-items:flex-start;
+}
+#content:has(.launchHero) .launchQuickCopy strong{
+ display:block;
+ font-size:13px;line-height:1.2;letter-spacing:-.025em;
+ overflow-wrap:anywhere;
+}
+#content:has(.launchHero) .launchQuickCopy small{
+ display:block;font-size:10px;line-height:1.25;
+ color:var(--slate-muted);overflow-wrap:anywhere;
+}
+#content:has(.launchHero) .launchQuickArrow{
+ grid-column:2;grid-row:1;
+ display:grid;place-items:center;
+ justify-self:end;align-self:center;
+ color:var(--theme-accent-text);opacity:.8;
+}
+#content:has(.launchHero) .launchQuickArrow svg{width:17px;height:17px}
+#content:has(.launchHero) .launchFeaturedGrid{gap:9px}
+#content:has(.launchHero) .launchFeatureRow{
+ display:grid;grid-template-columns:minmax(0,1fr) 18px;
+ grid-template-rows:26px auto;
+ align-content:start;align-items:start;
+ gap:7px 4px;
+ min-width:0;min-height:98px;
+ padding:12px 12px 10px;border-radius:11px;
+}
+#content:has(.launchHero) .launchFeatureRow .launchFeatureIcon{
+ grid-column:1;grid-row:1;
+ display:grid;place-items:center;justify-self:start;
+ width:29px;height:27px;min-width:29px;
+ color:var(--theme-accent-text);
+}
+#content:has(.launchHero) .launchFeatureRow>span:nth-child(2){
+ grid-column:1 / -1;grid-row:2;
+ display:flex;flex-direction:column;gap:3px;
+ min-width:0;
+}
+#content:has(.launchHero) .launchFeatureRow strong{
+ font-size:12px;line-height:1.25;
+ overflow-wrap:anywhere;
+}
+#content:has(.launchHero) .launchFeatureRow small{
+ margin:0;font-size:9.5px;line-height:1.3;
+ color:var(--slate-muted);
+}
+#content:has(.launchHero) .launchFeatureRow>svg{
+ grid-column:2;grid-row:1;
+ align-self:center;justify-self:end;
+ color:var(--theme-accent-text);
+ width:17px;height:17px;
+}
+#content:has(.launchHero) .launchFeatureRow:last-child:nth-child(odd){
+ grid-column:1 / -1;
+ min-height:61px;
+ grid-template-columns:29px minmax(0,1fr) 18px;
+ grid-template-rows:auto;
+ align-items:center;gap:10px;
+ padding:11px 12px;
+}
+#content:has(.launchHero) .launchFeatureRow:last-child:nth-child(odd) .launchFeatureIcon{grid-column:1;grid-row:1}
+#content:has(.launchHero) .launchFeatureRow:last-child:nth-child(odd)>span:nth-child(2){grid-column:2;grid-row:1}
+#content:has(.launchHero) .launchFeatureRow:last-child:nth-child(odd)>svg{grid-column:3;grid-row:1}
+/* One intentionally special panel. The concentric sigil is static
+   vector linework, not painted fantasy artwork. */
+#content:has(.launchHero) .launchHero{
+ position:relative;
+ display:flex;
+ flex-direction:column;align-items:stretch;justify-content:center;
+ gap:12px;
+ min-height:188px;
+ padding:18px 17px 16px;
+ border-radius:15px;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 48%,var(--theme-border));
+ background:
+  radial-gradient(ellipse 62% 95% at 3% 0%,color-mix(in srgb,var(--theme-highlight) 18%,transparent),transparent 82%),
+  radial-gradient(ellipse 66% 105% at 97% 0%,color-mix(in srgb,var(--theme-highlight) 11%,transparent),transparent 85%),
+  linear-gradient(125deg,rgba(255,255,255,.045),transparent 56%),
+  linear-gradient(118deg,
+    color-mix(in srgb,var(--theme-secondary) 84%,var(--theme-highlight) 16%),
+    color-mix(in srgb,var(--theme-main) 32%,var(--theme-secondary) 68%) 89%);
+ box-shadow:
+  0 0 0 1px color-mix(in srgb,var(--theme-highlight) 11%,transparent),
+  0 15px 31px rgba(0,0,0,.24),
+  0 0 26px color-mix(in srgb,var(--theme-highlight) 7%,transparent),
+  inset 0 1px color-mix(in srgb,var(--theme-highlight) 28%,#ffffff20);
+}
+#content:has(.launchHero) .launchHero:before{
+ background:linear-gradient(180deg,
+   color-mix(in srgb,var(--theme-highlight) 80%,white 20%) 0%,
+   var(--theme-highlight) 42%,
+   color-mix(in srgb,var(--theme-highlight) 12%,transparent) 100%);
+ width:3px;
+ opacity:.91;
+}
+#content:has(.launchHero) .launchHeroArcaneSeal{
+ position:absolute;top:-32px;right:-23px;
+ width:187px;height:187px;
+ stroke:var(--theme-highlight);
+ stroke-width:.75;opacity:.18;pointer-events:none;
+ transform:rotate(-13deg);
+ z-index:0;
+}
+#content:has(.launchHero) .launchHeroHeader{
+ position:relative;z-index:2;
+ display:flex;align-items:center;
+ gap:13px;min-width:0;
+}
+#content:has(.launchHero) .launchHeroArt{
+ position:relative;
+ left:auto;top:auto;right:auto;bottom:auto;
+ transform:none;
+ flex:0 0 57px;
+ display:grid;place-items:center;
+ width:57px;height:57px;min-width:57px;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 54%,var(--theme-border));
+ border-radius:15px;
+ background:
+  radial-gradient(circle at 50% 48%,color-mix(in srgb,var(--theme-highlight) 22%,transparent),transparent 76%),
+  linear-gradient(140deg,color-mix(in srgb,var(--theme-secondary) 90%,var(--theme-highlight) 10%),var(--theme-main));
+ color:var(--theme-accent-text);
+ opacity:1;
+ box-shadow:0 0 0 4px color-mix(in srgb,var(--theme-highlight) 5%,transparent),inset 0 1px rgba(255,255,255,.075);
+}
+#content:has(.launchHero) .launchHeroArt:before{
+ content:"";
+ position:absolute;inset:5px;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 22%,transparent);
+ transform:rotate(45deg) scale(.72);
+ border-radius:3px;pointer-events:none;
+}
+#content:has(.launchHero) .launchHeroArt svg{width:33px;height:33px;position:relative;z-index:1}
+#content:has(.launchHero) .launchHeroText{flex:1;min-width:0;max-width:none;position:relative;z-index:1}
+#content:has(.launchHero) .launchHero .launchEyebrow{
+ font-size:9px;letter-spacing:.18em;
+ color:var(--theme-accent-text);font-weight:760;
+}
+#content:has(.launchHero) .launchHero h1{
+ margin:4px 0 6px;
+ font-size:clamp(24px,4.5vw,32px);
+ letter-spacing:-.045em;line-height:1.1;
+ color:var(--slate-ink);
+ text-shadow:0 2px 7px rgba(0,0,0,.28);
+}
+#content:has(.launchHero) .launchHero p{
+ margin:0;color:color-mix(in srgb,var(--slate-muted) 88%,white 12%);
+ font-size:11px;line-height:1.42;
+}
+#content:has(.launchHero) .launchHeroCTA{
+ position:relative;z-index:3;
+ display:grid;grid-template-columns:32px minmax(0,1fr) 20px;
+ justify-items:stretch;align-items:center;gap:10px;
+ width:100%;min-height:58px;
+ padding:9px 14px;
+ border-radius:12px;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 60%,white 40%);
+ background:
+  linear-gradient(125deg,rgba(255,255,255,.3),transparent 34%,rgba(0,0,0,.06) 78%),
+  linear-gradient(112deg,
+   color-mix(in srgb,var(--theme-highlight) 78%,white 22%),
+   color-mix(in srgb,var(--theme-highlight) 86%,var(--theme-secondary) 14%));
+ color:var(--theme-main);
+ box-shadow:
+  0 4px 13px rgba(0,0,0,.18),
+  0 0 24px color-mix(in srgb,var(--theme-highlight) 19%,transparent),
+  inset 0 1px rgba(255,255,255,.45),
+  inset 0 -2px rgba(0,0,0,.11);
+ text-align:left;
+ text-shadow:none;
+ transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
+ overflow:hidden;
+}
+#content:has(.launchHero) .launchHeroCTA:before{
+ content:"";position:absolute;inset:-110% auto -110% -60%;
+ width:38%;transform:rotate(23deg);
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.24),transparent);
+ opacity:.72;pointer-events:none;
+ animation:arcanaForgeGlimmer 9s ease-in-out infinite;
+}
+@keyframes arcanaForgeGlimmer{
+ 0%,16%,100%{left:-65%}
+ 28%,36%{left:135%}
+}
+#content:has(.launchHero) .launchHeroCTA:hover,
+#content:has(.launchHero) .launchHeroCTA:focus-visible{
+ filter:brightness(1.08);
+ transform:translateY(-1px);
+ box-shadow:0 8px 18px rgba(0,0,0,.25),0 0 30px color-mix(in srgb,var(--theme-highlight) 26%,transparent),inset 0 1px rgba(255,255,255,.53);
+}
+#content:has(.launchHero) .launchHeroCTASigil{
+ display:grid;place-items:center;
+ width:31px;height:31px;
+ border:1px solid rgba(0,0,0,.19);
+ border-radius:8px;
+ background:rgba(0,0,0,.09);
+}
+#content:has(.launchHero) .launchHeroCTASigil svg{width:22px;height:22px}
+#content:has(.launchHero) .launchHeroCTACopy{
+ display:flex;flex-direction:column;gap:2px;min-width:0;
+}
+#content:has(.launchHero) .launchHeroCTACopy strong{
+ font-size:13px;line-height:1.1;letter-spacing:.01em;font-weight:850;
+}
+#content:has(.launchHero) .launchHeroCTACopy small{
+ font-size:9.5px;line-height:1.2;font-weight:630;opacity:.72;
+}
+#content:has(.launchHero) .launchHeroCTA>svg{width:20px;height:20px}
+html[data-launch-compact="true"] #content:has(.launchHero) .launchQuickCard{min-height:87px;padding:9px}
+html[data-launch-compact="true"] #content:has(.launchHero) .launchHero{min-height:169px;padding:13px 15px;gap:10px}
+html[data-launch-compact="true"] #content:has(.launchHero) .launchFeatureRow{min-height:82px}
+@media(max-width:700px){
+ #content:has(.launchHero) .launchHero{min-height:177px;padding:15px 14px;gap:11px}
+ #content:has(.launchHero) .launchHeroHeader{gap:12px}
+ #content:has(.launchHero) .launchHero h1{font-size:25px}
+ #content:has(.launchHero) .launchQuickGrid,
+ #content:has(.launchHero) .launchFeaturedGrid{gap:8px}
+ #content:has(.launchHero) .launchQuickCard{
+  min-height:100px;
+  padding:11px 11px 10px;
+ }
+ #content:has(.launchHero) .launchQuickCopy strong{font-size:12.5px}
+ #content:has(.launchHero) .launchQuickCopy small{font-size:9.5px}
+ #content:has(.launchHero) .launchFeatureRow{min-height:92px;padding:11px 10px}
+ #content:has(.launchHero) .launchHeroCTA{min-height:56px}
+}
+@media(max-width:360px){
+ #content:has(.launchHero) .launchHeroHeader{gap:9px}
+ #content:has(.launchHero) .launchHeroArt{width:48px;height:48px;min-width:48px;flex-basis:48px}
+ #content:has(.launchHero) .launchHeroArt svg{width:28px;height:28px}
+ #content:has(.launchHero) .launchHero h1{font-size:23px}
+ #content:has(.launchHero) .launchQuickGrid,
+ #content:has(.launchHero) .launchFeaturedGrid{gap:6px}
+ #content:has(.launchHero) .launchQuickCard{padding:10px 9px;min-height:100px}
+ #content:has(.launchHero) .launchQuickCopy strong{font-size:12px}
+ #content:has(.launchHero) .launchQuickCopy small{font-size:9px}
+ #content:has(.launchHero) .launchFeatureRow{padding:10px 9px}
+}
+@media(prefers-reduced-motion:reduce){
+ #content:has(.launchHero) .launchHeroCTA:before{animation:none;display:none}
+ #content:has(.launchHero) .launchHeroCTA{transition:none}
+ #content:has(.launchHero) .launchQuickCard{transition:none}
+}
