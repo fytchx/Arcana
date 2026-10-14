@@ -24,7 +24,7 @@ export function normalizeQuickView(raw={}){
   slot:PATHFINDER_SLOTS.some(s=>s.id===x.slot)?x.slot:'head',
   mode,
   stage:ids.includes(x.stage)?x.stage:ids[0],
-  level:clamp(x.level,0,30)
+  level:clamp(x.level??1,0,30)
  };
 }
 export function readQuickView(store=globalThis.localStorage){
