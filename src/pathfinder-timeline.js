@@ -37,7 +37,12 @@ export function saveQuickView(view,store=globalThis.localStorage){
  return v;
 }
 export function timelineStages(snapshot,mode){
- return stagesFor(snapshot).filter(s=>mode==='awakened'?s.id.startsWith('A'):s.id.startsWith('T'));
+ const stages=stagesFor(snapshot).filter(s=>mode==='awakened'?s.id.startsWith('A'):s.id.startsWith('T'));
+ if(mode!=='awakened')return stages;
+ // All awakening ranks share one enhancement span in this source snapshot.
+ // A missing source row must remain visibly unavailable, not shorten the map.
+ const expected=Math.max(0,...Object.values(snapshot?.codex?.awaken?.rows||{}).map(rows=>Array.isArray(rows)?rows.length:0));
+ return stages.map(s=>({...s,max:Math.max(s.max,expected)}));
 }
 export function normalizeSelection(view,snapshot){
  const v=normalizeQuickView(view),stages=timelineStages(snapshot,v.mode);
