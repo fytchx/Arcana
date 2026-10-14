@@ -516,7 +516,7 @@
         {
           "category": "skills",
           "key": "warrior:deflection",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 78,
           "cols": 10,
           "rows": 9,
@@ -525,7 +525,7 @@
         {
           "category": "skills",
           "key": "warrior:titans_grip",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 88,
           "cols": 10,
           "rows": 9,
@@ -560,7 +560,7 @@
         {
           "category": "skills",
           "key": "archer:archery",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 1,
           "cols": 10,
           "rows": 9,
@@ -569,7 +569,7 @@
         {
           "category": "skills",
           "key": "archer:perfect_shot",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 11,
           "cols": 10,
           "rows": 9,
@@ -604,7 +604,7 @@
         {
           "category": "skills",
           "key": "mage:spell_mastery",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 51,
           "cols": 10,
           "rows": 9,
@@ -613,7 +613,7 @@
         {
           "category": "skills",
           "key": "mage:arcane_surge",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 38,
           "cols": 10,
           "rows": 9,
@@ -648,7 +648,7 @@
         {
           "category": "skills",
           "key": "rogue:umbral_blades",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 70,
           "cols": 10,
           "rows": 9,
@@ -657,7 +657,7 @@
         {
           "category": "skills",
           "key": "rogue:shadow_echo",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 66,
           "cols": 10,
           "rows": 9,
@@ -692,7 +692,7 @@
         {
           "category": "skills",
           "key": "druid:wild_attunement",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 35,
           "cols": 10,
           "rows": 9,
@@ -701,7 +701,7 @@
         {
           "category": "skills",
           "key": "druid:feral_bond",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 22,
           "cols": 10,
           "rows": 9,
@@ -822,7 +822,7 @@
         {
           "category": "materials",
           "key": "astral_catalyst",
-          "atlas": "/assets/official-art//materials.webp",
+          "atlas": "/assets/official-art/materials.webp",
           "index": 4,
           "cols": 10,
           "rows": 5,
@@ -856,7 +856,7 @@
         {
           "category": "skills",
           "key": "warrior:battle_focus",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 72,
           "cols": 10,
           "rows": 9,
@@ -925,7 +925,7 @@
         {
           "category": "materials",
           "key": "prism-stone",
-          "atlas": "/assets/official-art//materials.webp",
+          "atlas": "/assets/official-art/materials.webp",
           "index": 33,
           "cols": 10,
           "rows": 5,
@@ -1037,7 +1037,7 @@
         {
           "category": "skills",
           "key": "warrior:deflection",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 78,
           "cols": 10,
           "rows": 9,
@@ -1046,7 +1046,7 @@
         {
           "category": "skills",
           "key": "mage:spell_mastery",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 51,
           "cols": 10,
           "rows": 9,
@@ -1150,7 +1150,7 @@
         {
           "category": "materials",
           "key": "astral_catalyst",
-          "atlas": "/assets/official-art//materials.webp",
+          "atlas": "/assets/official-art/materials.webp",
           "index": 4,
           "cols": 10,
           "rows": 5,
@@ -1159,7 +1159,7 @@
         {
           "category": "materials",
           "key": "adamantine-fragment",
-          "atlas": "/assets/official-art//materials.webp",
+          "atlas": "/assets/official-art/materials.webp",
           "index": 1,
           "cols": 10,
           "rows": 5,
@@ -1408,7 +1408,7 @@
         {
           "category": "materials",
           "key": "astral_catalyst",
-          "atlas": "/assets/official-art//materials.webp",
+          "atlas": "/assets/official-art/materials.webp",
           "index": 4,
           "cols": 10,
           "rows": 5,
@@ -1491,7 +1491,7 @@
         {
           "category": "skills",
           "key": "warrior:mighty_strikes",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 82,
           "cols": 10,
           "rows": 9,
@@ -1524,7 +1524,7 @@
         {
           "category": "skills",
           "key": "warrior:crushing_blows",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 76,
           "cols": 10,
           "rows": 9,
@@ -1548,7 +1548,7 @@
         {
           "category": "skills",
           "key": "archer:perfect_shot",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 11,
           "cols": 10,
           "rows": 9,
@@ -1572,7 +1572,7 @@
         {
           "category": "skills",
           "key": "rogue:coup_de_grace",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 56,
           "cols": 10,
           "rows": 9,
@@ -1597,7 +1597,7 @@
         {
           "category": "skills",
           "key": "warrior:iron_constitution",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 80,
           "cols": 10,
           "rows": 9,
@@ -1630,7 +1630,7 @@
         {
           "category": "skills",
           "key": "warrior:deflection",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 78,
           "cols": 10,
           "rows": 9,
@@ -1655,7 +1655,7 @@
         {
           "category": "skills",
           "key": "warrior:deflection",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 78,
           "cols": 10,
           "rows": 9,
@@ -1664,7 +1664,7 @@
         {
           "category": "skills",
           "key": "warrior:relentless_assault",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 84,
           "cols": 10,
           "rows": 9,
@@ -1689,7 +1689,7 @@
         {
           "category": "skills",
           "key": "archer:pet_mastery",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 12,
           "cols": 10,
           "rows": 9,
@@ -1698,7 +1698,7 @@
         {
           "category": "skills",
           "key": "druid:feral_bond",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 22,
           "cols": 10,
           "rows": 9,
@@ -1722,7 +1722,7 @@
         {
           "category": "skills",
           "key": "warrior:titans_grip",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 88,
           "cols": 10,
           "rows": 9,
@@ -1746,7 +1746,7 @@
         {
           "category": "skills",
           "key": "archer:archery",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 1,
           "cols": 10,
           "rows": 9,
@@ -1770,7 +1770,7 @@
         {
           "category": "skills",
           "key": "mage:spell_mastery",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 51,
           "cols": 10,
           "rows": 9,
@@ -1804,7 +1804,7 @@
         {
           "category": "skills",
           "key": "rogue:pickpocket",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 63,
           "cols": 10,
           "rows": 9,
@@ -1838,7 +1838,7 @@
         {
           "category": "skills",
           "key": "archer:hunters_instinct",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 8,
           "cols": 10,
           "rows": 9,
@@ -1863,7 +1863,7 @@
         {
           "category": "skills",
           "key": "rogue:treasure_hunter",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 69,
           "cols": 10,
           "rows": 9,
@@ -1872,7 +1872,7 @@
         {
           "category": "items",
           "key": "wardplate",
-          "atlas": "/assets/official-art//items.webp",
+          "atlas": "/assets/official-art/items.webp",
           "index": 0,
           "cols": 4,
           "rows": 3,
@@ -1896,7 +1896,7 @@
         {
           "category": "skills",
           "key": "warrior:culling_strike",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 77,
           "cols": 10,
           "rows": 9,
@@ -1930,7 +1930,7 @@
         {
           "category": "skills",
           "key": "warrior:titanic_blow",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 87,
           "cols": 10,
           "rows": 9,
@@ -1956,7 +1956,7 @@
         {
           "category": "skills",
           "key": "mage:spell_mastery",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 51,
           "cols": 10,
           "rows": 9,
@@ -1965,7 +1965,7 @@
         {
           "category": "skills",
           "key": "archer:archery",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 1,
           "cols": 10,
           "rows": 9,
@@ -1974,7 +1974,7 @@
         {
           "category": "skills",
           "key": "warrior:deflection",
-          "atlas": "/assets/official-art//skills.webp",
+          "atlas": "/assets/official-art/skills.webp",
           "index": 78,
           "cols": 10,
           "rows": 9,
