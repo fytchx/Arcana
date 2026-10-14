@@ -35,7 +35,7 @@ test('homepage grain is a static safe neutral asset; cards and logo follow palet
  assert.match(css,/arcana-etched-grain\.svg/);
  assert.match(svg,/<svg xmlns="http:\/\/www.w3.org\/2000\/svg"/);
  assert.match(svg,/Small nonrepresentational etched-grain/);
- assert.doesNotMatch(svg,/<script\\b|<image\\b|<foreignObject\\b|\\b(?:href|src)=["']https?:\\/\\//i);
+ assert.doesNotMatch(svg,/<script\b|<image\b|<foreignObject\b|\b(?:href|src)=["']https?:\/\//i);
  const server=await readFile(new URL('../server.mjs',import.meta.url),'utf8');
  assert.match(server,/const publicAsset/);
  assert.match(server,/svg/);
