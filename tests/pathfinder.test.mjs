@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {quoteUpgrade,planGearUpgrades,normalizePathfinderPlan,stagesFor} from '../src/pathfinder-engine.js';
+import {quoteUpgrade,planGearUpgrades,normalizePathfinderPlan,stagesFor,REAL_EQUIPMENT_SLOTS} from '../src/pathfinder-engine.js';
+import {LOADOUT_LAYOUT} from '../src/core-boards.js';
 import {pathfinderView,buildProgressionView,readPathfinderPlan,savePathfinderPlan} from '../src/pathfinder-views.js';
 
 const data={source:'Unit source',codex:{tiers:Object.fromEntries(Array.from({length:6},(_,i)=>[String(i+1),{name:'Tier '+(i+1),max_level:1,rows:[{current:0,gold:'100',fragment_slug:'iron-fragment',fragments:2,monster_materials:{'spider-fang':4},fail:.5,success:.5}]}])),
@@ -53,4 +54,13 @@ test('local persistence roundtrips and view renders shared targets',()=>{
  assert.deepEqual(readPathfinderPlan(store),p);
  assert.match(buildProgressionView(gear,p,data),/data-pf-stage="weapon"/);
  assert.match(pathfinderView(gear,p,data),/data-pf-owned="spider-fang"/);
+});
+
+test('only genuine equipment slots are counted, even from old saved builds',()=>{
+ assert.equal(REAL_EQUIPMENT_SLOTS.length,11);
+ assert.deepEqual(LOADOUT_LAYOUT.map(x=>x.key),REAL_EQUIPMENT_SLOTS);
+ const withOld={...gear,charm:{id:'game:item:fake',rarity:6,awaken:20}};
+ const p={targets:{charm:{stage:'A30',level:30},weapon:{stage:'T1',level:1}}};
+ assert.equal(planGearUpgrades(withOld,p,data).equipment.length,2);
+ assert.doesNotMatch(buildProgressionView(withOld,p,data),/data-pf-stage="charm"/);
 });
