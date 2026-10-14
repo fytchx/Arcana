@@ -1,5 +1,6 @@
 import {esc} from './ui.js';
 import {PATHFINDER_SLOTS,MODE_LABELS,money,timelineModel,stageStepLabel,normalizeQuickView} from './pathfinder-timeline.js';
+import {quoteRange,normalizeRange} from './pathfinder-range.js';
 
 const title=stage=>stage.tier?stage.name:stage.id+' · Awakened';
 const compactGold=n=>{
@@ -35,8 +36,36 @@ export function pathfinderChapterDetail(model){
  '<p class="pathWarning">Some source recipes are missing. This stage total is incomplete.</p>')+
  '</div></details>';
 }
+// Only this content refreshes when range endpoints change. The scrolling
+// timeline and its position stay mounted, so editing totals feels instant.
+const rangeLevelOptions=(stage,level)=>Array.from({length:(stage?.max||0)+1},(_,i)=>
+ option(String(i),i===0?'Start / +0':'+'+i,String(level))).join('');
+export function pathfinderRangeContent(snapshot,quick,raw={}){
+ const quote=quoteRange(snapshot,raw,quick),{range,stages}=quote;
+ const from=stages.find(s=>s.id===range.fromStage),to=stages.find(s=>s.id===range.toStage);
+ const stageOpts=(selected)=>stages.map(s=>option(s.id,s.tier?s.name+' ('+s.id+')':s.id,selected)).join('');
+ const controls='<div class="pathRangeInputs">'+
+ '<fieldset><legend>FROM</legend><label>Rarity / rank<select data-path-from-stage aria-label="From upgrade stage">'+stageOpts(range.fromStage)+'</select></label>'+
+ '<label>Enhancement<select data-path-from-level aria-label="From enhancement level">'+rangeLevelOptions(from,range.fromLevel)+'</select></label></fieldset>'+
+ '<span class="pathRangeArrow" aria-hidden="true">→</span>'+
+ '<fieldset><legend>TO</legend><label>Rarity / rank<select data-path-to-stage aria-label="To upgrade stage">'+stageOpts(range.toStage)+'</select></label>'+
+ '<label>Enhancement<select data-path-to-level aria-label="To enhancement level">'+rangeLevelOptions(to,range.toLevel)+'</select></label></fieldset></div>';
+ const summary=quote.error?'<div class="pathWarning" role="status">'+esc(quote.error)+(quote.missing.length?' Missing: '+esc(quote.missing.slice(0,4).join(', ')):'')+'</div>':
+ '<div class="pathRangeSummary"><div><small>Upgrade steps</small><strong>'+money(quote.steps)+'</strong></div>'+
+ '<div><small>Total Gold</small><strong>'+money(quote.gold)+'</strong></div>'+
+ '<div><small>Material types</small><strong>'+quote.materials.length+'</strong></div></div>'+
+ (quote.materials.length?'<h4>All materials for this route</h4>'+amountList(quote.materials):
+ '<p class="pathFree">These checkpoints are identical, so no upgrade is needed.</p>');
+ return controls+'<div class="pathRangeOutput" role="status" aria-live="polite">'+summary+'</div>'+
+ '<p class="pathRangeFoot">Base recipe totals include intervening enhancements and tier / rank transitions. Failed attempts are excluded.</p>';
+}
+export function pathfinderRangePanel(snapshot,quick,raw={}){
+ return '<details class="pathRangePanel" id="pathRangePanel"><summary><span><strong>Calculate From → To</strong>'+
+ '<small>Full Gold and material totals between any two upgrade levels</small></span><span aria-hidden="true">▾</span></summary>'+
+ '<div id="pathRangeContent">'+pathfinderRangeContent(snapshot,quick,raw)+'</div></details>';
+}
 const option=(value,name,chosen)=>'<option value="'+esc(value)+'" '+(value===chosen?'selected':'')+'>'+esc(name)+'</option>';
-export function pathfinderView(raw,snapshot,error=''){
+export function pathfinderView(raw,snapshot,error='',rangePlan={}){
  const pref=normalizeQuickView(raw);
  if(!snapshot)return '<section class="pathPage"><header class="pathIntro"><span class="pathEyebrow">ARCANA PATHFINDER</span><h1>See every upgrade at a glance.</h1><p>Pick your equipment slot and swipe through enhancement costs.</p></header><p class="pathWarning">'+esc(error||'Loading verified upgrade recipes…')+'</p><button class="btn secondary" data-action="path-refresh">Retry recipe connection</button></section>';
  const model=timelineModel(snapshot,pref);
@@ -59,7 +88,7 @@ export function pathfinderView(raw,snapshot,error=''){
  ).join('')+'</div>'+
  '<div class="pathRangeHead"><label for="pathStepRange">Slide through upgrades</label><output id="pathStepValue" for="pathStepRange">'+(view.level===0?'Transition':'+'+view.level)+'</output></div>'+
  '<input id="pathStepRange" data-path-range aria-label="Selected upgrade level" type="range" min="0" max="'+active.max+'" value="'+view.level+'" step="1" aria-valuetext="'+esc(stageStepLabel(active,view.level))+'" style="--path-progress:'+(active.max?Math.round(view.level/active.max*100):0)+'%">'+
- pathfinderStepDetail(model)+pathfinderChapterDetail(model)+
+ pathfinderStepDetail(model)+pathfinderChapterDetail(model)+pathfinderRangePanel(snapshot,view,rangePlan)+
  '</section>'+
  '<p class="pathSource">Source: '+esc(snapshot.sourceVersion||snapshot.source||'October 2026 verified-cost snapshot')+'. Base Gold and material amounts per upgrade, before failed attempts. This dataset uses the same tier recipes for every slot; slot-specific cost differences are not documented. A1–A30 are supported where source data is available.</p>'+
  '<div class="pathActions"><button type="button" class="btn secondary" data-route="labs/build">Back to Build Studio</button><button type="button" class="btn secondary" data-route="wiki/library" data-params="kind=material">Materials in the Wiki</button></div>'+
