@@ -1,5 +1,5 @@
 import {esc} from './ui.js';
-import {stagesFor,stageForGear,planGearUpgrades,normalizePathfinderPlan,formatCost} from './pathfinder-engine.js';
+import {stagesFor,stageForGear,planGearUpgrades,normalizePathfinderPlan,formatCost,REAL_EQUIPMENT_SLOTS} from './pathfinder-engine.js';
 export const PATHFINDER_PLAN_KEY='arcana-pathfinder-plan-v1';
 export function readPathfinderPlan(store=globalThis.localStorage){try{return normalizePathfinderPlan(JSON.parse(store.getItem(PATHFINDER_PLAN_KEY)||'null')||{})}catch{return normalizePathfinderPlan()}}
 export function savePathfinderPlan(raw,store=globalThis.localStorage){const plan=normalizePathfinderPlan(raw);try{store.setItem(PATHFINDER_PLAN_KEY,JSON.stringify(plan))}catch{}return plan}
@@ -9,7 +9,7 @@ const stageOptions=(list,value)=>list.map(x=>opt(x.id,x.id+' · '+x.name,value))
 const levelOptions=(list,stage,level)=>Array.from({length:1+(list.find(x=>x.id===stage)?.max||0)},(_,i)=>opt(String(i),'+'+i,String(level))).join('');
 function gearRows(equipment,plan,data){
  const stages=stagesFor(data);
- const rows=Object.entries(equipment||{}).filter(([,g])=>g);
+ const rows=Object.entries(equipment||{}).filter(([slot,g])=>g&&REAL_EQUIPMENT_SLOTS.includes(slot));
  if(!rows.length)return '<p class="pfNote">Start by choosing your current equipment in Build Studio.</p>';
  return '<div class="pfGearGrid">'+rows.map(([slot,g])=>{
   const from=stageForGear(g);
