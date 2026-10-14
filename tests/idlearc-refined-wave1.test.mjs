@@ -25,7 +25,7 @@ test('equipment names show the exact matched in-game equipment tile',()=>{
  assert.equal(vest.key,'bloodweave-vest');
  assert.equal(resolvedGearArtwork('Invented Helmet'),null);
  assert.match(slotSilhouette('head','Leather Cap'),/data-refined-source="equipment:leather-cap"/);
- assert.match(slotSilhouette('chest','Bloodweave Vest'),/data-refined-source="equipment:bloodweave-vest"/);
+ assert.match(slotSilhouette('chest','Bloodweave Vest'),/data-refined-source="items:bloodweave-vest"/);
  assert.match(slotSilhouette('chest','Not a real item'),/data-refined-source="equipment:leather-armor"/);
  assert.match(slotSilhouette('offhand'),/data-refined-source="equipment:wooden-shield"/);
 });
