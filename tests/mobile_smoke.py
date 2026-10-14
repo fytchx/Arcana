@@ -128,8 +128,9 @@ with sync_playwright() as playwright:
     assert page.locator('#bottomNav').count()==0, 'Launch must not have a bottom task bar'
     assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1, 'Build Studio is not featured'
     assert page.locator('.launchQuickCard').count()==6, 'Exactly six launch navigation cards are required'
-    assert page.locator('.launchQuickCard .arcanaIcon').count()>=12, 'Themeable SVG icons missing from launch navigation'
-    assert page.locator('.launchHeroArt .arcanaIcon').get_attribute('data-arcana-icon')=='feature-build-studio', 'Build Studio emblem must use Arcana Minimal'
+    assert page.locator('.launchQuickCard .arcanaRefinedIcon').count()==6, 'Custom Refined art missing from six launch cards'
+    assert page.locator('.launchHeroCTA .arcanaRefinedIcon').count()==1, 'Custom Forge CTA art missing'
+    assert page.locator('.launchHeroArt .arcanaRefinedIcon').get_attribute('data-refined-icon')=='feature-build-studio', 'Build Studio hero must use approved custom artwork'
     # The icon gallery is a real route and every registered asset is previewable.
     page.evaluate("location.hash='#/icons'")
     page.locator('.arcanaIconCatalogItem').first.wait_for(timeout=8000)
