@@ -68,6 +68,23 @@ export function resolveTheme(settings,scope='home'){
  const chosen=section&&section.inherit===false?colors(section,base):base;
  return {scope,palette:chosen,inherit:!section||section.inherit!==false,radius:Math.min(22,Math.max(8,Number(s.radius)||15)),density:s.density==='comfortable'?'comfortable':'compact',minimal:s.minimal!==false,glow:s.glow===true,available:!!config};
 }
+/* Recolor only Arcana branding, never verified in-game artwork. Keeping
+ * the original faceted source image means its shading survives theming. */
+export function logoFilterForAccent(input){
+ if(!validHex(input))return 'none';
+ const rgb=[1,3,5].map(i=>parseInt(input.slice(i,i+2),16)/255);
+ const hi=Math.max(...rgb),lo=Math.min(...rgb),d=hi-lo;
+ if(d<0.055)return 'grayscale(1) brightness(1.15) contrast(1.07)';
+ let hue;
+ if(hi===rgb[0])hue=((rgb[1]-rgb[2])/d)%6;
+ else if(hi===rgb[1])hue=(rgb[2]-rgb[0])/d+2;
+ else hue=(rgb[0]-rgb[1])/d+4;
+ hue=((hue*60)%360+360)%360;
+ // Approximate source brand facet hue. Hue rotation retains highlights,
+ // reflections and transparency unlike a flat CSS mask.
+ const degrees=((hue-273+540)%360)-180;
+ return 'hue-rotate('+degrees.toFixed(1)+'deg) saturate(1.1) brightness(1.035)';
+}
 export function themeStatus(){
  const remote=resolveTheme(config,currentScope),accentChoice=selectedAccent(),surfaceChoice=selectedSiteSurface();
  const custom=ACCENT_PRESETS.find(x=>x.id===accentChoice);
@@ -90,6 +107,7 @@ export function applyTheme(scope=currentScope){
  root.style.setProperty('--theme-main',resolved.palette.main);
  root.style.setProperty('--theme-secondary',resolved.palette.secondary);
  root.style.setProperty('--theme-highlight',resolved.palette.highlight);
+ root.style.setProperty('--arcana-logo-filter',logoFilterForAccent(resolved.palette.highlight));
  root.style.setProperty('--arcana-icon-color',resolved.iconColor);
  root.style.setProperty('--arcana-icon-muted','color-mix(in srgb, '+resolved.palette.secondary+' 48%, #B5BCCB 52%)');
  root.dataset.arcanaIconMode=resolved.iconMode;

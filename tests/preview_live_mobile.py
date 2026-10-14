@@ -71,6 +71,15 @@ with sync_playwright() as p:
         assert colors["glyph"].lower()=="#13c5f4"
         assert colors["glyphStyle"]=="rgb(19, 197, 244)"
         assert colors["mode"]=="accent"
+        brand_red=page.locator('#brandHome img').evaluate("(el)=>getComputedStyle(el).filter")
+        footer_red=page.locator('.arcanaSigLogo').evaluate("(el)=>getComputedStyle(el).filter")
+        assert 'hue-rotate' in brand_red and 'hue-rotate' in footer_red,"Brand artwork did not respond to site accent"
+        print("Red Arcana logo:",brand_red)
+        page.locator('[data-action="accent"][data-arg="white-silver"]').click()
+        brand_silver=page.locator('#brandHome img').evaluate("(el)=>getComputedStyle(el).filter")
+        assert brand_red!=brand_silver and 'grayscale(1)' in brand_silver,"Silver site accent must recolor Arcana logo"
+        page.locator('[data-action="accent"][data-arg="crimson-red"]').click()
+
         page.reload(wait_until="domcontentloaded")
         page.locator('.arcanaThemePreview').wait_for(timeout=12000)
         after_refresh=page.evaluate("() => [getComputedStyle(document.documentElement).getPropertyValue('--theme-main').trim(),getComputedStyle(document.documentElement).getPropertyValue('--arcana-icon-color').trim(),document.documentElement.dataset.arcanaIconMode]")
@@ -80,6 +89,28 @@ with sync_playwright() as p:
         assert page.locator('.arcanaIconCatalogItem').count()==144,"Entire SVG gallery did not render"
         assert page.evaluate("document.documentElement.scrollWidth<=innerWidth+3"),"Icon gallery overflows mobile"
         print("Icon library:",page.locator('.arcanaIconCatalogItem').count(),"SVG assets")
+        page.goto(URL+"#/home",wait_until="domcontentloaded",timeout=30000)
+        page.locator('.launchQuickCard').first.wait_for(timeout=16000)
+        textured=page.evaluate("""() => {
+          const hero=document.querySelector('.launchHero'),
+                card=document.querySelector('.launchQuickCard'),
+                feature=document.querySelector('.launchFeatureRow');
+          return {
+            main:getComputedStyle(document.querySelector('#content'),':before').backgroundImage,
+            hero:getComputedStyle(hero,':after').backgroundImage,
+            card:getComputedStyle(card,':after').backgroundImage,
+            feature:getComputedStyle(feature,':after').backgroundImage,
+            logo:getComputedStyle(document.querySelector('#brandHome img')).filter,
+            bodyWidth:document.body.scrollWidth,
+            viewport:innerWidth
+          };
+        }""")
+        assert all('arcana-etched-grain.svg' in textured[key] for key in ['main','hero','card','feature']),"Homepage texture is not applied to each surface"
+        assert 'hue-rotate' in textured['logo'],"Recolored Arcana logo did not persist onto homepage"
+        assert textured['bodyWidth']<=textured['viewport']+3,"Texture caused horizontal scroll"
+        page.screenshot(path=str(out/"arcana-home-etched-mobile.png"),full_page=True)
+        print("Homepage texture and Arcana brand recoloring: OK")
+
 
         page.goto(URL+"#/labs/build",wait_until="domcontentloaded",timeout=30000)
         page.locator(".studioProfile").wait_for(timeout=16000)
