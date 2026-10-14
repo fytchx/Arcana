@@ -65,6 +65,23 @@ with sync_playwright() as p:
         assert profile and equipment and equipment["y"]>profile["y"],"Equipment must follow compact build profile"
         assert equipment["y"]<500,"Equipment is below the first mobile screen"
         print("Live Studio geometry:",json.dumps({"profile":profile,"equipment":equipment}))
+        page.evaluate("""async () => {
+          const canvas=document.createElement('canvas');canvas.width=64;canvas.height=64;
+          const ctx=canvas.getContext('2d');ctx.fillStyle='#9272da';ctx.fillRect(0,0,64,64);
+          const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+          const dt=new DataTransfer();
+          dt.items.add(new File([blob],'avatar.png',{type:'image/png'}));
+          const field=document.getElementById('studioPortraitUpload');
+          field.files=dt.files;field.dispatchEvent(new Event('change',{bubbles:true}));
+        }""")
+        page.locator('.studioPortraitImg').wait_for(timeout=9000)
+        assert page.evaluate("localStorage.getItem('arcana-studio-portrait-local-v1')?.startsWith('data:image/')"),"Avatar not saved"
+        page.reload(wait_until="domcontentloaded")
+        page.locator('.studioPortraitImg').wait_for(timeout=15000)
+        page.locator('[data-action="removeportrait"]').click()
+        assert page.locator('.studioPortraitImg').count()==0,"Reset to class icon failed"
+        print("Live avatar upload, persistence and removal: OK")
+
 
 
         assert result["url"].startswith(URL),"Preview unexpectedly redirects away"
