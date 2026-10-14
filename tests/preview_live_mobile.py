@@ -49,7 +49,7 @@ with sync_playwright() as p:
         chosen=page.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--theme-highlight').trim()")
         assert chosen.lower()=="#13c5f4","Personal accent was not applied"
         page.reload(wait_until="domcontentloaded")
-        page.locator(".launchQuickCard").first.wait_for(timeout=20000)
+        page.locator(".slateAccentChoice").first.wait_for(timeout=20000)
         persisted=page.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--theme-highlight').trim()")
         assert persisted.lower()=="#13c5f4","Personal accent choice did not survive reload"
         print("Player accent persisted:",persisted)
