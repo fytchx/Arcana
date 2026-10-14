@@ -1010,3 +1010,44 @@ html[data-launch-compact="true"] #content:has(.launchHero) .launchFeatureRow{min
  #content:has(.launchHero) .launchHeroCTA{transition:none}
  #content:has(.launchHero) .launchQuickCard{transition:none}
 }
+
+
+/* PATHFINDER: unstyled-by-brand reusable progression surfaces. Everything
+   inherits Arcana's active theme tokens instead of hardcoded artwork/colors. */
+.pfPanel,.pfPage{max-width:100%;min-width:0}
+.pfPanel{margin:16px 0;padding:clamp(14px,3vw,24px);border:1px solid var(--theme-border,var(--stroke,#37344a));border-radius:var(--radius,16px);background:var(--theme-secondary,var(--secondary,#191726));color:var(--text,#f3f1fa)}
+.pfPage{max-width:1080px;margin:0 auto;padding:10px clamp(10px,3vw,22px) 35px}
+.pfPage>header{padding:12px 4px 5px}
+.pfPage h1{font-size:clamp(23px,5vw,34px);line-height:1.14;letter-spacing:-.03em;margin:7px 0 9px}
+.pfPanel h2{font-size:clamp(18px,3.5vw,22px);margin:0 0 7px}
+.pfPanel p,.pfPage header p{margin:4px 0 14px;color:var(--muted,#b9b4c7);line-height:1.5;font-size:13px}
+.pfOptions,.pfNav{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+.pfOptions label{display:flex;align-items:center;gap:9px;flex:1;min-width:175px;font-size:12px}
+.pfOptions input{width:18px;height:18px;flex:none;accent-color:var(--theme-highlight,var(--highlight,#a88afa))}
+.pfOptions .btn,.pfNav .btn{min-height:44px}
+.pfGearGrid{display:grid;gap:9px;margin:12px 0}
+.pfGearRow{display:grid;grid-template-columns:minmax(110px,1fr) minmax(90px,.8fr) minmax(125px,1fr) minmax(75px,.6fr);align-items:end;gap:8px;padding:10px;border:1px solid var(--theme-border,var(--stroke,#37344a));border-radius:12px;background:var(--theme-main,var(--bg,#100e18))}
+.pfGearRow>div>strong,.pfGearRow>div>small{display:block;overflow-wrap:anywhere}
+.pfGearRow>div>strong{font-size:13px;text-transform:capitalize}
+.pfGearRow>div>small{font-size:11px;color:var(--muted,#b9b4c7)}
+.pfGearRow label,.pfMaterialFields label,.pfPanel>label{font-size:11px;color:var(--muted,#b9b4c7);display:grid;gap:5px;min-width:0}
+.pfGearRow select,.pfMaterialFields input,.pfPanel>label select{width:100%;min-width:0;min-height:44px;padding:7px 9px;border:1px solid var(--theme-border,var(--stroke,#37344a));border-radius:9px;background:var(--theme-secondary,var(--secondary,#211d30));color:var(--text,#f3f1fa);font:inherit;font-size:12px}
+.pfGearRow select:focus-visible,.pfMaterialFields input:focus-visible,.pfPanel>label select:focus-visible{outline:2px solid var(--theme-highlight,var(--highlight,#a88afa));outline-offset:1px}
+.pfStats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:13px 0}
+.pfStats>div{padding:12px;border-radius:12px;border:1px solid var(--theme-border,var(--stroke,#37344a));background:var(--theme-main,var(--bg,#100e18));min-width:0}
+.pfStats small,.pfStats strong{display:block}
+.pfStats small{font-size:10px;color:var(--muted,#b9b4c7)}
+.pfStats strong{font-size:clamp(14px,3.3vw,19px);margin-top:4px;overflow-wrap:anywhere}
+.pfPanel>.btn.primary{margin-top:9px;min-height:44px}
+.pfNote{font-size:11px!important;color:var(--muted,#b9b4c7)!important;line-height:1.45!important}
+.pfWarning{padding:12px;border-radius:10px;border:1px solid var(--theme-border,var(--stroke,#37344a));background:var(--theme-main,var(--bg,#100e18));font-size:12px!important}
+.pfMaterials{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:10px}
+.pfMaterial{min-width:0;border:1px solid var(--theme-border,var(--stroke,#37344a));border-radius:12px;padding:12px;background:var(--theme-main,var(--bg,#100e18))}
+.pfMaterialTitle{display:flex;justify-content:space-between;gap:8px;align-items:start;margin-bottom:6px;font-size:12px}
+.pfMaterialTitle span{flex:none;color:var(--theme-highlight,var(--highlight,#a88afa));font-weight:700}
+.pfMaterial>small{color:var(--muted,#b9b4c7);font-size:11px}
+.pfMaterialFields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.pfRecommendation{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 4px;border-bottom:1px solid var(--theme-border,var(--stroke,#37344a));font-size:12px}
+.pfRecommendation span{color:var(--muted,#b9b4c7);text-align:right}
+@media(max-width:680px){.pfGearRow{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px}.pfGearRow>div:first-child{grid-column:1/-1}.pfStats{grid-template-columns:1fr 1fr}.pfStats>div:first-child{grid-column:1/-1}}
+@media(max-width:380px){.pfMaterialFields{grid-template-columns:1fr}.pfOptions .btn{width:100%}}
