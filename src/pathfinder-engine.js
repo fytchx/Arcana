@@ -122,7 +122,7 @@ export function planGearUpgrades(equipment,plan,snapshot){
   const baseline=p.baselineMlXpPerMinute||0;
   const penalty=minutes===null?null:baseline?Math.max(0,baseline-xp)*minutes:0;
   return {slug,name:source?.name||slug.replace(/-/g,' '),type:source?.type||'unknown',monsterId:source?.monster_id??null,
-   required:q.required,base:q.base,owned,missing:shortfall,perMinute,minutes,rateLabel:rate.label||'',
+   required:q.required,base:q.base,owned,missing:shortfall,perMinute,minutes,rateLabel:rate.label||'',sourceMonster:source?.sourceMonster||'',sourceBiome:source?.sourceBiome||'',monsterRef:source?.monsterRef||'',
    xpPerMinute:xp,xpOpportunityCost:penalty};
  }).sort((a,b)=>b.missing>a.missing?1:b.missing<a.missing?-1:a.name.localeCompare(b.name));
  const unknownRates=missing.filter(m=>m.missing>0n&&!m.perMinute);
