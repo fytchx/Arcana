@@ -119,7 +119,7 @@ const TOOL_SEARCH_ALIASES={
  skills:'class skill tree planner',passives:'passive skill tree planner',
  petlab:'pet lab pet loadout companion',compound:'pet compound calculator equalisation',
  affixes:'pet affix cost calculator shard',guildtree:'guild skill tree planner guild bonuses',
- guilds:'guild finder recruitment',raids:'lfg raid finder',farm:'monster level xp farm comparator fastest kills per second ml xp',pathfinder:'Arcana Pathfinder all gear equipment upgrade target material farming efficiency monster level route planner'
+ guilds:'guild finder recruitment',raids:'lfg raid finder',farm:'monster level xp farm comparator fastest kills per second ml xp',pathfinder:'Arcana Pathfinder fast scroll swipe item slot rarity awakened A1 A30 upgrade material gold costs quick reference'
 };
 const searchExtras=()=>[
  ...(savedBuild()?[{id:'my-build',kind:'build',title:state.draft.title||'My Build',subtitle:'Saved locally · Build Studio',keywords:'my build custom saved planner equipment runes skills',description:'Your locally saved build.'}]:[]),
