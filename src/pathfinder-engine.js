@@ -119,9 +119,9 @@ export function planGearUpgrades(equipment,plan,snapshot){
   const source=lookup.get(slug);
   const rate=p.rates[slug]||{},perMinute=rate.perMinute||0;
   const minutes=shortfall>0n&&perMinute>0?Number(shortfall)/perMinute:shortfall===0n?0:null;
-  const xp=rate.mlXpPerMinute||0;
+  const xp=rate.mlXpPerMinute>0?rate.mlXpPerMinute:null;
   const baseline=p.baselineMlXpPerMinute||0;
-  const penalty=minutes===null?null:baseline?Math.max(0,baseline-xp)*minutes:0;
+  const penalty=minutes===null||xp===null||!baseline?null:Math.max(0,baseline-xp)*minutes;
   return {slug,name:source?.name||slug.replace(/-/g,' '),type:source?.type||'unknown',monsterId:source?.monster_id??null,
    required:q.required,base:q.base,owned,missing:shortfall,perMinute,minutes,rateLabel:rate.label||'',sourceMonster:source?.sourceMonster||'',sourceBiome:source?.sourceBiome||'',monsterRef:source?.monsterRef||'',
    xpPerMinute:xp,xpOpportunityCost:penalty};
@@ -131,9 +131,9 @@ export function planGearUpgrades(equipment,plan,snapshot){
  const estimateMinutes=actionable.reduce((sum,m)=>sum+m.minutes,0);
  const ranked=[...actionable].sort((a,b)=>{
   if(p.strategy==='materials')return (b.minutes-a.minutes)||a.name.localeCompare(b.name);
-  if(p.strategy==='ml')return (a.xpOpportunityCost-b.xpOpportunityCost)||b.minutes-a.minutes;
-  return (b.minutes*(1+(a.xpOpportunityCost/(1+(p.baselineMlXpPerMinute||1)*Math.max(a.minutes,1))))-
-          a.minutes*(1+(b.xpOpportunityCost/(1+(p.baselineMlXpPerMinute||1)*Math.max(b.minutes,1)))))||a.name.localeCompare(b.name);
+  if(p.strategy==='ml')return ((a.xpOpportunityCost??Infinity)-(b.xpOpportunityCost??Infinity))||b.minutes-a.minutes;
+  const value=m=>m.minutes/(1+(m.xpOpportunityCost===null?0:m.xpOpportunityCost/(1+(p.baselineMlXpPerMinute||1)*Math.max(m.minutes,1))));
+  return value(b)-value(a)||a.name.localeCompare(b.name);
  });
  return {equipment:all,gold,goldBase,steps,materials:missing,missingCount:missing.filter(x=>x.missing>0n).length,
   unknownRates:unknownRates.length,estimateMinutes,estimatedAll:unknownRates.length===0&&missing.length>0&&errors.length===0,
