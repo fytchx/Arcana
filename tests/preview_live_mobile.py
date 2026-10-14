@@ -62,7 +62,8 @@ with sync_playwright() as p:
         assert page.locator(".launchReturnHome").count()==0,"Duplicate home bar returned"
         profile=page.locator(".studioProfile").bounding_box()
         equipment=page.locator(".studioPrimaryEquipment").bounding_box()
-        assert profile and equipment and equipment["y"]>profile["y"],"Equipment must follow compact build profile"
+        print("Live Studio geometry:",json.dumps({"profile":profile,"equipment":equipment}),flush=True)
+        assert profile and equipment and equipment["y"]>=profile["y"]+profile["height"]-4,"Equipment must follow compact build profile"
         assert equipment["y"]<500,"Equipment is below the first mobile screen"
         print("Live Studio geometry:",json.dumps({"profile":profile,"equipment":equipment}))
         page.evaluate("""async () => {
