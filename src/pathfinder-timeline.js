@@ -104,10 +104,21 @@ export function stageStepLabel(stage,level){
  if(stage.tier)return 'Tier '+(stage.tier-1)+' → Tier '+stage.tier;
  return 'A'+(stage.rank-1)+' → '+stage.id;
 }
+const stageCache=new WeakMap();
+function cachedStage(snapshot,stage){
+ let entries=stageCache.get(snapshot);
+ if(!entries){entries=new Map();stageCache.set(snapshot,entries)}
+ if(entries.has(stage.id))return entries.get(stage.id);
+ const steps=Array.from({length:stage.max+1},(_,level)=>stepCost(snapshot,stage,level));
+ const chapter=chapterTotal(snapshot,stage);
+ const result={steps,chapter};
+ entries.set(stage.id,result);
+ return result;
+}
 export function timelineModel(snapshot,raw){
  if(!snapshot)return null;
  const view=normalizeSelection(raw,snapshot),stages=timelineStages(snapshot,view.mode),active=stages.find(s=>s.id===view.stage);
  if(!active)return null;
- const steps=Array.from({length:active.max+1},(_,level)=>stepCost(snapshot,active,level));
- return {view,stages,active,steps,step:steps[view.level],chapter:chapterTotal(snapshot,active)};
+ const {steps,chapter}=cachedStage(snapshot,active);
+ return {view,stages,active,steps,step:steps[view.level],chapter};
 }
