@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 
 test('mobile preview always provides a recovery from a stalled module graph',async()=>{
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
- assert.match(html,/wrap\\.id='arcanaLoadRecovery'/);
+ assert.match(html,/wrap\.id='arcanaLoadRecovery'/);
  assert.match(html,/Retry preview/);
  assert.match(html,/setTimeout\(display,8000\)/);
  assert.match(html,/refined-preview-recovery-20261014/);
