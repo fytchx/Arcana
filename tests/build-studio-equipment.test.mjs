@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {GEAR_ITEMS,DROP_BONUSES,RARITIES,CLASS_CODES,baseItem,equipmentId,allowedItem,allowedGearForSlot,asGear,newGear,bonusRange,bonusUnit,gearIssues,gearLabel} from '../src/build-studio-data.js';
+import {LOADOUT_LAYOUT,buildLoadout} from '../src/core-boards.js';
 
 test('verified equipment and Drop Bonus catalogs are complete',()=>{
  assert.equal(GEAR_ITEMS.length,40);
@@ -74,4 +75,14 @@ test('legacy string builds remain inspectable but do not invent a rarity',()=>{
 test('normal gear cannot be assigned ordinary rarity Drop Bonuses',()=>{
  const gear={...newGear('game:item:rags'),rarity:1,bonusId:'fierce',bonusTier:2,roll:3};
  assert.ok(gearIssues(gear,'chest','Warrior').some(x=>x.includes('Normal-item')));
+});
+
+test('Build Studio contains only eleven actual game equipment slots, never fictional utility slots',()=>{
+ const slots=LOADOUT_LAYOUT.map(({key})=>key);
+ assert.deepEqual(slots,['torch','head','neck','weapon','chest','offhand','ring','belt','ring2','hands','feet']);
+ assert.equal(LOADOUT_LAYOUT[0].label,'Torch');
+ const rendered=buildLoadout({charm:'game:item:rags',charm2:'game:item:rags'},()=>null,false);
+ assert.equal((rendered.match(/class="loadoutSlot /g)||[]).length,11);
+ assert.match(rendered,/0 EQUIPPED/,'Legacy unsupported fields must never count as equipped');
+ assert.doesNotMatch(rendered,/Utility I|Utility II|charm-left|charm-right|Torch \/ utility/);
 });

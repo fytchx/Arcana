@@ -155,7 +155,7 @@ body,.shell{background:var(--theme-main)}
 @media(max-width:700px){.gearBoard .gearSlot{min-height:108px;padding:7px 3px}.gearBoard .gearSlot .slotGlyph{width:56px;height:56px}.gearBoard .gearSlot strong{font-size:9px}.gearBoard .gearSlot small{font-size:8px}.skillNode{width:105px;min-height:115px}.skillStudyHeader{padding:14px}.studyPreviewArt{width:81px;height:81px}.studyPreviewArt img{width:76px;height:76px}}
 @media(max-width:355px){.gearBoard{gap:5px}.gearBoard .gearSlot .slotGlyph{width:48px;height:48px}.gearBoard .gearSlot strong{font-size:8px}.skillNodes{gap:9px}.skillNode{width:95px}}
 
-/* ARCANA CORE SYSTEMS V4 – 13-slot game-shaped loadout / swipe trees */
+/* ARCANA CORE SYSTEMS V4 – 11-slot verified equipment loadout / swipe trees */
 .coreSwitch{display:flex;gap:5px;padding:5px;background:var(--theme-card);border:1px solid var(--theme-border);border-radius:13px;margin:5px 0 14px;min-width:0}
 .coreSwitch button{flex:1;min-width:0;min-height:40px;color:var(--soft);border:0;border-radius:9px;background:transparent;font-size:11px;font-weight:750}
 .coreSwitch button.active{background:var(--theme-highlight-soft);color:var(--theme-accent-text);box-shadow:inset 0 0 0 1px var(--theme-highlight-border)}
@@ -178,10 +178,7 @@ body,.shell{background:var(--theme-main)}
 .loadoutSlot[data-pos="top-left"]{grid-area:1/3/2/5}.loadoutSlot[data-pos="top-center"]{grid-area:1/5/2/9}.loadoutSlot[data-pos="top-right"]{grid-area:1/9/2/11}
 .loadoutSlot[data-pos="weapon-left"]{grid-area:2/1/3/5;min-height:126px}.loadoutSlot[data-pos="chest-center"]{grid-area:2/5/3/9;min-height:126px}.loadoutSlot[data-pos="offhand-right"]{grid-area:2/9/3/13;min-height:126px}
 .loadoutSlot[data-pos="ring-left"]{grid-area:3/3/4/5}.loadoutSlot[data-pos="belt-center"]{grid-area:3/5/4/9}.loadoutSlot[data-pos="ring-right"]{grid-area:3/9/4/11}
-.loadoutSlot[data-pos="charm-left"]{grid-area:4/1/5/3;min-height:90px}.loadoutSlot[data-pos="gloves-center"]{grid-area:4/3/5/7}.loadoutSlot[data-pos="boots-center"]{grid-area:4/7/5/11}.loadoutSlot[data-pos="charm-right"]{grid-area:4/11/5/13;min-height:90px}
-.loadoutSlot[data-pos^="charm"] .loadoutMeta strong{display:none}
-.loadoutSlot[data-pos^="charm"] .loadoutSprite{width:45px;height:45px}
-.loadoutSlot[data-pos^="charm"] .loadoutMeta small{font-size:7px;white-space:normal}
+.loadoutSlot[data-pos="gloves-center"]{grid-area:4/3/5/7}.loadoutSlot[data-pos="boots-center"]{grid-area:4/7/5/11}
 .boardCaveat{font-size:10px;line-height:1.5;color:var(--soft);margin:12px 2px 0}
 .treeProvenance{padding:10px 12px;margin:0 0 12px;border:1px solid var(--theme-border);border-left:2px solid var(--theme-highlight);border-radius:9px;background:var(--theme-card);color:var(--soft);font-size:11px;line-height:1.4}
 .plannerControls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
@@ -225,8 +222,8 @@ body,.shell{background:var(--theme-main)}
 .skillInspector .rank button{min-width:42px;min-height:40px;border:1px solid var(--theme-highlight-border);border-radius:9px;background:var(--theme-highlight-soft);color:var(--theme-accent-text);font-size:18px}
 .skillInspector .rank button:disabled{opacity:.32}
 .skillInspector .reason{font-size:11px;color:var(--soft)}
-@media(max-width:700px){.loadoutFrame{padding:11px 7px}.loadoutStage{grid-template-rows:repeat(4,minmax(76px,auto));gap:5px 0}.loadoutSlot{min-height:78px;padding:4px 1px;gap:1px}.loadoutSlot[data-pos="weapon-left"],.loadoutSlot[data-pos="chest-center"],.loadoutSlot[data-pos="offhand-right"]{min-height:108px}.loadoutSlot[data-pos^="charm"]{min-height:75px}.loadoutSlot[data-pos^="charm"] .loadoutSprite{width:37px;height:37px}.loadoutSprite{width:60px;height:54px}.loadoutMeta small{font-size:7px}.loadoutMeta strong{font-size:8px}.treeSwipe{min-height:260px}.classSkillNode{width:115px}.treeContext h2{font-size:16px}}
-@media(max-width:370px){.loadoutSprite{width:46px;height:45px}.loadoutMeta strong{font-size:7px}.loadoutMeta small{font-size:6px}.loadoutSlot[data-pos^="charm"] .loadoutSprite{width:31px;height:31px}.loadoutFrame{padding:10px 5px}.classSkillNode{width:108px}.passiveRowNodes{gap:5px}.passiveNode{padding:7px 2px}.passiveNode strong{font-size:9px}}
+@media(max-width:700px){.loadoutFrame{padding:11px 7px}.loadoutStage{grid-template-rows:repeat(4,minmax(76px,auto));gap:5px 0}.loadoutSlot{min-height:78px;padding:4px 1px;gap:1px}.loadoutSlot[data-pos="weapon-left"],.loadoutSlot[data-pos="chest-center"],.loadoutSlot[data-pos="offhand-right"]{min-height:108px}.loadoutSprite{width:60px;height:54px}.loadoutMeta small{font-size:7px}.loadoutMeta strong{font-size:8px}.treeSwipe{min-height:260px}.classSkillNode{width:115px}.treeContext h2{font-size:16px}}
+@media(max-width:370px){.loadoutSprite{width:46px;height:45px}.loadoutMeta strong{font-size:7px}.loadoutMeta small{font-size:6px}.loadoutFrame{padding:10px 5px}.classSkillNode{width:108px}.passiveRowNodes{gap:5px}.passiveNode{padding:7px 2px}.passiveNode strong{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.loadoutSlot{transition:none}}
 
 /* ARCANA V5: ONE COMPLETE TIER PER PAGE / INLINE RANK ADJUSTMENT */

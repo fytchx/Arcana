@@ -415,10 +415,10 @@ with sync_playwright() as playwright:
     page.evaluate("location.hash='#/labs/build'")
     page.wait_for_selector('.studioProfile')
     assert page.locator('.studioTitleInput').input_value()=='My Build'
-    assert '0 / 13 equipped' in page.locator('.studioEquipmentHeading').inner_text(), 'New user must start with empty build, not invented demo gear'
+    assert '0 / 11 equipped' in page.locator('.studioEquipmentHeading').inner_text(), 'New user must start with empty build, not invented demo gear'
     assert page.locator('[data-action="sharebuild"]').count()==1, 'Guest build sharing is not available'
-    assert page.locator('.loadoutSlot').count()==13, 'All verified equipment slots must remain available'
-    assert page.locator('.loadoutSlot .arcanaSilhouette').count()==13, 'Equipment art must use understated silhouettes'
+    assert page.locator('.loadoutSlot').count()==11, 'Only the eleven verified game equipment slots must be shown'
+    assert page.locator('.loadoutSlot .arcanaSilhouette').count()==11, 'Equipment art must use understated silhouettes'
     assert page.locator('.studioProfileVisual .arcanaSilhouette').count()==1, 'Class identity emblem should be visible'
     assert page.locator('.studioProfile').bounding_box()['y']<page.locator('.studioPrimaryEquipment').bounding_box()['y'], 'Equipment should follow the compact profile'
     assert page.locator('.pageHead').count()==0, 'Build Studio must not show the old giant page heading'
