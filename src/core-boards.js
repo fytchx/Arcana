@@ -2,6 +2,7 @@ import {allocatedTotal,classPointBudget,passivePointBudget,getClass,getBranch,pa
 import {esc,icon} from './ui.js';
 import {gameArt,hasGameSprite,codexOfficialArt} from './assets.js';
 import {asGear,gearLabel,baseItem,equipmentId} from './build-studio-data.js';
+import {slotSilhouette} from './studio-visuals.js';
 import {motifArt,passiveTitle,safeGameAsset,classTheme} from './tree-art.js';
 const btn=(label,route)=>`<button class="boardJump" data-route="${route}">${label}</button>`;
 const ico=(name)=>icon(name,19);
@@ -33,8 +34,9 @@ export function buildLoadout(equipment,itemLookup,inspecting){
   const raw=equipment?.[slot.key],item=itemLookup(raw),configuration=asGear(raw),base=baseItem(raw);
   const locked=slot.key==='offhand'&&twoHanded&&!raw;
   const displayName=item?.title||base?.name||'',tier=configuration?.rarity?gearLabel(configuration):'';
-  const tieredArt=item?{...item,tier:configuration?.awaken?'A'+configuration.awaken:configuration?.rarity?'T'+configuration.rarity:undefined}:null;
-  const art=item?gameArt(hasGameSprite(tieredArt)?tieredArt:item,100):icon(locked?'close':'plus',24);
+  // A restrained, uniform silhouette keeps empty and equipped states legible.
+  // Real item art stays in the picker/editor where it provides useful detail.
+  const art=slotSilhouette(slot.key);
   return `<button type="button" class="loadoutSlot ${item?'':'empty'} ${locked?'gearLocked':''}" data-pos="${slot.group}" data-action="${inspecting?'inspectgear':'pickgear'}" data-arg="${slot.key}" data-item="${esc(equipmentId(raw)||'')}" aria-label="${esc(slot.label)}: ${esc(displayName|| (locked?'blocked by two-handed weapon':'empty'))}${tier?' · '+esc(tier):''}"><span class="loadoutSprite">${art}</span><span class="loadoutMeta"><small>${esc(slot.label)}</small><strong>${esc(displayName|| (locked?'Blocked':'Empty'))}</strong>${tier?`<em class="gearTierMark">${esc(tier)}</em>`:''}</span>${item?'<i class="loadoutEquipped" aria-hidden="true"></i>':''}</button>`;
  }).join('')}</div><p class="boardCaveat">Tap an equipment slot to choose its base item, rarity, awakening and Drop Bonus. Saved builds retain their individual gear configurations.</p></section>`;
 }
