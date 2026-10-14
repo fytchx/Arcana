@@ -18,6 +18,7 @@ with sync_playwright() as p:
     try:
         response=page.goto(URL,wait_until="domcontentloaded",timeout=30000)
         print("Initial HTTP:",response.status if response else None)
+        assert response and response.status==200,"Preview homepage returned HTTP "+str(response.status if response else "no response")
         page.locator(".launchQuickCard").first.wait_for(timeout=20000)
         page.wait_for_timeout(1000)
         result=page.evaluate("""() => ({
@@ -35,7 +36,10 @@ with sync_playwright() as p:
         assert result["url"].startswith(URL),"Preview unexpectedly redirects away"
         assert result["bodyWidth"]<=result["viewport"]+3,"Mobile horizontal overflow"
         assert not errors,"JavaScript page errors: "+repr(errors)
-        assert not broken,"Failed browser requests: "+repr(broken)
+        required=[x for x in broken if x[0].startswith(URL)]
+        optional=[x for x in broken if not x[0].startswith(URL)]
+        print("Optional external requests:",json.dumps(optional))
+        assert not required,"Failed Arcana Preview assets: "+repr(required)
     finally:
         print("Navigations:",json.dumps(redirects))
         print("Page errors:",json.dumps(errors))
