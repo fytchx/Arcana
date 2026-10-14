@@ -49,12 +49,12 @@ export function pathfinderView(raw,snapshot,error=''){
  '<section class="pathTimeline" aria-label="Upgrade cost timeline">'+
  '<div class="pathTrackHeading"><div><span class="pathEyebrow">01 / UPGRADE MAP</span><h2>Explore '+(view.mode==='awakened'?'Awakening ranks':'rarity tiers')+'</h2></div><span class="pathTrackCount">'+stages.length+' stages</span></div>'+
  '<div class="pathStageRail" id="pathStageRail" role="group" aria-label="Scroll through upgrade stages">'+stages.map((s,i)=>
- '<button type="button" class="pathStage '+(s.id===active.id?'selected':'')+'" data-action="path-stage" data-arg="'+esc(s.id)+'" data-path-stage="'+esc(s.id)+'" aria-pressed="'+(s.id===active.id)+'">'+
+ '<button type="button" class="pathStage '+(s.id===active.id?'selected':'')+'" data-action="path-stage" data-arg="'+esc(s.id)+'" data-path-stage="'+esc(s.id)+'" aria-pressed="'+(s.id===active.id)+'" aria-label="Select '+esc(title(s))+'">'+
  '<span class="pathStageNumber">'+String(i+1).padStart(2,'0')+'</span><strong>'+esc(s.id)+'</strong><small>'+esc(s.name)+'</small></button>'
  ).join('')+'</div>'+
  '<div class="pathTrackHeading pathStepHeading"><div><span class="pathEyebrow">02 / ENHANCEMENT</span><h2 id="pathStageTitle">'+esc(title(active))+'</h2></div><div class="pathTrackBtns"><button type="button" data-action="path-prev" aria-label="Previous enhancement">‹</button><button type="button" data-action="path-next" aria-label="Next enhancement">›</button></div></div>'+
  '<div class="pathStepRail" id="pathStepRail" role="group" aria-label="Browse individual upgrade steps">'+model.steps.map((x,i)=>
- '<button type="button" data-action="path-step" data-arg="'+i+'" data-path-step="'+i+'" aria-pressed="'+(i===view.level)+'" class="pathStep '+(i===view.level?'selected':'')+'">'+
+ '<button type="button" data-action="path-step" data-arg="'+i+'" data-path-step="'+i+'" aria-pressed="'+(i===view.level)+'" aria-label="'+esc(stageStepLabel(active,i))+'" class="pathStep '+(i===view.level?'selected':'')+'">'+
  '<span>'+ (i===0?'↗':'+'+i)+'</span><small>'+(i===0?'Transition':x?compactGold(x.gold)+' G':'Unverified')+'</small></button>'
  ).join('')+'</div>'+
  '<div class="pathRangeHead"><label for="pathStepRange">Slide through upgrades</label><output id="pathStepValue" for="pathStepRange">'+(view.level===0?'Transition':'+'+view.level)+'</output></div>'+
