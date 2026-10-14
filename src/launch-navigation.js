@@ -1,5 +1,5 @@
 import {esc,icon} from './ui.js';
-import {ACCENT_PRESETS,SITE_SURFACES,ICON_MODES,selectedAccent,selectedSiteSurface,selectedIconColor,selectedIconMode} from './theme.js';
+import {ACCENT_PRESETS,SITE_SURFACES,ICON_MODES,selectedAccent,selectedSiteSurface,selectedIconColor,selectedIconMode,customAccent} from './theme.js';
 import {ICON_CATEGORIES,ICON_IDS,iconAssetPath} from './arcana-icons.js';
 
 // One navigation registry for the launch home, its popovers and the A-Z directory.
@@ -150,7 +150,8 @@ export function applyAppPrefs(){const prefs=appPrefs();document.documentElement.
 export function changeAppPref(key,checked){if(!['compact','reduceMotion'].includes(key))return;const p={...appPrefs(),[key]:checked===true};try{localStorage.setItem(PREF_KEY,JSON.stringify(p))}catch{}applyAppPrefs()}
 export function settingsView(){
  const p=appPrefs(),selected=selectedAccent(),surface=selectedSiteSurface(),iconColor=selectedIconColor(),iconMode=selectedIconMode();
- const accentCards=ACCENT_PRESETS.map(x=>'<button type="button" class="slateAccentChoice '+(selected===x.id?'selected':'')+'" data-action="accent" data-arg="'+esc(x.id)+'" aria-pressed="'+(selected===x.id)+'"><span class="slateAccentSwatch" style="--swatch:'+x.hex+'"></span><span>'+esc(x.name)+'</span>'+(selected===x.id?'<b aria-hidden="true">✓</b>':'')+'</button>').join('');
+ const custom=customAccent();
+  const accentCards=ACCENT_PRESETS.map(x=>'<button type="button" class="slateAccentChoice '+(selected===x.id?'selected':'')+'" data-action="accent" data-arg="'+esc(x.id)+'" aria-pressed="'+(selected===x.id)+'"><span class="slateAccentSwatch" style="--swatch:'+x.hex+'"></span><span>'+esc(x.name)+'</span>'+(selected===x.id?'<b aria-hidden="true">✓</b>':'')+'</button>').join('');
  const surfaceCards=SITE_SURFACES.map(x=>'<button type="button" class="arcanaSurfaceChoice '+(surface===x.id?'selected':'')+'" data-action="site-surface" data-arg="'+esc(x.id)+'" aria-pressed="'+(surface===x.id)+'"><span class="arcanaSurfacePreview" style="--surface-main:'+(x.main||'#0D1019')+';--surface-card:'+(x.secondary||'#191E2B')+'"></span><span>'+esc(x.name)+'</span></button>').join('');
  const iconColors='<button type="button" class="arcanaIconColorChoice '+(iconColor==='follow-site'?'selected':'')+'" data-action="icon-color" data-arg="follow-site" aria-pressed="'+(iconColor==='follow-site')+'"><span class="slateAccentSwatch" style="--swatch:var(--theme-highlight)"></span><span>Follow site accent</span></button>'+
  ACCENT_PRESETS.map(x=>'<button type="button" class="arcanaIconColorChoice '+(iconColor===x.id?'selected':'')+'" data-action="icon-color" data-arg="'+esc(x.id)+'" aria-pressed="'+(iconColor===x.id)+'"><span class="slateAccentSwatch" style="--swatch:'+x.hex+'"></span><span>'+esc(x.name)+'</span></button>').join('');
@@ -158,8 +159,9 @@ export function settingsView(){
  const examples=['feature-build-studio','equipment-chest','class-mage','feature-rune-forge','feature-codex','stat-retaliation'].map(id=>'<span class="arcanaThemePreviewIcon">'+icon(id,23)+'<small>'+esc(id.replace(/^(feature|equipment|class|stat)-/,'').replaceAll('-',' '))+'</small></span>').join('');
  return '<div class="launchPage slateSettings arcanaSettings"><span class="launchEyebrow">USER CENTER</span><h1>App Settings</h1><p>Color the entire Arcana interface and its custom Minimal icon pack separately. Your preferences save on this device.</p>'+
  '<section class="slateSettingsBlock"><h2>Site appearance</h2><p>Choose the foundation for Arcana. Layout and content are unchanged.</p><div class="arcanaSurfaceGrid" role="group" aria-label="Site theme">'+surfaceCards+'</div></section>'+
- '<section class="slateSettingsBlock"><h2>Site accent color</h2><p>The original ten colors control the site highlights, selected buttons and borders.</p><div class="slateAccentGrid" role="group" aria-label="Site accent color">'+accentCards+'</div>'+
- '<button type="button" class="slateSiteTheme '+(selected==='site'?'selected':'')+'" data-action="accent" data-arg="site" aria-pressed="'+(selected==='site')+'">Follow centrally managed Arcana accent '+(selected==='site'?'✓':'')+'</button></section>'+
+ '<section class="slateSettingsBlock"><h2>Site accent color</h2><p>Choose a preset or create any hex color. Your wave artwork, buttons and borders follow it instantly and the color stays saved on this device.</p><div class="slateAccentGrid" role="group" aria-label="Site accent color">'+accentCards+'</div>'+
+ '<div class="arcanaCustomAccent" role="group" aria-label="Custom accent color"><label for="arcanaCustomAccentPicker">Your custom color</label><input type="color" id="arcanaCustomAccentPicker" value="'+esc(custom)+'" aria-label="Pick your color"><input type="text" id="arcanaCustomAccentHex" value="'+esc(custom)+'" maxlength="7" spellcheck="false" aria-label="Hex color code" placeholder="#A98BFF"><button type="button" data-action="custom-accent">Apply custom color</button>'+(selected==='custom'?'<strong class="arcanaCustomActive">Active ✓</strong>':'')+'</div>'+ 
+  '<button type="button" class="slateSiteTheme '+(selected==='site'?'selected':'')+'" data-action="accent" data-arg="site" aria-pressed="'+(selected==='site')+'">Follow centrally managed Arcana accent '+(selected==='site'?'✓':'')+'</button></section>'+
  '<section class="slateSettingsBlock"><h2>Arcana Minimal icons</h2><p>'+ICON_IDS.length+' original SVGs. Icons can use a different color from the rest of Arcana.</p>'+
  '<div class="arcanaThemePreview" aria-label="Live preview of current icon colors">'+examples+'</div>'+
  '<h3>Icon color</h3><div class="arcanaIconColorGrid" role="group" aria-label="Icon color">'+iconColors+'</div>'+
