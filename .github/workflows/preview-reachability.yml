@@ -25,3 +25,16 @@ jobs:
               grep -q 'launchQuickGrid' /tmp/arcana-response
             fi
           done
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'playwright>=1.55,<2'
+      - run: python -m playwright install --with-deps chromium
+      - name: Validate real Android-sized browser render and console
+        run: python tests/preview_live_mobile.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arcana-preview-live-screen
+          path: qa-output/preview-live-mobile.png
+          if-no-files-found: ignore
