@@ -107,7 +107,7 @@ with sync_playwright() as p:
         assert page.locator('.refinedGallerySection').count()==5,"Refined asset families missing"
         assert page.locator('.refinedGalleryTile .arcanaRefinedIcon').count()==62,"Inline SVG vectors did not mount"
         assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'),"Refined gallery overflowed mobile"
-        svg_response=page.request.get(URL.rsplit('/?',1)[0]+"/assets/icons/idlearc-refined/equipment/equipment-head.svg")
+        svg_response=page.request.get(URL.rstrip('/')+"/assets/icons/idlearc-refined/equipment/equipment-head.svg")
         assert svg_response.status==200 and 'svg' in svg_response.headers.get('content-type',''),"Standalone illustrated asset did not serve"
         page.screenshot(path=str(out/"arcana-refined-svg-gallery.png"),full_page=True)
         print("IdleArc Refined gallery: 62 individually served SVG artworks",flush=True)
