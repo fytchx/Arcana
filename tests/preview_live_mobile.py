@@ -53,6 +53,13 @@ with sync_playwright() as p:
         assert abs(geom[0]["y"]-geom[1]["y"])<3 and geom[1]["x"]>geom[0]["x"]+70,"Featured cards should be two-up"
         assert geom[2]["width"]>geom[0]["width"]*1.8 and geom[2]["y"]>geom[0]["y"]+60,"Third featured card should fill final row"
         print("Mystical homepage geometry:",json.dumps({"quick":slate,"featured":geom}),flush=True)
+        assert page.locator('.launchQuickCard .refinedOfficialSprite').count()==6,"Six home sections must display real game motifs"
+        assert page.locator('.launchHeroArt .refinedOfficialSprite').count()==1,"Build Studio hero lacks official game motif"
+        assert page.locator('.launchQuickCard[data-arg="codex"] [data-refined-source="materials:prism-stone"]').count()==1,"Codex needs distinctive original-art token"
+        source_check=page.evaluate("""async()=>Promise.all(['/official-art/equipment.webp','/official-art/skills.webp','/official-art/icons.webp','/official-art/materials.webp'].map(async p=>{const r=await fetch(p);return {url:p,status:r.status,type:r.headers.get('content-type')}}))""")
+        assert all(row["status"]==200 and "webp" in row["type"] for row in source_check),"IdleArc sprites did not load on live preview"
+        print("Official game artwork requests:",json.dumps(source_check),flush=True)
+
         page.locator("#accountBtn").click()
         page.locator('[data-route="settings"]').click()
         assert page.locator(".slateAccentChoice").count()==10,"Ten theme colors must be selectable"
@@ -133,6 +140,11 @@ with sync_playwright() as p:
         page.locator(".studioProfile").wait_for(timeout=16000)
         page.evaluate("window.scrollTo(0,0)")
         assert page.locator(".studioPrimaryEquipment .loadoutSlot").count()==13,"Live loadout lost gear slots"
+        assert page.locator(".studioPrimaryEquipment .refinedOfficialSprite").count()==13,"Each equipment slot needs recognizable game art"
+        assert page.locator(".studioProfileVisual .refinedOfficialSprite").count()==1,"Class profile must show an in-game skill motif"
+        assert page.locator('.loadoutSlot[data-pos="top-center"] [data-refined-source="equipment:chainmail-helm"]').count()==1,"Empty head slot not based on actual helmet art"
+        page.screenshot(path=str(out/"idlearc-refined-studio-mobile.png"),full_page=True)
+
         assert page.locator(".studioPrimaryEquipment .arcanaSilhouette").count()==13,"Live equipment silhouettes not applied"
         assert page.locator(".studioProfileVisual .arcanaSilhouette").count()==1,"Class profile emblem missing"
         assert page.locator(".pageHead").count()==0,"Old oversized heading still present"
