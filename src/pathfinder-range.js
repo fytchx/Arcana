@@ -1,6 +1,6 @@
 /* Pure cost totals for any two verified rarity/awakening checkpoints.
    Reads the same unmodified recipe model as Pathfinder's single-step viewer. */
-import {timelineStages,stepCost} from './pathfinder-timeline.js';
+import {timelineStages,timelineModel} from './pathfinder-timeline.js';
 export const RANGE_KEY='arcana-pathfinder-checkpoints-v1';
 const clamp=(v,max)=>Math.max(0,Math.min(max,Number.isFinite(Number(v))?Math.trunc(Number(v)):0));
 export const allStages=snapshot=>[...timelineStages(snapshot,'normal'),...timelineStages(snapshot,'awakened')];
@@ -38,8 +38,9 @@ export function quoteRange(snapshot,raw,quick={}){
  for(let i=start;i<=stop;i++){
   const stage=stages[i],initial=i===start?range.fromLevel+1:0;
   const final=i===stop?range.toLevel:stage.max;
+  const cached=timelineModel(snapshot,{mode:stage.tier?'normal':'awakened',stage:stage.id,level:0});
   for(let level=initial;level<=final;level++){
-   const cost=stepCost(snapshot,stage,level);
+   const cost=cached?.steps[level];
    if(!cost){missing.push(stage.id+' '+(level===0?'transition':'+'+level));continue}
    gold+=cost.gold;
    for(const m of cost.materials){
