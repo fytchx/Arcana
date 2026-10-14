@@ -1,5 +1,6 @@
 import {esc,icon} from './ui.js';
-import {ACCENT_PRESETS,selectedAccent} from './theme.js';
+import {ACCENT_PRESETS,SITE_SURFACES,ICON_MODES,selectedAccent,selectedSiteSurface,selectedIconColor,selectedIconMode} from './theme.js';
+import {ICON_CATEGORIES,ICON_IDS,iconAssetPath} from './arcana-icons.js';
 
 // One navigation registry for the launch home, its popovers and the A-Z directory.
 // Topics are navigation shells until the editorial team publishes actual articles.
@@ -93,6 +94,7 @@ const extras=[
  link('About IdleArc','Game overview and navigation.','wiki/about','info'),
  link('Account & Profile','Your player card and account.','account','users'),
  link('App Settings','Display and accessibility preferences.','settings','cog'),
+ link('Arcana Minimal Icons','Browse all original recolorable SVGs.','icons','gem'),
  link('Build Studio','Equipment, pets, runes, and skills.','labs/build','shield'),
  link('Class Skill Tree · Build Studio','Manage class skills.','labs/skills','git'),
  link('Passive Skill Tree · Build Studio','Manage passive skills.','labs/passives','layers'),
@@ -137,6 +139,7 @@ export function userCenterView(profile=null){
  link('My Profile & Account','Player card, login and published content.','account','users'),
  link('Recent Activity','Continue work and revisit guides.','recent','clock'),
  link('App Settings','Appearance and accessibility on this device.','settings','cog'),
+ link('Icon Library','Browse the complete Arcana Minimal asset pack.','icons','gem'),
  link('My Build Studio','Jump back into your character.','labs/build','shield'),
  link('Beta Feedback','Report anything that needs fixing.','beta','info')
  ].map(navrow).join('')+'</div></div>';
@@ -146,11 +149,31 @@ export function appPrefs(){try{const raw=JSON.parse(localStorage.getItem(PREF_KE
 export function applyAppPrefs(){const prefs=appPrefs();document.documentElement.dataset.launchCompact=String(prefs.compact);document.documentElement.dataset.launchReduceMotion=String(prefs.reduceMotion)}
 export function changeAppPref(key,checked){if(!['compact','reduceMotion'].includes(key))return;const p={...appPrefs(),[key]:checked===true};try{localStorage.setItem(PREF_KEY,JSON.stringify(p))}catch{}applyAppPrefs()}
 export function settingsView(){
- const p=appPrefs(),selected=selectedAccent();
- const colorCards=ACCENT_PRESETS.map(x=>'<button type="button" class="slateAccentChoice '+(selected===x.id?'selected':'')+'" data-action="accent" data-arg="'+esc(x.id)+'" aria-pressed="'+(selected===x.id)+'"><span class="slateAccentSwatch" style="--swatch:'+x.hex+'"></span><span>'+esc(x.name)+'</span>'+(selected===x.id?'<b aria-hidden="true">✓</b>':'')+'</button>').join('');
- return '<div class="launchPage slateSettings"><span class="launchEyebrow">USER CENTER</span><h1>App Settings</h1><p>Make Arcana yours. Your accent color is saved in this browser and used across Arcana pages and tools.</p>'+
- '<section class="slateSettingsBlock"><h2>Accent color</h2><p>The same ten palettes, now on the neutral Slate layout. Changing your color never alters game stats or builds.</p><div class="slateAccentGrid" role="group" aria-label="Choose Arcana accent color">'+colorCards+'</div>'+
- '<button type="button" class="slateSiteTheme '+(selected==='site'?'selected':'')+'" data-action="accent" data-arg="site" aria-pressed="'+(selected==='site')+'">Follow centrally managed Arcana theme '+(selected==='site'?'✓':'')+'</button></section>'+
+ const p=appPrefs(),selected=selectedAccent(),surface=selectedSiteSurface(),iconColor=selectedIconColor(),iconMode=selectedIconMode();
+ const accentCards=ACCENT_PRESETS.map(x=>'<button type="button" class="slateAccentChoice '+(selected===x.id?'selected':'')+'" data-action="accent" data-arg="'+esc(x.id)+'" aria-pressed="'+(selected===x.id)+'"><span class="slateAccentSwatch" style="--swatch:'+x.hex+'"></span><span>'+esc(x.name)+'</span>'+(selected===x.id?'<b aria-hidden="true">✓</b>':'')+'</button>').join('');
+ const surfaceCards=SITE_SURFACES.map(x=>'<button type="button" class="arcanaSurfaceChoice '+(surface===x.id?'selected':'')+'" data-action="site-surface" data-arg="'+esc(x.id)+'" aria-pressed="'+(surface===x.id)+'"><span class="arcanaSurfacePreview" style="--surface-main:'+(x.main||'#0D1019')+';--surface-card:'+(x.secondary||'#191E2B')+'"></span><span>'+esc(x.name)+'</span></button>').join('');
+ const iconColors='<button type="button" class="arcanaIconColorChoice '+(iconColor==='follow-site'?'selected':'')+'" data-action="icon-color" data-arg="follow-site" aria-pressed="'+(iconColor==='follow-site')+'"><span class="slateAccentSwatch" style="--swatch:var(--theme-highlight)"></span><span>Follow site accent</span></button>'+
+ ACCENT_PRESETS.map(x=>'<button type="button" class="arcanaIconColorChoice '+(iconColor===x.id?'selected':'')+'" data-action="icon-color" data-arg="'+esc(x.id)+'" aria-pressed="'+(iconColor===x.id)+'"><span class="slateAccentSwatch" style="--swatch:'+x.hex+'"></span><span>'+esc(x.name)+'</span></button>').join('');
+ const modeCards=ICON_MODES.map(x=>'<button type="button" class="arcanaIconModeChoice '+(iconMode===x.id?'selected':'')+'" data-action="icon-mode" data-arg="'+esc(x.id)+'" aria-pressed="'+(iconMode===x.id)+'"><strong>'+esc(x.name)+'</strong><small>'+esc(x.detail)+'</small></button>').join('');
+ const examples=['feature-build-studio','equipment-chest','class-mage','feature-rune-forge','feature-codex','stat-retaliation'].map(id=>'<span class="arcanaThemePreviewIcon">'+icon(id,23)+'<small>'+esc(id.replace(/^(feature|equipment|class|stat)-/,'').replaceAll('-',' '))+'</small></span>').join('');
+ return '<div class="launchPage slateSettings arcanaSettings"><span class="launchEyebrow">USER CENTER</span><h1>App Settings</h1><p>Color the entire Arcana interface and its custom Minimal icon pack separately. Your preferences save on this device.</p>'+
+ '<section class="slateSettingsBlock"><h2>Site appearance</h2><p>Choose the foundation for Arcana. Layout and content are unchanged.</p><div class="arcanaSurfaceGrid" role="group" aria-label="Site theme">'+surfaceCards+'</div></section>'+
+ '<section class="slateSettingsBlock"><h2>Site accent color</h2><p>The original ten colors control the site highlights, selected buttons and borders.</p><div class="slateAccentGrid" role="group" aria-label="Site accent color">'+accentCards+'</div>'+
+ '<button type="button" class="slateSiteTheme '+(selected==='site'?'selected':'')+'" data-action="accent" data-arg="site" aria-pressed="'+(selected==='site')+'">Follow centrally managed Arcana accent '+(selected==='site'?'✓':'')+'</button></section>'+
+ '<section class="slateSettingsBlock"><h2>Arcana Minimal icons</h2><p>'+ICON_IDS.length+' original SVGs. Icons can use a different color from the rest of Arcana.</p>'+
+ '<div class="arcanaThemePreview" aria-label="Live preview of current icon colors">'+examples+'</div>'+
+ '<h3>Icon color</h3><div class="arcanaIconColorGrid" role="group" aria-label="Icon color">'+iconColors+'</div>'+
+ '<h3>Icon appearance</h3><div class="arcanaIconModeGrid" role="group" aria-label="Icon style">'+modeCards+'</div>'+
+ '<button type="button" class="arcanaOpenGallery" data-route="icons">'+icon('grid',16)+' Browse all '+ICON_IDS.length+' icons '+icon('arrow',15)+'</button></section>'+
  '<section class="slateSettingsBlock"><h2>Display</h2><div class="launchSettingList"><label class="launchSetting"><span><strong>Compact navigation</strong><small>Make rows and menus tighter.</small></span><input type="checkbox" data-app-pref="compact" '+(p.compact?'checked':'')+'></label><label class="launchSetting"><span><strong>Reduce animations</strong><small>Minimize motion effects.</small></span><input type="checkbox" data-app-pref="reduceMotion" '+(p.reduceMotion?'checked':'')+'></label></div></section>'+
- '<p class="mutedSmall">Preferences on this preview are stored locally in your browser, not your account. They do not change production.</p></div>';
+ '<p class="mutedSmall">Preferences are local to this browser. Production styling and your saved builds are not changed.</p></div>';
+}
+export function iconGalleryView(){
+ const sections=Object.entries(ICON_CATEGORIES).map(([cat,ids])=>
+ '<section class="arcanaIconCatalogSection"><header><h2>'+esc(cat[0].toUpperCase()+cat.slice(1))+'</h2><small>'+ids.length+' assets</small></header>'+
+ '<div class="arcanaIconCatalogGrid">'+ids.map(id=>'<div class="arcanaIconCatalogItem" title="'+esc(id)+'">'+icon(id,27)+'<span>'+esc(id.replace(/^(feature|class|equipment|stat|currency)-/,'').replaceAll('-',' '))+'</span></div>').join('')+'</div></section>').join('');
+ return '<div class="launchPage arcanaIconCatalog"><span class="launchEyebrow">ASSET SYSTEM</span><h1>Arcana Minimal Icon Library</h1>'+
+ '<p>All '+ICON_IDS.length+' original vector assets, organized by purpose. Every icon responds to your selected color and appearance mode. These are independent from IdleArc game artwork.</p>'+
+ '<button class="arcanaOpenGallery" data-route="settings">'+icon('back',16)+' Customize icon appearance</button>'+
+ sections+'<p class="mutedSmall">SVG source files and the manifest are available in the Arcana repository under <code>assets/icons/arcana-minimal/</code>.</p></div>';
 }
