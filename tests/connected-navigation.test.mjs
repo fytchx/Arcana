@@ -6,7 +6,7 @@ import {WIKI_ARTICLES,WIKI_CONNECTIONS,WIKI_CATEGORY_LIST,wikiArticleById} from 
 import {wikiArticleView,wikiRecordView,wikiLibraryView,wikiLandingView} from '../src/wiki-views.js';
 
 const app=()=>readFile(new URL('../src/app.js',import.meta.url),'utf8');
-const allRoutes=new Set(['home','labs','calculators','wiki','lfg','labs/build','labs/runes','labs/skills','labs/passives','labs/pets','labs/guild-tree','calculators/pet','calculators/affixes','calculators/upgrade','calculators/compare','calculators/ml-farm','lfg/raids','lfg/guilds','wiki/guides','wiki/article','wiki/library']);
+const allRoutes=new Set(['home','labs','calculators','wiki','lfg','labs/build','labs/runes','labs/skills','labs/passives','labs/pets','labs/guild-tree','calculators/pet','calculators/affixes','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/ml-farm','lfg/raids','lfg/guilds','wiki/guides','wiki/article','wiki/library']);
 
 test('Every recommended next step has an actual registered destination',()=>{
  for(const [page,keys] of Object.entries(NAV_FLOWS)){
