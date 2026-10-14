@@ -128,10 +128,11 @@ with sync_playwright() as playwright:
     assert page.locator('#bottomNav').count()==0, 'Launch must not have a bottom task bar'
     assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1, 'Build Studio is not featured'
     assert page.locator('.launchQuickCard').count()==6, 'Exactly six launch navigation cards are required'
+    assert page.locator('.launchBrandName').inner_text()=='ARCANA', 'Slate wordmark missing'
     assert page.locator('.launchHero').evaluate('(e)=>getComputedStyle(e).display')=='flex', 'Build Studio hero CSS missing'
     assert page.locator('.launchQuickGrid').evaluate('(e)=>getComputedStyle(e).display')=='grid', 'Homepage cards are not using responsive grid CSS'
     positions=page.locator('.launchQuickCard').evaluate_all('(els)=>els.slice(0,2).map(e=>({x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y}))')
-    assert abs(positions[0]['y']-positions[1]['y'])<3 and positions[1]['x']>positions[0]['x']+40, 'Mobile cards stacked instead of two-column layout'
+    assert positions[1]['y']>positions[0]['y']+40 and abs(positions[0]['x']-positions[1]['x'])<3, 'Slate navigation must be a compact single column'
 
     for menu_id in ('wiki','tools','guides','builds','codex','social'):
         assert page.locator('.launchQuickCard[data-arg="'+menu_id+'"]').count()==1, 'Missing home card '+menu_id
