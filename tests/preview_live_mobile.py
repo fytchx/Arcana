@@ -83,6 +83,7 @@ with sync_playwright() as p:
 
         page.goto(URL+"#/labs/build",wait_until="domcontentloaded",timeout=30000)
         page.locator(".studioProfile").wait_for(timeout=16000)
+        page.evaluate("window.scrollTo(0,0)")
         assert page.locator(".studioPrimaryEquipment .loadoutSlot").count()==13,"Live loadout lost gear slots"
         assert page.locator(".studioPrimaryEquipment .arcanaSilhouette").count()==13,"Live equipment silhouettes not applied"
         assert page.locator(".studioProfileVisual .arcanaSilhouette").count()==1,"Class profile emblem missing"
