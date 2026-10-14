@@ -33,6 +33,27 @@ with sync_playwright() as p:
         assert result["cards"]==6,"Six navigation cards did not render"
         assert result["css"]=="grid","Live navigation stylesheet failed to apply"
         assert result["hero"]=="flex","Live hero stylesheet failed to apply"
+        slate=page.locator(".launchQuickCard").evaluate_all("""els => {
+            const a=els[0].getBoundingClientRect(),b=els[1].getBoundingClientRect();
+            return {top:a.y,next:b.y,left:a.x,nextLeft:b.x,cardHeight:a.height,
+                    heroHeight:document.querySelector('.launchHero').getBoundingClientRect().height};
+        }""")
+        print("Slate geometry:",json.dumps(slate))
+        assert slate["next"]>slate["top"]+45 and abs(slate["left"]-slate["nextLeft"])<3,"Slate must use one-column navigation"
+        assert 52<=slate["cardHeight"]<=80,"Slate cards are too large or too small"
+        assert 110<=slate["heroHeight"]<=200,"Build Studio feature too tall for Slate"
+        page.locator("#accountBtn").click()
+        page.locator('[data-route="settings"]').click()
+        assert page.locator(".slateAccentChoice").count()==10,"Ten theme colors must be selectable"
+        page.locator('[data-action="accent"][data-arg="cyan-blue"]').click()
+        chosen=page.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--theme-highlight').trim()")
+        assert chosen.lower()=="#13c5f4","Personal accent was not applied"
+        page.reload(wait_until="domcontentloaded")
+        page.locator(".launchQuickCard").first.wait_for(timeout=20000)
+        persisted=page.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--theme-highlight').trim()")
+        assert persisted.lower()=="#13c5f4","Personal accent choice did not survive reload"
+        print("Player accent persisted:",persisted)
+
         assert result["url"].startswith(URL),"Preview unexpectedly redirects away"
         assert result["bodyWidth"]<=result["viewport"]+3,"Mobile horizontal overflow"
         assert not errors,"JavaScript page errors: "+repr(errors)
