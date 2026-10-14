@@ -2,6 +2,15 @@ import {esc} from './ui.js';
 import {PATHFINDER_SLOTS,MODE_LABELS,money,timelineModel,stageStepLabel,normalizeQuickView} from './pathfinder-timeline.js';
 
 const title=stage=>stage.tier?stage.name:stage.id+' · Awakened';
+const compactGold=n=>{
+ const scales=[[1000000000000n,'T'],[1000000000n,'B'],[1000000n,'M'],[1000n,'K']];
+ for(const [denom,unit] of scales)if(n>=denom){
+  const tenth=n*10n/denom;
+  return (tenth%10n===0n?String(tenth/10n):String(tenth/10n)+'.'+String(tenth%10n))+unit;
+ }
+ return money(n);
+};
+
 const amountList=list=>'<div class="pathMaterials">'+list.map(x=>
  '<div class="pathMaterial"><span>'+esc(x.name)+'</span><strong>'+money(x.quantity)+'</strong></div>'
  ).join('')+'</div>';
@@ -46,7 +55,7 @@ export function pathfinderView(raw,snapshot,error=''){
  '<div class="pathTrackHeading pathStepHeading"><div><span class="pathEyebrow">02 / ENHANCEMENT</span><h2 id="pathStageTitle">'+esc(title(active))+'</h2></div><div class="pathTrackBtns"><button type="button" data-action="path-prev" aria-label="Previous enhancement">‹</button><button type="button" data-action="path-next" aria-label="Next enhancement">›</button></div></div>'+
  '<div class="pathStepRail" id="pathStepRail" role="group" aria-label="Browse individual upgrade steps">'+model.steps.map((x,i)=>
  '<button type="button" data-action="path-step" data-arg="'+i+'" data-path-step="'+i+'" aria-pressed="'+(i===view.level)+'" class="pathStep '+(i===view.level?'selected':'')+'">'+
- '<span>'+ (i===0?'↗':'+'+i)+'</span><small>'+(i===0?'Transition':x?money(x.gold)+' G':'Unverified')+'</small></button>'
+ '<span>'+ (i===0?'↗':'+'+i)+'</span><small>'+(i===0?'Transition':x?compactGold(x.gold)+' G':'Unverified')+'</small></button>'
  ).join('')+'</div>'+
  '<div class="pathRangeHead"><label for="pathStepRange">Slide through upgrades</label><output id="pathStepValue" for="pathStepRange">'+(view.level===0?'Transition':'+'+view.level)+'</output></div>'+
  '<input id="pathStepRange" data-path-range aria-label="Selected upgrade level" type="range" min="0" max="'+active.max+'" value="'+view.level+'" step="1" aria-valuetext="'+esc(stageStepLabel(active,view.level))+'" style="--path-progress:'+(active.max?Math.round(view.level/active.max*100):0)+'%">'+
