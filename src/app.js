@@ -36,12 +36,13 @@ import {connectedNext,homeStart,navCards,NAV_DESTINATIONS} from './context-nav.j
 import {resumableWorkspaces} from './workspace-hub.js';
 import {readFarmPlan,saveFarmPlan,farmCompareView} from './farm-compare.js';
 import {timelineStages,timelineModel,stageStepLabel,readQuickView,saveQuickView} from './pathfinder-timeline.js';
-import {pathfinderView,pathfinderStepDetail} from './pathfinder-timeline-view.js';
+import {pathfinderView,pathfinderStepDetail,pathfinderRangeContent} from './pathfinder-timeline-view.js';
+import {readRange,saveRange,allStages} from './pathfinder-range.js';
 import {homeScreen,homeSubmenu,directoryView,wikiTopicsView,wikiTopicView,wikiAboutView,userCenterView,settingsView,iconGalleryView,applyAppPrefs,changeAppPref} from './launch-navigation.js';
 import {currentAccount,refreshAccount} from './community-ui.js';
 
 const $=s=>document.querySelector(s);const node=id=>document.getElementById(id);
-const state={treeData:null,treeStatus:'loading',treeClassId:null,treeBranchId:null,passiveTier:0,passivePage:0,classTierIndex:0,characterLevel:1,passiveAlloc:{},classAlloc:{},classAllocById:{},passiveFreeMode:false,layer:null,search:'',lastSearch:'',recent:loadRecent(),draft:loadDraft(),compareLeft:null,compareRight:null,compareTier:1,runeIndex:0,runeFamily:'Fury',runeSecondary:'critical_damage',runeShape:'small',runeSelected:null,runeHistory:[],petLevels:[0,0,0,0],petCalcMode:'seasonal',petAffixPlan:readPetAffixPlan(),compoundQuick:readCompoundPlan(),affixCostQuick:readAffixCostPlan(),slotTarget:null,gearEdit:null,returnTo:null,guildTreePlan:readGuildTree(),guildTreeTab:'vanguard',guildTreeLinkKey:'',guildUndo:[],guildRedo:[],guildBaseline:readGuildBaseline(),farmPlan:readFarmPlan(),pathfinderQuick:readQuickView()};
+const state={treeData:null,treeStatus:'loading',treeClassId:null,treeBranchId:null,passiveTier:0,passivePage:0,classTierIndex:0,characterLevel:1,passiveAlloc:{},classAlloc:{},classAllocById:{},passiveFreeMode:false,layer:null,search:'',lastSearch:'',recent:loadRecent(),draft:loadDraft(),compareLeft:null,compareRight:null,compareTier:1,runeIndex:0,runeFamily:'Fury',runeSecondary:'critical_damage',runeShape:'small',runeSelected:null,runeHistory:[],petLevels:[0,0,0,0],petCalcMode:'seasonal',petAffixPlan:readPetAffixPlan(),compoundQuick:readCompoundPlan(),affixCostQuick:readAffixCostPlan(),slotTarget:null,gearEdit:null,returnTo:null,guildTreePlan:readGuildTree(),guildTreeTab:'vanguard',guildTreeLinkKey:'',guildUndo:[],guildRedo:[],guildBaseline:readGuildBaseline(),farmPlan:readFarmPlan(),pathfinderQuick:readQuickView(),pathfinderRange:readRange()};
 const recipeState={data:null,loading:false,error:''};
 async function loadPathfinderRecipes(){
  if(recipeState.loading||recipeState.data)return;recipeState.loading=true;
@@ -225,7 +226,7 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
  '<p class="studioBuildNotice"><strong>Game data:</strong> '+esc(b.notes||'Values remain under verification.')+'</p>'+
  '</div>';}
 
-function calcPathfinder(){return layout('Arcana Pathfinder','UPGRADE REFERENCE',pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error),'calculator')}
+function calcPathfinder(){return layout('Arcana Pathfinder','UPGRADE REFERENCE',pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error,state.pathfinderRange),'calculator')}
 function calcUpgrade(){const id=parseRoute().query.get('item'),e=item(id);if(e)track(e.id);
  return layout('Upgrade Cost Calculator','ARCANA CALCULATORS',`<div class="calcWorkspace"><span class="eyebrow">SELECTED EQUIPMENT</span><button class="selection" data-action="chooseupgrade"><span class="tinyIcon ${e?'tinyGameArt':''}">${e?gameArt(e,40):icon('shield',22)}</span><span><strong>${esc(e?.title||'Select an item')}</strong><small>${esc(e?.subtitle||'Use universal search or the item picker')}</small></span>${icon('arrow',16)}</button>${e?`<div class="actionsGroup">${button('View item in Wiki','wikiitem',e.id,'secondary','book')}${button('Compare','compare',e.id,'secondary','compare')}</div>`:''}<div class="calcWarning">${icon('info',20)} <p>Partial cost reference: this snapshot provides base tier changes only, not level-by-level or Awakened totals. No full expected cost is claimed.</p></div></div>${verifiedUpgradeReferencePanel(e?.title)}`,'calculator')}
 function calcCompare(){const qp=parseRoute().query;const left=item(qp.get('left')||state.compareLeft),right=item(qp.get('right')||state.compareRight);state.compareLeft=left?.id||null;state.compareRight=right?.id||null;
@@ -740,6 +741,21 @@ function wirePathfinderQuick(){
  });
  document.addEventListener('change',e=>{
   if(e.target.matches('[data-path-range]')){state.pathfinderQuick=saveQuickView(state.pathfinderQuick);centerPathRail('pathStepRail','data-path-step',state.pathfinderQuick.level,'smooth');return;}
+  const d=e.target.dataset;
+  if(recipeState.data&&(d.pathFromStage!==undefined||d.pathFromLevel!==undefined||d.pathToStage!==undefined||d.pathToLevel!==undefined)){
+   const stages=allStages(recipeState.data);
+   const current={...state.pathfinderRange};
+   if(d.pathFromStage!==undefined){current.fromStage=e.target.value;current.fromLevel=0;}
+   else if(d.pathToStage!==undefined){
+    current.toStage=e.target.value;
+    current.toLevel=stages.find(s=>s.id===current.toStage)?.max||0;
+   }else if(d.pathFromLevel!==undefined)current.fromLevel=Number(e.target.value);
+   else current.toLevel=Number(e.target.value);
+   state.pathfinderRange=saveRange(current);
+   const content=node('pathRangeContent');
+   if(content)content.innerHTML=pathfinderRangeContent(recipeState.data,state.pathfinderQuick,current);
+   return;
+  }
   if(e.target.matches('[data-path-slot]')){
    updatePathfinderQuick({slot:e.target.value},true);
   }
