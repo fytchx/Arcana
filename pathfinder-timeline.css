@@ -89,3 +89,29 @@
 @media(hover:hover){.pathStage:not(.selected):hover,.pathStep:not(.selected):hover{border-color:var(--path-accent)}}
 @media(max-width:590px){.pathSelectors{grid-template-columns:1fr;gap:15px;padding:13px}.pathModeChoices button{min-height:42px}.pathStage{flex-basis:98px;min-width:98px}.pathChapter>summary{align-items:flex-start}.pathChapterGold{white-space:normal}}
 @media(prefers-reduced-motion:reduce){.pathPage *{scroll-behavior:auto!important;transition:none!important}}
+
+
+/* From → To calculator shares Pathfinder tokens and never repaints the map. */
+.pathRangePanel{margin-top:13px;border:1px solid var(--path-line);border-radius:12px;background:var(--path-base);overflow:hidden}
+.pathRangePanel>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;padding:16px;min-height:64px;list-style:none}
+.pathRangePanel>summary::-webkit-details-marker{display:none}
+.pathRangePanel>summary span:first-child{display:grid;gap:5px;min-width:0}
+.pathRangePanel>summary strong{font-size:14px}
+.pathRangePanel>summary small{font-size:11px;color:var(--path-dim);line-height:1.35}
+.pathRangePanel[open]>summary{border-bottom:1px solid var(--path-line)}
+.pathRangePanel[open]>summary span:last-child{transform:rotate(180deg)}
+#pathRangeContent{padding:14px}
+.pathRangeInputs{display:grid;grid-template-columns:minmax(0,1fr) 25px minmax(0,1fr);gap:9px;align-items:center}
+.pathRangeInputs fieldset{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.63fr);gap:9px;border:0;padding:0;margin:0;min-width:0}
+.pathRangeInputs fieldset legend{grid-column:1/-1;font-size:10px;font-weight:780;letter-spacing:.12em;color:var(--path-accent);margin-bottom:8px}
+.pathRangeInputs label{display:grid;gap:6px;min-width:0;font-size:11px;color:var(--path-dim)}
+.pathRangeInputs select{width:100%;min-width:0;min-height:44px;border:1px solid var(--path-line);border-radius:9px;background:var(--path-card);color:var(--path-ink);font-size:12px;padding:9px 4px}
+.pathRangeArrow{align-self:end;justify-self:center;font-size:22px;color:var(--path-accent);padding-bottom:6px}
+.pathRangeSummary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:17px}
+.pathRangeSummary>div{display:flex;flex-direction:column;gap:6px;padding:13px;background:var(--path-card);border:1px solid var(--path-line);border-radius:10px;min-width:0}
+.pathRangeSummary small{font-size:11px;color:var(--path-dim)}
+.pathRangeSummary strong{font-size:clamp(14px,3.5vw,21px);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.pathRangeOutput>h4{font-size:13px;margin:17px 0 9px}
+.pathRangeOutput .pathWarning{margin-top:14px}
+.pathRangeFoot{font-size:11px;line-height:1.5;color:var(--path-dim);margin:14px 0 0}
+@media(max-width:680px){.pathRangeInputs{grid-template-columns:1fr}.pathRangeArrow{align-self:center;padding:0}.pathRangeSummary{grid-template-columns:repeat(2,minmax(0,1fr))}.pathRangeSummary>div:first-child{grid-column:1/-1}}
