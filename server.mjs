@@ -1,4 +1,5 @@
 import http from 'node:http';
+import {gunzipSync} from 'node:zlib';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve, sep, extname } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -89,6 +90,23 @@ async function verifiedCatalog(){
  console.log('ARCANA_CATALOG_COUNTS',JSON.stringify({original:payload.entries.length,additional:extras.length,currencies:extras.filter(e=>e.kind==='currency').length,pets:extras.filter(e=>e.kind==='pet').length}));
  return catalogCache;
 }
+let previewRecipe=null,previewRecipeTime=0;
+async function sourceBackedRecipes(){
+ if(previewRecipe&&Date.now()-previewRecipeTime<3600000)return previewRecipe;
+ const response=await get(BASES.legacyArt+'/assets/data.b64',12000);
+ if(!response.ok)throw Error('Verified reference HTTP '+response.status);
+ const source=(await response.text()).trim();
+ if(source.length<20000||source.length>300000||!/^[A-Za-z0-9+/=]+$/.test(source))throw Error('Invalid reference encoding');
+ const raw=gunzipSync(Buffer.from(source,'base64'),{maxOutputLength:1800000});
+ const data=JSON.parse(raw.toString('utf8')),cd=data.codex;
+ if(!cd?.tiers?.['6']?.rows||!cd.awaken?.rows?.['30']||!Array.isArray(data.materials))throw Error('Upgrade data incomplete');
+ previewRecipe={source:'Arcana game-cost snapshot',sourceVersion:String(cd.source_version||''),verifiedDate:String(cd.verified_date||''),
+ codex:{tiers:Object.fromEntries(Object.entries(cd.tiers).map(([k,v])=>[k,{name:v.name,max_level:v.max_level,rows:v.rows}])),
+ tier_upgrades:cd.tier_upgrades,awaken:{rows:Object.fromEntries(Object.entries(cd.awaken.rows).filter(([k])=>Number(k)>=1&&Number(k)<=30)),transitions:cd.awaken.transitions.filter(x=>Number(x.rank)<=30)}},
+ materials:data.materials.map(m=>({slug:m.slug,name:m.name,type:m.type,monster_id:m.monster_id??null}))};
+ previewRecipeTime=Date.now();return previewRecipe;
+}
+
 const server=http.createServer(async(req,res)=>{
  try {
   const parsedUrl=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
@@ -112,6 +130,11 @@ const server=http.createServer(async(req,res)=>{
   if(req.method!=='GET'&&req.method!=='HEAD'){send(res,405,'Method not allowed');return;}
   if(pathname==='/health'||pathname==='/__health') {const art=await localArtAudit;const ok=!REQUIRE_LOCAL_ART||art.ready;json(res,ok?200:503,{ok,release:REVISION,source:'tracked frontend files',artwork:{local:art.ready,groups:art.groups,version:art.version||null},dependencyEndpoints:Object.keys(BASES)});return;}
   if(pathname==='/api/lfg/public'){await lfgFeed(res);return;}
+  if(pathname==='/api/pathfinder/recipes'){
+   try{json(res,200,await sourceBackedRecipes(),{'cache-control':'public,max-age=900'});}
+   catch(error){console.warn('PATHFINDER_SOURCE_UNAVAILABLE',String(error));json(res,503,{error:'Verified upgrade data unavailable. Costs hidden to avoid guesses.'},{'cache-control':'no-store'});}
+   return;
+  }
   if(pathname==='/api/search/catalog'){try{json(res,200,await verifiedCatalog(),{'cache-control':'no-store'});}catch(e){json(res,502,{error:'Verified catalog unavailable'});}return;}
   if(pathname==='/api/guilds'){await pipe(res,BASES.catalog+pathname,{mime:'application/json; charset=utf-8',limit:500000});return;}
   if(pathname==='/game-assets/map'||pathname==='/game-assets/atlas'||pathname==='/game-assets/skill-tree'){
