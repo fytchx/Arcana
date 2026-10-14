@@ -36,7 +36,7 @@ export function buildLoadout(equipment,itemLookup,inspecting){
   const displayName=item?.title||base?.name||'',tier=configuration?.rarity?gearLabel(configuration):'';
   // A restrained, uniform silhouette keeps empty and equipped states legible.
   // Real item art stays in the picker/editor where it provides useful detail.
-  const art=slotSilhouette(slot.key,displayName);
+  const art=slotSilhouette(slot.key);
   return `<button type="button" class="loadoutSlot ${item?'':'empty'} ${locked?'gearLocked':''}" data-pos="${slot.group}" data-action="${inspecting?'inspectgear':'pickgear'}" data-arg="${slot.key}" data-item="${esc(equipmentId(raw)||'')}" aria-label="${esc(slot.label)}: ${esc(displayName|| (locked?'blocked by two-handed weapon':'empty'))}${tier?' · '+esc(tier):''}"><span class="loadoutSprite">${art}</span><span class="loadoutMeta"><small>${esc(slot.label)}</small><strong>${esc(displayName|| (locked?'Blocked':'Empty'))}</strong>${tier?`<em class="gearTierMark">${esc(tier)}</em>`:''}</span>${item?'<i class="loadoutEquipped" aria-hidden="true"></i>':''}</button>`;
  }).join('')}</div><p class="boardCaveat">Tap an equipment slot to choose its base item, rarity, awakening and Drop Bonus. Saved builds retain their individual gear configurations.</p></section>`;
 }
