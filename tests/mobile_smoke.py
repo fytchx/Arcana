@@ -424,6 +424,8 @@ with sync_playwright() as playwright:
        png_chunk(b'IDAT',zlib.compress(png_raw))+
        png_chunk(b'IEND',b''))
     page.locator('#studioPortraitUpload').set_input_files({'name':'portrait.png','mimeType':'image/png','buffer':tiny_png})
+    page.wait_for_timeout(450)
+    print('Portrait upload diagnostics:',{'toast':page.locator('#toast').inner_text() if page.locator('#toast').count() else '', 'stored':page.evaluate("localStorage.getItem('arcana-studio-portrait-local-v1')?.length || 0"),'route':page.evaluate("location.hash")},flush=True)
     page.locator('.studioPortraitImg').wait_for(timeout=7000)
     assert page.evaluate("localStorage.getItem('arcana-studio-portrait-local-v1')?.startsWith('data:image/')"), 'Picture not persisted locally'
     page.locator('[data-action="removeportrait"]').click()
