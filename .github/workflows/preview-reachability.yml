@@ -1,8 +1,5 @@
 name: Arcana Preview Live Reachability
 on:
-  push:
-    branches:
-      - build-studio-overhaul-2026-10-13
   workflow_dispatch:
 permissions:
   contents: read
