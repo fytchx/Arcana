@@ -12,6 +12,8 @@ export const PATHFINDER_SLOTS=Object.freeze([
 ].filter(([id])=>REAL_EQUIPMENT_SLOTS.includes(id)).map(([id,label])=>Object.freeze({id,label})));
 export const MODE_LABELS=Object.freeze({normal:'Non-Awakened',awakened:'Awakened'});
 export const VIEW_KEY='arcana-pathfinder-quick-reference-v1';
+const indexedNames=new WeakMap();
+function materialNames(snapshot){if(!indexedNames.has(snapshot))indexedNames.set(snapshot,new Map((snapshot.materials||[]).map(m=>[m.slug,m.name])));return indexedNames.get(snapshot)}
 const safeAmount=n=>{try{const x=BigInt(String(n??'0'));return x>=0n?x:0n}catch{return 0n}};
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,Number.isFinite(Number(value))?Math.floor(Number(value)):min));
 const stageIds=mode=>mode==='awakened'?Array.from({length:30},(_,i)=>'A'+(i+1)):Array.from({length:6},(_,i)=>'T'+(i+1));
@@ -76,7 +78,7 @@ export function stepCost(snapshot,stage,level){
  const extras=row.extra_materials||row.materials||[];
  if(Array.isArray(extras))for(const mat of extras)add(mat.slug,mat.quantity);
  else for(const [slug,qty] of Object.entries(extras))add(slug,qty);
- const names=new Map((snapshot.materials||[]).map(m=>[m.slug,m.name]));
+ const names=materialNames(snapshot);
  const materials=[...raw].map(([slug,quantity])=>({slug,quantity,name:names.get(slug)||slug.replaceAll('-',' ')})).sort((a,b)=>a.name.localeCompare(b.name));
  const fail=Number(row.fail??row.failure??(row.success===undefined?0:1-Number(row.success)));
  const failureChance=Number.isFinite(fail)?Math.min(1,Math.max(0,fail)):null;
