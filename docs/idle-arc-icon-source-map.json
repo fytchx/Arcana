@@ -1,0 +1,2010 @@
+{
+  "version": "2026-10-13-first-source-map",
+  "sourceManifest": "assets/official-art/manifest.json",
+  "sourceVersion": "official-inventory-2026-10-11-v4",
+  "productionSource": "IdleArc official atlas already indexed in fytchx/Arcana",
+  "permission": "User states IdleArc developer Mik granted permission to use game art",
+  "validation": "All source category:key IDs exist in checked source manifest. Visual selection and sign-off are still required.",
+  "targets": [
+    {
+      "family": "equipment",
+      "id": "torch",
+      "label": "Torch / utility",
+      "treatment": "derived-silhouette",
+      "source": [
+        "equipment:torch",
+        "skins:forge-torch"
+      ],
+      "emphasis": "Real torch bowl, handle and flame silhouette; not a potion flask.",
+      "usage": "Equipment slot, empty or selected",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "torch",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 179,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "skins",
+          "key": "forge-torch",
+          "atlas": "/assets/official-art/skins.webp",
+          "index": 66,
+          "cols": 12,
+          "rows": 11,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "equipment",
+      "id": "head",
+      "label": "Head",
+      "treatment": "derived-silhouette",
+      "source": [
+        "equipment:chainmail-helm",
+        "equipment:leather-cap",
+        "equipment:visionary-hood"
+      ],
+      "emphasis": "Recognizable helmet/hood silhouette, with a single crown or face opening.",
+      "usage": "Gear grid, slot picker",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "chainmail-helm",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 39,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "leather-cap",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 80,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "visionary-hood",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 182,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "equipment",
+      "id": "neck",
+      "label": "Necklace",
+      "treatment": "derived-silhouette",
+      "source": [
+        "equipment:adventurer-amulet",
+        "equipment:scholar-amulet"
+      ],
+      "emphasis": "Pendant with its actual hanging chain and stone outline.",
+      "usage": "Necklace gear slots",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "adventurer-amulet",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 6,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "scholar-amulet",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 132,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "equipment",
+      "id": "weapon",
+      "label": "Main hand",
+      "treatment": "adaptive-silhouette",
+      "source": [
+        "equipment:iron-sword",
+        "equipment:wooden-bow",
+        "equipment:wooden-wand",
+        "equipment:iron-dagger"
+      ],
+      "emphasis": "Default weapon shape should be neutral; when an item is equipped, reflect its actual type (blade/bow/wand).",
+      "usage": "Main-hand gear slot and legal item picker",
+      "priority": "P0",
+      "note": "Do not depict all weapons as swords.",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "iron-sword",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 75,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "wooden-bow",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 210,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "wooden-wand",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 215,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "iron-dagger",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 74,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "equipment",
+      "id": "chest",
+      "label": "Chest",
+      "treatment": "derived-silhouette",
+      "source": [
+        "equipment:leather-armor",
+        "equipment:chainmail-armor",
+        "equipment:bloodweave-vest"
+      ],
+      "emphasis": "Clear torso/shoulder armor form, broad silhouette and narrow waist.",
+      "usage": "Chest armor slot",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "leather-armor",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 78,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "chainmail-armor",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 36,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "bloodweave-vest",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 25,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "equipment",
+      "id": "offhand",
+      "label": "Off hand",
+      "treatment": "adaptive-silhouette",
+      "source": [
+        "equipment:wooden-shield",
+        "equipment:leather-spellbook",
+        "equipment:leather-quiver"
+      ],
+      "emphasis": "Select shield/book/quiver silhouette from actual equipped off-hand type; no fixed shield for everyone.",
+      "usage": "Off-hand slot, equipment picker",
+      "priority": "P0",
+      "note": "Type-dependent once an item is selected.",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "wooden-shield",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 213,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "leather-spellbook",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 83,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "leather-quiver",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 82,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "equipment",
+      "id": "ring",
+      "label": "Ring I",
+      "treatment": "derived-silhouette",
+      "source": [
+        "equipment:adventurer-ring",
+        "equipment:scholar-ring"
+      ],
+      "emphasis": "Jewelry ring with readable inner aperture and setting; small UI numeral I outside source artwork.",
+      "usage": "Ring I slot",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "adventurer-ring",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 13,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "scholar-ring",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 146,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "equipment",
+      "id": "belt",
+      "label": "Belt",
+      "treatment": "derived-silhouette",
+      "source": [
+        "equipment:cloth-belt",
+        "equipment:ranger-belt"
+      ],
+      "emphasis": "Broad belt with an obvious central buckle.",
+      "usage": "Belt slot",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "cloth-belt",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 40,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "ranger-belt",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 107,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "equipment",
+      "id": "ring2",
+      "label": "Ring II",
+      "treatment": "derived-silhouette",
+      "source": [
+        "equipment:adventurer-ring",
+        "equipment:scholar-ring"
+      ],
+      "emphasis": "Same recognizable game-inspired ring shape as Ring I; optional numeral II in UI chrome.",
+      "usage": "Ring II slot",
+      "priority": "P0",
+      "note": "Avoid a fake second ring type.",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "adventurer-ring",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 13,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "scholar-ring",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 146,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "equipment",
+      "id": "charm",
+      "label": "Utility I",
+      "treatment": "derived-silhouette",
+      "source": [
+        "skins:forge-satchel",
+        "icons:runic-core"
+      ],
+      "emphasis": "A simple utility pouch/relic holder, not a made-up equipable talisman.",
+      "usage": "Utility I slot",
+      "priority": "P0",
+      "note": "Source motif, not proof a satchel is equippable in this slot.",
+      "atlasRefs": [
+        {
+          "category": "skins",
+          "key": "forge-satchel",
+          "atlas": "/assets/official-art/skins.webp",
+          "index": 60,
+          "cols": 12,
+          "rows": 11,
+          "tile": 68
+        },
+        {
+          "category": "icons",
+          "key": "runic-core",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 20,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "equipment",
+      "id": "hands",
+      "label": "Hands",
+      "treatment": "derived-silhouette",
+      "source": [
+        "equipment:leather-gloves",
+        "equipment:slayer-gauntlets"
+      ],
+      "emphasis": "Actual glove/gauntlet outline with articulated fingers.",
+      "usage": "Hands slot",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "leather-gloves",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 81,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "slayer-gauntlets",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 155,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "equipment",
+      "id": "feet",
+      "label": "Feet",
+      "treatment": "derived-silhouette",
+      "source": [
+        "equipment:leather-boots",
+        "equipment:swiftstride-boots"
+      ],
+      "emphasis": "Recognizable game boot profile rather than abstract geometric feet.",
+      "usage": "Feet slot",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "leather-boots",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 79,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "swiftstride-boots",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 166,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "equipment",
+      "id": "charm2",
+      "label": "Utility II",
+      "treatment": "derived-silhouette",
+      "source": [
+        "skins:forge-satchel",
+        "icons:runic-core"
+      ],
+      "emphasis": "Same neutral utility motif as Utility I; differentiate only with slot position/UI label.",
+      "usage": "Utility II slot",
+      "priority": "P0",
+      "note": "Do not imply a nonexistent distinct item category.",
+      "atlasRefs": [
+        {
+          "category": "skins",
+          "key": "forge-satchel",
+          "atlas": "/assets/official-art/skins.webp",
+          "index": 60,
+          "cols": 12,
+          "rows": 11,
+          "tile": 68
+        },
+        {
+          "category": "icons",
+          "key": "runic-core",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 20,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "classes",
+      "id": "warrior",
+      "label": "Warrior",
+      "treatment": "derived-emblem",
+      "source": [
+        "skills:warrior:deflection",
+        "skills:warrior:titans_grip",
+        "equipment:steel-crest-shield"
+      ],
+      "emphasis": "Physical defensive melee identity informed by real class skill silhouettes.",
+      "usage": "Build profile, class picker, guides",
+      "priority": "P0",
+      "note": "Confirm motif from source atlas visually.",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "warrior:deflection",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 78,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "skills",
+          "key": "warrior:titans_grip",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 88,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "equipment",
+          "key": "steel-crest-shield",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 158,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "classes",
+      "id": "archer",
+      "label": "Archer",
+      "treatment": "derived-emblem",
+      "source": [
+        "skills:archer:archery",
+        "skills:archer:perfect_shot",
+        "equipment:wooden-bow"
+      ],
+      "emphasis": "Bow/string or aiming silhouette; leave out unrelated wings or helmets.",
+      "usage": "Build profile, class picker, guides",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "archer:archery",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 1,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "skills",
+          "key": "archer:perfect_shot",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 11,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "equipment",
+          "key": "wooden-bow",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 210,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "classes",
+      "id": "mage",
+      "label": "Mage",
+      "treatment": "derived-emblem",
+      "source": [
+        "skills:mage:spell_mastery",
+        "skills:mage:arcane_surge",
+        "equipment:wooden-wand"
+      ],
+      "emphasis": "Orb or magic focus shape matching actual Mage skill and wand design.",
+      "usage": "Build profile, class picker, guides",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "mage:spell_mastery",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 51,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "skills",
+          "key": "mage:arcane_surge",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 38,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "equipment",
+          "key": "wooden-wand",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 215,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "classes",
+      "id": "rogue",
+      "label": "Rogue",
+      "treatment": "derived-emblem",
+      "source": [
+        "skills:rogue:umbral_blades",
+        "skills:rogue:shadow_echo",
+        "equipment:iron-dagger"
+      ],
+      "emphasis": "Recognizable paired blades/dagger form, sharper and narrower than Warrior.",
+      "usage": "Build profile, class picker, guides",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "rogue:umbral_blades",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 70,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "skills",
+          "key": "rogue:shadow_echo",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 66,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "equipment",
+          "key": "iron-dagger",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 74,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "classes",
+      "id": "druid",
+      "label": "Druid",
+      "treatment": "derived-emblem",
+      "source": [
+        "skills:druid:wild_attunement",
+        "skills:druid:feral_bond",
+        "pets:bober-1"
+      ],
+      "emphasis": "Organic/nature bond motif informed by actual Druid skills, not generic leaf logo.",
+      "usage": "Build profile, class picker, guides",
+      "priority": "P0",
+      "note": "Pet portrait is context only.",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "druid:wild_attunement",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 35,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "skills",
+          "key": "druid:feral_bond",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 22,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "pets",
+          "key": "bober-1",
+          "atlas": "/assets/official-art/pets.webp",
+          "index": 4,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "features",
+      "id": "build-studio",
+      "label": "Build Studio",
+      "treatment": "hybrid-feature",
+      "source": [
+        "equipment:steel-plate-armor",
+        "icons:runic-core",
+        "currency:passive_point"
+      ],
+      "emphasis": "Loadout frame + recognizable rune core. Distinguished from ordinary Builds link.",
+      "usage": "Hero CTA, homepage, studio tab",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "steel-plate-armor",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 160,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "icons",
+          "key": "runic-core",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 20,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        },
+        {
+          "category": "currency",
+          "key": "passive_point",
+          "atlas": "/assets/official-art/currency.webp",
+          "index": 3,
+          "cols": 3,
+          "rows": 3,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "features",
+      "id": "wiki",
+      "label": "Wiki",
+      "treatment": "hybrid-feature",
+      "source": [
+        "equipment:old-book",
+        "skins:forge-spellbook"
+      ],
+      "emphasis": "Open reference book: readable spreads and a plain page edge.",
+      "usage": "Homepage/wiki menus",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "old-book",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 88,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "skins",
+          "key": "forge-spellbook",
+          "atlas": "/assets/official-art/skins.webp",
+          "index": 63,
+          "cols": 12,
+          "rows": 11,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "features",
+      "id": "tools",
+      "label": "Tools",
+      "treatment": "hybrid-feature",
+      "source": [
+        "icons:runic-core",
+        "materials:astral_catalyst"
+      ],
+      "emphasis": "Functional forge core + measured/calculation mark, not a generic keyboard calculator.",
+      "usage": "Homepage tool menu",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "icons",
+          "key": "runic-core",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 20,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        },
+        {
+          "category": "materials",
+          "key": "astral_catalyst",
+          "atlas": "/assets/official-art//materials.webp",
+          "index": 4,
+          "cols": 10,
+          "rows": 5,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "features",
+      "id": "guides",
+      "label": "Guides",
+      "treatment": "hybrid-feature",
+      "source": [
+        "equipment:old-book",
+        "skills:warrior:battle_focus"
+      ],
+      "emphasis": "Bookmarked manual with an unmistakable guide marker; separate from Wiki book.",
+      "usage": "Homepage/guides",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "old-book",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 88,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "skills",
+          "key": "warrior:battle_focus",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 72,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "features",
+      "id": "builds",
+      "label": "Builds",
+      "treatment": "hybrid-feature",
+      "source": [
+        "equipment:chainmail-armor",
+        "equipment:wooden-shield"
+      ],
+      "emphasis": "Saved equipment preset stack, not identical to Build Studio flagship sigil.",
+      "usage": "Community build cards",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "chainmail-armor",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 36,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "equipment",
+          "key": "wooden-shield",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 213,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "features",
+      "id": "codex",
+      "label": "Codex",
+      "treatment": "hybrid-feature",
+      "source": [
+        "equipment:old-book",
+        "materials:prism-stone",
+        "icons:runic-core"
+      ],
+      "emphasis": "Indexed inventory archive: small item specimen over a catalog outline.",
+      "usage": "Homepage, item browser",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "old-book",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 88,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        },
+        {
+          "category": "materials",
+          "key": "prism-stone",
+          "atlas": "/assets/official-art//materials.webp",
+          "index": 33,
+          "cols": 10,
+          "rows": 5,
+          "tile": 50
+        },
+        {
+          "category": "icons",
+          "key": "runic-core",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 20,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "features",
+      "id": "guild-raid",
+      "label": "Guild & Raid Finder",
+      "treatment": "hybrid-feature",
+      "source": [
+        "icons:guildstone",
+        "world-bosses:rift-titan-1"
+      ],
+      "emphasis": "Actual Guildstone crest and compact raid-party outline; avoid fake class symbols.",
+      "usage": "Homepage/guild finder",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "icons",
+          "key": "guildstone",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 11,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        },
+        {
+          "category": "world-bosses",
+          "key": "rift-titan-1",
+          "atlas": "/assets/official-art/world-bosses.webp",
+          "index": 3,
+          "cols": 3,
+          "rows": 3,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "features",
+      "id": "rune-forge",
+      "label": "Rune Forge",
+      "treatment": "hybrid-feature",
+      "source": [
+        "icons:runic-core",
+        "icons:rune-dust",
+        "icons:rune-reforge"
+      ],
+      "emphasis": "Preserve the in-game rune stone/cut and recognizable core silhouette.",
+      "usage": "Rune Forge tab/feature",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "icons",
+          "key": "runic-core",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 20,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        },
+        {
+          "category": "icons",
+          "key": "rune-dust",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 18,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        },
+        {
+          "category": "icons",
+          "key": "rune-reforge",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 19,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "features",
+      "id": "class-skills",
+      "label": "Class Skills",
+      "treatment": "hybrid-feature",
+      "source": [
+        "skills:warrior:deflection",
+        "skills:mage:spell_mastery"
+      ],
+      "emphasis": "Skill icon framing and branch marker inspired by actual skill artwork.",
+      "usage": "Build Studio skills tab",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "warrior:deflection",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 78,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "skills",
+          "key": "mage:spell_mastery",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 51,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "features",
+      "id": "passive-tree",
+      "label": "Passive Tree",
+      "treatment": "hybrid-feature",
+      "source": [
+        "currency:passive_point",
+        "icons:runic-core"
+      ],
+      "emphasis": "Connect passive-point glyphs with simple node paths; no random constellation.",
+      "usage": "Build Studio passive tab",
+      "priority": "P0",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "currency",
+          "key": "passive_point",
+          "atlas": "/assets/official-art/currency.webp",
+          "index": 3,
+          "cols": 3,
+          "rows": 3,
+          "tile": 68
+        },
+        {
+          "category": "icons",
+          "key": "runic-core",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 20,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "features",
+      "id": "pet-lab",
+      "label": "Pet Lab",
+      "treatment": "hybrid-feature",
+      "source": [
+        "currency:pet_egg",
+        "pets:bear",
+        "currency:pet_shard"
+      ],
+      "emphasis": "Pet egg silhouette plus recognizable pet motif, no generic paw as sole symbol.",
+      "usage": "Pet calculator/lab",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "currency",
+          "key": "pet_egg",
+          "atlas": "/assets/official-art/currency.webp",
+          "index": 4,
+          "cols": 3,
+          "rows": 3,
+          "tile": 68
+        },
+        {
+          "category": "pets",
+          "key": "bear",
+          "atlas": "/assets/official-art/pets.webp",
+          "index": 2,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        },
+        {
+          "category": "currency",
+          "key": "pet_shard",
+          "atlas": "/assets/official-art/currency.webp",
+          "index": 5,
+          "cols": 3,
+          "rows": 3,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "features",
+      "id": "upgrade-calculator",
+      "label": "Upgrade Calculator",
+      "treatment": "hybrid-feature",
+      "source": [
+        "materials:astral_catalyst",
+        "materials:adamantine-fragment",
+        "skins:forge-helm"
+      ],
+      "emphasis": "Forge/catalyst + incremental progression mark.",
+      "usage": "Upgrade calculator",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "materials",
+          "key": "astral_catalyst",
+          "atlas": "/assets/official-art//materials.webp",
+          "index": 4,
+          "cols": 10,
+          "rows": 5,
+          "tile": 50
+        },
+        {
+          "category": "materials",
+          "key": "adamantine-fragment",
+          "atlas": "/assets/official-art//materials.webp",
+          "index": 1,
+          "cols": 10,
+          "rows": 5,
+          "tile": 50
+        },
+        {
+          "category": "skins",
+          "key": "forge-helm",
+          "atlas": "/assets/official-art/skins.webp",
+          "index": 54,
+          "cols": 12,
+          "rows": 11,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "tokens",
+      "id": "arcstone",
+      "label": "Arcstone",
+      "treatment": "direct-token",
+      "source": [
+        "icons:arcstone"
+      ],
+      "emphasis": "Keep the recognizable official Arcstone art and native hues.",
+      "usage": "Balances, pricing, wiki",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "icons",
+          "key": "arcstone",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 6,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "tokens",
+      "id": "ruby",
+      "label": "Ruby",
+      "treatment": "direct-token",
+      "source": [
+        "currency:ruby"
+      ],
+      "emphasis": "Keep the official ruby token exactly recognizable.",
+      "usage": "Balances, guild contributions",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "currency",
+          "key": "ruby",
+          "atlas": "/assets/official-art/currency.webp",
+          "index": 6,
+          "cols": 3,
+          "rows": 3,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "tokens",
+      "id": "gold",
+      "label": "Gold",
+      "treatment": "direct-token",
+      "source": [
+        "currency:coin"
+      ],
+      "emphasis": "Keep the official coin symbol and color identity.",
+      "usage": "Gold calculators, guilds",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "currency",
+          "key": "coin",
+          "atlas": "/assets/official-art/currency.webp",
+          "index": 0,
+          "cols": 3,
+          "rows": 3,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "tokens",
+      "id": "guildstone",
+      "label": "Guildstone",
+      "treatment": "direct-token",
+      "source": [
+        "icons:guildstone"
+      ],
+      "emphasis": "Use the game's Guildstone design, not a generic gem.",
+      "usage": "Guild contributions, guild page",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "icons",
+          "key": "guildstone",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 11,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "tokens",
+      "id": "pet-egg",
+      "label": "Pet Egg",
+      "treatment": "direct-token",
+      "source": [
+        "currency:pet_egg"
+      ],
+      "emphasis": "Official egg icon. Avoid replacing with a standard Easter egg silhouette.",
+      "usage": "Pet Lab, Codex",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "currency",
+          "key": "pet_egg",
+          "atlas": "/assets/official-art/currency.webp",
+          "index": 4,
+          "cols": 3,
+          "rows": 3,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "tokens",
+      "id": "pet-shard",
+      "label": "Pet Shard",
+      "treatment": "direct-token",
+      "source": [
+        "currency:pet_shard"
+      ],
+      "emphasis": "Official shard token, preserve native color.",
+      "usage": "Pet Lab, Codex",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "currency",
+          "key": "pet_shard",
+          "atlas": "/assets/official-art/currency.webp",
+          "index": 5,
+          "cols": 3,
+          "rows": 3,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "tokens",
+      "id": "rune-dust",
+      "label": "Rune Dust",
+      "treatment": "direct-token",
+      "source": [
+        "icons:rune-dust"
+      ],
+      "emphasis": "Official dust token.",
+      "usage": "Rune Forge, Codex",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "icons",
+          "key": "rune-dust",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 18,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "tokens",
+      "id": "rune-reforge",
+      "label": "Rune Reforge",
+      "treatment": "direct-token",
+      "source": [
+        "icons:rune-reforge"
+      ],
+      "emphasis": "Official rune reforge token.",
+      "usage": "Rune Forge, costs",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "icons",
+          "key": "rune-reforge",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 19,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "tokens",
+      "id": "runic-core",
+      "label": "Runic Core",
+      "treatment": "direct-token",
+      "source": [
+        "icons:runic-core"
+      ],
+      "emphasis": "Official runic core shape.",
+      "usage": "Runes, recipes, costs",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "icons",
+          "key": "runic-core",
+          "atlas": "/assets/official-art/icons.webp",
+          "index": 20,
+          "cols": 6,
+          "rows": 6,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "tokens",
+      "id": "upgrade-catalyst",
+      "label": "Upgrade Catalyst",
+      "treatment": "direct-token",
+      "source": [
+        "materials:astral_catalyst"
+      ],
+      "emphasis": "Keep precise catalyst artwork, not a generic sparkle.",
+      "usage": "Upgrades, Codex",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "materials",
+          "key": "astral_catalyst",
+          "atlas": "/assets/official-art//materials.webp",
+          "index": 4,
+          "cols": 10,
+          "rows": 5,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "tokens",
+      "id": "gem",
+      "label": "Gem",
+      "treatment": "direct-token",
+      "source": [
+        "gems:amber-rough",
+        "gems:garnet-rough"
+      ],
+      "emphasis": "Game gem cuts and original colors; do not recolor game item art to user accent.",
+      "usage": "Gem slots, Forge, Codex",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "gems",
+          "key": "amber-rough",
+          "atlas": "/assets/official-art/gems.webp",
+          "index": 9,
+          "cols": 7,
+          "rows": 6,
+          "tile": 68
+        },
+        {
+          "category": "gems",
+          "key": "garnet-rough",
+          "atlas": "/assets/official-art/gems.webp",
+          "index": 19,
+          "cols": 7,
+          "rows": 6,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "tokens",
+      "id": "gem-dust",
+      "label": "Gem Dust",
+      "treatment": "direct-token",
+      "source": [
+        "gems:gem-dust"
+      ],
+      "emphasis": "Official gem dust artwork.",
+      "usage": "Crafting costs, Codex",
+      "priority": "P1",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "gems",
+          "key": "gem-dust",
+          "atlas": "/assets/official-art/gems.webp",
+          "index": 20,
+          "cols": 7,
+          "rows": 6,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "attack-damage",
+      "label": "Attack Damage",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:warrior:mighty_strikes",
+        "equipment:iron-sword"
+      ],
+      "emphasis": "Weapon stroke with weight, not an arbitrary polygon.",
+      "usage": "Stats in build cards",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "warrior:mighty_strikes",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 82,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "equipment",
+          "key": "iron-sword",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 75,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "flat-damage",
+      "label": "Flat Damage",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:warrior:crushing_blows"
+      ],
+      "emphasis": "Solid strike mark separate from proportional attack icon.",
+      "usage": "Stats in calculators",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "warrior:crushing_blows",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 76,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "crit-chance",
+      "label": "Crit Chance",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:archer:perfect_shot"
+      ],
+      "emphasis": "Precision/target focal point, distinguish from Crit Damage.",
+      "usage": "Build stats",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "archer:perfect_shot",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 11,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "crit-damage",
+      "label": "Crit Damage",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:rogue:coup_de_grace"
+      ],
+      "emphasis": "Burst strike fragment, stronger shape than Crit Chance.",
+      "usage": "Build stats",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "rogue:coup_de_grace",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 56,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "defense",
+      "label": "Defense",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:warrior:iron_constitution",
+        "equipment:wooden-shield"
+      ],
+      "emphasis": "Protective plate/block silhouette, avoid identical Block Chance mark.",
+      "usage": "Build stats",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "warrior:iron_constitution",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 80,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "equipment",
+          "key": "wooden-shield",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 213,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "block-chance",
+      "label": "Block Chance",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:warrior:deflection"
+      ],
+      "emphasis": "Parry/deflection angle, differentiable from static defense.",
+      "usage": "Build stats",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "warrior:deflection",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 78,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "retaliation",
+      "label": "Retaliation",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:warrior:deflection",
+        "skills:warrior:relentless_assault"
+      ],
+      "emphasis": "Damage redirected outward from armor. Verify against in-game mechanic language.",
+      "usage": "Warrior guides and stats",
+      "priority": "P2",
+      "note": "Source is thematic inspiration only, not an official retaliation icon.",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "warrior:deflection",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 78,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "skills",
+          "key": "warrior:relentless_assault",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 84,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "pet-damage",
+      "label": "Pet Damage",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:archer:pet_mastery",
+        "skills:druid:feral_bond"
+      ],
+      "emphasis": "Pet silhouette plus controlled offensive mark.",
+      "usage": "Pet builds",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "archer:pet_mastery",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 12,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "skills",
+          "key": "druid:feral_bond",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 22,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "strength",
+      "label": "Strength",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:warrior:titans_grip"
+      ],
+      "emphasis": "Heavy-lift grip shape, not generic bicep.",
+      "usage": "Attribute displays",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "warrior:titans_grip",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 88,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "dexterity",
+      "label": "Dexterity",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:archer:archery"
+      ],
+      "emphasis": "Precise bow or quick draw.",
+      "usage": "Attribute displays",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "archer:archery",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 1,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "intelligence",
+      "label": "Intelligence",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:mage:spell_mastery"
+      ],
+      "emphasis": "Arcane focus central glyph.",
+      "usage": "Attribute displays",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "mage:spell_mastery",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 51,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "gold-gain",
+      "label": "Gold Gain",
+      "treatment": "hybrid-stat",
+      "source": [
+        "currency:coin",
+        "skills:rogue:pickpocket"
+      ],
+      "emphasis": "Official gold token with small plus/arrow UI mark.",
+      "usage": "Gold farming guides",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "currency",
+          "key": "coin",
+          "atlas": "/assets/official-art/currency.webp",
+          "index": 0,
+          "cols": 3,
+          "rows": 3,
+          "tile": 68
+        },
+        {
+          "category": "skills",
+          "key": "rogue:pickpocket",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 63,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "exp-gain",
+      "label": "EXP Gain",
+      "treatment": "hybrid-stat",
+      "source": [
+        "currency:passive_point",
+        "skills:archer:hunters_instinct"
+      ],
+      "emphasis": "Clear upward progression motif, not a claimed official EXP sprite.",
+      "usage": "XP calculators and guides",
+      "priority": "P2",
+      "note": "No confirmed EXP-specific sprite in official manifest.",
+      "atlasRefs": [
+        {
+          "category": "currency",
+          "key": "passive_point",
+          "atlas": "/assets/official-art/currency.webp",
+          "index": 3,
+          "cols": 3,
+          "rows": 3,
+          "tile": 68
+        },
+        {
+          "category": "skills",
+          "key": "archer:hunters_instinct",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 8,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "drop-bonus",
+      "label": "Drop Bonus",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:rogue:treasure_hunter",
+        "items:wardplate"
+      ],
+      "emphasis": "Loot highlight and item outline.",
+      "usage": "Drop Bonus guide, item Codex",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "rogue:treasure_hunter",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 69,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "items",
+          "key": "wardplate",
+          "atlas": "/assets/official-art//items.webp",
+          "index": 0,
+          "cols": 4,
+          "rows": 3,
+          "tile": 80
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "extra-kill",
+      "label": "Extra Kill",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:warrior:culling_strike"
+      ],
+      "emphasis": "Second target/kill indicator with a concise split stroke.",
+      "usage": "ML farming calculators",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "warrior:culling_strike",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 77,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "boss-damage",
+      "label": "Boss Damage",
+      "treatment": "hybrid-stat",
+      "source": [
+        "world-bosses:rift-titan-1",
+        "skills:warrior:titanic_blow"
+      ],
+      "emphasis": "Boss crown/face outline with impact mark; do not copy boss portrait into tiny stat tile.",
+      "usage": "Raid and stat views",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "world-bosses",
+          "key": "rift-titan-1",
+          "atlas": "/assets/official-art/world-bosses.webp",
+          "index": 3,
+          "cols": 3,
+          "rows": 3,
+          "tile": 68
+        },
+        {
+          "category": "skills",
+          "key": "warrior:titanic_blow",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 87,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "all-class-skills",
+      "label": "All Class Skills",
+      "treatment": "hybrid-stat",
+      "source": [
+        "skills:mage:spell_mastery",
+        "skills:archer:archery",
+        "skills:warrior:deflection"
+      ],
+      "emphasis": "Neutral multi-class signifier, not a Mage-specific token.",
+      "usage": "Torch/ACS, gear comparison",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "skills",
+          "key": "mage:spell_mastery",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 51,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "skills",
+          "key": "archer:archery",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 1,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        },
+        {
+          "category": "skills",
+          "key": "warrior:deflection",
+          "atlas": "/assets/official-art//skills.webp",
+          "index": 78,
+          "cols": 10,
+          "rows": 9,
+          "tile": 50
+        }
+      ]
+    },
+    {
+      "family": "stats",
+      "id": "armor",
+      "label": "Armor",
+      "treatment": "hybrid-stat",
+      "source": [
+        "equipment:chainmail-armor"
+      ],
+      "emphasis": "Defensive chest material, separate from block icon.",
+      "usage": "Gear and build stats",
+      "priority": "P2",
+      "note": "",
+      "atlasRefs": [
+        {
+          "category": "equipment",
+          "key": "chainmail-armor",
+          "atlas": "/assets/official-art/equipment.webp",
+          "index": 36,
+          "cols": 15,
+          "rows": 15,
+          "tile": 68
+        }
+      ]
+    }
+  ]
+}
