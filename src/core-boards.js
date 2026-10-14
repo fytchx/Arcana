@@ -7,7 +7,7 @@ import {motifArt,passiveTitle,safeGameAsset,classTheme} from './tree-art.js';
 const btn=(label,route)=>`<button class="boardJump" data-route="${route}">${label}</button>`;
 const ico=(name)=>icon(name,19);
 export const LOADOUT_LAYOUT=[
-  {key:'torch',label:'Torch / utility',group:'top-left'},
+  {key:'torch',label:'Torch',group:'top-left'},
   {key:'head',label:'Head',group:'top-center'},
   {key:'neck',label:'Necklace',group:'top-right'},
   {key:'weapon',label:'Main hand',group:'weapon-left'},
@@ -16,10 +16,8 @@ export const LOADOUT_LAYOUT=[
   {key:'ring',label:'Ring I',group:'ring-left'},
   {key:'belt',label:'Belt',group:'belt-center'},
   {key:'ring2',label:'Ring II',group:'ring-right'},
-  {key:'charm',label:'Utility I',group:'charm-left'},
   {key:'hands',label:'Hands',group:'gloves-center'},
-  {key:'feet',label:'Feet',group:'boots-center'},
-  {key:'charm2',label:'Utility II',group:'charm-right'}
+  {key:'feet',label:'Feet',group:'boots-center'}
 ];
 const safeName=name=>String(name||'').replace(/[^A-Za-z0-9 _\-]/g,'').slice(0,70);
 function realClassIcon(cls){const v=safeGameAsset(cls?.icon||cls?.icon_url||cls?.image||'');if(v)return `<img src="${esc(v)}" alt="" class="realClassIcon" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden class="classGlyph emblemFallback">${motifArt(cls?.name,{role:'class',size:30})}</span>`;return `<span class="classGlyph">${motifArt(cls?.name,{role:'class',size:30})}</span>`}
