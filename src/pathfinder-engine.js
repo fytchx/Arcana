@@ -22,7 +22,8 @@ export function stageForGear(gear){
 }
 export function normalizePathfinderPlan(raw={}){
  const source=raw&&typeof raw==='object'?raw:{};
- const targets={},inventory={},rates={};
+ const targets={},inventory={},rates={},currentLevels={};
+ for(const [slot,level] of Object.entries(source.currentLevels||{}))if(/^[a-z][a-z0-9]{0,20}$/.test(slot))currentLevels[slot]=Math.max(0,Math.min(30,Math.floor(safeNumber(level))));
  for(const [slot,val] of Object.entries(source.targets||{})){
   if(!/^[a-z][a-z0-9]{0,20}$/.test(slot))continue;
   const stage=String(val?.stage||'');
@@ -37,7 +38,7 @@ export function normalizePathfinderPlan(raw={}){
   const mlXpPerMinute=Math.max(0,Math.min(1e14,safeNumber(val?.mlXpPerMinute)));
   rates[slug]={perMinute,label,mlXpPerMinute};
  }
- return {targets,inventory,rates,includeFailures:source.includeFailures===true,strategy:['balanced','materials','ml'].includes(source.strategy)?source.strategy:'balanced',baselineMlXpPerMinute:Math.max(0,safeNumber(source.baselineMlXpPerMinute))};
+ return {targets,currentLevels,inventory,rates,includeFailures:source.includeFailures===true,strategy:['balanced','materials','ml'].includes(source.strategy)?source.strategy:'balanced',baselineMlXpPerMinute:Math.max(0,safeNumber(source.baselineMlXpPerMinute))};
 }
 export function setTarget(plan,slot,stage,level){
  return normalizePathfinderPlan({...plan,targets:{...plan.targets,[slot]:{stage,level}}});
@@ -97,7 +98,7 @@ export function planGearUpgrades(equipment,plan,snapshot){
  let gold=0n,goldBase=0n,steps=0;
  for(const [slot,gear] of Object.entries(equipment||{})){
   if(!gear)continue;
-  const from=stageForGear(gear),level=Math.floor(safeNumber(gear.level)),selected=p.targets[slot];
+  const from=stageForGear(gear),level=p.currentLevels[slot]??Math.floor(safeNumber(gear.level)),selected=p.targets[slot];
   if(!from){all.push({slot,name:gear.id||slot,unconfigured:true});continue;}
   const target=selected?.stage||from,targetLevel=selected?.level??level;
   const q=quoteUpgrade(snapshot,from,level,target,targetLevel,p.includeFailures);
