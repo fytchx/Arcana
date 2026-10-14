@@ -131,6 +131,21 @@ const server=http.createServer(async(req,res)=>{
     if(REQUIRE_LOCAL_ART){json(res,503,{error:'Validated artwork bundle unavailable'});return;}
     await pipe(res,BASES.officialArt+pathname.slice('/official-art'.length),{timeout:14000,cache:'public,max-age=180'});return;
   }
+  // Stable production frontend: restore the last complete material-cost calculator.
+  // This proxies only public frontend routes; authenticated account, Wiki,
+  // community, beta and game-data API handlers above remain unchanged.
+  // The persistent production volume and separate preview are untouched.
+  const stablePublicHost=isPublicDomain&&(
+   host==='arcanacompanion.xyz'||host==='arcana-stable-app-staging.up.railway.app'
+  );
+  if(stablePublicHost){
+   const legacyPath=(pathname==='/'||pathname==='/index.html')?'/legacy':pathname;
+   await pipe(res,BASES.legacyArt+legacyPath+parsedUrl.search,{
+    timeout:18000,
+    cache:pathname.startsWith('/assets/')?'public,max-age=300':'no-store'
+   });
+   return;
+  }
   const normalized=pathname==='/'?'/index.html':pathname;
   // Serve only public frontend assets. Never expose account/session files or local Wiki data.
   const publicPage=new Set(['/index.html','/privacy.html','/beta-rules.html','/styles.css','/wiki-studio.css','/community.css','/beta.css','/launch-navigation.css']).has(normalized);
