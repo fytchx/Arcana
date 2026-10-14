@@ -516,6 +516,7 @@ function action(name,arg,btn){switch(name){
  case 'wikisection':{const slug=String(arg||'');if(!/^[a-z0-9-]{1,100}$/.test(slug))break;const target=document.getElementById('section-'+slug);if(target){target.scrollIntoView({behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});target.querySelector('h2')?.focus({preventScroll:true});}break;}
  case 'wikitop':window.scrollTo({top:0,behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});break;
  case 'guildtreetab':state.guildTreeTab=arg;render();node('content').querySelector('.guildTreeTabs button.active')?.focus({preventScroll:true});break;
+ case 'pf-refresh':recipeState.error='';recipeState.data=null;void loadPathfinderRecipes();break;
  case 'pf-set-all':{
   if(!recipeState.data){toast('Upgrade recipes are not loaded');break;}
   const stages=stagesFor(recipeState.data),limit=stages.findIndex(s=>s.id==='A1'),targets={...state.pathfinderPlan.targets};
