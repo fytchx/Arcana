@@ -63,7 +63,7 @@ export const HOME_CARDS=Object.freeze([
  {id:'tools',title:'Tools',detail:'Calculators & planners',icon:'feature-calculator'},
  {id:'guides',title:'Guides',detail:'Learn & contribute',icon:'feature-guides'},
  {id:'builds',title:'Builds',detail:'Create & share setups',icon:'feature-build-studio'},
- {id:'pathfinder',title:'Pathfinder',detail:'Swipe through upgrade costs',icon:'feature-codex'},
+ {id:'pathfinder',title:'Pathfinder',detail:'Swipe through upgrade costs',icon:'layers'},
  {id:'social',title:'Guild & Raid Finder',detail:'Groups & recruitment',icon:'feature-guild-finder'}
 ]);
 const attrs=x=>'data-route="'+esc(x.route)+'"'+(x.params?' data-params="'+esc(new URLSearchParams(x.params).toString())+'"':'');
