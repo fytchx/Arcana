@@ -119,9 +119,9 @@ export function wikiTopicsView(){
 }
 export function wikiTopicView(slug){
  const entry=WIKI_TOPICS.find(x=>x.slug===slug);if(!entry)return null;
- const related=slug==='gear-awakening'?[link('Equipment Codex','Browse items.','wiki/library','shield',{kind:'item'}),link('Upgrade Calculator','Equipment costs and upgrades.','calculators/upgrade','calculator')]:
- slug==='pets-runes-talismans'?[link('Pet Codex','Browse companions.','wiki/library','paw',{kind:'pet'}),link('Rune Forge · Build Studio','Plan rune placement.','labs/runes','gem')]:
- slug==='combat-monsters-biomes'?[link('Biome Codex','Explore biomes.','wiki/library','layers',{kind:'biome'}),link('ML Farming Comparator','Compare farming speed.','calculators/ml-farm','sword')]:
+ const related=slug==='gear-awakening'?[link('Equipment References','Browse items.','wiki/library','shield',{kind:'item'}),link('Upgrade Calculator','Equipment costs and upgrades.','calculators/upgrade','calculator')]:
+ slug==='pets-runes-talismans'?[link('Pet References','Browse companions.','wiki/library','paw',{kind:'pet'}),link('Rune Forge · Build Studio','Plan rune placement.','labs/runes','gem')]:
+ slug==='combat-monsters-biomes'?[link('Biome References','Explore biomes.','wiki/library','layers',{kind:'biome'}),link('ML Farming Comparator','Compare farming speed.','calculators/ml-farm','sword')]:
  slug==='guilds-raids'?[link('Find a Raid','Browse raid listings.','lfg/raids','users'),link('Guild Skill Planner','Plan guild bonuses.','labs/guild-tree','shield')]:
  [link('Season 2 Guide','Current seasonal guide.','wiki/article','book',{id:'season-2'})];
  return '<div class="launchPage"><span class="launchEyebrow">WIKI / TOPICS</span><h1>'+esc(entry.title)+'</h1><p>'+esc(entry.detail)+'</p><div class="launchTopicPlaceholder"><strong>Navigation is ready. Articles come next.</strong><span>This topic hub will collect relevant pages as the Wiki is filled out.</span></div><h2>Explore related sections</h2><div class="launchMenuLinks">'+related.map(navrow).join('')+'</div></div>';
