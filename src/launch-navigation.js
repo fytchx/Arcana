@@ -188,6 +188,7 @@ export function settingsView(){
  '<div class="arcanaThemePreview" aria-label="Live preview of current icon colors">'+examples+'</div>'+
  '<h3>Icon color</h3><div class="arcanaIconColorGrid" role="group" aria-label="Icon color">'+iconColors+'</div>'+
  '<h3>Icon appearance</h3><div class="arcanaIconModeGrid" role="group" aria-label="Icon style">'+modeCards+'</div>'+
+ '<button type="button" class="arcanaOpenGallery refinedGalleryJump" data-route="refined-icons">'+refinedSvg('feature-codex',26)+' Browse the new IdleArc Refined library ('+REFINED_IDS.length+' assets) '+icon('arrow',15)+'</button>'+ 
  '<button type="button" class="arcanaOpenGallery" data-route="icons">'+icon('grid',16)+' Browse all '+ICON_IDS.length+' icons '+icon('arrow',15)+'</button></section>'+
  '<section class="slateSettingsBlock"><h2>Display</h2><div class="launchSettingList"><label class="launchSetting"><span><strong>Compact navigation</strong><small>Make rows and menus tighter.</small></span><input type="checkbox" data-app-pref="compact" '+(p.compact?'checked':'')+'></label><label class="launchSetting"><span><strong>Reduce animations</strong><small>Minimize motion effects.</small></span><input type="checkbox" data-app-pref="reduceMotion" '+(p.reduceMotion?'checked':'')+'></label></div></section>'+
  '<p class="mutedSmall">Preferences are local to this browser. Production styling and your saved builds are not changed.</p></div>';
