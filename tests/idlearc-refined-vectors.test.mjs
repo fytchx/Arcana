@@ -43,7 +43,7 @@ test('all six homepage cards, hero, featured links and submenu destinations use 
  assert.equal((submenu.match(/class="launchNavRow"/g)||[]).length,6);
  assert.equal((submenu.match(/data-refined-icon="feature-/g)||[]).length,6);
 });
-test('Build Studio tabs and browsable gallery render the actual 62 icons',()=>{
+test('Build Studio tabs and browsable gallery render the actual 62 icons',async()=>{
  const tabs=labsTabs();
  for(const id of ['build-studio','rune-forge','class-skills','passive-tree'])
   assert.match(tabs,new RegExp('data-refined-icon="feature-'+id+'"'));
