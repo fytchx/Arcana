@@ -12,7 +12,7 @@ export async function handleGeneralChat(req,res,url){
  const path=url.pathname,method=req.method;
  if(path==='/api/chat/messages'&&method==='GET'){
   const list=await allMessages(),limit=Math.max(1,Math.min(100,Number(url.searchParams.get('limit'))||70));
-  sendJSON(res,200,{messages:list.filter(x=>!x.deleted).slice(-limit),updatedAt:new Date().toISOString()});return true;
+  sendJSON(res,200,{messages:list.filter(x=>!x.deleted).slice(-limit).map(({id,authorId,name,message,createdAt})=>({id,authorId,name,message,createdAt})),updatedAt:new Date().toISOString()});return true;
  }
  if(path==='/api/chat/messages'&&method==='POST'){
   checkOrigin(req);
