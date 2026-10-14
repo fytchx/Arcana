@@ -736,10 +736,10 @@ function wirePathfinderQuick(){
   const value=Number(e.target.value);
   if(!Number.isInteger(value))return;
   state.pathfinderQuick={...state.pathfinderQuick,level:value};
-  refreshPathfinderStep(true);
+  refreshPathfinderStep(false);
  });
  document.addEventListener('change',e=>{
-  if(e.target.matches('[data-path-range]')){state.pathfinderQuick=saveQuickView(state.pathfinderQuick);return;}
+  if(e.target.matches('[data-path-range]')){state.pathfinderQuick=saveQuickView(state.pathfinderQuick);centerPathRail('pathStepRail','data-path-step',state.pathfinderQuick.level,'smooth');return;}
   if(e.target.matches('[data-path-slot]')){
    updatePathfinderQuick({slot:e.target.value},true);
   }
