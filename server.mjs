@@ -175,7 +175,11 @@ const server=http.createServer(async(req,res)=>{
    const info=await stat(filename);
    if(!info.isFile()){send(res,404,'Not found');return;}
    const bytes=await readFile(filename);
-   send(res,200,req.method==='HEAD'?null:bytes,{'content-type':TYPES[extname(filename)]||'application/octet-stream','cache-control':/\.(?:html|js|css)$/.test(filename)?'no-store':'public,max-age=300'});
+   const cacheControl=/\.html$/.test(filename)?'no-store':/\.(?:js|css)$/.test(filename)?'no-cache, must-revalidate':'public,max-age=300';
+   const etag='"'+createHash('sha256').update(bytes).digest('hex').slice(0,22)+'"';
+   const headers={'content-type':TYPES[extname(filename)]||'application/octet-stream','cache-control':cacheControl,'etag':etag};
+   if(cacheControl!=='no-store'&&req.headers['if-none-match']===etag){send(res,304,null,headers);return;}
+   send(res,200,req.method==='HEAD'?null:bytes,headers);
   }catch{send(res,404,'Not found');}
  }catch(error){console.error('Arcana server error:',error);json(res,500,{error:'Internal error'});}
 });
