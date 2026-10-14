@@ -100,6 +100,7 @@ export function communityPage(route,query){
  if(route==='community/create')return createView(query);
  return '';
 }
+export function currentAccount(){return state.me||null}
 export async function refreshAccount(){
  try{const data=await getJSON('/api/account/me');state.me=data.user;state.enabled=Boolean(data.enabled);state.betaEnrollmentOpen=Boolean(data.betaEnrollmentOpen);}
  catch{state.me=null;state.enabled=false;}
@@ -157,7 +158,7 @@ export function wireCommunityUI({go,getBuild,applyBuild,refresh,toast}){
     }
     if(action==='clear-avatar'){avatarPending='';const el=document.getElementById('arcanaAvatarStatus');if(el)el.textContent='Picture will be removed when you save your player card.';return;}
     if(action==='copy-profile'){await navigator.clipboard.writeText(location.origin+'/#/profile?id='+encodeURIComponent(id));toast('Player card copied.');return;}
-   if(action==='logout'){await getJSON('/api/account/logout',{method:'POST'});state.me=null;state.requested='';go('account');refresh();return;}
+   if(action==='logout'){await getJSON('/api/account/logout',{method:'POST'});state.me=null;state.requested='';window.dispatchEvent(new Event('arcana:account-updated'));go('account');refresh();return;}
    if(action==='use-build'){if(!state.post?.build)throw Error('This build is unavailable.');applyBuild(state.post.build);toast('Build copied to your local workspace.');go('labs/build');return;}
    if(action==='visibility'){
     const next=state.post?.status==='hidden'?'public':'hidden';
@@ -181,7 +182,7 @@ export function wireCommunityUI({go,getBuild,applyBuild,refresh,toast}){
     if(avatarPending!==null)data.avatarDataUrl=avatarPending;
      const out=await getJSON('/api/account/profile',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({profile:data})});
      avatarPending=null;
-    state.me=out.profile;toast('Player card updated.');refresh();return;
+    state.me=out.profile;window.dispatchEvent(new Event('arcana:account-updated'));toast('Player card updated.');refresh();return;
    }
    if(form.dataset.communityForm==='roles'){
     const id=String(data.id||'').trim();

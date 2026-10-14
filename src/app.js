@@ -3,8 +3,8 @@ import {loadDraft,saveDraft,deepCopy,remember,loadRecent} from './session.js';
 import {navigate,parseRoute,navigateBack} from './routing.js';
 import {esc,icon,boxIcon,chip,button,cardEntity} from './ui.js';
 import {ADMIN_URL,initTheme,applyTheme,themeStatus,refreshTheme} from './theme.js';
-import {gameArt,initGameAssets,loadStatus,canonicalArtReference} from './assets.js';
-import {TREE_DATA_URL,normalizeTree,getClass,getBranch,passiveAllowed,classAllowed,allocatedTotal,passivePointBudget,classPointBudget,passiveTierSpend} from './tree-engine.js';
+import {gameArt,initGameAssets,loadStatus,canonicalArtReference,codexOfficialArt} from './assets.js';
+import {TREE_DATA_URL,normalizeTree,getClass,getBranch,passiveAllowed,classAllowed,allocatedTotal,passivePointBudget,classPointBudget,passiveTierSpend,passiveValue} from './tree-engine.js';
 import {LOADOUT_LAYOUT,boardSwitch,buildLoadout,passiveBoard,classBoard,activePassiveNode,activeClassSkill,passivePageCount,skillTierGroups} from './core-boards.js';
 import {passiveTitle} from './tree-art.js';
 import {normalizeBuild,putRune,removeRune,nextRuneId,petSummary,RUNE_SHAPES,RUNE_FAMILIES,RUNE_FAMILY_DETAILS,RUNE_SECONDARIES,PET_AFFIX_DEFS,statName,runeIssue,monsterLevelGrid,activeRuneBoard} from './labs-engine.js';
@@ -20,6 +20,8 @@ import {communityPage,loadCommunityPage,wireCommunityUI} from './community-ui.js
 import {betaView,wireBetaUI,loadBetaStatus} from './beta-center.js';
 import {shareBuildToken,openBuildToken} from './build-links.js';
 import {saveNewAccountBuild} from './account-builds-ui.js';
+import {baseItem,equipmentId,asGear,newGear,gearIssues,allowedItem,RARITIES} from './build-studio-data.js';
+import {gearPickerMarkup,gearEditorMarkup,gearInspectMarkup} from './build-studio-ui.js';
 import {wikiLandingView,wikiLibraryView,wikiGuidesView,wikiArticleView,wikiRecordView,wikiRecordRows} from './wiki-views.js';
 import {verifiedComparisonPanel,verifiedUpgradeReferencePanel} from './verified-item-views.js';
 import {readCompoundPlan,saveCompoundPlan,readAffixCostPlan,saveAffixCostPlan,PET_HATCH_BONUSES} from './pet-simple-math.js';
@@ -32,9 +34,11 @@ import {readGuildBaseline,saveGuildBaseline,clearGuildBaseline} from './guild-tr
 import {connectedNext,homeStart,navCards,NAV_DESTINATIONS} from './context-nav.js';
 import {resumableWorkspaces} from './workspace-hub.js';
 import {readFarmPlan,saveFarmPlan,farmCompareView} from './farm-compare.js';
+import {homeScreen,homeSubmenu,directoryView,wikiTopicsView,wikiTopicView,wikiAboutView,userCenterView,settingsView,applyAppPrefs,changeAppPref} from './launch-navigation.js';
+import {currentAccount,refreshAccount} from './community-ui.js';
 
 const $=s=>document.querySelector(s);const node=id=>document.getElementById(id);
-const state={treeData:null,treeStatus:'loading',treeClassId:null,treeBranchId:null,passiveTier:0,passivePage:0,classTierIndex:0,characterLevel:1,passiveAlloc:{},classAlloc:{},classAllocById:{},layer:null,search:'',lastSearch:'',recent:loadRecent(),draft:loadDraft(),compareLeft:null,compareRight:null,compareTier:1,runeIndex:0,runeFamily:'Fury',runeSecondary:'critical_damage',runeShape:'small',runeSelected:null,runeHistory:[],petLevels:[0,0,0,0],petCalcMode:'seasonal',petAffixPlan:readPetAffixPlan(),compoundQuick:readCompoundPlan(),affixCostQuick:readAffixCostPlan(),slotTarget:null,returnTo:null,guildTreePlan:readGuildTree(),guildTreeTab:'vanguard',guildTreeLinkKey:'',guildUndo:[],guildRedo:[],guildBaseline:readGuildBaseline(),farmPlan:readFarmPlan()};
+const state={treeData:null,treeStatus:'loading',treeClassId:null,treeBranchId:null,passiveTier:0,passivePage:0,classTierIndex:0,characterLevel:1,passiveAlloc:{},classAlloc:{},classAllocById:{},passiveFreeMode:false,layer:null,search:'',lastSearch:'',recent:loadRecent(),draft:loadDraft(),compareLeft:null,compareRight:null,compareTier:1,runeIndex:0,runeFamily:'Fury',runeSecondary:'critical_damage',runeShape:'small',runeSelected:null,runeHistory:[],petLevels:[0,0,0,0],petCalcMode:'seasonal',petAffixPlan:readPetAffixPlan(),compoundQuick:readCompoundPlan(),affixCostQuick:readAffixCostPlan(),slotTarget:null,gearEdit:null,returnTo:null,guildTreePlan:readGuildTree(),guildTreeTab:'vanguard',guildTreeLinkKey:'',guildUndo:[],guildRedo:[],guildBaseline:readGuildBaseline(),farmPlan:readFarmPlan()};
 const verifiedState={entries:[],loading:false,loaded:false,error:''};
 const guildState={guilds:[],loaded:false,loading:false,error:'',updatedAt:0,query:''};
 const wikiState={category:'all',query:'',limit:36,returnPosition:null};
@@ -57,19 +61,40 @@ const lfgDynamic=()=>lfgSearchEntries(allLfg());
 const lfgSearchable=()=>[...searchExtras(),...lfgDynamic()];
 const lfgById=id=>lfgDynamic().find(e=>e.id===id);
 async function loadPublicLfg(force=false){if(lfgState.loading||(!force&&lfgState.updatedAt&&Date.now()-lfgState.updatedAt<30000))return; lfgState.loading=true; lfgState.error='';try{const r=await fetch('/api/lfg/public',{cache:'no-store',signal:AbortSignal.timeout(9500)});if(!r.ok)throw Error('HTTP '+r.status);const payload=await r.json(),data=normalizePublicFeed(payload);lfgState.error=(payload.issues?.length?('Some '+payload.issues.join(', ')+' are currently unavailable'):'');lfgState.listings=data.listings;lfgState.plans=data.plans;lfgState.loaded=true;lfgState.updatedAt=Date.now();}catch(e){lfgState.error='Live listings temporarily unavailable';console.warn('LFG feed',e.message)}finally{lfgState.updatedAt=Date.now();lfgState.loading=false;const route=parseRoute().route;if(route.startsWith('lfg/raids')||route==='lfg/listing')render();if(state.layer?.type==='search')refreshLiveSearch();}}
-const LINKS=[['home','Home','home'],['calculators','Calculators','calculator'],['labs','Arcana Labs','flask'],['lfg','ArcanaLFG','users'],['wiki','ArcanaWiki','book'],['community','Community','users'],['beta','Beta & Feedback','message-square']];
+const LINKS=[['home','Home','home'],['calculators','Calculators','calculator'],['labs/build','Build Studio','shield'],['lfg','ArcanaLFG','users'],['wiki','ArcanaWiki','book'],['community','Community','users'],['beta','Beta & Feedback','message-square']];
 const BUILD_SLOTS=LOADOUT_LAYOUT.map(x=>[x.key,x.label]);
-const item=id=>entityById.get(id)||(verifiedState.entries.find(e=>e.id===id&&e.gameKind==='item')?(()=>{const x=verifiedState.entries.find(e=>e.id===id);const kind=String(x.slot||'').toLowerCase();const slot={main_hand:'weapon',off_hand:'offhand',head:'head',chest:'chest',hands:'hands',feet:'feet',belt:'belt',ring:'ring',amulet:'neck',necklace:'neck',torch:'torch'}[kind]||null;return {...x,kind:'item',slot,subtitle:'Equipment · '+(x.description||''),verified:true}})():null);const buildTemplate=id=>demoBuilds[id];
+const item=value=>{
+ const id=equipmentId(value);if(!id)return null;
+ const local=entityById.get(id);if(local)return local;
+ const verified=verifiedState.entries.find(e=>e.id===id&&e.gameKind==='item');
+ if(verified){
+  const kind=String(verified.slot||'').toLowerCase();
+  const slot={main_hand:'weapon',off_hand:'offhand',head:'head',chest:'chest',hands:'hands',feet:'feet',belt:'belt',ring:'ring',amulet:'neck',necklace:'neck',torch:'torch'}[kind]||null;
+  return {...verified,kind:'item',slot,subtitle:'Equipment · '+(verified.description||''),verified:true};
+ }
+ const gear=baseItem(id);
+ const slot=gear?{main_hand:'weapon',off_hand:'offhand',amulet:'neck',ring:'ring'}[gear.slot]||gear.slot:null;
+ return gear?{id:gear.id,kind:'item',title:gear.name,subtitle:'Verified Season 2 base equipment',slot,verified:true}:null;
+};const buildTemplate=id=>demoBuilds[id];
 const savedBuild=()=>state.draft&&state.draft.equipment?normalizeBuild(state.draft):null;
 const shared={token:'',build:null,error:''};
 async function resolveShared(token){
  if(shared.token===token)return;
  shared.token=token;shared.build=null;shared.error='';
  try{shared.build=await openBuildToken(token);}catch(err){shared.error=String(err.message||err);}
- if(parseRoute().query.get('share')===token&&['labs/build','labs/runes'].includes(parseRoute().route))render();
+ if(parseRoute().query.get('share')===token&&['labs/build','labs/runes','labs/passives'].includes(parseRoute().route))render();
 }
 const newPersonalBuild=()=>normalizeBuild({id:'local-draft',title:'My Build',className:'Warrior',owner:'You',version:'LOCAL',summary:'Create a build with your own equipment, rune layout, skills and pets.',notes:'Your changes stay on this device until you share your build.',equipment:{weapon:null,offhand:null,head:null,chest:null,hands:null,feet:null,belt:null,ring:null,neck:null},skills:[],runes:[],pets:[],runeBoard:[],monsterLevel:1,passiveAlloc:{},classAllocById:{}});
-function ensureDraft(){if(!state.draft)state.draft=newPersonalBuild();else state.draft=normalizeBuild(state.draft);return state.draft;}
+function ensureDraft(){
+ if(!state.draft){
+  state.draft=newPersonalBuild();
+  state.draft.characterLevel=state.characterLevel;
+  state.draft.passiveAlloc=structuredClone(state.passiveAlloc);
+  state.draft.passiveFreeMode=state.passiveFreeMode===true;
+  state.draft.classAllocById=structuredClone(state.classAllocById);
+ }else state.draft=normalizeBuild(state.draft);
+ return state.draft;
+}
 function persistDraft(){if(state.draft){state.draft=normalizeBuild(state.draft);saveDraft(state.draft)}}
 const SEARCHABLE_TOOLS=['items','guides','upgrade','compare','build','runes','skills','passives','petlab','compound','affixes','guildtree','guilds','raids','farm'];
 const TOOL_SEARCH_ALIASES={
@@ -91,12 +116,12 @@ const searchExtras=()=>[
 function track(id){if(!id)return;state.recent=remember(id)}
 function crumbTrail(title){
  const route=parseRoute().route,section=route.split('/')[0];
- const parent={labs:['Arcana Labs','labs'],calculators:['Calculators','calculators'],lfg:['ArcanaLFG','lfg'],wiki:['ArcanaWiki','wiki']}[section];
+ const parent={labs:['Build Studio','labs/build'],calculators:['Calculators','calculators'],lfg:['ArcanaLFG','lfg'],wiki:['ArcanaWiki','wiki']}[section];
  if(!parent||route===parent[1])return '';
  return `<nav class="arcanaCrumbs" aria-label="Breadcrumbs"><button data-route="home">Home</button><span aria-hidden="true">›</span><button data-route="${parent[1]}">${parent[0]}</button><span aria-hidden="true">›</span><span aria-current="page">${esc(title)}</span></nav>`;
 }
 function layout(title,kicker,inner,mark='gem'){
- return `${crumbTrail(title)}<div class="pageHead"><button class="backLink" data-action="back">${icon('back',17)} Back</button><div class="pageHeadline"><span class="pageIcon">${icon(mark,24)}</span><div><span class="eyebrow">${esc(kicker)}</span><h1>${esc(title)}</h1></div></div></div>${inner}`;
+ return `${crumbTrail(title)}<div class="pageHead"><button class="backLink" data-route="home">${icon('back',17)} Home</button><div class="pageHeadline"><span class="pageIcon">${icon(mark,24)}</span><div><span class="eyebrow">${esc(kicker)}</span><h1>${esc(title)}</h1></div></div></div>${inner}`;
 }
 
 const homePanels={quick:false,actions:false};
@@ -113,34 +138,8 @@ const homeDisclosure=(key,kicker,title,description,content)=>
 const homeSecondary=(route,title,description,symbol)=>
  '<button type="button" class="arcanaHomeSecondary" data-route="'+esc(route)+'"><span class="arcanaHomeSecondaryIcon">'+icon(symbol,19)+'</span>'+
  '<span><strong>'+esc(title)+'</strong><small>'+esc(description)+'</small></span><span class="arcanaHomeSecondaryArrow">'+icon('arrow',17)+'</span></button>';
-function home(){
- const recent=state.recent.map(x=>entityById.get(x)).filter(Boolean).slice(0,3);
- const saved=resumableWorkspaces({draft:savedBuild(),guild:state.guildTreePlan,compound:state.compoundQuick,affix:state.affixCostQuick,farm:state.farmPlan,
-  recent:state.recent.map(id=>id.startsWith('wiki:article:')?wikiArticleById(id.slice(13)):null).filter(Boolean)});
- const quickContent=(saved||'')+
-  '<div class="arcanaHomeShortcuts"><span class="eyebrow">POPULAR SHORTCUTS</span><div class="arcanaStartGrid">'+navCards(['search','compound','runes','farm'],{compact:true})+'</div></div>'+
-  (recent.length?'<div class="arcanaHomeRecent"><span class="eyebrow">RECENTLY VIEWED</span><div class="recentList">'+recent.map(cardEntity).join('')+'</div></div>':'');
- return '<section class="hero arcanaHomeHero"><span class="eyebrow">IDLEARC COMPANION <i>·</i> ARCANA</span><h1>Everything connected.<br><em>Nothing in your way.</em></h1>'+
- '<p>Explore the game, plan your build, and get straight to the tools that matter.</p><span class="heroFacet" aria-hidden="true">'+icon('gem',38)+'</span></section>'+
- '<section class="arcanaHomePrimary" aria-label="Featured Arcana destinations"><div class="arcanaHomePrimaryHeading"><span class="eyebrow">EXPLORE ARCANA</span><h2>Where would you like to go?</h2><p>Your four main destinations, all in one place.</p></div>'+
- '<div class="arcanaHomeGatewayGrid">'+
- homeGateway('wiki','ArcanaWiki','Browse the Codex, game artwork, items, and mechanics.','CODEX & REFERENCE','book')+
- homeGateway('labs','Arcana Labs','Build Studio, Rune Forge, skill trees, and planning.','BUILD & EXPERIMENT','flask')+
- homeGateway('calculators','Calculators','Pet costs, equipment comparisons, and farming tools.','RUN THE NUMBERS','calculator')+
- homeGateway('wiki/guides','Player Guides','Season 2 walkthroughs and practical game explanations.','READ & LEARN','layers')+
- '</div></section>'+
- '<section class="arcanaHomeFoldGroup" aria-label="Optional shortcuts">'+
- homeDisclosure('quick','PERSONAL WORKSPACE','Quick Access','Saved plans, recent references, and useful shortcuts.',quickContent)+
- homeDisclosure('actions','QUICK START','What do you want to do?','Open a specific task without browsing the main sections.',homeStart({compact:true}))+
- '</section>'+
- '<section class="arcanaHomeCommunity" aria-label="Community and multiplayer"><div class="arcanaHomeCommunityHeading"><span class="eyebrow">COMMUNITY</span><h2>Connect with other players</h2></div>'+
- '<div class="arcanaHomeCommunityGrid">'+
- homeSecondary('community','Player Community','Shared guides, builds, and player profiles','users')+
- homeSecondary('lfg','ArcanaLFG','Find raid groups and guild recruitment','shield')+
- '</div></section>'+
- '<section class="arcanaHomeBeta"><div><span class="eyebrow">ARCANA BETA</span><h2>Help make Arcana better</h2><p>Found a bug, missing image, or confusing screen? Send feedback without an account.</p></div>'+
- '<button type="button" class="btn secondary" data-route="beta">'+icon('message-square',17)+' Report an issue '+icon('arrow',15)+'</button></section>';
-}
+function home(){return homeScreen()}
+function recentView(){const recent=state.recent.map(id=>entityById.get(id)||verifiedState.entries.find(e=>e.id===id)||wikiArticleEntries().find(e=>e.id===id)).filter(Boolean).slice(0,15);const saved=resumableWorkspaces({draft:savedBuild(),guild:state.guildTreePlan,compound:state.compoundQuick,affix:state.affixCostQuick,farm:state.farmPlan,recent:state.recent.map(id=>id.startsWith('wiki:article:')?wikiArticleById(id.slice(13)):null).filter(Boolean)});return '<div class="launchPage"><span class="launchEyebrow">USER CENTER</span><h1>Recent Activity</h1><p>Your saved planning work and recently viewed references, available to continue on this device.</p>'+(saved||'<p class="mutedSmall">No saved planning activity yet. Start in Build Studio.</p>')+'<h2>Recently viewed</h2><div class="resultList">'+(recent.length?recent.map(cardEntity).join(''):'<p class="mutedSmall">Pages you open will appear here.</p>')+'</div></div>'}
 function siteSignature(){return `<footer class="footer arcanaSignature" aria-label="Arcana creator and community">
 <img class="arcanaSigLogo" src="/assets/arcana-logo.webp" alt="" loading="lazy"/>
 <div class="arcanaSigText"><strong>Made by <em>Zane</em></strong><small>Guild leader of PDX &amp; OVK · For the IdleArc community</small></div>
@@ -171,7 +170,7 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
  if(share&&!shared.build)return layout('Shared Build','ARCANA LABS','<p class="notice">'+esc(shared.error||'Shared build unavailable.')+'</p><button class="btn secondary" data-route="labs/build">My Build Studio</button>');
  const inspecting=!!route.query.get('build')||!!share,b=demoActive();if(!b)return notFound();if(!inspecting)state.draft=b;
  const slots=buildLoadout(b.equipment,item,inspecting);
- return layout(inspecting?'Inspect Guide Build':'My Build Studio','ARCANA LABS',`<section class="studioHero"><div><span class="eyebrow">${inspecting?'READ-ONLY INSPECTION · GUIDE BUILD':'LOCAL WORKSPACE · SAVED ON THIS DEVICE'}</span><h2>${esc(b.title)}</h2><p>${esc(b.className)} · ${esc(b.summary)}</p></div>${chip(inspecting?(b.version==='PLAYER GUIDE'?'Zane’s Retaliation setup':'Demonstration build'):'My editable draft')}</section>
+ return layout(inspecting?'Inspect Guide Build':'My Build Studio','BUILD STUDIO',`<section class="studioHero"><div><span class="eyebrow">${inspecting?'READ-ONLY INSPECTION · GUIDE BUILD':'LOCAL WORKSPACE · SAVED ON THIS DEVICE'}</span><h2>${esc(b.title)}</h2><p>${esc(b.className)} · ${esc(b.summary)}</p></div>${chip(inspecting?(b.version==='PLAYER GUIDE'?'Zane’s Retaliation setup':'Demonstration build'):'My editable draft')}</section>
  ${!inspecting?`<section class="buildIdentityEditor" aria-label="Personal build details"><label>Build name<input data-build-field="title" maxlength="100" value="${esc(b.title)}" placeholder="My Build"></label><label>Class<select data-build-field="className">${['Warrior','Archer','Mage','Rogue','Druid'].map(name=>`<option ${b.className===name?'selected':''}>${name}</option>`).join('')}</select></label><label>Build description<textarea data-build-field="summary" maxlength="350" rows="2" placeholder="What are you trying to achieve?">${esc(b.summary||'')}</textarea></label></section>`:''}
  <div class="studioAction">${inspecting?`<button class="btn primary" data-action="clonebuild" data-arg="${esc(b.id)}">${icon('edit',17)} Use as my build</button>`:`<button class="btn primary" data-action="savebuild">${icon('check',16)} Save draft</button><button class="btn secondary" data-action="sharebuild">${icon('link',17)} Share build</button><button class="btn secondary" data-action="savecloud">${icon('check',17)} Save to Account</button><button class="btn secondary" data-action="resetbuild">${icon('close',17)} Start fresh</button>`}<button class="btn secondary" data-route="beta">${icon('message-square',17)} Report a problem</button></div>
  ${!inspecting?'<p class="mutedSmall">Your draft is saved on this device. A share link includes the build setup, description and notes. Do not include private details.</p>':''}
@@ -190,10 +189,10 @@ function petLab(){return buildStudio()}
 function calcAffixes(){return layout('Pet Affix Cost','ARCANA CALCULATORS',simpleAffixCostView(state.affixCostQuick),'paw')}
 function calcFarm(){return layout('ML Farming Comparator','ARCANA CALCULATORS',farmCompareView(state.farmPlan),'sword')}
 function runeForge(){const templateId=parseRoute().query.get('build'),share=parseRoute().query.get('share');
- if(share&&shared.token!==share)return layout('Rune Forge','ARCANA LABS','<p class="notice">Opening shared runes…</p>');
- if(share&&!shared.build)return layout('Rune Forge','ARCANA LABS','<p class="notice">'+esc(shared.error||'Shared build unavailable.')+'</p>');
+ if(share&&shared.token!==share)return layout('Rune Forge','BUILD STUDIO','<p class="notice">Opening shared runes…</p>');
+ if(share&&!shared.build)return layout('Rune Forge','BUILD STUDIO','<p class="notice">'+esc(shared.error||'Shared build unavailable.')+'</p>');
  const preview=share?shared.build:templateId?buildTemplate(templateId):null;const b=preview?normalizeBuild(preview):ensureDraft();const isReadonly=!!preview;
- return layout('Rune Forge','ARCANA LABS',`${labsTabs('runes')}<section class="runeIntro"><div><span class="eyebrow">ARCANA LABS / CHARACTER WORKSPACE</span><h2>Rune Forge</h2><p>${isReadonly?'Guide build, read-only preview':'Every placement saves to your current draft immediately. Grid grows with Monster Level.'}</p></div><span class="runeProgress">${activeRuneBoard(b.runeBoard||[],b.monsterLevel||1).active.reduce((n,r)=>n+r.w*r.h,0)} / ${monsterLevelGrid(b.monsterLevel||1).cols*monsterLevelGrid(b.monsterLevel||1).rows} cells</span></section><div class="runeStudioGrid">${runeGridView(b,state.runeSelected,isReadonly)}${runeOptionsUI({family:state.runeFamily,shape:state.runeShape,secondary:state.runeSecondary,selected:state.runeSelected},b,isReadonly)}</div>${!b.runeBoard.length&&b.runes.length?`<p class="notice">Reference families: ${esc(b.runes.join(', '))}. This build has no verified rune placement coordinates yet, so the board begins empty.</p>`:''}`,'gem')}
+ return layout('Rune Forge','BUILD STUDIO',`${labsTabs('runes')}<section class="runeIntro"><div><span class="eyebrow">BUILD STUDIO / RUNES</span><h2>Rune Forge</h2><p>${isReadonly?'Guide build, read-only preview':'Every placement saves to your current draft immediately. Grid grows with Monster Level.'}</p></div><span class="runeProgress">${activeRuneBoard(b.runeBoard||[],b.monsterLevel||1).active.reduce((n,r)=>n+r.w*r.h,0)} / ${monsterLevelGrid(b.monsterLevel||1).cols*monsterLevelGrid(b.monsterLevel||1).rows} cells</span></section><div class="runeStudioGrid">${runeGridView(b,state.runeSelected,isReadonly)}${runeOptionsUI({family:state.runeFamily,shape:state.runeShape,secondary:state.runeSecondary,selected:state.runeSelected},b,isReadonly)}</div>${!b.runeBoard.length&&b.runes.length?`<p class="notice">Reference families: ${esc(b.runes.join(', '))}. This build has no verified rune placement coordinates yet, so the board begins empty.</p>`:''}`,'gem')}
 function mutateRunes(callback){const b=ensureDraft();const old=structuredClone(b.runeBoard);const out=callback(b);if(out===false)return;state.runeHistory.push(old);if(state.runeHistory.length>20)state.runeHistory.shift();b.runes=[...new Set(b.runeBoard.map(r=>r.family))];persistDraft();render();}
 
 const ASSASSIN_MOTIFS=[
@@ -205,15 +204,45 @@ const ASSASSIN_MOTIFS=[
   ['Mirror assault','assassin-06','Tier 3 · right']
 ];
 function skillArt(id){return `<img src="/assets/skills/${id}-precision.svg" alt="" class="arcanaSkillImage" loading="lazy">`}
-function skills(){return layout('Class Skill Tree','ARCANA LABS',labsTabs('skills')+classBoard(state,state.treeData),'git')}
-function passives(){return layout('Passive Skill Tree','ARCANA LABS',labsTabs('passives')+passiveBoard(state,state.treeData),'layers')}
-function storeTreePlan(){const plan={characterLevel:state.characterLevel,treeClassId:state.treeClassId,treeBranchId:state.treeBranchId,passiveAlloc:state.passiveAlloc,classAlloc:state.classAlloc,classAllocById:state.classAllocById};try{localStorage.setItem('arcana-v4-tree-plan',JSON.stringify(plan))}catch{}if(state.draft){Object.assign(state.draft,{characterLevel:state.characterLevel,passiveAlloc:structuredClone(state.passiveAlloc),classAllocById:structuredClone(state.classAllocById)});persistDraft()}}
-function restoreTreePlan(){try{const p=JSON.parse(localStorage.getItem('arcana-v4-tree-plan')||'{}');state.characterLevel=Math.max(1,Math.floor(Number(p.characterLevel)||1));state.treeClassId=p.treeClassId||null;state.treeBranchId=p.treeBranchId||null;state.passiveAlloc=p.passiveAlloc&&typeof p.passiveAlloc==='object'?p.passiveAlloc:{};state.classAlloc=p.classAlloc&&typeof p.classAlloc==='object'?p.classAlloc:{};state.classAllocById=p.classAllocById&&typeof p.classAllocById==='object'?p.classAllocById:{}}catch{}}
-async function loadTrees(){state.treeStatus='loading';try{const r=await fetch(TREE_DATA_URL,{cache:'no-store',signal:AbortSignal.timeout(12000)});if(!r.ok)throw new Error('HTTP '+r.status);const d=normalizeTree(await r.json());if(!d.passive.rows.length&&!d.classes.length)throw new Error('No compatible tree data in export');state.treeData=d;state.treeStatus='ready';if(!state.treeClassId&&d.classes.length)state.treeClassId=d.classes[0].id;}catch(e){state.treeData=null;state.treeStatus='unavailable';console.warn('Arcana skill data:',e.message)}if(parseRoute().route.startsWith('labs/skill')||parseRoute().route.startsWith('labs/passive'))render()}
-function adjustPassive(key,delta){const n=activePassiveNode(state.treeData,key),res=passiveAllowed(state.treeData,state.passiveAlloc,n,delta,state.characterLevel);if(!res.ok){toast(res.reason);return}state.passiveAlloc=res.allocation;storeTreePlan();rerenderTreeKeepingFocus('passive',key,delta)}
-function adjustClass(id,delta){const {cls,skill}=activeClassSkill(state.treeData,state.treeClassId,id);const res=classAllowed(cls,state.classAlloc,skill,delta,state.characterLevel);if(!res.ok){toast(res.reason);return}state.classAlloc=res.allocation;state.classAllocById[state.treeClassId||'default']=state.classAlloc;storeTreePlan();rerenderTreeKeepingFocus('class',id,delta)}
-function inspectPassive(key){const node=activePassiveNode(state.treeData,key);if(!node)return;const rank=+(state.passiveAlloc[key]||0);const plus=passiveAllowed(state.treeData,state.passiveAlloc,node,1,state.characterLevel),minus=passiveAllowed(state.treeData,state.passiveAlloc,node,-1,state.characterLevel);showLayer('PASSIVE NODE',`<section class="skillInspector"><span class="eyebrow">ROW ${node.row+1} · ${node.milestone?'MILESTONE':'PASSIVE'}</span><h2>${esc(passiveTitle(node.name))}</h2><p>${esc(node.description||'Stat node from the game tree export.')}</p><div class="rank"><button data-action="passiveadjust" data-arg="${esc(key)}|-1" ${minus.ok?'':'disabled'} aria-label="Refund point">−</button><strong>${rank} / ${node.maxRank||'?'}</strong><button data-action="passiveadjust" data-arg="${esc(key)}|1" ${plus.ok?'':'disabled'} aria-label="Allocate point">+</button></div><p class="reason">${esc(!plus.ok?plus.reason:`${state.characterLevel} character level · passive points remaining: ${Math.max(0,passivePointBudget(state.characterLevel)-allocatedTotal(state.passiveAlloc))}`)}</p></section>`,'passive-inspector')}
-function inspectClass(id){const {cls,skill}=activeClassSkill(state.treeData,state.treeClassId,id);if(!skill)return;const rank=+(state.classAlloc[id]||0);const plus=classAllowed(cls,state.classAlloc,skill,1,state.characterLevel),minus=classAllowed(cls,state.classAlloc,skill,-1,state.characterLevel);showLayer('CLASS SKILL',`<section class="skillInspector"><span class="eyebrow">${esc(cls.name.toUpperCase())} · VERIFIED SKILL ID ${esc(id)}</span><h2>${esc(skill.name)}</h2><p>${esc(skill.description||skill.effect||'Details available from the game tree export.')}</p>${skill.prereqs.length?`<p>Requires: ${esc(skill.prereqs.join(', '))}</p>`:''}<div class="rank"><button data-action="classadjust" data-arg="${esc(id)}|-1" ${minus.ok?'':'disabled'} aria-label="Refund skill point">−</button><strong>${rank} / ${skill.maxRank||'?'}</strong><button data-action="classadjust" data-arg="${esc(id)}|1" ${plus.ok?'':'disabled'} aria-label="Allocate skill point">+</button></div><p class="reason">${esc(!plus.ok?plus.reason:`${Math.max(0,classPointBudget(state.characterLevel)-allocatedTotal(state.classAlloc))} class points available`)}</p></section>`,'class-inspector')}
+function skills(){return layout('Class Skill Tree','BUILD STUDIO',labsTabs('skills')+classBoard(state,state.treeData),'git')}
+function visiblePassiveState(){
+ const route=parseRoute(),token=route.query.get('share');
+ if(!token)return {...state,passiveReadOnly:false};
+ if(shared.token!==token||!shared.build)return null;
+ const source=shared.build,tierValue=Number(route.query.get('tier'));
+ const tier=Number.isInteger(tierValue)&&tierValue>=0&&tierValue<20?tierValue:state.passiveTier;
+ return {...state,passiveTier:tier,passiveReadOnly:true,passiveAlloc:source.passiveAlloc||{},passiveFreeMode:source.passiveFreeMode===true,characterLevel:Math.max(1,Math.min(1000,Number(source.characterLevel)||1))};
+}
+function passives(){
+ const token=parseRoute().query.get('share');
+ if(token&&shared.token!==token)return layout('Shared Passive Tree','BUILD STUDIO','<p class="notice">Opening shared passive tree…</p>','layers');
+ if(token&&!shared.build)return layout('Shared Passive Tree','BUILD STUDIO',`<p class="notice">${esc(shared.error||'Shared passive tree unavailable.')}</p><button class="btn secondary" data-route="labs/passives">Open my passive planner</button>`,'layers');
+ const view=visiblePassiveState();
+ return layout(token?'Shared Passive Skill Tree':'Passive Skill Tree','ARCANA LABS',labsTabs('passives')+passiveBoard(view,state.treeData),'layers');
+}
+function storeTreePlan(){const plan={characterLevel:state.characterLevel,treeClassId:state.treeClassId,treeBranchId:state.treeBranchId,passiveAlloc:state.passiveAlloc,classAlloc:state.classAlloc,classAllocById:state.classAllocById,passiveFreeMode:state.passiveFreeMode};try{localStorage.setItem('arcana-v4-tree-plan',JSON.stringify(plan))}catch{}if(state.draft){Object.assign(state.draft,{characterLevel:state.characterLevel,passiveAlloc:structuredClone(state.passiveAlloc),classAllocById:structuredClone(state.classAllocById),passiveFreeMode:state.passiveFreeMode});persistDraft()}}
+function restoreTreePlan(){try{const p=JSON.parse(localStorage.getItem('arcana-v4-tree-plan')||'{}');state.characterLevel=Math.max(1,Math.floor(Number(p.characterLevel)||1));state.treeClassId=p.treeClassId||null;state.treeBranchId=p.treeBranchId||null;state.passiveAlloc=p.passiveAlloc&&typeof p.passiveAlloc==='object'?p.passiveAlloc:{};state.passiveFreeMode=typeof p.passiveFreeMode==='boolean'?p.passiveFreeMode:state.draft?.passiveFreeMode===true;state.classAlloc=p.classAlloc&&typeof p.classAlloc==='object'?p.classAlloc:{};state.classAllocById=p.classAllocById&&typeof p.classAllocById==='object'?p.classAllocById:{}}catch{}}
+async function loadTrees(){
+ // The passive and class simulators share immutable verified October 9, 2026 configuration.
+ // They must not depend on the older /game-assets/skill-tree export returning or being correctly formatted.
+ state.treeStatus='ready';
+ state.treeData=normalizeTree({});
+ if(!state.treeClassId||!state.treeData.classes.some(c=>c.id===state.treeClassId)){
+  state.treeClassId=state.treeData.classes.find(c=>c.name===state.draft?.className)?.id||state.treeData.classes[0]?.id||null;
+ }
+ state.classAlloc=state.classAllocById[state.treeClassId]||state.classAlloc||{};
+ if(!state.classAllocById[state.treeClassId])state.classAllocById[state.treeClassId]={...state.classAlloc};
+ if(parseRoute().route.startsWith('labs/skill')||parseRoute().route.startsWith('labs/passive'))render();
+}
+function adjustPassive(key,delta){if(parseRoute().route==='labs/passives'&&parseRoute().query.has('share')){toast('Shared trees are read-only');return;}const n=activePassiveNode(state.treeData,key),res=passiveAllowed(state.treeData,state.passiveAlloc,n,delta,state.characterLevel,state.passiveFreeMode);if(!res.ok){toast(res.reason);return}state.passiveAlloc=res.allocation;storeTreePlan();rerenderTreeKeepingFocus('passive',key,delta);if(state.layer?.type==='passive-inspector')inspectPassive(key);}
+function adjustClass(id,delta){const {cls,skill}=activeClassSkill(state.treeData,state.treeClassId,id);const res=classAllowed(cls,state.classAlloc,skill,delta,state.characterLevel);if(!res.ok){toast(res.reason);return}state.classAlloc=res.allocation;state.classAllocById[state.treeClassId||'default']=state.classAlloc;storeTreePlan();rerenderTreeKeepingFocus('class',id,delta);if(state.layer?.type==='class-inspector')inspectClass(id);}
+function inspectPassive(key){
+ const node=activePassiveNode(state.treeData,key),current=visiblePassiveState();if(!node||!current)return;
+ const rank=Number(current.passiveAlloc[key]||0),readOnly=current.passiveReadOnly===true;
+ const plus=passiveAllowed(state.treeData,current.passiveAlloc,node,1,current.characterLevel,current.passiveFreeMode),minus=passiveAllowed(state.treeData,current.passiveAlloc,node,-1,current.characterLevel,current.passiveFreeMode);
+ showLayer('PASSIVE NODE',`<section class="skillInspector"><span class="eyebrow">ROW ${node.row+1} · ${node.milestone?'MILESTONE':'PASSIVE'} ${readOnly?'· SHARED PREVIEW':''}</span><h2>${esc(passiveTitle(node.name))}</h2><p>${esc(node.description||'Verified in-game passive skill.')}</p><div class="passiveInspectorEffect"><strong>${esc(passiveValue(node,1))} per rank</strong><small>${rank?esc(passiveValue(node,rank))+' at your rank':'No points allocated'}</small></div><div class="rank"><button data-action="passiveadjust" data-arg="${esc(key)}|-1" ${readOnly||!minus.ok?'disabled':''} aria-label="Refund point">−</button><strong>${rank} / ${node.maxRank||'?'}</strong><button data-action="passiveadjust" data-arg="${esc(key)}|1" ${readOnly||!plus.ok?'disabled':''} aria-label="Allocate point">+</button></div><p class="reason">${esc(readOnly?'Shared preview · view only':!plus.ok?plus.reason:current.passiveFreeMode?'Free Allocation · progression rules are bypassed':`${current.characterLevel} character level · passive points remaining: ${Math.max(0,passivePointBudget(current.characterLevel)-allocatedTotal(current.passiveAlloc))}`)}</p></section>`,'passive-inspector');
+}
+function inspectClass(id){const {cls,skill}=activeClassSkill(state.treeData,state.treeClassId,id);if(!skill)return;const rank=+(state.classAlloc[id]||0);const plus=classAllowed(cls,state.classAlloc,skill,1,state.characterLevel),minus=classAllowed(cls,state.classAlloc,skill,-1,state.characterLevel);showLayer('CLASS SKILL',`<section class="skillInspector"><div class="classSkillInspectorArt">${codexOfficialArt({id:'game:class-skill:'+skill.id,gameKind:'class-skill',title:skill.name,className:cls.name},76)}</div><span class="eyebrow">${esc(cls.name.toUpperCase())} · SKILL #${esc(id)}</span><h2>${esc(skill.name)}</h2><p>${esc(skill.description||skill.effect||'Details available from the game configuration.')}</p>${skill.prereqs.length?`<p>Requires: ${esc(skill.prereqs.join(', '))}</p>`:''}<div class="rank"><button data-action="classadjust" data-arg="${esc(id)}|-1" ${minus.ok?'':'disabled'} aria-label="Refund skill point">−</button><strong>${rank} / ${skill.maxRank||'?'}</strong><button data-action="classadjust" data-arg="${esc(id)}|1" ${plus.ok?'':'disabled'} aria-label="Allocate skill point">+</button></div><p class="reason">${esc(!plus.ok?plus.reason:`${Math.max(0,classPointBudget(state.characterLevel)-allocatedTotal(state.classAlloc))} class points available`)}</p></section>`,'class-inspector')}
 function rerenderTreeKeepingFocus(kind,key,delta){
  const scrolled=window.scrollY;
  const oldRail=document.querySelector(kind==='passive'?'.coreTreePanel .treeRail':'.classTierRail');
@@ -247,7 +276,22 @@ function commitTreeLevel(value){const n=Math.floor(Number(value));const valid=le
  const prevY=window.scrollY;state.characterLevel=n;storeTreePlan();render();
  window.scrollTo({top:prevY,left:0,behavior:'instant'});
 }
-function passiveMove(delta){const tiers=state.treeData?.passive?.tiers||[];if(!tiers.length)return;const next=state.passiveTier+delta;if(next<0||next>=tiers.length)return;state.passiveTier=next;state.passivePage=0;render()}
+function selectPassiveTier(value){
+ const tierCount=state.treeData?.passive?.tiers?.length||20,index=Math.max(0,Math.min(tierCount-1,Math.floor(Number(value)||0)));
+ state.passiveTier=index;state.passivePage=0;
+ const route=parseRoute();
+ if(route.route==='labs/passives'&&route.query.get('share')){
+  const query=new URLSearchParams(route.query);query.set('tier',String(index));
+  history.replaceState(history.state,'','#/labs/passives?'+query.toString());
+ }
+ render();
+}
+function passiveMove(delta){
+ const current=visiblePassiveState(),tierCount=state.treeData?.passive?.tiers?.length||0;
+ if(!tierCount||!current)return;
+ const next=current.passiveTier+delta;
+ if(next>=0&&next<tierCount)selectPassiveTier(next);
+}
 function classMove(delta){const groups=getBranch(getClass(state.treeData,state.treeClassId),state.treeBranchId)?.skills||[];const tierCount=skillTierGroups({skills:groups}).length;const next=state.classTierIndex+delta;if(next>=0&&next<tierCount){state.classTierIndex=next;render()}}
 function showSkillStudy(id){const entry=ASSASSIN_MOTIFS.find(x=>x[1]===id);if(!entry)return;
  showLayer('ARCANA SKILL ART · DESIGN REVIEW',`<div class="previewHero"><span class="studyPreviewArt">${skillArt(id)}</span><div><span class="eyebrow">${esc(entry[2])} · PROVISIONAL</span><h2>${esc(entry[0])}</h2><p>Original Arcana icon concept inspired by the corresponding in-game visual. The final icon will be mapped to verified skill data and reviewed before publication.</p></div></div><div class="actionsGroup"><button class="btn secondary" data-route="labs/skills">${icon('git',16)} Return to Skill Tree</button></div><p class="mutedSmall">Inner class colors remain fixed. The surrounding UI follows the admin-selected theme.</p>`,'skill-study');}
@@ -309,10 +353,13 @@ function updateGuildTree(plan,{recordHistory=true}={}){
  }
 }
 
-function routeView(){const {route,query}=parseRoute();switch(route){case 'home':return home();case 'calculators':return calculators();case 'labs':return labs();case 'wiki':return wikiLandingView({entries:verifiedState.entries,loaded:verifiedState.loaded,error:verifiedState.error,itemCount:verifiedState.entries.length});case 'lfg':return lfg();case 'beta':case 'beta/reports':return betaView(route);case 'account':case 'profile':case 'community':case 'community/post':case 'community/create':return communityPage(route,query);case 'wiki/items':return wikiLibraryView({entries:verifiedState.entries,category:'item',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/mechanics':return wikiLibraryView({entries:verifiedState.entries,category:'passive',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/guides':return wikiGuidesView();case 'wiki/studio':return wikiStudioView();case 'wiki/library':return wikiLibraryView({entries:verifiedState.entries,category:wikiState.category=query.get('kind')||'all',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/article':{const a=wikiArticleById(query.get('id'));if(a)track('wiki:article:'+a.id);return wikiArticleView(a);}case 'wiki/guide':return fullGuide(query.get('id'));case 'wiki/item':return wikiItem(query.get('item'));case 'wiki/mechanic':return wikiMechanic(query.get('id'));case 'labs/build':return buildStudio();case 'labs/runes':return runeForge();case 'labs/pets':return petLab();case 'labs/guild-tree':case 'lfg/guild-tree':return guildTree();case 'labs/skills':return skills();case 'labs/passives':return passives();case 'calculators/upgrade':return calcUpgrade();case 'calculators/compare':return calcCompare();case 'calculators/pet':return calcPet();case 'calculators/affixes':return calcAffixes();case 'calculators/ml-farm':return calcFarm();case 'lfg/raids':return lfg('raids');case 'lfg/guilds':return guildPage();case 'lfg/guild':return guildPage();case 'lfg/guild/new':return guildPage();case 'lfg/guild/edit':return guildPage();case 'lfg/listing':return lfg('listing');case 'reference/detail':case 'wiki/reference':{const id=query.get('id')||query.get('item');if(id)track(id);return wikiRecordView(verifiedState.entries.find(e=>e.id===id),verifiedState.entries,wikiState.category);} default:return notFound()}}
-function render(){const __prevGuildRail=document.querySelector('.guildTreeTabs');const __prevGuildX=__prevGuildRail?.scrollLeft??null;const __prevWikiRail=document.querySelector('.wikiCategoryScroll');const __prevWikiX=__prevWikiRail?__prevWikiRail.scrollLeft:null;const dest=parseRoute().route;if(dest.startsWith('lfg/guild')&&!guildState.loading&&Date.now()-guildState.updatedAt>30000)queueMicrotask(()=>void loadGuilds());if(dest.startsWith('lfg')&&!lfgState.loading&&(Date.now()-lfgState.updatedAt>30000)){queueMicrotask(()=>void loadPublicLfg())};applyTheme(dest);node('content').innerHTML=routeView()+connectedNext(dest)+siteSignature();if((dest==='labs/build'||dest==='labs/runes')&&parseRoute().query.get('share')&&shared.token!==parseRoute().query.get('share'))queueMicrotask(()=>void resolveShared(parseRoute().query.get('share')));
+function routeView(){const {route,query}=parseRoute();switch(route){case 'home':return home();case 'directory':return directoryView();case 'user':return userCenterView(currentAccount());case 'recent':return recentView();case 'settings':return settingsView();case 'wiki/about':return wikiAboutView();case 'wiki/topics':return wikiTopicsView();case 'wiki/topic':return wikiTopicView(query.get('slug'))||notFound();case 'calculators':return calculators();case 'labs':return buildStudio();case 'wiki':return wikiLandingView({entries:verifiedState.entries,loaded:verifiedState.loaded,error:verifiedState.error,itemCount:verifiedState.entries.length});case 'lfg':return lfg();case 'beta':case 'beta/reports':return betaView(route);case 'account':case 'profile':case 'community':case 'community/post':case 'community/create':return communityPage(route,query);case 'wiki/items':return wikiLibraryView({entries:verifiedState.entries,category:'item',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/mechanics':return wikiLibraryView({entries:verifiedState.entries,category:'passive',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/guides':return wikiGuidesView();case 'wiki/studio':return wikiStudioView();case 'wiki/library':return wikiLibraryView({entries:verifiedState.entries,category:wikiState.category=query.get('kind')||'all',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/article':{const a=wikiArticleById(query.get('id'));if(a)track('wiki:article:'+a.id);return wikiArticleView(a);}case 'wiki/guide':return fullGuide(query.get('id'));case 'wiki/item':return wikiItem(query.get('item'));case 'wiki/mechanic':return wikiMechanic(query.get('id'));case 'labs/build':return buildStudio();case 'labs/runes':return runeForge();case 'labs/pets':return petLab();case 'labs/guild-tree':case 'lfg/guild-tree':return guildTree();case 'labs/skills':return skills();case 'labs/passives':return passives();case 'calculators/upgrade':return calcUpgrade();case 'calculators/compare':return calcCompare();case 'calculators/pet':return calcPet();case 'calculators/affixes':return calcAffixes();case 'calculators/ml-farm':return calcFarm();case 'lfg/raids':return lfg('raids');case 'lfg/guilds':return guildPage();case 'lfg/guild':return guildPage();case 'lfg/guild/new':return guildPage();case 'lfg/guild/edit':return guildPage();case 'lfg/listing':return lfg('listing');case 'reference/detail':case 'wiki/reference':{const id=query.get('id')||query.get('item');if(id)track(id);return wikiRecordView(verifiedState.entries.find(e=>e.id===id),verifiedState.entries,wikiState.category);} default:return notFound()}}
+function globalHomeBar(dest){return '<nav class="launchReturnHome" aria-label="Return to home"><button type="button" data-route="home">'+icon('back',17)+' Home</button><span>'+esc(dest.startsWith('labs/')?'Build Studio':dest.startsWith('wiki/')?'ArcanaWiki':'Arcana')+'</span></nav>'}
+function renderHeaderAvatar(){const button=node('accountBtn');if(!button)return;const profile=currentAccount();const uri=profile?.avatarDataUrl;button.innerHTML=typeof uri==='string'&&/^data:image\/(?:webp|png|jpeg);base64,/.test(uri)?'<img src="'+esc(uri)+'" alt="">':(profile?.displayName?'<strong>'+esc(profile.displayName.slice(0,1).toUpperCase())+'</strong>':icon('users',22));button.setAttribute('aria-label',profile?'Open user center for '+profile.displayName:'Open guest user center')}
+function render(){const __treeRails=Object.fromEntries(['.classRail','.branchRail','.passiveTierRail'].map(sel=>[sel,document.querySelector(sel)?.scrollLeft??null]));const __prevGuildRail=document.querySelector('.guildTreeTabs');const __prevGuildX=__prevGuildRail?.scrollLeft??null;const __prevWikiRail=document.querySelector('.wikiCategoryScroll');const __prevWikiX=__prevWikiRail?__prevWikiRail.scrollLeft:null;const dest=parseRoute().route;if(dest.startsWith('lfg/guild')&&!guildState.loading&&Date.now()-guildState.updatedAt>30000)queueMicrotask(()=>void loadGuilds());if(dest.startsWith('lfg')&&!lfgState.loading&&(Date.now()-lfgState.updatedAt>30000)){queueMicrotask(()=>void loadPublicLfg())};applyTheme(dest);node('content').innerHTML=(dest==='home'?'':globalHomeBar(dest))+routeView()+connectedNext(dest)+siteSignature();renderHeaderAvatar();if((dest==='labs/build'||dest==='labs/runes'||dest==='labs/passives')&&parseRoute().query.get('share')&&shared.token!==parseRoute().query.get('share'))queueMicrotask(()=>void resolveShared(parseRoute().query.get('share')));
  if(dest==='wiki/studio')queueMicrotask(()=>void mountWikiStudio());if(dest==='beta'||dest==='beta/reports')queueMicrotask(()=>void loadBetaStatus(render));if(['account','profile','community','community/post','community/create'].includes(dest))queueMicrotask(()=>void loadCommunityPage(dest,parseRoute().query,render));const __nextGuildRail=node('content').querySelector('.guildTreeTabs');
 if(__nextGuildRail&&__prevGuildX!==null)__nextGuildRail.scrollLeft=__prevGuildX;
+for(const [selector,x] of Object.entries(__treeRails)){const rail=node('content').querySelector(selector);if(rail&&x!==null)rail.scrollLeft=x;}
 const __nextWikiRail=node('content').querySelector('.wikiCategoryScroll');if(__nextWikiRail){
   if(__prevWikiX!==null)__nextWikiRail.scrollLeft=__prevWikiX;
   const __activeWikiTab=__nextWikiRail.querySelector('a.active');
@@ -321,11 +368,10 @@ const __nextWikiRail=node('content').querySelector('.wikiCategoryScroll');if(__n
     if(bounds.left<view.left+pad)__nextWikiRail.scrollLeft=Math.max(0,__nextWikiRail.scrollLeft-(view.left+pad-bounds.left));
     else if(bounds.right>view.right-pad)__nextWikiRail.scrollLeft+=bounds.right-(view.right-pad);
   }
- }const currentTab=node('content').querySelector('.labsTab.active');if(currentTab){const rail=currentTab.parentElement;rail.scrollLeft=Math.max(0,currentTab.offsetLeft-rail.offsetLeft-(rail.clientWidth-currentTab.clientWidth)/2)}const nav=node('bottomNav');nav.innerHTML=`<button data-route="home" class="navItem ${dest==='home'?'selected':''}">${icon('home',21)}<small>Home</small></button><button data-action="quick" class="navItem">${icon('clock',21)}<small>Shortcuts</small></button><button data-action="search" class="navSearch" aria-label="Search all of Arcana"><span>${icon('search',25)}</span><small>Search</small></button><button data-route="labs" class="navItem ${dest.startsWith('labs')?'selected':''}">${icon('flask',21)}<small>Labs</small></button><button data-action="menu" class="navItem">${icon('menu',21)}<small>Menu</small></button>`;
- node('sideNav').innerHTML=`<span class="eyebrow navEyebrow">ARCANA</span>${LINKS.map(([href,label,ico])=>`<button data-route="${href}" class="sideItem ${dest===href||dest.startsWith(href+'/')?'selected':''}">${icon(ico,20)} ${esc(label)}</button>`).join('')}<div class="sideDivider"></div><span class="eyebrow navEyebrow">SHORTCUTS</span><button class="sideItem" data-action="search">${icon('search',19)} Universal Search</button><button class="sideItem" data-action="quick">${icon('clock',19)} Recent & Quick</button><button class="sideItem" data-route="labs/guild-tree">${icon('shield',19)} Guild Skill Tree</button>`;
- document.title=(dest==='home'?'Arcana':(node('content').querySelector('h1')?.textContent||'Arcana'))+' | Arcana';}
-function showLayer(kicker,body,type='panel'){state.layer={type};node('layerKicker').textContent=kicker;node('layerContent').innerHTML=body;node('layer').hidden=false;document.body.classList.add('noScroll')}
-function closeLayer(){node('layer').hidden=true;state.layer=null;document.body.classList.remove('noScroll')}
+ }const currentTab=node('content').querySelector('.labsTab.active');if(currentTab){const rail=currentTab.parentElement;rail.scrollLeft=Math.max(0,currentTab.offsetLeft-rail.offsetLeft-(rail.clientWidth-currentTab.clientWidth)/2)}document.title=(dest==='home'?'Arcana':(node('content').querySelector('h1')?.textContent||'Arcana'))+' | Arcana';}
+function showLayer(kicker,body,type='panel'){state.layer={type};node('layer').dataset.type=type;node('layerKicker').textContent=kicker;node('layerContent').innerHTML=body;node('layer').hidden=false;document.body.classList.add('noScroll')}
+function closeLayer(){node('layer').hidden=true;delete node('layer').dataset.type;state.layer=null;document.body.classList.remove('noScroll')}
+function showHomeMenu(id){const content=homeSubmenu(id);if(!content)return;showLayer('NAVIGATE',content,'home-menu');queueMicrotask(()=>node('layerContent')?.querySelector('.launchNavRow')?.focus({preventScroll:true}))}
 function overlayTitle(text,iconName='search'){return `<h2 class="sheetTitle">${icon(iconName,24)} ${esc(text)}</h2>`}
 function showSearch(q=state.lastSearch){state.search=q;const recent=state.recent.map(x=>entityById.get(x)||verifiedState.entries.find(e=>e.id===x)||guildEntries(guildState.guilds).find(e=>e.id===x)).filter(Boolean).slice(0,4);
  showLayer('UNIVERSAL SEARCH',`${overlayTitle('Find anything in Arcana')}<div class="bigSearch">${icon('search',23)}<input id="globalSearch" autocomplete="off" aria-label="Search entire Arcana" placeholder="Items, guides, skills, tools, raids…" value="${esc(q)}"><button class="iconButton small" data-action="clearsearch" aria-label="Clear search">${icon('close',17)}</button></div><div class="searchHint">Type to search every indexed public destination. No separate search boxes.</div><div id="searchResults" aria-live="polite">${q?resultMarkup(q):`<span class="eyebrow">RECENTLY VIEWED</span><div class="resultList">${recent.length?recent.map(cardEntity).join(''):'<p class="mutedSmall">Your viewed items and guides will appear here.</p>'}</div><span class="eyebrow">TRY SEARCHING</span><div class="pillSet"><button class="sampleChip" data-action="searchterm" data-arg="boots">boots</button><button class="sampleChip" data-action="searchterm" data-arg="retaliation">retaliation</button><button class="sampleChip" data-action="searchterm" data-arg="compound">compound</button><button class="sampleChip" data-action="searchterm" data-arg="raid">raid</button></div>`}</div>`,'search');}
@@ -337,6 +383,7 @@ function quick(){const rec=state.recent.map(id=>entityById.get(id)).filter(Boole
 function menu(){showLayer('ARCANA DIRECTORY',`${overlayTitle('Explore the ecosystem','menu')}<div class="menuList">${LINKS.map(([href,label,i])=>`<button data-route="${href}"><span class="tinyIcon">${icon(i,22)}</span><strong>${esc(label)}</strong>${icon('arrow',17)}</button>`).join('')}</div><div class="sectionCard"><h3>Useful destinations</h3><button class="textLink" data-route="wiki/guide" data-params="id=warrior-retaliation-demo-guide">Example guide with inspectable build ${icon('arrow',16)}</button><button class="textLink" data-route="calculators/pet">Pet Compound cap ${icon('arrow',16)}</button><button class="textLink" data-route="wiki/library" data-params="kind=item">Item Codex ${icon('arrow',16)}</button><button class="textLink" data-route="labs/guild-tree">Guild Skill Tree ${icon('arrow',16)}</button></div><div class="sectionCard adminEntry"><span class="eyebrow">ACCOUNT & ADMINISTRATION</span><h3>Arcana Control</h3><p class="mutedSmall">Only approved admins can edit themes. Player tools remain open to guests.</p><div class="themeReadout">${themeColorPreview()}</div><a class="btn secondary full" href="${ADMIN_URL}" target="_blank" rel="noopener noreferrer">${icon('sliders',17)} Open protected admin portal ${icon('up',16)}</a></div>`,'menu')}
 function themeColorPreview(){const t=themeStatus();const {main,secondary,highlight}=t.palette;return `<span class="themeSwatch" style="background:${main}"></span><span class="themeSwatch" style="background:${secondary}"></span><span class="themeSwatch" style="background:${highlight}"></span><span class="themeReadoutText">${t.available?'Central theme active':'Default palette (offline)'}</span>`}
 function pickerOptions(kind,slot,query=''){
+ if(kind==='gear')return gearPickerMarkup(slot,ensureDraft().className,query);
  const verified=verifiedState.entries.filter(e=>e.gameKind==='item').map(e=>item(e.id));
  const unique=new Map([...verified,...itemList].filter(Boolean).map(e=>[e.title.toLowerCase(),e]));
  const normalized=slot==='ring2'?'ring':slot==='charm2'?'charm':slot;
@@ -346,7 +393,33 @@ function pickerOptions(kind,slot,query=''){
 }
 function picker(kind,slot){state.slotTarget={kind,slot};showLayer('SELECT EQUIPMENT',`${overlayTitle('Choose equipment','shield')}<div class="filterLine"><input type="search" id="gearPickerQuery" placeholder="Find equipment…" autocomplete="off" aria-label="Search equipment"><span>${icon('search',18)}</span></div><div class="resultList" id="gearPickerItems">${pickerOptions(kind,slot)}</div>`,'picker')}
 
-function chooseItem(id){const target=state.slotTarget;if(!target)return;closeLayer();if(target.kind==='gear'){if(!state.draft)state.draft=ensureDraft();state.draft.equipment[target.slot]=id;saveDraft(state.draft);navigate('labs/build');}
+function openGearEditor(slot,value){
+ const entry=asGear(value),fallback=newGear(equipmentId(value));
+ if(!entry&&!fallback){toast('Equipment unavailable in verified game data');return;}
+ state.slotTarget={kind:'gear',slot};
+ state.gearEdit={...fallback,...entry};
+ if(!state.gearEdit.rarity)state.gearEdit.rarity=2;
+ if(!state.gearEdit.bonusTier)state.gearEdit.bonusTier=Math.max(2,state.gearEdit.rarity);
+ showGearEditor();
+}
+function showGearEditor(){
+ if(!state.slotTarget||!state.gearEdit)return;
+ showLayer('CONFIGURE EQUIPMENT',gearEditorMarkup(state.slotTarget.slot,state.gearEdit,ensureDraft().className),'gear-editor');
+}
+function saveGearEdit(){
+ const {slot}=state.slotTarget||{},v=asGear(state.gearEdit),build=ensureDraft();
+ if(!slot||!v)return;
+ const errors=gearIssues(v,slot,build.className,build.equipment);
+ if(errors.length){toast(errors[0]);return;}
+ if(slot==='weapon'&&baseItem(v)?.twoHanded&&build.equipment.offhand){
+  build.equipment.offhand=null;
+  toast('Off hand cleared for two-handed weapon');
+ }
+ build.equipment[slot]=v;persistDraft();state.gearEdit=null;closeLayer();render();toast('Equipment saved');
+}
+function chooseItem(id){const target=state.slotTarget;if(!target)return;
+ if(target.kind==='gear'){openGearEditor(target.slot,id);return;}
+ closeLayer();
  if(target.kind==='upgrade')navigate('calculators/upgrade',{item:id});if(target.kind==='compare'){if(target.slot==='left')state.compareLeft=id;else state.compareRight=id;navigate('calculators/compare',{left:state.compareLeft,right:state.compareRight});}
 }
 function go(route,params={}){
@@ -368,6 +441,7 @@ function go(route,params={}){
 }
 function action(name,arg,btn){switch(name){
  case 'skipmain':node('content')?.focus({preventScroll:false});break;
+  case 'homemenu':showHomeMenu(arg);break;
  case 'wikishare':{
   if(!wikiArticleById(arg)){toast('Guide unavailable');break;}
   const url=location.origin+location.pathname+location.search+'#/wiki/article?id='+encodeURIComponent(arg);
@@ -403,7 +477,34 @@ function action(name,arg,btn){switch(name){
   else window.prompt('Copy your guild tree link',link);
   break;
  }
-case 'searchcategory':state.searchCategory=arg;refreshLiveSearch();break;case 'guildrefresh':void loadGuilds(true);break;case 'guildcopykey':navigator.clipboard?.writeText(arg).then(()=>toast('Recovery key copied')).catch(()=>toast('Copy the key manually'));break;case 'guildrecover':{const key=node('guildRecovery')?.value?.trim();if(!key||key.length<30){toast('Enter the full recovery key');break;}saveGuildOwner(arg,key);closeLayer();go('lfg/guild/edit',{id:arg});break;}case 'guilddelete':{if(!window.confirm('Delete this guild listing? This cannot be undone.'))break;const key=readGuildOwner(arg);fetch(V11_GUILD_ENDPOINT+'/'+encodeURIComponent(arg),{method:'DELETE',headers:{'x-owner-key':key}}).then(async r=>{const b=await r.json();if(!r.ok)throw Error(b.error||'Delete failed');await loadGuilds(true);go('lfg/guilds');toast('Guild listing deleted')}).catch(e=>toast(e.message));break;}case 'lfgtab':lfgState.tab=arg;render();break;case 'lfgrefresh':void loadPublicLfg(true);break;case 'lfgclear':Object.assign(lfgState,{query:'',tier:'',characterClass:'',mightAmount:'',mightUnit:'M'});render();break;case 'lfgguild':lfgState.query=arg;lfgState.tab='all';go('lfg/raids');break;case 'passiveinspect':inspectPassive(arg);break;case 'classinspect':inspectClass(arg);break;case 'passiveadjust':{const [key,d]=arg.split('|');adjustPassive(key,+d);break;}case 'classadjust':{const [key,d]=arg.split('|');adjustClass(key,+d);break;}case 'passivetier':state.passiveTier=+arg;state.passivePage=0;render();break;case 'passiveprev':passiveMove(-1);break;case 'passivenext':passiveMove(1);break;case 'passivefirst':state.passiveTier=0;state.passivePage=0;render();break;case 'passivemilestone':{const t=state.treeData?.passive?.tiers?.findIndex(x=>x.milestone);if(t>=0){state.passiveTier=t;state.passivePage=0;render()}else toast('No milestone tier identified in this export');break;}case 'classselect':{if(state.treeClassId)state.classAllocById[state.treeClassId]=state.classAlloc;state.treeClassId=arg;state.treeBranchId=null;state.classAlloc=state.classAllocById[arg]||{};state.classTierIndex=0;storeTreePlan();render();break;}case 'branchselect':state.treeBranchId=arg;state.classTierIndex=0;storeTreePlan();render();break;case 'classtier':state.classTierIndex=+arg;render();break;case 'classprev':classMove(-1);break;case 'classnext':classMove(1);break;case 'resetpassives':state.passiveAlloc={};storeTreePlan();render();break;case 'resetclasses':state.classAlloc={};state.classAllocById[state.treeClassId||'default']={};storeTreePlan();render();break;case 'reloadtree':void loadTrees();
+case 'searchcategory':state.searchCategory=arg;refreshLiveSearch();break;case 'guildrefresh':void loadGuilds(true);break;case 'guildcopykey':navigator.clipboard?.writeText(arg).then(()=>toast('Recovery key copied')).catch(()=>toast('Copy the key manually'));break;case 'guildrecover':{const key=node('guildRecovery')?.value?.trim();if(!key||key.length<30){toast('Enter the full recovery key');break;}saveGuildOwner(arg,key);closeLayer();go('lfg/guild/edit',{id:arg});break;}case 'guilddelete':{if(!window.confirm('Delete this guild listing? This cannot be undone.'))break;const key=readGuildOwner(arg);fetch(V11_GUILD_ENDPOINT+'/'+encodeURIComponent(arg),{method:'DELETE',headers:{'x-owner-key':key}}).then(async r=>{const b=await r.json();if(!r.ok)throw Error(b.error||'Delete failed');await loadGuilds(true);go('lfg/guilds');toast('Guild listing deleted')}).catch(e=>toast(e.message));break;}case 'lfgtab':lfgState.tab=arg;render();break;case 'lfgrefresh':void loadPublicLfg(true);break;case 'lfgclear':Object.assign(lfgState,{query:'',tier:'',characterClass:'',mightAmount:'',mightUnit:'M'});render();break;case 'lfgguild':lfgState.query=arg;lfgState.tab='all';go('lfg/raids');break;case 'passiveinspect':inspectPassive(arg);break;case 'classinspect':inspectClass(arg);break;case 'passiveadjust':{const [key,d]=arg.split('|');adjustPassive(key,+d);break;}case 'classadjust':{const [key,d]=arg.split('|');adjustClass(key,+d);break;}case 'passivetier':selectPassiveTier(arg);break;case 'passiveprev':passiveMove(-1);break;case 'passivenext':passiveMove(1);break;case 'passivefirst':selectPassiveTier(0);break;case 'passivemilestone':{node('content').querySelector('.passivePanel .milestoneRow')?.scrollIntoView({block:'center',behavior:'smooth'});break;}case 'classselect':{
+ const target=state.treeData?.classes?.find(x=>x.id===arg);if(!target||state.treeClassId===arg)break;
+ if(state.treeClassId)state.classAllocById[state.treeClassId]=state.classAlloc;
+ state.treeClassId=arg;state.treeBranchId=null;state.classAlloc=state.classAllocById[arg]||{};
+ state.classTierIndex=0;
+ if(state.draft){
+  const previous=state.draft.className;
+  state.draft.className=target.name;
+  if(previous!==target.name){
+   for(const [slot,itemValue] of Object.entries(state.draft.equipment||{})){
+    if(itemValue&&!allowedItem(itemValue,slot,target.name))state.draft.equipment[slot]=null;
+   }
+  }
+ }
+ storeTreePlan();render();break;
+}case 'branchselect':state.treeBranchId=arg;state.classTierIndex=0;storeTreePlan();render();break;case 'classtier':state.classTierIndex=+arg;render();break;case 'classprev':classMove(-1);break;case 'classnext':classMove(1);break;case 'resetpassives':{if(allocatedTotal(state.passiveAlloc)>0&&!confirm('Refund all allocated passive points?'))break;state.passiveAlloc={};storeTreePlan();render();break;}case 'resetclasses':{
+ if(allocatedTotal(state.classAlloc)>0&&!window.confirm('Reset all allocated class skill points for this class?'))break;
+ state.classAlloc={};state.classAllocById[state.treeClassId||'default']={};storeTreePlan();render();break;
+}
+case 'resetbranch':{
+ const cls=getClass(state.treeData,state.treeClassId),b=getBranch(cls,state.treeBranchId);
+ if(!b)break;const count=b.skills.reduce((sum,s)=>sum+Number(state.classAlloc[s.id]||0),0);
+ if(!count)break;
+ if(!window.confirm('Refund '+count+' points from '+b.name+'?'))break;
+ // A full branch reset can invalidate skill prerequisites in this class; rebuild allocation conservatively.
+ const candidate={...state.classAlloc};for(const sk of b.skills)delete candidate[sk.id];
+ state.classAlloc=candidate;state.classAllocById[cls.id]=candidate;storeTreePlan();render();break;
+}case 'reloadtree':void loadTrees();
 void loadPublicLfg();break;case 'search':showSearch(arg||'');break;case 'wikicat':navigate('wiki/library',{kind:arg});break;case 'wikimore':{
  const before=wikiState.limit;
  wikiState.limit+=36;
@@ -415,7 +516,26 @@ void loadPublicLfg();break;case 'search':showSearch(arg||'');break;case 'wikicat
  if(showing)showing.textContent=result.count?'Showing '+Math.min(result.count,wikiState.limit)+' of '+result.count:'Season 2 reference library';
  // Preserve the window scroll position rather than rebuilding the entire page.
  break;
-}case 'wikiretry':{if(btn){btn.disabled=true;btn.textContent='Retrying…';}void loadVerifiedIndex();break;}case 'wikiclear':wikiState.query='';wikiState.limit=36;render();break;case 'skillpreview':showSkillStudy(arg);break;case 'clearsearch':showSearch('');break;case 'searchterm':showSearch(arg);break;case 'quick':quick();break;case 'menu':menu();break;case 'backsearch':showSearch(state.lastSearch);break;case 'back':navigateBack();break;case 'route':{const [path,q='']=arg.split('?');go(path,Object.fromEntries(new URLSearchParams(q)));break;}case 'wikiitem':if(arg.startsWith('game:item:'))go('wiki/reference',{id:arg});else go('wiki/item',{item:arg});break;case 'upgrade':go('calculators/upgrade',{item:arg});break;case 'compare':{state.compareLeft=arg;go('calculators/compare',{left:arg,right:state.compareRight});break;}case 'equip':{state.draft=ensureDraft();const slot=item(arg)?.slot||'weapon';state.draft.equipment[slot]=arg;saveDraft(state.draft);go('labs/build');break;}case 'pickgear':picker('gear',arg);break;case 'inspectgear':{const itemId=btn?.dataset.item;if(itemId)showPreview(itemId);else showLayer('EMPTY EQUIPMENT SLOT',`<p class="lead">This slot is empty in the guide example. Clone the build to edit it.</p>`);break;}case 'petcompoundstep':{
+}case 'wikiretry':{if(btn){btn.disabled=true;btn.textContent='Retrying…';}void loadVerifiedIndex();break;}case 'wikiclear':wikiState.query='';wikiState.limit=36;render();break;case 'skillpreview':showSkillStudy(arg);break;case 'clearsearch':showSearch('');break;case 'searchterm':showSearch(arg);break;case 'quick':quick();break;case 'menu':menu();break;case 'backsearch':showSearch(state.lastSearch);break;case 'back':go('home');break;case 'route':{const [path,q='']=arg.split('?');go(path,Object.fromEntries(new URLSearchParams(q)));break;}case 'wikiitem':if(arg.startsWith('game:item:'))go('wiki/reference',{id:arg});else go('wiki/item',{item:arg});break;case 'upgrade':go('calculators/upgrade',{item:arg});break;case 'compare':{state.compareLeft=arg;go('calculators/compare',{left:arg,right:state.compareRight});break;}case 'equip':{const g=baseItem(arg);if(!g){toast('Item not in verified equipment catalog');break;}const slot={main_hand:'weapon',off_hand:'offhand',amulet:'neck'}[g.slot]||g.slot;go('labs/build');openGearEditor(slot,arg);break;}
+case 'pickgear':{
+ const b=ensureDraft();
+ if(arg==='offhand'&&baseItem(b.equipment.weapon)?.twoHanded){toast('Remove the two-handed weapon to equip an off hand');break;}
+ if(b.equipment[arg])openGearEditor(arg,b.equipment[arg]);else picker('gear',arg);
+ break;
+}
+case 'inspectgear':{
+ const raw=demoActive().equipment[arg];
+ if(raw)showLayer('EQUIPPED ITEM',gearInspectMarkup(arg,raw),'gear-inspect');
+ else showLayer('EMPTY EQUIPMENT SLOT',`<p class="lead">This slot is empty. Copy the build to edit it.</p>`);
+ break;
+}
+case 'gearchangebase':{const slot=state.slotTarget?.slot;if(slot)picker('gear',slot);break;}
+case 'gearsave':saveGearEdit();break;
+case 'gearclear':{
+ const slot=state.slotTarget?.slot;if(!slot)break;
+ const b=ensureDraft();b.equipment[slot]=null;persistDraft();state.gearEdit=null;closeLayer();render();toast('Equipment removed');break;
+}
+case 'petcompoundstep':{
  const step=Number(arg);if(![1,5,10,25].includes(step))break;
  state.compoundQuick=saveCompoundPlan({...state.compoundQuick,level:state.compoundQuick.level+step});render();break;
 }case 'petcompoundreset':{state.compoundQuick=saveCompoundPlan({...state.compoundQuick,level:0});render();break;}
@@ -426,6 +546,19 @@ case 'petaffixstep':{
 case 'comparetier':{const tier=Number(arg);if(!Number.isInteger(tier)||tier<1||tier>6)break;state.compareTier=tier;render();break;}case 'pickcompare':picker('compare',arg);break;case 'chooseupgrade':picker('upgrade');break;case 'selectitem':chooseItem(arg);break;case 'clonebuild':{const source=parseRoute().query.get('share')?shared.build:buildTemplate(arg);if(!source){toast('Shared build unavailable');break;}state.draft=normalizeBuild(deepCopy(source));state.runeSelected=null;state.runeHistory=[];state.draft.id='local-draft';state.draft.title=String(source.title||'Copied build').replace(/demonstration/ig,'copied').slice(0,90);state.draft.version='LOCAL';saveDraft(state.draft);go('labs/build');toast('Build copied into your own local draft.');break;}
 case 'resetbuild':{if(!confirm('Start a new blank build? This replaces your current local Build Studio draft. Save or share it first if you want to keep a copy.'))break;state.draft=newPersonalBuild();saveDraft(state.draft);state.runeSelected=null;state.runeHistory=[];go('labs/build');toast('New blank build created.');break;}
 case 'savecloud':{persistDraft();void saveNewAccountBuild(ensureDraft()).then(b=>toast('Saved '+b.title+' to your account.')).catch(err=>toast(err.message||'Sign in to your account first.'));break;}
+case 'sharepassives':{
+ storeTreePlan();
+ // Share only the passive preview: never leak private notes, gear, pet details or other build data.
+ const plan={id:'passive-tree-preview',title:'Passive Skill Tree Preview',className:state.draft?.className||'Warrior',
+  characterLevel:state.characterLevel,passiveAlloc:structuredClone(state.passiveAlloc),
+  passiveFreeMode:state.passiveFreeMode===true,equipment:{},runes:[]};
+ void shareBuildToken(plan).then(token=>{
+  const url=location.origin+location.pathname+'#/labs/passives?share='+encodeURIComponent(token)+'&tier='+state.passiveTier;
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Passive tree link copied')).catch(()=>window.prompt('Copy passive tree link',url));
+  else window.prompt('Copy passive tree link',url);
+ }).catch(err=>toast(String(err.message||err)));
+ break;
+}
 case 'sharebuild':{const b=ensureDraft();persistDraft();void shareBuildToken(b).then(token=>{const url=location.origin+location.pathname+'#/labs/build?share='+encodeURIComponent(token);if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Shareable build link copied')).catch(()=>window.prompt('Copy your build link',url));else window.prompt('Copy your build link',url);}).catch(err=>toast(String(err.message||err)));break;}
 case 'savebuild':if(state.draft)saveDraft(state.draft);toast('Build saved on this device.');break;case 'runesave':persistDraft();toast('Rune grid saved with your character.');break;
 case 'runefamily':{const family=RUNE_FAMILIES.includes(arg)?arg:'Fury',def=RUNE_FAMILY_DETAILS[family];state.runeFamily=family;if(state.runeSelected){mutateRunes(b=>{const r=b.runeBoard.find(r=>r.id===state.runeSelected);if(r){r.family=family;r.primary=def.primary}})}else{state.runeSecondary=def.suggestedSecondary;render()}break;}
@@ -447,7 +580,17 @@ function wireBuildIdentity(){
  const apply=e=>{
   const key=e.target?.dataset?.buildField;
   if(!['title','className','summary'].includes(key)||parseRoute().route!=='labs/build'||parseRoute().query.get('share')||parseRoute().query.get('build'))return;
-  const b=ensureDraft();b[key]=String(e.target.value||'').slice(0,key==='summary'?350:100);persistDraft();
+  const b=ensureDraft();b[key]=String(e.target.value||'').slice(0,key==='summary'?350:100);
+  if(key==='className'&&e.type==='change'){
+   if(state.treeData?.classes?.length){
+    const target=state.treeData.classes.find(cls=>cls.name===b.className);
+    if(target){state.classAllocById[state.treeClassId||target.id]=state.classAlloc;state.treeClassId=target.id;state.treeBranchId=null;state.classAlloc=state.classAllocById[target.id]||{};state.classTierIndex=0;}
+   }
+   let removed=0;
+   for(const [slot,raw] of Object.entries(b.equipment)){if(raw&&!allowedItem(raw,slot,b.className)){b.equipment[slot]=null;removed++;}}
+   if(removed)toast(removed+' incompatible item(s) unequipped for '+b.className);
+  }
+  persistDraft();
   const head=node('content')?.querySelector('.studioHero h2'),desc=node('content')?.querySelector('.studioHero p');
   if(head)head.textContent=b.title||'My Build';
   if(desc)desc.textContent=(b.className||'Warrior')+' · '+(b.summary||'');
@@ -460,7 +603,20 @@ function init(){document.addEventListener('click',e=>{
  if(!summary)return;
  const group=summary.parentElement,key=group.dataset.homePanel;
  if(Object.prototype.hasOwnProperty.call(homePanels,key))homePanels[key]=!group.open;
-});wireBuildIdentity();wireWikiStudio();wireBetaUI({go,refresh:render,toast});wireCommunityUI({go,getBuild:savedBuild,applyBuild:input=>{state.draft=normalizeBuild(deepCopy(input));state.draft.id='local-draft';state.draft.version='LOCAL';persistDraft();},refresh:render,toast});if(state.draft)state.draft=normalizeBuild(state.draft);restoreTreePlan();initTheme();node('brandHome').onclick=()=>go('home');node('accountBtn').innerHTML=icon('users',20);node('accountBtn').onclick=()=>go('account');document.addEventListener('click',e=>{if(e.target.closest('[data-close]')){closeLayer();return}const preview=e.target.closest('[data-preview]');if(preview){state.lastSearch=state.search;showPreview(preview.dataset.preview,!!state.layer&&state.layer.type==='search');return}const routed=e.target.closest('[data-route]');if(routed){const pars=Object.fromEntries(new URLSearchParams(routed.dataset.params||''));go(routed.dataset.route,pars);return}const act=e.target.closest('[data-action]');if(act)action(act.dataset.action,act.dataset.arg||'',act);});document.addEventListener('input',e=>{if(e.target.id==='treeLevel'||e.target.id==='treeLevelRange')previewTreeLevel(e.target.value);if(e.target.hasAttribute('data-monster-slider')){const input=node('content').querySelector('[data-monster-level]');if(input)input.value=e.target.value;}if(e.target.id==='guildQuery'){guildState.query=e.target.value;const list=guildFilter(guildState.guilds,guildState.query),box=node('guildCards');if(box)box.innerHTML=list.map(guildCard).join('')||'<div class="lfgEmpty">No matching guilds right now.</div>';const counter=node('guildCount');if(counter)counter.textContent=String(list.length);}if(e.target.id==='lfgQuery'){lfgState.query=e.target.value;updateLiveResults();}if(e.target.id==='lfgMight'){lfgState.mightAmount=e.target.value;updateLiveResults();}if(e.target.id==='globalSearch'){state.search=e.target.value;state.lastSearch=state.search;node('searchResults').innerHTML=state.search?resultMarkup(state.search):'<div class="emptyMini">Start typing to search public Arcana content.</div>'}if(e.target.id==='gearPickerQuery'){const box=node('gearPickerItems');if(box)box.innerHTML=pickerOptions(state.slotTarget?.kind,state.slotTarget?.slot,e.target.value);}if(e.target.id==='wikiFilter'){wikiState.query=e.target.value;wikiState.limit=36;const result=wikiRecordRows(verifiedState.entries,parseRoute().query.get('kind')||'all',wikiState.query,wikiState.limit),list=node('wikiRecords'),counter=node('wikiFoundCount'),more=node('wikiMore'),showing=node('wikiShowing'),clear=node('content').querySelector('.wikiClearFilter');if(list)list.innerHTML=result.html;if(counter)counter.textContent=result.count+' '+(result.count===1?'reference':'references');if(showing)showing.textContent=result.count?'Showing '+Math.min(result.count,wikiState.limit)+' of '+result.count:'Season 2 reference library';if(clear)clear.hidden=!wikiState.query;if(more)more.hidden=!result.hasMore;}if(e.target.id==='itemFilter'){const q=e.target.value.toLowerCase();node('itemResults').innerHTML=itemList.filter(x=>(x.title+' '+x.keywords).toLowerCase().includes(q)).map(cardEntity).join('')||'<p class="emptyMini">No matching item.</p>'}if(e.target.dataset.petLevel!==undefined){const i=+e.target.dataset.petLevel,n=Math.max(0,Number(e.target.value)||0);state.petLevels[i]=n;const cap=Math.min(...state.petLevels)+10;const el=node('petEffective');if(el){el.textContent=cap;el.nextElementSibling.textContent='Minimum '+Math.min(...state.petLevels)+' + 10'}}});document.addEventListener('change',e=>{
+});wireBuildIdentity();wireWikiStudio();wireBetaUI({go,refresh:render,toast});wireCommunityUI({go,getBuild:savedBuild,applyBuild:input=>{state.draft=normalizeBuild(deepCopy(input));state.draft.id='local-draft';state.draft.version='LOCAL';persistDraft();},refresh:render,toast});if(state.draft)state.draft=normalizeBuild(state.draft);restoreTreePlan();initTheme();applyAppPrefs();node('brandHome').onclick=()=>go('home');node('accountBtn').onclick=()=>go('user');node('searchBtn').innerHTML=icon('search',24);node('searchBtn').onclick=()=>showSearch();void refreshAccount().then(()=>{renderHeaderAvatar();if(parseRoute().route==='user')render()});window.addEventListener('arcana:account-updated',renderHeaderAvatar);document.addEventListener('click',e=>{if(e.target.closest('[data-close]')){closeLayer();return}const preview=e.target.closest('[data-preview]');if(preview){state.lastSearch=state.search;showPreview(preview.dataset.preview,!!state.layer&&state.layer.type==='search');return}const routed=e.target.closest('[data-route]');if(routed){const pars=Object.fromEntries(new URLSearchParams(routed.dataset.params||''));go(routed.dataset.route,pars);return}const act=e.target.closest('[data-action]');if(act)action(act.dataset.action,act.dataset.arg||'',act);});document.addEventListener('input',e=>{if(e.target.id==='treeLevel'||e.target.id==='treeLevelRange')previewTreeLevel(e.target.value);if(e.target.hasAttribute('data-monster-slider')){const input=node('content').querySelector('[data-monster-level]');if(input)input.value=e.target.value;}if(e.target.id==='guildQuery'){guildState.query=e.target.value;const list=guildFilter(guildState.guilds,guildState.query),box=node('guildCards');if(box)box.innerHTML=list.map(guildCard).join('')||'<div class="lfgEmpty">No matching guilds right now.</div>';const counter=node('guildCount');if(counter)counter.textContent=String(list.length);}if(e.target.id==='lfgQuery'){lfgState.query=e.target.value;updateLiveResults();}if(e.target.id==='lfgMight'){lfgState.mightAmount=e.target.value;updateLiveResults();}if(e.target.id==='globalSearch'){state.search=e.target.value;state.lastSearch=state.search;node('searchResults').innerHTML=state.search?resultMarkup(state.search):'<div class="emptyMini">Start typing to search public Arcana content.</div>'}if(e.target.id==='gearPickerQuery'){const box=node('gearPickerItems');if(box)box.innerHTML=pickerOptions(state.slotTarget?.kind,state.slotTarget?.slot,e.target.value);}if(e.target.id==='wikiFilter'){wikiState.query=e.target.value;wikiState.limit=36;const result=wikiRecordRows(verifiedState.entries,parseRoute().query.get('kind')||'all',wikiState.query,wikiState.limit),list=node('wikiRecords'),counter=node('wikiFoundCount'),more=node('wikiMore'),showing=node('wikiShowing'),clear=node('content').querySelector('.wikiClearFilter');if(list)list.innerHTML=result.html;if(counter)counter.textContent=result.count+' '+(result.count===1?'reference':'references');if(showing)showing.textContent=result.count?'Showing '+Math.min(result.count,wikiState.limit)+' of '+result.count:'Season 2 reference library';if(clear)clear.hidden=!wikiState.query;if(more)more.hidden=!result.hasMore;}if(e.target.id==='itemFilter'){const q=e.target.value.toLowerCase();node('itemResults').innerHTML=itemList.filter(x=>(x.title+' '+x.keywords).toLowerCase().includes(q)).map(cardEntity).join('')||'<p class="emptyMini">No matching item.</p>'}if(e.target.dataset.petLevel!==undefined){const i=+e.target.dataset.petLevel,n=Math.max(0,Number(e.target.value)||0);state.petLevels[i]=n;const cap=Math.min(...state.petLevels)+10;const el=node('petEffective');if(el){el.textContent=cap;el.nextElementSibling.textContent='Minimum '+Math.min(...state.petLevels)+' + 10'}}});document.addEventListener('change',e=>{
+ if(e.target.hasAttribute('data-app-pref')){changeAppPref(e.target.dataset.appPref,e.target.checked);return;}
+ if(e.target.matches('[data-passive-free-mode]')){state.passiveFreeMode=e.target.checked===true;storeTreePlan();render();return;}
+ const field=e.target.dataset.gearField;
+ if(field&&state.gearEdit){
+  const g=state.gearEdit;
+  if(field==='rarity'){g.rarity=Number(e.target.value);g.awaken=0;g.bonusTier=Math.max(2,g.rarity);g.bonusId=null;g.roll=null;}
+  if(field==='awaken')g.awaken=Number(e.target.value);
+  if(field==='bonusTier'){g.bonusTier=Number(e.target.value);g.bonusId=null;g.roll=null;}
+  if(field==='bonusId'){g.bonusId=e.target.value||null;g.roll=null;}
+  if(field==='roll')g.roll=e.target.value===''?null:Number(e.target.value);
+  if(field!=='roll')showGearEditor();
+  return;
+ }
  if(e.target.hasAttribute('data-farm-mode')){state.farmPlan=saveFarmPlan({...state.farmPlan,mode:e.target.value});render();return;}
  if(e.target.hasAttribute('data-farm-time')){const index=Number(e.target.dataset.farmTime);if(Number.isInteger(index)&&index>=0&&index<3){const times=[...state.farmPlan.times];times[index]=e.target.value;state.farmPlan=saveFarmPlan({...state.farmPlan,times});render();}return;}
  if(e.target.id==='guildTreeLevel'){updateGuildTree(guildTreeWithLevel(state.guildTreePlan,e.target.value));return;}
