@@ -1,6 +1,7 @@
 import {esc,icon} from './ui.js';
 import {ACCENT_PRESETS,SITE_SURFACES,ICON_MODES,selectedAccent,selectedSiteSurface,selectedIconColor,selectedIconMode} from './theme.js';
 import {ICON_CATEGORIES,ICON_IDS,iconAssetPath} from './arcana-icons.js';
+import {refinedSvg,REFINED_CATEGORIES,REFINED_IDS} from './idlearc-refined-vectors.js';
 
 // One navigation registry for the launch home, its popovers and the A-Z directory.
 // Topics are navigation shells until the editorial team publishes actual articles.
@@ -68,24 +69,45 @@ export const HOME_CARDS=Object.freeze([
  {id:'social',title:'Guild & Raid Finder',detail:'Groups & recruitment',icon:'feature-guild-finder'}
 ]);
 const attrs=x=>'data-route="'+esc(x.route)+'"'+(x.params?' data-params="'+esc(new URLSearchParams(x.params).toString())+'"':'');
-const navrow=x=>'<button type="button" class="launchNavRow" '+attrs(x)+'><span class="launchNavIcon">'+icon(x.icon||'arrow',20)+'</span><span class="launchNavCopy"><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',17)+'</button>';
+// The identical custom art family is used on cards and popup destinations.
+// Chevrons and little utility controls stay lightweight.
+const refinedForRoute=x=>{
+ const route=String(x.route||'');
+ if(route.startsWith('labs/runes'))return 'rune-forge';
+ if(route.startsWith('labs/passives'))return 'passive-tree';
+ if(route.startsWith('labs/skills'))return 'class-skills';
+ if(route.startsWith('labs/build'))return 'build-studio';
+ if(route.includes('guild')||route.includes('raid')||route.startsWith('lfg'))return 'guild-raid';
+ if(route.includes('pets')||route.includes('pet')||route.includes('affix'))return 'pet-lab';
+ if(route.includes('upgrade')||route.includes('compare'))return 'upgrade';
+ if(route.startsWith('calculators')||route==='labs')return 'tools';
+ if(route.includes('community/create'))return 'guides';
+ if(route==='community'||route.includes('build'))return 'builds';
+ if(route.includes('wiki/guid')||route.includes('wiki/guide'))return 'guides';
+ if(route.includes('wiki/library')||route.includes('codex'))return 'codex';
+ if(route.startsWith('wiki'))return 'wiki';
+ if(route==='beta')return 'feedback';
+ return ({book:'wiki',calculator:'tools',compare:'upgrade',paw:'pet-lab',shield:'builds',gem:'rune-forge',git:'class-skills',layers:'passive-tree',users:'guild-raid',edit:'guides',info:'wiki',sword:'builds'})[x.icon]||'codex';
+};
+const navrow=x=>'<button type="button" class="launchNavRow" '+attrs(x)+'><span class="launchNavIcon">'+refinedSvg('feature-'+refinedForRoute(x),32)+'</span><span class="launchNavCopy"><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',17)+'</button>';
+
 export function homeScreen(){
  return '<section class="launchHero" aria-label="Featured Build Studio">'+
   '<svg class="launchHeroArcaneSeal" viewBox="0 0 160 160" fill="none" aria-hidden="true" focusable="false"><circle cx="80" cy="80" r="66"/><circle cx="80" cy="80" r="53"/><circle cx="80" cy="80" r="35"/><path d="M80 5v26m0 98v26M5 80h26m98 0h26M25 25l19 19m72 72 19 19m0-110-19 19m-72 72-19 19M80 40l40 40-40 40-40-40zM80 54l26 26-26 26-26-26z"/><circle cx="80" cy="15" r="3"/><circle cx="145" cy="80" r="3"/><circle cx="80" cy="145" r="3"/><circle cx="15" cy="80" r="3"/></svg>'+
-  '<div class="launchHeroHeader"><span class="launchHeroArt" aria-hidden="true">'+icon('feature-build-studio',38)+'</span>'+
+  '<div class="launchHeroHeader"><span class="launchHeroArt" aria-hidden="true">'+refinedSvg('feature-build-studio',46)+'</span>'+
   '<div class="launchHeroText"><span class="launchEyebrow">THE HEART OF ARCANA</span><h1>Build Studio</h1>'+
   '<p>Gear, runes, pets and skill trees. One connected build.</p></div></div>'+
-  '<button type="button" class="launchHeroCTA" data-route="labs/build" aria-label="Enter Build Studio"><span class="launchHeroCTASigil" aria-hidden="true">'+icon('feature-rune-forge',22)+'</span><span class="launchHeroCTACopy"><strong>Enter Build Studio</strong><small>Forge your perfect setup</small></span>'+icon('arrow',20)+'</button>'+
+  '<button type="button" class="launchHeroCTA" data-route="labs/build" aria-label="Enter Build Studio"><span class="launchHeroCTASigil" aria-hidden="true">'+refinedSvg('feature-rune-forge',28)+'</span><span class="launchHeroCTACopy"><strong>Enter Build Studio</strong><small>Forge your perfect setup</small></span>'+icon('arrow',20)+'</button>'+
   '</section>'+
   '<section class="launchQuick" aria-label="Quick Access"><div class="launchSectionTop"><h2>Quick Access</h2><button type="button" data-route="directory" class="launchSeeAll">See All '+icon('arrow',16)+'</button></div>'+
-  '<div class="launchQuickGrid">'+HOME_CARDS.map(x=>'<button type="button" class="launchQuickCard" data-action="homemenu" data-arg="'+esc(x.id)+'" aria-label="Open '+esc(x.title)+' menu"><span class="launchQuickIcon">'+icon(x.icon,27)+'</span><span class="launchQuickCopy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></span><span class="launchQuickArrow">'+icon('arrow',17)+'</span></button>').join('')+'</div></section>'+
+  '<div class="launchQuickGrid">'+HOME_CARDS.map(x=>'<button type="button" class="launchQuickCard" data-action="homemenu" data-arg="'+esc(x.id)+'" aria-label="Open '+esc(x.title)+' menu"><span class="launchQuickIcon">'+refinedSvg('feature-'+({social:'guild-raid'}[x.id]||x.id),38)+'</span><span class="launchQuickCopy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></span><span class="launchQuickArrow">'+icon('arrow',17)+'</span></button>').join('')+'</div></section>'+
   '<section class="launchFeatured" aria-label="Useful and Featured"><div class="launchSectionTop"><h2>Useful &amp; Featured</h2></div>'+
   '<p class="launchFeaturedIntro">Featured articles, player guides, builds and updates will live here as they are published.</p>'+
   '<div class="launchFeaturedGrid">'+[
    link('Player Guides','Browse walkthroughs and game tips.','wiki/guides','book'),
    link('Community Builds','Explore setups shared by players.','community','users'),
    link('Feedback & Updates','Help improve Arcana ahead of launch.','beta','info')
-  ].map(x=>'<button type="button" class="launchFeatureRow" '+attrs(x)+'><span class="launchFeatureIcon">'+icon(x.icon,20)+'</span><span><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',16)+'</button>').join('')+'</div></section>';
+  ].map(x=>'<button type="button" class="launchFeatureRow" '+attrs(x)+'><span class="launchFeatureIcon">'+refinedSvg('feature-'+(x.route==='wiki/guides'?'guides':x.route==='community'?'builds':'feedback'),32)+'</span><span><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',16)+'</button>').join('')+'</div></section>';
 }
 export function homeSubmenu(id){
  const menu=HOME_MENUS[id]; if(!menu)return '';
@@ -96,6 +118,7 @@ const extras=[
  link('Account & Profile','Your player card and account.','account','users'),
  link('App Settings','Display and accessibility preferences.','settings','cog'),
  link('Arcana Minimal Icons','Browse all original recolorable SVGs.','icons','gem'),
+ link('IdleArc Refined Icon Library','Browse the custom premium icon pack.','refined-icons','gem'),
  link('Build Studio','Equipment, pets, runes, and skills.','labs/build','shield'),
  link('Class Skill Tree · Build Studio','Manage class skills.','labs/skills','git'),
  link('Passive Skill Tree · Build Studio','Manage passive skills.','labs/passives','layers'),
@@ -177,4 +200,10 @@ export function iconGalleryView(){
  '<p>All '+ICON_IDS.length+' original vector assets, organized by purpose. Every icon responds to your selected color and appearance mode. These are independent from IdleArc game artwork.</p>'+
  '<button class="arcanaOpenGallery" data-route="settings">'+icon('back',16)+' Customize icon appearance</button>'+
  sections+'<p class="mutedSmall">SVG source files and the manifest are available in the Arcana repository under <code>assets/icons/arcana-minimal/</code>.</p></div>';
+}
+
+export function refinedIconGalleryView(){
+ const sections=Object.entries(REFINED_CATEGORIES).map(([category,ids])=>'<section class="refinedGallerySection"><header><h2>'+esc(category[0].toUpperCase()+category.slice(1))+'</h2><span>'+ids.length+' icons</span></header><div class="refinedGalleryGrid">'+
+ ids.map(id=>'<div class="refinedGalleryTile" title="'+esc(id)+'">'+refinedSvg(id,54)+'<span>'+esc(id.replace(/^(equipment|class|feature|token|stat)-/,'').replaceAll('-',' '))+'</span></div>').join('')+'</div></section>').join('');
+ return '<div class="launchPage refinedGalleryPage"><span class="launchEyebrow">ARCANA ARTWORK SYSTEM</span><h1>IdleArc Refined</h1><p>'+REFINED_IDS.length+' custom hand-built vector assets inspired by the approved concept, used throughout Arcana. Individual SVG files, not cropped screenshots or pasted game sprites.</p><button type="button" class="arcanaOpenGallery" data-route="settings">Appearance settings '+icon('arrow',16)+'</button>'+sections+'</div>';
 }
