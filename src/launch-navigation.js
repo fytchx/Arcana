@@ -60,18 +60,18 @@ export const HOME_MENUS=Object.freeze({
  ]}
 });
 export const HOME_CARDS=Object.freeze([
- {id:'wiki',title:'Wiki',detail:'Game systems & articles',icon:'book'},
- {id:'tools',title:'Tools',detail:'Calculators & planners',icon:'calculator'},
- {id:'guides',title:'Guides',detail:'Learn & contribute',icon:'book'},
- {id:'builds',title:'Builds',detail:'Create & share setups',icon:'shield'},
- {id:'codex',title:'Codex',detail:'Items & game records',icon:'layers'},
- {id:'social',title:'Guild & Raid Finder',detail:'Groups & recruitment',icon:'users'}
+ {id:'wiki',title:'Wiki',detail:'Game systems & articles',icon:'feature-wiki'},
+ {id:'tools',title:'Tools',detail:'Calculators & planners',icon:'feature-calculator'},
+ {id:'guides',title:'Guides',detail:'Learn & contribute',icon:'feature-guides'},
+ {id:'builds',title:'Builds',detail:'Create & share setups',icon:'feature-build-studio'},
+ {id:'codex',title:'Codex',detail:'Items & game records',icon:'feature-codex'},
+ {id:'social',title:'Guild & Raid Finder',detail:'Groups & recruitment',icon:'feature-guild-finder'}
 ]);
 const attrs=x=>'data-route="'+esc(x.route)+'"'+(x.params?' data-params="'+esc(new URLSearchParams(x.params).toString())+'"':'');
 const navrow=x=>'<button type="button" class="launchNavRow" '+attrs(x)+'><span class="launchNavIcon">'+icon(x.icon||'arrow',20)+'</span><span class="launchNavCopy"><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',17)+'</button>';
 export function homeScreen(){
  return '<section class="launchHero" aria-label="Featured Build Studio">'+
-  '<span class="launchHeroArt" aria-hidden="true">'+icon('gem',47)+'</span>'+
+  '<span class="launchHeroArt" aria-hidden="true">'+icon('feature-build-studio',37)+'</span>'+
   '<div class="launchHeroText"><span class="launchEyebrow">YOUR CHARACTER WORKSPACE</span><h1>Build Studio</h1>'+
   '<p>Gear, runes, pets and skill trees. One connected build.</p>'+
   '<button type="button" class="launchHeroCTA" data-route="labs/build">Open Studio '+icon('arrow',16)+'</button>'+
