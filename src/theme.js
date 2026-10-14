@@ -33,6 +33,7 @@ export const ICON_MODES=Object.freeze([
  {id:'muted',name:'Subtle',detail:'Quiet secondary icons.'}
 ]);
 const PLAYER_ACCENT_KEY='arcana-player-accent-v1';
+const CUSTOM_ACCENT_KEY='arcana-player-custom-accent-v1';
 const SITE_SURFACE_KEY='arcana-site-surface-v1';
 const ICON_COLOR_KEY='arcana-minimal-icon-color-v1';
 const ICON_MODE_KEY='arcana-minimal-icon-mode-v1';
@@ -44,11 +45,13 @@ export const selectedIconMode=()=>pick(ICON_MODE_KEY,ICON_MODES.map(x=>x.id),'tw
 export function setSiteSurface(name){if(!SITE_SURFACES.some(x=>x.id===name)||!store(SITE_SURFACE_KEY,name))return false;applyTheme();return true}
 export function setIconColor(name){if(name!=='follow-site'&&!ACCENT_PRESETS.some(x=>x.id===name)||!store(ICON_COLOR_KEY,name))return false;applyTheme();return true}
 export function setIconMode(name){if(!ICON_MODES.some(x=>x.id===name)||!store(ICON_MODE_KEY,name))return false;applyTheme();return true}
+export function customAccent(){try{const hex=localStorage.getItem(CUSTOM_ACCENT_KEY);return validHex(hex)?hex.toUpperCase():'#A98BFF'}catch{return '#A98BFF'}}
+export function setCustomAccent(value){if(!validHex(value))return false;try{localStorage.setItem(CUSTOM_ACCENT_KEY,value.toUpperCase());localStorage.setItem(PLAYER_ACCENT_KEY,'custom')}catch{return false}applyTheme();return true}
 export function selectedAccent(){
- try{const name=localStorage.getItem(PLAYER_ACCENT_KEY);return name==='site'||ACCENT_PRESETS.some(x=>x.id===name)?name:'arcane-violet';}catch{return 'arcane-violet'}
+ try{const name=localStorage.getItem(PLAYER_ACCENT_KEY);return name==='site'||name==='custom'||ACCENT_PRESETS.some(x=>x.id===name)?name:'arcane-violet';}catch{return 'arcane-violet'}
 }
 export function setAccent(name){
- if(name!=='site'&&!ACCENT_PRESETS.some(x=>x.id===name))return false;
+ if(name!=='site'&&name!=='custom'&&!ACCENT_PRESETS.some(x=>x.id===name))return false;
  try{localStorage.setItem(PLAYER_ACCENT_KEY,name)}catch{return false}
  applyTheme();return true;
 }
@@ -92,7 +95,7 @@ export function themeStatus(){
  const palette={
   main:surface?.main||remote.palette.main,
   secondary:surface?.secondary||remote.palette.secondary,
-  highlight:custom?.hex||remote.palette.highlight
+  highlight:accentChoice==='custom'?customAccent():custom?.hex||remote.palette.highlight
  };
  const iconColorChoice=selectedIconColor();
  const iconColor=ACCENT_PRESETS.find(x=>x.id===iconColorChoice)?.hex||palette.highlight;
