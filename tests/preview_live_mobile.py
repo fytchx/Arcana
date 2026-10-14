@@ -53,6 +53,34 @@ with sync_playwright() as p:
         persisted=page.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--theme-highlight').trim()")
         assert persisted.lower()=="#13c5f4","Personal accent choice did not survive reload"
         print("Player accent persisted:",persisted)
+        # Independent look and feel: site surface, site accent, and icon color.
+        page.locator('[data-action="site-surface"][data-arg="midnight"]').click()
+        page.locator('[data-action="accent"][data-arg="crimson-red"]').click()
+        page.locator('[data-action="icon-color"][data-arg="cyan-blue"]').click()
+        page.locator('[data-action="icon-mode"][data-arg="accent"]').click()
+        colors=page.evaluate("""() => ({
+          surface:getComputedStyle(document.documentElement).getPropertyValue('--theme-main').trim(),
+          site:getComputedStyle(document.documentElement).getPropertyValue('--theme-highlight').trim(),
+          glyph:getComputedStyle(document.documentElement).getPropertyValue('--arcana-icon-color').trim(),
+          mode:document.documentElement.dataset.arcanaIconMode,
+          glyphStyle:getComputedStyle(document.querySelector('.arcanaThemePreview .arcanaIcon')).color
+        })""")
+        print("Independent theme palette:",json.dumps(colors))
+        assert colors["surface"].lower()=="#080e19"
+        assert colors["site"].lower()=="#ec464d"
+        assert colors["glyph"].lower()=="#13c5f4"
+        assert colors["glyphStyle"]=="rgb(19, 197, 244)"
+        assert colors["mode"]=="accent"
+        page.reload(wait_until="domcontentloaded")
+        page.locator('.arcanaThemePreview').wait_for(timeout=12000)
+        after_refresh=page.evaluate("() => [getComputedStyle(document.documentElement).getPropertyValue('--theme-main').trim(),getComputedStyle(document.documentElement).getPropertyValue('--arcana-icon-color').trim(),document.documentElement.dataset.arcanaIconMode]")
+        assert after_refresh==["#080E19","#13C5F4","accent"],"Icon and surface choices did not survive reload"
+        page.goto(URL+"#/icons",wait_until="domcontentloaded",timeout=30000)
+        page.locator('.arcanaIconCatalogItem').first.wait_for(timeout=16000)
+        assert page.locator('.arcanaIconCatalogItem').count()==144,"Entire SVG gallery did not render"
+        assert page.evaluate("document.documentElement.scrollWidth<=innerWidth+3"),"Icon gallery overflows mobile"
+        print("Icon library:",page.locator('.arcanaIconCatalogItem').count(),"SVG assets")
+
         page.goto(URL+"#/labs/build",wait_until="domcontentloaded",timeout=30000)
         page.locator(".studioProfile").wait_for(timeout=16000)
         assert page.locator(".studioPrimaryEquipment .loadoutSlot").count()==13,"Live loadout lost gear slots"
