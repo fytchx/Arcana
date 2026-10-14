@@ -23,8 +23,8 @@ HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
 # styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
 for css_name in ('styles.css','wiki-studio.css','community.css','beta.css','launch-navigation.css'):
     css=(ROOT/css_name).read_text()
-    pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\\?[^\"]*)?">'
-    HTML,count=re.subn(pattern,lambda _: '<style>\\n'+css+'\\n</style>',HTML)
+    pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\?[^"]*)?">'
+    HTML,count=re.subn(pattern,lambda _: '<style>\n'+css+'\n</style>',HTML)
     assert count==1, 'Homepage missing required CSS reference '+css_name
 
 HTML=HTML.replace('</head>', '<script type="importmap">'+json.dumps({'imports': IMPORTS})+'</script></head>')
