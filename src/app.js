@@ -691,6 +691,8 @@ function wirePathfinder(){
    next={...p,currentLevels,targets};
   }else if(d.pfOwned!==undefined)next={...p,inventory:{...p.inventory,[d.pfOwned]:e.target.value}};
   else if(d.pfRate!==undefined)next={...p,rates:{...p.rates,[d.pfRate]:{...p.rates[d.pfRate],perMinute:e.target.value}}};
+  else if(d.pfXp!==undefined)next={...p,rates:{...p.rates,[d.pfXp]:{...p.rates[d.pfXp],mlXpPerMinute:e.target.value}}};
+  else if(d.pfBestXp!==undefined)next={...p,baselineMlXpPerMinute:e.target.value};
   else if(d.pfFailures!==undefined)next={...p,includeFailures:e.target.checked};
   else if(d.pfStrategy!==undefined)next={...p,strategy:e.target.value};
   if(!next)return;
