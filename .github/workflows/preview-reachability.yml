@@ -17,7 +17,7 @@ jobs:
         run: |
           set -euo pipefail
           host="https://arcana-preview-app-preview.up.railway.app"
-          for path in /health / /launch-navigation.css; do
+          for path in /health / /launch-navigation.css /assets/icons/arcana-minimal/manifest.json /assets/icons/arcana-minimal/classes/class-mage.svg; do
             echo "CHECK $host$path"
             curl --fail --silent --show-error --location --retry 5 --retry-all-errors --retry-delay 5 --connect-timeout 10 --max-time 20 --output /tmp/arcana-response "$host$path"
             echo "OK $path bytes=$(wc -c </tmp/arcana-response)"
