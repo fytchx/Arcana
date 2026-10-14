@@ -517,6 +517,18 @@ function action(name,arg,btn){switch(name){
  case 'wikitop':window.scrollTo({top:0,behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});break;
  case 'guildtreetab':state.guildTreeTab=arg;render();node('content').querySelector('.guildTreeTabs button.active')?.focus({preventScroll:true});break;
  case 'path-refresh':recipeState.error='';recipeState.data=null;void loadPathfinderRecipes();break;
+ case 'path-mode':{
+ if(!['normal','awakened'].includes(arg))break;
+ updatePathfinderQuick({mode:arg,stage:arg==='awakened'?'A1':'T1',level:1},true);break;
+}
+case 'path-stage':pathfinderStage(arg);break;
+case 'path-step':{
+ const model=recipeState.data&&timelineModel(recipeState.data,state.pathfinderQuick);
+ const value=Number(arg);if(model&&Number.isInteger(value)&&value>=0&&value<=model.active.max)updatePathfinderQuick({level:value});break;
+}
+case 'path-prev':movePathfinderStep(-1);break;
+case 'path-next':movePathfinderStep(1);break;
+
  case 'farmreset':state.farmPlan=saveFarmPlan({mode:state.farmPlan.mode,times:[null,null,null]});render();break;
  case 'guildbaseline':state.guildBaseline=saveGuildBaseline(state.guildTreePlan);state.guildTreeTab='comparison';render();toast('Guild comparison baseline saved.');break;
  case 'guildbaselineclear':if(window.confirm('Clear this locally saved comparison baseline?')){state.guildBaseline=clearGuildBaseline();render();toast('Comparison baseline cleared.')}break;
@@ -664,6 +676,100 @@ function wireStudioPortrait(){
   catch(err){toast(err?.message||'Could not save your picture');}
  });
 }
+function centerPathRail(railId,attribute,value,behavior='auto'){
+ const rail=node(railId),selected=rail?.querySelector('['+attribute+'="'+CSS.escape(String(value))+'"]');
+ if(!rail||!selected)return;
+ const distance=selected.offsetLeft-rail.offsetLeft-(rail.clientWidth-selected.clientWidth)/2;
+ rail.scrollTo({left:Math.max(0,distance),behavior});
+}
+function refreshPathfinderStep(align=false){
+ if(parseRoute().route!=='calculators/pathfinder'||!recipeState.data)return;
+ const model=timelineModel(recipeState.data,state.pathfinderQuick);
+ if(!model)return;
+ state.pathfinderQuick=model.view;
+ const previous=node('pathDetail');
+ if(previous)previous.outerHTML=pathfinderStepDetail(model);
+ const input=node('pathStepRange');
+ if(input){
+  input.value=String(model.view.level);
+  input.setAttribute('aria-valuetext',stageStepLabel(model.active,model.view.level));
+  input.style.setProperty('--path-progress',String(model.active.max?Math.round(100*model.view.level/model.active.max):0)+'%');
+ }
+ const value=node('pathStepValue');
+ if(value)value.textContent=model.view.level===0?'Transition':'+'+model.view.level;
+ for(const button of document.querySelectorAll('#pathStepRail [data-path-step]')){
+  const active=Number(button.dataset.pathStep)===model.view.level;
+  button.classList.toggle('selected',active);
+  button.setAttribute('aria-pressed',String(active));
+ }
+ if(align)centerPathRail('pathStepRail','data-path-step',model.view.level,'smooth');
+}
+function updatePathfinderQuick(update,redraw=false){
+ state.pathfinderQuick=saveQuickView({...state.pathfinderQuick,...update});
+ if(!redraw){refreshPathfinderStep(true);return;}
+ const oldY=window.scrollY;
+ render();
+ requestAnimationFrame(()=>{
+  window.scrollTo({top:oldY,behavior:'instant'});
+  centerPathRail('pathStageRail','data-path-stage',state.pathfinderQuick.stage);
+  centerPathRail('pathStepRail','data-path-step',state.pathfinderQuick.level);
+ });
+}
+function pathfinderStage(stage){
+ if(!recipeState.data)return;
+ const allowed=timelineStages(recipeState.data,state.pathfinderQuick.mode);
+ if(!allowed.some(s=>s.id===stage)||stage===state.pathfinderQuick.stage)return;
+ updatePathfinderQuick({stage,level:1},true);
+}
+function movePathfinderStep(direction){
+ if(!recipeState.data)return;
+ const model=timelineModel(recipeState.data,state.pathfinderQuick);
+ if(!model)return;
+ const level=model.view.level+direction;
+ if(level>=0&&level<=model.active.max){updatePathfinderQuick({level});return;}
+ const index=model.stages.findIndex(s=>s.id===model.active.id),next=model.stages[index+(direction>0?1:-1)];
+ if(next)updatePathfinderQuick({stage:next.id,level:direction>0?0:next.max},true);
+}
+function wirePathfinderQuick(){
+ document.addEventListener('input',e=>{
+  if(!e.target.matches('[data-path-range]'))return;
+  const value=Number(e.target.value);
+  if(!Number.isInteger(value))return;
+  state.pathfinderQuick={...state.pathfinderQuick,level:value};
+  refreshPathfinderStep(true);
+ });
+ document.addEventListener('change',e=>{
+  if(e.target.matches('[data-path-range]')){state.pathfinderQuick=saveQuickView(state.pathfinderQuick);return;}
+  if(e.target.matches('[data-path-slot]')){
+   updatePathfinderQuick({slot:e.target.value},true);
+  }
+ });
+ // Scroll snapping also selects the nearest visible step or tier. No heavy
+ // rerender happens while a finger is actively dragging the map.
+ let scrollTimer=null;
+ document.addEventListener('scroll',e=>{
+  const rail=e.target;
+  if(rail?.id!=='pathStageRail'&&rail?.id!=='pathStepRail')return;
+  clearTimeout(scrollTimer);
+  scrollTimer=setTimeout(()=>{
+   if(!rail.isConnected||parseRoute().route!=='calculators/pathfinder')return;
+   const field=rail.id==='pathStageRail'?'pathStage':'pathStep';
+   const center=rail.getBoundingClientRect().left+rail.clientWidth/2;
+   const choices=[...rail.querySelectorAll('[data-'+(field==='pathStage'?'path-stage':'path-step')+']')];
+   const nearest=choices.sort((a,b)=>{
+    const midpoint=x=>x.getBoundingClientRect().left+x.getBoundingClientRect().width/2;
+    return Math.abs(midpoint(a)-center)-Math.abs(midpoint(b)-center);
+   })[0];
+   if(!nearest)return;
+   if(field==='pathStage')pathfinderStage(nearest.dataset.pathStage);
+   else {
+    const level=Number(nearest.dataset.pathStep);
+    if(level!==state.pathfinderQuick.level)updatePathfinderQuick({level});
+   }
+  },200);
+ },true);
+}
+
 function init(){document.addEventListener('click',e=>{
  const summary=e.target.closest('details[data-home-panel] > summary');
  if(!summary)return;
