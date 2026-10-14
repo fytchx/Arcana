@@ -128,6 +128,23 @@ with sync_playwright() as playwright:
     assert page.locator('#bottomNav').count()==0, 'Launch must not have a bottom task bar'
     assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1, 'Build Studio is not featured'
     assert page.locator('.launchQuickCard').count()==6, 'Exactly six launch navigation cards are required'
+    assert page.locator('.launchQuickCard .arcanaIcon').count()>=12, 'Themeable SVG icons missing from launch navigation'
+    assert page.locator('.launchHeroArt .arcanaIcon').get_attribute('data-arcana-icon')=='feature-build-studio', 'Build Studio emblem must use Arcana Minimal'
+    # The icon gallery is a real route and every registered asset is previewable.
+    page.evaluate("location.hash='#/icons'")
+    page.locator('.arcanaIconCatalogItem').first.wait_for(timeout=8000)
+    assert page.locator('.arcanaIconCatalogItem').count()==144, 'Full icon library did not render'
+    assert page.locator('.arcanaIconCatalogSection').count()==6, 'Icon categories missing'
+    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Icon gallery overflows mobile horizontally'
+    page.evaluate("location.hash='#/settings'")
+    page.locator('.arcanaSettings').wait_for(timeout=8000)
+    assert page.locator('.arcanaSurfaceChoice').count()==5, 'Site surface options missing'
+    assert page.locator('.arcanaIconColorChoice').count()==11, 'Independent icon colors missing'
+    assert page.locator('.arcanaIconModeChoice').count()==4, 'Icon modes missing'
+    assert page.locator('.slateAccentChoice').count()==10, 'Original accent colors missing'
+    page.evaluate("location.hash='#/home'")
+    page.locator('.launchQuickCard').first.wait_for(timeout=8000)
+
     assert page.locator('.launchBrandName').inner_text()=='ARCANA', 'Slate wordmark missing'
     assert page.locator('.launchHero').evaluate('(e)=>getComputedStyle(e).display')=='flex', 'Build Studio hero CSS missing'
     assert page.locator('.launchQuickGrid').evaluate('(e)=>getComputedStyle(e).display')=='grid', 'Homepage cards are not using responsive grid CSS'
