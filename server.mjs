@@ -135,9 +135,10 @@ const server=http.createServer(async(req,res)=>{
   // This proxies only public frontend routes; authenticated account, Wiki,
   // community, beta and game-data API handlers above remain unchanged.
   // The persistent production volume and separate preview are untouched.
-  const stablePublicHost=isPublicDomain&&(
-   host==='arcanacompanion.xyz'||host==='arcana-stable-app-staging.up.railway.app'
-  );
+  const stablePublicHost=[
+   'arcanacompanion.xyz','www.arcanacompanion.xyz',
+   'arcana-stable-app-staging.up.railway.app'
+  ].includes(host);
   if(stablePublicHost){
    const legacyPath=(pathname==='/'||pathname==='/index.html')?'/legacy':pathname;
    await pipe(res,BASES.legacyArt+legacyPath+parsedUrl.search,{
