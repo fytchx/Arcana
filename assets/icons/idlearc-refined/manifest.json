@@ -41,8 +41,42 @@
       "feature-upgrade",
       "feature-community",
       "feature-feedback"
+    ],
+    "tokens": [
+      "token-arcstone",
+      "token-ruby",
+      "token-gold",
+      "token-guildstone",
+      "token-pet-egg",
+      "token-pet-shard",
+      "token-rune-dust",
+      "token-rune-reforge",
+      "token-runic-core",
+      "token-upgrade-catalyst",
+      "token-gem",
+      "token-gem-dust"
+    ],
+    "stats": [
+      "stat-attack-damage",
+      "stat-flat-damage",
+      "stat-crit-chance",
+      "stat-crit-damage",
+      "stat-defense",
+      "stat-block-chance",
+      "stat-retaliation",
+      "stat-pet-damage",
+      "stat-strength",
+      "stat-dexterity",
+      "stat-intelligence",
+      "stat-gold-gain",
+      "stat-exp-gain",
+      "stat-drop-bonus",
+      "stat-extra-kill",
+      "stat-boss-damage",
+      "stat-all-class-skills",
+      "stat-armor"
     ]
   },
-  "iconCount": 32,
+  "iconCount": 62,
   "viewBox": "0 0 100 100"
 }
