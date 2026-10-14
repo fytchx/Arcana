@@ -1,5 +1,5 @@
 import http from 'node:http';
-import {gunzipSync} from 'node:zlib';
+import {gunzipSync,gzipSync} from 'node:zlib';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve, sep, extname } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -91,6 +91,7 @@ async function verifiedCatalog(){
  return catalogCache;
 }
 let previewRecipe=null,previewRecipeTime=0;
+let recipeZip=null,recipeZipRef=null;
 async function sourceBackedRecipes(){
  if(previewRecipe&&Date.now()-previewRecipeTime<3600000)return previewRecipe;
  const response=await get(BASES.legacyArt+'/assets/data.b64',12000);
@@ -132,7 +133,14 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/health'||pathname==='/__health') {const art=await localArtAudit;const ok=!REQUIRE_LOCAL_ART||art.ready;json(res,ok?200:503,{ok,release:REVISION,source:'tracked frontend files',artwork:{local:art.ready,groups:art.groups,version:art.version||null},dependencyEndpoints:Object.keys(BASES)});return;}
   if(pathname==='/api/lfg/public'){await lfgFeed(res);return;}
   if(pathname==='/api/pathfinder/recipes'){
-   try{json(res,200,await sourceBackedRecipes(),{'cache-control':'public,max-age=900'});}
+   try{
+    const recipe=await sourceBackedRecipes();
+    const headers={'cache-control':'public,max-age=900','vary':'Accept-Encoding'};
+    if(String(req.headers['accept-encoding']||'').includes('gzip')){
+     if(recipeZipRef!==recipe){recipeZip=gzipSync(Buffer.from(JSON.stringify(recipe)));recipeZipRef=recipe;}
+     send(res,200,req.method==='HEAD'?null:recipeZip,{'content-type':'application/json; charset=utf-8','content-encoding':'gzip',...headers});
+    }else json(res,200,recipe,headers);
+   }
    catch(error){console.warn('PATHFINDER_SOURCE_UNAVAILABLE',String(error));json(res,503,{error:'Verified upgrade data unavailable. Costs hidden to avoid guesses.'},{'cache-control':'no-store'});}
    return;
   }
