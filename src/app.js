@@ -2,7 +2,7 @@ import {entities,entityById,itemList,guideList,demoBuilds,demoGuideSections,sear
 import {loadDraft,saveDraft,deepCopy,remember,loadRecent} from './session.js';
 import {navigate,parseRoute,navigateBack} from './routing.js';
 import {esc,icon,boxIcon,chip,button,cardEntity} from './ui.js';
-import {ADMIN_URL,initTheme,applyTheme,themeStatus,refreshTheme} from './theme.js';
+import {ADMIN_URL,initTheme,applyTheme,themeStatus,refreshTheme,setAccent} from './theme.js';
 import {gameArt,initGameAssets,loadStatus,canonicalArtReference,codexOfficialArt} from './assets.js';
 import {TREE_DATA_URL,normalizeTree,getClass,getBranch,passiveAllowed,classAllowed,allocatedTotal,passivePointBudget,classPointBudget,passiveTierSpend,passiveValue} from './tree-engine.js';
 import {LOADOUT_LAYOUT,boardSwitch,buildLoadout,passiveBoard,classBoard,activePassiveNode,activeClassSkill,passivePageCount,skillTierGroups} from './core-boards.js';
@@ -440,6 +440,7 @@ function go(route,params={}){
  }
 }
 function action(name,arg,btn){switch(name){
+ case 'accent':if(setAccent(arg)){render();toast('Theme updated')}else toast('Unable to save theme preference');break;
  case 'skipmain':node('content')?.focus({preventScroll:false});break;
   case 'homemenu':showHomeMenu(arg);break;
  case 'wikishare':{
