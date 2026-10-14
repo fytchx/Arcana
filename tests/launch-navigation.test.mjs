@@ -2,8 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {HOME_CARDS,HOME_MENUS,DIRECTORY,WIKI_TOPICS,homeScreen,homeSubmenu,directoryView,wikiTopicView,userCenterView,settingsView} from '../src/launch-navigation.js';
+import {ACCENT_PRESETS,selectedAccent,setAccent,themeStatus} from '../src/theme.js';
 
-const routes=new Set(['home','directory','user','recent','settings','wiki','wiki/about','wiki/topics','wiki/topic','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','community','community/create','account','beta','lfg/raids','lfg/guilds']);
+const routes=new Set(['home','directory','user','recent','settings','icons','refined-icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','community','community/create','account','beta','lfg/raids','lfg/guilds']);
 test('six home cards open real submenu groups',()=>{
  assert.deepEqual(HOME_CARDS.map(x=>x.title),['Wiki','Tools','Guides','Builds','Codex','Guild & Raid Finder']);
  const html=homeScreen();
@@ -12,6 +13,7 @@ test('six home cards open real submenu groups',()=>{
  assert.match(html,/data-route="labs\/build"/);
  assert.match(html,/Useful &amp; Featured/);
  assert.match(html,/data-route="directory"/);
+ assert.equal((html.match(/data-refined-icon="feature-/g)||[]).length,11);
  for(const card of HOME_CARDS){const popup=homeSubmenu(card.id);assert.ok(popup.includes(card.title.replaceAll('&','&amp;')));assert.match(popup,/launchNavRow/);}
 });
 test('all submenu and A-Z destinations are resolvable routes',()=>{
@@ -48,4 +50,46 @@ test('global home control is registered and the old bottom nav is absent',async(
  assert.match(app,/data-route="home"/);
  assert.match(app,/showHomeMenu/);
  assert.match(settingsView(),/data-app-pref="reduceMotion"/);
+});
+
+test('every homepage stylesheet is publicly served by the Arcana server',async()=>{
+ const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+ const server=await readFile(new URL('../server.mjs',import.meta.url),'utf8');
+ const whitelist=server.match(/const publicPage=new Set\(\[([^\]]+)\]\)\.has\(normalized\)/);
+ assert.ok(whitelist,'Expected static document allowlist was changed: update this regression check');
+ const styles=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="(\/[^"?]+)(?:\?[^\"]*)?"/g)].map(match=>match[1]);
+ assert.ok(styles.includes('/launch-navigation.css'),'Launch stylesheet is required for mobile navigation');
+ for(const stylesheet of styles){
+  assert.ok(whitelist[1].includes("'"+stylesheet+"'"),stylesheet+' is blocked by server.mjs (HTTP 404)');
+ }
+});
+
+test('Slate keeps every original accent and saves personal selection safely',async()=>{
+ assert.equal(ACCENT_PRESETS.length,10);
+ assert.deepEqual(ACCENT_PRESETS.map(x=>x.name),[
+  'Neon Green','Arcane Violet','Cyan Blue','Magenta Pink','Amber Gold',
+  'Crimson Red','Ice Teal','Electric Lime','Royal Indigo','White Silver']);
+ const previous=globalThis.localStorage;
+ const saved=new Map();
+ try{
+  globalThis.localStorage={getItem:key=>saved.get(key)??null,setItem:(key,value)=>saved.set(key,value)};
+  assert.equal(selectedAccent(),'arcane-violet');
+  assert.match(settingsView(),/slateAccentGrid/);
+  assert.equal((settingsView().match(/class="slateAccentChoice/g)||[]).length,10);
+  assert.equal(setAccent('cyan-blue'),true);
+  assert.equal(selectedAccent(),'cyan-blue');
+  assert.equal(themeStatus().palette.highlight,'#13C5F4');
+  assert.equal(themeStatus().palette.main,'#0D1019');
+  assert.match(settingsView(),/data-arg="cyan-blue" aria-pressed="true"/);
+  assert.equal(setAccent('not-a-theme'),false);
+  assert.equal(selectedAccent(),'cyan-blue');
+  assert.equal(setAccent('site'),true);
+  assert.equal(selectedAccent(),'site');
+ }finally{
+  if(previous===undefined)delete globalThis.localStorage;
+  else globalThis.localStorage=previous;
+ }
+ const css=await readFile(new URL('../launch-navigation.css',import.meta.url),'utf8');
+ assert.match(css,/ARCANA SLATE/);
+ assert.match(css,/grid-template-columns:minmax\(0,1fr\)/);
 });

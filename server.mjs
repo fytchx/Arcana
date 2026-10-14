@@ -133,7 +133,7 @@ const server=http.createServer(async(req,res)=>{
   }
   const normalized=pathname==='/'?'/index.html':pathname;
   // Serve only public frontend assets. Never expose account/session files or local Wiki data.
-  const publicPage=new Set(['/index.html','/privacy.html','/beta-rules.html','/styles.css','/wiki-studio.css','/community.css','/beta.css']).has(normalized);
+  const publicPage=new Set(['/index.html','/privacy.html','/beta-rules.html','/styles.css','/wiki-studio.css','/community.css','/beta.css','/launch-navigation.css']).has(normalized);
   const publicModule=/^\/src\/[a-z][a-z0-9-]*\.js$/.test(normalized);
   const publicAsset=/^\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.(?:webp|svg|png|jpg|jpeg|json)$/.test(normalized);
   if(!publicPage&&!publicModule&&!publicAsset){send(res,404,'Not found');return;}

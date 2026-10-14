@@ -1,10 +1,11 @@
 import {esc,icon} from './ui.js';
+import {refinedSvg} from './idlearc-refined-vectors.js';
 import {PET_BONUS_OPTIONS,normalizedPetBonusTargets} from './pet-simple-math.js';
 import {RUNE_COLS,RUNE_ROWS,monsterLevelGrid,activeRuneBoard,RUNE_GRID_STAGES,RUNE_SHAPES,RUNE_FAMILIES,RUNE_FAMILY_DETAILS,RUNE_SECONDARIES,PET_AFFIX_DEFS,PET_HATCH_BONUSES,statName,petSummary} from './labs-engine.js';
 export const FAMILY_ICONS=Object.freeze({Fury:'F',Fortitude:'Ft',Precision:'P',Wisdom:'W',Vitality:'V',Bond:'B',Fortune:'Fo'});
 export function labsTabs(active='studio'){
- const pages=[['studio','labs/build','Build Studio','shield'],['runes','labs/runes','Rune Forge','gem'],['skills','labs/skills','Class Skills','git'],['passives','labs/passives','Passive Tree','layers']];
- return `<nav class="labsTabs" aria-label="Build Studio sections">${pages.map(([id,url,label,glyph])=>`<button class="labsTab ${id===active?'active':''}" data-route="${url}" aria-current="${id===active?'page':'false'}">${icon(glyph,16)} ${label}</button>`).join('')}</nav>`;
+ const pages=[['studio','labs/build','Build Studio','feature-build-studio'],['runes','labs/runes','Rune Forge','feature-rune-forge'],['skills','labs/skills','Class Skills','feature-class-skills'],['passives','labs/passives','Passive Tree','feature-passive-tree']];
+ return `<nav class="labsTabs" aria-label="Build Studio sections">${pages.map(([id,url,label,glyph])=>`<button class="labsTab ${id===active?'active':''}" data-route="${url}" aria-current="${id===active?'page':'false'}">${refinedSvg(glyph,30)} ${label}</button>`).join('')}</nav>`;
 }
 const runeSummary=r=>`${r.family} · ${statName(r.secondary)}`;
 export function monsterLevelControl(build,readonly=false,placement='forge'){
