@@ -564,3 +564,58 @@ html[data-arcana-icon-mode="neutral"] .arcanaIcon{
 @media(prefers-reduced-motion:reduce){
  .arcanaIcon{transition:none}
 }
+
+/* Shared surface and accent tokens are intentionally honored by legacy routes
+   as well as the new minimal navigation. The four site skin choices recolor
+   real panels, not only the settings swatches. */
+html[data-arcana-surface] body,
+html[data-arcana-surface] .shell{background:var(--theme-main)}
+html[data-arcana-surface] .top{background:color-mix(in srgb,var(--theme-main) 96%,var(--theme-secondary));border-bottom-color:var(--theme-border)}
+html[data-arcana-surface] .sheet,
+html[data-arcana-surface] .sectionCard,
+html[data-arcana-surface] .calcWorkspace,
+html[data-arcana-surface] .detailCard,
+html[data-arcana-surface] .articleHeader,
+html[data-arcana-surface] .resultRow,
+html[data-arcana-surface] .toolTile{
+ background:linear-gradient(145deg,color-mix(in srgb,var(--theme-secondary) 97%,var(--theme-highlight) 3%),var(--theme-secondary));
+ border-color:var(--theme-border);
+}
+html[data-arcana-surface] .btn.secondary,
+html[data-arcana-surface] .gearSlot,
+html[data-arcana-surface] .runeSlot,
+html[data-arcana-surface] .selection{
+ background:var(--theme-secondary);border-color:var(--theme-border);color:var(--text);
+}
+html[data-arcana-surface] .btn.primary{
+ background:var(--theme-highlight);border-color:var(--theme-highlight);color:var(--theme-main);
+}
+html[data-arcana-surface] .eyebrow,
+html[data-arcana-surface] .textLink,
+html[data-arcana-surface] .tileMore,
+html[data-arcana-surface] .sectionCard h3 svg,
+html[data-arcana-surface] .launchQuickIcon,
+html[data-arcana-surface] .launchFeatureIcon{
+ color:var(--theme-accent-text);
+}
+html[data-arcana-surface] .glyph,
+html[data-arcana-surface] .tileIcon,
+html[data-arcana-surface] .featureIcon,
+html[data-arcana-surface] .pageIcon,
+html[data-arcana-surface] .tinyIcon:not(.tinyGameArt){
+ background:var(--theme-highlight-soft);
+ border-color:var(--theme-highlight-border);
+ color:var(--theme-accent-text);
+}
+html[data-arcana-surface] .chip{
+ background:color-mix(in srgb,var(--theme-highlight) 8%,var(--theme-secondary));
+ border-color:var(--theme-highlight-border);color:var(--text)
+}
+html[data-arcana-surface] .launchHero,
+html[data-arcana-surface] .studioProfile,
+html[data-arcana-surface] .studioPrimaryEquipment{
+ box-shadow:0 9px 28px #00000029,inset 0 1px #ffffff09;
+}
+html[data-arcana-surface] .arcanaIconCatalogSection .arcanaIconCatalogItem:hover{
+ border-color:var(--theme-highlight);background:var(--theme-highlight-soft)
+}
