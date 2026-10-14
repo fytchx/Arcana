@@ -384,10 +384,17 @@ with sync_playwright() as playwright:
     assert 'Feedback received.' in page.locator('.betaCenter').inner_text(), 'Beta submission did not confirm: '+repr(page.locator('.betaCenter').inner_text()[-900:])+' JS errors '+repr(errors)
     assert page.locator('[data-beta-form="feedback"]').count()==1
     page.evaluate("location.hash='#/labs/build'")
-    page.wait_for_selector('.studioHero')
-    assert 'My Build' in page.locator('.studioHero').inner_text()
-    assert page.locator('.equipmentSection .sectionCardTop').inner_text().find('0 slots equipped')>=0, 'New user must start with empty build, not invented demo gear'
+    page.wait_for_selector('.studioProfile')
+    assert page.locator('.studioTitleInput').input_value()=='My Build'
+    assert '0 / 13 equipped' in page.locator('.studioEquipmentHeading').inner_text(), 'New user must start with empty build, not invented demo gear'
     assert page.locator('[data-action="sharebuild"]').count()==1, 'Guest build sharing is not available'
+    assert page.locator('.loadoutSlot').count()==13, 'All verified equipment slots must remain available'
+    assert page.locator('.loadoutSlot .arcanaSilhouette').count()==13, 'Equipment art must use understated silhouettes'
+    assert page.locator('.studioProfileVisual .arcanaSilhouette').count()==1, 'Class identity emblem should be visible'
+    assert page.locator('.studioProfile').bounding_box()['y']<page.locator('.studioPrimaryEquipment').bounding_box()['y'], 'Equipment should follow the compact profile'
+    assert page.locator('.pageHead').count()==0, 'Build Studio must not show the old giant page heading'
+    assert page.locator('.launchReturnHome').count()==0, 'Build Studio must not duplicate home navigation'
+
     token=page.evaluate("""async () => {
       const {shareBuildToken}=await import('@arcana/build-links.js');
       return await shareBuildToken({title:'Shared beta Warrior',className:'Warrior',
@@ -396,7 +403,7 @@ with sync_playwright() as playwright:
     assert len(token)<7500
     page.evaluate("(token) => {location.hash='#/labs/build?share='+encodeURIComponent(token)}",token)
     page.locator('[data-action="clonebuild"]').wait_for(timeout=7000)
-    assert 'Shared beta Warrior' in page.locator('.studioHero').inner_text(), 'Read-only shared build failed'
+    assert 'Shared beta Warrior' in page.locator('.studioProfile h1').inner_text(), 'Read-only shared build failed'
     assert page.locator('[data-action="sharebuild"]').count()==0, 'Shared build should be read-only'
     page.locator('[data-action="clonebuild"]').dispatch_event('click')
     page.wait_for_timeout(200)
@@ -404,8 +411,20 @@ with sync_playwright() as playwright:
     assert page.locator('[data-build-field="title"]').count()==1, 'Build name editor missing'
     page.locator('[data-build-field="title"]').fill('My actual beta build')
     page.locator('[data-build-field="className"]').select_option('Druid')
-    assert 'My actual beta build' in page.locator('.studioHero h2').inner_text()
-    assert 'Druid' in page.locator('.studioHero p').inner_text()
+    assert page.locator('.studioTitleInput').input_value()=='My actual beta build'
+    assert page.locator('.studioClassControl select').input_value()=='Druid'
+    assert page.locator('.studioProfileVisual .arcanaSilhouette').get_attribute('data-kind')=='druid', 'Class icon must update with the selected class'
+    # Build profile picture uploads are local to the browser. A tiny valid PNG exercises compression, storage, removal.
+    import base64
+    tiny_png=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO5qjKkAAAAASUVORK5CYII=')
+    page.locator('#studioPortraitUpload').set_input_files({'name':'portrait.png','mimeType':'image/png','buffer':tiny_png})
+    page.locator('.studioPortraitImg').wait_for(timeout=7000)
+    assert page.evaluate("localStorage.getItem('arcana-studio-portrait-local-v1')?.startsWith('data:image/')"), 'Picture not persisted locally'
+    page.locator('[data-action="removeportrait"]').click()
+    assert page.locator('.studioPortraitImg').count()==0, 'Default class icon not restored'
+    assert page.locator('.studioProfileVisual .arcanaSilhouette').get_attribute('data-kind')=='druid'
+    page.screenshot(path=str(OUT/'build_studio_compact_mobile.png'),full_page=True)
+
     page.evaluate("location.hash='#/home'")
     page.wait_for_timeout(120)
     page.evaluate("location.hash='#/labs/build'")
