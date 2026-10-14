@@ -1,0 +1,100 @@
+/* Arcana Contour: neutral geometry recolored with the user's live theme tokens.
+   Only website chrome changes; game artwork and item visuals remain untouched. */
+:root{--arcana-dock-height:65px;--arcana-header-height:68px}
+#app.shell{padding-bottom:calc(var(--arcana-dock-height) + env(safe-area-inset-bottom));}
+#app.shell .top{z-index:90;border-bottom:1px solid color-mix(in srgb,var(--theme-highlight) 12%,transparent);height:var(--arcana-header-height);min-height:var(--arcana-header-height)}
+#app.shell .launchTopLeft,#app.shell .launchTopRight{min-width:48px}
+#app.shell .launchChatBtn{height:44px;width:44px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--theme-highlight) 26%,transparent);background:color-mix(in srgb,var(--theme-secondary) 82%,transparent);border-radius:13px;color:var(--theme-highlight);cursor:pointer}
+#app.shell .launchChatBtn svg{width:23px;height:23px}
+#app.shell .launchChatBtn:focus-visible,#arcanaDock button:focus-visible,.arcanaChatPanel button:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:3px}
+#accountBtn[hidden]{display:none!important}
+#app.shell .launchBrand{display:flex;flex-direction:row;gap:9px;align-items:center;justify-content:center;min-width:0}
+#app.shell .launchBrand img{width:36px;height:36px;filter:var(--arcana-logo-filter,none)}
+#app.shell .launchBrandName{color:var(--text,#faf9ff);font-weight:850;font-size:13px;letter-spacing:.2em}
+#app.shell .launchSearchBtn{color:var(--text,#f6f3ff);display:grid;place-items:center;width:44px;height:44px}
+#arcanaDock{position:fixed;bottom:0;left:0;right:0;z-index:99;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:center;gap:2px;min-height:calc(var(--arcana-dock-height) + env(safe-area-inset-bottom));padding:5px max(7px,env(safe-area-inset-left)) calc(4px + env(safe-area-inset-bottom)) max(7px,env(safe-area-inset-right));background:color-mix(in srgb,var(--theme-main,#0d1019) 95%,black 5%);border-top:1px solid color-mix(in srgb,var(--theme-highlight) 24%,transparent);box-shadow:0 -7px 26px #0008;backdrop-filter:blur(14px)}
+#arcanaDock button{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;padding:5px 2px;border:0;border-radius:12px;min-width:0;min-height:52px;color:var(--muted,#b6b5c9);background:transparent;cursor:pointer;font:inherit}
+#arcanaDock .arcanaDockGlyph{height:24px;display:grid;place-items:center}
+#arcanaDock svg{height:23px;width:23px}
+#arcanaDock .arcanaDockLabel{font-size:10px;line-height:1.1;font-weight:700;white-space:nowrap}
+#arcanaDock button.active{color:var(--theme-highlight);background:color-mix(in srgb,var(--theme-highlight) 13%,transparent)}
+#arcanaDock button:last-child .arcanaDockGlyph svg{width:26px;height:26px}
+#content:not(.homeFullscreen){padding-bottom:calc(75px + env(safe-area-inset-bottom))}
+#content.homeFullscreen{box-sizing:border-box;width:min(100%,980px);max-width:980px;display:flex;flex-direction:column;gap:7px;height:calc(100dvh - var(--arcana-header-height) - var(--arcana-dock-height) - env(safe-area-inset-bottom));min-height:0;padding:9px 13px 9px;overflow:hidden}
+#content.homeFullscreen >.launchFeatured,#content.homeFullscreen >.arcanaSignature,#content.homeFullscreen >.arcanaConnectedNext{display:none!important}
+#content.homeFullscreen .launchHero{box-sizing:border-box;flex:0 0 clamp(170px,32%,238px);min-height:0!important;max-height:238px;gap:10px!important;justify-content:space-between!important;padding:clamp(12px,2dvh,19px)!important;border-radius:17px;border:1px solid color-mix(in srgb,var(--theme-highlight) 65%,#777d8b 35%);background:linear-gradient(135deg,color-mix(in srgb,var(--theme-highlight) 18%,#070a12),color-mix(in srgb,var(--theme-highlight) 5%,#070a12) 78%)!important;box-shadow:inset 0 0 20px color-mix(in srgb,var(--theme-highlight) 7%,transparent),0 0 16px color-mix(in srgb,var(--theme-highlight) 12%,transparent);isolation:isolate}
+#content.homeFullscreen .launchHero:before{display:none!important}
+#content.homeFullscreen .launchHero:after,#content.homeFullscreen .launchQuickCard:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.49;background:var(--theme-highlight);-webkit-mask-image:url('/assets/arcana-contour-waves.svg');mask-image:url('/assets/arcana-contour-waves.svg');-webkit-mask-size:cover;mask-size:cover;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+#content.homeFullscreen .launchHero:after{opacity:.57;filter:drop-shadow(0 0 4px var(--theme-highlight));}
+#content.homeFullscreen .launchHeroArcaneSeal{opacity:.19!important;stroke:var(--theme-highlight)!important;z-index:1!important;width:140px;height:140px;right:-15px;top:-8px}
+#content.homeFullscreen .launchHeroHeader{z-index:2!important;gap:10px;align-items:center}
+#content.homeFullscreen .launchHeroArt{flex-basis:48px!important;width:48px!important;height:48px!important;min-width:48px!important;border-radius:12px!important;color:var(--theme-highlight)!important}
+#content.homeFullscreen .launchHeroArt svg{width:28px!important;height:28px!important}
+#content.homeFullscreen .launchHero h1{font-size:clamp(22px,5.4vw,31px)!important;line-height:1.05;margin:4px 0 5px!important;color:var(--text,#f3f1fa)!important}
+#content.homeFullscreen .launchHero p{font-size:clamp(10px,2.5vw,12px)!important;line-height:1.35!important;max-width:360px;color:var(--text,#f3f1fa)!important;opacity:.83}
+#content.homeFullscreen .launchHero .launchEyebrow{font-size:clamp(7px,2vw,10px);letter-spacing:.12em;color:color-mix(in srgb,var(--theme-highlight) 68%,white)}
+#content.homeFullscreen .launchHeroCTA{flex:none;z-index:2;min-height:52px!important;display:grid;grid-template-columns:32px minmax(0,1fr) 20px;width:100%;background:linear-gradient(105deg,color-mix(in srgb,var(--theme-highlight) 69%,white 31%),color-mix(in srgb,var(--theme-highlight) 86%,#1a1333 14%))!important;border-color:color-mix(in srgb,var(--theme-highlight) 54%,white)!important;color:#091018!important;border-radius:12px!important;padding:9px 12px!important;box-shadow:inset 0 1px #ffffff80,0 3px 13px #0005}
+#content.homeFullscreen .launchHeroCTA:before{animation:none!important}
+#content.homeFullscreen .launchHeroCTACopy strong{font-size:clamp(12px,3.2vw,15px)!important}
+#content.homeFullscreen .launchHeroCTACopy small{font-size:clamp(9px,2.3vw,11px)!important}
+#content.homeFullscreen .launchQuick{display:flex;flex-direction:column;min-height:0;flex:1}
+#content.homeFullscreen .launchSectionTop{margin:0 3px 5px;min-height:34px;flex:none}
+#content.homeFullscreen .launchSectionTop h2{font-size:clamp(16px,4vw,20px);font-weight:800}
+#content.homeFullscreen .launchSeeAll{color:var(--theme-highlight);font-size:11px;min-height:32px}
+#content.homeFullscreen .launchQuickGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:8px!important;min-height:0;flex:1}
+#content.homeFullscreen .launchQuickCard{box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) 18px;grid-template-rows:26px minmax(0,1fr);align-content:start;align-items:start;position:relative;isolation:isolate;overflow:hidden;min-height:0!important;height:100%;padding:10px!important;gap:5px 3px;border-radius:12px!important;border:1px solid color-mix(in srgb,var(--theme-highlight) 60%,transparent)!important;background:linear-gradient(140deg,color-mix(in srgb,var(--theme-highlight) 15%,#060912),color-mix(in srgb,var(--theme-highlight) 4%,#080a14))!important;box-shadow:inset 0 1px #ffffff0b,0 0 14px color-mix(in srgb,var(--theme-highlight) 9%,transparent)}
+#content.homeFullscreen .launchQuickCard:before{display:none!important}
+#content.homeFullscreen .launchQuickCard:after{opacity:.52}
+#content.homeFullscreen .launchQuickCard>*{z-index:1;position:relative}
+#content.homeFullscreen .launchQuickIcon{grid-row:1;grid-column:1;display:grid;place-items:center;width:27px!important;height:27px!important;min-width:27px!important;border-radius:8px;background:color-mix(in srgb,var(--theme-highlight) 12%,#080b16)!important;color:color-mix(in srgb,var(--theme-highlight) 80%,white)!important;border:1px solid color-mix(in srgb,var(--theme-highlight) 40%,transparent)!important}
+#content.homeFullscreen .launchQuickIcon svg{width:20px!important;height:20px!important}
+#content.homeFullscreen .launchQuickArrow{grid-row:1;grid-column:2;color:color-mix(in srgb,var(--theme-highlight) 80%,white)!important}
+#content.homeFullscreen .launchQuickCopy{grid-row:2;grid-column:1/-1;align-self:end;gap:3px;background:linear-gradient(0deg,color-mix(in srgb,var(--theme-main) 75%,transparent),transparent);border-radius:4px;padding:3px 0 0}
+#content.homeFullscreen .launchQuickCopy strong{font-size:clamp(10.5px,2.9vw,14px)!important;line-height:1.18;color:var(--text,#f3f1fa)!important}
+#content.homeFullscreen .launchQuickCopy small{font-size:clamp(8.2px,2.25vw,10.5px)!important;line-height:1.14;color:var(--muted,#c1bcd0)!important}
+#content.homeFullscreen .launchQuickCard:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:1px}
+.arcanaCustomAccent{display:grid;grid-template-columns:54px minmax(0,1fr) auto;align-items:center;gap:8px;padding:12px;border:1px solid var(--line);border-radius:12px;margin:12px 0;color:var(--text)}
+.arcanaCustomAccent label{grid-column:1/-1;font-size:12px;font-weight:800}
+.arcanaCustomAccent input[type=color]{padding:2px;width:51px;height:44px;border:1px solid var(--theme-highlight);border-radius:10px;background:transparent}
+.arcanaCustomAccent input[type=text]{min-width:0;width:100%;height:44px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);font:inherit;padding:8px;text-transform:uppercase}
+.arcanaCustomAccent button{min-height:44px;padding:6px 10px;background:var(--theme-highlight);border:0;border-radius:9px;color:#090e15;font-size:12px;font-weight:800;cursor:pointer}
+.arcanaCustomActive{grid-column:1/-1;color:var(--theme-highlight);font-size:11px}
+#arcanaChatOverlay[hidden]{display:none!important}
+#arcanaChatOverlay{position:fixed;inset:0;z-index:300;display:grid;place-items:end center;background:#000a;padding:15px 12px calc(15px + env(safe-area-inset-bottom))}
+.arcanaChatPanel{display:flex;flex-direction:column;width:min(100%,480px);height:min(690px,87dvh);min-height:260px;overflow:hidden;background:var(--theme-main,#0d1019);border:1px solid color-mix(in srgb,var(--theme-highlight) 56%,var(--theme-secondary));border-radius:18px;box-shadow:0 20px 60px #000b;color:var(--text)}
+.arcanaChatHead{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:15px;border-bottom:1px solid var(--line)}
+.arcanaChatHead strong{font-size:17px}.arcanaChatHead small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.arcanaChatHead button{width:44px;height:44px;border-radius:11px;background:var(--theme-secondary);color:var(--text);border:1px solid var(--line);font-size:19px;cursor:pointer}
+.arcanaChatMessages{display:flex;flex-direction:column;gap:10px;overflow-y:auto;flex:1;min-height:0;padding:14px;overscroll-behavior:contain}
+.arcanaChatMessage{padding:10px;border-radius:12px;background:color-mix(in srgb,var(--theme-secondary) 84%,transparent);border:1px solid var(--line)}
+.arcanaChatMessage.mine{border-color:color-mix(in srgb,var(--theme-highlight) 40%,var(--line))}
+.arcanaChatMessage header{display:flex;gap:10px;justify-content:space-between;align-items:center}
+.arcanaChatMessage strong{font-size:12px;color:var(--theme-highlight);overflow-wrap:anywhere}
+.arcanaChatMessage time{font-size:10px;color:var(--muted);white-space:nowrap}
+.arcanaChatMessage p{font-size:13px;line-height:1.4;margin:6px 0 0;overflow-wrap:anywhere;white-space:pre-wrap}
+.arcanaChatMessage button{margin-top:6px;background:transparent;border:0;color:var(--theme-highlight);font:inherit;font-size:11px;text-decoration:underline;cursor:pointer}
+.arcanaChatForm{display:flex;gap:7px;padding:12px;border-top:1px solid var(--line)}
+.arcanaChatForm input{flex:1;min-width:0;min-height:44px;padding:10px;border-radius:11px;background:var(--theme-secondary);color:var(--text);border:1px solid var(--line);font:inherit;font-size:14px}
+.arcanaChatForm button,.arcanaChatSignIn{min-height:44px;border:0;border-radius:11px;background:var(--theme-highlight);color:#091018;font:inherit;font-size:13px;font-weight:800;padding:0 14px;cursor:pointer}
+.arcanaChatStatus{padding:8px 14px 0;color:var(--muted);font-size:11px}
+.arcanaChatSignIn{display:flex;align-items:center;justify-content:center;margin:8px 12px 13px;text-decoration:none}
+@media(max-height:720px) and (max-width:700px){
+ #content.homeFullscreen{padding-top:5px;padding-bottom:5px;gap:4px}
+ #content.homeFullscreen .launchHero{flex-basis:154px!important;padding:11px!important;gap:6px!important}
+ #content.homeFullscreen .launchHeroArt{width:41px!important;height:41px!important;min-width:41px!important;flex-basis:41px!important}
+ #content.homeFullscreen .launchHeroCTA{min-height:46px!important;padding:6px 10px!important}
+ #content.homeFullscreen .launchSectionTop{min-height:29px;margin-bottom:3px}
+ #content.homeFullscreen .launchQuickGrid{gap:5px!important}
+ #content.homeFullscreen .launchQuickCard{padding:7px!important}
+ #content.homeFullscreen .launchQuickCopy{gap:1px}
+}
+@media(max-height:615px) and (max-width:700px){
+ #content.homeFullscreen{height:auto;min-height:calc(100dvh - var(--arcana-header-height) - var(--arcana-dock-height));overflow:visible}
+ #content.homeFullscreen .launchQuickCard{min-height:79px!important}
+ #content.homeFullscreen .launchQuickGrid{grid-template-rows:repeat(3,minmax(79px,1fr))}
+}
+@media(min-width:701px){#content.homeFullscreen{height:auto;min-height:calc(100dvh - var(--arcana-header-height) - var(--arcana-dock-height));overflow:visible;padding:22px;gap:15px}
+#content.homeFullscreen .launchHero{flex-basis:auto;min-height:210px!important;max-height:none}
+#content.homeFullscreen .launchQuickGrid{grid-template-rows:repeat(3,minmax(118px,1fr))}
+#content.homeFullscreen .launchQuickCard{min-height:118px!important}}
+@media(prefers-reduced-motion:reduce){#content.homeFullscreen *,#arcanaDock *{animation:none!important;transition:none!important}}
