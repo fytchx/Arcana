@@ -53,6 +53,19 @@ with sync_playwright() as p:
         persisted=page.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--theme-highlight').trim()")
         assert persisted.lower()=="#13c5f4","Personal accent choice did not survive reload"
         print("Player accent persisted:",persisted)
+        page.goto(URL+"#/labs/build",wait_until="domcontentloaded",timeout=30000)
+        page.locator(".studioProfile").wait_for(timeout=16000)
+        assert page.locator(".studioPrimaryEquipment .loadoutSlot").count()==13,"Live loadout lost gear slots"
+        assert page.locator(".studioPrimaryEquipment .arcanaSilhouette").count()==13,"Live equipment silhouettes not applied"
+        assert page.locator(".studioProfileVisual .arcanaSilhouette").count()==1,"Class profile emblem missing"
+        assert page.locator(".pageHead").count()==0,"Old oversized heading still present"
+        assert page.locator(".launchReturnHome").count()==0,"Duplicate home bar returned"
+        profile=page.locator(".studioProfile").bounding_box()
+        equipment=page.locator(".studioPrimaryEquipment").bounding_box()
+        assert profile and equipment and equipment["y"]>profile["y"],"Equipment must follow compact build profile"
+        assert equipment["y"]<500,"Equipment is below the first mobile screen"
+        print("Live Studio geometry:",json.dumps({"profile":profile,"equipment":equipment}))
+
 
         assert result["url"].startswith(URL),"Preview unexpectedly redirects away"
         assert result["bodyWidth"]<=result["viewport"]+3,"Mobile horizontal overflow"
