@@ -43,7 +43,7 @@ function materialTable(report,plan){
   '<div class="pfMaterial"><div class="pfMaterialTitle"><strong>'+esc(m.name)+'</strong><span>'+ (m.missing===0n?'Ready':formatCost(m.missing)+' remaining')+'</span></div>'+
   '<small>Required '+formatCost(m.required)+' · owned '+formatCost(m.owned)+(m.sourceMonster?' · '+esc(m.sourceMonster)+(m.sourceBiome?' ('+esc(m.sourceBiome)+')':''):'')+'</small>'+
   '<div class="pfMaterialFields"><label>Owned<input type="number" min="0" inputmode="numeric" data-pf-owned="'+esc(m.slug)+'" value="'+esc(plan.inventory[m.slug]||'0')+'"></label>'+
-  '<label>Measured material/min<input type="number" min="0" step="any" inputmode="decimal" data-pf-rate="'+esc(m.slug)+'" placeholder="Optional" value="'+(plan.rates[m.slug]?.perMinute||'')+'"></label></div></div>'
+  '<label>Measured material/min<input type="number" min="0" step="any" inputmode="decimal" data-pf-rate="'+esc(m.slug)+'" placeholder="Optional" value="'+(plan.rates[m.slug]?.perMinute||'')+'"></label><label>ML XP / minute here<input type="number" min="0" step="any" inputmode="decimal" data-pf-xp="'+esc(m.slug)+'" placeholder="Optional" value="'+(plan.rates[m.slug]?.mlXpPerMinute||'')+'"></label></div></div>'
  ).join('')+'</div>';
 }
 function farmTable(report,plan){
@@ -51,6 +51,7 @@ function farmTable(report,plan){
   '<div class="pfRecommendation"><b>'+(i+1)+'. '+esc(m.sourceMonster||m.name)+'</b><span>'+esc(m.name)+' · '+fmt(m.minutes)+' min at '+fmt(m.perMinute)+'/min</span></div>'
  ).join('');
  return '<section class="pfPanel"><h2>3. Farming priorities</h2><p>Your measurements, not fabricated monster drop rates, determine these estimates.</p>'+
+ '<label>Your best ML XP / minute<input type="number" min="0" step="any" data-pf-best-xp inputmode="decimal" value="'+(plan.baselineMlXpPerMinute||'')+'" placeholder="Optional measured value"></label>'+
  '<label>Route strategy<select data-pf-strategy>'+[
  ['balanced','Balanced'],['materials','Materials first'],['ml','Monster Level first']
  ].map(([v,label])=>opt(v,label,plan.strategy)).join('')+'</select></label>'+
