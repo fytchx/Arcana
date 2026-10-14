@@ -138,7 +138,21 @@ export async function refreshTheme(){
  }catch(err){if(!config)console.info('Arcana theme service unavailable; using default styling.');}
  return applyTheme();
 }
+// Preview-only one-time visual reset: preserve accounts, builds, wiki and all other data.
+function restorePreviewAppearanceOnce(){
+ if(typeof location==='undefined'||location.hostname!=='arcana-preview-app-preview.up.railway.app')return;
+ try{
+  const migration='arcana-preview-default-appearance-20261014-v1';
+  if(localStorage.getItem(migration))return;
+  localStorage.setItem(PLAYER_ACCENT_KEY,'arcane-violet');
+  localStorage.setItem(SITE_SURFACE_KEY,'slate');
+  localStorage.setItem(ICON_COLOR_KEY,'follow-site');
+  localStorage.setItem(ICON_MODE_KEY,'two-tone');
+  localStorage.setItem(migration,'1');
+ }catch{}
+}
 export function initTheme(){
+ restorePreviewAppearanceOnce();
  applyTheme();
  void refreshTheme();
  if(typeof window!=='undefined'){

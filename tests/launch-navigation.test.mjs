@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {HOME_CARDS,HOME_MENUS,DIRECTORY,WIKI_TOPICS,homeScreen,homeSubmenu,directoryView,wikiTopicView,userCenterView,settingsView} from '../src/launch-navigation.js';
 import {ACCENT_PRESETS,selectedAccent,setAccent,themeStatus} from '../src/theme.js';
 
-const routes=new Set(['home','directory','user','recent','settings','icons','refined-icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','community','community/create','account','beta','lfg/raids','lfg/guilds']);
+const routes=new Set(['home','directory','user','recent','settings','icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','community','community/create','account','beta','lfg/raids','lfg/guilds']);
 test('six home cards open real submenu groups',()=>{
  assert.deepEqual(HOME_CARDS.map(x=>x.title),['Wiki','Tools','Guides','Builds','Codex','Guild & Raid Finder']);
  const html=homeScreen();
@@ -13,7 +13,6 @@ test('six home cards open real submenu groups',()=>{
  assert.match(html,/data-route="labs\/build"/);
  assert.match(html,/Useful &amp; Featured/);
  assert.match(html,/data-route="directory"/);
- assert.equal((html.match(/data-refined-icon="feature-/g)||[]).length,11);
  for(const card of HOME_CARDS){const popup=homeSubmenu(card.id);assert.ok(popup.includes(card.title.replaceAll('&','&amp;')));assert.match(popup,/launchNavRow/);}
 });
 test('all submenu and A-Z destinations are resolvable routes',()=>{

@@ -3,7 +3,6 @@ import {esc,icon} from './ui.js';
 import {gameArt,hasGameSprite,codexOfficialArt} from './assets.js';
 import {asGear,gearLabel,baseItem,equipmentId} from './build-studio-data.js';
 import {slotSilhouette} from './studio-visuals.js';
-import {refinedSvg} from './idlearc-refined-vectors.js';
 import {motifArt,passiveTitle,safeGameAsset,classTheme} from './tree-art.js';
 const btn=(label,route)=>`<button class="boardJump" data-route="${route}">${label}</button>`;
 const ico=(name)=>icon(name,19);
@@ -26,7 +25,7 @@ const safeName=name=>String(name||'').replace(/[^A-Za-z0-9 _\-]/g,'').slice(0,70
 function realClassIcon(cls){const v=safeGameAsset(cls?.icon||cls?.icon_url||cls?.image||'');if(v)return `<img src="${esc(v)}" alt="" class="realClassIcon" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden class="classGlyph emblemFallback">${motifArt(cls?.name,{role:'class',size:30})}</span>`;return `<span class="classGlyph">${motifArt(cls?.name,{role:'class',size:30})}</span>`}
 export function boardSwitch(active='equipment'){
  const entries=[['equipment','Equipment','labs/build'],['passive','Passive Tree','labs/passives'],['class','Class Skills','labs/skills']];
- return `<nav class="coreSwitch" aria-label="Build Studio boards">${entries.map(([id,n,r])=>`<button data-route="${r}" class="${active===id?'active':''}" aria-current="${active===id?'page':'false'}">${refinedSvg(id==='equipment'?'feature-builds':id==='passive'?'feature-passive-tree':'feature-class-skills',28)} ${esc(n)}</button>`).join('')}</nav>`;
+ return `<nav class="coreSwitch" aria-label="Build Studio boards">${entries.map(([id,n,r])=>`<button data-route="${r}" class="${active===id?'active':''}" aria-current="${active===id?'page':'false'}">${esc(n)}</button>`).join('')}</nav>`;
 }
 export function buildLoadout(equipment,itemLookup,inspecting){
  const count=Object.values(equipment||{}).filter(Boolean).length;
