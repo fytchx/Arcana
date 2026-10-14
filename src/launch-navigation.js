@@ -1,4 +1,5 @@
 import {esc,icon} from './ui.js';
+import {ACCENT_PRESETS,selectedAccent} from './theme.js';
 
 // One navigation registry for the launch home, its popovers and the A-Z directory.
 // Topics are navigation shells until the editorial team publishes actual articles.
@@ -69,11 +70,11 @@ const attrs=x=>'data-route="'+esc(x.route)+'"'+(x.params?' data-params="'+esc(ne
 const navrow=x=>'<button type="button" class="launchNavRow" '+attrs(x)+'><span class="launchNavIcon">'+icon(x.icon||'arrow',20)+'</span><span class="launchNavCopy"><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',17)+'</button>';
 export function homeScreen(){
  return '<section class="launchHero" aria-label="Featured Build Studio">'+
-  '<div class="launchHeroText"><span class="launchEyebrow">THE HEART OF ARCANA</span><h1>Build Studio</h1>'+
-  '<p>One connected workspace for your entire IdleArc build. Equip gear, configure pets, plan class and passive skills, and arrange runes. Follow item links into the Codex, check the Wiki, use calculators, then share your complete setup.</p>'+
-  '<button type="button" class="launchHeroCTA" data-route="labs/build">Open Build Studio '+icon('arrow',18)+'</button>'+
-  '<div class="launchHeroPills"><span>Equipment</span><span>Rune Forge</span><span>Skill Trees</span><span>Pets</span></div></div>'+
-  '<span class="launchHeroArt" aria-hidden="true">'+icon('gem',110)+'</span></section>'+
+  '<span class="launchHeroArt" aria-hidden="true">'+icon('gem',47)+'</span>'+
+  '<div class="launchHeroText"><span class="launchEyebrow">YOUR CHARACTER WORKSPACE</span><h1>Build Studio</h1>'+
+  '<p>Gear, runes, pets and skill trees. One connected build.</p>'+
+  '<button type="button" class="launchHeroCTA" data-route="labs/build">Open Studio '+icon('arrow',16)+'</button>'+
+  '<div class="launchHeroPills"><span>Equipment</span><span>Rune Forge</span><span>Skill Trees</span><span>Pets</span></div></div></section>'+
   '<section class="launchQuick" aria-label="Quick Access"><div class="launchSectionTop"><h2>Quick Access</h2><button type="button" data-route="directory" class="launchSeeAll">See All '+icon('arrow',16)+'</button></div>'+
   '<div class="launchQuickGrid">'+HOME_CARDS.map(x=>'<button type="button" class="launchQuickCard" data-action="homemenu" data-arg="'+esc(x.id)+'" aria-label="Open '+esc(x.title)+' menu"><span class="launchQuickIcon">'+icon(x.icon,27)+'</span><span class="launchQuickCopy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></span><span class="launchQuickArrow">'+icon('arrow',17)+'</span></button>').join('')+'</div></section>'+
   '<section class="launchFeatured" aria-label="Useful and Featured"><div class="launchSectionTop"><h2>Useful &amp; Featured</h2></div>'+
@@ -145,5 +146,11 @@ export function appPrefs(){try{const raw=JSON.parse(localStorage.getItem(PREF_KE
 export function applyAppPrefs(){const prefs=appPrefs();document.documentElement.dataset.launchCompact=String(prefs.compact);document.documentElement.dataset.launchReduceMotion=String(prefs.reduceMotion)}
 export function changeAppPref(key,checked){if(!['compact','reduceMotion'].includes(key))return;const p={...appPrefs(),[key]:checked===true};try{localStorage.setItem(PREF_KEY,JSON.stringify(p))}catch{}applyAppPrefs()}
 export function settingsView(){
- const p=appPrefs();return '<div class="launchPage"><span class="launchEyebrow">USER CENTER</span><h1>App Settings</h1><p>These settings are saved on this device, not on your IdleArc character or Arcana account.</p><div class="launchSettingList"><label class="launchSetting"><span><strong>Compact navigation cards</strong><small>Reduce spacing in launch menus.</small></span><input type="checkbox" data-app-pref="compact" '+(p.compact?'checked':'')+'></label><label class="launchSetting"><span><strong>Reduce animations</strong><small>Minimize motion effects in the app.</small></span><input type="checkbox" data-app-pref="reduceMotion" '+(p.reduceMotion?'checked':'')+'></label></div><p class="mutedSmall">Color themes are managed centrally during the beta.</p></div>';
+ const p=appPrefs(),selected=selectedAccent();
+ const colorCards=ACCENT_PRESETS.map(x=>'<button type="button" class="slateAccentChoice '+(selected===x.id?'selected':'')+'" data-action="accent" data-arg="'+esc(x.id)+'" aria-pressed="'+(selected===x.id)+'"><span class="slateAccentSwatch" style="--swatch:'+x.hex+'"></span><span>'+esc(x.name)+'</span>'+(selected===x.id?'<b aria-hidden="true">✓</b>':'')+'</button>').join('');
+ return '<div class="launchPage slateSettings"><span class="launchEyebrow">USER CENTER</span><h1>App Settings</h1><p>Make Arcana yours. Your accent color is saved in this browser and used across Arcana pages and tools.</p>'+
+ '<section class="slateSettingsBlock"><h2>Accent color</h2><p>The same ten palettes, now on the neutral Slate layout. Changing your color never alters game stats or builds.</p><div class="slateAccentGrid" role="group" aria-label="Choose Arcana accent color">'+colorCards+'</div>'+
+ '<button type="button" class="slateSiteTheme '+(selected==='site'?'selected':'')+'" data-action="accent" data-arg="site" aria-pressed="'+(selected==='site')+'">Follow centrally managed Arcana theme '+(selected==='site'?'✓':'')+'</button></section>'+
+ '<section class="slateSettingsBlock"><h2>Display</h2><div class="launchSettingList"><label class="launchSetting"><span><strong>Compact navigation</strong><small>Make rows and menus tighter.</small></span><input type="checkbox" data-app-pref="compact" '+(p.compact?'checked':'')+'></label><label class="launchSetting"><span><strong>Reduce animations</strong><small>Minimize motion effects.</small></span><input type="checkbox" data-app-pref="reduceMotion" '+(p.reduceMotion?'checked':'')+'></label></div></section>'+
+ '<p class="mutedSmall">Preferences on this preview are stored locally in your browser, not your account. They do not change production.</p></div>';
 }
