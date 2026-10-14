@@ -39,9 +39,20 @@ with sync_playwright() as p:
                     heroHeight:document.querySelector('.launchHero').getBoundingClientRect().height};
         }""")
         print("Slate geometry:",json.dumps(slate))
-        assert slate["next"]>slate["top"]+45 and abs(slate["left"]-slate["nextLeft"])<3,"Slate must use one-column navigation"
-        assert 52<=slate["cardHeight"]<=80,"Slate cards are too large or too small"
-        assert 110<=slate["heroHeight"]<=200,"Build Studio feature too tall for Slate"
+        assert abs(slate["next"]-slate["top"])<3 and slate["nextLeft"]>slate["left"]+70,"Home cards must be two per row"
+        assert 83<=slate["cardHeight"]<=145,"Mobile two-column cards must stay compact and tappable"
+        assert 165<=slate["heroHeight"]<=255,"Mystical Build Studio feature should be prominent but not enormous"
+        assert page.locator(".launchHeroCTA").inner_text().find("Enter Build Studio")>=0,"Mystical CTA missing"
+        assert page.locator(".launchHeroArcaneSeal").count()==1,"Subtle geometric seal missing"
+        assert page.locator(".launchHeroCTASigil").count()==1,"CTA needs a central glyph"
+        geom=page.locator(".launchFeatureRow").evaluate_all("""els => els.map(el=>{
+          const r=el.getBoundingClientRect();
+          return {x:r.x,y:r.y,width:r.width,height:r.height}
+        })""")
+        assert len(geom)==3
+        assert abs(geom[0]["y"]-geom[1]["y"])<3 and geom[1]["x"]>geom[0]["x"]+70,"Featured cards should be two-up"
+        assert geom[2]["width"]>geom[0]["width"]*1.8 and geom[2]["y"]>geom[0]["y"]+60,"Third featured card should fill final row"
+        print("Mystical homepage geometry:",json.dumps({"quick":slate,"featured":geom}),flush=True)
         page.locator("#accountBtn").click()
         page.locator('[data-route="settings"]').click()
         assert page.locator(".slateAccentChoice").count()==10,"Ten theme colors must be selectable"
@@ -109,6 +120,12 @@ with sync_playwright() as p:
         assert 'hue-rotate' in textured['logo'],"Recolored Arcana logo did not persist onto homepage"
         assert textured['bodyWidth']<=textured['viewport']+3,"Texture caused horizontal scroll"
         page.screenshot(path=str(out/"arcana-home-etched-mobile.png"),full_page=True)
+        assert page.locator('.launchHeroCTA').evaluate("(el) => getComputedStyle(el).display")=="grid","Flagship CTA must use its intentional grid layout"
+        page.locator('.launchHeroCTA').click()
+        page.locator('.studioPrimaryEquipment').wait_for(timeout=20000)
+        assert page.locator('.studioPrimaryEquipment .loadoutSlot').count()==13,"Featured CTA must open the complete Build Studio"
+        page.go_back(wait_until='domcontentloaded')
+        page.locator('.launchQuickCard').first.wait_for(timeout=12000)
         print("Homepage texture and Arcana brand recoloring: OK")
 
 
