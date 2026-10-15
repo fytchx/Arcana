@@ -4,7 +4,7 @@ Version: 2026-10-15. Baseline: verified October 9 Season 2 equipment snapshot an
 
 ## Approved taxonomy
 
-8 primary Wiki categories, 30 proposed page IDs. 10 IDs correspond to already published, source-controlled Wiki articles. The other 20 are registered in `src/wiki-taxonomy.js` but are **not** served as article links until they have real content. The existing `guide-builds` instructional demonstration stays reachable through Guides, outside the 30 mechanics/article page list.
+8 primary Wiki categories, 30 proposed page IDs. 10 IDs were already source-controlled Wiki articles. Five concise class overview articles are also now sourced from verified class branches, bringing the initial public article count to 15. The remaining 15 pages are registered in `src/wiki-taxonomy.js` but are **not** served as article links until they have real content. The existing `guide-builds` instructional demonstration stays reachable through Guides, outside the 30 mechanics/article page list.
 
 Each article has one primary parent in the taxonomy. Legacy article routes `#/wiki/article?id=...` and old topic URLs remain usable. `Home › ArcanaWiki › <Category> › <Article>` is the canonical location, while the Back button follows actual browser history and falls back to its parent on direct entry.
 
