@@ -95,8 +95,8 @@ test('Codex records connect to the correct calculators for different mechanics',
 
 test('Wiki collection and home include obvious connected destinations',()=>{
  const html=wikiLandingView({loaded:true,itemCount:200});
- assert.match(html,/wikiPortalShortcuts/);
- assert.match(html,/Plan guild skill points/);
+ assert.match(html,/wikiV1Categories/);
+ assert.match(html,/Item Codex/);
  const library=wikiLibraryView({category:'item',entries:[],loaded:true});
  assert.match(library,/wikiCollectionNext/);
  assert.match(library,/Compare equipment/);
@@ -108,7 +108,7 @@ test('Application keeps connected destinations and exposes a universal home path
   assert.match(code,/node\('content'\)\.innerHTML=simpleBackBar\(dest\)\+routeView\(\)/);
  assert.match(code,/homeScreen\(\)/);
  assert.match(code,/case 'directory':return directoryView\(\)/);
- assert.match(code,/case 'wiki\/topic':return wikiTopicView/);
+ assert.match(code,/case 'wiki\/category':return wikiCategory/);
  assert.match(code,/case 'homemenu':if\(arg==='pathfinder'\)go\('calculators\/pathfinder'\)/);
  assert.match(code,/case 'labs':return buildStudio\(\)/);
  assert.match(code,/node\('searchBtn'\)\.onclick/);

@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {HOME_CARDS,HOME_MENUS,DIRECTORY,WIKI_TOPICS,homeScreen,homeSubmenu,directoryView,wikiTopicView,userCenterView,settingsView} from '../src/launch-navigation.js';
 import {ACCENT_PRESETS,selectedAccent,setAccent,themeStatus} from '../src/theme.js';
 
-const routes=new Set(['home','directory','user','recent','settings','icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','community','community/create','account','beta','lfg/raids','lfg/guilds']);
+const routes=new Set(['home','directory','user','recent','settings','icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/category','wiki/items','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','community','community/create','account','beta','lfg/raids','lfg/guilds']);
 test('six home cards open real submenu groups',()=>{
  assert.deepEqual(HOME_CARDS.map(x=>x.title),['Wiki','Tools','Guides','Builds','Pathfinder','Guild & Raid Finder']);
  const html=homeScreen();
@@ -28,7 +28,7 @@ test('all submenu and A-Z destinations are resolvable routes',()=>{
 test('topic shells are navigable, safely escaped and do not invent article content',()=>{
  for(const topic of WIKI_TOPICS){
   const html=wikiTopicView(topic.slug);
-  assert.match(html,/Navigation is ready/);
+  assert.match(html,/View published articles/);
   assert.ok(html.includes(topic.title));
   assert.match(html,/data-route/);
  }

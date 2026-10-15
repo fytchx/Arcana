@@ -107,16 +107,12 @@ export function directoryView(){
  return '<div class="launchPage"><span class="launchEyebrow">ALL DESTINATIONS</span><h1>Explore Arcana A–Z</h1><p>Every primary destination in one alphabetized list. No guessing which section something is hiding in.</p><div class="launchAlphabet">'+[...groups].map(([letter,links])=>'<section class="launchAlphabetGroup"><h2>'+esc(letter)+'</h2><div>'+links.map(navrow).join('')+'</div></section>').join('')+'</div></div>';
 }
 export function wikiTopicsView(){
- return '<div class="launchPage"><span class="launchEyebrow">ARCANAWIKI</span><h1>Wiki Topics</h1><p>Choose a topic or browse the complete Wiki. Articles will be added after the launch navigation is finalized.</p><div class="launchMenuLinks">'+WIKI_TOPICS.map(x=>navrow(link(x.title,x.detail,'wiki/topic',x.icon,{slug:x.slug}))).join('')+navrow(link('Explore the Wiki','Browse published articles.','wiki','book'))+'</div></div>';
+ return '<div class="launchPage"><span class="launchEyebrow">ARCANAWIKI</span><h1>Wiki Categories</h1><p>Choose a topic to see its published articles.</p><div class="launchMenuLinks">'+WIKI_TOPICS.map(c=>navrow(link(c.title,c.detail,'wiki/category',c.icon,{slug:c.slug}))).join('')+'</div></div>';
 }
 export function wikiTopicView(slug){
- const entry=WIKI_TOPICS.find(x=>x.slug===slug);if(!entry)return null;
- const related=slug==='gear-awakening'?[link('Equipment References','Browse items.','wiki/library','shield',{kind:'item'}),link('Upgrade Calculator','Equipment costs and upgrades.','calculators/upgrade','calculator')]:
- slug==='pets-runes-talismans'?[link('Pet References','Browse companions.','wiki/library','paw',{kind:'pet'}),link('Rune Forge · Build Studio','Plan rune placement.','labs/runes','gem')]:
- slug==='combat-monsters-biomes'?[link('Biome References','Explore biomes.','wiki/library','layers',{kind:'biome'}),link('ML Farming Comparator','Compare farming speed.','calculators/ml-farm','sword')]:
- slug==='guilds-raids'?[link('Find a Raid','Browse raid listings.','lfg/raids','users'),link('Guild Skill Planner','Plan guild bonuses.','labs/guild-tree','shield')]:
- [link('Season 2 Guide','Current seasonal guide.','wiki/article','book',{id:'season-2'})];
- return '<div class="launchPage"><span class="launchEyebrow">WIKI / TOPICS</span><h1>'+esc(entry.title)+'</h1><p>'+esc(entry.detail)+'</p><div class="launchTopicPlaceholder"><strong>Navigation is ready. Articles come next.</strong><span>This topic hub will collect relevant pages as the Wiki is filled out.</span></div><h2>Explore related sections</h2><div class="launchMenuLinks">'+related.map(navrow).join('')+'</div></div>';
+ const topic=WIKI_TOPICS.find(c=>c.slug===slug);
+ if(!topic)return null;
+ return '<div class="launchPage"><span class="launchEyebrow">ARCANAWIKI</span><h1>'+esc(topic.title)+'</h1><p>'+esc(topic.detail)+'</p><div class="launchMenuLinks">'+navrow(link('View published articles','Browse this category.','wiki/category',topic.icon,{slug:topic.slug}))+'</div></div>';
 }
 export function wikiAboutView(){
  return '<div class="launchPage"><span class="launchEyebrow">WELCOME TO IDLEARC</span><h1>About IdleArc</h1><p>IdleArc is an idle RPG built around character progression, equipment, skills, pets and long-term build decisions. Arcana connects guides, game references and planning tools in one place.</p><div class="launchTopicPlaceholder"><strong>Full game overview coming soon</strong><span>The content pass starts after the navigation is finalized.</span></div><div class="launchMenuLinks">'+[
