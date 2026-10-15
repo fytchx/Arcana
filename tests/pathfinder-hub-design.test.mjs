@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {readDesign,writeDesign,resetDesign,DEFAULT_DESIGN,normalizeDesignHex} from '../src/design-controls.js';
 import {settingsView} from '../src/launch-navigation.js';
+import {designMiniMarkup,endDesignMiniSession} from '../src/design-mini-preview.js';
 
 test('admin style workshop is hidden from public settings',()=>{
  const guest=settingsView();
@@ -51,4 +52,32 @@ test('typed and pasted HEX values validate and normalize safely',()=>{
  assert.equal(normalizeDesignHex('a78bfa'),'#A78BFA');
  assert.equal(normalizeDesignHex('  #0d1019  '),'#0D1019');
  for(const bad of ['','#ABC','#GGGGGG','#000000; color:red','1234567','transparent'])assert.equal(normalizeDesignHex(bad),null,bad);
+});
+
+test('the protected workshop embeds a real mini sample with three example screens',()=>{
+ endDesignMiniSession();
+ const sample=designMiniMarkup();
+ assert.match(sample,/data-mini-canvas/);
+ assert.match(sample,/miniHero/);
+ assert.match(sample,/miniDock/);
+ assert.match(sample,/data-mini-compare="before"/);
+ assert.match(sample,/data-mini-compare="after"/);
+ for(const section of ['home','studio','pathfinder'])
+  assert.match(sample,new RegExp('data-mini-page="'+section+'"'));
+ assert.match(sample,/data-mini-reset/);
+ assert.doesNotMatch(sample,/<iframe/i);
+ assert.match(settingsView({admin:true}),/designMiniPreview/);
+ assert.doesNotMatch(settingsView({admin:false}),/designMiniPreview/);
+});
+test('mini style preview is updated by the existing saved-design writes',async()=>{
+ const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+ const controls=await readFile(new URL('../src/design-controls.js',import.meta.url),'utf8');
+ const preview=await readFile(new URL('../src/design-mini-preview.js',import.meta.url),'utf8');
+ const css=await readFile(new URL('../arcana-contour.css',import.meta.url),'utf8');
+ assert.match(app,/wireDesignMiniPreview\(\)/);
+ assert.match(app,/syncDesignMiniPreview\(\)/);
+ assert.match(controls,/arcana:design-change/);
+ assert.match(preview,/readDesign\(\)/);
+ assert.match(css,/position:sticky/);
+ for(const pattern of ['rings','stars','plain'])assert.ok(css.includes('data-mini-pattern="'+pattern+'"'));
 });
