@@ -109,7 +109,7 @@ test('Application keeps connected destinations and exposes a universal home path
  assert.match(code,/homeScreen\(\)/);
  assert.match(code,/case 'directory':return directoryView\(\)/);
  assert.match(code,/case 'wiki\/topic':return wikiTopicView/);
- assert.match(code,/case 'homemenu':showHomeMenu\(arg\)/);
+ assert.match(code,/case 'homemenu':if\(arg==='pathfinder'\)go\('calculators\/pathfinder'\)/);
  assert.match(code,/case 'labs':return buildStudio\(\)/);
  assert.match(code,/node\('searchBtn'\)\.onclick/);
  assert.match(code,/data-route="home"/);
