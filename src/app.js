@@ -529,6 +529,7 @@ function action(name,arg,btn){if(['accent','custom-accent','site-surface','icon-
  case 'chooseportrait':node('studioPortraitUpload')?.click();break;
  case 'removeportrait':if(clearStudioPortrait()){render();toast('Class icon restored')}else toast('Could not remove the custom image');break;
  case 'accent':if(setAccent(arg)){render();toast('Theme updated')}else toast('Unable to save theme preference');break;
+  case 'reset-design':if(!isAppearanceAdmin()){toast('Admin access required');break}resetDesign();applyTheme(parseRoute().route);render();toast('Design preview reset');break;
   case 'custom-accent':{const hex=node('arcanaCustomAccentHex')?.value.trim()||node('arcanaCustomAccentPicker')?.value;if(setCustomAccent(hex)){render();toast('Custom color saved')}else toast('Enter a valid six-digit hex color such as #A98BFF');break;}
  case 'site-surface':if(setSiteSurface(arg)){render();toast('Site appearance updated')}else toast('Unable to save site appearance');break;
  case 'icon-color':if(setIconColor(arg)){render();toast('Icon color updated')}else toast('Unable to save icon color');break;
