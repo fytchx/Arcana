@@ -7,9 +7,15 @@ export const DEFAULT_DESIGN=Object.freeze({
 });
 const numbers={intensity:[0,100],glow:[0,100],edges:[0,100],roundness:[3,28],buttonRoundness:[3,30],buttonFill:[35,100]};
 const colors=new Set(['main','card','action','text']);
+// Accept pasted #A78BFA or A78BFA, never partial values or CSS strings.
+export function normalizeDesignHex(value){
+ const raw=String(value||'').trim();
+ const prefixed=raw.startsWith('#')?raw:'#'+raw;
+ return /^#[0-9a-fA-F]{6}$/.test(prefixed)?prefixed.toUpperCase():null;
+}
 export const DESIGN_FIELDS=Object.keys(DEFAULT_DESIGN);
 export function validateDesignField(key,value){
- if(colors.has(key))return /^#[0-9a-fA-F]{6}$/.test(String(value||''))?String(value).toUpperCase():null;
+ if(colors.has(key))return normalizeDesignHex(value);
  if(key==='pattern')return ['contours','rings','stars','plain'].includes(value)?value:null;
  if(numbers[key]){const n=Number(value);return Number.isFinite(n)?Math.max(numbers[key][0],Math.min(numbers[key][1],Math.round(n))):null}
  return null;

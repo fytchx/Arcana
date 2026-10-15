@@ -335,3 +335,22 @@ html[data-arcana-design-pattern="plain"] #content.homeFullscreen .launchQuickCar
  .pathfinderHubTabs button svg{width:17px;height:17px}
 }
 .arcanaThemeReadOnly .arcanaLoginStatus{margin:12px 0 0;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--theme-main);color:#d5d9e3;font-size:12px;line-height:1.5}
+
+/* Admin Design Workshop: editable HEX alongside every color swatch. */
+.arcanaDesignLab .designColorControl{grid-template-columns:minmax(0,1fr) 48px minmax(112px,142px);gap:8px;min-height:60px;padding:7px 0;align-items:center}
+.arcanaDesignLab .designColorControl>span{font-size:12px;font-weight:750;color:var(--text)}
+.arcanaDesignLab .designColorControl input[type="color"]{width:45px;height:44px;cursor:pointer;max-width:100%}
+.arcanaDesignLab .designColorControl input[data-design-hex]{
+ box-sizing:border-box;width:100%;min-width:0;height:44px;padding:9px 10px;border-radius:9px;
+ background:var(--theme-main);border:1px solid color-mix(in srgb,var(--theme-highlight) 28%,#9fa9b8);
+ color:var(--text);font:700 13px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.01em;text-transform:uppercase;
+}
+.arcanaDesignLab .designColorControl input[data-design-hex]:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:1px}
+.arcanaDesignLab .designColorControl input[data-design-hex][aria-invalid="true"]{border-color:#ff7487;outline-color:#ff7487}
+.arcanaDesignLab .designHexStatus{grid-column:2/4;justify-self:end;font-size:10px;line-height:1.2;color:color-mix(in srgb,var(--theme-highlight) 60%,white)}
+.arcanaDesignLab .designColorControl input[aria-invalid="true"]+.designHexStatus{color:#ff9cac}
+@media(max-width:390px){
+ .arcanaDesignLab .designColorControl{grid-template-columns:minmax(0,1fr) 42px minmax(100px,120px);gap:5px}
+ .arcanaDesignLab .designColorControl input[type="color"]{width:40px}
+ .arcanaDesignLab .designColorControl input[data-design-hex]{font-size:12px;padding:8px}
+}

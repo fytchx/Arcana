@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {readDesign,writeDesign,resetDesign,DEFAULT_DESIGN} from '../src/design-controls.js';
+import {readDesign,writeDesign,resetDesign,DEFAULT_DESIGN,normalizeDesignHex} from '../src/design-controls.js';
 import {settingsView} from '../src/launch-navigation.js';
 
 test('admin style workshop is hidden from public settings',()=>{
@@ -13,6 +13,8 @@ test('admin style workshop is hidden from public settings',()=>{
  assert.match(admin,/data-design-field="pattern"/);
  assert.match(admin,/data-design-field="roundness"/);
  assert.match(admin,/data-design-field="action"/);
+ for(const key of ['main','card','action','text'])assert.match(admin,new RegExp('data-design-hex="'+key+'"'),key+' typed HEX input');
+ assert.doesNotMatch(guest,/data-design-hex=/);
 });
 test('saved design choices remain validated, isolated, and resettable',()=>{
  const original=globalThis.localStorage,store=new Map();
@@ -42,4 +44,11 @@ test('Pathfinder is the one-stop upgrade destination, with four integrated modes
  assert.doesNotMatch(board,/return `\$\{boardSwitch\('passive'\)\}/);
  assert.doesNotMatch(board,/return `\$\{boardSwitch\('class'\)\}/);
  assert.match(css,/pathfinderHubTabs/);
+});
+
+test('typed and pasted HEX values validate and normalize safely',()=>{
+ assert.equal(normalizeDesignHex('#a78bfa'),'#A78BFA');
+ assert.equal(normalizeDesignHex('a78bfa'),'#A78BFA');
+ assert.equal(normalizeDesignHex('  #0d1019  '),'#0D1019');
+ for(const bad of ['','#ABC','#GGGGGG','#000000; color:red','1234567','transparent'])assert.equal(normalizeDesignHex(bad),null,bad);
 });
