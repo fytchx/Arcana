@@ -66,12 +66,13 @@ test('site skins and icon modes stay independently customizable and survive read
   assert.equal(selectedSiteSurface(),'midnight');
   assert.equal(selectedIconMode(),'accent');
   assert.equal(selectedIconColor(),'cyan-blue');
-  const settings=settingsView();
+  const settings=settingsView({admin:true});
   assert.equal((settings.match(/class="slateAccentChoice/g)||[]).length,10);
-  assert.equal((settings.match(/class="arcanaIconColorChoice/g)||[]).length,11);
-  assert.equal((settings.match(/class="arcanaIconModeChoice/g)||[]).length,4);
-  assert.equal((settings.match(/class="arcanaSurfaceChoice/g)||[]).length,5);
-  assert.match(settings,/data-route="icons"/);
+  assert.equal((settings.match(/class="arcanaIconColorChoice/g)||[]).length,0);
+  assert.equal((settings.match(/class="arcanaIconModeChoice/g)||[]).length,0);
+  assert.equal((settings.match(/class="arcanaSurfaceChoice/g)||[]).length,0);
+  assert.doesNotMatch(settingsView(),/data-action="accent"/);
+  assert.match(settings,/Open protected Design Control/);
   assert.match(settings,/data-arg="cyan-blue" aria-pressed="true"/);
   assert.equal(setSiteSurface('bogus'),false);
   assert.equal(setIconColor('javascript:alert(1)'),false);
