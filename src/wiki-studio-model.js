@@ -1,7 +1,7 @@
 import {NAV_DESTINATIONS} from './context-nav.js';
 import {WIKI_CATEGORY_LIST} from './wiki-data.js';
 export const STUDIO_VERSION=2;
-export const WIKI_STUDIO_CATEGORIES=['Getting Started','Progression','Classes','Equipment','Pets','Runes','Guilds','Raids','Build Guides','Mechanics','Other'];
+export const WIKI_STUDIO_CATEGORIES=['Getting Started','Classes','Progression & Farming','Equipment','Combat & Stats','Runes & Skill Trees','Pets','Guilds & Raids','Build Guides','Progression','Runes','Guilds','Raids','Mechanics','Other'];
 export const MAX_IMAGE_BYTES=650000;
 export const MAX_ARTICLE_IMAGES=10;
 export const MAX_SECTIONS=35;

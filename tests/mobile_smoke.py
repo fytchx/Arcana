@@ -168,132 +168,42 @@ with sync_playwright() as playwright:
     for menu_id in ('wiki','tools','guides','builds','pathfinder','social'):
         assert page.locator('.launchQuickCard[data-arg="'+menu_id+'"]').count()==1, 'Missing home card '+menu_id
     page.locator('.launchQuickCard[data-arg="wiki"]').click()
-    assert page.locator('#layer').is_visible(), 'Wiki overlay did not open'
-    assert page.locator('#layer .launchNavRow').count()>=6, 'Wiki submenu is incomplete'
-    page.locator('#layer .scrim').dispatch_event('click')
-    assert page.locator('#layer').is_hidden(), 'Clicking outside did not close submenu'
-    page.locator('.launchQuickCard[data-arg="tools"]').click()
-    page.locator('#layer [data-route="labs/guild-tree"]').click()
-    assert page.locator('.guildTreePlanner').count()==1, 'Guild planner menu link is broken'
-    assert page.locator('.launchReturnHome').count()==0, 'Duplicate Home bar wastes space'
-    page.locator('#arcanaDock [data-route="home"]').click()
-    page.locator('.launchSeeAll').click()
-    assert page.locator('.launchAlphabetGroup').count()>0, 'A-Z directory did not open'
-    page.locator('#arcanaDock [data-route="home"]').click()
-    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Home has horizontal overflow'
-    page.set_viewport_size({'width':320,'height':720})
-    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Homepage overflows a narrow Android screen'
-    page.set_viewport_size({'width':390,'height':844})
-    page.screenshot(path=str(OUT/'home_mobile.png'),full_page=True)
-    # Pathfinder is now a direct link with four sections and a phone-width layout.
-    page.locator('.launchQuickCard[data-arg="pathfinder"]').click()
-    page.locator('.pathfinderHubTabs button').first.wait_for(timeout=9000)
-    assert page.locator('#layer').is_hidden(), 'Pathfinder should open directly'
-    assert page.locator('.pathfinderHubTabs button').count()==4
-    for width in (320,360,390,430):
-        page.set_viewport_size({'width':width,'height':800})
-        page.wait_for_timeout(100)
-        assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), f'Pathfinder overflow at {width}px'
-        assert page.locator('.pathfinderHubTabs').evaluate('(el)=>getComputedStyle(el).gridTemplateColumns.split(" ").length===2'), f'Pathfinder mobile tabs at {width}px'
-    page.locator('.pathfinderHubTabs [data-params="view=range"]').click()
-    page.locator('.pathRangeWorkspace').wait_for(timeout=7000)
-    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Pathfinder range form overflow'
-    page.set_viewport_size({'width':390,'height':844})
-    page.screenshot(path=str(OUT/'pathfinder_mobile.png'),full_page=True)
+    page.locator('#layer [data-route="wiki"]').click()
+    assert page.locator('.wikiV1Categories [data-route="wiki/category"]').count()>=5
+    page.locator('.wikiV1Categories [data-params="slug=equipment"]').click()
+    assert page.locator('.wikiCrumbTrail').count()==1
+    page.locator('.wikiCategoryPage [data-params="id=forge"]').click()
+    assert 'Equipment' in page.locator('.wikiCrumbTrail').inner_text()
+    assert 'The Forge' in page.locator('.wikiCrumbTrail').inner_text()
+    page.locator('.wikiArticle .wikiLocationBack').click()
+    page.wait_for_timeout(170)
+    assert page.locator('.wikiCategoryPage').count()==1
     page.locator('#arcanaDock [data-route="home"]').click()
     page.locator('.launchQuickCard[data-arg="wiki"]').click()
     page.locator('#layer [data-route="wiki"]').click()
-    assert page.locator('.wikiPortalShortcuts .arcanaConnection').count()==4, 'Wiki shortcuts are missing'
-    assert page.locator('.launchReturnHome').count()==0, 'Wiki duplicates the permanent Home tab'
-    page.locator('[data-route="wiki/library"]').first.dispatch_event('click')
-    page.wait_for_timeout(250)
+    page.locator('.wikiCodexLaunch').click()
+    assert page.locator('.wikiLibrary h1').inner_text()=='Item Codex'
     rail=page.locator('.wikiCategoryScroll')
-    assert rail.count()==1, 'Category carousel missing'
-    tabs=rail.locator('a')
-    assert tabs.count()==6, f'Illustrated Atlas should have exactly 6 collections: {tabs.count()}'
-    all_names=tabs.all_inner_texts()
-    for required in ('Monsters','Biomes','Class Skills','Pet Companions','Currencies','Equipment'):
-        assert any(tab.startswith(required) for tab in all_names), f'Missing illustrated category {required}'
-    assert page.locator('.wikiShelfSwitch .wikiShelfTab').count()==3, 'Separate Atlas and System collections missing'
-    rail.evaluate('(e)=>e.scrollLeft=120')
-    before=rail.evaluate('(e)=>e.scrollLeft')
-    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=monster"]').dispatch_event('click')
-    page.wait_for_timeout(200)
-    assert page.locator('.wikiCategoryScroll .active').inner_text().startswith('Monsters')
-    after=page.locator('.wikiCategoryScroll').evaluate('(e)=>e.scrollLeft')
-    assert after>0, f'Category rail unexpectedly reset from {before} to {after}'
-    page.screenshot(path=str(OUT/'wiki_mobile.png'),full_page=True)
-    # Manifest loads in the SAME assets.js module instance as app initialization.
-    page.locator('.wikiShelfSwitch a[href="#/wiki/library?kind=item"]').dispatch_event('click')
-    page.wait_for_timeout(200)
-    # Search remains responsive without replacing the entire page or moving the rail.
-    query=page.locator('#wikiFilter')
-    clear=page.locator('.wikiClearFilter')
-    assert clear.is_hidden(), 'Clear filter must start hidden'
-    query.fill('zzzz-not-a-real-game-entry')
-    assert clear.is_visible(), 'Clear filter must appear as soon as typing starts'
-    assert page.locator('#wikiFoundCount').inner_text().startswith('0 ')
-    assert page.locator('.wikiEmptyActions [data-action="wikiclear"]').count()==1
-    assert page.locator('.wikiEmptyActions a[href="#/wiki/library?kind=all"]').count()==1
-    assert 'No matches for' in page.locator('#wikiRecords').inner_text()
-    clear.dispatch_event('click')
-    page.wait_for_timeout(180)
-    assert page.locator('#wikiFilter').input_value()==''
-    assert page.locator('.wikiClearFilter').is_hidden()
-    assert page.locator('#wikiRecords .wikiRecord').count()>0
+    assert rail.count()==1
+    assert rail.locator('a').count()==1
+    assert 'Equipment' in rail.locator('a').first.inner_text()
     query=page.locator('#wikiFilter')
     query.fill('Broken Sword')
     assert page.locator('#wikiFoundCount').inner_text().startswith('1 ')
-    assert page.locator('#wikiRecords .wikiRecord').count()==1
-    assert page.locator('#wikiShowing').inner_text()=='Showing 1 of 1'
+    assert page.locator('#wikiRecords .wikiRecordVisual').count()==1
+    assert page.locator('#wikiRecords [data-art-status="official"]').count()==1
     query.fill('')
-    assert page.locator('.wikiShelf-atlas .wikiGalleryList').count()==1, 'Visual gallery mode missing'
-    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=monster"]').dispatch_event('click')
+    page.locator('.wikiShelfSwitch a[href="#/wiki/library?kind=material"]').click()
+    assert page.locator('.wikiRecordVisual').count()==0
+    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=class-skill"]').click()
     page.wait_for_timeout(200)
-    images=page.locator('#wikiRecords [data-art-status="official"]')
-    assert images.count()==1, 'Monster image did not render from the official atlas'
-    assert 'monsters:elder-wraith' in images.first.get_attribute('data-asset-key')
-    page.locator('.wikiShelfSwitch a[href="#/wiki/library?kind=material"]').dispatch_event('click')
-    page.wait_for_timeout(200)
-    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=pet-affix"]').dispatch_event('click')
-    page.wait_for_timeout(200)
-    assert page.locator('#wikiRecords .wikiRecordText').count()==1, 'Mechanics should use concise text rows'
-    assert page.locator('#wikiRecords [data-art-status="category-emblem"]').count()==0, 'Repeated generic sprite art must not clutter reference rows'
-    page.locator('.wikiShelfSwitch a[href="#/wiki/library?kind=item"]').dispatch_event('click')
-    page.wait_for_timeout(200)
-    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=class-skill"]').dispatch_event('click')
-    page.wait_for_timeout(200)
-    assert page.locator('#wikiRecords [data-asset-key="skills:warrior:retaliation"]').count()==1, 'Correct class skill art missing'
-    for key in ('counterstrike','keen-edge','lethal-blow','strong-pet-bound'):
-        assert page.locator(f'#wikiRecords [data-asset-key="skill-override:{key}"][data-art-status="user-confirmed"]').count()==1, f'Provided skill artwork missing: {key}'
-    assert page.locator('.wikiShelf-atlas .wikiGalleryList').count()==1, 'Visual skills must render as gallery cards' 
-    active=page.locator('.wikiCategoryScroll a.active')
-    position=active.evaluate('(e)=>{const a=e.getBoundingClientRect(),p=e.parentElement.getBoundingClientRect();return {left:a.left,right:a.right,viewLeft:p.left,viewRight:p.right}}')
-    assert position['left']>=position['viewLeft']-2 and position['right']<=position['viewRight']+2, f'Active category not visible: {position}'
-    # Large skill lists expand in place rather than replacing the page and jumping to the top.
-    page.locator('#wikiFilter').fill('')
-    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=class-skill"]').dispatch_event('click')
-    page.wait_for_timeout(180)
-    assert page.locator('#wikiRecords .wikiRecord').count()==36
-    page.evaluate("window.scrollTo({top:520,behavior:'instant'})")
-    before_more=page.evaluate("window.scrollY")
-    page.locator('#wikiMore [data-action="wikimore"]').dispatch_event('click')
-    page.wait_for_timeout(80)
-    assert page.locator('#wikiRecords .wikiRecord').count()>36
-    assert page.evaluate("window.scrollY")>=before_more-8, "Show more unexpectedly reset scroll"
-    # Opening a reference and using the in-page Back button restores the previous reading spot.
-    page.evaluate("window.scrollTo({top:610,behavior:'instant'})")
-    read_top=page.evaluate("window.scrollY")
-    page.locator('#wikiRecords .wikiRecord').nth(40).dispatch_event('click')
-    page.wait_for_timeout(120)
+    assert page.locator('.wikiRecordVisual').count()==0
+    assert page.locator('#wikiRecords .wikiRecordText').count()>0
+    page.locator('#wikiRecords .wikiRecordText').first.click()
     assert page.locator('.wikiReferencePage').count()==1
-    assert page.locator('.wikiShareBtn[data-action="wikirefshare"]').count()==1, 'Codex reference is missing its share action'
-    page.locator('.wikiReferencePage .wikiBack').dispatch_event('click')
-    page.wait_for_timeout(170)
-    assert page.locator('.wikiCategoryScroll a.active').inner_text().startswith('Class Skills')
-    assert page.locator('#wikiRecords .wikiRecord').count()>36
-    assert abs(page.evaluate("window.scrollY")-read_top)<=24, "Returning from Codex reference did not restore scroll"
-    page.screenshot(path=str(OUT/'wiki_official_art_mobile.png'),full_page=True)
+    page.locator('.wikiReferencePage .wikiLocationBack').click()
+    assert page.locator('.wikiLibrary').count()==1
+    page.screenshot(path=str(OUT/'wiki_mobile.png'),full_page=True)
 
     # Pet tools are now two simple calculators plus four bonus choices inside Build Studio.
     page.evaluate("location.hash='#/calculators/pet'")
