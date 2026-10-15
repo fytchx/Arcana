@@ -20,13 +20,14 @@ test('approved Wiki tree has 8 unique parents and 30 unique article IDs, ten exi
 test('unfinished articles have no clickable blank pages; categories link only to existing articles',()=>{
  const published=wikiCategoriesWithContent(WIKI_ARTICLES);
  assert.ok(published.some(c=>c.id==='equipment'));
- assert.equal(published.some(c=>c.id==='classes'),false);
+ assert.ok(published.some(c=>c.id==='classes'));
  const landing=wikiLandingView({loaded:true,itemCount:300});
  assert.match(landing,/Wiki categories/);
  assert.match(landing,/Item Codex/);
- assert.doesNotMatch(landing,/data-params="id=warrior"/);
+ assert.match(landing,/wikiV1Categories/);
  const warriorPage=wikiCategoryView('classes');
- assert.doesNotMatch(warriorPage,/data-route="wiki\/article"/);
+ assert.match(warriorPage,/data-params="id=warrior"/);
+ assert.match(wikiArticleView(WIKI_ARTICLES.find(a=>a.id==='warrior')),/Classes/);
  const equipment=wikiCategoryView('equipment');
  assert.match(equipment,/data-params="id=forge"/);
  assert.doesNotMatch(equipment,/data-params="id=awakening"/);

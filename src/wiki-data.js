@@ -12,7 +12,7 @@ const CLASS_OVERVIEWS=Object.freeze([
  return {id:spec.id,title:spec.title,category:'Classes',readTime:'1 min',summary:spec.summary,keywords:spec.title.toLowerCase()+' class skills branches',
  sections:[{title:'Class skill paths',body:spec.title+' has three class skill branches: '+paths.join(', ')+'. Open Class Skills in Build Studio to inspect the exact effects, prerequisites and ranks of each skill.'}],
  actions:[{label:'View class skills',route:'labs/skills',icon:'git'},{label:'Open Build Studio',route:'labs/build',icon:'flask'}],
- connections:{articles:[],collections:['class-skill'],tools:['skills','build']},verificationSource:'October 9, 2026 game configuration'};
+ connections:{articles:['season-2'],collections:['class-skill'],tools:['skills','build']},verificationSource:'October 9, 2026 game configuration'};
 }));
 /* ArcanaWiki editorial content. Each practical claim is Season 2 scoped.
    The October 9 config is the canonical source of game entities and stats.

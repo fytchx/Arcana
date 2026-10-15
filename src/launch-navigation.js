@@ -13,6 +13,7 @@ const topic=slug=>link(WIKI_TOPICS.find(x=>x.slug===slug)?.title||slug,'Explore 
 export const HOME_MENUS=Object.freeze({
  wiki:{title:'Wiki',detail:'Find game mechanics without digging through unrelated pages.',links:[
   link('Open ArcanaWiki','Browse published wiki categories.','wiki','book'),
+  link('Classes','Browse the five playable classes.','wiki/category','shield',{slug:'classes'}),
   link('Equipment','Upgrades, reforging and sockets.','wiki/category','shield',{slug:'equipment'}),
   link('Item Codex','Look up equipment and verified game artwork.','wiki/items','shield'),
   link('All Topics','See every published wiki category.','wiki/topics','layers')
