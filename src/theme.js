@@ -1,3 +1,4 @@
+import {applyDesign} from './design-controls.js';
 /**
  * Arcana design bridge. Read-only client; the owner changes palettes in the
  * existing authenticated Design Control service. Never expose write credentials.
@@ -127,6 +128,7 @@ export function applyTheme(scope=currentScope){
  root.dataset.arcanaThemeDensity=resolved.density;
  root.dataset.arcanaThemeMinimal=String(resolved.minimal);
  root.dataset.arcanaThemeGlow=String(resolved.glow);
+  applyDesign(root);
  listeners.forEach(cb=>{try{cb(resolved)}catch(_){}});
  return resolved;
 }
