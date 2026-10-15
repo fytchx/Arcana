@@ -1,3 +1,19 @@
+import {VERIFIED_CLASS_SKILL_TREES} from './verified-class-skills.js';
+// Short class introductions sourced from the verified skill branches.
+// Full skill effects are held by Class Skills, not duplicated on the Wiki.
+const CLASS_OVERVIEWS=Object.freeze([
+ {id:'warrior',classId:'1',title:'Warrior',summary:'Warrior class skill paths include Might, Strength and Finesse.'},
+ {id:'archer',classId:'2',title:'Archer',summary:'Archer class skill paths include Marksmanship, Hunting and Beastmaster.'},
+ {id:'mage',classId:'3',title:'Mage',summary:'Mage class skill paths include Arcane, Destruction and Chaos.'},
+ {id:'rogue',classId:'4',title:'Rogue',summary:'Rogue class skill paths include Assassin, Shadowwalker and Thief.'},
+ {id:'druid',classId:'5',title:'Druid',summary:'Druid class skill paths include Lodge, Tunnels and Symbiosis.'}
+].map(spec=>{
+ const paths=(VERIFIED_CLASS_SKILL_TREES[spec.classId]||[]).map(branch=>branch.name);
+ return {id:spec.id,title:spec.title,category:'Classes',readTime:'1 min',summary:spec.summary,keywords:spec.title.toLowerCase()+' class skills branches',
+ sections:[{title:'Class skill paths',body:spec.title+' has three class skill branches: '+paths.join(', ')+'. Open Class Skills in Build Studio to inspect the exact effects, prerequisites and ranks of each skill.'}],
+ actions:[{label:'View class skills',route:'labs/skills',icon:'git'},{label:'Open Build Studio',route:'labs/build',icon:'flask'}],
+ connections:{articles:[],collections:['class-skill'],tools:['skills','build']},verificationSource:'October 9, 2026 game configuration'};
+}));
 /* ArcanaWiki editorial content. Each practical claim is Season 2 scoped.
    The October 9 config is the canonical source of game entities and stats.
    Human-written articles are concise, not speculative, and do not imply optimal builds. */
@@ -56,6 +72,7 @@ export const WIKI_ARTICLES=Object.freeze([
   {title:'Reforge and compare',body:'Combining three identical items reforges them into an item of the next rarity. In the Codex you can compare an equipment base by its configured implicit-stat ranges, then open the Forge cost reference for its tier progression.'},
   {title:'Build around purpose',body:'An item with the right effects for a farming build can be useful even when a different base has a larger raw stat. Compare what each item contributes to your actual build rather than treating rarity as a complete ranking.'}],actions:[{label:'Browse Item Codex',route:'wiki/library?kind=item',icon:'shield'},{label:'Compare equipment',route:'calculators/compare',icon:'compare'},{label:'Read Forge guide',route:'wiki/article?id=forge',icon:'book'}],source:'official-patch',sourceUrl:'https://idlearc.com/patch-notes/1-3-1'},
 
+ ...CLASS_OVERVIEWS
 ]);
 export const WIKI_CATEGORY_LIST=Object.freeze([
  ['all','Everything','book'],['item','Equipment','shield'],['material','Materials','gem'],['currency','Currencies','gem'],['class-skill','Class Skills','git'],['passive','Passives','layers'],['rune','Runes','gem'],['runeword','Runewords','link'],['pet','Pet Companions','paw'],['pet-bonus','Pet Bonuses','paw'],['pet-affix','Pet Affixes','paw'],['biome','Biomes','layers'],['monster','Monsters','sword'],['item-affix','Gear Affixes','spark']
