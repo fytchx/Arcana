@@ -136,7 +136,7 @@ with sync_playwright() as playwright:
     assert page.locator('#arcanaDock button').count()==5, 'Persistent five-tab dock missing'
     assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1, 'Build Studio is not featured'
     assert page.locator('.launchQuickCard').count()==6, 'Exactly six launch navigation cards are required'
-    assert page.locator('.launchQuickCard .arcanaIcon').count()>=12, 'Themeable SVG icons missing from launch navigation'
+    assert page.locator('.launchQuickCard .arcanaIcon').count()>=18, 'Themeable SVG icons missing from launch navigation'
     assert page.locator('.launchHeroArt .arcanaIcon').get_attribute('data-arcana-icon')=='feature-build-studio', 'Build Studio emblem must use Arcana Minimal'
     # The icon gallery is a real route and every registered asset is previewable.
     page.evaluate("location.hash='#/icons'")
@@ -146,10 +146,9 @@ with sync_playwright() as playwright:
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Icon gallery overflows mobile horizontally'
     page.evaluate("location.hash='#/settings'")
     page.locator('.arcanaSettings').wait_for(timeout=8000)
-    assert page.locator('.arcanaSurfaceChoice').count()==5, 'Site surface options missing'
-    assert page.locator('.arcanaIconColorChoice').count()==11, 'Independent icon colors missing'
-    assert page.locator('.arcanaIconModeChoice').count()==4, 'Icon modes missing'
-    assert page.locator('.slateAccentChoice').count()==10, 'Original accent colors missing'
+    assert page.locator('.arcanaThemeReadOnly').count()==1, 'Public accounts must not edit Arcana themes'
+    assert page.locator('.slateAccentChoice').count()==0, 'Accent editor visible to a guest'
+    assert page.locator('[data-app-pref="reduceMotion"]').count()==1, 'Accessible display settings missing'
     page.evaluate("location.hash='#/home'")
     page.locator('.launchQuickCard').first.wait_for(timeout=8000)
 
@@ -163,14 +162,10 @@ with sync_playwright() as playwright:
     assert page.locator('.launchHeroCTA').evaluate("(e)=>getComputedStyle(e).gridTemplateColumns!='none'"), 'Mystical CTA CSS was not loaded'
     assert page.locator('.launchQuickGrid').evaluate("(e)=>getComputedStyle(e).gridTemplateColumns.split(' ').length==2"), 'Quick Access grid must have exactly two columns'
     assert page.locator('.launchQuickCard').evaluate_all("(els)=>els.every(e=>e.getBoundingClientRect().height>=80)"), 'Quick Access tap targets are too small'
-    assert page.locator('.launchFeaturedGrid').evaluate("(e)=>getComputedStyle(e).gridTemplateColumns.split(' ').length==2"), 'Featured cards must be laid out two across'
-    features=page.locator('.launchFeatureRow').evaluate_all("(els)=>els.map(e=>({x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y,w:e.getBoundingClientRect().width}))")
-    assert len(features)==3, 'All featured destinations must be preserved'
-    assert abs(features[0]['y']-features[1]['y'])<3 and features[1]['x']>features[0]['x']+75, 'Featured first pair must be side by side'
-    assert features[2]['y']>features[0]['y']+65 and features[2]['w']>features[0]['w']*1.8, 'Last featured card must span the entire row'
+    assert page.locator('.launchFeatured').is_hidden(), 'Featured section should live in bottom navigation'
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Two-column home has horizontal overflow'
 
-    for menu_id in ('wiki','tools','guides','builds','codex','social'):
+    for menu_id in ('wiki','tools','guides','builds','pathfinder','social'):
         assert page.locator('.launchQuickCard[data-arg="'+menu_id+'"]').count()==1, 'Missing home card '+menu_id
     page.locator('.launchQuickCard[data-arg="wiki"]').click()
     assert page.locator('#layer').is_visible(), 'Wiki overlay did not open'
@@ -180,11 +175,11 @@ with sync_playwright() as playwright:
     page.locator('.launchQuickCard[data-arg="tools"]').click()
     page.locator('#layer [data-route="labs/guild-tree"]').click()
     assert page.locator('.guildTreePlanner').count()==1, 'Guild planner menu link is broken'
-    assert page.locator('.launchReturnHome [data-route="home"]').count()==1, 'Page has no direct Home return'
-    page.locator('.launchReturnHome [data-route="home"]').click()
+    assert page.locator('.launchReturnHome').count()==0, 'Duplicate Home bar wastes space'
+    page.locator('#arcanaDock [data-route="home"]').click()
     page.locator('.launchSeeAll').click()
     assert page.locator('.launchAlphabetGroup').count()>0, 'A-Z directory did not open'
-    page.locator('.launchReturnHome button').click()
+    page.locator('#arcanaDock [data-route="home"]').click()
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Home has horizontal overflow'
     page.set_viewport_size({'width':320,'height':720})
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Homepage overflows a narrow Android screen'
@@ -193,7 +188,7 @@ with sync_playwright() as playwright:
     page.locator('.launchQuickCard[data-arg="wiki"]').click()
     page.locator('#layer [data-route="wiki"]').click()
     assert page.locator('.wikiPortalShortcuts .arcanaConnection').count()==4, 'Wiki shortcuts are missing'
-    assert page.locator('.launchReturnHome [data-route="home"]').count()==1, 'Wiki must return directly to Home'
+    assert page.locator('.launchReturnHome').count()==0, 'Wiki duplicates the permanent Home tab'
     page.locator('[data-route="wiki/library"]').first.dispatch_event('click')
     page.wait_for_timeout(250)
     rail=page.locator('.wikiCategoryScroll')
