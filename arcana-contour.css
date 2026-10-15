@@ -207,3 +207,73 @@
 #content .arcanaCrumbs button{color:color-mix(in srgb,var(--theme-highlight) 74%,white);font-weight:750}
 #content .arcanaCrumbs [aria-current="page"]{color:#ccd1de;font-size:11px}
 #arcanaDock button.active .arcanaDockGlyph{filter:drop-shadow(0 0 5px color-mix(in srgb,var(--theme-highlight) 38%,transparent))}
+
+
+/* Unified workspaces: one tab rail, no duplicate technical panels. */
+.studioSubPage{max-width:1100px;margin:0 auto}
+.studioSubPage>.arcanaCrumbs{margin:0 0 12px!important}
+.studioSubPage>.labsTabs{margin:0 0 16px}
+.studioSubPage .coreTreePanel{margin-top:10px}
+.studioSubPage .passiveAllocationMode{margin-top:8px}
+.studioSubPage .treeFootControls{margin-bottom:15px}
+.pathfinderHub{max-width:1100px;margin:0 auto;padding-bottom:12px}
+.pathfinderHubHead{display:flex;align-items:center;gap:14px;padding:15px;margin:6px 0 12px;background:linear-gradient(112deg,color-mix(in srgb,var(--theme-highlight) 13%,var(--theme-secondary)),var(--theme-main));border:1px solid color-mix(in srgb,var(--theme-highlight) 30%,var(--line));border-radius:var(--arcana-card-radius,14px)}
+.pathfinderHubHead .pathfinderHubIcon{display:grid;place-items:center;flex:none;width:56px;height:56px;border-radius:12px;border:1px solid var(--theme-highlight);color:var(--theme-highlight);background:color-mix(in srgb,var(--theme-highlight) 14%,var(--theme-main))}
+.pathfinderHubHead h1{font-size:clamp(24px,6vw,31px);line-height:1.14;margin:2px 0}
+.pathfinderHubHead p{margin:0;color:var(--muted,#bfc3ce);font-size:12px}
+.pathfinderHubTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;padding:6px;margin:0 0 12px;background:var(--theme-secondary);border:1px solid var(--line);border-radius:14px}
+.pathfinderHubTabs button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:58px;border-radius:10px;border:1px solid transparent;background:transparent;color:#bdc4d1;padding:7px 2px;font:750 11px/1.15 system-ui;cursor:pointer}
+.pathfinderHubTabs button.active{background:color-mix(in srgb,var(--theme-highlight) 19%,var(--theme-main));border-color:var(--theme-highlight);color:color-mix(in srgb,var(--theme-highlight) 50%,white)}
+.pathfinderHubTabs button svg{height:22px;width:22px}
+.pathfinderHubContent>.pathPage{margin:0}
+.pathfinderHub .pathIntro{padding:0;margin:0 0 12px!important}
+.pathfinderHub .pathIntro .pathEyebrow{display:none}
+.pathfinderHub .pathIntro h1{font-size:clamp(19px,5vw,24px)!important}
+.pathfinderHub .pathIntro p{max-width:630px;font-size:12px;line-height:1.4;margin:3px 0}
+.pathfinderHub .pathSelectors{padding:12px!important;margin:0 0 12px!important;gap:10px}
+.pathfinderHub .pathTimeline{padding:12px!important;margin-top:10px!important}
+.pathfinderHub .pathTrackHeading{margin:0 0 10px}
+.pathfinderHub .pathTrackHeading h2{font-size:clamp(15px,4vw,20px)}
+.pathfinderHub .pathSource{font-size:10px;line-height:1.45}
+.pathfinderHub .pathActions{display:none}
+.pathRangeWorkspace,.pathfinderHubSubTool{padding:14px;background:linear-gradient(140deg,color-mix(in srgb,var(--theme-highlight) 5%,var(--theme-secondary)),var(--theme-secondary));border:1px solid var(--line);border-radius:var(--arcana-card-radius,14px)}
+.pathRangeWorkspace>h2,.pathfinderHubSubTool>h2{margin:0 0 5px;font-size:19px}
+.pathRangeWorkspace>p{font-size:12px;color:var(--muted);margin:0 0 16px}
+.pathWaiting{padding:26px 14px;text-align:center;border:1px solid var(--line);border-radius:12px}
+.pathfinderHubSubTool .calcWorkspace{margin:12px 0}
+@media(max-width:390px){
+ .pathfinderHubTabs{gap:3px;padding:4px}
+ .pathfinderHubTabs button{font-size:10px}
+ .pathfinderHubHead{padding:11px}
+ .pathfinderHubHead .pathfinderHubIcon{width:47px;height:47px}
+}
+/* Artist controls: variables are set only for authenticated administrators. */
+#content.homeFullscreen .launchHero:after,#content.homeFullscreen .launchQuickCard:after{
+ opacity:var(--arcana-wave-opacity,.22)!important;
+}
+#content.homeFullscreen .launchHero,#content.homeFullscreen .launchQuickCard{border-radius:var(--arcana-card-radius,13px)!important}
+#content.homeFullscreen .launchHero,#content.homeFullscreen .launchQuickCard{
+ box-shadow:0 0 calc(var(--arcana-glow-alpha,.18) * 40px) color-mix(in srgb,var(--theme-highlight) 20%,transparent),inset 0 1px #ffffff0b;
+}
+#content.homeFullscreen .launchHeroCTA{border-radius:var(--arcana-button-radius,11px)!important;
+ background:linear-gradient(115deg,color-mix(in srgb,var(--arcana-action-color,var(--theme-highlight)) var(--arcana-button-fill,82%),white),var(--arcana-action-color,var(--theme-highlight)))!important}
+#content.homeFullscreen .launchQuickCard{border-color:color-mix(in srgb,var(--theme-highlight) calc(var(--arcana-edge-alpha,.42) * 100%),#767b8799)!important}
+html[data-arcana-design-pattern="rings"] #content.homeFullscreen .launchHero:after,
+html[data-arcana-design-pattern="rings"] #content.homeFullscreen .launchQuickCard:after{
+ background:repeating-radial-gradient(circle at 75% 50%,transparent 0 18px,var(--theme-highlight) 20px,transparent 22px,transparent 36px)!important;-webkit-mask-image:none!important;mask-image:none!important
+}
+html[data-arcana-design-pattern="stars"] #content.homeFullscreen .launchHero:after,
+html[data-arcana-design-pattern="stars"] #content.homeFullscreen .launchQuickCard:after{
+ background:radial-gradient(circle at 20% 23%,var(--theme-highlight) 1.5px,transparent 3px),radial-gradient(circle at 73% 65%,var(--theme-highlight) 2px,transparent 4px),radial-gradient(circle at 51% 13%,white 1px,transparent 2px)!important;background-size:70px 70px,96px 92px,58px 60px!important;-webkit-mask-image:none!important;mask-image:none!important
+}
+html[data-arcana-design-pattern="plain"] #content.homeFullscreen .launchHero:after,
+html[data-arcana-design-pattern="plain"] #content.homeFullscreen .launchQuickCard:after{display:none!important}
+.arcanaDesignLab{margin-top:13px}
+.arcanaDesignLab h3{font-size:13px;margin:0 0 9px;color:var(--text)}
+.designControlGroup{border-top:1px solid var(--line);padding:15px 0 10px}
+.designControl{display:grid;grid-template-columns:minmax(0,1fr) minmax(100px,140px) 60px;align-items:center;gap:8px;min-height:49px;font-size:12px;color:#e9ebf3}
+.designControl input[type="color"]{width:68px;height:40px;padding:3px;border:1px solid var(--line);background:var(--theme-main);border-radius:7px}
+.designControl input[type="range"]{accent-color:var(--theme-highlight);min-width:0;width:100%;height:32px}
+.designControl select{min-height:42px;background:var(--theme-main);border:1px solid var(--line);border-radius:9px;color:var(--text);padding:4px;grid-column:2/4}
+.designControl strong{font-size:11px;color:var(--theme-highlight);justify-self:end}
+@media(max-width:390px){.designControl{grid-template-columns:minmax(0,1fr) 90px 50px;gap:4px;font-size:11px}}
