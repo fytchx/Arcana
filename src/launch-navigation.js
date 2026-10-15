@@ -1,5 +1,5 @@
 import {esc,icon} from './ui.js';
-import {ACCENT_PRESETS,SITE_SURFACES,ICON_MODES,selectedAccent,selectedSiteSurface,selectedIconColor,selectedIconMode,customAccent} from './theme.js';
+import {ACCENT_PRESETS,SITE_SURFACES,ICON_MODES,selectedAccent,selectedSiteSurface,selectedIconColor,selectedIconMode,customAccent,ADMIN_URL} from './theme.js';
 import {ICON_CATEGORIES,ICON_IDS,iconAssetPath} from './arcana-icons.js';
 
 // One navigation registry for the launch home, its popovers and the A-Z directory.
@@ -138,8 +138,8 @@ export function userCenterView(profile=null){
  return '<div class="launchPage"><span class="launchEyebrow">PERSONAL PORTAL</span><h1>User Center</h1><p>Pick up where you left off, manage your profile or adjust this device’s preferences.</p><div class="launchUserCard"><strong>'+esc(label)+'</strong><small>'+(profile?'Signed in to Arcana':'You can use the tools without an account')+'</small></div><div class="launchMenuLinks">'+[
  link('My Profile & Account','Player card, login and published content.','account','users'),
  link('Recent Activity','Continue work and revisit guides.','recent','clock'),
- link('App Settings','Appearance and accessibility on this device.','settings','cog'),
- link('Icon Library','Browse the complete Arcana Minimal asset pack.','icons','gem'),
+ link('App Settings','Display and accessibility options.','settings','cog'),
+ link('Icon Library','Browse Arcana icon styles.','icons','gem'),
  link('My Build Studio','Jump back into your character.','labs/build','shield'),
  link('Beta Feedback','Report anything that needs fixing.','beta','info')
  ].map(navrow).join('')+'</div></div>';
@@ -148,27 +148,19 @@ const PREF_KEY='arcana-launch-prefs';
 export function appPrefs(){try{const raw=JSON.parse(localStorage.getItem(PREF_KEY)||'{}');return {compact:raw.compact===true,reduceMotion:raw.reduceMotion===true}}catch{return {compact:false,reduceMotion:false}}}
 export function applyAppPrefs(){const prefs=appPrefs();document.documentElement.dataset.launchCompact=String(prefs.compact);document.documentElement.dataset.launchReduceMotion=String(prefs.reduceMotion)}
 export function changeAppPref(key,checked){if(!['compact','reduceMotion'].includes(key))return;const p={...appPrefs(),[key]:checked===true};try{localStorage.setItem(PREF_KEY,JSON.stringify(p))}catch{}applyAppPrefs()}
-export function settingsView(){
- const p=appPrefs(),selected=selectedAccent(),surface=selectedSiteSurface(),iconColor=selectedIconColor(),iconMode=selectedIconMode();
- const custom=customAccent();
-  const accentCards=ACCENT_PRESETS.map(x=>'<button type="button" class="slateAccentChoice '+(selected===x.id?'selected':'')+'" data-action="accent" data-arg="'+esc(x.id)+'" aria-pressed="'+(selected===x.id)+'"><span class="slateAccentSwatch" style="--swatch:'+x.hex+'"></span><span>'+esc(x.name)+'</span>'+(selected===x.id?'<b aria-hidden="true">✓</b>':'')+'</button>').join('');
- const surfaceCards=SITE_SURFACES.map(x=>'<button type="button" class="arcanaSurfaceChoice '+(surface===x.id?'selected':'')+'" data-action="site-surface" data-arg="'+esc(x.id)+'" aria-pressed="'+(surface===x.id)+'"><span class="arcanaSurfacePreview" style="--surface-main:'+(x.main||'#0D1019')+';--surface-card:'+(x.secondary||'#191E2B')+'"></span><span>'+esc(x.name)+'</span></button>').join('');
- const iconColors='<button type="button" class="arcanaIconColorChoice '+(iconColor==='follow-site'?'selected':'')+'" data-action="icon-color" data-arg="follow-site" aria-pressed="'+(iconColor==='follow-site')+'"><span class="slateAccentSwatch" style="--swatch:var(--theme-highlight)"></span><span>Follow site accent</span></button>'+
- ACCENT_PRESETS.map(x=>'<button type="button" class="arcanaIconColorChoice '+(iconColor===x.id?'selected':'')+'" data-action="icon-color" data-arg="'+esc(x.id)+'" aria-pressed="'+(iconColor===x.id)+'"><span class="slateAccentSwatch" style="--swatch:'+x.hex+'"></span><span>'+esc(x.name)+'</span></button>').join('');
- const modeCards=ICON_MODES.map(x=>'<button type="button" class="arcanaIconModeChoice '+(iconMode===x.id?'selected':'')+'" data-action="icon-mode" data-arg="'+esc(x.id)+'" aria-pressed="'+(iconMode===x.id)+'"><strong>'+esc(x.name)+'</strong><small>'+esc(x.detail)+'</small></button>').join('');
- const examples=['feature-build-studio','equipment-chest','class-mage','feature-rune-forge','feature-codex','stat-retaliation'].map(id=>'<span class="arcanaThemePreviewIcon">'+icon(id,23)+'<small>'+esc(id.replace(/^(feature|equipment|class|stat)-/,'').replaceAll('-',' '))+'</small></span>').join('');
- return '<div class="launchPage slateSettings arcanaSettings"><span class="launchEyebrow">USER CENTER</span><h1>App Settings</h1><p>Color the entire Arcana interface and its custom Minimal icon pack separately. Your preferences save on this device.</p>'+
- '<section class="slateSettingsBlock"><h2>Site appearance</h2><p>Choose the foundation for Arcana. Layout and content are unchanged.</p><div class="arcanaSurfaceGrid" role="group" aria-label="Site theme">'+surfaceCards+'</div></section>'+
- '<section class="slateSettingsBlock"><h2>Site accent color</h2><p>Choose a preset or create any hex color. Your wave artwork, buttons and borders follow it instantly and the color stays saved on this device.</p><div class="slateAccentGrid" role="group" aria-label="Site accent color">'+accentCards+'</div>'+
- '<div class="arcanaCustomAccent" role="group" aria-label="Custom accent color"><label for="arcanaCustomAccentPicker">Your custom color</label><input type="color" id="arcanaCustomAccentPicker" value="'+esc(custom)+'" aria-label="Pick your color"><input type="text" id="arcanaCustomAccentHex" value="'+esc(custom)+'" maxlength="7" spellcheck="false" aria-label="Hex color code" placeholder="#A98BFF"><button type="button" data-action="custom-accent">Apply custom color</button>'+(selected==='custom'?'<strong class="arcanaCustomActive">Active ✓</strong>':'')+'</div>'+ 
-  '<button type="button" class="slateSiteTheme '+(selected==='site'?'selected':'')+'" data-action="accent" data-arg="site" aria-pressed="'+(selected==='site')+'">Follow centrally managed Arcana accent '+(selected==='site'?'✓':'')+'</button></section>'+
- '<section class="slateSettingsBlock"><h2>Arcana Minimal icons</h2><p>'+ICON_IDS.length+' original SVGs. Icons can use a different color from the rest of Arcana.</p>'+
- '<div class="arcanaThemePreview" aria-label="Live preview of current icon colors">'+examples+'</div>'+
- '<h3>Icon color</h3><div class="arcanaIconColorGrid" role="group" aria-label="Icon color">'+iconColors+'</div>'+
- '<h3>Icon appearance</h3><div class="arcanaIconModeGrid" role="group" aria-label="Icon style">'+modeCards+'</div>'+
- '<button type="button" class="arcanaOpenGallery" data-route="icons">'+icon('grid',16)+' Browse all '+ICON_IDS.length+' icons '+icon('arrow',15)+'</button></section>'+
- '<section class="slateSettingsBlock"><h2>Display</h2><div class="launchSettingList"><label class="launchSetting"><span><strong>Compact navigation</strong><small>Make rows and menus tighter.</small></span><input type="checkbox" data-app-pref="compact" '+(p.compact?'checked':'')+'></label><label class="launchSetting"><span><strong>Reduce animations</strong><small>Minimize motion effects.</small></span><input type="checkbox" data-app-pref="reduceMotion" '+(p.reduceMotion?'checked':'')+'></label></div></section>'+
- '<p class="mutedSmall">Preferences are local to this browser. Production styling and your saved builds are not changed.</p></div>';
+export function settingsView({admin=false}={}){
+ const p=appPrefs(),selected=selectedAccent();
+ const accentCards=ACCENT_PRESETS.map(x=>'<button type="button" class="slateAccentChoice '+(selected===x.id?'selected':'')+'" data-action="accent" data-arg="'+esc(x.id)+'" aria-pressed="'+(selected===x.id)+'"><span class="slateAccentSwatch" style="--swatch:'+x.hex+'"></span><span>'+esc(x.name)+'</span>'+(selected===x.id?'<b aria-hidden="true">✓</b>':'')+'</button>').join('');
+ const adminEditor=admin?'<section class="slateSettingsBlock arcanaAdminAppearance"><span class="launchEyebrow">ADMIN ONLY</span><h2>'+icon('settings',20)+' Arcana Theme Studio</h2><p>Preview a color on this device. Publishing a color for everyone requires the protected Design Control portal.</p>'+
+  '<div class="slateAccentGrid" role="group" aria-label="Theme previews">'+accentCards+'</div>'+
+  '<div class="arcanaCustomAccent"><label for="arcanaCustomAccentPicker">Custom accent</label><input type="color" id="arcanaCustomAccentPicker" value="'+esc(customAccent())+'" aria-label="Pick accent color"><input type="text" id="arcanaCustomAccentHex" value="'+esc(customAccent())+'" maxlength="7" spellcheck="false" placeholder="#A98BFF" aria-label="Custom hex color"><button type="button" data-action="custom-accent">Preview</button></div>'+
+  '<button class="slateSiteTheme" type="button" data-action="accent" data-arg="site">Reset to published theme</button>'+
+  '<a class="arcanaAdminPublish" href="'+esc(ADMIN_URL)+'" target="_blank" rel="noopener noreferrer">'+icon('settings',18)+' Open protected Design Control '+icon('external',16)+'</a>'+
+  '<small class="arcanaThemeWarning">Color previews do not publish changes to the community.</small></section>':
+  '<section class="slateSettingsBlock arcanaThemeReadOnly"><h2>'+icon('shield',20)+' Appearance</h2><p>Arcana colors and icons are managed by the administration team. Your display preferences are available below.</p></section>';
+ return '<div class="launchPage slateSettings arcanaSettings"><span class="launchEyebrow">PREFERENCES</span><h1>Settings</h1><p>Simple display controls. Your game progress and saved builds are unaffected.</p>'+
+  '<section class="slateSettingsBlock"><h2>'+icon('settings',20)+' Display</h2><div class="launchSettingList"><label class="launchSetting"><span><strong>Compact menus</strong><small>Reduce spacing throughout menus.</small></span><input type="checkbox" data-app-pref="compact" '+(p.compact?'checked':'')+'></label><label class="launchSetting"><span><strong>Reduce motion</strong><small>Turn off decorative movement.</small></span><input type="checkbox" data-app-pref="reduceMotion" '+(p.reduceMotion?'checked':'')+'></label></div></section>'+
+  adminEditor+'</div>';
 }
 export function iconGalleryView(){
  const sections=Object.entries(ICON_CATEGORIES).map(([cat,ids])=>
