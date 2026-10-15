@@ -277,3 +277,9 @@ html[data-arcana-design-pattern="plain"] #content.homeFullscreen .launchQuickCar
 .designControl select{min-height:42px;background:var(--theme-main);border:1px solid var(--line);border-radius:9px;color:var(--text);padding:4px;grid-column:2/4}
 .designControl strong{font-size:11px;color:var(--theme-highlight);justify-self:end}
 @media(max-width:390px){.designControl{grid-template-columns:minmax(0,1fr) 90px 50px;gap:4px;font-size:11px}}
+
+.arcanaContextBack{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px;color:#bec4d0;font-size:12px}
+.arcanaContextBack button{display:flex;align-items:center;gap:6px;min-height:36px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--theme-secondary);color:#eef1f9;font-weight:800}
+.arcanaCrumbs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:30px}
+.arcanaCrumbs button{min-height:31px;background:transparent;border:0;color:var(--theme-highlight);font-weight:800;padding:4px}
+.studioPage>.arcanaCrumbs{margin-bottom:13px}
