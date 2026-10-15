@@ -65,7 +65,7 @@ export function pathfinderRangePanel(snapshot,quick,raw={}){
  '<div id="pathRangeContent">'+pathfinderRangeContent(snapshot,quick,raw)+'</div></details>';
 }
 const option=(value,name,chosen)=>'<option value="'+esc(value)+'" '+(value===chosen?'selected':'')+'>'+esc(name)+'</option>';
-export function pathfinderView(raw,snapshot,error='',rangePlan={}){
+export function pathfinderView(raw,snapshot,error='',rangePlan={},options={}){
  const pref=normalizeQuickView(raw);
  if(!snapshot)return '<section class="pathPage"><header class="pathIntro"><span class="pathEyebrow">ARCANA PATHFINDER</span><h1>See every upgrade at a glance.</h1><p>Pick your equipment slot and swipe through enhancement costs.</p></header><p class="pathWarning">'+esc(error||'Loading verified upgrade recipes…')+'</p><button class="btn secondary" data-action="path-refresh">Retry recipe connection</button></section>';
  const model=timelineModel(snapshot,pref);
@@ -88,7 +88,7 @@ export function pathfinderView(raw,snapshot,error='',rangePlan={}){
  ).join('')+'</div>'+
  '<div class="pathRangeHead"><label for="pathStepRange">Slide through upgrades</label><output id="pathStepValue" for="pathStepRange">'+(view.level===0?'Transition':'+'+view.level)+'</output></div>'+
  '<input id="pathStepRange" data-path-range aria-label="Selected upgrade level" type="range" min="0" max="'+active.max+'" value="'+view.level+'" step="1" aria-valuetext="'+esc(stageStepLabel(active,view.level))+'" style="--path-progress:'+(active.max?Math.round(view.level/active.max*100):0)+'%">'+
- pathfinderStepDetail(model)+pathfinderChapterDetail(model)+pathfinderRangePanel(snapshot,view,rangePlan)+
+ pathfinderStepDetail(model)+pathfinderChapterDetail(model)+(options.includeRange===false?'':pathfinderRangePanel(snapshot,view,rangePlan))+
  '</section>'+
  '<p class="pathSource">Source: '+esc(snapshot.sourceVersion||snapshot.source||'October 2026 verified-cost snapshot')+'. Base Gold and material amounts per upgrade, before failed attempts. This dataset uses the same tier recipes for every slot; slot-specific cost differences are not documented. A1–A30 are supported where source data is available.</p>'+
  '<div class="pathActions"><button type="button" class="btn secondary" data-route="labs/build">Back to Build Studio</button><button type="button" class="btn secondary" data-route="wiki/library" data-params="kind=material">Materials in the Wiki</button></div>'+

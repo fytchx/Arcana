@@ -21,12 +21,9 @@ export const HOME_MENUS=Object.freeze({
   topic('gear-awakening'),topic('pets-runes-talismans'),topic('combat-monsters-biomes'),
   link('All Wiki topics','Browse every topic, with more coming as content is published.','wiki/topics','layers')
  ]},
- tools:{title:'Tools',detail:'Calculators and planners. Rune Forge and skill trees live inside Build Studio.',links:[
-  link('Upgrade Cost Calculator','Plan equipment upgrades.','calculators/upgrade','calculator'),
-  link('Arcana Pathfinder','Swipe through costs for every rarity and awakened level.','calculators/pathfinder','layers'),
-  link('Equipment Comparison','Compare two equipment bases.','calculators/compare','compare'),
+ tools:{title:'Tools',detail:'Companion calculators. Gear upgrades live in Pathfinder.',links:[
   link('Pet Compound Calculator','Inspect pet Compound and Drop Bonus.','calculators/pet','paw'),
-  link('Pet Affix Costs','Calculate Pet Shard requirements.','calculators/affixes','calculator'),
+  link('Pet Affix Costs','Calculate shard requirements for affixes.','calculators/affixes','calculator'),
   link('ML Farming Comparator','Compare monster farming speed.','calculators/ml-farm','sword'),
   link('Guild Skill Planner','Plan and share guild skill allocations.','labs/guild-tree','shield')
  ]},
@@ -45,12 +42,9 @@ export const HOME_MENUS=Object.freeze({
   link('Community Builds & Guides','Discover setups other players have shared.','community','users'),
   link('Publish a Build','Share a snapshot from your Build Studio.','community/create','edit',{kind:'build'})
  ]},
- pathfinder:{title:'Pathfinder',detail:'Quickly browse every equipment upgrade without entering your inventory.',links:[
-  link('Pathfinder Planner','See the exact listed cost of every enhancement.','calculators/pathfinder','layers'),
-  link('Build Studio','Set your current gear and share a build.','labs/build','shield'),
-  link('Materials · Wiki','Materials and their verified sources.','wiki/library','box',{kind:'material'}),
-  link('Monsters · Wiki','Learn about monsters and their drops.','wiki/library','sword',{kind:'monster'}),
-  link('ML Farming Comparator','Compare measured monster kill speeds.','calculators/ml-farm','sword')
+ pathfinder:{title:'Pathfinder',detail:'Every character equipment upgrade in one place.',links:[
+  link('Pathfinder','Upgrade Map, From → To, Cost Reference, and Compare.','calculators/pathfinder','layers'),
+  link('Materials · Wiki','Browse verified material references.','wiki/library','box',{kind:'material'})
  ]},
  social:{title:'Guild & Raid Finder',detail:'Find players, recruit members and plan group content.',links:[
   link('Find a Guild','Browse guild recruitment profiles.','lfg/guilds','users'),
@@ -159,7 +153,7 @@ const designPanel=()=>{
  '<div class="designControlGroup"><h3>Shapes &amp; buttons</h3>'+slider('roundness','Card corners',3,28,' px')+slider('buttonRoundness','Button corners',3,30,' px')+slider('buttonFill','Button color strength',35,100)+'</div>'+
  '<button type="button" class="btn secondary" data-action="reset-design">'+icon('back',16)+' Reset design preview</button><p class="mutedSmall">Game sprites and verified data are never recolored. The protected Design Control portal is required to publish a global theme.</p></section>';
 };
-export function settingsView({admin=false}={}){
+export function settingsView({admin=false,authEnabled=false,loggedIn=false}={}){
  const p=appPrefs(),selected=selectedAccent();
  const accentCards=ACCENT_PRESETS.map(x=>'<button type="button" class="slateAccentChoice '+(selected===x.id?'selected':'')+'" data-action="accent" data-arg="'+esc(x.id)+'" aria-pressed="'+(selected===x.id)+'"><span class="slateAccentSwatch" style="--swatch:'+x.hex+'"></span><span>'+esc(x.name)+'</span>'+(selected===x.id?'<b aria-hidden="true">✓</b>':'')+'</button>').join('');
  const adminEditor=admin?'<section class="slateSettingsBlock arcanaAdminAppearance"><span class="launchEyebrow">ADMIN ONLY</span><h2>'+icon('settings',20)+' Arcana Theme Studio</h2><p>Preview a color on this device. Publishing a color for everyone requires the protected Design Control portal.</p>'+
@@ -168,7 +162,10 @@ export function settingsView({admin=false}={}){
   '<button class="slateSiteTheme" type="button" data-action="accent" data-arg="site">Reset to published theme</button>'+
   '<a class="arcanaAdminPublish" href="'+esc(ADMIN_URL)+'" target="_blank" rel="noopener noreferrer">'+icon('settings',18)+' Open protected Design Control '+icon('external',16)+'</a>'+
   '<small class="arcanaThemeWarning">Color previews do not publish changes to the community.</small></section>':
-  '<section class="slateSettingsBlock arcanaThemeReadOnly"><h2>'+icon('shield',20)+' Appearance</h2><p>Arcana colors and icons are managed by the administration team. Your display preferences are available below.</p></section>';
+  '<section class="slateSettingsBlock arcanaThemeReadOnly"><span class="launchEyebrow">ADMIN ONLY</span><h2>'+icon('shield',20)+' Design Workshop · Locked</h2><p>Find the theme editor at <strong>Options → Settings → Design Workshop</strong>. Only signed-in Arcana Admins and the Creator can unlock it.</p>'+
+ (!authEnabled?'<p class="arcanaLoginStatus">Discord login is not configured on this preview yet. Admin controls cannot unlock until preview authentication is connected.</p>':
+ !loggedIn?'<a class="btn secondary" href="/api/account/login">Sign in with Discord</a>':
+ '<p class="arcanaLoginStatus">This account does not have Admin or Creator access.</p>')+'</section>';
  return '<div class="launchPage slateSettings arcanaSettings"><span class="launchEyebrow">PREFERENCES</span><h1>Settings</h1><p>Simple display controls. Your game progress and saved builds are unaffected.</p>'+
   '<section class="slateSettingsBlock"><h2>'+icon('settings',20)+' Display</h2><div class="launchSettingList"><label class="launchSetting"><span><strong>Compact menus</strong><small>Reduce spacing throughout menus.</small></span><input type="checkbox" data-app-pref="compact" '+(p.compact?'checked':'')+'></label><label class="launchSetting"><span><strong>Reduce motion</strong><small>Turn off decorative movement.</small></span><input type="checkbox" data-app-pref="reduceMotion" '+(p.reduceMotion?'checked':'')+'></label></div></section>'+
   adminEditor+(admin?designPanel():'')+'</div>';

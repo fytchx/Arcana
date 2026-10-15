@@ -101,6 +101,7 @@ export function communityPage(route,query){
  return '';
 }
 export function currentAccount(){return state.me||null}
+export function accountStatus(){return {enabled:state.enabled===true,authenticated:!!state.me}}
 export async function refreshAccount(){
  try{const data=await getJSON('/api/account/me');state.me=data.user;state.enabled=Boolean(data.enabled);state.betaEnrollmentOpen=Boolean(data.betaEnrollmentOpen);}
  catch{state.me=null;state.enabled=false;}
