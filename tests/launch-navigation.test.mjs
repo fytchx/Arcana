@@ -45,7 +45,8 @@ test('global home control is registered and the old bottom nav is absent',async(
  assert.match(html,/id="searchBtn"/);
  assert.match(html,/id="accountBtn"/);
  assert.doesNotMatch(html,/id="bottomNav"/);
- assert.match(app,/launchReturnHome/);
+ assert.doesNotMatch(app,/function globalHomeBar/);
+  assert.match(html,/id="arcanaDock"/);
  assert.match(app,/data-route="home"/);
  assert.match(app,/showHomeMenu/);
  assert.match(settingsView(),/data-app-pref="reduceMotion"/);
