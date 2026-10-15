@@ -506,7 +506,7 @@ function saveGearEdit(){
 function chooseItem(id){const target=state.slotTarget;if(!target)return;
  if(target.kind==='gear'){openGearEditor(target.slot,id);return;}
  closeLayer();
- if(target.kind==='upgrade')navigate('calculators/upgrade',{item:id});if(target.kind==='compare'){if(target.slot==='left')state.compareLeft=id;else state.compareRight=id;navigate('calculators/compare',{left:state.compareLeft,right:state.compareRight});}
+ const inHub=parseRoute().route==='calculators/pathfinder';if(target.kind==='upgrade'){if(inHub)navigate('calculators/pathfinder',{view:'upgrade',item:id});else navigate('calculators/upgrade',{item:id})}if(target.kind==='compare'){if(target.slot==='left')state.compareLeft=id;else state.compareRight=id;if(inHub)navigate('calculators/pathfinder',{view:'compare',left:state.compareLeft,right:state.compareRight});else navigate('calculators/compare',{left:state.compareLeft,right:state.compareRight})}
 }
 function go(route,params={}){
  const current=parseRoute();
