@@ -24,11 +24,11 @@ export function writeDesign(key,value){
  const safe=validateDesignField(key,value);if(safe===null)return false;
  const next={...readDesign(),[key]:safe};
  try{localStorage.setItem(DESIGN_KEY,JSON.stringify(next))}catch{return false}
- applyDesign(document.documentElement);return true;
+ applyDesign(globalThis.document?.documentElement);return true;
 }
 export function resetDesign(){
  try{localStorage.removeItem(DESIGN_KEY)}catch{return false}
- applyDesign(document.documentElement);return true;
+ applyDesign(globalThis.document?.documentElement);return true;
 }
 export function applyDesign(root=globalThis.document?.documentElement){
  if(!root)return;
