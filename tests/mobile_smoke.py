@@ -185,6 +185,22 @@ with sync_playwright() as playwright:
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Homepage overflows a narrow Android screen'
     page.set_viewport_size({'width':390,'height':844})
     page.screenshot(path=str(OUT/'home_mobile.png'),full_page=True)
+    # Pathfinder is now a direct link with four sections and a phone-width layout.
+    page.locator('.launchQuickCard[data-arg="pathfinder"]').click()
+    page.locator('.pathfinderHubTabs button').first.wait_for(timeout=9000)
+    assert page.locator('#layer').is_hidden(), 'Pathfinder should open directly'
+    assert page.locator('.pathfinderHubTabs button').count()==4
+    for width in (320,360,390,430):
+        page.set_viewport_size({'width':width,'height':800})
+        page.wait_for_timeout(100)
+        assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), f'Pathfinder overflow at {width}px'
+        assert page.locator('.pathfinderHubTabs').evaluate('(el)=>getComputedStyle(el).gridTemplateColumns.split(" ").length===2'), f'Pathfinder mobile tabs at {width}px'
+    page.locator('.pathfinderHubTabs [data-params="view=range"]').click()
+    page.locator('.pathRangeWorkspace').wait_for(timeout=7000)
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Pathfinder range form overflow'
+    page.set_viewport_size({'width':390,'height':844})
+    page.screenshot(path=str(OUT/'pathfinder_mobile.png'),full_page=True)
+    page.locator('#arcanaDock [data-route="home"]').click()
     page.locator('.launchQuickCard[data-arg="wiki"]').click()
     page.locator('#layer [data-route="wiki"]').click()
     assert page.locator('.wikiPortalShortcuts .arcanaConnection').count()==4, 'Wiki shortcuts are missing'

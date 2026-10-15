@@ -75,7 +75,8 @@ test('Slate keeps every original accent and saves personal selection safely',asy
   globalThis.localStorage={getItem:key=>saved.get(key)??null,setItem:(key,value)=>saved.set(key,value)};
   assert.equal(selectedAccent(),'arcane-violet');
   assert.doesNotMatch(settingsView(),/slateAccentGrid/);
-  assert.match(settingsView(),/managed by the administration team/);
+  assert.match(settingsView(),/Design Workshop · Locked/);
+  assert.match(settingsView(),/Discord login is not configured/);
   assert.equal((settingsView({admin:true}).match(/class="slateAccentChoice/g)||[]).length,10);
   assert.equal(setAccent('cyan-blue'),true);
   assert.equal(selectedAccent(),'cyan-blue');
