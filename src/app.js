@@ -41,6 +41,7 @@ import {readRange,saveRange,allStages} from './pathfinder-range.js';
 import {homeScreen,homeSubmenu,directoryView,wikiTopicsView,wikiTopicView,wikiAboutView,userCenterView,settingsView,iconGalleryView,applyAppPrefs,changeAppPref} from './launch-navigation.js';
 import {currentAccount,refreshAccount} from './community-ui.js';
 import {searchAsYouType} from './search-as-you-type.js';
+import {writeDesign,resetDesign} from './design-controls.js';
 import {initGeneralChat} from './general-chat.js';
 import {setCustomAccent} from './theme.js';
 
