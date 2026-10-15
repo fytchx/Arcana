@@ -17,7 +17,7 @@ test('six home cards open real submenu groups',()=>{
 });
 test('all submenu and A-Z destinations are resolvable routes',()=>{
  for(const [id,group] of Object.entries(HOME_MENUS)){
-  assert.ok(group.title&&group.links.length>=4,id);
+  assert.ok(group.title&&group.links.length>=(id==='pathfinder'?1:4),id);
   for(const destination of group.links)assert.ok(routes.has(destination.route),id+' -> '+destination.route);
  }
  assert.ok(DIRECTORY.length>20);

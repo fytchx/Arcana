@@ -34,7 +34,7 @@ test('Pathfinder is the one-stop upgrade destination, with four integrated modes
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
  const board=await readFile(new URL('../src/core-boards.js',import.meta.url),'utf8');
  const css=await readFile(new URL('../arcana-contour.css',import.meta.url),'utf8');
- assert.match(app,/function pathfinderHub\(\)/);
+ assert.match(app,/function pathfinderHub\(legacyView='timeline'\)/);
  for(const route of ['timeline','range','upgrade','compare'])assert.ok(app.includes("['"+route+"'"),route);
  assert.match(app,/pathfinderRangeContent\(recipeState.data/);
  assert.match(app,/case 'homemenu':if\(arg==='pathfinder'\)go\('calculators\/pathfinder'\)/);

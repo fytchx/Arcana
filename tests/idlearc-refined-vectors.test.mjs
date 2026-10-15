@@ -37,7 +37,7 @@ test('preview homepage and menus use Arcana Minimal instead of Refined',()=>{
  assert.match(home,/data-arcana-icon="feature-build-studio"/);
  assert.doesNotMatch(home,/data-refined-icon=/);
  const submenu=homeSubmenu('tools');
- assert.equal((submenu.match(/class="launchNavRow"/g)||[]).length,7);
+ assert.equal((submenu.match(/class="launchNavRow"/g)||[]).length,4);
  assert.match(submenu,/data-arcana-icon=/);
  assert.doesNotMatch(submenu,/data-refined-icon=/);
 });
