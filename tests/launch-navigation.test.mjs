@@ -73,13 +73,14 @@ test('Slate keeps every original accent and saves personal selection safely',asy
  try{
   globalThis.localStorage={getItem:key=>saved.get(key)??null,setItem:(key,value)=>saved.set(key,value)};
   assert.equal(selectedAccent(),'arcane-violet');
-  assert.match(settingsView(),/slateAccentGrid/);
-  assert.equal((settingsView().match(/class="slateAccentChoice/g)||[]).length,10);
+  assert.doesNotMatch(settingsView(),/slateAccentGrid/);
+  assert.match(settingsView(),/managed by the administration team/);
+  assert.equal((settingsView({admin:true}).match(/class="slateAccentChoice/g)||[]).length,10);
   assert.equal(setAccent('cyan-blue'),true);
   assert.equal(selectedAccent(),'cyan-blue');
   assert.equal(themeStatus().palette.highlight,'#13C5F4');
   assert.equal(themeStatus().palette.main,'#0D1019');
-  assert.match(settingsView(),/data-arg="cyan-blue" aria-pressed="true"/);
+  assert.match(settingsView({admin:true}),/data-arg="cyan-blue" aria-pressed="true"/);
   assert.equal(setAccent('not-a-theme'),false);
   assert.equal(selectedAccent(),'cyan-blue');
   assert.equal(setAccent('site'),true);
