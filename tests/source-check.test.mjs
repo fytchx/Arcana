@@ -51,8 +51,8 @@ test('Codex presents visual atlas separately from compact mechanics rows', async
  assert.match(views,/wikiShelfSwitch/);
  assert.match(views,/wikiGalleryList/);
  assert.match(views,/wikiRecordText/);
- assert.match(views,/wikiReferenceTopics/);
- assert.match(views,/wikiAtlasTopics/);
+ assert.match(views,/wikiV1Categories/);
+ assert.match(views,/const imageKinds=new Set\(\['item'\]\)/);
 });
 
 test('signature inherits the live theme highlight, rather than hardcoding violet',async()=>{

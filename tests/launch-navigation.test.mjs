@@ -29,7 +29,7 @@ test('topic shells are navigable, safely escaped and do not invent article conte
  for(const topic of WIKI_TOPICS){
   const html=wikiTopicView(topic.slug);
   assert.match(html,/View published articles/);
-  assert.ok(html.includes(topic.title));
+  assert.ok(html.includes(topic.title.replaceAll('&','&amp;')));
   assert.match(html,/data-route/);
  }
  assert.equal(wikiTopicView('no-such-topic'),null);
