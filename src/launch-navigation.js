@@ -1,4 +1,5 @@
 import {readDesign,DEFAULT_DESIGN} from './design-controls.js';
+import {WIKI_CATEGORIES} from './wiki-taxonomy.js';
 import {designMiniMarkup} from './design-mini-preview.js';
 import {esc,icon} from './ui.js';
 import {ACCENT_PRESETS,SITE_SURFACES,ICON_MODES,selectedAccent,selectedSiteSurface,selectedIconColor,selectedIconMode,customAccent,ADMIN_URL} from './theme.js';
@@ -6,21 +7,16 @@ import {ICON_CATEGORIES,ICON_IDS,iconAssetPath} from './arcana-icons.js';
 
 // One navigation registry for the launch home, its popovers and the A-Z directory.
 // Topics are navigation shells until the editorial team publishes actual articles.
-export const WIKI_TOPICS = Object.freeze([
- {slug:'gear-awakening',title:'Gear and Awakening',detail:'Equipment, rarities, reforging and awakening.',icon:'shield'},
- {slug:'pets-runes-talismans',title:'Pets, Runes, and Talismans',detail:'Companions, rune systems, talismans and bonuses.',icon:'paw'},
- {slug:'combat-monsters-biomes',title:'Combat, Monsters, and Biomes',detail:'Combat rules, monsters and places to farm.',icon:'sword'},
- {slug:'progression',title:'Progression and Seasons',detail:'Character levels, Monster Level and seasonal systems.',icon:'layers'},
- {slug:'guilds-raids',title:'Guilds and Rift Raids',detail:'Guild progression, group content and raid systems.',icon:'users'}
-]);
+export const WIKI_TOPICS = Object.freeze(WIKI_CATEGORIES.map(c=>({slug:c.id,title:c.title,detail:c.description,icon:c.icon})));
 const link=(label,detail,route,iconName='arrow',params=null)=>({label,detail,route,icon:iconName,params});
-const topic=slug=>link(WIKI_TOPICS.find(x=>x.slug===slug)?.title||slug,'Explore the topic hub','wiki/topic','book',{slug});
+const topic=slug=>link(WIKI_TOPICS.find(x=>x.slug===slug)?.title||slug,'Explore the topic hub','wiki/category','book',{slug});
 export const HOME_MENUS=Object.freeze({
- wiki:{title:'Wiki',detail:'Every game system, explained and connected to your tools.',links:[
-  link('Explore the Wiki','Open the full ArcanaWiki home page.','wiki','book'),
-  link('About IdleArc','The game at a glance, with links to key systems.','wiki/about','info'),
-  topic('gear-awakening'),topic('pets-runes-talismans'),topic('combat-monsters-biomes'),
-  link('All Wiki topics','Browse every topic, with more coming as content is published.','wiki/topics','layers')
+ wiki:{title:'Wiki',detail:'Find game mechanics without digging through unrelated pages.',links:[
+  link('Open ArcanaWiki','Browse published wiki categories.','wiki','book'),
+  link('Classes','Understand playable classes.','wiki/category','shield',{slug:'classes'}),
+  link('Equipment','Upgrades, reforging and sockets.','wiki/category','shield',{slug:'equipment'}),
+  link('Item Codex','Look up equipment and verified game artwork.','wiki/items','shield'),
+  link('All Topics','See every published wiki category.','wiki/topics','layers')
  ]},
  tools:{title:'Tools',detail:'Companion calculators. Gear upgrades live in Pathfinder.',links:[
   link('Pet Compound Calculator','Inspect pet Compound and Drop Bonus.','calculators/pet','paw'),

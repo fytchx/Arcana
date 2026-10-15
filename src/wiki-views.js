@@ -50,7 +50,7 @@ export function wikiCategoryView(slug){
  '<div class="wikiEmpty"><p>Articles are being prepared. Only finished pages appear here.</p></div>')+'</div>';
 }
 
-export function wikiArticleCard(a){return `<button class="wikiArticleCard" data-route="wiki/article" data-params="id=${esc(a.id)}"><span class="wikiArticleTop"><span class="wikiType">${literal(a.category)}</span><span class="wikiTime">${literal(a.readTime)}</span></span><strong>${literal(a.title)}</strong><p>${literal(a.summary)}</p><span class="wikiCardArrow">Read guide ${icon('arrow',15)}</span></button>`}
+export function wikiArticleCard(a){return `<button class="wikiArticleCard" data-route="wiki/article" data-params="id=${esc(a.id)}"><span class="wikiArticleTop"><span class="wikiType">${literal(a.category)}</span><span class="wikiTime">${literal(a.readTime)}</span></span><strong>${literal(a.title)}</strong><p>${literal(a.summary)}</p><span class="wikiCardArrow">Read article ${icon('arrow',15)}</span></button>`}
 export function wikiRecordCard(e){
  const kind=e.gameKind||e.kind,real={...e,kind},visual=imageKinds.has(kind);
  const content=`<span class="wikiRecordContent"><strong>${literal(e.title)}</strong><small>${literal(e.description||recordKindLabel(kind))}</small></span>`;
