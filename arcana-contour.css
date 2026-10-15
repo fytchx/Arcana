@@ -98,3 +98,79 @@
 #content.homeFullscreen .launchQuickGrid{grid-template-rows:repeat(3,minmax(118px,1fr))}
 #content.homeFullscreen .launchQuickCard{min-height:118px!important}}
 @media(prefers-reduced-motion:reduce){#content.homeFullscreen *,#arcanaDock *{animation:none!important;transition:none!important}}
+
+
+/* Arcana mobile UX pass: denser screens, legible navigation, and lightweight overlays. */
+:root{--arcana-header-height:56px}
+#app.shell .top{height:var(--arcana-header-height);min-height:var(--arcana-header-height);padding:0 12px;grid-template-rows:none}
+#app.shell .launchBrand img{width:31px;height:31px}
+#app.shell .launchBrandName{font-size:13px}
+#app.shell .launchChatBtn,#app.shell .launchSearchBtn{height:42px;width:42px}
+#content:not(.homeFullscreen){padding-top:12px!important;padding-left:clamp(12px,3vw,20px);padding-right:clamp(12px,3vw,20px)}
+#content:not(.homeFullscreen) .launchReturnHome{display:none!important}
+#content:not(.homeFullscreen) .arcanaCrumbs{margin:0 0 10px!important;padding:0!important;min-height:32px}
+#content:not(.homeFullscreen) .pageHead{margin:0 0 13px!important}
+#content:not(.homeFullscreen) .pageHeadline{gap:10px}
+#content:not(.homeFullscreen) .pageIcon{width:42px;height:42px}
+#content:not(.homeFullscreen) .pageHeadline h1{font-size:clamp(22px,5vw,29px)}
+#content:not(.homeFullscreen) .pathIntro{margin:4px 0 15px!important}
+#content:not(.homeFullscreen) .pathIntro h1{margin:5px 0!important;font-size:clamp(23px,5.5vw,30px)}
+#content:not(.homeFullscreen) .pathIntro p{margin:5px 0!important}
+#content:not(.homeFullscreen) .pathSelectors{margin-top:12px!important}
+#content.homeFullscreen .launchQuickCard{grid-template-rows:39px minmax(0,1fr);padding:10px 11px!important;border-color:color-mix(in srgb,var(--theme-highlight) 78%,#ffffff38)!important;background:linear-gradient(142deg,color-mix(in srgb,var(--theme-highlight) 19%,#060912),color-mix(in srgb,var(--theme-highlight) 6%,#080a14))!important}
+#content.homeFullscreen .launchQuickCard:after{opacity:.37}
+#content.homeFullscreen .launchQuickIcon{width:39px!important;height:39px!important;min-width:39px!important;border-radius:11px!important;background:color-mix(in srgb,var(--theme-highlight) 26%,#090b13)!important;border:1px solid color-mix(in srgb,var(--theme-highlight) 74%,#ffffff22)!important;color:color-mix(in srgb,var(--theme-highlight) 55%,white)!important;box-shadow:0 0 14px color-mix(in srgb,var(--theme-highlight) 19%,transparent)}
+#content.homeFullscreen .launchQuickIcon svg{width:27px!important;height:27px!important;stroke-width:1.9}
+#content.homeFullscreen .launchQuickArrow{color:color-mix(in srgb,var(--theme-highlight) 58%,white)!important;opacity:1!important}
+#content.homeFullscreen .launchQuickCopy{position:relative;z-index:3;align-self:end;background:linear-gradient(0deg,#070910de,#0709109a 80%,transparent);padding:6px 3px 3px!important;margin:0 -3px -3px;gap:4px}
+#content.homeFullscreen .launchQuickCopy strong{font-size:clamp(12px,3.4vw,15px)!important;font-weight:850!important;color:#fff!important;text-shadow:0 1px 2px #000}
+#content.homeFullscreen .launchQuickCopy small{font-size:clamp(9px,2.5vw,11px)!important;color:#d5d7e0!important}
+#content.homeFullscreen .launchQuickEmblem{position:absolute;inset:auto 0 24% auto;display:grid;place-items:center;z-index:0!important;color:var(--theme-highlight);opacity:.26;transform:translate(6%,-2%);pointer-events:none;filter:drop-shadow(0 0 7px var(--theme-highlight))}
+#content.homeFullscreen .launchQuickEmblem svg{width:clamp(66px,21vw,116px);height:clamp(66px,21vw,116px);stroke-width:1.5}
+@media(max-height:710px) and (max-width:700px){
+ #content.homeFullscreen .launchQuickCard{grid-template-rows:30px minmax(0,1fr);padding:7px!important}
+ #content.homeFullscreen .launchQuickIcon{width:30px!important;height:30px!important;min-width:30px!important}
+ #content.homeFullscreen .launchQuickIcon svg{width:22px!important;height:22px!important}
+ #content.homeFullscreen .launchQuickEmblem svg{width:62px;height:62px}
+}
+/* General chat is a compact popover, not an almost-fullscreen modal. */
+#arcanaChatOverlay{padding:12px 10px calc(var(--arcana-dock-height) + env(safe-area-inset-bottom) + 10px);background:#0005;align-items:end;backdrop-filter:none}
+.arcanaChatPanel{height:min(38dvh,380px);min-height:0;max-height:calc(100dvh - var(--arcana-header-height) - var(--arcana-dock-height) - 12px);width:min(100%,480px);border-radius:16px;box-shadow:0 12px 32px #0009}
+.arcanaChatHead{padding:7px 11px}
+.arcanaChatHead strong{font-size:14px}
+.arcanaChatHead small{font-size:10px;margin-top:1px}
+.arcanaChatHead button{width:36px;height:36px}
+.arcanaChatMessages{padding:8px 10px;gap:7px}
+.arcanaChatForm{padding:7px 10px}
+.arcanaChatStatus{font-size:10px;padding:3px 11px}
+.arcanaChatSignIn{margin:5px 10px}
+@media(max-height:560px){.arcanaChatPanel{height:min(48dvh,290px)}}
+/* Search lives at the top of the screen; no history, chips or prompts before typing. */
+.layer[data-type="search"]{z-index:310;align-items:flex-start;justify-content:center;padding:0 10px;background:transparent}
+.layer[data-type="search"] .scrim{background:#070a15a1;backdrop-filter:blur(2px)}
+.layer[data-type="search"] .sheet{position:relative;z-index:1;width:min(820px,100%);max-height:min(76dvh,650px);margin-top:max(6px,env(safe-area-inset-top));padding:9px;border:1px solid color-mix(in srgb,var(--theme-highlight) 52%,#647083);border-radius:14px;background:color-mix(in srgb,var(--theme-main) 92%,#21253a 8%);box-shadow:0 13px 45px #0009;overflow-y:auto;overscroll-behavior:contain}
+.layer[data-type="search"] .sheetTop,.layer[data-type="search"] .sheetHandle{display:none!important}
+.layer[data-type="search"] #layerContent{padding:0!important}
+.arcanaSearchDock{display:flex;align-items:center;min-height:54px;gap:10px;padding:0 9px;border:1px solid color-mix(in srgb,var(--theme-highlight) 65%,#aeb8ce 35%);border-radius:11px;background:color-mix(in srgb,var(--theme-secondary) 90%,#121726 10%)}
+.arcanaSearchGlyph{display:grid;place-items:center;color:var(--theme-highlight)}
+#globalSearch{display:block;flex:1;min-width:0;min-height:49px;padding:10px 0;border:0;background:transparent;outline:none;color:#fff;font:600 16px/1.4 system-ui,sans-serif;appearance:none}
+#globalSearch::placeholder{color:#b2b9c7;opacity:1}
+#globalSearch::-webkit-search-cancel-button{display:none}
+.arcanaSearchClose{flex:none;display:grid;place-items:center;width:39px;height:39px;color:#edf0f7;border-radius:9px;border:0;background:#ffffff12;cursor:pointer}
+.arcanaTypeahead:empty{display:none}
+.arcanaTypeahead{max-height:min(56dvh,500px);overflow:auto;margin-top:8px}
+.arcanaSearchMatches{display:flex;flex-direction:column;gap:5px}
+.arcanaSearchMatches .resultRow,.arcanaSearchGuess{display:flex;align-items:center;gap:11px;min-height:52px;padding:9px 11px;border:1px solid color-mix(in srgb,var(--theme-highlight) 16%,#354258);background:color-mix(in srgb,var(--theme-secondary) 92%,black);border-radius:10px;color:#f3f6ff;text-align:left}
+.arcanaSearchMatches .resultText strong,.arcanaSearchGuess span{font-size:13px;font-weight:750;color:#f5f7fd}
+.arcanaSearchMatches .resultText small{font-size:11px;color:#c7ccd9}
+.arcanaSearchGuess{width:100%}
+.arcanaSearchGuess>svg:first-child{color:var(--theme-highlight)}
+.arcanaSearchGuess>svg:last-child{margin-left:auto;color:#ced4e1}
+.arcanaSearchGuessLabel{font-size:10px;letter-spacing:.13em;color:var(--theme-highlight);font-weight:800;padding:9px 4px 3px}
+@media(max-width:700px){.layer[data-type="search"]{padding:0 8px}.layer[data-type="search"] .sheet{margin-top:6px;width:100%}}
+/* Display choices are public; admin preview/publishing is kept in a separate panel. */
+.arcanaSettings .slateSettingsBlock{padding:15px}
+.arcanaSettings .slateSettingsBlock h2{display:flex;align-items:center;gap:8px;font-size:16px}
+.arcanaAdminAppearance .slateAccentGrid{margin:10px 0}
+.arcanaAdminPublish{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 13px;min-height:45px;background:var(--theme-highlight);color:#081018;font-size:12px;font-weight:850;border-radius:10px}
+.arcanaThemeWarning{display:block;margin-top:10px;color:#c4c5cf}
