@@ -174,3 +174,36 @@
 .arcanaAdminAppearance .slateAccentGrid{margin:10px 0}
 .arcanaAdminPublish{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 13px;min-height:45px;background:var(--theme-highlight);color:#081018;font-size:12px;font-weight:850;border-radius:10px}
 .arcanaThemeWarning{display:block;margin-top:10px;color:#c4c5cf}
+
+
+/* Navigation hierarchy: recognizable symbols and clear interactive targets. */
+#content .pageIcon,#content .tileIcon,#content .featureIcon,
+#content .tinyIcon,#content .launchFeatureIcon,
+#layer .launchNavIcon,#layer .tinyIcon{
+  border-color:color-mix(in srgb,var(--theme-highlight) 58%,#ffffff20);
+  background:color-mix(in srgb,var(--theme-highlight) 15%,var(--theme-secondary));
+  color:color-mix(in srgb,var(--theme-highlight) 72%,white);
+  box-shadow:inset 0 1px #ffffff0b;
+}
+#content .toolTile,#content .launchFeatureRow,
+#content .arcanaConnection,#layer .launchNavRow,
+#layer .menuList button{
+  border-color:color-mix(in srgb,var(--theme-highlight) 32%,#535c6e);
+  transition:border-color .16s ease,background-color .16s ease;
+}
+#content .toolTile:focus-visible,#content .toolTile:hover,
+#layer .launchNavRow:focus-visible,#layer .launchNavRow:hover{
+ border-color:var(--theme-highlight);
+ background:color-mix(in srgb,var(--theme-highlight) 11%,var(--theme-secondary));
+}
+#content .toolTile strong,#content .launchFeatureRow strong,
+#layer .launchNavRow strong,#layer .menuList strong{
+ color:#f5f7fc;font-size:clamp(13px,3vw,15px);font-weight:800;
+}
+#content .toolTile p,#content .launchFeatureRow small,
+#layer .launchNavRow small{color:#c1c7d6;font-size:11px}
+#content .toolTile .tileIcon,#content .pageIcon{width:44px;height:44px}
+#content .toolTile .tileIcon svg,#content .pageIcon svg{width:25px;height:25px}
+#content .arcanaCrumbs button{color:color-mix(in srgb,var(--theme-highlight) 74%,white);font-weight:750}
+#content .arcanaCrumbs [aria-current="page"]{color:#ccd1de;font-size:11px}
+#arcanaDock button.active .arcanaDockGlyph{filter:drop-shadow(0 0 5px color-mix(in srgb,var(--theme-highlight) 38%,transparent))}
