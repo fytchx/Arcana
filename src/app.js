@@ -138,7 +138,7 @@ function crumbTrail(title){
  const route=parseRoute().route,section=route.split('/')[0];
  const parent={labs:['Build Studio','labs/build'],calculators:['Calculators','calculators'],lfg:['ArcanaLFG','lfg'],wiki:['ArcanaWiki','wiki']}[section];
  if(!parent||route===parent[1])return '';
- return `<nav class="arcanaCrumbs" aria-label="Breadcrumbs"><button data-route="home">Home</button><span aria-hidden="true">›</span><button data-route="${parent[1]}">${parent[0]}</button><span aria-hidden="true">›</span><span aria-current="page">${esc(title)}</span></nav>`;
+ return `<nav class="arcanaCrumbs" aria-label="Breadcrumbs"><button data-route="${parent[1]}">${parent[0]}</button><span aria-hidden="true">›</span><span aria-current="page">${esc(title)}</span></nav>`;
 }
 function layout(title,kicker,inner,mark='gem'){
  return `${crumbTrail(title)}<div class="pageHead"><div class="pageHeadline"><span class="pageIcon">${icon(mark,24)}</span><div><span class="eyebrow">${esc(kicker)}</span><h1>${esc(title)}</h1></div></div></div>${inner}`;
@@ -242,7 +242,7 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
  '<p class="studioBuildNotice"><strong>Game data:</strong> '+esc(b.notes||'Values remain under verification.')+'</p>'+
  '</div>';}
 
-function calcPathfinder(){return layout('Arcana Pathfinder','UPGRADE REFERENCE',pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error,state.pathfinderRange),'calculator')}
+function calcPathfinder(){return pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error,state.pathfinderRange)}
 function calcUpgrade(){const id=parseRoute().query.get('item'),e=item(id);if(e)track(e.id);
  return layout('Upgrade Cost Calculator','ARCANA CALCULATORS',`<div class="calcWorkspace"><span class="eyebrow">SELECTED EQUIPMENT</span><button class="selection" data-action="chooseupgrade"><span class="tinyIcon ${e?'tinyGameArt':''}">${e?gameArt(e,40):icon('shield',22)}</span><span><strong>${esc(e?.title||'Select an item')}</strong><small>${esc(e?.subtitle||'Use universal search or the item picker')}</small></span>${icon('arrow',16)}</button>${e?`<div class="actionsGroup">${button('View item in Wiki','wikiitem',e.id,'secondary','book')}${button('Compare','compare',e.id,'secondary','compare')}</div>`:''}<div class="calcWarning">${icon('info',20)} <p>Partial cost reference: this snapshot provides base tier changes only, not level-by-level or Awakened totals. No full expected cost is claimed.</p></div></div>${verifiedUpgradeReferencePanel(e?.title)}`,'calculator')}
 function calcCompare(){const qp=parseRoute().query;const left=item(qp.get('left')||state.compareLeft),right=item(qp.get('right')||state.compareRight);state.compareLeft=left?.id||null;state.compareRight=right?.id||null;
