@@ -35,7 +35,7 @@ export function applyDesign(root=globalThis.document?.documentElement){
  const admin=root.dataset.arcanaAdminDesign==='true';
  const values=admin?readDesign():DEFAULT_DESIGN;
  for(const [k,css] of Object.entries({main:'--theme-main',card:'--theme-secondary',action:'--arcana-action-color',text:'--arcana-design-text'})){
-  if(admin)root.style.setProperty(css,values[k]);
+  if(admin){root.style.setProperty(css,values[k]);if(k==='main')root.style.setProperty('--bg',values[k]);if(k==='card')root.style.setProperty('--panel',values[k]);}
   else if(css.startsWith('--arcana-'))root.style.removeProperty(css);
  }
  root.style.setProperty('--arcana-wave-opacity',String(values.intensity/100));
@@ -46,5 +46,6 @@ export function applyDesign(root=globalThis.document?.documentElement){
  root.style.setProperty('--arcana-button-fill',values.buttonFill+'%');
  root.dataset.arcanaDesignPattern=values.pattern;
  if(admin)root.style.setProperty('--text',values.text);
+ else root.style.removeProperty('--text');
  return values;
 }
