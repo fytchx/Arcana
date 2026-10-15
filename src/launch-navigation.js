@@ -1,3 +1,4 @@
+import {readDesign,DEFAULT_DESIGN} from './design-controls.js';
 import {esc,icon} from './ui.js';
 import {ACCENT_PRESETS,SITE_SURFACES,ICON_MODES,selectedAccent,selectedSiteSurface,selectedIconColor,selectedIconMode,customAccent,ADMIN_URL} from './theme.js';
 import {ICON_CATEGORIES,ICON_IDS,iconAssetPath} from './arcana-icons.js';
@@ -148,6 +149,16 @@ const PREF_KEY='arcana-launch-prefs';
 export function appPrefs(){try{const raw=JSON.parse(localStorage.getItem(PREF_KEY)||'{}');return {compact:raw.compact===true,reduceMotion:raw.reduceMotion===true}}catch{return {compact:false,reduceMotion:false}}}
 export function applyAppPrefs(){const prefs=appPrefs();document.documentElement.dataset.launchCompact=String(prefs.compact);document.documentElement.dataset.launchReduceMotion=String(prefs.reduceMotion)}
 export function changeAppPref(key,checked){if(!['compact','reduceMotion'].includes(key))return;const p={...appPrefs(),[key]:checked===true};try{localStorage.setItem(PREF_KEY,JSON.stringify(p))}catch{}applyAppPrefs()}
+const designPanel=()=>{
+ const d=readDesign();
+ const color=(key,label)=>'<label class="designControl"><span>'+label+'</span><input type="color" data-design-field="'+key+'" value="'+esc(d[key])+'" aria-label="'+label+'"><strong data-design-value="'+key+'">'+esc(d[key])+'</strong></label>';
+ const slider=(key,label,lo,hi,unit='%')=>'<label class="designControl"><span>'+label+'</span><input type="range" min="'+lo+'" max="'+hi+'" data-design-field="'+key+'" value="'+d[key]+'" aria-label="'+label+'"><strong data-design-value="'+key+'">'+d[key]+unit+'</strong></label>';
+ return '<section class="slateSettingsBlock arcanaDesignLab"><span class="launchEyebrow">ADVANCED · ADMIN PREVIEW</span><h2>Design Workshop</h2><p>Full control over the look of your preview. Changes are instant and saved only on this device, not published to visitors.</p>'+
+ '<div class="designControlGroup"><h3>Site colors</h3>'+color('main','Background')+color('card','Panel color')+color('action','Primary buttons')+color('text','Text')+'</div>'+
+ '<div class="designControlGroup"><h3>Artwork &amp; effects</h3><label class="designControl"><span>Background pattern</span><select data-design-field="pattern" aria-label="Background pattern">'+[['contours','Arcane waves'],['rings','Mystic rings'],['stars','Starlight'],['plain','None']].map(([v,label])=>'<option value="'+v+'" '+(d.pattern===v?'selected':'')+'>'+label+'</option>').join('')+'</select></label>'+slider('intensity','Pattern intensity',0,100)+slider('glow','Glow strength',0,100)+slider('edges','Border intensity',0,100)+'</div>'+
+ '<div class="designControlGroup"><h3>Shapes &amp; buttons</h3>'+slider('roundness','Card corners',3,28,' px')+slider('buttonRoundness','Button corners',3,30,' px')+slider('buttonFill','Button color strength',35,100)+'</div>'+
+ '<button type="button" class="btn secondary" data-action="reset-design">'+icon('back',16)+' Reset design preview</button><p class="mutedSmall">Game sprites and verified data are never recolored. The protected Design Control portal is required to publish a global theme.</p></section>';
+};
 export function settingsView({admin=false}={}){
  const p=appPrefs(),selected=selectedAccent();
  const accentCards=ACCENT_PRESETS.map(x=>'<button type="button" class="slateAccentChoice '+(selected===x.id?'selected':'')+'" data-action="accent" data-arg="'+esc(x.id)+'" aria-pressed="'+(selected===x.id)+'"><span class="slateAccentSwatch" style="--swatch:'+x.hex+'"></span><span>'+esc(x.name)+'</span>'+(selected===x.id?'<b aria-hidden="true">✓</b>':'')+'</button>').join('');
@@ -160,7 +171,7 @@ export function settingsView({admin=false}={}){
   '<section class="slateSettingsBlock arcanaThemeReadOnly"><h2>'+icon('shield',20)+' Appearance</h2><p>Arcana colors and icons are managed by the administration team. Your display preferences are available below.</p></section>';
  return '<div class="launchPage slateSettings arcanaSettings"><span class="launchEyebrow">PREFERENCES</span><h1>Settings</h1><p>Simple display controls. Your game progress and saved builds are unaffected.</p>'+
   '<section class="slateSettingsBlock"><h2>'+icon('settings',20)+' Display</h2><div class="launchSettingList"><label class="launchSetting"><span><strong>Compact menus</strong><small>Reduce spacing throughout menus.</small></span><input type="checkbox" data-app-pref="compact" '+(p.compact?'checked':'')+'></label><label class="launchSetting"><span><strong>Reduce motion</strong><small>Turn off decorative movement.</small></span><input type="checkbox" data-app-pref="reduceMotion" '+(p.reduceMotion?'checked':'')+'></label></div></section>'+
-  adminEditor+'</div>';
+  adminEditor+(admin?designPanel():'')+'</div>';
 }
 export function iconGalleryView(){
  const sections=Object.entries(ICON_CATEGORIES).map(([cat,ids])=>
