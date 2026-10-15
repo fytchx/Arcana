@@ -67,7 +67,7 @@ export function wikiRecordRows(entries,category,query,limit){
 export function wikiLandingView({entries=[],loaded=false,error='',itemCount=0}){
  const articles=allWikiArticles(),categories=wikiCategoriesWithContent(articles);
  return '<div class="wikiPortal wikiPortalV1" aria-label="ArcanaWiki home">'+
- crumbs([{title:'ArcanaWiki'}],'home')+'<div class="wikiHero"><div><span class="wikiEyebrow">ARCANAWIKI · SEASON 2</span<h1>ArcanaWiki</h1><p>Short answers, clear categories, useful connections.</p></div><span class="wikiHeroRune">'+icon('book',32)+'</span></div>'+
+ crumbs([{title:'ArcanaWiki'}],'home')+'<div class="wikiHero"><div><span class="wikiEyebrow">ARCANAWIKI · SEASON 2</span><h1>ArcanaWiki</h1><p>Short answers, clear categories, useful connections.</p></div><span class="wikiHeroRune">'+icon('book',32)+'</span></div>'+
  '<button class="wikiSearchLaunch" type="button" data-action="search" aria-label="Search Arcana">'+icon('search',22)+'<span>Search classes, mechanics, equipment and more</span></button>'+
  '<section class="wikiCategorySection"><div class="wikiFeaturedHead"><div><span class="wikiEyebrow">BROWSE BY TOPIC</span><h2>Wiki categories</h2></div></div>'+
  '<div class="wikiTopicGrid wikiV1Categories">'+categories.map(c=>'<button class="wikiTopic wikiV1Category" type="button" data-route="wiki/category" data-params="slug='+esc(c.id)+'"><span class="wikiTopicIcon">'+icon(c.icon,22)+'</span><strong>'+esc(c.title)+'</strong><small>'+wikiCategoryArticles(c.id,articles).length+' articles</small><span class="wikiTopicArrow">'+icon('arrow',16)+'</span></button>').join('')+'</div></section>'+
