@@ -76,8 +76,8 @@ test('Studio view links and client wiring are included in Arcana',async()=>{
  assert.match(app,/case 'wiki\/studio':return wikiStudioView/);
  assert.match(app,/wireWikiStudio\(\)/);
  assert.match(app,/mountWikiStudio\(\)/);
- assert.match(view,/Open Wiki Studio/);
- assert.match(view,/Write a guide/);
+ assert.match(view,/wikiCategoryView/);
+ assert.match(view,/aria-label="Wiki breadcrumbs"/);
 });
 test('Publishing stays locked without server owner credentials and registry has a valid shape',async()=>{
  assert.equal(typeof wikiPublishingEnabled(),'boolean');
