@@ -136,9 +136,9 @@ function track(id){if(!id)return;state.recent=remember(id)}
 const isAppearanceAdmin=()=>Boolean(currentAccount()?.roles?.some(role=>['admin','creator'].includes(typeof role==='string'?role:role.id)));
 function crumbTrail(title){
  const route=parseRoute().route,section=route.split('/')[0];
- const parent={labs:['Build Studio','labs/build'],calculators:['Calculators','calculators'],lfg:['ArcanaLFG','lfg'],wiki:['ArcanaWiki','wiki']}[section];
+ const parent={labs:['Build Studio','labs/build'],calculators:['Pathfinder','calculators/pathfinder'],lfg:['Guild & Raid Finder','lfg'],wiki:['ArcanaWiki','wiki']}[section];
  if(!parent||route===parent[1])return '';
- return `<nav class="arcanaCrumbs" aria-label="Breadcrumbs"><button data-route="${parent[1]}">${parent[0]}</button><span aria-hidden="true">›</span><span aria-current="page">${esc(title)}</span></nav>`;
+ return `<nav class="arcanaCrumbs" aria-label="Breadcrumbs"><button type="button" data-route="home">Home</button><span aria-hidden="true">›</span><button type="button" data-route="${parent[1]}">${parent[0]}</button><span aria-hidden="true">›</span><span aria-current="page">${esc(title)}</span></nav>`;
 }
 function layout(title,kicker,inner,mark='gem'){
  return `${crumbTrail(title)}<div class="pageHead"><div class="pageHeadline"><span class="pageIcon">${icon(mark,24)}</span><div><span class="eyebrow">${esc(kicker)}</span><h1>${esc(title)}</h1></div></div></div>${inner}`;
@@ -228,7 +228,7 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
   (!inspecting?'<button type="button" data-action="resetbuild">'+icon('close',16)+' Start fresh</button>':'')+
   '<button type="button" data-route="beta">'+icon('info',16)+' Report a problem</button>'+
   '</div></details></div></section>';
- const nav='<nav class="studioTopNav" aria-label="Build Studio location"><button type="button" data-route="home">'+icon('back',16)+' Home</button><span>Build Studio</span></nav>';
+ const nav='<nav class="arcanaCrumbs" aria-label="Build Studio location"><button type="button" data-route="home">Home</button><span aria-hidden="true">›</span><span aria-current="page">Build Studio</span></nav>';
  return '<div class="studioPage">'+nav+profile+labsTabs('studio')+
  '<section class="studioPrimaryEquipment" aria-label="Equipment editor"><header class="studioEquipmentHeading"><h2>'+icon('shield',19)+' Equipment</h2><span>'+Object.values(b.equipment).filter(Boolean).length+' / '+LOADOUT_LAYOUT.length+' equipped</span></header>'+
  slots+'<p class="studioEquipmentHint">Select a slot to change equipment, rarity, awakening, or Drop Bonus.</p></section>'+ '<section class="pfPanel"><h2>Arcana Pathfinder</h2><p>Need to check an upgrade? Browse the cost of any rarity or awakening level without setting up your character or entering materials.</p><button class="btn primary" data-route="calculators/pathfinder">Browse upgrade costs '+icon('arrow',16)+'</button></section>'+
@@ -271,7 +271,7 @@ const ASSASSIN_MOTIFS=[
   ['Mirror assault','assassin-06','Tier 3 · right']
 ];
 function skillArt(id){return `<img src="/assets/skills/${id}-precision.svg" alt="" class="arcanaSkillImage" loading="lazy">`}
-function skills(){return layout('Class Skill Tree','BUILD STUDIO',labsTabs('skills')+classBoard(state,state.treeData),'git')}
+function skills(){return '<div class="studioPage studioSubPage">'+crumbTrail('Class Skills')+labsTabs('skills')+classBoard(state,state.treeData)+'</div>'}
 function visiblePassiveState(){
  const route=parseRoute(),token=route.query.get('share');
  if(!token)return {...state,passiveReadOnly:false};
@@ -285,7 +285,7 @@ function passives(){
  if(token&&shared.token!==token)return layout('Shared Passive Tree','BUILD STUDIO','<p class="notice">Opening shared passive tree…</p>','layers');
  if(token&&!shared.build)return layout('Shared Passive Tree','BUILD STUDIO',`<p class="notice">${esc(shared.error||'Shared passive tree unavailable.')}</p><button class="btn secondary" data-route="labs/passives">Open my passive planner</button>`,'layers');
  const view=visiblePassiveState();
- return layout(token?'Shared Passive Skill Tree':'Passive Skill Tree','ARCANA LABS',labsTabs('passives')+passiveBoard(view,state.treeData),'layers');
+ return '<div class="studioPage studioSubPage">'+crumbTrail('Passive Skill Tree')+labsTabs('passives')+passiveBoard(view,state.treeData)+'</div>';
 }
 function storeTreePlan(){const plan={characterLevel:state.characterLevel,treeClassId:state.treeClassId,treeBranchId:state.treeBranchId,passiveAlloc:state.passiveAlloc,classAlloc:state.classAlloc,classAllocById:state.classAllocById,passiveFreeMode:state.passiveFreeMode};try{localStorage.setItem('arcana-v4-tree-plan',JSON.stringify(plan))}catch{}if(state.draft){Object.assign(state.draft,{characterLevel:state.characterLevel,passiveAlloc:structuredClone(state.passiveAlloc),classAllocById:structuredClone(state.classAllocById),passiveFreeMode:state.passiveFreeMode});persistDraft()}}
 function restoreTreePlan(){try{const p=JSON.parse(localStorage.getItem('arcana-v4-tree-plan')||'{}');state.characterLevel=Math.max(1,Math.floor(Number(p.characterLevel)||1));state.treeClassId=p.treeClassId||null;state.treeBranchId=p.treeBranchId||null;state.passiveAlloc=p.passiveAlloc&&typeof p.passiveAlloc==='object'?p.passiveAlloc:{};state.passiveFreeMode=typeof p.passiveFreeMode==='boolean'?p.passiveFreeMode:state.draft?.passiveFreeMode===true;state.classAlloc=p.classAlloc&&typeof p.classAlloc==='object'?p.classAlloc:{};state.classAllocById=p.classAllocById&&typeof p.classAllocById==='object'?p.classAllocById:{}}catch{}}
@@ -522,7 +522,7 @@ function action(name,arg,btn){if(['accent','custom-accent','site-surface','icon-
  case 'icon-color':if(setIconColor(arg)){render();toast('Icon color updated')}else toast('Unable to save icon color');break;
  case 'icon-mode':if(setIconMode(arg)){render();toast('Icon appearance updated')}else toast('Unable to save icon appearance');break;
  case 'skipmain':node('content')?.focus({preventScroll:false});break;
-  case 'homemenu':showHomeMenu(arg);break;
+  case 'homemenu':if(arg==='pathfinder')go('calculators/pathfinder');else showHomeMenu(arg);break;
  case 'wikishare':{
   if(!wikiArticleById(arg)){toast('Guide unavailable');break;}
   const url=location.origin+location.pathname+location.search+'#/wiki/article?id='+encodeURIComponent(arg);
