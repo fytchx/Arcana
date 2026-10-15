@@ -73,7 +73,7 @@ test('site skins and icon modes stay independently customizable and survive read
   assert.equal((settings.match(/class="arcanaSurfaceChoice/g)||[]).length,0);
   assert.doesNotMatch(settingsView(),/data-action="accent"/);
   assert.match(settings,/Open protected Design Control/);
-  assert.match(settings,/data-arg="cyan-blue" aria-pressed="true"/);
+  assert.match(settings,/data-arg="crimson-red" aria-pressed="true"/);
   assert.equal(setSiteSurface('bogus'),false);
   assert.equal(setIconColor('javascript:alert(1)'),false);
   assert.equal(setIconMode('none'),false);
