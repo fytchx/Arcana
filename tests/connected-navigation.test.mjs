@@ -104,7 +104,8 @@ test('Wiki collection and home include obvious connected destinations',()=>{
 
 test('Application keeps connected destinations and exposes a universal home path',async()=>{
  const code=await app();
- assert.match(code,/globalHomeBar\(dest\)/);
+ assert.doesNotMatch(code,/globalHomeBar\(dest\)/);
+  assert.match(code,/node\('content'\)\.innerHTML=routeView\(\)/);
  assert.match(code,/homeScreen\(\)/);
  assert.match(code,/case 'directory':return directoryView\(\)/);
  assert.match(code,/case 'wiki\/topic':return wikiTopicView/);
