@@ -743,3 +743,23 @@ html[data-arcana-design-active="true"]:not([data-arcana-design-pattern="contours
 .miniCanvas[data-mini-pattern="facets"]{--mini-pattern:conic-gradient(from 30deg at 30% 25%,transparent,var(--mini-accent),transparent 40%,var(--mini-secondary),transparent 60%)}
 .miniCanvas[data-mini-pattern="scanlines"]{--mini-pattern:repeating-linear-gradient(0deg,transparent 0 2px,var(--mini-accent) 3px,transparent 4px,transparent 7px)}
 .miniCanvas[data-mini-pattern="honeycomb"]{--mini-pattern:repeating-linear-gradient(60deg,transparent 0 16px,var(--mini-accent) 17px,transparent 18px,transparent 34px),repeating-linear-gradient(-60deg,transparent 0 16px,var(--mini-secondary) 17px,transparent 18px,transparent 34px)}
+
+
+/* Follow-up mobile audit: keep From / To on one compact two-field row.
+   The old one-column overrides made four selects needlessly fill a screen. */
+@media(max-width:700px){
+ .pathfinderHub .pathRangeInputs{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+ .pathfinderHub .pathRangeInputs fieldset{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(90px,.7fr);gap:7px;align-items:end}
+ .pathfinderHub .pathRangeInputs fieldset legend{grid-column:1/-1}
+ .pathfinderHub .pathRangeInputs label{min-width:0;max-width:100%;gap:5px}
+ .pathfinderHub .pathRangeInputs select{min-height:46px;padding:9px 8px;font-size:16px}
+ .pathfinderHub .pathRangeArrow{font-size:17px;min-height:22px;line-height:1;align-self:center;transform:rotate(90deg);padding:0}
+ .pathfinderHub .pathRangeSlot{gap:5px;margin-bottom:10px}
+ .pathfinderHub .pathRangeSlot>small{font-size:11px;line-height:1.4}
+ .pathfinderHub .pathRangeSummary{margin-top:13px}
+ .pathfinderHub .pathRangeSummary>div{padding:11px}
+ .pathfinderHub .pathBiomeGroup .pathMaterials{gap:5px;padding:8px}
+ .pathfinderHub .pathBiomeGroup .pathMaterial{padding:8px 10px;min-height:42px}
+ .pathfinderHub .pathBiomeGroup summary{min-height:50px}
+ .pathfinderHub .pathRangeOutput>h4{font-size:15px}
+}
