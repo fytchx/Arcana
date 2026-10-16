@@ -1,4 +1,4 @@
-import {readDesign,replaceDesignDraft,DESIGN_FIELDS,validateDesignField} from './design-controls.js';
+import {readDesign,replaceDesignDraft,DESIGN_FIELDS,DEFAULT_DESIGN,validateDesignField} from './design-controls.js';
 import {esc} from './ui.js';
 
 const KEY='arcana-owner-theme-snapshots-v1';
@@ -10,7 +10,8 @@ const safeList=()=>{
  }catch{return []}
 };
 const persist=v=>localStorage.setItem(KEY,JSON.stringify(v));
-const isValid=x=>x&&typeof x==='object'&&!Array.isArray(x)&&DESIGN_FIELDS.every(k=>validateDesignField(k,x[k])!==null)&&Object.keys(x).every(k=>DESIGN_FIELDS.includes(k));
+const isValid=x=>x&&typeof x==='object'&&!Array.isArray(x)&&['main','card','action','text','pattern','buttonText'].every(k=>validateDesignField(k,x[k])!==null)&&Object.keys(x).every(k=>DESIGN_FIELDS.includes(k)&&validateDesignField(k,x[k])!==null);
+const migrate=x=>Object.fromEntries(DESIGN_FIELDS.map(k=>[k,validateDesignField(k,x?.[k])??DEFAULT_DESIGN[k]]));
 export const themeVaultMarkup=()=>{
  const all=safeList();
  const cards=Array.from({length:SLOT_COUNT},(_,slot)=>{
@@ -48,7 +49,7 @@ export function wireThemeVault({onLoad,toast}){
    }else if(b.hasAttribute('data-theme-load')){
     const picked=all[slot];
     if(!picked||!isValid(picked.design))throw Error('That saved theme is incomplete.');
-    if(!replaceDesignDraft(picked.design))throw Error('Could not restore this theme.');
+    if(!replaceDesignDraft(migrate(picked.design)))throw Error('Could not restore this theme.');
     onLoad?.();toast('Loaded '+picked.name+'. This is only a preview.');
    }else if(b.hasAttribute('data-theme-clear')){
     if(!all[slot]||!confirm('Clear this locally saved theme?'))return;
@@ -61,7 +62,7 @@ export function wireThemeVault({onLoad,toast}){
     const data=JSON.parse(field?.value||'null');
     if(data?.format!=='arcana-theme-v1'||!isValid(data.design))throw Error('Invalid Theme Studio export. No changes made.');
     if(!confirm('Replace your local preview with this imported theme? Nothing will be published.'))return;
-    if(!replaceDesignDraft(data.design))throw Error('Could not import this theme.');
+    if(!replaceDesignDraft(migrate(data.design)))throw Error('Could not import this theme.');
     onLoad?.();toast('Imported as a private preview. Publish separately when ready.');
    }
    if(b.hasAttribute('data-theme-save')||b.hasAttribute('data-theme-clear')){
