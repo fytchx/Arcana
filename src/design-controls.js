@@ -22,12 +22,24 @@ export const DESIGN_PRESETS=Object.freeze({
  sapphire:{name:'Cosmic Sapphire',main:'#080F20',card:'#152642',action:'#498CFF',secondaryAccent:'#B794FF',text:'#EDF4FF',borderColor:'#41608B',mutedText:'#AABBD5',navBar:'#152642',buttonText:'#080F20',pattern:'stars'},
  ember:{name:'Solar Ember',main:'#180E0B',card:'#302019',action:'#FF914D',secondaryAccent:'#F5C451',text:'#FFF3E8',borderColor:'#895439',mutedText:'#D2B4A4',navBar:'#302019',buttonText:'#180E0B',pattern:'rings'},
  rose:{name:'Mystic Rose',main:'#170B19',card:'#301B32',action:'#F472D0',secondaryAccent:'#A78BFA',text:'#FFF0FA',borderColor:'#814D80',mutedText:'#D5B4D0',navBar:'#301B32',buttonText:'#170B19',pattern:'contours'},
- silver:{name:'Silver Eclipse',main:'#0E1118',card:'#222936',action:'#CBD5E1',secondaryAccent:'#6FB9FF',text:'#F8FAFC',borderColor:'#617083',mutedText:'#BCC6D4',navBar:'#222936',buttonText:'#0E1118',pattern:'plain'}
+ silver:{name:'Silver Eclipse',main:'#0E1118',card:'#222936',action:'#CBD5E1',secondaryAccent:'#6FB9FF',text:'#F8FAFC',borderColor:'#617083',mutedText:'#BCC6D4',navBar:'#222936',buttonText:'#0E1118',pattern:'plain'},
+ cobalt:{name:'Cobalt Citadel',main:'#081322',card:'#172B44',action:'#60A5FA',secondaryAccent:'#22D3EE',text:'#EFF7FF',borderColor:'#44678D',mutedText:'#ACBED5',navBar:'#102139',buttonText:'#061625',pattern:'hex',intensity:20,roundness:10,buttonStyle:'solid'},
+ obsidian:{name:'Obsidian Forge',main:'#0A0C10',card:'#171A20',action:'#EABF7A',secondaryAccent:'#D18C69',text:'#F5EFE8',borderColor:'#53483F',mutedText:'#B7A99C',navBar:'#121419',buttonText:'#18120C',pattern:'grain',intensity:13,glow:7,roundness:8},
+ frost:{name:'Frostbound',main:'#08171E',card:'#18313B',action:'#73E0FF',secondaryAccent:'#B7F7F3',text:'#EAFBFF',borderColor:'#41737E',mutedText:'#A6CBD3',navBar:'#142833',buttonText:'#07171C',pattern:'crystal',intensity:22},
+ twilight:{name:'Twilight Archive',main:'#100E25',card:'#242040',action:'#D4A7FF',secondaryAccent:'#FFACD6',text:'#F7EEFF',borderColor:'#675680',mutedText:'#C0B2D5',navBar:'#1A1733',buttonText:'#170E21',pattern:'nebula',intensity:28,heroSize:'showcase'},
+ woodland:{name:'Elderwood',main:'#0D1512',card:'#1B2B23',action:'#A3C77C',secondaryAccent:'#E5C68A',text:'#ECF4E9',borderColor:'#526953',mutedText:'#B6C4AD',navBar:'#17241D',buttonText:'#0E180E',pattern:'weave',intensity:17},
+ crimson:{name:'Crimson Ritual',main:'#180C12',card:'#331C28',action:'#FF6382',secondaryAccent:'#F5A862',text:'#FFF1F3',borderColor:'#8B4B61',mutedText:'#D0A9B5',navBar:'#29141E',buttonText:'#24070E',pattern:'runes',intensity:23},
+ midnight:{name:'Midnight Signal',main:'#080D14',card:'#13212D',action:'#45F4DC',secondaryAccent:'#8AB8FF',text:'#E9FFFC',borderColor:'#386D70',mutedText:'#A3CBD2',navBar:'#101B27',buttonText:'#071717',pattern:'circuit',intensity:20,buttonStyle:'outline'},
+ parchment:{name:'Ancient Parchment',main:'#17130F',card:'#302820',action:'#E0BC78',secondaryAccent:'#BA9A6B',text:'#FFF0D8',borderColor:'#675944',mutedText:'#CCB89A',navBar:'#241C16',buttonText:'#24170B',pattern:'topography',intensity:20,fontFamily:'serif'},
+ quartz:{name:'Prismatic Quartz',main:'#10111E',card:'#25243A',action:'#F2ABFF',secondaryAccent:'#7DE2FF',text:'#F9F4FF',borderColor:'#74628C',mutedText:'#C7B9D7',navBar:'#1B1A2E',buttonText:'#160D1C',pattern:'facets',intensity:18,roundness:19},
+ steel:{name:'Steel Tactician',main:'#111720',card:'#27303E',action:'#98B7D8',secondaryAccent:'#E2BC7A',text:'#F3F6FA',borderColor:'#657384',mutedText:'#B8C3D1',navBar:'#1B2533',buttonText:'#121820',pattern:'scanlines',intensity:12,density:'compact',roundness:7},
+ gilded:{name:'Gilded Night',main:'#111015',card:'#26202A',action:'#F5C866',secondaryAccent:'#D0A4ED',text:'#FFF9ED',borderColor:'#76634E',mutedText:'#C8BCAF',navBar:'#201C23',buttonText:'#1D1509',pattern:'honeycomb',intensity:16,heroActionStyle:'spotlight'},
+ ink:{name:'Ink & Starlight',main:'#0B0B13',card:'#1C1C2A',action:'#F4F4F9',secondaryAccent:'#998DFF',text:'#F3F3F8',borderColor:'#545467',mutedText:'#B4B4C7',navBar:'#171722',buttonText:'#101018',pattern:'stars',intensity:18,buttonStyle:'outline',glow:8}
 });
 export const DESIGN_FIELDS=Object.keys(DEFAULT_DESIGN);
 export function validateDesignField(key,value){
  if(colors.has(key))return normalizeDesignHex(value);
- if(key==='pattern')return ['contours','rings','stars','grid','aurora','diagonal','plain'].includes(value)?value:null;
+ if(key==='pattern')return ['contours','rings','stars','grid','aurora','diagonal','hex','grain','crystal','nebula','weave','runes','circuit','topography','facets','scanlines','honeycomb','plain'].includes(value)?value:null;
  if(key==='iconMode')return ['two-tone','neutral','accent','muted'].includes(value)?value:null;
  if(key==='fontFamily')return ['system','rounded','serif','mono'].includes(value)?value:null;
  if(key==='density')return ['comfortable','compact','spacious'].includes(value)?value:null;
