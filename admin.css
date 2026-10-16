@@ -1,0 +1,50 @@
+/* Unified Arcana owner/admin workspace. Always in normal scroll flow. */
+.adminConsole{max-width:1100px;margin-inline:auto;padding-bottom:110px}
+.adminConsole>h1{margin-bottom:8px}
+.adminConsole>p{color:var(--muted);line-height:1.6}
+.adminTabNav{display:flex;gap:7px;overflow-x:auto;padding:9px 0 15px;margin:12px 0 18px;scrollbar-width:thin;overscroll-behavior-inline:contain}
+.adminTab{flex:0 0 auto;white-space:nowrap;min-height:43px;padding:8px 13px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text);font:inherit;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation}
+.adminTab.active{color:var(--theme-main,#0d1019);background:var(--theme-highlight,#a98bff);border-color:var(--theme-highlight,#a98bff)}
+.adminTab:focus-visible,.adminConsole button:focus-visible,.adminConsole input:focus-visible,.adminConsole textarea:focus-visible{outline:2px solid var(--theme-highlight,#a98bff);outline-offset:2px}
+.adminPanelSection{border:1px solid var(--line);border-radius:16px;padding:17px 15px;margin:15px 0;background:var(--panel)}
+.adminPanelSection h2{margin:0 0 8px;font-size:18px;color:var(--text)}
+.adminPanelSection>p{margin:0 0 16px;color:var(--muted);font-size:13px;line-height:1.55}
+.adminPanelSection .launchMenuLinks{display:grid;gap:7px}
+.adminPublishedStatus{display:flex;flex-direction:column;gap:6px;padding:10px 0 16px}
+.adminPublishedStatus strong{color:var(--text)}
+.adminPublishedStatus span,.adminHelp{font-size:12px;color:var(--muted);line-height:1.65}
+.adminPublishBar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.adminPublishBar>.btn{font-size:12px;min-height:50px;white-space:normal}
+.adminPublishBar>button:first-child{grid-column:span 2}
+.adminAppearance .arcanaDesignLab{margin-top:16px}
+.adminAppearance .designMiniPreview{position:relative!important;top:auto!important;inset:auto!important;transform:none!important;z-index:auto!important;max-height:none!important}
+.adminInfo,.adminError,.adminEmpty{padding:12px 13px;border-radius:10px;font-size:12px;line-height:1.5;background:var(--panel2);color:var(--muted)}
+.adminError{color:#ffb1b1;border:1px solid #9c5555}
+.adminField{display:flex;flex-direction:column;gap:8px;margin:12px 0;font-size:13px;font-weight:700;color:var(--text)}
+.adminField input,.adminField textarea{width:100%;box-sizing:border-box;font:inherit;font-size:14px;min-height:43px;padding:11px 12px;border-radius:10px;color:var(--text);background:var(--bg);border:1px solid var(--line);resize:vertical}
+.adminMemberStats{font-size:12px;color:var(--muted)}
+.adminMemberStats strong{font-size:21px;color:var(--text)}
+.adminMemberList{display:grid;gap:7px;max-height:600px;overflow-y:auto;overscroll-behavior:contain}
+.adminMemberRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;padding:13px 11px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--text);cursor:pointer}
+.adminMemberRow.active{border-color:var(--theme-highlight,#a98bff);background:var(--panel2)}
+.adminMemberRow strong{display:block;font-size:13px}
+.adminMemberRow small{display:block;color:var(--muted);font-size:10px;margin-top:5px;overflow-wrap:anywhere}
+.adminMemberRole{max-width:120px;text-align:right;font-size:10px;color:var(--muted);overflow-wrap:anywhere}
+.adminPagination{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:15px 0 8px;font-size:12px;color:var(--muted)}
+.adminPagination button,.adminHistoryRow button{min-height:40px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:7px 14px;color:var(--text);font:inherit;cursor:pointer}
+.adminPagination button:disabled{opacity:.35;cursor:default}
+.adminRoleForm{padding:14px 12px;margin-top:18px;background:var(--bg);border-radius:13px;border:1px solid var(--line)}
+.adminRoleForm h3{margin:0 0 6px;font-size:17px}
+.adminRoleForm p{overflow-wrap:anywhere;color:var(--muted);font-size:11px}
+.adminRoleForm fieldset{border:1px solid var(--line);border-radius:12px;display:grid;gap:10px;margin:15px 0;padding:14px}
+.adminRoleForm legend{padding:0 7px;color:var(--muted);font-size:12px}
+.adminRoleCheck{display:flex;align-items:center;gap:10px;min-height:39px;font-size:13px;color:var(--text)}
+.adminRoleCheck input{width:18px;height:18px;accent-color:var(--theme-highlight,#a98bff)}
+.adminHistory{display:grid;gap:7px}
+.adminHistoryRow{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.adminHistoryRow small{display:block;margin-top:4px;color:var(--muted);font-size:10px}
+.adminNoticeForm{display:grid;gap:14px}
+.adminSiteStatus strong{color:#94ebc3}
+.adminSiteStatus p{font-size:12px;color:var(--muted)}
+.siteNotice{padding:12px 16px;margin:12px 0;border:1px solid var(--theme-highlight,var(--accent));border-radius:12px;background:color-mix(in srgb,var(--theme-highlight,var(--accent)) 12%,var(--panel));color:var(--text);font-size:13px;line-height:1.5;text-align:center;overflow-wrap:anywhere}
+@media(min-width:720px){.adminPublishBar{display:flex;align-items:center}.adminPublishBar>button:first-child{grid-column:auto}.adminPanelSection{padding:22px 24px}.adminMemberRole{max-width:230px}}
