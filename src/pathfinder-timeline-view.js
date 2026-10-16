@@ -1,6 +1,7 @@
 import {esc} from './ui.js';
 import {PATHFINDER_SLOTS,MODE_LABELS,money,timelineModel,stageStepLabel,normalizeQuickView} from './pathfinder-timeline.js';
 import {quoteRange,normalizeRange} from './pathfinder-range.js';
+import {sourceMaterialGroups,recipeSlotStatus} from './pathfinder-material-groups.js';
 
 const title=stage=>stage.tier?stage.name:stage.id+' · Awakened';
 const compactGold=n=>{
@@ -40,7 +41,7 @@ export function pathfinderChapterDetail(model){
 // timeline and its position stay mounted, so editing totals feels instant.
 const rangeLevelOptions=(stage,level)=>Array.from({length:(stage?.max||0)+1},(_,i)=>
  option(String(i),i===0?'Start / +0':'+'+i,String(level))).join('');
-export function pathfinderRangeContent(snapshot,quick,raw={}){
+export function pathfinderRangeContent(snapshot,quick,raw={},catalog=[]){
  const quote=quoteRange(snapshot,raw,quick),{range,stages}=quote;
  const from=stages.find(s=>s.id===range.fromStage),to=stages.find(s=>s.id===range.toStage);
  const stageOpts=(selected)=>stages.map(s=>option(s.id,s.tier?s.name+' ('+s.id+')':s.id,selected)).join('');
@@ -59,10 +60,10 @@ export function pathfinderRangeContent(snapshot,quick,raw={}){
  return controls+'<div class="pathRangeOutput" role="status" aria-live="polite">'+summary+'</div>'+
  '<p class="pathRangeFoot">Base recipe totals include intervening enhancements and tier / rank transitions. Failed attempts are excluded.</p>';
 }
-export function pathfinderRangePanel(snapshot,quick,raw={}){
+export function pathfinderRangePanel(snapshot,quick,raw={},catalog=[]){
  return '<details class="pathRangePanel" id="pathRangePanel"><summary><span><strong>Calculate From → To</strong>'+
  '<small>Full Gold and material totals between any two upgrade levels</small></span><span aria-hidden="true">▾</span></summary>'+
- '<div id="pathRangeContent">'+pathfinderRangeContent(snapshot,quick,raw)+'</div></details>';
+ '<div id="pathRangeContent">'+pathfinderRangeContent(snapshot,quick,raw,catalog)+'</div></details>';
 }
 const option=(value,name,chosen)=>'<option value="'+esc(value)+'" '+(value===chosen?'selected':'')+'>'+esc(name)+'</option>';
 export function pathfinderView(raw,snapshot,error='',rangePlan={},options={}){
@@ -88,9 +89,9 @@ export function pathfinderView(raw,snapshot,error='',rangePlan={},options={}){
  ).join('')+'</div>'+
  '<div class="pathRangeHead"><label for="pathStepRange">Slide through upgrades</label><output id="pathStepValue" for="pathStepRange">'+(view.level===0?'Transition':'+'+view.level)+'</output></div>'+
  '<input id="pathStepRange" data-path-range aria-label="Selected upgrade level" type="range" min="0" max="'+active.max+'" value="'+view.level+'" step="1" aria-valuetext="'+esc(stageStepLabel(active,view.level))+'" style="--path-progress:'+(active.max?Math.round(view.level/active.max*100):0)+'%">'+
- pathfinderStepDetail(model)+pathfinderChapterDetail(model)+(options.includeRange===false?'':pathfinderRangePanel(snapshot,view,rangePlan))+
+ pathfinderStepDetail(model)+pathfinderChapterDetail(model)+(options.includeRange===false?'':pathfinderRangePanel(snapshot,view,rangePlan,options.catalog))+
  '</section>'+
- '<p class="pathSource">Source: '+esc(snapshot.sourceVersion||snapshot.source||'October 2026 verified-cost snapshot')+'. Base Gold and material amounts per upgrade, before failed attempts. This dataset uses the same tier recipes for every slot; slot-specific cost differences are not documented. A1–A30 are supported where source data is available.</p>'+
+ '<p class="pathSource">Source: '+esc(snapshot.sourceVersion||snapshot.source||'October 2026 verified-cost snapshot')+'. Base Gold and material amounts per upgrade, before failed attempts. This source has only generic tier recipes. It cannot verify slot-specific cost differences. A1–A30 are supported where source data is available.</p>'+
  '<div class="pathActions"><button type="button" class="btn secondary" data-route="labs/build">Back to Build Studio</button><button type="button" class="btn secondary" data-route="wiki/library" data-params="kind=material">Materials in the Wiki</button></div>'+
  '</div>';
 }
