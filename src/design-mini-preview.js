@@ -60,6 +60,9 @@ export function syncDesignMiniPreview(){
  const caption=section.querySelector('[data-mini-caption]');
  if(caption)caption.textContent=mode==='before'?'Before: your original theme when this editor opened.':'After: your current local draft. Nothing is published until you choose Publish.';
 }
+export function focusDesignMiniPreview(){
+ previewMode='focus';previewExpanded=true;storePreview();syncDesignMiniPreview();
+}
 export function wireDesignMiniPreview(){
  if(typeof document==='undefined')return;
  document.addEventListener('click',e=>{
