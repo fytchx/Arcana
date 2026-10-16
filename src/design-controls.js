@@ -40,10 +40,10 @@ export function readDesign(){
  for(const k of DESIGN_FIELDS){const v=validateDesignField(k,stored[k]);if(v!==null)values[k]=v}
  return values;
 }
-let priorDesign=null;
+let priorDesign=null,priorEditKey='',lastEditAt=0;
 export function undoDesign(){
  if(!priorDesign)return false;
- const prior=priorDesign;priorDesign=null;
+ const prior=priorDesign;priorDesign=null;priorEditKey='';lastEditAt=0;
  try{localStorage.setItem(DESIGN_KEY,JSON.stringify(prior))}catch{return false}
  applyDesign(globalThis.document?.documentElement);
  if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:design-change'));
@@ -54,7 +54,7 @@ export function applyDesignPreset(key){
  const {name,...values}=preset;
  const old=readDesign(),next={...old,...values};
  try{localStorage.setItem(DESIGN_KEY,JSON.stringify(next))}catch{return false}
- priorDesign=old;applyDesign(globalThis.document?.documentElement);
+ priorDesign=old;priorEditKey='preset';lastEditAt=0;applyDesign(globalThis.document?.documentElement);
  if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:design-change'));
  return true;
 }
@@ -62,13 +62,14 @@ export function writeDesign(key,value){
  const safe=validateDesignField(key,value);if(safe===null)return false;
  const old=readDesign(),next={...old,[key]:safe};
  try{localStorage.setItem(DESIGN_KEY,JSON.stringify(next))}catch{return false}
- priorDesign=old;
+ if(priorEditKey!==key||Date.now()-lastEditAt>850)priorDesign=old;
+ priorEditKey=key;lastEditAt=Date.now();
  applyDesign(globalThis.document?.documentElement);if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:design-change'));return true;
 }
 export function resetDesign(){
  const before=readDesign();
  try{localStorage.removeItem(DESIGN_KEY)}catch{return false}
- priorDesign=before;
+ priorDesign=before;priorEditKey='reset';lastEditAt=0;
  applyDesign(globalThis.document?.documentElement);if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:design-change'));return true;
 }
 export function applyDesign(root=globalThis.document?.documentElement){
