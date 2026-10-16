@@ -1,3 +1,4 @@
+import {NAV_DESTINATIONS} from './context-nav.js';
 /* Curated ArcanaWiki Season 2 expansion (October 2026).
  * New, source-checked summaries of official IdleArc patch notes, not raw Fandom imports.
  * Artwork is the user-approved Arcana Refined illustration set (not game screenshots).
@@ -11,7 +12,7 @@ const guide=(id,title,category,summary,keywords,sourceUrl,art,sections,relatedAr
  sections:sections.map(([heading,body],i)=>({title:heading,body,...(i===0?{imageId:'image-topic'}:{})})),
  images:[{id:'image-topic',name:'Arcana Refined illustration',src:'/assets/icons/idlearc-refined/'+art+'.svg',alt:'Arcana Refined artwork illustrating '+title,caption:'Arcana Refined illustration. Refer to the Game Atlas for original IdleArc item and creature artwork.'}],
  connections:{articles:relatedArticles,tools:relatedTools,collections:relatedCollections},
- actions:[] // Article navigation is provided through related-content connections.
+ actions:relatedTools.map(key=>NAV_DESTINATIONS[key]).filter(dest=>dest?.route).slice(0,3).map(dest=>({label:dest.label,route:dest.route+(dest.params?'?'+new URLSearchParams(dest.params):''),icon:dest.icon}))
 });
 export const WIKI_EXPANSION_ARTICLES=Object.freeze([
  guide("druid-class","Druid: Class Overview","Classes","The Druid's pet-focused combat identity, weapon and three skill branches.","druid lodge tunnels symbiosis gnarled stick pet damage skill tree",notesS2,"classes/class-druid",[["Meet the Druid","The Druid joined IdleArc with Season 2. It is a pet-focused class built around strengthening its companion in combat. Its signature weapon is the two-handed Gnarled Stick."],["Three skill branches","The Druid has three named branches: Lodge, Tunnels and Symbiosis. Browse the in-game Class Skill Tree or Arcana's verified skill references to see the current effects of individual skills; avoid treating an old screenshot as a current skill description."],["Build planning","Pet Damage and the strength of your own attacks are different parts of a build. Compare them in your actual loadout before replacing items. A two-handed weapon also changes which off-hand slot is available; the Torch still has its separate slot."],["Where to go next","Start with the Class Skill Tree, inspect the associated passives and place equipment in Build Studio. Read the pet articles before spending resources on Compound or evolved affixes."]],["pet-compound","season-2","torch-slot"],["skills","build","petlab"],["class-skill","pet"]),
