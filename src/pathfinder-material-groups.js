@@ -28,10 +28,11 @@ export function sourceMaterialGroups(materials=[],sourceMaterials=[],catalog=[])
   const meta=source.get(keyFrom(mat))||{};
   const record=entryMaterial(mat);
   const targetId=number(meta.monster_id??mat.monster_id);
-  const monster=targetId?byMonsterId.get(targetId):null;
+  const sourceName=text(meta.sourceMonster||mat.sourceMonster||info(record,'Monster','Dropped By','Dropped From','Source Monster'));
+  const monster=(targetId?byMonsterId.get(targetId):null)||monsters.find(x=>String(x.title||'').toLowerCase()===sourceName.toLowerCase())||null;
   // Independent verified material references may identify the source when
   // the recipe's numeric monster link is absent.
-  const biome=text(meta.sourceBiome||mat.sourceBiome||info(monster,'Biome')||info(record,'Biome','Source Biome'));
+  const biome=text(meta.sourceBiome||mat.sourceBiome||info(monster,'Biome')||info(record,'Biome','Source Biome','Found In'));
   const bi=biomeByName.get(biome.toLowerCase());
   const tier=text(meta.tier||mat.tier||info(monster,'Tier','Monster Tier')||info(record,'Tier','Monster Tier')||info(bi?.row,'Tier','Biome Tier'));
   const unlock=number(info(bi?.row,'Unlock Monster Level','Unlock ML','Monster Level','Minimum ML','Unlock Level','Order','Index'));
@@ -41,7 +42,7 @@ export function sourceMaterialGroups(materials=[],sourceMaterials=[],catalog=[])
   const g=groups.get(groupKey);
   if(g.tier==='Tier unverified'&&tier)g.tier=tier;
   g.monsterOrder=Math.min(g.monsterOrder,monsterNum);
-  g.materials.push({...mat,sourceMonster:text(meta.sourceMonster||info(record,'Source Monster')||monster?.title),biome:biome||'',tier:tier||'',sourceVerified:Boolean(biome)});
+  g.materials.push({...mat,sourceMonster:text(sourceName||monster?.title),biome:biome||'',tier:tier||'',sourceVerified:Boolean(biome)});
  }
  const arranged=[...groups.values()].sort((a,b)=>{
   if(a.kind!==b.kind)return ({biome:0,unknown:1,special:2}[a.kind]-{biome:0,unknown:1,special:2}[b.kind]);
