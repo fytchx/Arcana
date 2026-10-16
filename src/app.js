@@ -894,7 +894,27 @@ function wirePathfinderQuick(){
  },true);
 }
 
-function init(){wireDesignMiniPreview();wireThemeVault({toast,onLoad:()=>{applyTheme(parseRoute().route);syncWorkshopInputs();}});document.addEventListener('click',e=>{
+function wireThemeStudioControls(){
+ document.addEventListener('click',e=>{
+  const pattern=e.target.closest('[data-theme-pattern]');
+  if(pattern&&pattern.closest('.arcanaDesignLab')){
+   if(!isAppearanceAdmin())return;
+   if(writeDesign('pattern',pattern.dataset.themePattern)){
+    applyTheme(parseRoute().route);
+    syncWorkshopInputs();
+   }
+   return;
+  }
+  const filter=e.target.closest('[data-theme-pattern-filter]');
+  if(filter&&filter.closest('.arcanaDesignLab')){
+   const category=filter.dataset.themePatternFilter;
+   const section=filter.closest('.themePatternLibrary');
+   for(const button of section.querySelectorAll('[data-theme-pattern-filter]'))button.setAttribute('aria-pressed',String(button===filter));
+   for(const tile of section.querySelectorAll('[data-pattern-category]'))tile.hidden=category!=='All'&&tile.dataset.patternCategory!==category;
+  }
+ });
+}
+function init(){wireDesignMiniPreview();wireThemeStudioControls();wireThemeVault({toast,onLoad:()=>{applyTheme(parseRoute().route);syncWorkshopInputs();}});document.addEventListener('click',e=>{
  const summary=e.target.closest('details[data-home-panel] > summary');
  if(!summary)return;
  const group=summary.parentElement,key=group.dataset.homePanel;
