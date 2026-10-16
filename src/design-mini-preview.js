@@ -16,8 +16,8 @@ export function endDesignMiniSession(){baseline=null;mode='after';page='home';}
 const tile=(title,sub,id)=>'<div class="miniTile"><div class="miniTileIcon">'+icon(id)+'</div><div class="miniTileWords"><b>'+title+'</b><small>'+sub+'</small></div>'+icon('arrow',12)+'</div>';
 export function designMiniMarkup(){
  start();
- return '<section class="designMiniPreview" aria-label="Live mini theme preview">'+
- '<header class="miniPreviewHeader"><div><strong>Live preview</strong><small>Always beside your controls · updates instantly</small></div><div class="miniPreviewHeaderActions"><button type="button" data-mini-toggle aria-expanded="'+String(previewExpanded)+'" aria-controls="miniPreviewContents">'+(previewExpanded?'Collapse':'Open')+'</button><button type="button" data-mini-size="'+(previewMode==='focus'?'dock':'focus')+'" aria-pressed="'+String(previewMode==='focus')+'">'+(previewMode==='focus'?'Done':'Expand')+'</button></div></header>'+
+ return '<section class="designMiniPreview" aria-label="Live mini theme preview">'+'<div class="miniPreviewGrip" data-mini-grip title="Drag up or down to resize preview"></div>'+
+ '<header class="miniPreviewHeader"><div><strong>Live preview</strong><small>Always beside your controls · updates instantly</small></div><div class="miniPreviewHeaderActions"><button type="button" data-mini-toggle aria-expanded="'+String(previewExpanded)+'" aria-controls="miniPreviewContents">'+(previewExpanded?'Collapse':'Open')+'</button><button type="button" data-mini-size="cycle" aria-pressed="'+String(previewMode==='focus')+'">'+(previewMode==='focus'?'Dock':previewMode==='expanded'?'Full screen':'Larger')+'</button></div></header>'+
  '<div id="miniPreviewContents" class="miniPreviewContents" '+(previewExpanded?'':'hidden')+'><div class="miniPreviewToolbar"><div class="miniDeviceSwitch" role="group" aria-label="Simulated device width"><button type="button" data-mini-device="phone" aria-pressed="'+(device==='phone')+'">Phone</button><button type="button" data-mini-device="tablet" aria-pressed="'+(device==='tablet')+'">Tablet</button><button type="button" data-mini-device="desktop" aria-pressed="'+(device==='desktop')+'">Desktop</button></div><button type="button" data-mini-reset>Reset view</button></div><div class="miniCompare" role="group" aria-label="Before and After"><button type="button" data-mini-compare="before" aria-pressed="false">Before</button><button type="button" data-mini-compare="after" aria-pressed="true">After</button></div>'+
  '<div class="miniCanvas" data-mini-canvas data-mini-page="home" data-mini-pattern="contours" aria-label="Miniature Arcana homepage showing current appearance">'+
  '<div class="miniHeader"><span>'+icon('message-square')+'</span><b><i class="miniLogo"></i> ARCANA</b><span>'+icon('search')+'</span></div>'+
@@ -49,7 +49,7 @@ export function syncDesignMiniPreview(){
  if(dock){dock.dataset.previewMode=previewMode;dock.dataset.miniDevice=device;dock.dataset.previewExpanded=String(previewExpanded)}
  for(const b of section.querySelectorAll('[data-mini-device]'))b.setAttribute('aria-pressed',String(b.dataset.miniDevice===device));
  const focus=section.querySelector('[data-mini-size]');
- if(focus){focus.dataset.miniSize=previewMode==='focus'?'dock':'focus';focus.textContent=previewMode==='focus'?'Done':'Expand';focus.setAttribute('aria-pressed',String(previewMode==='focus'))}
+ if(focus){focus.textContent=previewMode==='focus'?'Dock':previewMode==='expanded'?'Full screen':'Larger';focus.setAttribute('aria-pressed',String(previewMode==='focus'))}
  const toggle=section.querySelector('[data-mini-toggle]');
  if(toggle){toggle.textContent=previewExpanded?'Collapse':'Open';toggle.setAttribute('aria-expanded',String(previewExpanded))}
  const contents=section.querySelector('#miniPreviewContents');
@@ -66,7 +66,7 @@ export function wireDesignMiniPreview(){
   const b=e.target.closest('button[data-mini-compare],button[data-mini-page],button[data-mini-reset],button[data-mini-toggle],button[data-mini-size],button[data-mini-device]');
   if(!b||!b.closest('.designMiniPreview')||document.documentElement.dataset.arcanaAdminDesign!=='true')return;
   if(b.hasAttribute('data-mini-toggle')){previewExpanded=!previewExpanded;if(!previewExpanded&&previewMode==='focus')previewMode='dock';}
-  else if(b.hasAttribute('data-mini-size')){previewExpanded=true;previewMode=previewMode==='focus'?'dock':'focus';}
+  else if(b.hasAttribute('data-mini-size')){previewExpanded=true;previewMode=previewMode==='dock'?'expanded':previewMode==='expanded'?'focus':'dock';}
   else if(b.hasAttribute('data-mini-device'))device=['phone','tablet','desktop'].includes(b.dataset.miniDevice)?b.dataset.miniDevice:device;
   else if(b.hasAttribute('data-mini-reset')){mode='after';page='home';device='phone';}
   else if(b.hasAttribute('data-mini-compare'))mode=b.dataset.miniCompare==='before'?'before':'after';
