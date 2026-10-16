@@ -1,3 +1,4 @@
+import {WIKI_EXPANSION_ARTICLES} from './wiki-expansion.js';
 /* ArcanaWiki editorial content. Each practical claim is Season 2 scoped.
    The October 9 config is the canonical source of game entities and stats.
    Human-written articles are concise, not speculative, and do not imply optimal builds. */
@@ -56,6 +57,7 @@ export const WIKI_ARTICLES=Object.freeze([
   {title:'Reforge and compare',body:'Combining three identical items reforges them into an item of the next rarity. In the Codex you can compare an equipment base by its configured implicit-stat ranges, then open the Forge cost reference for its tier progression.'},
   {title:'Build around purpose',body:'An item with the right effects for a farming build can be useful even when a different base has a larger raw stat. Compare what each item contributes to your actual build rather than treating rarity as a complete ranking.'}],actions:[{label:'Browse Item Codex',route:'wiki/library?kind=item',icon:'shield'},{label:'Compare equipment',route:'calculators/compare',icon:'compare'},{label:'Read Forge guide',route:'wiki/article?id=forge',icon:'book'}],source:'official-patch',sourceUrl:'https://idlearc.com/patch-notes/1-3-1'},
 
+ ...WIKI_EXPANSION_ARTICLES
 ]);
 export const WIKI_CATEGORY_LIST=Object.freeze([
  ['all','Everything','book'],['item','Equipment','shield'],['material','Materials','gem'],['currency','Currencies','gem'],['class-skill','Class Skills','git'],['passive','Passives','layers'],['rune','Runes','gem'],['runeword','Runewords','link'],['pet','Pet Companions','paw'],['pet-bonus','Pet Bonuses','paw'],['pet-affix','Pet Affixes','paw'],['biome','Biomes','layers'],['monster','Monsters','sword'],['item-affix','Gear Affixes','spark']
