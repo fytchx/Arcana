@@ -1155,3 +1155,30 @@ html select optgroup:disabled{
     background-color:Canvas;
   }
 }
+
+
+/* 2026-10-16 UX audit: keep responsive screens inside the physical viewport.
+   Preserve intentional horizontal scrolling in nested chip and timeline rails. */
+html{max-width:100%;overscroll-behavior-x:none}
+body,#app.shell{max-width:100%;min-width:0}
+#content{min-width:0}
+:where(.studioPage,.wikiPage,.communityPage,.pathfinderHub,.pfPage,.adminConsole,.betaPage,
+ .wikiLibrary,.guildPage,.lfgPage,.arcanaFeaturedPage,.accountFarmLists){max-width:100%;min-width:0}
+:where(input,select,textarea){max-width:100%}
+:where(button,a,summary,input,select,textarea):focus-visible{
+ outline:2px solid var(--theme-highlight,var(--accent,#a98bff));
+ outline-offset:2px;
+}
+:where(button,a,summary)[aria-disabled="true"]{cursor:not-allowed;opacity:.55}
+:where(.pathBiomeGroup>summary,.pathRangePanel>summary,.designOptionSection>summary){scroll-margin-top:92px}
+@media(max-width:700px){
+ html,body,#app.shell{width:100%;max-width:100%;overflow-x:clip}
+ #content{width:100%;min-width:0;max-width:100%;overflow-x:clip}
+ .top{width:100%;max-width:100%;background:var(--theme-main,var(--bg,#0d1019))!important}
+ #arcanaDock{max-width:100%;background:var(--theme-secondary,var(--panel,#191e2b))!important}
+ :where(.pathPage,.pathfinderHub,.pathfinderHubContent,.pathRangeWorkspace,
+ .wikiPage,.wikiArticleCard,.communityPage,.accountFarmLists,
+ .guildPage,.studioPage,.adminConsole){min-width:0;max-width:100%;overflow-wrap:break-word}
+ :where(input[type="text"],input[type="search"],input[type="number"],input[type="email"],select,textarea){font-size:max(16px,1em)}
+ :where(button,a[role="button"],summary){-webkit-tap-highlight-color:transparent}
+}
