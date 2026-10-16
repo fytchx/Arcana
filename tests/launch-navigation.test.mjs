@@ -76,5 +76,5 @@ test('only administrators set appearance; users can keep reduced motion',async()
  assert.match(publicSettings,/managed centrally by Arcana administrators/);
  const css=await readFile(new URL('../launch-navigation.css',import.meta.url),'utf8');
  assert.match(css,/ARCANA SLATE/);
- assert.match(css,/grid-template-columns:minmax\\(0,1fr\\)/);
+ assert.match(css,/grid-template-columns:minmax\(0,1fr\)/);
 });
