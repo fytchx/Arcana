@@ -11,19 +11,16 @@ test('faceted Arcana branding responds to all 10 site accents',()=>{
  assert.match(logoFilterForAccent('#E8E9ED'),/grayscale\(1\)/);
  assert.equal(logoFilterForAccent('#danger'),'none');
 });
-test('logo uses the selected site accent, never the independently selected icon color',()=>{
+test('visitor branding ignores obsolete personal accent and icon overrides',()=>{
  const saved=globalThis.localStorage,store=new Map();
  try{
   globalThis.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v)};
   assert.ok(setIconColor('cyan-blue'));
   assert.ok(setAccent('crimson-red'));
-  assert.equal(themeStatus().palette.highlight,'#EC464D');
-  assert.equal(themeStatus().iconColor,'#13C5F4');
-  assert.match(logoFilterForAccent(themeStatus().palette.highlight),/hue-rotate\(/);
- }finally{
-  if(saved===undefined)delete globalThis.localStorage;
-  else globalThis.localStorage=saved;
- }
+  assert.equal(themeStatus().palette.highlight,'#A98BFF');
+  assert.equal(themeStatus().iconColor,themeStatus().palette.highlight);
+  assert.match(logoFilterForAccent(themeStatus().palette.highlight),/hue-rotate\\(/);
+ }finally{if(saved===undefined)delete globalThis.localStorage;else globalThis.localStorage=saved;}
 });
 test('homepage grain is a static safe neutral asset; cards and logo follow palette',async()=>{
  const css=await readFile(new URL('../launch-navigation.css',import.meta.url),'utf8');
