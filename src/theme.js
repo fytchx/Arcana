@@ -1,4 +1,4 @@
-import {applyDesign} from './design-controls.js';
+import {applyDesign,setPublishedDesign,currentPublishedDesign} from './design-controls.js';
 /**
  * Arcana design bridge. Read-only client; the owner changes palettes in the
  * existing authenticated Design Control service. Never expose write credentials.
@@ -8,6 +8,9 @@ export const PUBLIC_THEME_URL='https://arcana-design-control-production.up.railw
 const HEX=/^#[0-9a-fA-F]{6}$/;
 // Slate is the stable neutral surface. Only the accent varies by player choice.
 const DEFAULT={main:'#0D1019',secondary:'#191E2B',highlight:'#A98BFF'};
+let publishedNotice={enabled:false,text:''};
+export const siteNotice=()=>({...publishedNotice});
+export const isThemePublished=()=>Boolean(currentPublishedDesign());
 export const ACCENT_PRESETS=Object.freeze([
  {id:'neon-green',name:'Neon Green',hex:'#00FF88'},
  {id:'arcane-violet',name:'Arcane Violet',hex:'#A98BFF'},
@@ -90,17 +93,13 @@ export function logoFilterForAccent(input){
  return 'hue-rotate('+degrees.toFixed(1)+'deg) saturate(1.1) brightness(1.035)';
 }
 export function themeStatus(){
- const remote=resolveTheme(config,currentScope),accentChoice=selectedAccent(),surfaceChoice=selectedSiteSurface();
- const custom=ACCENT_PRESETS.find(x=>x.id===accentChoice);
- const surface=SITE_SURFACES.find(x=>x.id===surfaceChoice);
- const palette={
-  main:surface?.main||remote.palette.main,
-  secondary:surface?.secondary||remote.palette.secondary,
-  highlight:accentChoice==='custom'?customAccent():custom?.hex||remote.palette.highlight
- };
- const iconColorChoice=selectedIconColor();
- const iconColor=ACCENT_PRESETS.find(x=>x.id===iconColorChoice)?.hex||palette.highlight;
- return {...remote,palette,accentChoice,surfaceChoice,iconColorChoice,iconColor,iconMode:selectedIconMode(),available:remote.available};
+ const remote=resolveTheme(config,currentScope);
+ const published=currentPublishedDesign();
+ // The public palette never reads individual browsers' old theme preferences.
+ const palette=published?{main:published.main,secondary:published.card,highlight:published.action}:remote.palette;
+ return {...remote,palette,accentChoice:'site',surfaceChoice:'managed',
+  iconColorChoice:'follow-site',iconColor:palette.highlight,
+  iconMode:published?.iconMode||'two-tone',available:Boolean(published)||remote.available};
 }
 export function subscribeTheme(cb){listeners.add(cb);return ()=>listeners.delete(cb)}
 export function applyTheme(scope=currentScope){
@@ -135,12 +134,19 @@ export function applyTheme(scope=currentScope){
 export async function refreshTheme(){
  if(typeof fetch==='undefined')return applyTheme();
  try{
-  const response=await fetch(PUBLIC_THEME_URL,{cache:'no-store',mode:'cors',credentials:'omit'});
-  if(!response.ok)throw new Error('Theme API '+response.status);
-  const data=await response.json();
-  if(!data||typeof data!=='object'||!data.palette||!data.sections)throw new Error('Invalid theme data');
-  config=data;
- }catch(err){if(!config)console.info('Arcana theme service unavailable; using default styling.');}
+  // This first-party endpoint is the authoritative published design for every user.
+  const res=await fetch('/api/site/theme',{cache:'no-store',credentials:'omit'});
+  if(!res.ok)throw new Error('Public site config '+res.status);
+  const site=await res.json();
+  setPublishedDesign(site?.design||null);
+  publishedNotice=site?.notice?.enabled&&typeof site.notice.text==='string'?{enabled:true,text:site.notice.text}:{enabled:false,text:''};
+  if(site?.design){config=null;return applyTheme();}
+ }catch(e){console.warn('Published appearance unavailable; retaining last validated theme.');}
+ // Compatibility until the Creator publishes the first combined theme.
+ try{
+  const response=await fetch(PUBLIC_THEME_URL,{cache:'no-store',mode:'cors',credentials:'omit',signal:AbortSignal.timeout(7000)});
+  if(response.ok){const data=await response.json();if(data?.palette&&data?.sections)config=data;}
+ }catch{}
  return applyTheme();
 }
 // Preview-only one-time visual reset: preserve accounts, builds, wiki and all other data.
@@ -161,6 +167,7 @@ export function initTheme(){
  applyTheme();
  void refreshTheme();
  if(typeof window!=='undefined'){
+  window.setInterval(()=>{if(!document.hidden)void refreshTheme()},240000);
   window.addEventListener('focus',()=>{void refreshTheme()});
   window.addEventListener('pageshow',()=>{void refreshTheme()});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refreshTheme()});
