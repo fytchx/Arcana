@@ -776,3 +776,53 @@ html[data-arcana-design-active="true"]:not([data-arcana-design-pattern="contours
 .arcanaDesignLab .designPresetSwatches{width:30px;height:30px;grid-template-columns:repeat(2,13px);grid-template-rows:repeat(2,13px)}
 .arcanaDesignLab .designPreset[hidden]{display:none!important}
 @media(min-width:860px){.arcanaDesignLab .designPresetGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+
+/* Pathfinder audit: separate input, totals and biome groups instead of one
+   uninterrupted sheet of numbers. Uses the published theme's surfaces. */
+.pathfinderHub .pathRangeWorkspace{
+ padding:clamp(12px,2vw,20px);
+ border-color:var(--theme-border);
+ background-color:color-mix(in srgb,var(--theme-secondary) 89%,var(--theme-main));
+ border-radius:var(--arcana-card-radius,15px);
+ min-width:0;
+}
+.pathfinderHub .pathRangeSlot{
+ padding:10px 12px;
+ border:1px solid var(--theme-border);
+ border-radius:11px;
+ background:color-mix(in srgb,var(--theme-main) 66%,var(--theme-secondary));
+}
+.pathfinderHub .pathRangeInputs{
+ padding:14px;
+ border:1px solid var(--theme-border);
+ border-radius:12px;
+ background:var(--theme-main);
+}
+.pathfinderHub .pathRangeInputs fieldset legend{
+ font-size:12px;
+ letter-spacing:.085em;
+ margin-bottom:8px;
+ color:var(--theme-highlight);
+}
+.pathfinderHub .pathRangeInputs label{color:var(--soft);font-size:12px}
+.pathfinderHub .pathRangeSummary>div{
+ background:var(--theme-main);
+ border-color:var(--theme-border);
+}
+.pathfinderHub .pathRangeSummary>div strong{color:var(--text);font-weight:820}
+.pathfinderHub .pathRangeSummary>div:first-child strong{color:var(--theme-highlight)}
+.pathfinderHub .pathBiomeGroup{background:var(--theme-secondary);border-color:var(--theme-border)}
+.pathfinderHub .pathBiomeGroup>summary{background:color-mix(in srgb,var(--theme-highlight) 5%,var(--theme-secondary))}
+.pathfinderHub .pathBiomeGroup>summary:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:-3px}
+.pathfinderHub .pathBiomeGroup .pathMaterials{background:var(--theme-main)}
+.pathfinderHub .pathBiomeGroup .pathMaterial{border:1px solid var(--theme-border);background:var(--theme-secondary)}
+.pathfinderHub .pathMaterial small{font-size:11px}
+.pathfinderHub .pathGroupGuide{margin-top:0}
+@media(max-width:700px){
+ .pathfinderHub .pathRangeWorkspace{padding:10px;border-radius:12px}
+ .pathfinderHub .pathRangeInputs{padding:10px;gap:6px}
+ .pathfinderHub .pathRangeSlot{padding:9px 10px}
+ .pathfinderHub .pathRangeInputs fieldset legend{font-size:12px}
+ .pathfinderHub .pathRangeSummary>div strong{font-size:clamp(17px,4.4vw,22px)}
+}
