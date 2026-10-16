@@ -9,7 +9,7 @@ const tabs=[
  ['traffic','Traffic','chart'],['appearance','Appearance','settings'],['members','Members & Roles','users'],
  ['content','Content','book'],['site','Site Controls','shield']
 ];
-const state={config:null,history:[],members:[],total:0,page:1,pages:1,member:null,query:'',error:'',noticeText:'',noticeEnabled:false,loading:false,status:null,busy:false};
+const state={config:null,configLoaded:false,history:[],members:[],membersLoaded:false,total:0,page:1,pages:1,member:null,query:'',error:'',noticeText:'',noticeEnabled:false,loading:false,status:null,busy:false};
 const tabName=v=>tabs.some(t=>t[0]===v)?v:'traffic';
 const adminFetch=async(path,options={})=>{
  const response=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(15000),...options});
@@ -80,14 +80,14 @@ export function adminConsoleView({admin=false,authEnabled=false,tab='traffic'}={
 let siteLoading=false,membersLoading=false,healthLoading=false;
 export async function loadAdminConsole(tab,refresh,{force=false}={}){
  const selected=tabName(tab);
- if(['appearance','site','members'].includes(selected)&&(!state.config||force)&&!siteLoading){
+ if(['appearance','site','members'].includes(selected)&&(!state.configLoaded||force)&&!siteLoading){
   siteLoading=true;try{const data=await adminFetch('/api/admin/site');state.config=data;state.history=data.history||[];state.error='';}
-  catch(e){state.error=e.message;}finally{siteLoading=false;refresh();}
+  catch(e){state.error=e.message;}finally{state.configLoaded=true;siteLoading=false;refresh();}
  }
  if(selected==='traffic')void loadAdminTraffic(refresh);
- if(selected==='members'&&(!state.members.length||force)&&!membersLoading){
+ if(selected==='members'&&(!state.membersLoaded||force)&&!membersLoading){
   membersLoading=true;try{const data=await adminFetch('/api/admin/members?page='+state.page);state.members=data.members;state.total=data.total;state.pages=data.pages;state.error='';}
-  catch(e){state.error=e.message;}finally{membersLoading=false;refresh();}
+  catch(e){state.error=e.message;}finally{state.membersLoaded=true;membersLoading=false;refresh();}
  }
  if(selected==='site'&&(!state.status||force)&&!healthLoading){
   healthLoading=true;try{state.status=await adminFetch('/health');}catch(e){state.error=e.message;}finally{healthLoading=false;refresh();}
@@ -120,7 +120,7 @@ export function wireAdminConsole({refresh,toast}){
   if(command==='publish-theme'){if(!confirm('Publish your current appearance for ALL Arcana visitors?'))return;
    void publish('design',{design:readDesign()},refresh,toast).catch(err=>{state.error=err.message;refresh()});}
   if(command==='discard-theme'){replaceDesignDraft(currentPublishedDesign()||DEFAULT_DESIGN);toast('Draft restored to published theme.');refresh();}
-  if(command==='prev'||command==='next'){state.page=Math.max(1,Math.min(state.pages,state.page+(command==='next'?1:-1)));state.members=[];state.member=null;state.query='';void loadAdminConsole('members',refresh,{force:true});}
+  if(command==='prev'||command==='next'){state.page=Math.max(1,Math.min(state.pages,state.page+(command==='next'?1:-1)));state.members=[];state.membersLoaded=false;state.member=null;state.query='';void loadAdminConsole('members',refresh,{force:true});}
   if(command==='refresh-status')void loadAdminConsole('site',refresh,{force:true});
  });
  document.addEventListener('submit',e=>{
