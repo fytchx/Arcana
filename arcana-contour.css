@@ -454,7 +454,7 @@ html[data-arcana-design-pattern="plain"] #content.homeFullscreen .launchQuickCar
 
 /* All additional adjustments stay on the signed-in creator/admin's local experience. */
 html[data-arcana-design-active="true"] :is(body,.shell,#content,.layer,.sheet){font-family:var(--arcana-design-font-family,system-ui)}
-html[data-arcana-design-active="true"] #content:not(:has(.arcanaDesignLab)) :is(p,.wikiArticleSection li){font-size:calc(13px * var(--arcana-font-scale,1))}
+html[data-arcana-design-active="true"] #content:not(:has(.arcanaDesignLab)) :is(.wikiArticleSection p,.wikiArticleSection li,.pathPage .pathSource,.communityPage .playerBio){font-size:clamp(13px,calc(14px * var(--arcana-font-scale,1)),18px);line-height:1.55}
 html[data-arcana-design-active="true"] :is(.launchSeeAll,.wikiTextLink){color:var(--arcana-secondary-accent,var(--theme-highlight))}
 html[data-arcana-design-active="true"] :is(.launchQuickCard,.wikiTopic,.wikiArticleCard,.launchFeatureRow,.pathfinderHubHead){border-width:var(--arcana-border-width,1px);border-color:color-mix(in srgb,var(--arcana-border-color,#66708B) calc(var(--arcana-edge-alpha,.42) * 100%),transparent)}
 html[data-arcana-design-active="true"] #content.homeFullscreen .launchHero{border-width:var(--arcana-border-width,1px)}
