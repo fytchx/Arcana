@@ -11,7 +11,7 @@ import {can} from '../src/account-policy.js';
 
 const base='http://localhost:3000';
 function fake(method,path,body,token,origin=base){
- const req=Readable.from(body?[JSON.stringify(body)]:[]);
+ const req=Readable.from(body?[Buffer.from(JSON.stringify(body))]:[]);
  req.method=method;req.url=path;
  req.headers={host:'localhost:3000',origin,'content-type':'application/json',cookie:token?'arcana-session='+token:''};
  const res={status:0,body:'',writeHead(code){this.status=code;},end(text){this.body+=text||'';}};
