@@ -8,7 +8,7 @@ const notesS2="https://idlearc.com/patch-notes/1-3-1";
 const notes121="https://idlearc.com/patch-notes/1-2-1";
 const notesClasses="https://idlearc.com/classes";
 const guide=(id,title,category,summary,keywords,sourceUrl,art,sections,relatedArticles,relatedTools,relatedCollections)=>({
- id,title,category,summary,keywords,source:'official-patch',sourceLabel:sourceUrl===notesS2?'IdleArc Season 2 patch notes':sourceUrl===notes121?'IdleArc Season Update v1.2.1':'IdleArc official class skill trees',sourceUrl,
+ id,title,category,summary,keywords,source:sourceUrl===notesClasses?'official-classes':'official-patch',sourceLabel:sourceUrl===notesS2?'IdleArc Season 2 patch notes':sourceUrl===notes121?'IdleArc Season Update v1.2.1':'IdleArc official class skill trees',sourceUrl,
  readTime:Math.max(2,Math.ceil(sections.reduce((n,s)=>n+s[1].split(/\s+/).length,0)/210))+' min',
  sections:sections.map(([heading,body],i)=>({title:heading,body,...(i===0?{imageId:'image-topic'}:{})})),
  images:[{id:'image-topic',name:'Arcana Refined illustration',src:'/assets/icons/idlearc-refined/'+art+'.svg',alt:'Arcana Refined artwork illustrating '+title,caption:'Arcana Refined illustration. Original game artwork is available in the Game Atlas.'}],
