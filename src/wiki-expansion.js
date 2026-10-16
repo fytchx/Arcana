@@ -3,6 +3,7 @@ import {NAV_DESTINATIONS} from './context-nav.js';
  * New, source-checked summaries of official IdleArc patch notes, not raw Fandom imports.
  * Artwork is the user-approved Arcana Refined illustration set (not game screenshots).
  * Specific values not confirmed in current official sources are deliberately omitted.
+ * Three public citations: two release notes and the official class skill reference.
  */
 const notesS2="https://idlearc.com/patch-notes/1-3-1";
 const notes121="https://idlearc.com/patch-notes/1-2-1";
