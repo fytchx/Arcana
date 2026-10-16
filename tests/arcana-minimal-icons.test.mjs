@@ -42,15 +42,10 @@ test('all legacy app and studio icons render from the new registry',()=>{
  }
  assert.match(arcanaIcon('not-an-icon',30),/data-arcana-icon="box"/);
 });
-test('site skins and icon modes stay independently customizable and survive readback',()=>{
- const original=globalThis.localStorage;
- const values=new Map();
+test('visitor palette and icon mode follow published site design, not local controls',()=>{
+ const original=globalThis.localStorage,values=new Map();
  try{
   globalThis.localStorage={getItem:k=>values.get(k)??null,setItem:(k,v)=>values.set(k,v)};
-  assert.equal(selectedSiteSurface(),'slate');
-  assert.equal(selectedAccent(),'arcane-violet');
-  assert.equal(selectedIconColor(),'follow-site');
-  assert.equal(selectedIconMode(),'two-tone');
   assert.equal(SITE_SURFACES.length,5);
   assert.equal(ICON_MODES.length,4);
   assert.equal(ACCENT_PRESETS.length,10);
@@ -58,40 +53,22 @@ test('site skins and icon modes stay independently customizable and survive read
   assert.equal(setAccent('crimson-red'),true);
   assert.equal(setIconColor('cyan-blue'),true);
   assert.equal(setIconMode('accent'),true);
-  assert.equal(themeStatus().palette.main,'#080E19');
-  assert.equal(themeStatus().palette.secondary,'#142039');
-  assert.equal(themeStatus().palette.highlight,'#EC464D');
-  assert.equal(themeStatus().iconColor,'#13C5F4');
-  assert.equal(themeStatus().iconMode,'accent');
-  assert.equal(selectedSiteSurface(),'midnight');
-  assert.equal(selectedIconMode(),'accent');
-  assert.equal(selectedIconColor(),'cyan-blue');
-  const settings=settingsView({admin:true});
-  assert.equal((settings.match(/class="slateAccentChoice/g)||[]).length,10);
-  assert.equal((settings.match(/class="arcanaIconColorChoice/g)||[]).length,0);
-  assert.equal((settings.match(/class="arcanaIconModeChoice/g)||[]).length,0);
-  assert.equal((settings.match(/class="arcanaSurfaceChoice/g)||[]).length,0);
+  assert.equal(themeStatus().palette.main,'#0D1019');
+  assert.equal(themeStatus().palette.secondary,'#191E2B');
+  assert.equal(themeStatus().palette.highlight,'#A98BFF');
+  assert.equal(themeStatus().iconColor,'#A98BFF');
+  assert.equal(themeStatus().iconMode,'two-tone');
+  assert.doesNotMatch(settingsView({admin:true}),/slateAccentChoice/);
   assert.doesNotMatch(settingsView(),/data-action="accent"/);
-  assert.match(settings,/Open protected Design Control/);
-  assert.match(settings,/data-arg="crimson-red" aria-pressed="true"/);
   assert.equal(setSiteSurface('bogus'),false);
   assert.equal(setIconColor('javascript:alert(1)'),false);
   assert.equal(setIconMode('none'),false);
-  assert.equal(selectedIconMode(),'accent');
-  assert.equal(selectedSiteSurface(),'midnight');
-  assert.equal(setIconColor('follow-site'),true);
-  assert.equal(themeStatus().iconColor,themeStatus().palette.highlight);
-  assert.equal(setSiteSurface('slate'),true);
-  assert.equal(themeStatus().palette.main,'#0D1019');
- }finally{
-  if(original===undefined)delete globalThis.localStorage;
-  else globalThis.localStorage=original;
- }
+ }finally{if(original===undefined)delete globalThis.localStorage;else globalThis.localStorage=original;}
 });
 test('browsable catalog shows every glyph and server allows every SVG path',async()=>{
  const page=iconGalleryView();
  assert.equal((page.match(/class="arcanaIconCatalogItem"/g)||[]).length,ICON_IDS.length);
- assert.match(page,/Customize icon appearance/);
+ assert.match(page,/controlled globally by Arcana administrators/);
  const server=await readFile(new URL('../server.mjs',import.meta.url),'utf8');
  assert.match(server,/const publicAsset=\/\^\\\/assets/);
  assert.match(server,/svg/);
