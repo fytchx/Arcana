@@ -38,7 +38,12 @@ const atlasCategories=new Set(imageKinds);
 const referenceCategories=new Set(['material','passive','rune','runeword','pet-bonus','pet-affix','item-affix']);
 const shelfFor=kind=>atlasCategories.has(kind)?'atlas':referenceCategories.has(kind)?'reference':'all';
 const recordArt=(entry,size)=>imageKinds.has(entry.gameKind||entry.kind)||hasCodexOfficialArt(entry)?codexOfficialArt(entry,size):icon(badgeIcon(entry.gameKind||entry.kind),size>50?40:20);
-export function wikiArticleCard(a){return `<button class="wikiArticleCard" data-route="wiki/article" data-params="id=${esc(a.id)}"><span class="wikiArticleTop"><span class="wikiType">${literal(a.category)}</span><span class="wikiTime">${literal(a.readTime)}</span></span><strong>${literal(a.title)}</strong><p>${literal(a.summary)}</p><span class="wikiCardArrow">Read guide ${icon('arrow',15)}</span></button>`}
+export function wikiArticleCard(a){
+ const asset=String(a.images?.[0]?.src||'');
+ const curated=/^\/assets\/icons\/idlearc-refined\/(?:classes|equipment|features|stats|tokens)\/[a-z0-9-]+\.svg$/.test(asset);
+ const thumbnail=curated?'<img class="wikiArticleCardArt" src="'+literal(asset)+'" alt="" loading="lazy" decoding="async">':'';
+ return `<button class="wikiArticleCard" data-route="wiki/article" data-params="id=${esc(a.id)}"><span class="wikiArticleTop"><span class="wikiType">${literal(a.category)}</span><span class="wikiTime">${literal(a.readTime)}</span></span><span class="wikiArticleCardTitleRow"><strong>${literal(a.title)}</strong>${thumbnail}</span><p>${literal(a.summary)}</p><span class="wikiCardArrow">Read guide ${icon('arrow',15)}</span></button>`;
+}
 export function wikiRecordCard(e){
  const kind=e.gameKind||e.kind,real={...e,kind},visual=imageKinds.has(kind);
  const content=`<span class="wikiRecordContent"><strong>${literal(e.title)}</strong><small>${literal(e.description||recordKindLabel(kind))}</small></span>`;
