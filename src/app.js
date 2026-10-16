@@ -816,7 +816,23 @@ function movePathfinderStep(direction){
  const index=model.stages.findIndex(s=>s.id===model.active.id),next=model.stages[index+(direction>0?1:-1)];
  if(next)updatePathfinderQuick({stage:next.id,level:direction>0?0:next.max},true);
 }
+async function savePathfinderChecklist(button){
+ if(!recipeState.data)return toast('Verified upgrade recipes are unavailable.');
+ if(!currentAccount()){toast('Sign in with Discord to save a checklist to your profile.');go('account');return;}
+ const quote=quoteRange(recipeState.data,state.pathfinderRange,state.pathfinderQuick);
+ if(!quote.complete||quote.error||!quote.materials.length)return toast('Select a valid complete upgrade route first.');
+ const groups=sourceMaterialGroups(quote.materials,recipeState.data.materials,verifiedState.entries)
+  .map(group=>({name:group.name,tier:group.tier,items:group.materials.map(m=>({slug:m.slug,name:m.name,quantity:String(m.quantity)}))}));
+ const list={title:'Upgrade '+quote.range.fromStage+' +'+quote.range.fromLevel+' → '+quote.range.toStage+' +'+quote.range.toLevel,
+  slot:state.pathfinderQuick.slot,from:quote.range.fromStage+' +'+quote.range.fromLevel,
+  to:quote.range.toStage+' +'+quote.range.toLevel,gold:String(quote.gold),
+  sourceVersion:String(recipeState.data.sourceVersion||recipeState.data.source||''),groups};
+ button.disabled=true;button.textContent='Saving to profile…';
+ try{await saveFarmingList(list);toast('Farming checklist saved to your account.');go('account');}
+ catch(error){toast(error.message);button.disabled=false;button.textContent='Save a farming checklist to my profile';}
+}
 function wirePathfinderQuick(){
+ document.addEventListener('click',e=>{const button=e.target.closest('[data-pf-save-list]');if(!button)return;e.preventDefault();if(!button.disabled)void savePathfinderChecklist(button);});
  document.addEventListener('input',e=>{
   if(!e.target.matches('[data-path-range]'))return;
   const value=Number(e.target.value);
@@ -844,6 +860,7 @@ function wirePathfinderQuick(){
   if(e.target.matches('[data-path-slot]')){
    updatePathfinderQuick({slot:e.target.value},true);
   }
+  if(e.target.matches('[data-path-range-slot]'))state.pathfinderQuick=saveQuickView({...state.pathfinderQuick,slot:e.target.value});
  });
  // Scroll snapping also selects the nearest visible step or tier. No heavy
  // rerender happens while a finger is actively dragging the map.
