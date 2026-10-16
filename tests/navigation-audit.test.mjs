@@ -25,7 +25,7 @@ test('primary screens do not repeat their dock entries or gear-tool panels',asyn
 });
 test('all gear upgrade routes use Pathfinder tabs without duplicated total calculator',async()=>{
  const app=await source('src/app.js'),view=await source('src/pathfinder-timeline-view.js'),css=await source('arcana-contour.css');
- assert.match(app,/case 'calculators\/upgrade':return pathfinderHub\('upgrade'\)/);
+ assert.match(app,/case 'calculators\/upgrade':return pathfinderHub\('range'\)/);
  assert.match(app,/case 'calculators\/compare':return pathfinderHub\('compare'\)/);
  assert.match(app,/includeRange:false/);
  assert.match(view,/options.includeRange===false/);
