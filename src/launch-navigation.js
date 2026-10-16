@@ -147,11 +147,11 @@ export const designPanel=()=>{
  const presets=Object.entries(DESIGN_PRESETS).map(([id,p])=>'<button class="designPreset" type="button" data-action="design-preset" data-arg="'+id+'"><span class="designPresetSwatches" style="--preset-main:'+p.main+';--preset-card:'+p.card+';--preset-primary:'+p.action+';--preset-secondary:'+p.secondaryAccent+'"><i></i><i></i><i></i><i></i></span><strong>'+esc(p.name)+'</strong></button>').join('');
  return '<section class="slateSettingsBlock arcanaDesignLab"><span class="launchEyebrow">ADVANCED · ADMIN ONLY</span><h2>Design Workshop</h2><p>All appearance settings in one place. Preview changes privately, then Publish to everyone above when ready.</p>'+
  designMiniMarkup()+
- '<div class="designPresetHeader"><h3>Quick Themes</h3><p>Six complete palettes. Pick one, then fine-tune any individual setting.</p></div><div class="designPresetGrid">'+presets+'</div>'+
+ '<div class="designPresetHeader"><h3>Theme presets</h3><p>18 distinct starting points, from minimalist layouts to illustrated arcane textures. Preview before publishing.</p></div><div class="designPresetGrid">'+presets+'</div>'+
  group('Colors &amp; accents',
  color('main','Background')+color('card','Panels')+color('action','Primary accent')+color('secondaryAccent','Second accent')+color('text','Text')+color('mutedText','Muted text')+color('borderColor','Border color')+color('navBar','Navigation bar')+color('buttonText','Button text'))+
  group('Background &amp; lighting',
- select('pattern','Background pattern',[['contours','Arcane waves'],['rings','Mystic rings'],['stars','Starlight'],['grid','Arcane grid'],['aurora','Aurora glow'],['diagonal','Rune lines'],['plain','None']])+
+ select('pattern','Background pattern',[['contours','Arcane waves'],['rings','Mystic rings'],['stars','Starlight'],['grid','Arcane grid'],['aurora','Aurora glow'],['diagonal','Diagonal runes'],['hex','Hex lattice'],['grain','Soft grain'],['crystal','Frost crystals'],['nebula','Cosmic nebula'],['weave','Elderwood weave'],['runes','Ritual symbols'],['circuit','Circuit grid'],['topography','Topographic layers'],['facets','Prismatic facets'],['scanlines','Fine scanlines'],['honeycomb','Honeycomb'],['plain','No texture']])+
  slider('intensity','Pattern intensity',0,100)+slider('patternScale','Pattern size',60,180)+slider('glow','Glow strength',0,100)+slider('cardShadow','Card shadow',0,100)+slider('edges','Border intensity',0,100)+slider('borderWidth','Border thickness',0,3)+slider('headerOpacity','Header opacity',65,100))+
  group('Build Studio feature',
  select('heroActionStyle','Feature button style',[['integrated','Integrated dark'],['outline','Quiet outline'],['spotlight','Bright spotlight']])+
