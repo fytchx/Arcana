@@ -357,7 +357,7 @@ html[data-arcana-design-pattern="plain"] #content.homeFullscreen .launchQuickCar
 
 
 /* Miniature admin-only Design Workshop preview. Uses isolated --mini-* tokens. */
-.designMiniPreview{position:sticky;top:calc(var(--arcana-header-height,56px) + 5px);z-index:18;margin:11px 0 15px;padding:9px;background:color-mix(in srgb,var(--theme-main) 96%,#000);border:1px solid color-mix(in srgb,var(--theme-highlight) 38%,var(--line));border-radius:15px;box-shadow:0 8px 30px #0009;color:var(--text)}
+.designMiniPreview{position:relative;margin:11px 0 15px;padding:9px;background:color-mix(in srgb,var(--theme-main) 96%,#000);border:1px solid color-mix(in srgb,var(--theme-highlight) 38%,var(--line));border-radius:15px;box-shadow:0 8px 30px #0009;color:var(--text)}
 .designMiniPreview *{box-sizing:border-box}
 .miniPreviewHeader{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 6px}
 .miniPreviewHeader>div{display:flex;flex-direction:column;gap:1px;min-width:0}
@@ -421,3 +421,80 @@ html[data-arcana-design-pattern="plain"] #content.homeFullscreen .launchQuickCar
 .designMiniPreview .miniCaption{margin:5px 1px 0!important;font-size:9px!important;line-height:1.3!important;color:var(--muted)!important}
 @media(max-width:390px){.designMiniPreview{padding:7px}.miniCanvas .miniPage{padding:6px 7px}.miniPreviewHeader small{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.designMiniPreview *{animation:none!important;transition:none!important}}
+
+
+/* Design Workshop V2: the sample stays in document flow and never floats over form controls. */
+.arcanaDesignLab .designMiniPreview{position:relative!important;top:auto!important;z-index:auto!important;contain:layout style;box-shadow:0 3px 14px #0005}
+.designMiniPreview .miniPreviewContents[hidden]{display:none!important}
+.designMiniPreview .miniPreviewHeaderActions{display:flex;align-items:center;gap:5px}
+.arcanaDesignLab .designOptionSection{margin:10px 0;border:1px solid color-mix(in srgb,var(--theme-highlight) 19%,var(--line));border-radius:12px;overflow:hidden;background:color-mix(in srgb,var(--theme-secondary) 87%,var(--theme-main))}
+.arcanaDesignLab .designOptionSection>summary{padding:13px 13px;min-height:45px;display:flex;align-items:center;justify-content:space-between;gap:7px;cursor:pointer;font-size:14px;font-weight:800;color:var(--text);list-style:none}
+.arcanaDesignLab .designOptionSection>summary::after{content:'⌄';font-size:20px;color:var(--theme-highlight);transition:transform .15s}
+.arcanaDesignLab .designOptionSection[open]>summary::after{transform:rotate(180deg)}
+.arcanaDesignLab .designOptionSection>summary::-webkit-details-marker{display:none}
+.arcanaDesignLab .designOptionSection[open]>summary{border-bottom:1px solid var(--line)}
+.arcanaDesignLab .designOptionDescription{margin:8px 12px 0;color:var(--muted);font-size:11px;line-height:1.4}
+.arcanaDesignLab .designOptionControls{padding:8px 12px 14px}
+.arcanaDesignLab .designPresetHeader{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:17px 0 8px}
+.arcanaDesignLab .designPresetHeader h3{margin:0}
+.arcanaDesignLab .designPresetHeader p{font-size:11px;margin:0;color:var(--muted)}
+.arcanaDesignLab .designPresetGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.arcanaDesignLab .designPreset{display:flex;align-items:center;gap:8px;min-height:53px;padding:9px 10px;text-align:left;border:1px solid var(--line);border-radius:11px;background:var(--theme-main);color:var(--text);cursor:pointer}
+.arcanaDesignLab .designPreset:focus-visible,.arcanaDesignLab .designPreset:hover{border-color:var(--theme-highlight);outline-offset:1px}
+.arcanaDesignLab .designPreset strong{font-size:11px;line-height:1.25}
+.arcanaDesignLab .designPresetSwatches{display:grid;grid-template-columns:repeat(2,12px);grid-template-rows:repeat(2,12px);gap:2px;flex:none}
+.arcanaDesignLab .designPresetSwatches i{border-radius:3px;border:1px solid #ffffff44}
+.arcanaDesignLab .designPresetSwatches i:nth-child(1){background:var(--preset-main)}
+.arcanaDesignLab .designPresetSwatches i:nth-child(2){background:var(--preset-card)}
+.arcanaDesignLab .designPresetSwatches i:nth-child(3){background:var(--preset-primary)}
+.arcanaDesignLab .designPresetSwatches i:nth-child(4){background:var(--preset-secondary)}
+.arcanaDesignLab .designWorkshopActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:13px 0 8px}
+.arcanaDesignLab .designWorkshopActions button{display:flex;align-items:center;justify-content:center;gap:5px;min-height:44px;min-width:0;padding:8px;font-size:12px}
+@media(max-width:390px){.arcanaDesignLab .designPreset{padding:7px;gap:6px}.arcanaDesignLab .designPreset strong{font-size:10px}.arcanaDesignLab .designOptionControls{padding:6px 9px 12px}.designMiniPreview .miniPreviewHeaderActions{gap:3px}.designMiniPreview .miniPreviewHeaderActions button{padding:5px 6px}}
+
+/* All additional adjustments stay on the signed-in creator/admin's local experience. */
+html[data-arcana-admin-design="true"] :is(body,.shell,#content,.layer,.sheet){font-family:var(--arcana-design-font-family,system-ui)}
+html[data-arcana-admin-design="true"] #content:not(:has(.arcanaDesignLab)) :is(p,.wikiArticleSection li){font-size:calc(13px * var(--arcana-font-scale,1))}
+html[data-arcana-admin-design="true"] :is(.launchSeeAll,.wikiTextLink){color:var(--arcana-secondary-accent,var(--theme-highlight))}
+html[data-arcana-admin-design="true"] :is(.launchQuickCard,.wikiTopic,.wikiArticleCard,.launchFeatureRow,.pathfinderHubHead){border-width:var(--arcana-border-width,1px);border-color:color-mix(in srgb,var(--arcana-border-color,#66708B) calc(var(--arcana-edge-alpha,.42) * 100%),transparent)}
+html[data-arcana-admin-design="true"] #content.homeFullscreen .launchHero{border-width:var(--arcana-border-width,1px)}
+html[data-arcana-admin-design="true"] #content.homeFullscreen .launchQuickCard{padding:var(--arcana-card-padding,14px)!important}
+html[data-arcana-admin-design="true"] :is(.wikiTopic,.wikiArticleCard,.launchFeatureRow){padding:var(--arcana-card-padding,14px)}
+html[data-arcana-admin-design="true"] .launchHeroCTA{min-height:var(--arcana-button-height,45px)}
+html[data-arcana-admin-design="true"] :is(.launchHeroCTA,.arcanaAdminPublish){color:var(--arcana-button-text,#0A0C14)!important}
+html[data-arcana-admin-design="true"] #app.shell .top{background:color-mix(in srgb,var(--arcana-nav-panel,var(--theme-main)) var(--arcana-header-opacity,95%),transparent)}
+html[data-arcana-admin-design="true"] #arcanaDock{background:var(--arcana-nav-panel,var(--theme-secondary))}
+html[data-arcana-admin-design="true"] #content:not(:has(.arcanaDesignLab)) .launchPage :is(p,small){color:var(--arcana-muted-text,var(--muted))}
+html[data-arcana-admin-design="true"] #content.homeFullscreen .launchHero:after,
+html[data-arcana-admin-design="true"] #content.homeFullscreen .launchQuickCard:after{
+ -webkit-mask-size:calc(100% * var(--arcana-pattern-scale,1)) auto;mask-size:calc(100% * var(--arcana-pattern-scale,1)) auto;
+}
+html[data-arcana-admin-design="true"] #content.homeFullscreen .launchHero,
+html[data-arcana-admin-design="true"] #content.homeFullscreen .launchQuickCard{
+ box-shadow:0 0 calc(var(--arcana-glow-alpha,.18) * 35px) color-mix(in srgb,var(--arcana-secondary-accent,var(--theme-highlight)) 24%,transparent),
+ 0 6px calc(var(--arcana-shadow-depth,.3) * 27px) #0008;
+}
+html[data-arcana-admin-design="true"] #content.homeFullscreen .launchHeroCTA{
+ background:linear-gradient(115deg,color-mix(in srgb,var(--arcana-action-color,var(--theme-highlight)) var(--arcana-button-fill,82%),white),color-mix(in srgb,var(--arcana-secondary-accent,var(--theme-highlight)) var(--arcana-accent-blend,25%),var(--arcana-action-color,var(--theme-highlight))))!important
+}
+html[data-arcana-admin-design="true"][data-arcana-design-button-style="solid"] #content.homeFullscreen .launchHeroCTA{background:var(--arcana-action-color,var(--theme-highlight))!important}
+html[data-arcana-admin-design="true"][data-arcana-design-button-style="outline"] #content.homeFullscreen .launchHeroCTA{background:transparent!important;color:var(--arcana-action-color,var(--theme-highlight))!important;border:2px solid var(--arcana-action-color,var(--theme-highlight))!important}
+html[data-arcana-admin-design="true"][data-arcana-design-density="compact"] #content.homeFullscreen .launchQuickCard{padding:calc(var(--arcana-card-padding,14px) * .7)!important}
+html[data-arcana-admin-design="true"][data-arcana-design-density="spacious"] #content.homeFullscreen .launchQuickCard{padding:calc(var(--arcana-card-padding,14px) * 1.15)!important}
+/* Keep Settings stable while sliders move. No density/typography-induced scroll jumps in the editor. */
+
+/* Mini sampler reflects the extra inputs, but never affects real game art. */
+.miniCanvas{border-color:color-mix(in srgb,var(--mini-border,var(--mini-accent)) var(--mini-edge),transparent);border-width:var(--mini-border-width,1px);font-size:calc(11px * var(--mini-font-scale,1));box-shadow:0 0 var(--mini-glow) color-mix(in srgb,var(--mini-secondary,var(--mini-accent)) 45%,transparent)}
+.miniCanvas .miniHeader{background:color-mix(in srgb,var(--mini-nav,var(--mini-main)) var(--mini-header-alpha,95%),transparent)}
+.miniCanvas .miniDock{background:var(--mini-nav,var(--mini-panel))}
+.miniCanvas .miniHero:before,.miniCanvas .miniTile:before{-webkit-mask-size:var(--mini-pattern-size,100%) auto;mask-size:var(--mini-pattern-size,100%) auto}
+.miniCanvas .miniCTA{color:var(--mini-button-text,#0a0c14);min-height:calc(var(--mini-button-height,45px) * .64);background:linear-gradient(112deg,var(--mini-accent),color-mix(in srgb,var(--mini-secondary,var(--mini-accent)) var(--mini-blend,25%),var(--mini-accent)))}
+.miniCanvas[data-mini-buttons="solid"] .miniCTA{background:var(--mini-accent)}
+.miniCanvas[data-mini-buttons="outline"] .miniCTA{background:transparent;color:var(--mini-accent);border:1px solid var(--mini-accent)}
+.miniCanvas .miniTileWords small,.miniCanvas .miniHeroTitle em{color:var(--mini-muted,var(--mini-text))}
+.miniCanvas[data-mini-font="rounded"]{font-family:ui-rounded,Trebuchet MS,system-ui,sans-serif}
+.miniCanvas[data-mini-font="serif"]{font-family:Georgia,Times New Roman,serif}
+.miniCanvas[data-mini-font="mono"]{font-family:ui-monospace,Consolas,monospace}
+.miniCanvas[data-mini-density="compact"] .miniPage{padding:4px 7px}
+.miniCanvas[data-mini-density="spacious"] .miniPage{padding:10px 12px}
+.miniCanvas .miniHero,.miniCanvas .miniTile{box-shadow:0 0 var(--mini-glow) color-mix(in srgb,var(--mini-secondary,var(--mini-accent)) 26%,transparent),0 3px calc(var(--mini-shadow-alpha,.3) * 18px) #0009}
