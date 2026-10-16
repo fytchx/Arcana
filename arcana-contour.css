@@ -711,3 +711,35 @@ html[data-arcana-design-active="true"] #app.shell .top{
  .pathfinderHub .pathRangeWorkspace>h2{font-size:19px;line-height:1.3}
  .pathfinderHub .pathRangeWorkspace>p{font-size:13px;line-height:1.5}
 }
+
+
+/* Keep the admin sampler faithful to all textured public theme options. */
+html[data-arcana-design-active="true"]:not([data-arcana-design-pattern="contours"]):not([data-arcana-design-pattern="plain"]) #content.homeFullscreen :is(.launchHero,.launchQuickCard):after{
+ -webkit-mask-image:none!important;mask-image:none!important;
+ background-image:var(--arcana-texture)!important;
+ background-color:transparent!important;
+ background-size:var(--arcana-texture-size)!important;
+ opacity:1!important;
+}
+.miniCanvas[data-mini-pattern]:not([data-mini-pattern="contours"]):not([data-mini-pattern="plain"]) :is(.miniHero,.miniTile):before{
+ -webkit-mask-image:none!important;mask-image:none!important;
+ background-image:var(--mini-pattern)!important;
+ background-color:transparent!important;
+ background-size:calc(76px * var(--mini-pattern-size,1))!important;
+}
+.miniCanvas[data-mini-pattern="rings"]{--mini-pattern:repeating-radial-gradient(circle at 70% 40%,transparent 0 8px,var(--mini-accent) 9px,transparent 10px,transparent 20px)}
+.miniCanvas[data-mini-pattern="stars"]{--mini-pattern:radial-gradient(circle at 30% 30%,var(--mini-accent) 1px,transparent 2px),radial-gradient(circle at 75% 70%,var(--mini-secondary) 1px,transparent 2px)}
+.miniCanvas[data-mini-pattern="grid"]{--mini-pattern:linear-gradient(90deg,var(--mini-accent) 1px,transparent 1px),linear-gradient(0deg,var(--mini-secondary) 1px,transparent 1px)}
+.miniCanvas[data-mini-pattern="aurora"]{--mini-pattern:radial-gradient(ellipse at 20% 50%,var(--mini-accent),transparent 65%),radial-gradient(ellipse at 80% 60%,var(--mini-secondary),transparent 65%)}
+.miniCanvas[data-mini-pattern="diagonal"]{--mini-pattern:repeating-linear-gradient(135deg,transparent 0 13px,var(--mini-accent) 14px,transparent 15px,transparent 25px)}
+.miniCanvas[data-mini-pattern="hex"]{--mini-pattern:repeating-linear-gradient(60deg,transparent 0 16px,var(--mini-accent) 17px,transparent 18px,transparent 36px),repeating-linear-gradient(120deg,transparent 0 16px,var(--mini-secondary) 17px,transparent 18px,transparent 36px)}
+.miniCanvas[data-mini-pattern="grain"]{--mini-pattern:radial-gradient(circle at 15% 35%,var(--mini-accent) 1px,transparent 2px),radial-gradient(circle at 70% 60%,var(--mini-secondary) 1px,transparent 2px)}
+.miniCanvas[data-mini-pattern="crystal"]{--mini-pattern:conic-gradient(from 25deg at 35% 35%,transparent,var(--mini-accent),transparent 45%,var(--mini-secondary),transparent 70%)}
+.miniCanvas[data-mini-pattern="nebula"]{--mini-pattern:radial-gradient(ellipse at 15% 85%,var(--mini-secondary),transparent 60%),radial-gradient(ellipse at 70% 20%,var(--mini-accent),transparent 70%)}
+.miniCanvas[data-mini-pattern="weave"]{--mini-pattern:repeating-linear-gradient(0deg,transparent 0 10px,var(--mini-accent) 11px,transparent 12px,transparent 22px),repeating-linear-gradient(90deg,transparent 0 10px,var(--mini-secondary) 11px,transparent 12px,transparent 22px)}
+.miniCanvas[data-mini-pattern="runes"]{--mini-pattern:repeating-conic-gradient(from 45deg at 45% 55%,transparent 0 20deg,var(--mini-accent) 23deg,transparent 26deg 90deg)}
+.miniCanvas[data-mini-pattern="circuit"]{--mini-pattern:linear-gradient(90deg,transparent 48%,var(--mini-accent) 49%,transparent 51%),linear-gradient(0deg,transparent 33%,var(--mini-secondary) 34%,transparent 36%)}
+.miniCanvas[data-mini-pattern="topography"]{--mini-pattern:repeating-radial-gradient(ellipse at 0% 100%,transparent 0 11px,var(--mini-accent) 12px,transparent 13px,transparent 23px)}
+.miniCanvas[data-mini-pattern="facets"]{--mini-pattern:conic-gradient(from 30deg at 30% 25%,transparent,var(--mini-accent),transparent 40%,var(--mini-secondary),transparent 60%)}
+.miniCanvas[data-mini-pattern="scanlines"]{--mini-pattern:repeating-linear-gradient(0deg,transparent 0 2px,var(--mini-accent) 3px,transparent 4px,transparent 7px)}
+.miniCanvas[data-mini-pattern="honeycomb"]{--mini-pattern:repeating-linear-gradient(60deg,transparent 0 16px,var(--mini-accent) 17px,transparent 18px,transparent 34px),repeating-linear-gradient(-60deg,transparent 0 16px,var(--mini-secondary) 17px,transparent 18px,transparent 34px)}
