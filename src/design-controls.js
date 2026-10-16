@@ -9,6 +9,7 @@ export const DEFAULT_DESIGN=Object.freeze({
  secondaryAccent:'#38BDF8',borderColor:'#66708B',mutedText:'#A8B2C4',navBar:'#191E2B',buttonText:'#0A0C14',
  fontFamily:'system',density:'comfortable',buttonStyle:'gradient',heroActionStyle:'integrated',heroSize:'balanced',
  heroActionWidth:100,heroActionAlign:'center',heroActionHeight:45,heroActionGlow:10,heroActionBorder:1,heroActionIcon:'show',heroActionSubtitle:'auto',
+ heroCardStyle:'blended',heroCardEmblem:'subtle',
  patternTarget:'all',
  iconMode:'two-tone',fontSize:100,cardPadding:14,cardShadow:30,headerOpacity:95,patternScale:100,borderWidth:1,buttonHeight:45,accentBlend:25
 });
@@ -50,6 +51,8 @@ export function validateDesignField(key,value){
  if(key==='buttonStyle')return ['gradient','solid','outline'].includes(value)?value:null;
  if(key==='heroActionStyle')return HERO_CTA_STYLE_IDS.includes(value)?value:null;
  if(key==='heroActionAlign')return ['start','center','end'].includes(value)?value:null;
+ if(key==='heroCardStyle')return ['blended','flat','frameless','etched','glass','raised','accent-edge','metallic','minimal'].includes(value)?value:null;
+ if(key==='heroCardEmblem')return ['subtle','hidden','prominent'].includes(value)?value:null;
  if(key==='heroActionIcon')return ['show','hide','arrow-only'].includes(value)?value:null;
  if(key==='heroActionSubtitle')return ['auto','show','hide'].includes(value)?value:null;
  if(key==='patternTarget')return ['all','cards','background'].includes(value)?value:null;
@@ -151,6 +154,8 @@ export function applyDesign(root=globalThis.document?.documentElement){
  if(active){root.style.setProperty('--bg',values.main);root.style.setProperty('--panel',values.card);root.style.setProperty('--accent',values.action);root.style.setProperty('--line',values.borderColor);root.style.setProperty('--panel2',values.navBar);root.style.setProperty('--accentTint',`color-mix(in srgb, ${values.action} 13%, transparent)`);root.style.setProperty('--radius',values.roundness+'px');}
  root.dataset.arcanaDesignPattern=values.pattern;
  root.dataset.arcanaPatternTarget=values.patternTarget;
+ root.dataset.arcanaHeroCardStyle=values.heroCardStyle;
+ root.dataset.arcanaHeroCardEmblem=values.heroCardEmblem;
  root.dataset.arcanaHeroActionAlign=values.heroActionAlign;
  root.dataset.arcanaHeroActionIcon=values.heroActionIcon;
  root.dataset.arcanaHeroActionSubtitle=values.heroActionSubtitle;
