@@ -1,5 +1,6 @@
 import {esc,icon} from './ui.js';
 import {designPanel} from './launch-navigation.js';
+import {designMiniMarkup} from './design-mini-preview.js';
 import {readDesign,replaceDesignDraft,currentPublishedDesign,setDesignPreview,DEFAULT_DESIGN} from './design-controls.js';
 import {refreshTheme,siteNotice} from './theme.js';
 import {adminTrafficView,loadAdminTraffic} from './admin-traffic-ui.js';
@@ -44,7 +45,9 @@ function appearanceView(){
   '<div class="adminPublishedStatus"><strong>'+ (published?'Published theme v'+state.config.revision:'No unified theme published yet')+'</strong><span>'+(state.config?.updatedAt?'Last publish: '+esc(new Date(state.config.updatedAt).toLocaleString()):'Existing Arcana appearance remains until your first publish.')+'</span></div>'+
   '<div class="adminPublishBar"><button class="btn primary" data-admin-command="publish-theme" '+(state.busy?'disabled':'')+'>'+icon('check',16)+' Publish to everyone</button><button class="btn secondary" data-admin-command="discard-theme" '+(state.busy?'disabled':'')+'>Restore published design</button></div>'+
   '<p class="adminHelp">Preview edits stay on your device. Publishing updates the central server, so guests and signed-in members see the same appearance. Older local color preferences are ignored.</p>')+
- designPanel()+
+ '<div class="themeStudioWorkbench" aria-label="Arcana Theme Studio workspace">'+
+ '<div class="themeStudioEditor" id="themeStudioEditor">'+designPanel({showPreview:false})+'</div>'+
+ '<aside class="themeStudioPreview" id="themeStudioPreview" aria-label="Persistent real-time design preview">'+designMiniMarkup()+'</aside></div>'+
  section('Theme history','Restore an earlier release if a published design does not work as expected.',
  '<div class="adminHistory">'+((state.history||[]).slice().reverse().slice(0,10).map(x=>'<div class="adminHistoryRow"><span>Revision '+x.revision+'<small>'+esc(x.updatedAt?new Date(x.updatedAt).toLocaleString():'Original configuration')+'</small></span><button data-admin-rollback="'+x.revision+'">Restore</button></div>').join('')||infoBar('Version history begins with the first published change.'))+'</div>')+
  '</div>';
