@@ -6,7 +6,7 @@ export const DEFAULT_DESIGN=Object.freeze({
   buttonRoundness:11,buttonFill:82,
  secondaryAccent:'#38BDF8',borderColor:'#66708B',mutedText:'#A8B2C4',navBar:'#191E2B',buttonText:'#0A0C14',
  fontFamily:'system',density:'comfortable',buttonStyle:'gradient',heroActionStyle:'integrated',heroSize:'balanced',
- fontSize:100,cardPadding:14,cardShadow:30,headerOpacity:95,patternScale:100,borderWidth:1,buttonHeight:45,accentBlend:25
+ iconMode:'two-tone',fontSize:100,cardPadding:14,cardShadow:30,headerOpacity:95,patternScale:100,borderWidth:1,buttonHeight:45,accentBlend:25
 });
 const numbers={intensity:[0,100],glow:[0,100],edges:[0,100],roundness:[3,28],buttonRoundness:[3,30],buttonFill:[35,100],fontSize:[90,115],cardPadding:[8,22],cardShadow:[0,100],headerOpacity:[65,100],patternScale:[60,180],borderWidth:[0,3],buttonHeight:[40,58],accentBlend:[0,100]};
 const colors=new Set(['main','card','action','text','secondaryAccent','borderColor','mutedText','navBar','buttonText']);
@@ -28,6 +28,7 @@ export const DESIGN_FIELDS=Object.keys(DEFAULT_DESIGN);
 export function validateDesignField(key,value){
  if(colors.has(key))return normalizeDesignHex(value);
  if(key==='pattern')return ['contours','rings','stars','grid','aurora','diagonal','plain'].includes(value)?value:null;
+ if(key==='iconMode')return ['two-tone','neutral','accent','muted'].includes(value)?value:null;
  if(key==='fontFamily')return ['system','rounded','serif','mono'].includes(value)?value:null;
  if(key==='density')return ['comfortable','compact','spacious'].includes(value)?value:null;
  if(key==='buttonStyle')return ['gradient','solid','outline'].includes(value)?value:null;
@@ -36,9 +37,24 @@ export function validateDesignField(key,value){
  if(numbers[key]){const n=value===''||value===null||value===undefined?NaN:Number(value);return Number.isFinite(n)?Math.max(numbers[key][0],Math.min(numbers[key][1],Math.round(n))):null}
  return null;
 }
+let publishedDesign=null;
+let previewEnabled=false;
+export function setPublishedDesign(value){
+ publishedDesign=value&&typeof value==='object'?Object.fromEntries(DESIGN_FIELDS.map(key=>[key,validateDesignField(key,value[key])??DEFAULT_DESIGN[key]])):null;
+ applyDesign(globalThis.document?.documentElement);
+}
+export const currentPublishedDesign=()=>publishedDesign?{...publishedDesign}:null;
+export function setDesignPreview(enabled){previewEnabled=enabled===true;applyDesign(globalThis.document?.documentElement)}
+export function designPreviewActive(){return previewEnabled}
+export function replaceDesignDraft(next){
+ if(!next||typeof next!=='object')return false;
+ const clean={...DEFAULT_DESIGN};for(const key of DESIGN_FIELDS){const v=validateDesignField(key,next[key]);if(v!==null)clean[key]=v;}
+ try{localStorage.setItem(DESIGN_KEY,JSON.stringify(clean))}catch{return false}
+ applyDesign(globalThis.document?.documentElement);return true;
+}
 export function readDesign(){
  let stored={};try{stored=JSON.parse(localStorage.getItem(DESIGN_KEY)||'{}')||{}}catch{}
- const values={...DEFAULT_DESIGN};
+ const values={...DEFAULT_DESIGN,...publishedDesign};
  for(const k of DESIGN_FIELDS){const v=validateDesignField(k,stored[k]);if(v!==null)values[k]=v}
  return values;
 }
@@ -76,10 +92,12 @@ export function resetDesign(){
 }
 export function applyDesign(root=globalThis.document?.documentElement){
  if(!root)return;
- const admin=root.dataset.arcanaAdminDesign==='true';
- const values=admin?readDesign():DEFAULT_DESIGN;
+ const admin=root.dataset.arcanaAdminDesign==='true'&&previewEnabled;
+ const published=publishedDesign!==null;
+ const active=admin||published;
+ const values=admin?readDesign():publishedDesign||DEFAULT_DESIGN;
  for(const [k,css] of Object.entries({main:'--theme-main',card:'--theme-secondary',action:'--arcana-action-color',text:'--arcana-design-text',secondaryAccent:'--arcana-secondary-accent',borderColor:'--arcana-border-color',mutedText:'--arcana-muted-text',navBar:'--arcana-nav-panel',buttonText:'--arcana-button-text'})){
-  if(admin){root.style.setProperty(css,values[k]);if(k==='main')root.style.setProperty('--bg',values[k]);if(k==='card')root.style.setProperty('--panel',values[k]);}
+  if(active){root.style.setProperty(css,values[k]);if(k==='main')root.style.setProperty('--bg',values[k]);if(k==='card')root.style.setProperty('--panel',values[k]);}
   else if(css.startsWith('--arcana-'))root.style.removeProperty(css);
  }
  root.style.setProperty('--arcana-wave-opacity',String(values.intensity/100));
@@ -89,23 +107,27 @@ export function applyDesign(root=globalThis.document?.documentElement){
  root.style.setProperty('--arcana-button-radius',values.buttonRoundness+'px');
  root.style.setProperty('--arcana-button-fill',values.buttonFill+'%');
  const settings={fontSize:'--arcana-font-scale',cardPadding:'--arcana-card-padding',cardShadow:'--arcana-shadow-depth',headerOpacity:'--arcana-header-opacity',patternScale:'--arcana-pattern-scale',borderWidth:'--arcana-border-width',buttonHeight:'--arcana-button-height',accentBlend:'--arcana-accent-blend'};
- for(const [k,css] of Object.entries(settings)){if(admin)root.style.setProperty(css,k==='headerOpacity'?values[k]+'%':['fontSize','patternScale','cardShadow'].includes(k)?String(values[k]/100):k==='accentBlend'?values[k]+'%':values[k]+'px');else root.style.removeProperty(css);}
+ for(const [k,css] of Object.entries(settings)){if(active)root.style.setProperty(css,k==='headerOpacity'?values[k]+'%':['fontSize','patternScale','cardShadow'].includes(k)?String(values[k]/100):k==='accentBlend'?values[k]+'%':values[k]+'px');else root.style.removeProperty(css);}
  const families={system:'system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif',rounded:'ui-rounded,Trebuchet MS,system-ui,sans-serif',serif:'Georgia,Times New Roman,serif',mono:'ui-monospace,SFMono-Regular,Consolas,monospace'};
- if(admin){
+ if(active){
   root.style.setProperty('--arcana-design-font-family',families[values.fontFamily]);
   root.style.setProperty('--theme-highlight',values.action);
   root.style.setProperty('--accent',values.action);
   root.dataset.arcanaDesignDensity=values.density;
   root.dataset.arcanaDesignButtonStyle=values.buttonStyle;
+  root.dataset.arcanaIconMode=values.iconMode;
+  root.style.setProperty('--arcana-icon-color',values.action);
+  root.style.setProperty('--arcana-logo-filter','hue-rotate(0deg)');
  }else{
   root.style.removeProperty('--arcana-design-font-family');
   delete root.dataset.arcanaDesignDensity;
   delete root.dataset.arcanaDesignButtonStyle;
  }
+ if(active){root.style.setProperty('--bg',values.main);root.style.setProperty('--panel',values.card);root.style.setProperty('--accent',values.action);root.style.setProperty('--line',values.borderColor);root.style.setProperty('--panel2',values.navBar);root.style.setProperty('--accentTint',`color-mix(in srgb, ${values.action} 13%, transparent)`);root.style.setProperty('--radius',values.roundness+'px');}
  root.dataset.arcanaDesignPattern=values.pattern;
  root.dataset.arcanaHeroActionStyle=values.heroActionStyle;
  root.dataset.arcanaHeroSize=values.heroSize;
- if(admin)root.style.setProperty('--text',values.text);
+ if(active)root.style.setProperty('--text',values.text);
  else root.style.removeProperty('--text');
  return values;
 }
