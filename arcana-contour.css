@@ -688,7 +688,7 @@ html[data-arcana-design-active="true"] .pathfinderHubHead{
   background-size:var(--arcana-texture-size);
 }
 html[data-arcana-design-active="true"] #app.shell .top{
-  background:var(--arcana-nav-panel,var(--theme-main))!important;
+  background:color-mix(in srgb,var(--arcana-nav-panel,var(--theme-main)) var(--arcana-header-opacity,95%),var(--theme-main))!important;
   border-color:var(--theme-border)!important;
 }
 @media(min-width:720px){
@@ -725,7 +725,7 @@ html[data-arcana-design-active="true"]:not([data-arcana-design-pattern="contours
  -webkit-mask-image:none!important;mask-image:none!important;
  background-image:var(--mini-pattern)!important;
  background-color:transparent!important;
- background-size:calc(76px * var(--mini-pattern-size,1))!important;
+ background-size:calc(76px * var(--arcana-pattern-scale,1))!important;
 }
 .miniCanvas[data-mini-pattern="rings"]{--mini-pattern:repeating-radial-gradient(circle at 70% 40%,transparent 0 8px,var(--mini-accent) 9px,transparent 10px,transparent 20px)}
 .miniCanvas[data-mini-pattern="stars"]{--mini-pattern:radial-gradient(circle at 30% 30%,var(--mini-accent) 1px,transparent 2px),radial-gradient(circle at 75% 70%,var(--mini-secondary) 1px,transparent 2px)}
