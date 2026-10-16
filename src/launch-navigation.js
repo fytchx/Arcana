@@ -158,7 +158,7 @@ const designPanel=()=>{
  group('Typography &amp; spacing',
  select('fontFamily','Font style',[['system','Clean system'],['rounded','Soft rounded'],['serif','Classic serif'],['mono','Monospace']])+
  slider('fontSize','Text size',90,115)+select('density','Layout density',[['comfortable','Comfortable'],['compact','Compact'],['spacious','Spacious']]))+
- '<div class="designWorkshopActions"><button type="button" class="btn secondary" data-action="undo-design">'+icon('back',16)+' Undo last change</button><button type="button" class="btn secondary" data-action="reset-design">'+icon('close',16)+' Reset design</button></div>'+
+ '<div class="designWorkshopActions"><button type="button" class="btn secondary" data-action="preview-design">'+icon('search',16)+' View preview</button><button type="button" class="btn secondary" data-action="undo-design">'+icon('back',16)+' Undo last change</button><button type="button" class="btn secondary" data-action="reset-design">'+icon('close',16)+' Reset design</button></div>'+
  '<p class="mutedSmall">No game artwork or verified values are altered. Changes remain local to your signed-in browser, not published for everyone.</p></section>';
 };
 export function settingsView({admin=false,authEnabled=false,loggedIn=false}={}){
