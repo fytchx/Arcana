@@ -12,7 +12,7 @@ const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const approved=/^\/assets\/icons\/idlearc-refined\/(?:classes|equipment|features|stats|tokens)\/[a-z0-9-]+\.svg$/;
 
 test('Curated wiki expansion is substantial, unique and uses published primary sources',()=>{
- assert.ok(WIKI_EXPANSION_ARTICLES.length>=25);
+ assert.ok(WIKI_EXPANSION_ARTICLES.length>=32);
  const slugs=WIKI_ARTICLES.map(a=>a.id);
  assert.equal(new Set(slugs).size,slugs.length);
  for(const a of WIKI_EXPANSION_ARTICLES){
@@ -21,7 +21,7 @@ test('Curated wiki expansion is substantial, unique and uses published primary s
   assert.ok(a.sections.every(s=>s.title.length>3&&s.body.length>100),a.id);
   assert.ok(a.summary.length>=35,a.id);
   assert.ok(['Classes','Pets','Equipment','Runes','Mechanics','Progression','Getting Started','Guilds'].includes(a.category),a.id);
-  assert.ok(/^https:\/\/idlearc\.com\/patch-notes\/1-[23]-1$/.test(a.sourceUrl),a.id);
+  assert.ok(/^https:\/\/idlearc\.com\/(?:patch-notes\/1-[23]-1|classes)$/.test(a.sourceUrl),a.id);
   assert.ok(a.actions.length>=1,a.id+' must lead to tool');
  }
 });
