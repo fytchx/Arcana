@@ -546,7 +546,7 @@ function go(route,params={}){
 function syncWorkshopInputs(){
  if(!isAppearanceAdmin())return;
  const design=readDesign();
- const px=new Set(['roundness','buttonRoundness','cardPadding','borderWidth','buttonHeight']);
+ const px=new Set(['roundness','buttonRoundness','cardPadding','borderWidth','buttonHeight','heroActionHeight','heroActionBorder']);
  for(const e of document.querySelectorAll('.arcanaDesignLab [data-design-field]')){
   const key=e.dataset.designField;if(!Object.hasOwn(design,key))continue;
   e.value=String(design[key]);
@@ -560,6 +560,7 @@ function syncWorkshopInputs(){
   if(label)label.textContent='HEX code';
  }
  for(const tile of document.querySelectorAll('.arcanaDesignLab [data-theme-pattern]'))tile.setAttribute('aria-pressed',String(tile.dataset.themePattern===design.pattern));
+ for(const button of document.querySelectorAll('.arcanaDesignLab [data-hero-cta-style]'))button.setAttribute('aria-pressed',String(button.dataset.heroCtaStyle===design.heroActionStyle));
  for(const preset of document.querySelectorAll('.arcanaDesignLab .designPreset')){
   const matches=preset.dataset.presetSearch&&preset.dataset.arg;
   if(matches)preset.classList.toggle('selected',preset.dataset.arg===Object.keys(DESIGN_PRESETS).find(id=>DESIGN_PRESETS[id].main===design.main&&DESIGN_PRESETS[id].action===design.action&&DESIGN_PRESETS[id].pattern===design.pattern));
@@ -897,6 +898,15 @@ function wirePathfinderQuick(){
 
 function wireThemeStudioControls(){
  document.addEventListener('click',e=>{
+  const heroChoice=e.target.closest('[data-hero-cta-style]');
+  if(heroChoice&&heroChoice.closest('.arcanaDesignLab')){
+   if(!isAppearanceAdmin())return;
+   if(writeDesign('heroActionStyle',heroChoice.dataset.heroCtaStyle)){
+    applyTheme(parseRoute().route);
+    syncWorkshopInputs();
+   }
+   return;
+  }
   const pattern=e.target.closest('[data-theme-pattern]');
   if(pattern&&pattern.closest('.arcanaDesignLab')){
    if(!isAppearanceAdmin())return;
