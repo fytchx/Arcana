@@ -170,7 +170,10 @@ export const designPanel=({showPreview=true}={})=>{
  slider('heroActionHeight','Button height',44,70)+slider('heroActionBorder','Border thickness',0,3)+slider('heroActionGlow','Glow strength',0,100)+
  select('heroActionIcon','Icon treatment',[['show','Icon and arrow'],['hide','Text only'],['arrow-only','Arrow only']])+
  select('heroActionSubtitle','Subtitle',[['auto','Depends on design'],['show','Always show'],['hide','Always hide']])+
- select('heroSize','Feature card size',[['compact','Compact'],['balanced','Balanced'],['showcase','Showcase']]),
+ select('heroSize','Feature card size',[['compact','Compact'],['balanced','Balanced'],['showcase','Showcase']])+
+ '<div class="heroCtaEditorIntro"><strong>Or change the entire feature card.</strong><p>If the large Build Studio section feels out of place, change its surface and decorative artwork independently of the entrance button.</p></div>'+
+ select('heroCardStyle','Feature card treatment',[['blended','Blended (current)'],['flat','Flat / seamless'],['frameless','No surrounding frame'],['etched','Etched panel'],['glass','Smoked glass'],['raised','Raised card'],['accent-edge','Accent edge'],['metallic','Brushed alloy'],['minimal','Minimal feature']])+
+ select('heroCardEmblem','Decorative seal',[['subtle','Subtle'],['hidden','Hidden'],['prominent','Prominent']]),
  'Only the homepage Build Studio feature is changed. Other navigation, tools and buttons stay untouched.')+
  group('Cards &amp; buttons',
  slider('roundness','Card corners',3,28)+slider('cardPadding','Card padding',8,22)+slider('buttonRoundness','Button corners',3,30)+slider('buttonFill','Button color strength',35,100)+slider('buttonHeight','Button height',40,58)+slider('accentBlend','Gradient accent balance',0,100)+
