@@ -1,0 +1,126 @@
+/* Theme Studio Finishes: isolated CTA styling, premium texture controls.
+   Only enabled after the protected owner publishes or previews a global theme. */
+
+.heroCtaEditorIntro{padding:10px 12px;background:var(--theme-secondary);border:1px solid var(--line);border-radius:11px;margin:0 0 11px}
+.heroCtaEditorIntro strong{font-size:13px;color:var(--text)}
+.heroCtaEditorIntro p{font-size:12px!important;line-height:1.55;margin:5px 0 0;color:var(--muted)}
+.heroCtaLibrary{background:var(--theme-main);border:1px solid var(--line);border-radius:11px;overflow:hidden;margin:6px 0 17px}
+.heroCtaLibrary>summary{padding:12px;font:750 13px system-ui;color:var(--text);cursor:pointer;min-height:45px}
+.heroCtaGallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px;max-height:490px;overflow-y:auto;overscroll-behavior:contain}
+.heroCtaChoice{min-width:0;padding:9px;display:grid;align-content:start;gap:8px;text-align:left;background:var(--theme-secondary);border:1px solid var(--line);border-radius:11px;color:var(--text);cursor:pointer}
+.heroCtaChoice[aria-pressed="true"]{border-color:var(--theme-highlight);box-shadow:0 0 0 1px color-mix(in srgb,var(--theme-highlight) 40%,transparent)}
+.heroCtaChoice:hover{border-color:var(--theme-highlight)}
+.heroCtaChoice>span:last-child{display:grid;gap:4px;min-width:0}
+.heroCtaChoice>span:last-child strong{font-size:12px}
+.heroCtaChoice>span:last-child small{font-size:10px;line-height:1.3;color:var(--muted)}
+.heroCtaSample{--cta-color:var(--theme-highlight);display:flex;align-items:center;gap:7px;padding:10px;width:100%;min-height:42px;overflow:hidden;white-space:nowrap;border:1px solid color-mix(in srgb,var(--cta-color) 36%,var(--line));border-radius:9px;background:color-mix(in srgb,var(--cta-color) 12%,var(--theme-main));color:var(--text);font:750 12px system-ui}
+.heroCtaSample i{font-style:normal;color:var(--cta-color)}
+.heroCtaSample i:last-child{margin-left:auto}
+.heroCtaSample[data-hero-sample="integrated"]{background:linear-gradient(115deg,color-mix(in srgb,var(--cta-color) 13%,var(--theme-secondary)),var(--theme-main))}
+.heroCtaSample[data-hero-sample="outline"]{background:transparent}
+.heroCtaSample[data-hero-sample="spotlight"]{background:var(--cta-color);color:var(--theme-main)}
+.heroCtaSample[data-hero-sample="spotlight"] i{color:inherit}
+.heroCtaSample[data-hero-sample="seamless"]{background:none;border-color:transparent;border-bottom:1px solid color-mix(in srgb,var(--cta-color) 65%,transparent);border-radius:0}
+.heroCtaSample[data-hero-sample="ghost"]{background:transparent;border-color:color-mix(in srgb,var(--cta-color) 13%,transparent)}
+.heroCtaSample[data-hero-sample="soft-glow"]{background:radial-gradient(ellipse at 30% 100%,color-mix(in srgb,var(--cta-color) 27%,transparent),transparent 90%);box-shadow:0 0 10px color-mix(in srgb,var(--cta-color) 20%,transparent)}
+.heroCtaSample[data-hero-sample="frosted"]{background:linear-gradient(140deg,#ffffff14,#ffffff05);border-color:#ffffff36}
+.heroCtaSample[data-hero-sample="pill"]{border-radius:999px;background:color-mix(in srgb,var(--cta-color) 22%,var(--theme-secondary))}
+.heroCtaSample[data-hero-sample="etched"]{background:var(--theme-main);box-shadow:inset 0 1px #ffffff20,inset 0 -2px #0007}
+.heroCtaSample[data-hero-sample="ribbon"]{border-radius:3px;border-left:4px solid var(--cta-color)}
+.heroCtaSample[data-hero-sample="split"]{background:linear-gradient(90deg,color-mix(in srgb,var(--cta-color) 48%,var(--theme-secondary)) 0 33px,var(--theme-main) 33px)}
+.heroCtaSample[data-hero-sample="floating"]{background:var(--theme-secondary);box-shadow:0 5px 11px #0008;transform:translateY(-1px)}
+.heroCtaSample[data-hero-sample="brushed"]{background:repeating-linear-gradient(110deg,transparent 0 2px,color-mix(in srgb,var(--cta-color) 7%,transparent) 3px,transparent 5px),linear-gradient(135deg,var(--theme-secondary),var(--theme-main))}
+.heroCtaSample[data-hero-sample="neon-line"]{background:transparent;border-color:var(--cta-color);box-shadow:0 0 8px color-mix(in srgb,var(--cta-color) 25%,transparent)}
+.heroCtaSample[data-hero-sample="underlined"]{border:none;border-bottom:2px solid var(--cta-color);border-radius:0;background:transparent}
+.heroCtaSample[data-hero-sample="compact-tab"]{background:color-mix(in srgb,var(--cta-color) 14%,var(--theme-main));border-radius:5px;min-height:35px;padding-block:6px}
+@media(min-width:1100px){.heroCtaGallery{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:390px){.heroCtaGallery{grid-template-columns:1fr}.heroCtaChoice{grid-template-columns:minmax(0,1fr) minmax(110px,1fr);align-items:center}.heroCtaGallery{max-height:450px}}
+
+/* Shared independent controls, without altering unrelated buttons. */
+html[data-arcana-design-active="true"][data-arcana-hero-action-style] #content.homeFullscreen .launchHeroCTA{
+ width:var(--arcana-hero-cta-width,100%)!important;
+ min-height:max(44px,var(--arcana-hero-cta-height,45px))!important;
+ border-width:var(--arcana-hero-cta-border,1px)!important;
+ transition:background-color .14s,border-color .14s,box-shadow .14s;
+}
+html[data-arcana-design-active="true"][data-arcana-hero-action-align="start"] #content.homeFullscreen .launchHeroCTA{align-self:flex-start!important}
+html[data-arcana-design-active="true"][data-arcana-hero-action-align="center"] #content.homeFullscreen .launchHeroCTA{align-self:center!important}
+html[data-arcana-design-active="true"][data-arcana-hero-action-align="end"] #content.homeFullscreen .launchHeroCTA{align-self:flex-end!important}
+html[data-arcana-design-active="true"][data-arcana-hero-action-icon="hide"] #content.homeFullscreen .launchHeroCTA :is(.launchHeroCTASigil,svg:last-child){display:none!important}
+html[data-arcana-design-active="true"][data-arcana-hero-action-icon="arrow-only"] #content.homeFullscreen .launchHeroCTA .launchHeroCTASigil{display:none!important}
+html[data-arcana-design-active="true"][data-arcana-hero-action-subtitle="hide"] #content.homeFullscreen .launchHeroCTACopy small{display:none!important}
+html[data-arcana-design-active="true"][data-arcana-hero-action-subtitle="show"] #content.homeFullscreen .launchHeroCTACopy small{display:block!important}
+
+/* Texture placement is independent of pattern family, intensity and scale. */
+html[data-arcana-design-active="true"][data-arcana-pattern-target="cards"] #content:not(.homeFullscreen){background-image:none!important}
+html[data-arcana-design-active="true"][data-arcana-pattern-target="background"] #content.homeFullscreen{background-image:var(--arcana-texture)!important;background-size:var(--arcana-texture-size)!important}
+html[data-arcana-design-active="true"][data-arcana-pattern-target="background"] #content.homeFullscreen :is(.launchHero,.launchQuickCard):after{display:none!important}
+html[data-arcana-design-active="true"][data-arcana-pattern-target="background"] :is(.pathRangeWorkspace,.pathfinderHubHead){background-image:none!important}
+html[data-arcana-design-active="true"][data-arcana-pattern-target="cards"] :is(.pathRangeWorkspace,.pathfinderHubHead){background-image:var(--arcana-texture);background-size:var(--arcana-texture-size)}
+
+/* Scoped variants. Their strong selectors intentionally beat legacy CTA rules. */
+html[data-arcana-design-active="true"][data-arcana-hero-action-style="seamless"] #content.homeFullscreen .launchHeroCTA{
+ background:transparent!important;border-color:transparent!important;border-bottom:var(--arcana-hero-cta-border,1px) solid var(--theme-highlight)!important;
+ border-radius:1px!important;box-shadow:none!important;color:var(--text)!important;text-shadow:none!important
+}
+html[data-arcana-design-active="true"][data-arcana-hero-action-style="ghost"] #content.homeFullscreen .launchHeroCTA{
+ background:transparent!important;border-color:color-mix(in srgb,var(--theme-highlight) 16%,transparent)!important;
+ box-shadow:none!important;color:var(--text)!important
+}
+html[data-arcana-design-active="true"][data-arcana-hero-action-style="soft-glow"] #content.homeFullscreen .launchHeroCTA{
+ background:radial-gradient(ellipse at 30% 110%,color-mix(in srgb,var(--theme-highlight) 28%,var(--theme-secondary)),var(--theme-secondary) 92%)!important;
+ border-color:color-mix(in srgb,var(--theme-highlight) 35%,var(--theme-border))!important;color:var(--text)!important;
+ box-shadow:0 0 calc(3px + var(--arcana-hero-cta-glow,.1) * 26px) color-mix(in srgb,var(--theme-highlight) 25%,transparent)!important
+}
+html[data-arcana-design-active="true"][data-arcana-hero-action-style="frosted"] #content.homeFullscreen .launchHeroCTA{
+ background:linear-gradient(135deg,#ffffff1d,#ffffff08)!important;backdrop-filter:blur(12px);
+ border-color:color-mix(in srgb,white 27%,var(--theme-border))!important;color:var(--text)!important;
+ box-shadow:inset 0 1px #ffffff29,0 3px 11px #0004!important
+}
+html[data-arcana-design-active="true"][data-arcana-hero-action-style="pill"] #content.homeFullscreen .launchHeroCTA{
+ border-radius:999px!important;background:color-mix(in srgb,var(--theme-highlight) 20%,var(--theme-secondary))!important;
+ border-color:color-mix(in srgb,var(--theme-highlight) 34%,var(--theme-border))!important;
+ box-shadow:none!important;color:var(--text)!important
+}
+html[data-arcana-design-active="true"][data-arcana-hero-action-style="etched"] #content.homeFullscreen .launchHeroCTA{
+ background:var(--theme-main)!important;color:var(--text)!important;border-color:color-mix(in srgb,var(--theme-highlight) 30%,var(--theme-border))!important;
+ box-shadow:inset 0 1px #ffffff25,inset 0 -2px #0008!important
+}
+html[data-arcana-design-active="true"][data-arcana-hero-action-style="ribbon"] #content.homeFullscreen .launchHeroCTA{
+ background:color-mix(in srgb,var(--theme-highlight) 10%,var(--theme-secondary))!important;
+ border-color:color-mix(in srgb,var(--theme-highlight) 20%,var(--theme-border))!important;
+ border-left:4px solid var(--theme-highlight)!important;border-radius:4px!important;color:var(--text)!important;box-shadow:none!important
+}
+html[data-arcana-design-active="true"][data-arcana-hero-action-style="split"] #content.homeFullscreen .launchHeroCTA{
+ background:linear-gradient(90deg,color-mix(in srgb,var(--theme-highlight) 42%,var(--theme-secondary)) 0 46px,var(--theme-secondary) 46px)!important;
+ color:var(--text)!important;border-color:color-mix(in srgb,var(--theme-highlight) 37%,var(--theme-border))!important;
+ box-shadow:none!important
+}
+html[data-arcana-design-active="true"][data-arcana-hero-action-style="floating"] #content.homeFullscreen .launchHeroCTA{
+ background:var(--theme-secondary)!important;border-color:color-mix(in srgb,var(--theme-highlight) 22%,var(--theme-border))!important;
+ color:var(--text)!important;box-shadow:0 5px calc(8px + var(--arcana-hero-cta-glow,.1) * 18px) #0007!important
+}
+html[data-arcana-design-active="true"][data-arcana-hero-action-style="brushed"] #content.homeFullscreen .launchHeroCTA{
+ background:repeating-linear-gradient(110deg,transparent 0 2px,color-mix(in srgb,var(--theme-highlight) 6%,transparent) 3px,transparent 5px),
+ linear-gradient(130deg,color-mix(in srgb,var(--theme-highlight) 23%,var(--theme-secondary)),var(--theme-main))!important;
+ color:var(--text)!important;border-color:color-mix(in srgb,var(--theme-highlight) 37%,var(--theme-border))!important;
+ box-shadow:inset 0 1px #ffffff24!important
+}
+html[data-arcana-design-active="true"][data-arcana-hero-action-style="neon-line"] #content.homeFullscreen .launchHeroCTA{
+ background:var(--theme-main)!important;border-color:var(--theme-highlight)!important;color:var(--text)!important;
+ box-shadow:0 0 calc(2px + var(--arcana-hero-cta-glow,.1) * 23px) color-mix(in srgb,var(--theme-highlight) 38%,transparent)!important
+}
+html[data-arcana-design-active="true"][data-arcana-hero-action-style="underlined"] #content.homeFullscreen .launchHeroCTA{
+ background:transparent!important;border-color:transparent!important;border-bottom:2px solid var(--theme-highlight)!important;
+ color:var(--text)!important;border-radius:0!important;box-shadow:none!important
+}
+html[data-arcana-design-active="true"][data-arcana-hero-action-style="compact-tab"] #content.homeFullscreen .launchHeroCTA{
+ background:color-mix(in srgb,var(--theme-highlight) 14%,var(--theme-secondary))!important;
+ border-color:color-mix(in srgb,var(--theme-highlight) 22%,var(--theme-border))!important;
+ color:var(--text)!important;border-radius:6px!important;box-shadow:none!important;
+}
+/* All CTA styles retain a strong keyboard focus ring and a tappable minimum size. */
+html[data-arcana-design-active="true"][data-arcana-hero-action-style] #content.homeFullscreen .launchHeroCTA:focus-visible{
+ outline:2px solid var(--theme-highlight)!important;outline-offset:2px!important
+}
+@media(prefers-reduced-motion:reduce){html[data-arcana-design-active="true"] #content.homeFullscreen .launchHeroCTA{transition:none!important}}
