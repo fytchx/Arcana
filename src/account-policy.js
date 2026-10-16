@@ -13,7 +13,8 @@ const CAPABILITIES = Object.freeze({
  'community:delete':['admin','creator'],
  'roles:manage':['admin','creator'],
  'roles:privileged':['creator'],
- 'analytics:view':['admin','creator']
+ 'analytics:view':['admin','creator'],
+ 'site:manage':['admin','creator']
 });
 export function rolesOf(user){
  if(!user||user.suspended)return [];
