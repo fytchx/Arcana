@@ -905,6 +905,17 @@ function wireThemeStudioControls(){
    }
    return;
   }
+  const jump=e.target.closest('[data-theme-jump]');
+  if(jump&&jump.closest('.arcanaDesignLab')){
+   const pane=jump.closest('.themeStudioEditor');
+   const id=jump.dataset.themeJump;
+   const target=id==='vault'?pane.querySelector('.themeVaultSection'):pane.querySelector('[data-theme-group="'+id+'"]');
+   if(target){
+    if(target.tagName==='DETAILS')target.open=true;
+    target.scrollIntoView({behavior:document.documentElement.dataset.launchReduceMotion==='true'?'auto':'smooth',block:'start'});
+   }
+   return;
+  }
   const filter=e.target.closest('[data-theme-pattern-filter]');
   if(filter&&filter.closest('.arcanaDesignLab')){
    const category=filter.dataset.themePatternFilter;
