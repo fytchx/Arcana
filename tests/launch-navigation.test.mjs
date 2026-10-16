@@ -64,34 +64,17 @@ test('every homepage stylesheet is publicly served by the Arcana server',async()
  }
 });
 
-test('Slate keeps every original accent and saves personal selection safely',async()=>{
+test('only administrators set appearance; users can keep reduced motion',async()=>{
  assert.equal(ACCENT_PRESETS.length,10);
  assert.deepEqual(ACCENT_PRESETS.map(x=>x.name),[
   'Neon Green','Arcane Violet','Cyan Blue','Magenta Pink','Amber Gold',
   'Crimson Red','Ice Teal','Electric Lime','Royal Indigo','White Silver']);
- const previous=globalThis.localStorage;
- const saved=new Map();
- try{
-  globalThis.localStorage={getItem:key=>saved.get(key)??null,setItem:(key,value)=>saved.set(key,value)};
-  assert.equal(selectedAccent(),'arcane-violet');
-  assert.doesNotMatch(settingsView(),/slateAccentGrid/);
-  assert.match(settingsView(),/Design Workshop · Locked/);
-  assert.match(settingsView(),/Discord login is not configured/);
-  assert.equal((settingsView({admin:true}).match(/class="slateAccentChoice/g)||[]).length,10);
-  assert.equal(setAccent('cyan-blue'),true);
-  assert.equal(selectedAccent(),'cyan-blue');
-  assert.equal(themeStatus().palette.highlight,'#13C5F4');
-  assert.equal(themeStatus().palette.main,'#0D1019');
-  assert.match(settingsView({admin:true}),/data-arg="cyan-blue" aria-pressed="true"/);
-  assert.equal(setAccent('not-a-theme'),false);
-  assert.equal(selectedAccent(),'cyan-blue');
-  assert.equal(setAccent('site'),true);
-  assert.equal(selectedAccent(),'site');
- }finally{
-  if(previous===undefined)delete globalThis.localStorage;
-  else globalThis.localStorage=previous;
- }
+ const publicSettings=settingsView(),adminSettings=settingsView({admin:true});
+ assert.doesNotMatch(publicSettings,/slateAccentGrid|arcanaDesignLab|Design Workshop · Locked/);
+ assert.doesNotMatch(adminSettings,/data-action="accent"|data-design-field=/);
+ assert.match(publicSettings,/Reduce motion/);
+ assert.match(publicSettings,/managed centrally by Arcana administrators/);
  const css=await readFile(new URL('../launch-navigation.css',import.meta.url),'utf8');
  assert.match(css,/ARCANA SLATE/);
- assert.match(css,/grid-template-columns:minmax\(0,1fr\)/);
+ assert.match(css,/grid-template-columns:minmax\\(0,1fr\\)/);
 });
