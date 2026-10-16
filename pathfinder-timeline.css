@@ -115,3 +115,58 @@
 .pathRangeOutput .pathWarning{margin-top:14px}
 .pathRangeFoot{font-size:11px;line-height:1.5;color:var(--path-dim);margin:14px 0 0}
 @media(max-width:680px){.pathRangeInputs{grid-template-columns:1fr}.pathRangeArrow{align-self:center;padding:0}.pathRangeSummary{grid-template-columns:repeat(2,minmax(0,1fr))}.pathRangeSummary>div:first-child{grid-column:1/-1}}
+
+/* Pathfinder biome-first material presentation and persistent farm checklists */
+.pathBiomeGroups{display:grid;gap:10px;margin:12px 0}
+.pathBiomeGroup{border:1px solid var(--path-line);border-radius:12px;background:var(--path-card);overflow:hidden;min-width:0}
+.pathBiomeGroup>summary{min-height:57px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;padding:11px 15px;list-style:none}
+.pathBiomeGroup>summary::-webkit-details-marker{display:none}
+.pathBiomeGroup>summary span{display:grid;gap:3px;min-width:0}
+.pathBiomeGroup>summary strong{font-size:14px;color:var(--path-ink);overflow-wrap:anywhere}
+.pathBiomeGroup>summary small{font-size:11px;color:var(--path-dim)}
+.pathBiomeGroup>summary b{color:var(--path-accent);font-size:22px;transition:transform .15s}
+.pathBiomeGroup[open]>summary b{transform:rotate(180deg)}
+.pathBiomeGroup[open]>summary{border-bottom:1px solid var(--path-line)}
+.pathBiomeGroup .pathMaterials{padding:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.pathBiomeGroup .pathMaterial{background:var(--path-base);min-height:48px;align-items:start}
+.pathBiomeGroup .pathMaterial span{min-width:0;overflow-wrap:anywhere}
+.pathBiomeGroup .pathMaterial small{display:block;margin-top:4px;font-size:10px;color:var(--path-dim)}
+.pathGroupGuide{color:var(--path-dim);font-size:12px;line-height:1.55}
+.pathRangeSlot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:4px 0 17px}
+.pathRangeSlot label{display:flex;gap:9px;align-items:center;color:var(--path-ink);font-size:12px;font-weight:750}
+.pathRangeSlot select{min-height:44px;min-width:150px;background:var(--path-card);color:var(--path-ink);border:1px solid var(--path-line);border-radius:10px;padding:9px}
+.pathRangeSlot>small{color:var(--path-dim);line-height:1.4;max-width:410px}
+.pathSaveList{display:grid;gap:8px;justify-items:start;margin-top:19px;padding:14px;border:1px solid var(--path-accent);border-radius:12px;background:color-mix(in srgb,var(--path-accent) 8%,var(--path-base))}
+.pathSaveList button{min-height:46px;max-width:100%}
+.pathSaveList small,.pathSlotNote{font-size:11px;color:var(--path-dim);line-height:1.6}
+.pathSlotNote{padding:12px;border-left:3px solid var(--path-accent);background:var(--path-card);border-radius:0 8px 8px 0}
+.pathSlotNote strong{color:var(--path-ink)}
+.accountFarmLists{margin:17px 0;border:1px solid var(--theme-border);border-radius:15px;padding:14px;display:grid;gap:11px;background:var(--theme-card)}
+.accountFarmLists .accountCloudHead{margin-bottom:2px}
+.accountFarmList{min-width:0;border:1px solid var(--theme-border);border-radius:12px;background:var(--theme-secondary);overflow:hidden}
+.accountFarmList>details>summary{padding:14px;min-height:62px;display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;list-style:none}
+.accountFarmList>details>summary::-webkit-details-marker{display:none}
+.accountFarmList>details>summary>span:first-child{display:grid;gap:5px;min-width:0}
+.accountFarmList>details>summary strong{color:var(--text);overflow-wrap:anywhere}
+.accountFarmList>details>summary small{color:var(--muted);font-size:11px}
+.accountFarmPercent{font-size:14px;font-weight:900;color:var(--theme-highlight);white-space:nowrap}
+.accountFarmInside{padding:13px;border-top:1px solid var(--theme-border)}
+.accountFarmProgress{height:8px;overflow:hidden;background:var(--theme-overlay);border-radius:100px;margin-bottom:10px}
+.accountFarmProgress>span{display:block;background:var(--theme-highlight);height:100%;transition:width .15s}
+.accountFarmGroup{margin:14px 0}
+.accountFarmGroup h3{font-size:14px;margin:0 0 7px;color:var(--theme-accent-text)}
+.accountFarmGroup h3 small{color:var(--muted);font-size:11px;font-weight:450}
+.accountFarmItem{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px 8px;border-bottom:1px solid var(--theme-border);cursor:pointer;font-size:12px;min-height:46px}
+.accountFarmItem input{width:20px;height:20px;accent-color:var(--theme-highlight)}
+.accountFarmItem>span{overflow-wrap:anywhere}
+.accountFarmItem strong{font-variant-numeric:tabular-nums}
+.accountFarmItem.completed>span{text-decoration:line-through;opacity:.65}
+@media(max-width:590px){
+ .pathBiomeGroup .pathMaterials{grid-template-columns:1fr}
+ .pathSaveList button{width:100%}
+ .pathRangeSlot{align-items:stretch;flex-direction:column}
+ .pathRangeSlot label{justify-content:space-between}
+ .pathRangeSlot select{flex:1}
+ .accountFarmLists{padding:11px}
+}
+@media(prefers-reduced-motion:reduce){.accountFarmProgress>span,.pathBiomeGroup>summary b{transition:none}}
