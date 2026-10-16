@@ -27,7 +27,7 @@ export const DESIGN_PRESETS=Object.freeze({
 export const DESIGN_FIELDS=Object.keys(DEFAULT_DESIGN);
 export function validateDesignField(key,value){
  if(colors.has(key))return normalizeDesignHex(value);
- if(key==='pattern')return ['contours','rings','stars','plain'].includes(value)?value:null;
+ if(key==='pattern')return ['contours','rings','stars','grid','aurora','diagonal','plain'].includes(value)?value:null;
  if(key==='fontFamily')return ['system','rounded','serif','mono'].includes(value)?value:null;
  if(key==='density')return ['comfortable','compact','spacious'].includes(value)?value:null;
  if(key==='buttonStyle')return ['gradient','solid','outline'].includes(value)?value:null;
