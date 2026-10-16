@@ -10,7 +10,7 @@ const guide=(id,title,category,summary,keywords,sourceUrl,art,sections,relatedAr
  id,title,category,summary,keywords,source:'official-patch',sourceLabel:sourceUrl===notesS2?'IdleArc Season 2 patch notes':'IdleArc Season Update v1.2.1',sourceUrl,
  readTime:Math.max(2,Math.ceil(sections.reduce((n,s)=>n+s[1].split(/\s+/).length,0)/210))+' min',
  sections:sections.map(([heading,body],i)=>({title:heading,body,...(i===0?{imageId:'image-topic'}:{})})),
- images:[{id:'image-topic',name:'Arcana Refined illustration',src:'/assets/icons/idlearc-refined/'+art+'.svg',alt:'Arcana Refined artwork illustrating '+title,caption:'Arcana Refined illustration. Refer to the Game Atlas for original IdleArc item and creature artwork.'}],
+ images:[{id:'image-topic',name:'Arcana Refined illustration',src:'/assets/icons/idlearc-refined/'+art+'.svg',alt:'Arcana Refined artwork illustrating '+title,caption:'Arcana Refined illustration. Original game artwork is available in the Game Atlas.'}],
  connections:{articles:relatedArticles,tools:relatedTools,collections:relatedCollections},
  actions:relatedTools.map(key=>NAV_DESTINATIONS[key]).filter(dest=>dest?.route).slice(0,3).map(dest=>({label:dest.label,route:dest.route+(dest.params?'?'+new URLSearchParams(dest.params):''),icon:dest.icon}))
 });
