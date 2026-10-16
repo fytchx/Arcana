@@ -1,7 +1,8 @@
 import {esc} from './ui.js';
 import {PATHFINDER_SLOTS,MODE_LABELS,money,timelineModel,stageStepLabel,normalizeQuickView} from './pathfinder-timeline.js';
 import {quoteRange,normalizeRange} from './pathfinder-range.js';
-import {sourceMaterialGroups,recipeSlotStatus} from './pathfinder-material-groups.js';
+import {recipeSlotStatus} from './pathfinder-material-groups.js';
+import {groupedMaterialMarkup} from './pathfinder-material-view.js';
 
 const title=stage=>stage.tier?stage.name:stage.id+' · Awakened';
 const compactGold=n=>{
@@ -16,7 +17,7 @@ const compactGold=n=>{
 const amountList=list=>'<div class="pathMaterials">'+list.map(x=>
  '<div class="pathMaterial"><span>'+esc(x.name)+'</span><strong>'+money(x.quantity)+'</strong></div>'
  ).join('')+'</div>';
-export function pathfinderStepDetail(model){
+export function pathfinderStepDetail(model,catalog=[]){
  const {active,step,view}=model,level=view.level;
  const label=stageStepLabel(active,level);
  if(!step)return '<div class="pathDetail" id="pathDetail" role="status"><span class="pathEyebrow">'+esc(label)+'</span><h3>Verified recipe unavailable</h3><p>No estimated or invented cost is shown for this step.</p></div>';
@@ -26,14 +27,14 @@ export function pathfinderStepDetail(model){
  (step.free?'<p class="pathFree">Choose any enhancement to see its exact listed costs.</p>':
  '<div class="pathGold"><span>Gold required</span><strong>'+money(step.gold)+'</strong></div>'+
  '<h4>Materials required <small>'+step.materials.length+' types</small></h4>'+
- (step.materials.length?amountList(step.materials):'<p class="pathFree">No materials listed for this upgrade.</p>'))+
+ (step.materials.length?groupedMaterialMarkup(step.materials,model.snapshot,catalog):'<p class="pathFree">No materials listed for this upgrade.</p>'))+
  '</div>';
 }
-export function pathfinderChapterDetail(model){
+export function pathfinderChapterDetail(model,catalog=[]){
  const {chapter,active}=model;
  return '<details class="pathChapter"><summary><span><strong>Full '+esc(active.id)+' costs</strong><small>Transition plus every enhancement in this tier</small></span><span class="pathChapterGold">'+money(chapter.gold)+' Gold</span></summary>'+
  '<div class="pathChapterInside"><p>Listed base costs to complete '+esc(active.id)+'. No extra attempts from failed upgrades are included.</p>'+
- (chapter.complete?'<div class="pathGold"><span>Total Gold</span><strong>'+money(chapter.gold)+'</strong></div>'+amountList(chapter.materials):
+ (chapter.complete?'<div class="pathGold"><span>Total Gold</span><strong>'+money(chapter.gold)+'</strong></div>'+groupedMaterialMarkup(chapter.materials,model.snapshot,catalog):
  '<p class="pathWarning">Some source recipes are missing. This stage total is incomplete.</p>')+
  '</div></details>';
 }
@@ -55,7 +56,7 @@ export function pathfinderRangeContent(snapshot,quick,raw={},catalog=[]){
  '<div class="pathRangeSummary"><div><small>Upgrade steps</small><strong>'+money(quote.steps)+'</strong></div>'+
  '<div><small>Total Gold</small><strong>'+money(quote.gold)+'</strong></div>'+
  '<div><small>Material types</small><strong>'+quote.materials.length+'</strong></div></div>'+
- (quote.materials.length?'<h4>All materials for this route</h4>'+amountList(quote.materials):
+ (quote.materials.length?'<h4>Materials by biome and tier</h4><p class="pathGroupGuide">Verified biome sources appear first in progression order. Unknown sources and special currencies are clearly separated.</p>'+groupedMaterialMarkup(quote.materials,snapshot,catalog):
  '<p class="pathFree">These checkpoints are identical, so no upgrade is needed.</p>');
  return controls+'<div class="pathRangeOutput" role="status" aria-live="polite">'+summary+'</div>'+
  '<p class="pathRangeFoot">Base recipe totals include intervening enhancements and tier / rank transitions. Failed attempts are excluded.</p>';
@@ -89,7 +90,7 @@ export function pathfinderView(raw,snapshot,error='',rangePlan={},options={}){
  ).join('')+'</div>'+
  '<div class="pathRangeHead"><label for="pathStepRange">Slide through upgrades</label><output id="pathStepValue" for="pathStepRange">'+(view.level===0?'Transition':'+'+view.level)+'</output></div>'+
  '<input id="pathStepRange" data-path-range aria-label="Selected upgrade level" type="range" min="0" max="'+active.max+'" value="'+view.level+'" step="1" aria-valuetext="'+esc(stageStepLabel(active,view.level))+'" style="--path-progress:'+(active.max?Math.round(view.level/active.max*100):0)+'%">'+
- pathfinderStepDetail(model)+pathfinderChapterDetail(model)+(options.includeRange===false?'':pathfinderRangePanel(snapshot,view,rangePlan,options.catalog))+
+ pathfinderStepDetail(model,options.catalog)+pathfinderChapterDetail(model,options.catalog)+(options.includeRange===false?'':pathfinderRangePanel(snapshot,view,rangePlan,options.catalog))+
  '</section>'+
  '<p class="pathSource">Source: '+esc(snapshot.sourceVersion||snapshot.source||'October 2026 verified-cost snapshot')+'. Base Gold and material amounts per upgrade, before failed attempts. This source has only generic tier recipes. It cannot verify slot-specific cost differences. A1–A30 are supported where source data is available.</p>'+
  '<div class="pathActions"><button type="button" class="btn secondary" data-route="labs/build">Back to Build Studio</button><button type="button" class="btn secondary" data-route="wiki/library" data-params="kind=material">Materials in the Wiki</button></div>'+
