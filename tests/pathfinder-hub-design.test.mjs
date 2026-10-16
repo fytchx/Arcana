@@ -112,3 +112,26 @@ test('extended customization is bounded and respects accessible native controls'
  assert.equal(validateDesignField('fontSize',30),90);
  assert.equal(validateDesignField('headerOpacity',''),null);
 });
+
+test('multiple slider input events coalesce into one undo gesture',()=>{
+ const original=globalThis.localStorage,store=new Map();
+ try{
+  globalThis.localStorage={getItem:key=>store.get(key)||null,setItem:(key,value)=>store.set(key,value),removeItem:key=>store.delete(key)};
+  const initial=readDesign().fontSize;
+  assert.equal(writeDesign('fontSize',101),true);
+  assert.equal(writeDesign('fontSize',102),true);
+  assert.equal(writeDesign('fontSize',103),true);
+  assert.equal(readDesign().fontSize,103);
+  assert.equal(undoDesign(),true);
+  assert.equal(readDesign().fontSize,initial);
+ }finally{if(original===undefined)delete globalThis.localStorage;else globalThis.localStorage=original}
+});
+test('seven patterns validate and the sample has no overlay behavior',async()=>{
+ for(const pattern of ['contours','rings','stars','grid','aurora','diagonal','plain'])assert.equal(validateDesignField('pattern',pattern),pattern);
+ assert.equal(validateDesignField('pattern','external-url'),null);
+ const markup=settingsView({admin:true});
+ for(const value of ['grid','aurora','diagonal'])assert.match(markup,new RegExp('value="'+value+'"'));
+ const css=await readFile(new URL('../arcana-contour.css',import.meta.url),'utf8');
+ assert.match(css,/\.arcanaDesignLab \.designMiniPreview\{position:relative!important/);
+ assert.match(css,/\.miniCanvas\[data-mini-pattern="aurora"\]/);
+});
