@@ -61,6 +61,17 @@ test('public theme is anonymous while publishes, rollback, history and members a
   assert.equal(changed.status,200);assert.equal(changed.data.design.main,'#123456');assert.equal(changed.data.revision,1);
   const publicAfter=await call('GET','/api/site/theme');
   assert.equal(publicAfter.data.design.main,'#123456');
+  // A theme saved by the previous 32-pattern editor still loads after
+  // newer Build Studio controls are introduced, without losing colors.
+  const oldFile=join(temp,'admin','site-config.json');
+  const original=JSON.parse(await readFile(oldFile,'utf8'));
+  for(const key of ['patternTarget','heroActionWidth','heroActionAlign','heroActionHeight','heroActionGlow','heroActionBorder','heroActionIcon','heroActionSubtitle'])delete original.design[key];
+  await writeFile(oldFile,JSON.stringify(original));
+  const migrated=await call('GET','/api/site/theme');
+  assert.equal(migrated.status,200);
+  assert.equal(migrated.data.design.main,'#123456');
+  assert.equal(migrated.data.design.heroActionWidth,DEFAULT_DESIGN.heroActionWidth);
+  assert.equal(migrated.data.design.patternTarget,'all');
   assert.equal(publicAfter.data.updatedBy,undefined);
   const stale=await call('PUT','/api/admin/site',input,token);
   assert.equal(stale.status,409);
