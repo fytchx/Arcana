@@ -54,6 +54,7 @@ export async function loadAdminTraffic(refresh,{force=false}={}){
  finally{state.loading=false;if(location.hash.startsWith('#/admin'))refresh();}
 }
 export function wireAdminTraffic({refresh}){
+ setInterval(()=>{if(state.loadedAt&&document.visibilityState==='visible'&&location.hash.startsWith('#/admin'))void loadAdminTraffic(refresh,{force:true});},60000);
  document.addEventListener('click',e=>{
   const range=e.target.closest('[data-traffic-range]');
   if(range){const n=Number(range.dataset.trafficRange);if([7,14,30].includes(n)){state.range=n;refresh();}return;}
