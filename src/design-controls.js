@@ -107,12 +107,14 @@ export function applyDesign(root=globalThis.document?.documentElement){
  const admin=root.dataset.arcanaAdminDesign==='true'&&previewEnabled;
  const published=publishedDesign!==null;
  const active=admin||published;
+ root.dataset.arcanaDesignActive=String(active);
  const values=admin?readDesign():publishedDesign||DEFAULT_DESIGN;
  for(const [k,css] of Object.entries({main:'--theme-main',card:'--theme-secondary',action:'--arcana-action-color',text:'--arcana-design-text',secondaryAccent:'--arcana-secondary-accent',borderColor:'--arcana-border-color',mutedText:'--arcana-muted-text',navBar:'--arcana-nav-panel',buttonText:'--arcana-button-text'})){
   if(active){root.style.setProperty(css,values[k]);if(k==='main')root.style.setProperty('--bg',values[k]);if(k==='card')root.style.setProperty('--panel',values[k]);}
   else if(css.startsWith('--arcana-'))root.style.removeProperty(css);
  }
  root.style.setProperty('--arcana-wave-opacity',String(values.intensity/100));
+ root.style.setProperty('--arcana-pattern-alpha',Math.round(values.intensity*.16)+'%');
  root.style.setProperty('--arcana-glow-alpha',String(values.glow/100));
  root.style.setProperty('--arcana-edge-alpha',String(values.edges/100));
  root.style.setProperty('--arcana-card-radius',values.roundness+'px');
