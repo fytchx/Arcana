@@ -34,9 +34,10 @@ test('all gear upgrade routes use Pathfinder tabs without duplicated total calcu
  assert.equal(connectedNext('calculators/pathfinder'),'');
  assert.equal(connectedNext('labs/passives'),'');
 });
-test('guest settings explain how the admin-only workshop becomes available',()=>{
- assert.doesNotMatch(settingsView(),/data-design-field=/);
- assert.match(settingsView(),/Discord login is not configured/);
- assert.match(settingsView({authEnabled:true}),/api\/account\/login/);
- assert.match(settingsView({admin:true}),/data-design-field="pattern"/);
+test('public settings expose accessibility only, never admin design controls',()=>{
+ const guest=settingsView(),admin=settingsView({admin:true});
+ for(const page of [guest,admin]){
+  assert.match(page,/Reduce motion/);
+  assert.doesNotMatch(page,/data-design-field=|data-action="accent"|slateAccentChoice|arcanaDesignLab/);
+ }
 });
