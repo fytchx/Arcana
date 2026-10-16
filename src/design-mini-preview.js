@@ -73,6 +73,10 @@ export function syncDesignMiniPreview(){
  if(fix)fix.hidden=mode!=='after'||contrast.find(item=>item.id==='button')?.pass!==false;
 
 }
+export function showDesignMiniPage(next){
+ if(!['home','studio','pathfinder','wiki','profile'].includes(next))return;
+ page=next;mode='after';storePreview();syncDesignMiniPreview();
+}
 export function focusDesignMiniPreview(){
  previewMode='focus';previewExpanded=true;storePreview();syncDesignMiniPreview();
 }
