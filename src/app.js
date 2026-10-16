@@ -52,6 +52,7 @@ import {searchAsYouType} from './search-as-you-type.js';
 import {writeDesign,resetDesign,normalizeDesignHex,applyDesignPreset,undoDesign,readDesign,DESIGN_PRESETS} from './design-controls.js';
 import {wireDesignMiniPreview,syncDesignMiniPreview,endDesignMiniSession,focusDesignMiniPreview} from './design-mini-preview.js';
 import {wireThemeVault} from './theme-studio-vault.js';
+import {suggestedButtonText} from './theme-studio-audit.js';
 import {initGeneralChat} from './general-chat.js';
 import {setCustomAccent} from './theme.js';
 
@@ -902,6 +903,15 @@ function wireThemeStudioControls(){
    if(writeDesign('pattern',pattern.dataset.themePattern)){
     applyTheme(parseRoute().route);
     syncWorkshopInputs();
+   }
+   return;
+  }
+  const contrastFix=e.target.closest('[data-mini-fix-contrast]');
+  if(contrastFix&&contrastFix.closest('.themeStudioPreview')&&isAppearanceAdmin()){
+   if(writeDesign('buttonText',suggestedButtonText(readDesign()))){
+    applyTheme(parseRoute().route);
+    syncWorkshopInputs();
+    toast('Button text adjusted in your private draft. Nothing was published.');
    }
    return;
   }
