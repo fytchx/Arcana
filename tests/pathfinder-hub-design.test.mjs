@@ -86,11 +86,11 @@ test('mini style preview is updated by the existing saved-design writes',async()
  for(const pattern of ['rings','stars','plain'])assert.ok(css.includes('data-mini-pattern="'+pattern+'"'));
 });
 
-test('six curated palettes can be applied and undone without a page render',()=>{
+test('eighteen curated palettes can be applied and undone without a page render',()=>{
  const old=globalThis.localStorage,mem=new Map();
  try{
   globalThis.localStorage={getItem:k=>mem.get(k)||null,setItem:(k,v)=>mem.set(k,v),removeItem:k=>mem.delete(k)};
-  assert.equal(Object.keys(DESIGN_PRESETS).length,6);
+  assert.equal(Object.keys(DESIGN_PRESETS).length,18);
   assert.equal(applyDesignPreset('emerald'),true);
   assert.equal(readDesign().action,'#34E8A1');
   assert.equal(readDesign().main,'#071510');
@@ -127,8 +127,8 @@ test('multiple slider input events coalesce into one undo gesture',()=>{
   assert.equal(readDesign().fontSize,initial);
  }finally{if(original===undefined)delete globalThis.localStorage;else globalThis.localStorage=original}
 });
-test('seven patterns validate and the sample has no overlay behavior',async()=>{
- for(const pattern of ['contours','rings','stars','grid','aurora','diagonal','plain'])assert.equal(validateDesignField('pattern',pattern),pattern);
+test('eighteen patterns validate and the sample has no overlay behavior',async()=>{
+ for(const pattern of ['contours','rings','stars','grid','aurora','diagonal','hex','grain','crystal','nebula','weave','runes','circuit','topography','facets','scanlines','honeycomb','plain'])assert.equal(validateDesignField('pattern',pattern),pattern);
  assert.equal(validateDesignField('pattern','external-url'),null);
  const markup=designPanel();
  for(const value of ['grid','aurora','diagonal'])assert.match(markup,new RegExp('value="'+value+'"'));
