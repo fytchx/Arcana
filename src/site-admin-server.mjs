@@ -19,7 +19,7 @@ const serialized=task=>{
 const defaultConfig=()=>({revision:0,updatedAt:null,updatedBy:null,design:null,notice:{enabled:false,text:''}});
 function safeConfig(raw){
  if(!raw||typeof raw!=='object'||!Number.isSafeInteger(raw.revision)||raw.revision<0)return defaultConfig();
- return {...defaultConfig(),...raw,notice:normalizeNotice(raw.notice),design:raw.design?normalizeDesign(raw.design):null};
+ return {...defaultConfig(),...raw,notice:normalizeNotice(raw.notice),design:raw.design?normalizeDesign({...DEFAULT_DESIGN,...raw.design}):null};
 }
 export function normalizeDesign(value){
  if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('Invalid theme.');
