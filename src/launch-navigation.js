@@ -134,10 +134,10 @@ export function userCenterView(profile=null){
  ].map(navrow).join('')+'</div></div>';
 }
 const PREF_KEY='arcana-launch-prefs';
-export function appPrefs(){try{const raw=JSON.parse(localStorage.getItem(PREF_KEY)||'{}');return {compact:raw.compact===true,reduceMotion:raw.reduceMotion===true}}catch{return {compact:false,reduceMotion:false}}}
+export function appPrefs(){try{const raw=JSON.parse(localStorage.getItem(PREF_KEY)||'{}');return {compact:false,reduceMotion:raw.reduceMotion===true}}catch{return {compact:false,reduceMotion:false}}}
 export function applyAppPrefs(){const prefs=appPrefs();document.documentElement.dataset.launchCompact=String(prefs.compact);document.documentElement.dataset.launchReduceMotion=String(prefs.reduceMotion)}
-export function changeAppPref(key,checked){if(!['compact','reduceMotion'].includes(key))return;const p={...appPrefs(),[key]:checked===true};try{localStorage.setItem(PREF_KEY,JSON.stringify(p))}catch{}applyAppPrefs()}
-const designPanel=()=>{
+export function changeAppPref(key,checked){if(key!=='reduceMotion')return;const p={...appPrefs(),[key]:checked===true};try{localStorage.setItem(PREF_KEY,JSON.stringify(p))}catch{}applyAppPrefs()}
+export const designPanel=()=>{
  const d=readDesign();
  const color=(key,label)=>'<div class="designControl designColorControl"><span>'+label+'</span><input type="color" data-design-field="'+key+'" value="'+esc(d[key])+'" aria-label="'+label+' color picker"><input type="text" data-design-hex="'+key+'" value="'+esc(d[key])+'" inputmode="text" maxlength="7" spellcheck="false" autocorrect="off" autocapitalize="characters" aria-label="'+label+' HEX code" aria-describedby="designHexStatus-'+key+'" placeholder="#A78BFA"><small class="designHexStatus" id="designHexStatus-'+key+'" data-design-status="'+key+'" role="status">HEX code</small></div>';
  const unit=key=>['roundness','buttonRoundness','cardPadding','borderWidth','buttonHeight'].includes(key)?' px':'%';
@@ -145,7 +145,7 @@ const designPanel=()=>{
  const select=(key,label,opts)=>'<label class="designControl"><span>'+label+'</span><select data-design-field="'+key+'" aria-label="'+label+'">'+opts.map(([id,name])=>'<option value="'+id+'" '+(d[key]===id?'selected':'')+'>'+name+'</option>').join('')+'</select></label>';
  const group=(name,body,description='')=>'<details class="designOptionSection" open><summary>'+name+'</summary>'+(description?'<p class="designOptionDescription">'+description+'</p>':'')+'<div class="designOptionControls">'+body+'</div></details>';
  const presets=Object.entries(DESIGN_PRESETS).map(([id,p])=>'<button class="designPreset" type="button" data-action="design-preset" data-arg="'+id+'"><span class="designPresetSwatches" style="--preset-main:'+p.main+';--preset-card:'+p.card+';--preset-primary:'+p.action+';--preset-secondary:'+p.secondaryAccent+'"><i></i><i></i><i></i><i></i></span><strong>'+esc(p.name)+'</strong></button>').join('');
- return '<section class="slateSettingsBlock arcanaDesignLab"><span class="launchEyebrow">ADVANCED · ADMIN ONLY</span><h2>Design Workshop</h2><p>Experiment freely. Your saved appearance applies to this device only and does not change anyone else’s theme.</p>'+
+ return '<section class="slateSettingsBlock arcanaDesignLab"><span class="launchEyebrow">ADVANCED · ADMIN ONLY</span><h2>Design Workshop</h2><p>All appearance settings in one place. Preview changes privately, then Publish to everyone above when ready.</p>'+
  designMiniMarkup()+
  '<div class="designPresetHeader"><h3>Quick Themes</h3><p>Six complete palettes. Pick one, then fine-tune any individual setting.</p></div><div class="designPresetGrid">'+presets+'</div>'+
  group('Colors &amp; accents',
@@ -161,27 +161,18 @@ const designPanel=()=>{
  slider('roundness','Card corners',3,28)+slider('cardPadding','Card padding',8,22)+slider('buttonRoundness','Button corners',3,30)+slider('buttonFill','Button color strength',35,100)+slider('buttonHeight','Button height',40,58)+slider('accentBlend','Gradient accent balance',0,100)+
  select('buttonStyle','Button appearance',[['gradient','Gradient'],['solid','Solid'],['outline','Outlined']]))+
  group('Typography &amp; spacing',
+ select('iconMode','Icon treatment',[['two-tone','Two-tone'],['neutral','Neutral'],['accent','Accent'],['muted','Muted']])+
  select('fontFamily','Font style',[['system','Clean system'],['rounded','Soft rounded'],['serif','Classic serif'],['mono','Monospace']])+
  slider('fontSize','Text size',90,115)+select('density','Layout density',[['comfortable','Comfortable'],['compact','Compact'],['spacious','Spacious']]))+
  '<div class="designWorkshopActions"><button type="button" class="btn secondary" data-action="preview-design">'+icon('search',16)+' View preview</button><button type="button" class="btn secondary" data-action="undo-design">'+icon('back',16)+' Undo last change</button><button type="button" class="btn secondary" data-action="reset-design">'+icon('close',16)+' Reset design</button></div>'+
- '<p class="mutedSmall">No game artwork or verified values are altered. Changes remain local to your signed-in browser, not published for everyone.</p></section>';
+ '<p class="mutedSmall">No game artwork or verified values are altered. Use Publish to everyone at the top when your preview is ready.</p></section>';
 };
 export function settingsView({admin=false,authEnabled=false,loggedIn=false}={}){
  const p=appPrefs(),selected=selectedAccent();
  const accentCards=ACCENT_PRESETS.map(x=>'<button type="button" class="slateAccentChoice '+(selected===x.id?'selected':'')+'" data-action="accent" data-arg="'+esc(x.id)+'" aria-pressed="'+(selected===x.id)+'"><span class="slateAccentSwatch" style="--swatch:'+x.hex+'"></span><span>'+esc(x.name)+'</span>'+(selected===x.id?'<b aria-hidden="true">✓</b>':'')+'</button>').join('');
- const adminEditor=admin?'<section class="slateSettingsBlock arcanaAdminAppearance"><span class="launchEyebrow">ADMIN ONLY</span><h2>'+icon('settings',20)+' Arcana Theme Studio</h2><p>Preview a color on this device. Publishing a color for everyone requires the protected Design Control portal.</p>'+
-  '<div class="slateAccentGrid" role="group" aria-label="Theme previews">'+accentCards+'</div>'+
-  '<div class="arcanaCustomAccent"><label for="arcanaCustomAccentPicker">Custom accent</label><input type="color" id="arcanaCustomAccentPicker" value="'+esc(customAccent())+'" aria-label="Pick accent color"><input type="text" id="arcanaCustomAccentHex" value="'+esc(customAccent())+'" maxlength="7" spellcheck="false" placeholder="#A98BFF" aria-label="Custom hex color"><button type="button" data-action="custom-accent">Preview</button></div>'+
-  '<button class="slateSiteTheme" type="button" data-action="accent" data-arg="site">Reset to published theme</button>'+
-  '<a class="arcanaAdminPublish" href="'+esc(ADMIN_URL)+'" target="_blank" rel="noopener noreferrer">'+icon('settings',18)+' Open protected Design Control '+icon('external',16)+'</a>'+
-  '<small class="arcanaThemeWarning">Color previews do not publish changes to the community.</small></section>':
-  '<section class="slateSettingsBlock arcanaThemeReadOnly"><span class="launchEyebrow">ADMIN ONLY</span><h2>'+icon('shield',20)+' Design Workshop · Locked</h2><p>Find the theme editor at <strong>Options → Settings → Design Workshop</strong>. Only signed-in Arcana Admins and the Creator can unlock it.</p>'+
- (!authEnabled?'<p class="arcanaLoginStatus">Discord login is not configured on this preview yet. Admin controls cannot unlock until preview authentication is connected.</p>':
- !loggedIn?'<a class="btn secondary" href="/api/account/login">Sign in with Discord</a>':
- '<p class="arcanaLoginStatus">This account does not have Admin or Creator access.</p>')+'</section>';
  return '<div class="launchPage slateSettings arcanaSettings"><span class="launchEyebrow">PREFERENCES</span><h1>Settings</h1><p>Simple display controls. Your game progress and saved builds are unaffected.</p>'+
-  '<section class="slateSettingsBlock"><h2>'+icon('settings',20)+' Display</h2><div class="launchSettingList"><label class="launchSetting"><span><strong>Compact menus</strong><small>Reduce spacing throughout menus.</small></span><input type="checkbox" data-app-pref="compact" '+(p.compact?'checked':'')+'></label><label class="launchSetting"><span><strong>Reduce motion</strong><small>Turn off decorative movement.</small></span><input type="checkbox" data-app-pref="reduceMotion" '+(p.reduceMotion?'checked':'')+'></label></div></section>'+
-  adminEditor+(admin?designPanel():'')+'</div>';
+  '<section class="slateSettingsBlock"><h2>'+icon('settings',20)+' Accessibility</h2><div class="launchSettingList"><label class="launchSetting"><span><strong>Reduce motion</strong><small>Turn off decorative movement on this device.</small></span><input type="checkbox" data-app-pref="reduceMotion" '+(p.reduceMotion?'checked':'')+'></label></div></section>'+
+  '<p class="mutedSmall">Colors, icons, fonts, layouts and all design settings are managed centrally by Arcana administrators.</p></div>';
 }
 export function iconGalleryView(){
  const sections=Object.entries(ICON_CATEGORIES).map(([cat,ids])=>
@@ -189,6 +180,6 @@ export function iconGalleryView(){
  '<div class="arcanaIconCatalogGrid">'+ids.map(id=>'<div class="arcanaIconCatalogItem" title="'+esc(id)+'">'+icon(id,27)+'<span>'+esc(id.replace(/^(feature|class|equipment|stat|currency)-/,'').replaceAll('-',' '))+'</span></div>').join('')+'</div></section>').join('');
  return '<div class="launchPage arcanaIconCatalog"><span class="launchEyebrow">ASSET SYSTEM</span><h1>Arcana Minimal Icon Library</h1>'+
  '<p>All '+ICON_IDS.length+' original vector assets, organized by purpose. Every icon responds to your selected color and appearance mode. These are independent from IdleArc game artwork.</p>'+
- '<button class="arcanaOpenGallery" data-route="settings">'+icon('back',16)+' Customize icon appearance</button>'+
+ '<p class="mutedSmall">Icon appearance is controlled globally by Arcana administrators.</p>'+
  sections+'<p class="mutedSmall">SVG source files and the manifest are available in the Arcana repository under <code>assets/icons/arcana-minimal/</code>.</p></div>';
 }
