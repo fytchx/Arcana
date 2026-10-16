@@ -117,7 +117,6 @@ export function applyDesign(root=globalThis.document?.documentElement){
   root.dataset.arcanaDesignButtonStyle=values.buttonStyle;
   root.dataset.arcanaIconMode=values.iconMode;
   root.style.setProperty('--arcana-icon-color',values.action);
-  root.style.setProperty('--arcana-logo-filter','hue-rotate(0deg)');
  }else{
   root.style.removeProperty('--arcana-design-font-family');
   delete root.dataset.arcanaDesignDensity;
