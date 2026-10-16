@@ -49,8 +49,9 @@ import {saveFarmingList,wireFarmingLists} from './farming-lists-ui.js';
 import {homeScreen,homeSubmenu,directoryView,wikiTopicsView,wikiTopicView,wikiAboutView,userCenterView,settingsView,iconGalleryView,applyAppPrefs,changeAppPref} from './launch-navigation.js';
 import {currentAccount,refreshAccount,accountStatus} from './community-ui.js';
 import {searchAsYouType} from './search-as-you-type.js';
-import {writeDesign,resetDesign,normalizeDesignHex,applyDesignPreset,undoDesign,readDesign} from './design-controls.js';
-import {wireDesignMiniPreview,syncDesignMiniPreview,endDesignMiniSession} from './design-mini-preview.js';
+import {writeDesign,resetDesign,normalizeDesignHex,applyDesignPreset,undoDesign,readDesign,DESIGN_PRESETS} from './design-controls.js';
+import {wireDesignMiniPreview,syncDesignMiniPreview,endDesignMiniSession,focusDesignMiniPreview} from './design-mini-preview.js';
+import {wireThemeVault} from './theme-studio-vault.js';
 import {initGeneralChat} from './general-chat.js';
 import {setCustomAccent} from './theme.js';
 
@@ -557,6 +558,11 @@ function syncWorkshopInputs(){
   const label=document.querySelector('[data-design-status="'+e.dataset.designHex+'"]');
   if(label)label.textContent='HEX code';
  }
+ for(const tile of document.querySelectorAll('.arcanaDesignLab [data-theme-pattern]'))tile.setAttribute('aria-pressed',String(tile.dataset.themePattern===design.pattern));
+ for(const preset of document.querySelectorAll('.arcanaDesignLab .designPreset')){
+  const matches=preset.dataset.presetSearch&&preset.dataset.arg;
+  if(matches)preset.classList.toggle('selected',preset.dataset.arg===Object.keys(DESIGN_PRESETS).find(id=>DESIGN_PRESETS[id].main===design.main&&DESIGN_PRESETS[id].action===design.action&&DESIGN_PRESETS[id].pattern===design.pattern));
+ }
  syncDesignMiniPreview();
 }
 function action(name,arg,btn){if(['accent','custom-accent','site-surface','icon-color','icon-mode'].includes(name)&&!isAppearanceAdmin()){toast('Only Arcana admins can edit appearance');return;}switch(name){
@@ -564,7 +570,7 @@ function action(name,arg,btn){if(['accent','custom-accent','site-surface','icon-
  case 'removeportrait':if(clearStudioPortrait()){render();toast('Class icon restored')}else toast('Could not remove the custom image');break;
  case 'accent':if(setAccent(arg)){render();toast('Theme updated')}else toast('Unable to save theme preference');break;
   case 'reset-design':if(!isAppearanceAdmin()){toast('Admin access required');break}if(resetDesign()){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Design reset. Undo is available.')}break;
-  case 'preview-design':{const section=document.querySelector('.designMiniPreview');section?.scrollIntoView({behavior:document.documentElement.dataset.launchReduceMotion==='true'?'auto':'smooth',block:'start'});break;}
+  case 'preview-design':{focusDesignMiniPreview();break;}
   case 'undo-design':if(!isAppearanceAdmin()){toast('Admin access required');break}if(undoDesign()){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Previous design restored')}else toast('No recent design change to undo');break;
   case 'design-preset':if(!isAppearanceAdmin()){toast('Admin access required');break}if(applyDesignPreset(arg)){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Palette applied. Undo is available.')}else toast('Palette unavailable');break;
   case 'custom-accent':{const hex=node('arcanaCustomAccentHex')?.value.trim()||node('arcanaCustomAccentPicker')?.value;if(setCustomAccent(hex)){render();toast('Custom color saved')}else toast('Enter a valid six-digit hex color such as #A98BFF');break;}
@@ -888,7 +894,7 @@ function wirePathfinderQuick(){
  },true);
 }
 
-function init(){wireDesignMiniPreview();document.addEventListener('click',e=>{
+function init(){wireDesignMiniPreview();wireThemeVault({toast,onLoad:()=>{applyTheme(parseRoute().route);syncWorkshopInputs();}});document.addEventListener('click',e=>{
  const summary=e.target.closest('details[data-home-panel] > summary');
  if(!summary)return;
  const group=summary.parentElement,key=group.dataset.homePanel;
