@@ -1,6 +1,7 @@
 // A miniature, self-contained preview for admin style editing. No iframe or second app instance.
 import {arcanaIcon} from './arcana-icons.js';
 import {readDesign} from './design-controls.js';
+import {themeReadability} from './theme-studio-audit.js';
 const PREVIEW_UI_KEY='arcana-theme-preview-layout-v2';
 const storedPreview=()=>{try{return JSON.parse(globalThis.localStorage?.getItem(PREVIEW_UI_KEY)||'{}')||{}}catch{return {}}};
 const initial=storedPreview();
@@ -28,6 +29,7 @@ export function designMiniMarkup(){
  '<div class="miniPage miniProfile"><div class="miniHero miniWorkspace"><span class="miniHeroIcon">'+icon('user',26)+'</span><span><small>YOUR PROFILE</small><b>Player center</b><em>Builds, activity and progress</em></span></div><div class="miniTabs"><b>Saved builds</b><span>Checklists</span><span>Activity</span></div><div class="miniMaterials"><b>Material checklist</b><small>12 / 19 collected</small><i></i></div><div class="miniTiles">'+tile('Build 1','Ready to share','shield')+tile('My guild','PDX','users')+'</div></div>'+
  '<div class="miniDock"><span>'+icon('home')+'<small>Home</small></span><span>'+icon('user')+'<small>Profile</small></span><span>'+icon('spark')+'<small>Featured</small></span><span>'+icon('clock')+'<small>Recent</small></span><span>'+icon('menu')+'<small>Options</small></span></div></div>'+
  '<div class="miniViews" role="group" aria-label="Choose example screen"><button data-mini-page="home" type="button" aria-pressed="true">Home</button><button data-mini-page="studio" type="button" aria-pressed="false">Build</button><button data-mini-page="pathfinder" type="button" aria-pressed="false">Pathfinder</button><button data-mini-page="wiki" type="button" aria-pressed="false">Wiki</button><button data-mini-page="profile" type="button" aria-pressed="false">Profile</button></div>'+
+ '<section class="miniReadability" aria-label="Theme contrast check"><div><strong>Readability meter</strong><small>AA text target: 4.5:1</small></div><div class="miniReadabilityList">'+[['base','Page text'],['card','Panel text'],['button','Button label']].map(([id,label])=>'<div class="miniReadabilityRow" data-mini-readability="'+id+'"><span>'+label+'</span><strong data-mini-ratio="'+id+'">…</strong></div>').join('')+'</div><button type="button" data-mini-fix-contrast hidden>Fix button label contrast</button><small>Estimated flat-color contrast. Text over images and effects needs visual testing.</small></section>'+
  '<p class="miniCaption" data-mini-caption role="status">After: the design you are editing.</p></div></section>';
 }
 export function syncDesignMiniPreview(){
@@ -59,6 +61,16 @@ export function syncDesignMiniPreview(){
  for(const b of section.querySelectorAll('button[data-mini-page]'))b.setAttribute('aria-pressed',String(b.dataset.miniPage===page));
  const caption=section.querySelector('[data-mini-caption]');
  if(caption)caption.textContent=mode==='before'?'Before: your original theme when this editor opened.':'After: your current local draft. Nothing is published until you choose Publish.';
+ const contrast=themeReadability(v);
+ for(const item of contrast){
+  const ratio=section.querySelector('[data-mini-ratio="'+item.id+'"]');
+  const row=section.querySelector('[data-mini-readability="'+item.id+'"]');
+  if(ratio)ratio.textContent=item.ratio.toFixed(1)+':1';
+  if(row)row.dataset.pass=String(item.pass);
+ }
+ const fix=section.querySelector('[data-mini-fix-contrast]');
+ if(fix)fix.hidden=mode!=='after'||contrast.find(item=>item.id==='button')?.pass!==false;
+
 }
 export function focusDesignMiniPreview(){
  previewMode='focus';previewExpanded=true;storePreview();syncDesignMiniPreview();
