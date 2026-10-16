@@ -126,6 +126,7 @@ export function applyDesign(root=globalThis.document?.documentElement){
  }
  root.style.setProperty('--arcana-wave-opacity',String(values.intensity/100));
  root.style.setProperty('--arcana-pattern-alpha',Math.round(values.intensity*.16)+'%');
+ root.style.setProperty('--arcana-premium-pattern-alpha',Math.round(values.intensity*.35)+'%');
  root.style.setProperty('--arcana-glow-alpha',String(values.glow/100));
  root.style.setProperty('--arcana-edge-alpha',String(values.edges/100));
  root.style.setProperty('--arcana-card-radius',values.roundness+'px');
