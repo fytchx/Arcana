@@ -69,7 +69,9 @@ test('Visitors count as sessions, pageviews and active sessions, but not as pers
   const html=adminTrafficView({admin:true,authEnabled:true});
   assert.match(html,/Admin Dashboard/);
   assert.match(html,/data-traffic-action="refresh"/);
-  assert.match(html,/7d/);
+  assert.match(html,/No data loaded/);
+  const trafficUI=await readFile(new URL('../src/admin-traffic-ui.js',import.meta.url),'utf8');
+  assert.match(trafficUI,/data-traffic-range/);
   assert.doesNotMatch(adminTrafficView({admin:false}),/trafficGraph/);
  }finally{delete process.env.ARCANA_TRAFFIC_DATA_DIR;await rm(folder,{recursive:true,force:true});}
 });
