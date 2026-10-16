@@ -763,3 +763,16 @@ html[data-arcana-design-active="true"]:not([data-arcana-design-pattern="contours
  .pathfinderHub .pathBiomeGroup summary{min-height:50px}
  .pathfinderHub .pathRangeOutput>h4{font-size:15px}
 }
+
+
+/* Easy-to-scan preset library for the administrator's global appearance studio. */
+.arcanaDesignLab .designPresetSearch{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);margin:8px 0 10px}
+.arcanaDesignLab .designPresetSearch input{min-height:45px;padding:10px 12px;border:1px solid var(--theme-border);border-radius:10px;background:var(--theme-main);color:var(--text);font-size:16px}
+.arcanaDesignLab .designPresetSearch input:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:2px}
+.arcanaDesignLab .designPreset.selected{border-color:var(--theme-highlight);background:color-mix(in srgb,var(--theme-highlight) 11%,var(--theme-main))}
+.arcanaDesignLab .designPresetCopy{display:grid;gap:4px;min-width:0}
+.arcanaDesignLab .designPresetCopy strong{font-size:12px;overflow-wrap:anywhere}
+.arcanaDesignLab .designPresetCopy small{font-size:10px;color:var(--muted);text-transform:capitalize}
+.arcanaDesignLab .designPresetSwatches{width:30px;height:30px;grid-template-columns:repeat(2,13px);grid-template-rows:repeat(2,13px)}
+.arcanaDesignLab .designPreset[hidden]{display:none!important}
+@media(min-width:860px){.arcanaDesignLab .designPresetGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
