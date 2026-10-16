@@ -942,7 +942,7 @@ function wireThemeStudioControls(){
    const category=filter.dataset.themePatternFilter;
    const section=filter.closest('.themePatternLibrary');
    for(const button of section.querySelectorAll('[data-theme-pattern-filter]'))button.setAttribute('aria-pressed',String(button===filter));
-   for(const tile of section.querySelectorAll('[data-pattern-category]'))tile.hidden=category!=='All'&&tile.dataset.patternCategory!==category;
+   for(const tile of section.querySelectorAll('[data-pattern-category]'))tile.hidden=category==='Premium'?!['Material','Atmosphere','Relic'].includes(tile.dataset.patternCategory):category!=='All'&&tile.dataset.patternCategory!==category;
   }
  });
 }
