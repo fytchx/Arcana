@@ -46,3 +46,11 @@ test('Pathfinder presents compact input rows and folded biome categories',async(
  assert.match(view,/Materials by biome/);
  assert.match(view,/slot-specific/i);
 });
+
+test('legacy upgrade entry points show verified full-range costs instead of partial tier-only totals',async()=>{
+ const app=await read('../src/app.js');
+ const nav=await read('../src/context-nav.js');
+ assert.ok(app.includes("case 'calculators/upgrade':return pathfinderHub('range')"));
+ assert.ok(nav.includes("params:{view:'range'},icon:'calculator'"));
+ assert.ok(app.includes("['upgrade','Rarity Reference','calculator']"));
+});
