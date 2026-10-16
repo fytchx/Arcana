@@ -28,6 +28,7 @@ test('published theme styles work for guests without leaking editor controls',as
  assert.match(js,/root\.dataset\.arcanaDesignActive=String\(active\)/);
  assert.ok(css.includes('html[data-arcana-design-active="true"]'));
  assert.ok(!css.includes('html[data-arcana-admin-design="true"]'),'Appearance stylesheet should not be restricted to admin visitors');
+ assert.match(css,/background:color-mix\(in srgb,var\(--arcana-nav-panel/,'Public navigation should remain opaque while honoring the admin blend preference');
  assert.match(app,/setDesignPreview\(adminDesign\)/);
 });
 test('mobile viewport never shrinks below a device-width view, and zoom-in remains available',async()=>{
