@@ -44,7 +44,7 @@ export function syncDesignMiniPreview(){
   '--mini-button-radius':v.buttonRoundness+'px','--mini-fill':v.buttonFill+'%',
   '--mini-cta-width':v.heroActionWidth+'%','--mini-cta-height':Math.max(28,Math.round(v.heroActionHeight*.65))+'px','--mini-cta-glow':String(v.heroActionGlow/100),'--mini-cta-border':v.heroActionBorder+'px'
  }))canvas.style.setProperty(name,value);
- canvas.dataset.miniDevice=device;canvas.dataset.miniPage=page;canvas.dataset.miniHeroAction=v.heroActionStyle;canvas.dataset.miniHeroSize=v.heroSize;canvas.dataset.miniPattern=v.pattern;canvas.dataset.miniFont=v.fontFamily;canvas.dataset.miniDensity=v.density;canvas.dataset.miniButtons=v.buttonStyle;canvas.dataset.miniHeroAlign=v.heroActionAlign;canvas.dataset.miniHeroIcon=v.heroActionIcon;canvas.dataset.miniHeroSubtitle=v.heroActionSubtitle;canvas.dataset.miniPatternTarget=v.patternTarget;
+ canvas.dataset.miniDevice=device;canvas.dataset.miniPage=page;canvas.dataset.miniHeroAction=v.heroActionStyle;canvas.dataset.miniHeroSize=v.heroSize;canvas.dataset.miniPattern=v.pattern;canvas.dataset.miniFont=v.fontFamily;canvas.dataset.miniDensity=v.density;canvas.dataset.miniButtons=v.buttonStyle;canvas.dataset.miniHeroCard=v.heroCardStyle;canvas.dataset.miniHeroEmblem=v.heroCardEmblem;canvas.dataset.miniHeroAlign=v.heroActionAlign;canvas.dataset.miniHeroIcon=v.heroActionIcon;canvas.dataset.miniHeroSubtitle=v.heroActionSubtitle;canvas.dataset.miniPatternTarget=v.patternTarget;
  canvas.setAttribute('aria-label',(mode==='before'?'Before editing':'Current')+' '+page+' example');
  const section=canvas.closest('.designMiniPreview');
  section.dataset.previewMode=previewMode;section.dataset.miniDevice=device;
