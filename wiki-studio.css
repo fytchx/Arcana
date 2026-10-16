@@ -54,3 +54,12 @@
 .fandomImportRow details p{padding-left:8px;border-left:1px solid var(--line,#33384a)}
 .wikiImportedInlineLink{text-decoration:underline;text-underline-offset:3px;color:var(--theme-highlight,var(--accent,#aa91ff))}
 @media(max-width:600px){.fandomStats{grid-template-columns:repeat(2,minmax(0,1fr))}.fandomImportRow{grid-template-columns:24px minmax(0,1fr)}.fandomImportRow>.btn{grid-column:2;justify-self:start}.fandomImportBar .btn{flex:1}}
+
+/* Curated Wiki artwork: readable, compact and responsive without giant image panels. */
+.wikiArticleCardTitleRow{display:flex;width:100%;min-width:0;align-items:center;justify-content:space-between;gap:10px}
+.wikiArticleCardTitleRow strong{flex:1;min-width:0}
+.wikiArticleCardArt{display:block;width:54px;height:54px;object-fit:contain;flex:none;filter:drop-shadow(0 3px 9px rgba(0,0,0,.20))}
+.wikiArticleFigureIllustration{display:flex;flex-direction:column;align-items:center;padding:18px 16px 13px;border:1px solid var(--theme-border,var(--line));background:var(--theme-card,rgba(20,20,30,.5));border-radius:14px}
+.wikiArticleFigureIllustration img{width:min(100%,180px);height:154px;max-height:154px;object-fit:contain;background:transparent;border:0;border-radius:0}
+.wikiArticleFigureIllustration figcaption{max-width:440px;line-height:1.45}
+@media(max-width:500px){.wikiArticleCardArt{width:46px;height:46px}.wikiArticleFigureIllustration img{height:124px;max-height:124px}}
