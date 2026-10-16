@@ -122,5 +122,5 @@ export function timelineModel(snapshot,raw){
  const view=normalizeSelection(raw,snapshot),stages=timelineStages(snapshot,view.mode),active=stages.find(s=>s.id===view.stage);
  if(!active)return null;
  const {steps,chapter}=cachedStage(snapshot,active);
- return {view,stages,active,steps,step:steps[view.level],chapter};
+ return {view,stages,active,steps,step:steps[view.level],chapter,snapshot};
 }
