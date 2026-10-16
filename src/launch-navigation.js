@@ -150,7 +150,7 @@ const designPanel=()=>{
  group('Colors &amp; accents',
  color('main','Background')+color('card','Panels')+color('action','Primary accent')+color('secondaryAccent','Second accent')+color('text','Text')+color('mutedText','Muted text')+color('borderColor','Border color')+color('navBar','Navigation bar')+color('buttonText','Button text'))+
  group('Background &amp; lighting',
- select('pattern','Background pattern',[['contours','Arcane waves'],['rings','Mystic rings'],['stars','Starlight'],['plain','None']])+
+ select('pattern','Background pattern',[['contours','Arcane waves'],['rings','Mystic rings'],['stars','Starlight'],['grid','Arcane grid'],['aurora','Aurora glow'],['diagonal','Rune lines'],['plain','None']])+
  slider('intensity','Pattern intensity',0,100)+slider('patternScale','Pattern size',60,180)+slider('glow','Glow strength',0,100)+slider('cardShadow','Card shadow',0,100)+slider('edges','Border intensity',0,100)+slider('borderWidth','Border thickness',0,3)+slider('headerOpacity','Header opacity',65,100))+
  group('Cards &amp; buttons',
  slider('roundness','Card corners',3,28)+slider('cardPadding','Card padding',8,22)+slider('buttonRoundness','Button corners',3,30)+slider('buttonFill','Button color strength',35,100)+slider('buttonHeight','Button height',40,58)+slider('accentBlend','Gradient accent balance',0,100)+
