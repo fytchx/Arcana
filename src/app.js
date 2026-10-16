@@ -556,6 +556,7 @@ function action(name,arg,btn){if(['accent','custom-accent','site-surface','icon-
  case 'removeportrait':if(clearStudioPortrait()){render();toast('Class icon restored')}else toast('Could not remove the custom image');break;
  case 'accent':if(setAccent(arg)){render();toast('Theme updated')}else toast('Unable to save theme preference');break;
   case 'reset-design':if(!isAppearanceAdmin()){toast('Admin access required');break}if(resetDesign()){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Design reset. Undo is available.')}break;
+  case 'preview-design':{const section=document.querySelector('.designMiniPreview');section?.scrollIntoView({behavior:document.documentElement.dataset.launchReduceMotion==='true'?'auto':'smooth',block:'start'});break;}
   case 'undo-design':if(!isAppearanceAdmin()){toast('Admin access required');break}if(undoDesign()){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Previous design restored')}else toast('No recent design change to undo');break;
   case 'design-preset':if(!isAppearanceAdmin()){toast('Admin access required');break}if(applyDesignPreset(arg)){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Palette applied. Undo is available.')}else toast('Palette unavailable');break;
   case 'custom-accent':{const hex=node('arcanaCustomAccentHex')?.value.trim()||node('arcanaCustomAccentPicker')?.value;if(setCustomAccent(hex)){render();toast('Custom color saved')}else toast('Enter a valid six-digit hex color such as #A98BFF');break;}
