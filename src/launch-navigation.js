@@ -1,4 +1,4 @@
-import {readDesign,DEFAULT_DESIGN} from './design-controls.js';
+import {readDesign,DEFAULT_DESIGN,DESIGN_PRESETS} from './design-controls.js';
 import {WIKI_CATEGORIES} from './wiki-taxonomy.js';
 import {designMiniMarkup} from './design-mini-preview.js';
 import {esc,icon} from './ui.js';
@@ -138,13 +138,28 @@ export function applyAppPrefs(){const prefs=appPrefs();document.documentElement.
 export function changeAppPref(key,checked){if(!['compact','reduceMotion'].includes(key))return;const p={...appPrefs(),[key]:checked===true};try{localStorage.setItem(PREF_KEY,JSON.stringify(p))}catch{}applyAppPrefs()}
 const designPanel=()=>{
  const d=readDesign();
- const color=(key,label)=>'<div class="designControl designColorControl"><span>'+label+'</span><input type="color" data-design-field="'+key+'" value="'+esc(d[key])+'" aria-label="'+label+' color picker"><input type="text" data-design-hex="'+key+'" value="'+esc(d[key])+'" inputmode="text" maxlength="7" spellcheck="false" autocorrect="off" autocapitalize="characters" aria-label="'+label+' HEX color code" aria-describedby="designHexStatus-'+key+'" placeholder="#A78BFA"><small class="designHexStatus" id="designHexStatus-'+key+'" data-design-status="'+key+'" role="status">HEX code</small></div>';
- const slider=(key,label,lo,hi,unit='%')=>'<label class="designControl"><span>'+label+'</span><input type="range" min="'+lo+'" max="'+hi+'" data-design-field="'+key+'" value="'+d[key]+'" aria-label="'+label+'"><strong data-design-value="'+key+'">'+d[key]+unit+'</strong></label>';
- return '<section class="slateSettingsBlock arcanaDesignLab"><span class="launchEyebrow">ADVANCED · ADMIN PREVIEW</span><h2>Design Workshop</h2><p>Tap a swatch or type/paste a HEX color like #A78BFA. Your changes apply immediately and save on this device only.</p>'+
- designMiniMarkup()+'<div class="designControlGroup"><h3>Site colors</h3>'+color('main','Background')+color('card','Panel color')+color('action','Primary buttons')+color('text','Text')+'</div>'+
- '<div class="designControlGroup"><h3>Artwork &amp; effects</h3><label class="designControl"><span>Background pattern</span><select data-design-field="pattern" aria-label="Background pattern">'+[['contours','Arcane waves'],['rings','Mystic rings'],['stars','Starlight'],['plain','None']].map(([v,label])=>'<option value="'+v+'" '+(d.pattern===v?'selected':'')+'>'+label+'</option>').join('')+'</select></label>'+slider('intensity','Pattern intensity',0,100)+slider('glow','Glow strength',0,100)+slider('edges','Border intensity',0,100)+'</div>'+
- '<div class="designControlGroup"><h3>Shapes &amp; buttons</h3>'+slider('roundness','Card corners',3,28,' px')+slider('buttonRoundness','Button corners',3,30,' px')+slider('buttonFill','Button color strength',35,100)+'</div>'+
- '<button type="button" class="btn secondary" data-action="reset-design">'+icon('back',16)+' Reset design preview</button><p class="mutedSmall">Game sprites and verified data are never recolored. The protected Design Control portal is required to publish a global theme.</p></section>';
+ const color=(key,label)=>'<div class="designControl designColorControl"><span>'+label+'</span><input type="color" data-design-field="'+key+'" value="'+esc(d[key])+'" aria-label="'+label+' color picker"><input type="text" data-design-hex="'+key+'" value="'+esc(d[key])+'" inputmode="text" maxlength="7" spellcheck="false" autocorrect="off" autocapitalize="characters" aria-label="'+label+' HEX code" aria-describedby="designHexStatus-'+key+'" placeholder="#A78BFA"><small class="designHexStatus" id="designHexStatus-'+key+'" data-design-status="'+key+'" role="status">HEX code</small></div>';
+ const unit=key=>['roundness','buttonRoundness','cardPadding','borderWidth','buttonHeight'].includes(key)?' px':'%';
+ const slider=(key,label,lo,hi)=>'<label class="designControl"><span>'+label+'</span><input type="range" min="'+lo+'" max="'+hi+'" data-design-field="'+key+'" value="'+d[key]+'" aria-label="'+label+'"><strong data-design-value="'+key+'">'+d[key]+unit(key)+'</strong></label>';
+ const select=(key,label,opts)=>'<label class="designControl"><span>'+label+'</span><select data-design-field="'+key+'" aria-label="'+label+'">'+opts.map(([id,name])=>'<option value="'+id+'" '+(d[key]===id?'selected':'')+'>'+name+'</option>').join('')+'</select></label>';
+ const group=(name,body,description='')=>'<details class="designOptionSection" open><summary>'+name+'</summary>'+(description?'<p class="designOptionDescription">'+description+'</p>':'')+'<div class="designOptionControls">'+body+'</div></details>';
+ const presets=Object.entries(DESIGN_PRESETS).map(([id,p])=>'<button class="designPreset" type="button" data-action="design-preset" data-arg="'+id+'"><span class="designPresetSwatches" style="--preset-main:'+p.main+';--preset-card:'+p.card+';--preset-primary:'+p.action+';--preset-secondary:'+p.secondaryAccent+'"><i></i><i></i><i></i><i></i></span><strong>'+esc(p.name)+'</strong></button>').join('');
+ return '<section class="slateSettingsBlock arcanaDesignLab"><span class="launchEyebrow">ADVANCED · ADMIN ONLY</span><h2>Design Workshop</h2><p>Experiment freely. Your saved appearance applies to this device only and does not change anyone else’s theme.</p>'+
+ designMiniMarkup()+
+ '<div class="designPresetHeader"><h3>Quick Themes</h3><p>Six complete palettes. Pick one, then fine-tune any individual setting.</p></div><div class="designPresetGrid">'+presets+'</div>'+
+ group('Colors &amp; accents',
+ color('main','Background')+color('card','Panels')+color('action','Primary accent')+color('secondaryAccent','Second accent')+color('text','Text')+color('mutedText','Muted text')+color('borderColor','Border color')+color('navBar','Navigation bar')+color('buttonText','Button text'))+
+ group('Background &amp; lighting',
+ select('pattern','Background pattern',[['contours','Arcane waves'],['rings','Mystic rings'],['stars','Starlight'],['plain','None']])+
+ slider('intensity','Pattern intensity',0,100)+slider('patternScale','Pattern size',60,180)+slider('glow','Glow strength',0,100)+slider('cardShadow','Card shadow',0,100)+slider('edges','Border intensity',0,100)+slider('borderWidth','Border thickness',0,3)+slider('headerOpacity','Header opacity',65,100))+
+ group('Cards &amp; buttons',
+ slider('roundness','Card corners',3,28)+slider('cardPadding','Card padding',8,22)+slider('buttonRoundness','Button corners',3,30)+slider('buttonFill','Button color strength',35,100)+slider('buttonHeight','Button height',40,58)+slider('accentBlend','Gradient accent balance',0,100)+
+ select('buttonStyle','Button appearance',[['gradient','Gradient'],['solid','Solid'],['outline','Outlined']]))+
+ group('Typography &amp; spacing',
+ select('fontFamily','Font style',[['system','Clean system'],['rounded','Soft rounded'],['serif','Classic serif'],['mono','Monospace']])+
+ slider('fontSize','Text size',90,115)+select('density','Layout density',[['comfortable','Comfortable'],['compact','Compact'],['spacious','Spacious']]))+
+ '<div class="designWorkshopActions"><button type="button" class="btn secondary" data-action="undo-design">'+icon('back',16)+' Undo last change</button><button type="button" class="btn secondary" data-action="reset-design">'+icon('close',16)+' Reset design</button></div>'+
+ '<p class="mutedSmall">No game artwork or verified values are altered. Changes remain local to your signed-in browser, not published for everyone.</p></section>';
 };
 export function settingsView({admin=false,authEnabled=false,loggedIn=false}={}){
  const p=appPrefs(),selected=selectedAccent();
