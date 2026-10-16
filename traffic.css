@@ -1,0 +1,34 @@
+/* Arcana first-party Admin Dashboard. Uses existing theme tokens; mobile-first. */
+.trafficDashboard{max-width:1060px;margin-inline:auto}
+.trafficDashboardActions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:16px 0 20px}
+.trafficDashboardActions>span{font-size:12px;color:var(--muted)}
+.trafficNotice{padding:20px;border:1px solid var(--theme-border,var(--line));border-radius:14px;background:var(--theme-card,var(--panel));color:var(--soft);margin:14px 0}
+.trafficStatsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.trafficMetric{display:flex;flex-direction:column;gap:7px;min-width:0;padding:15px 14px;border:1px solid var(--theme-border,var(--line));border-radius:14px;background:var(--theme-card,var(--panel))}
+.trafficMetric:first-child{grid-column:span 2;background:linear-gradient(115deg,var(--theme-card,var(--panel)),var(--theme-card-raised,var(--panel)))}
+.trafficMetric span{font-size:11px;font-weight:750;color:var(--soft);letter-spacing:.03em}
+.trafficMetric strong{font-size:clamp(27px,5vw,38px);font-variant-numeric:tabular-nums;line-height:1.15;letter-spacing:-.045em;color:var(--text)}
+.trafficMetric small{font-size:10px;color:var(--muted);line-height:1.5}
+.trafficPanel{margin:16px 0;padding:18px 14px;border:1px solid var(--theme-border,var(--line));border-radius:14px;background:var(--theme-card,var(--panel))}
+.trafficPanel>h2,.trafficPanelHead h2{font-size:18px;margin:0 0 14px;color:var(--text)}
+.trafficPanelHead{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.trafficRanges{display:flex;gap:5px}
+.trafficRanges button{min-width:42px;min-height:36px;padding:5px 10px;border:1px solid var(--theme-border,var(--line));border-radius:8px;background:transparent;color:var(--text);font:inherit;font-size:12px;cursor:pointer}
+.trafficRanges button[aria-pressed="true"]{background:var(--theme-highlight-soft,var(--panel));border-color:var(--theme-highlight,var(--accent));color:var(--theme-accent-text,var(--text))}
+.trafficGraph{height:206px;display:flex;align-items:flex-end;gap:5px;min-width:0;overflow-x:auto;overscroll-behavior-inline:contain;padding:11px 4px 5px;border-bottom:1px solid var(--theme-border,var(--line));scrollbar-width:thin}
+.trafficDay{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:7px;flex:1 0 19px;min-width:19px;max-width:54px;height:180px}
+.trafficBar{border-radius:5px 5px 0 0;background:var(--theme-highlight,var(--accent));opacity:.85;min-height:3px;width:75%;transition:height .18s ease-out}
+.trafficDay small{font:10px/1.3 system-ui,sans-serif;color:var(--muted);white-space:nowrap;transform:rotate(-25deg);transform-origin:center;min-height:18px}
+.trafficCaption{margin:10px 0 0;color:var(--muted);font-size:11px;line-height:1.6}
+.trafficPage{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--theme-border,var(--line))}
+.trafficPage:last-child{border-bottom:0}
+.trafficRank{color:var(--theme-accent-text,var(--accent));font-size:12px}
+.trafficPage>span:nth-child(2){overflow-wrap:anywhere;color:var(--text);font-size:13px;font-weight:700}
+.trafficPage small{display:block;margin-top:4px;font-size:10px;font-weight:400;color:var(--muted)}
+.trafficPage>strong{font-variant-numeric:tabular-nums;color:var(--text);font-size:14px}
+.trafficDailyDetails{margin-top:12px;color:var(--soft);font-size:12px}
+.trafficDailyDetails summary{cursor:pointer;padding:8px 0;color:var(--theme-accent-text,var(--accent));font-weight:700}
+.trafficDailyList{display:grid;gap:4px;margin-top:8px}
+.trafficDailyRow{display:grid;grid-template-columns:1fr auto auto;gap:18px;padding:8px 4px;border-bottom:1px solid var(--theme-border,var(--line));font-size:11px}
+@media(min-width:760px){.trafficStatsGrid{grid-template-columns:repeat(5,minmax(0,1fr))}.trafficMetric:first-child{grid-column:span 1}.trafficDay{flex-basis:23px}.trafficPanel{padding:22px}}
+@media(prefers-reduced-motion:reduce){.trafficBar{transition:none}}
