@@ -1129,3 +1129,29 @@ body,.shell{background:var(--theme-main)}
 .passiveTierRows .passiveReadonlyRank{margin-top:auto;border:1px solid var(--theme-border);background:var(--theme-overlay);color:var(--theme-accent-text);border-radius:8px;min-height:31px;min-width:78px;padding:8px;font-size:11px;font-weight:800;text-align:center}
 .passivePanel .passiveNode .passiveReadonlyRank{white-space:nowrap}
 @media(max-width:430px){.passiveTierRows .passiveReadonlyRank{min-width:0;font-size:10px;padding:7px 4px}}
+
+
+/* Windows desktop native-select popup contrast fix (2026-10-16).
+   Windows browsers can paint the OS options popup WHITE while inheriting
+   Arcana's white text from the closed select. The list becomes invisible.
+   Set the native control's color scheme AND explicit option foreground and
+   background. Keep real <select> elements for keyboard and mobile access. */
+html select{
+  color-scheme:dark;
+}
+html select option,
+html select optgroup{
+  background-color:#191e2b;
+  color:#f5f5fb;
+}
+html select option:disabled,
+html select optgroup:disabled{
+  color:#b4bed1;
+}
+@media (forced-colors:active){
+  html select option,
+  html select optgroup{
+    color:CanvasText;
+    background-color:Canvas;
+  }
+}
