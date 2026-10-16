@@ -137,7 +137,7 @@ const PREF_KEY='arcana-launch-prefs';
 export function appPrefs(){try{const raw=JSON.parse(localStorage.getItem(PREF_KEY)||'{}');return {compact:false,reduceMotion:raw.reduceMotion===true}}catch{return {compact:false,reduceMotion:false}}}
 export function applyAppPrefs(){const prefs=appPrefs();document.documentElement.dataset.launchCompact=String(prefs.compact);document.documentElement.dataset.launchReduceMotion=String(prefs.reduceMotion)}
 export function changeAppPref(key,checked){if(key!=='reduceMotion')return;const p={...appPrefs(),[key]:checked===true};try{localStorage.setItem(PREF_KEY,JSON.stringify(p))}catch{}applyAppPrefs()}
-export const designPanel=()=>{
+export const designPanel=({showPreview=true}={})=>{
  const d=readDesign();
  const color=(key,label)=>'<div class="designControl designColorControl"><span>'+label+'</span><input type="color" data-design-field="'+key+'" value="'+esc(d[key])+'" aria-label="'+label+' color picker"><input type="text" data-design-hex="'+key+'" value="'+esc(d[key])+'" inputmode="text" maxlength="7" spellcheck="false" autocorrect="off" autocapitalize="characters" aria-label="'+label+' HEX code" aria-describedby="designHexStatus-'+key+'" placeholder="#A78BFA"><small class="designHexStatus" id="designHexStatus-'+key+'" data-design-status="'+key+'" role="status">HEX code</small></div>';
  const unit=key=>['roundness','buttonRoundness','cardPadding','borderWidth','buttonHeight'].includes(key)?' px':'%';
@@ -146,7 +146,7 @@ export const designPanel=()=>{
  const group=(name,body,description='')=>'<details class="designOptionSection" open><summary>'+name+'</summary>'+(description?'<p class="designOptionDescription">'+description+'</p>':'')+'<div class="designOptionControls">'+body+'</div></details>';
  const presets=Object.entries(DESIGN_PRESETS).map(([id,p])=>{const active=p.main===d.main&&p.action===d.action&&p.pattern===d.pattern;return '<button class="designPreset '+(active?'selected':'')+'" type="button" data-action="design-preset" data-arg="'+id+'" data-preset-search="'+esc(p.name.toLowerCase()+' '+p.pattern)+'" aria-pressed="'+active+'"><span class="designPresetSwatches" style="--preset-main:'+p.main+';--preset-card:'+p.card+';--preset-primary:'+p.action+';--preset-secondary:'+p.secondaryAccent+'"><i></i><i></i><i></i><i></i></span><span class="designPresetCopy"><strong>'+esc(p.name)+'</strong><small>'+esc(p.pattern.replace(/-/g,' '))+' texture</small></span></button>'}).join('');
  return '<section class="slateSettingsBlock arcanaDesignLab"><span class="launchEyebrow">ADVANCED · ADMIN ONLY</span><h2>Design Workshop</h2><p>All appearance settings in one place. Preview changes privately, then Publish to everyone above when ready.</p>'+
- designMiniMarkup()+
+ (showPreview?designMiniMarkup():'')+
  '<div class="designPresetHeader"><h3>Theme presets</h3><p>18 styles with different color, texture and layout combinations. Preview before publishing.</p></div><label class="designPresetSearch">Find a preset <input type="search" data-design-preset-search placeholder="Search names or textures…" autocomplete="off"></label><div class="designPresetGrid">'+presets+'</div>'+
  group('Colors &amp; accents',
  color('main','Background')+color('card','Panels')+color('action','Primary accent')+color('secondaryAccent','Second accent')+color('text','Text')+color('mutedText','Muted text')+color('borderColor','Border color')+color('navBar','Navigation bar')+color('buttonText','Button text'))+
