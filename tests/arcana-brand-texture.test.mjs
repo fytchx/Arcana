@@ -19,7 +19,7 @@ test('visitor branding ignores obsolete personal accent and icon overrides',()=>
   assert.ok(setAccent('crimson-red'));
   assert.equal(themeStatus().palette.highlight,'#A98BFF');
   assert.equal(themeStatus().iconColor,themeStatus().palette.highlight);
-  assert.match(logoFilterForAccent(themeStatus().palette.highlight),/hue-rotate\\(/);
+  assert.match(logoFilterForAccent(themeStatus().palette.highlight),/hue-rotate\(/);
  }finally{if(saved===undefined)delete globalThis.localStorage;else globalThis.localStorage=saved;}
 });
 test('homepage grain is a static safe neutral asset; cards and logo follow palette',async()=>{
