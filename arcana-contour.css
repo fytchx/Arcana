@@ -498,3 +498,7 @@ html[data-arcana-admin-design="true"][data-arcana-design-density="spacious"] #co
 .miniCanvas[data-mini-density="compact"] .miniPage{padding:4px 7px}
 .miniCanvas[data-mini-density="spacious"] .miniPage{padding:10px 12px}
 .miniCanvas .miniHero,.miniCanvas .miniTile{box-shadow:0 0 var(--mini-glow) color-mix(in srgb,var(--mini-secondary,var(--mini-accent)) 26%,transparent),0 3px calc(var(--mini-shadow-alpha,.3) * 18px) #0009}
+
+/* The user can jump back to the inline sampler; the sample never overlays input fields. */
+.designMiniPreview{scroll-margin-top:calc(var(--arcana-header-height,68px) + 12px)}
+.arcanaDesignLab .designWorkshopActions button:first-child{grid-column:1/-1}
