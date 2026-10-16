@@ -502,3 +502,25 @@ html[data-arcana-admin-design="true"][data-arcana-design-density="spacious"] #co
 /* The user can jump back to the inline sampler; the sample never overlays input fields. */
 .designMiniPreview{scroll-margin-top:calc(var(--arcana-header-height,68px) + 12px)}
 .arcanaDesignLab .designWorkshopActions button:first-child{grid-column:1/-1}
+
+
+/* Extra patterns use CSS-only geometry rather than loading new assets. */
+html[data-arcana-design-pattern="grid"] #content.homeFullscreen .launchHero:after,
+html[data-arcana-design-pattern="grid"] #content.homeFullscreen .launchQuickCard:after{
+ -webkit-mask-image:none!important;mask-image:none!important;
+ background:linear-gradient(90deg,var(--theme-highlight) 1px,transparent 1px),linear-gradient(0deg,var(--arcana-secondary-accent,var(--theme-highlight)) 1px,transparent 1px)!important;
+ background-size:34px 34px!important;
+}
+html[data-arcana-design-pattern="aurora"] #content.homeFullscreen .launchHero:after,
+html[data-arcana-design-pattern="aurora"] #content.homeFullscreen .launchQuickCard:after{
+ -webkit-mask-image:none!important;mask-image:none!important;
+ background:radial-gradient(ellipse at 16% 45%,var(--theme-highlight),transparent 60%),radial-gradient(ellipse at 85% 55%,var(--arcana-secondary-accent,var(--theme-highlight)),transparent 58%)!important;
+}
+html[data-arcana-design-pattern="diagonal"] #content.homeFullscreen .launchHero:after,
+html[data-arcana-design-pattern="diagonal"] #content.homeFullscreen .launchQuickCard:after{
+ -webkit-mask-image:none!important;mask-image:none!important;
+ background:repeating-linear-gradient(135deg,transparent 0 18px,var(--theme-highlight) 19px,transparent 20px,transparent 38px)!important;
+}
+.miniCanvas[data-mini-pattern="grid"] .miniHero:before,.miniCanvas[data-mini-pattern="grid"] .miniTile:before{-webkit-mask:none;mask:none;background:linear-gradient(90deg,var(--mini-accent) 1px,transparent 1px),linear-gradient(0deg,var(--mini-secondary) 1px,transparent 1px);background-size:26px 26px}
+.miniCanvas[data-mini-pattern="aurora"] .miniHero:before,.miniCanvas[data-mini-pattern="aurora"] .miniTile:before{-webkit-mask:none;mask:none;background:radial-gradient(ellipse at 20% 45%,var(--mini-accent),transparent 65%),radial-gradient(ellipse at 80% 60%,var(--mini-secondary),transparent 55%)}
+.miniCanvas[data-mini-pattern="diagonal"] .miniHero:before,.miniCanvas[data-mini-pattern="diagonal"] .miniTile:before{-webkit-mask:none;mask:none;background:repeating-linear-gradient(135deg,transparent 0 14px,var(--mini-accent) 15px,transparent 16px,transparent 28px)}
