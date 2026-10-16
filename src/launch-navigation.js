@@ -152,6 +152,10 @@ const designPanel=()=>{
  group('Background &amp; lighting',
  select('pattern','Background pattern',[['contours','Arcane waves'],['rings','Mystic rings'],['stars','Starlight'],['grid','Arcane grid'],['aurora','Aurora glow'],['diagonal','Rune lines'],['plain','None']])+
  slider('intensity','Pattern intensity',0,100)+slider('patternScale','Pattern size',60,180)+slider('glow','Glow strength',0,100)+slider('cardShadow','Card shadow',0,100)+slider('edges','Border intensity',0,100)+slider('borderWidth','Border thickness',0,3)+slider('headerOpacity','Header opacity',65,100))+
+ group('Build Studio feature',
+ select('heroActionStyle','Feature button style',[['integrated','Integrated dark'],['outline','Quiet outline'],['spotlight','Bright spotlight']])+
+ select('heroSize','Feature card size',[['compact','Compact'],['balanced','Balanced'],['showcase','Showcase']]),
+ 'These settings affect only the large Build Studio feature, not your other buttons.')+
  group('Cards &amp; buttons',
  slider('roundness','Card corners',3,28)+slider('cardPadding','Card padding',8,22)+slider('buttonRoundness','Button corners',3,30)+slider('buttonFill','Button color strength',35,100)+slider('buttonHeight','Button height',40,58)+slider('accentBlend','Gradient accent balance',0,100)+
  select('buttonStyle','Button appearance',[['gradient','Gradient'],['solid','Solid'],['outline','Outlined']]))+
