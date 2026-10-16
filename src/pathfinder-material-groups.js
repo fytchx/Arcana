@@ -34,7 +34,8 @@ export function sourceMaterialGroups(materials=[],sourceMaterials=[],catalog=[])
   // the recipe's numeric monster link is absent.
   const biome=text(meta.sourceBiome||mat.sourceBiome||info(monster,'Biome')||info(record,'Biome','Source Biome','Found In'));
   const bi=biomeByName.get(biome.toLowerCase());
-  const tier=text(meta.tier||mat.tier||info(monster,'Tier','Monster Tier')||info(record,'Tier','Monster Tier')||info(bi?.row,'Tier','Biome Tier'));
+  const rawTier=text(meta.tier||mat.tier||info(monster,'Tier','Monster Tier')||info(record,'Tier','Monster Tier')||info(bi?.row,'Tier','Biome Tier'));
+  const tier=/^(?:tier\s*)?0$/i.test(rawTier)?'':rawTier; // Source tier zero is not an established biome progression label.
   const unlock=number(info(bi?.row,'Unlock Monster Level','Unlock ML','Monster Level','Minimum ML','Unlock Level','Order','Index'));
   const monsterNum=targetId||numericId(monster)||Number.MAX_SAFE_INTEGER;
   const groupKey=biome?'biome:'+biome.toLowerCase():materialIsMonster(meta)||materialIsMonster(mat)?'unknown-source':'special';
