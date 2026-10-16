@@ -1,6 +1,8 @@
 import {readDesign,DEFAULT_DESIGN,DESIGN_PRESETS} from './design-controls.js';
 import {WIKI_CATEGORIES} from './wiki-taxonomy.js';
 import {designMiniMarkup} from './design-mini-preview.js';
+import {themeVaultMarkup} from './theme-studio-vault.js';
+import {THEME_PATTERNS} from './theme-patterns.js';
 import {esc,icon} from './ui.js';
 import {ACCENT_PRESETS,SITE_SURFACES,ICON_MODES,selectedAccent,selectedSiteSurface,selectedIconColor,selectedIconMode,customAccent,ADMIN_URL} from './theme.js';
 import {ICON_CATEGORIES,ICON_IDS,iconAssetPath} from './arcana-icons.js';
@@ -151,7 +153,8 @@ export const designPanel=({showPreview=true}={})=>{
  group('Colors &amp; accents',
  color('main','Background')+color('card','Panels')+color('action','Primary accent')+color('secondaryAccent','Second accent')+color('text','Text')+color('mutedText','Muted text')+color('borderColor','Border color')+color('navBar','Navigation bar')+color('buttonText','Button text'))+
  group('Background &amp; lighting',
- select('pattern','Background pattern',[['contours','Arcane waves'],['rings','Mystic rings'],['stars','Starlight'],['grid','Arcane grid'],['aurora','Aurora glow'],['diagonal','Diagonal runes'],['hex','Hex lattice'],['grain','Soft grain'],['crystal','Frost crystals'],['nebula','Cosmic nebula'],['weave','Elderwood weave'],['runes','Ritual symbols'],['circuit','Circuit grid'],['topography','Topographic layers'],['facets','Prismatic facets'],['scanlines','Fine scanlines'],['honeycomb','Honeycomb'],['plain','No texture']])+
+ select('pattern','Background pattern',THEME_PATTERNS.map(p=>[p.id,p.name]))+
+ '<details class="themePatternLibrary"><summary>Browse all 32 live pattern samples</summary><p>Select a texture to preview it instantly. Colors and intensity stay editable.</p><div class="themePatternFilters" role="group" aria-label="Pattern categories">'+['All','Arcane','Cosmic','Geometric','Elemental','Nature','Minimal'].map(c=>'<button type="button" data-theme-pattern-filter="'+c+'" aria-pressed="'+(c==='All')+'">'+c+'</button>').join('')+'</div><div class="themePatternGrid">'+THEME_PATTERNS.map(p=>'<button type="button" class="themePatternTile" data-theme-pattern="'+p.id+'" data-pattern-category="'+p.category+'" aria-pressed="'+String(d.pattern===p.id)+'" title="'+p.name+'"><span class="themePatternThumb" data-preview-pattern="'+p.id+'" aria-hidden="true"></span><span>'+p.name+'</span></button>').join('')+'</div></details>'+
  slider('intensity','Pattern intensity',0,100)+slider('patternScale','Pattern size',60,180)+slider('glow','Glow strength',0,100)+slider('cardShadow','Card shadow',0,100)+slider('edges','Border intensity',0,100)+slider('borderWidth','Border thickness',0,3)+slider('headerOpacity','Header opacity',65,100))+
  group('Build Studio feature',
  select('heroActionStyle','Feature button style',[['integrated','Integrated dark'],['outline','Quiet outline'],['spotlight','Bright spotlight']])+
@@ -164,6 +167,7 @@ export const designPanel=({showPreview=true}={})=>{
  select('iconMode','Icon treatment',[['two-tone','Two-tone'],['neutral','Neutral'],['accent','Accent'],['muted','Muted']])+
  select('fontFamily','Font style',[['system','Clean system'],['rounded','Soft rounded'],['serif','Classic serif'],['mono','Monospace']])+
  slider('fontSize','Text size',90,115)+select('density','Layout density',[['comfortable','Comfortable'],['compact','Compact'],['spacious','Spacious']]))+
+ '<section class="themeVaultSection" aria-label="Design vault"><div id="themeVaultContents">'+themeVaultMarkup()+'</div></section>'+
  '<div class="designWorkshopActions"><button type="button" class="btn secondary" data-action="preview-design">'+icon('search',16)+' View preview</button><button type="button" class="btn secondary" data-action="undo-design">'+icon('back',16)+' Undo last change</button><button type="button" class="btn secondary" data-action="reset-design">'+icon('close',16)+' Reset design</button></div>'+
  '<p class="mutedSmall">No game artwork or verified values are altered. Use Publish to everyone at the top when your preview is ready.</p></section>';
 };
