@@ -615,3 +615,29 @@ html[data-arcana-hero-size="compact"] #content.homeFullscreen .launchHeroCTACopy
 @media(prefers-reduced-motion:reduce){
  #content.homeFullscreen .launchHeroCTA{transition:none!important;animation:none!important}
 }
+
+
+/* Admin-specific overrides win over the older generic button appearance selectors. */
+html[data-arcana-admin-design="true"][data-arcana-hero-action-style="integrated"] #content.homeFullscreen .launchHeroCTA{
+ background:linear-gradient(128deg,color-mix(in srgb,var(--theme-highlight) 13%,var(--theme-secondary)),color-mix(in srgb,var(--theme-highlight) 5%,var(--theme-main)))!important;
+ color:var(--text,#f5f0ff)!important;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 38%,var(--theme-border,var(--line)))!important;
+}
+html[data-arcana-admin-design="true"][data-arcana-hero-action-style="outline"] #content.homeFullscreen .launchHeroCTA{
+ background:transparent!important;color:var(--text,#f5f0ff)!important;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 58%,transparent)!important;
+}
+html[data-arcana-admin-design="true"][data-arcana-hero-action-style="spotlight"] #content.homeFullscreen .launchHeroCTA{
+ background:linear-gradient(115deg,color-mix(in srgb,var(--theme-highlight) var(--arcana-button-fill,82%),white),var(--theme-highlight))!important;
+ color:var(--arcana-button-text,#091018)!important;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 54%,white)!important;
+}
+/* Keep the centerpiece recognizable without giving it a different visual language. */
+#content.homeFullscreen .launchHero{
+ background:linear-gradient(140deg,color-mix(in srgb,var(--theme-highlight) 17%,var(--theme-main)),color-mix(in srgb,var(--theme-highlight) 6%,var(--theme-main)))!important;
+ border-color:color-mix(in srgb,var(--theme-highlight) 55%,transparent)!important;
+}
+@media(max-width:700px){
+ #content.homeFullscreen .launchHeroArcaneSeal{opacity:.11!important}
+ #content.homeFullscreen .launchHeroArt{box-shadow:0 0 9px color-mix(in srgb,var(--theme-highlight) 12%,transparent)!important}
+}
