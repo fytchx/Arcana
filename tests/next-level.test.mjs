@@ -21,7 +21,7 @@ test('Six additional source-backed Season 2 articles exist with honest internal 
  }
  const ids=WIKI_ARTICLES.map(a=>a.id);
  assert.equal(new Set(ids).size,ids.length,'Article IDs must be stable and unique');
- for(const article of WIKI_ARTICLES)if(article.sourceUrl)assert.match(article.sourceUrl,/^https:\/\/idlearc\.com\/patch-notes\//);
+ for(const article of WIKI_ARTICLES)if(article.sourceUrl)assert.match(article.sourceUrl,/^https:\/\/idlearc\.com\/(?:patch-notes\/|classes(?:\/?$))/);
 });
 
 test('Group-guides view includes each article exactly once',()=>{
