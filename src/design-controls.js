@@ -86,7 +86,7 @@ export function applyDesign(root=globalThis.document?.documentElement){
  root.style.setProperty('--arcana-button-radius',values.buttonRoundness+'px');
  root.style.setProperty('--arcana-button-fill',values.buttonFill+'%');
  const settings={fontSize:'--arcana-font-scale',cardPadding:'--arcana-card-padding',cardShadow:'--arcana-shadow-depth',headerOpacity:'--arcana-header-opacity',patternScale:'--arcana-pattern-scale',borderWidth:'--arcana-border-width',buttonHeight:'--arcana-button-height',accentBlend:'--arcana-accent-blend'};
- for(const [k,css] of Object.entries(settings)){if(admin)root.style.setProperty(css,k==='fontSize'||k==='headerOpacity'||k==='patternScale'||k==='cardShadow'?String(values[k]/100):k==='accentBlend'?values[k]+'%':values[k]+'px');else root.style.removeProperty(css);}
+ for(const [k,css] of Object.entries(settings)){if(admin)root.style.setProperty(css,k==='headerOpacity'?values[k]+'%':['fontSize','patternScale','cardShadow'].includes(k)?String(values[k]/100):k==='accentBlend'?values[k]+'%':values[k]+'px');else root.style.removeProperty(css);}
  const families={system:'system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif',rounded:'ui-rounded,Trebuchet MS,system-ui,sans-serif',serif:'Georgia,Times New Roman,serif',mono:'ui-monospace,SFMono-Regular,Consolas,monospace'};
  if(admin){
   root.style.setProperty('--arcana-design-font-family',families[values.fontFamily]);
