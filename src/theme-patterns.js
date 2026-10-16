@@ -12,6 +12,21 @@ export const THEME_PATTERNS=Object.freeze([
  ['sunburst','Solar radiance','Elemental'],['marble','Dark marble','Nature'],
  ['moire','Astral interference','Cosmic'],['polka','Alchemist dots','Minimal'],
  ['frostlines','Glacial fissures','Elemental'],['embers','Falling embers','Elemental'],
- ['ivy','Whispering vines','Nature'],['diamonds','Diamond lattice','Geometric']
+ ['ivy','Whispering vines','Nature'],['diamonds','Diamond lattice','Geometric'],
+ // Material finishes. These are deliberately subtler and less 'computer wallpaper'.
+ ['satin','Satin sheen','Material'],['velvet','Midnight velvet','Material'],['linen','Woven linen','Material'],
+ ['brushed-metal','Brushed titanium','Material'],['etched-steel','Etched steel','Material'],['pearl','Mother of pearl','Material'],
+ ['leather','Aged leather','Material'],['silk','Silken folds','Material'],['obsidian-glass','Obsidian glass','Material'],
+ ['hammered','Hammered bronze','Material'],['carbon','Carbon fiber','Material'],['paper','Ancient paper','Material'],
+ // Atmospheres intentionally have soft composition rather than rigid geometry.
+ ['deep-space','Deep space','Atmosphere'],['fog','Moonlit fog','Atmosphere'],['volumetric','Radiant mist','Atmosphere'],
+ ['sunset','Ember horizon','Atmosphere'],['abyss','Abyssal depth','Atmosphere'],['moonlight','Moonlight','Atmosphere'],
+ ['biolume','Bioluminescence','Atmosphere'],['cosmic-dust','Cosmic dust','Atmosphere'],
+ // Relic / environment style overlays, suited to fantasy rather than dashboards.
+ ['slate','Natural slate','Relic'],['carved-stone','Carved stone','Relic'],['old-map','Ancient cartography','Relic'],
+ ['arcane-script','Arcane inscription','Relic'],['cracked-crystal','Cracked geode','Relic'],
+ ['goldleaf','Gold leaf','Relic'],['dragon-scale','Dragon scales','Relic'],['temple','Temple engravings','Relic'],
+ ['shadow-floral','Shadow blossoms','Relic'],['star-chart','Celestial chart','Relic'],
+ ['mana','Mana streams','Relic'],['rune-dust','Runestone dust','Relic']
 ].map(([id,name,category])=>Object.freeze({id,name,category})));
 export const THEME_PATTERN_IDS=Object.freeze(THEME_PATTERNS.map(x=>x.id));
