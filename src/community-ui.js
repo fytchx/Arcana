@@ -1,5 +1,6 @@
 import {esc,icon} from './ui.js';
 import {cloudBuildView,loadAccountBuilds,wireCloudBuildUI} from './account-builds-ui.js';
+import {farmListsAccountView,loadFarmingLists} from './farming-lists-ui.js';
 const state={me:undefined,enabled:false,betaEnrollmentOpen:false,posts:[],myPosts:[],profilePosts:[],post:null,profile:null,loading:null,error:'',lastRoute:'',requested:''};
 const titleProfile=p=>esc(p?.displayName||'Arcana player');
 let avatarPending=null;
@@ -46,7 +47,7 @@ function accountView(){
  if(!state.me)return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">ARCANA MEMBERSHIP</span><h1>Your Arcana identity</h1><p>Every player gets full access to Arcana tools, with or without a login.</p></div>'+signInPanel()+'</div>';
  const p=state.me;
  return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">ARCANA MEMBER</span><h1>My player card</h1><p>Make it easy for other IdleArc players to find and recognize you.</p></div>'+
- profileCard(p,{full:true})+profileForm(p)+cloudBuildView()+
+ profileCard(p,{full:true})+farmListsAccountView()+profileForm(p)+cloudBuildView()+
  (state.myPosts.length?'<section class="communityMyPosts"><h2>My published guides & builds</h2><div class="communityPostGrid">'+state.myPosts.map(communityPostCard).join('')+'</div></section>':'')+
  (false?'<form class="accountProfileForm" data-community-form="roles"><h2>Manage approved roles</h2><p class="mutedSmall">Enter the player ID from their public profile URL. Wiki Editors may publish official pages. Moderators can hide contributions; only Admins and the Creator can delete.</p><label>Player ID<input name="id" required placeholder="Account ID from their player-card link" maxlength="36"></label><fieldset class="accountRoleSelect"><legend>Approved roles</legend><label><input type="checkbox" name="roles" value="wiki-editor"> Arcana Wiki Editor</label><label><input type="checkbox" name="roles" value="moderator"> Moderator</label>'+(
  p.roles?.some(r=>r.id==='creator')?'<label><input type="checkbox" name="roles" value="admin"> Admin</label><label><input type="checkbox" name="roles" value="developer"> Developer</label>':'')+'</fieldset><button class="btn primary" type="submit">Set member roles</button><p class="mutedSmall">Select the roles to grant. Leave every checkbox unchecked to revoke additional roles. Creator assignments cannot be modified.</p></form>':'')+
@@ -115,7 +116,7 @@ export async function loadCommunityPage(route,query,refresh){
   if(route==='community'){state.posts=(await getJSON('/api/community/posts')).posts||[];}
   else if(route==='community/post'){state.post=(await getJSON('/api/community/posts/'+encodeURIComponent(query.get('id')||''))).post;}
   else if(route==='community/create'&&query.get('edit')){state.post=(await getJSON('/api/community/posts/'+encodeURIComponent(query.get('edit')))).post;}
-  else if(route==='account'&&state.me){state.myPosts=(await getJSON('/api/community/mine')).posts||[];await loadAccountBuilds();}
+  else if(route==='account'&&state.me){state.myPosts=(await getJSON('/api/community/mine')).posts||[];await loadAccountBuilds();await loadFarmingLists();}
   else if(route==='profile'){const id=query.get('id')||'';state.profile=(await getJSON('/api/profiles/'+encodeURIComponent(id))).profile;state.profilePosts=(await getJSON('/api/community/posts?authorId='+encodeURIComponent(id))).posts||[];}
   state.error='';
  }catch(e){state.error=e.message;state.post=null;state.profile=null;}
