@@ -108,7 +108,10 @@ async function sourceBackedRecipes(){
  previewRecipe={source:'Arcana game-cost snapshot',sourceVersion:String(cd.source_version||''),verifiedDate:String(cd.verified_date||''),
  codex:{tiers:Object.fromEntries(Object.entries(cd.tiers).map(([k,v])=>[k,{name:v.name,max_level:v.max_level,rows:v.rows}])),
  tier_upgrades:cd.tier_upgrades,awaken:{rows:Object.fromEntries(Object.entries(cd.awaken.rows).filter(([k])=>Number(k)>=1&&Number(k)<=30)),transitions:cd.awaken.transitions.filter(x=>Number(x.rank)<=30)}},
- materials:data.materials.map(m=>({slug:m.slug,name:m.name,type:m.type,monster_id:m.monster_id??null}))};
+ materials:data.materials.map(m=>({slug:m.slug,name:m.name,type:m.type,monster_id:m.monster_id??null,
+  sourceBiome:typeof (m.sourceBiome??m.biome_name??m.biome)==='string'?(m.sourceBiome??m.biome_name??m.biome):'',
+  sourceMonster:typeof (m.sourceMonster??m.monster_name)==='string'?(m.sourceMonster??m.monster_name):'',
+  tier:typeof (m.tier??m.biome_tier)==='string'||typeof (m.tier??m.biome_tier)==='number'?String(m.tier??m.biome_tier):''}))};
  // Pathfinder costs are independent of the remote monster catalog.
  previewRecipeTime=Date.now();return previewRecipe;
 }
