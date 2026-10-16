@@ -38,10 +38,10 @@ test('preview remains live across five pages, three devices, before-after, plus 
  assert.match(html,/data-mini-grip/);
  assert.doesNotMatch(html,/<iframe/);
 });
-test('32 textures are uniquely named, correctly validated and represented in site/mini/thumbnail CSS',async()=>{
+test('64 textures are uniquely named, correctly validated and represented in site/mini/thumbnail CSS',async()=>{
  const css=await read('../arcana-contour.css');
- assert.equal(THEME_PATTERNS.length,32);
- assert.equal(new Set(THEME_PATTERN_IDS).size,32);
+ assert.equal(THEME_PATTERNS.length,64);
+ assert.equal(new Set(THEME_PATTERN_IDS).size,64);
  const html=designPanel({showPreview:false});
  for(const p of THEME_PATTERNS){
   assert.equal(validateDesignField('pattern',p.id),p.id,p.id);
