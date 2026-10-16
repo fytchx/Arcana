@@ -74,5 +74,32 @@ export function wireDesignMiniPreview(){
   storePreview();
   syncDesignMiniPreview();
  });
+ document.addEventListener('focusin',e=>{
+  const dock=document.querySelector('.themeStudioPreview');
+  if(dock&&e.target.closest('.themeStudioEditor'))dock.dataset.editing='true';
+ });
+ document.addEventListener('focusout',e=>{
+  if(!e.target.closest('.themeStudioEditor'))return;
+  setTimeout(()=>{
+   const dock=document.querySelector('.themeStudioPreview');
+   if(dock&&!document.activeElement?.closest('.themeStudioEditor'))dock.dataset.editing='false';
+  },130);
+ });
+ let start=null;
+ document.addEventListener('pointerdown',e=>{
+  const grip=e.target.closest('[data-mini-grip]');
+  if(grip&&grip.closest('.themeStudioPreview'))start={id:e.pointerId,y:e.clientY};
+ });
+ document.addEventListener('pointerup',e=>{
+  if(!start||e.pointerId!==start.id)return;
+  const movement=start.y-e.clientY;start=null;
+  if(Math.abs(movement)<38)return;
+  if(movement>0){previewExpanded=true;previewMode=previewMode==='dock'?'expanded':'focus';}
+  else if(previewMode==='focus')previewMode='expanded';
+  else if(previewMode==='expanded')previewMode='dock';
+  else previewExpanded=false;
+  storePreview();syncDesignMiniPreview();
+ });
+ document.addEventListener('pointercancel',()=>{start=null});
  window.addEventListener('arcana:design-change',syncDesignMiniPreview);
 }
