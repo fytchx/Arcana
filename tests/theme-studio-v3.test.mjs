@@ -7,6 +7,7 @@ import {designPanel,settingsView} from '../src/launch-navigation.js';
 import {designMiniMarkup,endDesignMiniSession} from '../src/design-mini-preview.js';
 import {themeVaultMarkup} from '../src/theme-studio-vault.js';
 import {adminConsoleView} from '../src/admin-console.js';
+import {contrastRatio,themeReadability,suggestedButtonText} from '../src/theme-studio-audit.js';
 
 const read=path=>readFile(new URL(path,import.meta.url),'utf8');
 test('Theme Studio places independent always-visible preview beside long controls',async()=>{
@@ -63,4 +64,14 @@ test('draft vault has four private snapshots and authenticated import controls',
  assert.match(source,/replaceDesignDraft\(/);
  assert.match(source,/arcanaAdminDesign/);
  assert.match(source,/arcana-owner-theme-snapshots-v1/);
+});
+
+test('readability meter reports real contrast ratios and safe button text suggestions',()=>{
+ assert.equal(Number(contrastRatio('#FFFFFF','#000000').toFixed(2)),21);
+ assert.equal(Number(contrastRatio('#777777','#777777').toFixed(2)),1);
+ const bad={...DEFAULT_DESIGN,main:'#FFFFFF',card:'#F8F8F8',text:'#FFFFFF',action:'#FFFFFF',buttonText:'#FFFFFF'};
+ const checks=themeReadability(bad);
+ assert.equal(checks.filter(x=>x.pass).length,0);
+ assert.equal(suggestedButtonText(bad),'#0D1019');
+ assert.equal(themeReadability({...bad,buttonText:suggestedButtonText(bad)})[2].pass,true);
 });
