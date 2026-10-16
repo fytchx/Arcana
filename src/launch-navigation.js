@@ -3,6 +3,7 @@ import {WIKI_CATEGORIES} from './wiki-taxonomy.js';
 import {designMiniMarkup} from './design-mini-preview.js';
 import {themeVaultMarkup} from './theme-studio-vault.js';
 import {THEME_PATTERNS} from './theme-patterns.js';
+import {HERO_CTA_STYLES} from './hero-cta-styles.js';
 import {esc,icon} from './ui.js';
 import {ACCENT_PRESETS,SITE_SURFACES,ICON_MODES,selectedAccent,selectedSiteSurface,selectedIconColor,selectedIconMode,customAccent,ADMIN_URL} from './theme.js';
 import {ICON_CATEGORIES,ICON_IDS,iconAssetPath} from './arcana-icons.js';
@@ -142,7 +143,7 @@ export function changeAppPref(key,checked){if(key!=='reduceMotion')return;const 
 export const designPanel=({showPreview=true}={})=>{
  const d=readDesign();
  const color=(key,label)=>'<div class="designControl designColorControl"><span>'+label+'</span><input type="color" data-design-field="'+key+'" value="'+esc(d[key])+'" aria-label="'+label+' color picker"><input type="text" data-design-hex="'+key+'" value="'+esc(d[key])+'" inputmode="text" maxlength="7" spellcheck="false" autocorrect="off" autocapitalize="characters" aria-label="'+label+' HEX code" aria-describedby="designHexStatus-'+key+'" placeholder="#A78BFA"><small class="designHexStatus" id="designHexStatus-'+key+'" data-design-status="'+key+'" role="status">HEX code</small></div>';
- const unit=key=>['roundness','buttonRoundness','cardPadding','borderWidth','buttonHeight'].includes(key)?' px':'%';
+ const unit=key=>['roundness','buttonRoundness','cardPadding','borderWidth','buttonHeight','heroActionHeight','heroActionBorder'].includes(key)?' px':'%';
  const slider=(key,label,lo,hi)=>'<label class="designControl"><span>'+label+'</span><input type="range" min="'+lo+'" max="'+hi+'" data-design-field="'+key+'" value="'+d[key]+'" aria-label="'+label+'"><strong data-design-value="'+key+'">'+d[key]+unit(key)+'</strong></label>';
  const select=(key,label,opts)=>'<label class="designControl"><span>'+label+'</span><select data-design-field="'+key+'" aria-label="'+label+'">'+opts.map(([id,name])=>'<option value="'+id+'" '+(d[key]===id?'selected':'')+'>'+name+'</option>').join('')+'</select></label>';
  const group=(name,body,description='')=>{const groupId=name.startsWith('Colors')?'colors':name.startsWith('Background')?'textures':name.startsWith('Build')?'feature':name.startsWith('Cards')?'components':'type';return '<details class="designOptionSection" data-theme-group="'+groupId+'" '+(['colors','textures'].includes(groupId)?'open':'')+'><summary>'+name+'</summary>'+(description?'<p class="designOptionDescription">'+description+'</p>':'')+'<div class="designOptionControls">'+body+'</div></details>'};
@@ -155,12 +156,21 @@ export const designPanel=({showPreview=true}={})=>{
  color('main','Background')+color('card','Panels')+color('action','Primary accent')+color('secondaryAccent','Second accent')+color('text','Text')+color('mutedText','Muted text')+color('borderColor','Border color')+color('navBar','Navigation bar')+color('buttonText','Button text'))+
  group('Background &amp; lighting',
  select('pattern','Background pattern',THEME_PATTERNS.map(p=>[p.id,p.name]))+
- '<details class="themePatternLibrary"><summary>Browse all 32 live pattern samples</summary><p>Select a texture to preview it instantly. Colors and intensity stay editable.</p><div class="themePatternFilters" role="group" aria-label="Pattern categories">'+['All','Arcane','Cosmic','Geometric','Elemental','Nature','Minimal'].map(c=>'<button type="button" data-theme-pattern-filter="'+c+'" aria-pressed="'+(c==='All')+'">'+c+'</button>').join('')+'</div><div class="themePatternGrid">'+THEME_PATTERNS.map(p=>'<button type="button" class="themePatternTile" data-theme-pattern="'+p.id+'" data-pattern-category="'+p.category+'" aria-pressed="'+String(d.pattern===p.id)+'" title="'+p.name+'"><span class="themePatternThumb" data-preview-pattern="'+p.id+'" aria-hidden="true"></span><span>'+p.name+'</span></button>').join('')+'</div></details>'+
+ select('patternTarget','Where to show textures',[['all','Backgrounds + cards'],['cards','Cards only'],['background','Page backgrounds only']])+
+ '<details class="themePatternLibrary"><summary>Browse all 64 texture finishes</summary><p>Select a texture to preview it instantly. Colors and intensity stay editable.</p><div class="themePatternFilters" role="group" aria-label="Pattern categories">'+['All',...new Set(THEME_PATTERNS.map(p=>p.category))].map(c=>'<button type="button" data-theme-pattern-filter="'+c+'" aria-pressed="'+(c==='All')+'">'+c+'</button>').join('')+'</div><div class="themePatternGrid">'+THEME_PATTERNS.map(p=>'<button type="button" class="themePatternTile" data-theme-pattern="'+p.id+'" data-pattern-category="'+p.category+'" aria-pressed="'+String(d.pattern===p.id)+'" title="'+p.name+'"><span class="themePatternThumb" data-preview-pattern="'+p.id+'" aria-hidden="true"></span><span>'+p.name+'</span></button>').join('')+'</div></details>'+
  slider('intensity','Pattern intensity',0,100)+slider('patternScale','Pattern size',60,180)+slider('glow','Glow strength',0,100)+slider('cardShadow','Card shadow',0,100)+slider('edges','Border intensity',0,100)+slider('borderWidth','Border thickness',0,3)+slider('headerOpacity','Header opacity',65,100))+
  group('Build Studio feature',
- select('heroActionStyle','Feature button style',[['integrated','Integrated dark'],['outline','Quiet outline'],['spotlight','Bright spotlight']])+
+ '<div class="heroCtaEditorIntro"><strong>Make the entrance fit the home screen.</strong><p>The Build Studio button is separate from other controls. Try a minimal style, then adjust its size, position, icons and finish.</p></div>'+
+ '<details class="heroCtaLibrary" open><summary>Explore '+HERO_CTA_STYLES.length+' button designs</summary><div class="heroCtaGallery">'+HERO_CTA_STYLES.map(style=>
+ '<button type="button" class="heroCtaChoice" data-hero-cta-style="'+style.id+'" aria-pressed="'+String(d.heroActionStyle===style.id)+'" title="'+esc(style.detail)+'"><span class="heroCtaSample" data-hero-sample="'+style.id+'"><i aria-hidden="true">◈</i><b>Build Studio</b><i aria-hidden="true">→</i></span><span><strong>'+esc(style.name)+'</strong><small>'+esc(style.detail)+'</small></span></button>'
+ ).join('')+'</div></details>'+
+ select('heroActionStyle','Button design',HERO_CTA_STYLES.map(x=>[x.id,x.name]))+
+ slider('heroActionWidth','Button width',65,100)+select('heroActionAlign','Horizontal position',[['start','Left'],['center','Center'],['end','Right']])+
+ slider('heroActionHeight','Button height',44,70)+slider('heroActionBorder','Border thickness',0,3)+slider('heroActionGlow','Glow strength',0,100)+
+ select('heroActionIcon','Icon treatment',[['show','Icon and arrow'],['hide','Text only'],['arrow-only','Arrow only']])+
+ select('heroActionSubtitle','Subtitle',[['auto','Depends on design'],['show','Always show'],['hide','Always hide']])+
  select('heroSize','Feature card size',[['compact','Compact'],['balanced','Balanced'],['showcase','Showcase']]),
- 'These settings affect only the large Build Studio feature, not your other buttons.')+
+ 'Only the homepage Build Studio feature is changed. Other navigation, tools and buttons stay untouched.')+
  group('Cards &amp; buttons',
  slider('roundness','Card corners',3,28)+slider('cardPadding','Card padding',8,22)+slider('buttonRoundness','Button corners',3,30)+slider('buttonFill','Button color strength',35,100)+slider('buttonHeight','Button height',40,58)+slider('accentBlend','Gradient accent balance',0,100)+
  select('buttonStyle','Button appearance',[['gradient','Gradient'],['solid','Solid'],['outline','Outlined']]))+
