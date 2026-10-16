@@ -1,3 +1,4 @@
+import {WIKI_EXPANSION_ARTICLES} from './wiki-expansion.js';
 import {VERIFIED_CLASS_SKILL_TREES} from './verified-class-skills.js';
 // Short class introductions sourced from the verified skill branches.
 // Full skill effects are held by Class Skills, not duplicated on the Wiki.
@@ -10,7 +11,8 @@ const CLASS_OVERVIEWS=Object.freeze([
 ].map(spec=>{
  const paths=(VERIFIED_CLASS_SKILL_TREES[spec.classId]||[]).map(branch=>branch.name);
  return {id:spec.id,title:spec.title,category:'Classes',readTime:'1 min',summary:spec.summary,keywords:spec.title.toLowerCase()+' class skills branches',
- sections:[{title:'Class skill paths',body:spec.title+' has three class skill branches: '+paths.join(', ')+'. Open Class Skills in Build Studio to inspect the exact effects, prerequisites and ranks of each skill.'}],
+ sections:[{title:'Class skill paths',body:spec.title+' has three class skill branches: '+paths.join(', ')+'. Open Class Skills in Build Studio to inspect the exact effects, prerequisites and ranks of each skill.',imageId:spec.id+'-class-art'}],
+ images:[{id:spec.id+'-class-art',src:'/assets/icons/idlearc-refined/classes/class-'+spec.id+'.svg',alt:'Arcana '+spec.title+' class illustration',caption:'Arcana class artwork. Skill details are taken from the verified class tree.'}],
  actions:[{label:'View class skills',route:'labs/skills',icon:'git'},{label:'Open Build Studio',route:'labs/build',icon:'flask'}],
  connections:{articles:['season-2'],collections:['class-skill'],tools:['skills','build']},verificationSource:'October 9, 2026 game configuration'};
 }));
@@ -72,6 +74,7 @@ export const WIKI_ARTICLES=Object.freeze([
   {title:'Reforge and compare',body:'Combining three identical items reforges them into an item of the next rarity. In the Codex you can compare an equipment base by its configured implicit-stat ranges, then open the Forge cost reference for its tier progression.'},
   {title:'Build around purpose',body:'An item with the right effects for a farming build can be useful even when a different base has a larger raw stat. Compare what each item contributes to your actual build rather than treating rarity as a complete ranking.'}],actions:[{label:'Browse Item Codex',route:'wiki/library?kind=item',icon:'shield'},{label:'Compare equipment',route:'calculators/compare',icon:'compare'},{label:'Read Forge guide',route:'wiki/article?id=forge',icon:'book'}],source:'official-patch',sourceUrl:'https://idlearc.com/patch-notes/1-3-1'},
 
+ ...WIKI_EXPANSION_ARTICLES,
  ...CLASS_OVERVIEWS
 ]);
 export const WIKI_CATEGORY_LIST=Object.freeze([
