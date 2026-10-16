@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {readDesign,writeDesign,resetDesign,DEFAULT_DESIGN,normalizeDesignHex} from '../src/design-controls.js';
+import {readDesign,writeDesign,resetDesign,DEFAULT_DESIGN,normalizeDesignHex,DESIGN_PRESETS,applyDesignPreset,undoDesign,validateDesignField} from '../src/design-controls.js';
 import {settingsView} from '../src/launch-navigation.js';
 import {designMiniMarkup,endDesignMiniSession} from '../src/design-mini-preview.js';
 
@@ -14,7 +14,7 @@ test('admin style workshop is hidden from public settings',()=>{
  assert.match(admin,/data-design-field="pattern"/);
  assert.match(admin,/data-design-field="roundness"/);
  assert.match(admin,/data-design-field="action"/);
- for(const key of ['main','card','action','text'])assert.match(admin,new RegExp('data-design-hex="'+key+'"'),key+' typed HEX input');
+ for(const key of ['main','card','action','text','secondaryAccent','borderColor','mutedText','navBar','buttonText'])assert.match(admin,new RegExp('data-design-hex="'+key+'"'),key+' typed HEX input');
  assert.doesNotMatch(guest,/data-design-hex=/);
 });
 test('saved design choices remain validated, isolated, and resettable',()=>{
@@ -78,6 +78,37 @@ test('mini style preview is updated by the existing saved-design writes',async()
  assert.match(app,/syncDesignMiniPreview\(\)/);
  assert.match(controls,/arcana:design-change/);
  assert.match(preview,/readDesign\(\)/);
- assert.match(css,/position:sticky/);
+ assert.match(css,/\.designMiniPreview\{position:relative/);
+ assert.doesNotMatch(css,/\.designMiniPreview\{position:sticky/);
+ assert.match(preview,/data-mini-toggle/);
+ assert.match(preview,/miniPreviewContents/);
  for(const pattern of ['rings','stars','plain'])assert.ok(css.includes('data-mini-pattern="'+pattern+'"'));
+});
+
+test('six curated palettes can be applied and undone without a page render',()=>{
+ const old=globalThis.localStorage,mem=new Map();
+ try{
+  globalThis.localStorage={getItem:k=>mem.get(k)||null,setItem:(k,v)=>mem.set(k,v),removeItem:k=>mem.delete(k)};
+  assert.equal(Object.keys(DESIGN_PRESETS).length,6);
+  assert.equal(applyDesignPreset('emerald'),true);
+  assert.equal(readDesign().action,'#34E8A1');
+  assert.equal(readDesign().main,'#071510');
+  assert.equal(undoDesign(),true);
+  assert.equal(readDesign().main,DEFAULT_DESIGN.main);
+  assert.equal(applyDesignPreset('nonexistent'),false);
+ }finally{if(old===undefined)delete globalThis.localStorage;else globalThis.localStorage=old}
+});
+test('extended customization is bounded and respects accessible native controls',()=>{
+ const admin=settingsView({admin:true}),guest=settingsView();
+ for(const key of ['fontFamily','density','buttonStyle','fontSize','cardPadding','cardShadow','headerOpacity','patternScale','borderWidth','buttonHeight','accentBlend'])
+  assert.match(admin,new RegExp('data-design-field="'+key+'"'),key);
+ for(const preset of Object.keys(DESIGN_PRESETS))assert.match(admin,new RegExp('data-arg="'+preset+'"'),preset);
+ assert.match(admin,/data-action="undo-design"/);
+ assert.match(admin,/data-mini-toggle/);
+ assert.doesNotMatch(guest,/data-action="design-preset"/);
+ assert.equal(validateDesignField('fontFamily','url(evil)'),null);
+ assert.equal(validateDesignField('density','garbage'),null);
+ assert.equal(validateDesignField('borderWidth',999),3);
+ assert.equal(validateDesignField('fontSize',30),90);
+ assert.equal(validateDesignField('headerOpacity',''),null);
 });
