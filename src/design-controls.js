@@ -16,6 +16,14 @@ export function normalizeDesignHex(value){
  const prefixed=raw.startsWith('#')?raw:'#'+raw;
  return /^#[0-9a-fA-F]{6}$/.test(prefixed)?prefixed.toUpperCase():null;
 }
+export const DESIGN_PRESETS=Object.freeze({
+ violet:{name:'Arcane Violet',main:'#0B0916',card:'#1C1630',action:'#A78BFA',secondaryAccent:'#38BDF8',text:'#F5F0FF',borderColor:'#655385',mutedText:'#BDB4D1',navBar:'#1C1630',buttonText:'#0B0916',pattern:'contours'},
+ emerald:{name:'Emerald Abyss',main:'#071510',card:'#132820',action:'#34E8A1',secondaryAccent:'#C4F56D',text:'#E8FFF5',borderColor:'#376B55',mutedText:'#A8CCBC',navBar:'#132820',buttonText:'#071510',pattern:'rings'},
+ sapphire:{name:'Cosmic Sapphire',main:'#080F20',card:'#152642',action:'#498CFF',secondaryAccent:'#B794FF',text:'#EDF4FF',borderColor:'#41608B',mutedText:'#AABBD5',navBar:'#152642',buttonText:'#080F20',pattern:'stars'},
+ ember:{name:'Solar Ember',main:'#180E0B',card:'#302019',action:'#FF914D',secondaryAccent:'#F5C451',text:'#FFF3E8',borderColor:'#895439',mutedText:'#D2B4A4',navBar:'#302019',buttonText:'#180E0B',pattern:'rings'},
+ rose:{name:'Mystic Rose',main:'#170B19',card:'#301B32',action:'#F472D0',secondaryAccent:'#A78BFA',text:'#FFF0FA',borderColor:'#814D80',mutedText:'#D5B4D0',navBar:'#301B32',buttonText:'#170B19',pattern:'contours'},
+ silver:{name:'Silver Eclipse',main:'#0E1118',card:'#222936',action:'#CBD5E1',secondaryAccent:'#6FB9FF',text:'#F8FAFC',borderColor:'#617083',mutedText:'#BCC6D4',navBar:'#222936',buttonText:'#0E1118',pattern:'plain'}
+});
 export const DESIGN_FIELDS=Object.keys(DEFAULT_DESIGN);
 export function validateDesignField(key,value){
  if(colors.has(key))return normalizeDesignHex(value);
@@ -32,14 +40,35 @@ export function readDesign(){
  for(const k of DESIGN_FIELDS){const v=validateDesignField(k,stored[k]);if(v!==null)values[k]=v}
  return values;
 }
+let priorDesign=null;
+export function undoDesign(){
+ if(!priorDesign)return false;
+ const prior=priorDesign;priorDesign=null;
+ try{localStorage.setItem(DESIGN_KEY,JSON.stringify(prior))}catch{return false}
+ applyDesign(globalThis.document?.documentElement);
+ if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:design-change'));
+ return true;
+}
+export function applyDesignPreset(key){
+ const preset=DESIGN_PRESETS[key];if(!preset)return false;
+ const {name,...values}=preset;
+ const old=readDesign(),next={...old,...values};
+ try{localStorage.setItem(DESIGN_KEY,JSON.stringify(next))}catch{return false}
+ priorDesign=old;applyDesign(globalThis.document?.documentElement);
+ if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:design-change'));
+ return true;
+}
 export function writeDesign(key,value){
  const safe=validateDesignField(key,value);if(safe===null)return false;
- const next={...readDesign(),[key]:safe};
+ const old=readDesign(),next={...old,[key]:safe};
  try{localStorage.setItem(DESIGN_KEY,JSON.stringify(next))}catch{return false}
+ priorDesign=old;
  applyDesign(globalThis.document?.documentElement);if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:design-change'));return true;
 }
 export function resetDesign(){
+ const before=readDesign();
  try{localStorage.removeItem(DESIGN_KEY)}catch{return false}
+ priorDesign=before;
  applyDesign(globalThis.document?.documentElement);if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:design-change'));return true;
 }
 export function applyDesign(root=globalThis.document?.documentElement){
