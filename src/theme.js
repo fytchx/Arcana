@@ -139,7 +139,9 @@ export async function refreshTheme(){
   if(!res.ok)throw new Error('Public site config '+res.status);
   const site=await res.json();
   setPublishedDesign(site?.design||null);
+  const priorNotice=JSON.stringify(publishedNotice);
   publishedNotice=site?.notice?.enabled&&typeof site.notice.text==='string'?{enabled:true,text:site.notice.text}:{enabled:false,text:''};
+  if(priorNotice!==JSON.stringify(publishedNotice)&&typeof window!=='undefined')queueMicrotask(()=>window.dispatchEvent(new Event('arcana:site-config-change')));
   if(site?.design){config=null;return applyTheme();}
  }catch(e){console.warn('Published appearance unavailable; retaining last validated theme.');}
  // Compatibility until the Creator publishes the first combined theme.
