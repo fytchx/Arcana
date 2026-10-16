@@ -2,15 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {readDesign,writeDesign,resetDesign,DEFAULT_DESIGN,normalizeDesignHex,DESIGN_PRESETS,applyDesignPreset,undoDesign,validateDesignField} from '../src/design-controls.js';
-import {settingsView} from '../src/launch-navigation.js';
+import {settingsView,designPanel} from '../src/launch-navigation.js';
 import {designMiniMarkup,endDesignMiniSession} from '../src/design-mini-preview.js';
 
 test('admin style workshop is hidden from public settings',()=>{
  const guest=settingsView();
- const admin=settingsView({admin:true});
+ const admin=designPanel();
  assert.doesNotMatch(guest,/arcanaDesignLab/);
  assert.doesNotMatch(guest,/arcanaAdminAppearance/);
  assert.match(admin,/arcanaDesignLab/);
+ assert.doesNotMatch(settingsView({admin:true}),/arcanaDesignLab/);
  assert.match(admin,/data-design-field="pattern"/);
  assert.match(admin,/data-design-field="roundness"/);
  assert.match(admin,/data-design-field="action"/);
@@ -66,7 +67,7 @@ test('the protected workshop embeds a real mini sample with three example screen
   assert.match(sample,new RegExp('data-mini-page="'+section+'"'));
  assert.match(sample,/data-mini-reset/);
  assert.doesNotMatch(sample,/<iframe/i);
- assert.match(settingsView({admin:true}),/designMiniPreview/);
+ assert.match(designPanel(),/designMiniPreview/);
  assert.doesNotMatch(settingsView({admin:false}),/designMiniPreview/);
 });
 test('mini style preview is updated by the existing saved-design writes',async()=>{
@@ -99,7 +100,7 @@ test('six curated palettes can be applied and undone without a page render',()=>
  }finally{if(old===undefined)delete globalThis.localStorage;else globalThis.localStorage=old}
 });
 test('extended customization is bounded and respects accessible native controls',()=>{
- const admin=settingsView({admin:true}),guest=settingsView();
+ const admin=designPanel(),guest=settingsView();
  for(const key of ['fontFamily','density','buttonStyle','fontSize','cardPadding','cardShadow','headerOpacity','patternScale','borderWidth','buttonHeight','accentBlend'])
   assert.match(admin,new RegExp('data-design-field="'+key+'"'),key);
  for(const preset of Object.keys(DESIGN_PRESETS))assert.match(admin,new RegExp('data-arg="'+preset+'"'),preset);
@@ -129,7 +130,7 @@ test('multiple slider input events coalesce into one undo gesture',()=>{
 test('seven patterns validate and the sample has no overlay behavior',async()=>{
  for(const pattern of ['contours','rings','stars','grid','aurora','diagonal','plain'])assert.equal(validateDesignField('pattern',pattern),pattern);
  assert.equal(validateDesignField('pattern','external-url'),null);
- const markup=settingsView({admin:true});
+ const markup=designPanel();
  for(const value of ['grid','aurora','diagonal'])assert.match(markup,new RegExp('value="'+value+'"'));
  const css=await readFile(new URL('../arcana-contour.css',import.meta.url),'utf8');
  assert.match(css,/\.arcanaDesignLab \.designMiniPreview\{position:relative!important/);
@@ -137,7 +138,7 @@ test('seven patterns validate and the sample has no overlay behavior',async()=>{
 });
 
 test('featured Build Studio has three independent action treatments and three height modes',()=>{
- const view=settingsView({admin:true}),guest=settingsView();
+ const view=designPanel(),guest=settingsView();
  assert.match(view,/data-design-field="heroActionStyle"/);
  assert.match(view,/data-design-field="heroSize"/);
  for(const mode of ['integrated','outline','spotlight'])assert.equal(validateDesignField('heroActionStyle',mode),mode);
