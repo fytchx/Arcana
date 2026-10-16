@@ -135,3 +135,29 @@ test('seven patterns validate and the sample has no overlay behavior',async()=>{
  assert.match(css,/\.arcanaDesignLab \.designMiniPreview\{position:relative!important/);
  assert.match(css,/\.miniCanvas\[data-mini-pattern="aurora"\]/);
 });
+
+test('featured Build Studio has three independent action treatments and three height modes',()=>{
+ const view=settingsView({admin:true}),guest=settingsView();
+ assert.match(view,/data-design-field="heroActionStyle"/);
+ assert.match(view,/data-design-field="heroSize"/);
+ for(const mode of ['integrated','outline','spotlight'])assert.equal(validateDesignField('heroActionStyle',mode),mode);
+ for(const size of ['compact','balanced','showcase'])assert.equal(validateDesignField('heroSize',size),size);
+ assert.equal(validateDesignField('heroActionStyle','unsupported'),null);
+ assert.equal(validateDesignField('heroSize','900px'),null);
+ assert.doesNotMatch(guest,/data-design-field="heroActionStyle"/);
+ const preview=designMiniMarkup();
+ assert.match(preview,/data-mini-canvas/);
+});
+test('default Build Studio CTA blends with dark Quick Access panels without altering game assets',async()=>{
+ const controls=await readFile(new URL('../src/design-controls.js',import.meta.url),'utf8');
+ const css=await readFile(new URL('../arcana-contour.css',import.meta.url),'utf8');
+ assert.equal(DEFAULT_DESIGN.heroActionStyle,'integrated');
+ assert.equal(DEFAULT_DESIGN.heroSize,'balanced');
+ assert.match(css,/data-arcana-hero-action-style="integrated"/);
+ assert.match(css,/data-arcana-hero-action-style="outline"/);
+ assert.match(css,/data-arcana-hero-action-style="spotlight"/);
+ assert.match(css,/data-arcana-hero-size="compact"/);
+ assert.match(css,/data-mini-hero-action="integrated"/);
+ assert.match(controls,/root\.dataset\.arcanaHeroActionStyle=values\.heroActionStyle/);
+ assert.match(controls,/root\.dataset\.arcanaHeroSize=values\.heroSize/);
+});
