@@ -1,4 +1,5 @@
 import {THEME_PATTERN_IDS} from './theme-patterns.js';
+import {HERO_CTA_STYLE_IDS} from './hero-cta-styles.js';
 // Admin-only local appearance experimentation. Never alters community theme data.
 export const DESIGN_KEY='arcana-admin-design-preview-v1';
 export const DEFAULT_DESIGN=Object.freeze({
@@ -7,9 +8,11 @@ export const DEFAULT_DESIGN=Object.freeze({
   buttonRoundness:11,buttonFill:82,
  secondaryAccent:'#38BDF8',borderColor:'#66708B',mutedText:'#A8B2C4',navBar:'#191E2B',buttonText:'#0A0C14',
  fontFamily:'system',density:'comfortable',buttonStyle:'gradient',heroActionStyle:'integrated',heroSize:'balanced',
+ heroActionWidth:100,heroActionAlign:'center',heroActionHeight:45,heroActionGlow:10,heroActionBorder:1,heroActionIcon:'show',heroActionSubtitle:'auto',
+ patternTarget:'all',
  iconMode:'two-tone',fontSize:100,cardPadding:14,cardShadow:30,headerOpacity:95,patternScale:100,borderWidth:1,buttonHeight:45,accentBlend:25
 });
-const numbers={intensity:[0,100],glow:[0,100],edges:[0,100],roundness:[3,28],buttonRoundness:[3,30],buttonFill:[35,100],fontSize:[90,115],cardPadding:[8,22],cardShadow:[0,100],headerOpacity:[65,100],patternScale:[60,180],borderWidth:[0,3],buttonHeight:[40,58],accentBlend:[0,100]};
+const numbers={intensity:[0,100],glow:[0,100],edges:[0,100],roundness:[3,28],buttonRoundness:[3,30],buttonFill:[35,100],fontSize:[90,115],cardPadding:[8,22],cardShadow:[0,100],headerOpacity:[65,100],patternScale:[60,180],borderWidth:[0,3],buttonHeight:[40,58],accentBlend:[0,100],heroActionWidth:[65,100],heroActionHeight:[44,70],heroActionGlow:[0,100],heroActionBorder:[0,3]};
 const colors=new Set(['main','card','action','text','secondaryAccent','borderColor','mutedText','navBar','buttonText']);
 // Accept pasted #A78BFA or A78BFA, never partial values or CSS strings.
 export function normalizeDesignHex(value){
@@ -45,7 +48,11 @@ export function validateDesignField(key,value){
  if(key==='fontFamily')return ['system','rounded','serif','mono'].includes(value)?value:null;
  if(key==='density')return ['comfortable','compact','spacious'].includes(value)?value:null;
  if(key==='buttonStyle')return ['gradient','solid','outline'].includes(value)?value:null;
- if(key==='heroActionStyle')return ['integrated','outline','spotlight'].includes(value)?value:null;
+ if(key==='heroActionStyle')return HERO_CTA_STYLE_IDS.includes(value)?value:null;
+ if(key==='heroActionAlign')return ['start','center','end'].includes(value)?value:null;
+ if(key==='heroActionIcon')return ['show','hide','arrow-only'].includes(value)?value:null;
+ if(key==='heroActionSubtitle')return ['auto','show','hide'].includes(value)?value:null;
+ if(key==='patternTarget')return ['all','cards','background'].includes(value)?value:null;
  if(key==='heroSize')return ['compact','balanced','showcase'].includes(value)?value:null;
  if(numbers[key]){const n=value===''||value===null||value===undefined?NaN:Number(value);return Number.isFinite(n)?Math.max(numbers[key][0],Math.min(numbers[key][1],Math.round(n))):null}
  return null;
@@ -121,6 +128,10 @@ export function applyDesign(root=globalThis.document?.documentElement){
  root.style.setProperty('--arcana-card-radius',values.roundness+'px');
  root.style.setProperty('--arcana-button-radius',values.buttonRoundness+'px');
  root.style.setProperty('--arcana-button-fill',values.buttonFill+'%');
+ root.style.setProperty('--arcana-hero-cta-width',values.heroActionWidth+'%');
+ root.style.setProperty('--arcana-hero-cta-height',values.heroActionHeight+'px');
+ root.style.setProperty('--arcana-hero-cta-glow',String(values.heroActionGlow/100));
+ root.style.setProperty('--arcana-hero-cta-border',values.heroActionBorder+'px');
  const settings={fontSize:'--arcana-font-scale',cardPadding:'--arcana-card-padding',cardShadow:'--arcana-shadow-depth',headerOpacity:'--arcana-header-opacity',patternScale:'--arcana-pattern-scale',borderWidth:'--arcana-border-width',buttonHeight:'--arcana-button-height',accentBlend:'--arcana-accent-blend'};
  for(const [k,css] of Object.entries(settings)){if(active)root.style.setProperty(css,k==='headerOpacity'?values[k]+'%':['fontSize','patternScale','cardShadow'].includes(k)?String(values[k]/100):k==='accentBlend'?values[k]+'%':values[k]+'px');else root.style.removeProperty(css);}
  const families={system:'system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif',rounded:'ui-rounded,Trebuchet MS,system-ui,sans-serif',serif:'Georgia,Times New Roman,serif',mono:'ui-monospace,SFMono-Regular,Consolas,monospace'};
@@ -139,6 +150,10 @@ export function applyDesign(root=globalThis.document?.documentElement){
  }
  if(active){root.style.setProperty('--bg',values.main);root.style.setProperty('--panel',values.card);root.style.setProperty('--accent',values.action);root.style.setProperty('--line',values.borderColor);root.style.setProperty('--panel2',values.navBar);root.style.setProperty('--accentTint',`color-mix(in srgb, ${values.action} 13%, transparent)`);root.style.setProperty('--radius',values.roundness+'px');}
  root.dataset.arcanaDesignPattern=values.pattern;
+ root.dataset.arcanaPatternTarget=values.patternTarget;
+ root.dataset.arcanaHeroActionAlign=values.heroActionAlign;
+ root.dataset.arcanaHeroActionIcon=values.heroActionIcon;
+ root.dataset.arcanaHeroActionSubtitle=values.heroActionSubtitle;
  root.dataset.arcanaHeroActionStyle=values.heroActionStyle;
  root.dataset.arcanaHeroSize=values.heroSize;
  if(active)root.style.setProperty('--text',values.text);
