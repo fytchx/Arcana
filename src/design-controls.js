@@ -1,3 +1,4 @@
+import {THEME_PATTERN_IDS} from './theme-patterns.js';
 // Admin-only local appearance experimentation. Never alters community theme data.
 export const DESIGN_KEY='arcana-admin-design-preview-v1';
 export const DEFAULT_DESIGN=Object.freeze({
@@ -39,7 +40,7 @@ export const DESIGN_PRESETS=Object.freeze({
 export const DESIGN_FIELDS=Object.keys(DEFAULT_DESIGN);
 export function validateDesignField(key,value){
  if(colors.has(key))return normalizeDesignHex(value);
- if(key==='pattern')return ['contours','rings','stars','grid','aurora','diagonal','hex','grain','crystal','nebula','weave','runes','circuit','topography','facets','scanlines','honeycomb','plain'].includes(value)?value:null;
+ if(key==='pattern')return THEME_PATTERN_IDS.includes(value)?value:null;
  if(key==='iconMode')return ['two-tone','neutral','accent','muted'].includes(value)?value:null;
  if(key==='fontFamily')return ['system','rounded','serif','mono'].includes(value)?value:null;
  if(key==='density')return ['comfortable','compact','spacious'].includes(value)?value:null;
