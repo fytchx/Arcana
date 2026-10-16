@@ -45,6 +45,22 @@ test('Build Studio entrance has 16 distinct selectable treatments and safe contr
  assert.ok(mini.includes('dataset.miniHeroAlign=v.heroActionAlign'));
  assert.doesNotMatch(settingsView(),/heroCtaLibrary|heroActionWidth/);
 });
+test('nine feature-card surfaces and sigil visibility are independent of button styles',async()=>{
+ const css=await read('../theme-studio-finishes.css'),form=designPanel({showPreview:false}),mini=await read('../src/design-mini-preview.js');
+ const cards=['blended','flat','frameless','etched','glass','raised','accent-edge','metallic','minimal'];
+ for(const name of cards){
+  assert.equal(validateDesignField('heroCardStyle',name),name);
+  if(name!=='blended')assert.ok(css.includes('data-arcana-hero-card-style="'+name+'"'),name);
+  assert.ok(form.includes('value="'+name+'"'),name);
+ }
+ assert.ok(form.includes('data-design-field="heroCardEmblem"'));
+ assert.equal(validateDesignField('heroCardEmblem','hidden'),'hidden');
+ assert.equal(validateDesignField('heroCardEmblem','external-url'),null);
+ assert.equal(DEFAULT_DESIGN.heroCardStyle,'blended');
+ assert.equal(DEFAULT_DESIGN.heroCardEmblem,'subtle');
+ assert.ok(mini.includes('dataset.miniHeroCard=v.heroCardStyle'));
+ assert.match(css,/data-mini-hero-card="frameless"/);
+});
 test('new isolated styles are delivered through the production allowlist and load after legacy rules',async()=>{
  const index=await read('../index.html'),server=await read('../server.mjs');
  const css=await read('../theme-studio-finishes.css');
