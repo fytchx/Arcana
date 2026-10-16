@@ -129,7 +129,8 @@ export function userCenterView(profile=null){
  link('App Settings','Display and accessibility options.','settings','cog'),
  link('Icon Library','Browse Arcana icon styles.','icons','gem'),
  link('My Build Studio','Jump back into your character.','labs/build','shield'),
- link('Beta Feedback','Report anything that needs fixing.','beta','info')
+ link('Beta Feedback','Report anything that needs fixing.','beta','info'),
+ ...(profile?.roles?.some(r=>['admin','creator'].includes(r.id||r))?[link('Admin Dashboard','Private traffic statistics and management tools.','admin','shield')]:[])
  ].map(navrow).join('')+'</div></div>';
 }
 const PREF_KEY='arcana-launch-prefs';
