@@ -15,7 +15,7 @@ const routeName=name=>({
 const number=n=>Math.max(0,Number(n)||0).toLocaleString('en-US');
 const metric=(label,value,detail)=>'<div class="trafficMetric"><span>'+esc(label)+'</span><strong>'+number(value)+'</strong><small>'+esc(detail)+'</small></div>';
 const adminLink=(title,detail,route,mark)=>'<button type="button" class="launchNavRow" data-route="'+esc(route)+'"><span class="launchNavIcon">'+icon(mark,20)+'</span><span class="launchNavCopy"><strong>'+esc(title)+'</strong><small>'+esc(detail)+'</small></span>'+icon('arrow',16)+'</button>';
-export function adminTrafficView({admin=false,authEnabled=false}={}){
+export function adminTrafficView({admin=false,authEnabled=false,embedded=false}={}){
  if(!admin)return '<section class="launchPage"><span class="launchEyebrow">ADMIN DASHBOARD</span><h1>Admin access required</h1><p>Website traffic is private to signed-in Arcana Admins and the Creator.</p>'+(authEnabled?'<a class="btn primary" href="/api/account/login">Sign in with Discord</a>':'<p>Admin authentication is not configured on this environment.</p>')+'</section>';
  const d=state.data;
  const days=(d?.days||[]).slice(-state.range);
@@ -23,7 +23,7 @@ export function adminTrafficView({admin=false,authEnabled=false}={}){
  const chart=days.map(day=>'<div class="trafficDay" title="'+esc(day.date+': '+day.views+' views, '+day.sessions+' sessions')+'"><div class="trafficBar" style="height:'+Math.max(3,Math.round(day.views/high*100))+'%"></div><small>'+esc(day.date.slice(5))+'</small></div>').join('');
  const dailyList=days.map(day=>'<div class="trafficDailyRow"><span>'+esc(day.date)+'</span><span>'+number(day.views)+' views</span><span>'+number(day.sessions)+' sessions</span></div>').join('');
  const top=(d?.topPages||[]).map((page,index)=>'<div class="trafficPage"><span class="trafficRank">'+(index+1)+'</span><span>'+esc(routeName(page.route))+'<small>'+esc(page.route)+'</small></span><strong>'+number(page.views)+'</strong></div>').join('');
- return '<div class="launchPage trafficDashboard"><span class="launchEyebrow">ARCANA ADMINISTRATION</span><h1>Admin Dashboard</h1><p>Website activity, page popularity and tools for managing Arcana.</p>'+
+ return (embedded?'<div class="trafficDashboard">':'<div class="launchPage trafficDashboard"><span class="launchEyebrow">ARCANA ADMINISTRATION</span><h1>Admin Dashboard</h1><p>Website activity, page popularity and tools for managing Arcana.</p>')+
  '<div class="trafficDashboardActions"><button type="button" class="btn secondary" data-traffic-action="refresh">'+icon('refresh',16)+' Refresh traffic</button><span>'+(state.loadedAt?'Last checked '+esc(new Date(state.loadedAt).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})):'No data loaded')+'</span></div>'+
  (state.error?'<div class="trafficNotice" role="status">'+esc(state.error)+'</div>':'')+
  (!d?'<div class="trafficNotice" role="status">'+(state.loading?'Loading website traffic…':'Traffic data will appear when the statistics service is available.')+'</div>':
@@ -35,12 +35,12 @@ export function adminTrafficView({admin=false,authEnabled=false}={}){
  '<section class="trafficPanel"><div class="trafficPanelHead"><h2>Traffic trend</h2><div class="trafficRanges"><button type="button" data-traffic-range="7" '+(state.range===7?'aria-pressed="true"':'')+'>7d</button><button type="button" data-traffic-range="14" '+(state.range===14?'aria-pressed="true"':'')+'>14d</button><button type="button" data-traffic-range="30" '+(state.range===30?'aria-pressed="true"':'')+'>30d</button></div></div><div class="trafficGraph" role="img" aria-label="Daily page views for the selected number of days">'+chart+'</div><p class="trafficCaption">Views per day (UTC). Sessions count one browser session per day.</p><details class="trafficDailyDetails"><summary>Show exact daily totals</summary><div class="trafficDailyList">'+dailyList+'</div></details></section>'+
  '<section class="trafficPanel"><h2>Most visited sections</h2>'+(top||'<p>No visits recorded yet.</p>')+'</section>'+
  '<p class="trafficCaption">Statistics start when this feature is deployed. Visits are approximate browsing sessions, not individual people. No IP addresses, Discord IDs, or complete URLs are stored. Browser privacy settings and blocked scripts may exclude visits. Only Arcana page activity is measured.</p>')+
- '<section class="trafficPanel"><h2>Admin shortcuts</h2><div class="launchMenuLinks">'+
+ (!embedded?'<section class="trafficPanel"><h2>Admin shortcuts</h2><div class="launchMenuLinks">'+
  adminLink('Wiki Studio','Manage official articles and images.','wiki/studio','book')+
  adminLink('Account & Roles','Manage your account and approved roles.','account','users')+
  adminLink('Design Workshop','Preview styling and appearance settings.','settings','settings')+
  adminLink('Beta Feedback','Review suggestions and bug reports.','beta/reports','info')+
- '</div></section></div>';
+ '</div></section>':'')+'</div>';
 }
 export async function loadAdminTraffic(refresh,{force=false}={}){
  if(state.loading||!force&&Date.now()-state.loadedAt<30000)return;
@@ -54,7 +54,7 @@ export async function loadAdminTraffic(refresh,{force=false}={}){
  finally{state.loading=false;if(location.hash.startsWith('#/admin'))refresh();}
 }
 export function wireAdminTraffic({refresh}){
- setInterval(()=>{if(state.loadedAt&&document.visibilityState==='visible'&&location.hash.startsWith('#/admin'))void loadAdminTraffic(refresh,{force:true});},60000);
+ setInterval(()=>{if(state.loadedAt&&document.visibilityState==='visible'&&/^#\/admin(?:\?tab=traffic|$)/.test(location.hash))void loadAdminTraffic(refresh,{force:true});},60000);
  document.addEventListener('click',e=>{
   const range=e.target.closest('[data-traffic-range]');
   if(range){const n=Number(range.dataset.trafficRange);if([7,14,30].includes(n)){state.range=n;refresh();}return;}
