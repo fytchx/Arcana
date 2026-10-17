@@ -7,7 +7,7 @@
  * Item roll values replace the corresponding measured stage; never add to a
  * preexisting screenshot aggregate.
  */
-import {DRAFT_KEY,loadDraft} from './session.js';
+import {DRAFT_KEY} from './session.js';
 import {baseItem,asGear,allowedItem,bonusRange,gearIssues,DROP_BONUSES,CLASS_CODES} from './build-studio-data.js';
 
 const SLOT_KEYS=['torch','head','neck','weapon','chest','offhand','ring','belt','ring2','hands','feet'];
@@ -20,7 +20,6 @@ const TARGETS=Object.freeze({
  devastating:{path:'combat.doubleDamageChance',channel:'Double Damage Chance · equipment %'},
  thorned:{path:'retaliation.baseBonuses.reflectingGear',channel:'Retaliation base · Reflecting gear %'},
 });
-const own=(obj,key)=>Object.prototype.hasOwnProperty.call(obj,key);
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v));
 const configured=new Map(DROP_BONUSES.map(x=>[x.id,x]));
 export const BUILD_STUDIO_DAMAGE_SOURCE='Arcana Build Studio; exact October 9 item Drop Bonus roll snapshot';
@@ -117,6 +116,10 @@ export function readBuildStudioDamage(store=null){
 export function buildStudioScenarioChanges(importPreview,baseline={}){
  if(!importPreview?.known||importPreview.blockers?.length)
   return {ok:false,changes:{},reason:'Build Studio draft requires verification before applying.'};
+ const classFromSheet=String(baseline?.className||'').split(/[\s/·]+/)[0];
+ if(CLASS_CODES[classFromSheet]&&classFromSheet!==importPreview.className)
+  return {ok:false,changes:{},reason:'The Build Studio class ('+importPreview.className+
+   ') does not match the calculator reference class ('+classFromSheet+'). Clear or load the matching build first.'};
  const changes={},unmeasured=[];
  for(const row of importPreview.rows||[]){
   // Do not mix source provenance by adding to an existing screenshot total.
