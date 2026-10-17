@@ -257,7 +257,7 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
  '<p class="studioBuildNotice"><strong>Game data:</strong> '+esc(b.notes||'Values remain under verification.')+'</p>'+
  '</div>';}
 
-function pathfinderHub(legacyView='timeline'){
+function pathfinderHub(legacyView='range'){
  const view=parseRoute().query.get('view')||legacyView;
  const tabs=[['range','Upgrade Costs','calculator'],['timeline','Upgrade Map','layers'],['upgrade','Rarity Reference','calculator'],['compare','Compare Items','compare']];
  const selected=tabs.some(t=>t[0]===view)?view:'range';
