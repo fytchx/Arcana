@@ -82,3 +82,20 @@ Committed to this same draft feature branch after the first recovery checkpoint:
 - Five production modules parsed in a V8 syntax check; Hunter Attack remains within +0.002% and the calculated Pet tooltip multiplier within -0.066% of screenshot references.
 - Full `node --test`, `npm run check`, GitHub Actions runner execution, and real mobile browser QA remain **unverified**. GitHub Actions continues returning jobs marked failed with zero steps. No merge/deploy.
 - The quick comparison is intentionally **not** an automated pet hatch rarity/compound optimizer: exact effect-to-tooltip mapping, increased-attribute stat pools, ACS and real combat events need independent source confirmation before such recommendations can be calculated authoritatively.
+
+## 2026-10-17 continuation checkpoint: calibrated Pet comparison and low-friction entry
+
+### New saved work
+- `src/damage-pet-quick-engine.js` supports an **optional observed total Pet multiplier**, e.g. ×15. Players only need to enter the breakdown layers **they are changing**, and the comparator applies source-correct ratio deltas to the measured ×15. Without a measured total, projected × results are explicitly labeled **product of entered layers only**, not true overall Pet Damage.
+- The reference value is validated (finite, greater than zero); invalid or nonexistent evidence never becomes a claimed full multiplier. Pet raw base damage remains unknown unless both base endpoints are supplied.
+- `src/damage-pet-quick-ui.js` now displays **four inline baseline fields** above the A/B pet slots: equipment Pet Damage %, Companions drop bonus %, Pet INT contribution %, and Pet DEX contribution %. These fields are wired to the same saved baseline as the advanced Pets tab, so users don't need to scroll into 67 manual inputs for common comparisons.
+- Added an illustrative **2 Pet Damage % + 2 effective INT vs 4 Pet Damage %** preset in addition to the previous 2-vs-4 Pet % example. The inputs are examples, not promises of legal hatch bonus rolls.
+- A measured total × is **bound to a fingerprint of the current Pet breakdown, flat sources, base range and class identifier**. If the reference character/stages change, the old calibration is discarded and the UI explains why. Hero Attack changes alone do not invalidate it.
+- `src/damage-calculator-ui.js` synchronizes compact and advanced duplicate inputs without replacing the focused input or scrolling; handoff requires observed (not null/blank) baseline stages. Main Pet/Attack cards distinguish partial entered sources from a full measured tooltip rather than presenting every default ×1 as authoritative.
+- Tests expanded under `tests/damage-pet-quick-engine.test.mjs` and new `tests/damage-pet-quick-ui.test.mjs` for observed-anchor ratio math, invalid references, subset entry, four inline fields, and fingerprint invalidation. These are normal Node test files ready to execute in CI.
+
+### Verification / gating
+- Isolated V8 execution (not full Node): **14/14 focused engine and UI regression cases passed** after this batch; relevant UI and math modules parsed. The known Hunter ×132.24 reference can anchor precise relative projections.
+- Existing earlier tests and more extensive CI / npm check / browser-mobile QA were NOT all rerun. GitHub Actions on prior heads failed before obtaining a runner and completing any steps.
+- Increased INT/DEX **percentage** hatch rolls remain unresolved: callers must enter effective total INT/DEX points **after scaling**, because the exact eligible base pool / stacking order has not been established. The Pet-only comparison does not represent simultaneous changes to hero Attack and secondary combat stats.
+- Maintain **draft PR #33**, unmerged, undeployed. Next priorities: restore CI runner provisioning, full Node + mobile test gate, verify Increased INT stacking and Rogue/Druid live screens, then safe Build Studio import using exact provenance.
