@@ -37,6 +37,15 @@ const panelHTML=g=>'<section class="panel maxPanel" id="panel-'+g.id+'" hidden><
  return '<label class="control maxField" data-max-container="'+f.key+'" data-max-find="'+esc(f.label.toLowerCase()+' '+g.name.toLowerCase())+'">'+heading+c+'</label>';
  }).join('')+'</div></section>';
 const uiCSS=`
+.grid{--design-left:365px;--design-right:260px;grid-template-columns:var(--design-left) minmax(380px,1fr) var(--design-right);position:relative}
+.maxSplitter{position:absolute;top:0;bottom:0;width:8px;z-index:29;cursor:col-resize;background:transparent;touch-action:none}
+.maxSplitter:hover,.maxSplitter.dragging{background:#9777d34d}
+.maxSplitter.left{left:calc(var(--design-left) - 4px)}.maxSplitter.right{right:calc(var(--design-right) - 4px)}
+.maxPreviewFullscreen{position:fixed!important;inset:0!important;z-index:1000!important;width:100vw!important;height:100dvh!important}
+.maxZoom{font-size:10px;color:#b9aace;display:flex;align-items:center;gap:7px}.maxZoom input{width:90px;accent-color:#ad87ee}.maxZoom b{font:700 11px ui-monospace,monospace;min-width:39px}
+@media(max-width:1100px){.grid{grid-template-columns:350px minmax(400px,1fr)}.maxSplitter.right{display:none}}
+@media(max-width:850px){.maxSplitter{display:none}}
+
 .maxPanel .maxLead{margin:-4px 0 18px;font-size:11px;line-height:1.6;color:#a8b1c7}
 .maxCount{float:right;color:#9a90ac;font-size:9px;letter-spacing:.07em}
 .maxField{padding:11px 10px 8px;border:1px solid #37394e;border-radius:10px;background:#151827;margin:0 0 8px}
@@ -86,8 +95,27 @@ export function installDesignMax(){
  const info=document.createElement('section');info.id='panel-guide';info.className='panel';info.hidden=true;
  info.innerHTML='<div class="sectionTitle">Studio diagnostics</div><div id="maxDiagnostics" class="maxHelp">Checking preview…</div><p class="maxInfo">Only this test environment supports the advanced design layer. Publishing is intentionally disabled here.</p><p class="maxInfo"><b>Shortcuts:</b> <span class="maxHotkey">Ctrl/⌘ + Z</span> Undo, <span class="maxHotkey">Ctrl/⌘ + Shift + Z</span> Redo, <span class="maxHotkey">Ctrl/⌘ + S</span> Save snapshot.</p>';
  recipe.after(info);const it=document.createElement('button');it.dataset.tab='guide';it.textContent='Diagnostics';tabs.append(it);
- const toolbar=document.createElement('div');toolbar.className='maxToolbar';toolbar.innerHTML='<span class="maxPanorama">CREATOR TOOLKIT</span><button data-max-action="undo" title="Undo Ctrl+Z">↶ Undo</button><button data-max-action="redo" title="Redo Ctrl+Shift+Z">↷ Redo</button><button data-max-action="compare" aria-pressed="false">◫ Before / After</button><button data-max-action="shuffle">✧ Remix</button><button data-max-action="save" title="Save to first empty vault slot">Save snapshot</button><span class="maxSpacer"></span><span class="maxPill">PRIVATE DRAFT · NO PUBLISH</span>';
+ const toolbar=document.createElement('div');toolbar.className='maxToolbar';toolbar.innerHTML='<span class="maxPanorama">CREATOR TOOLKIT</span><button data-max-action="undo" title="Undo Ctrl+Z">↶ Undo</button><button data-max-action="redo" title="Redo Ctrl+Shift+Z">↷ Redo</button><button data-max-action="compare" aria-pressed="false">◫ Before / After</button><button data-max-action="fullscreen" aria-pressed="false">⛶ Fullscreen</button><button data-max-action="shuffle">✧ Remix</button><button data-max-action="save" title="Save to first empty vault slot">Save snapshot</button><span class="maxSpacer"></span><span class="maxPill">PRIVATE DRAFT · NO PUBLISH</span>';
  const stage=document.querySelector('.stage');stage.insertBefore(toolbar,stage.firstChild);
+ const grid=document.querySelector('.grid');
+ const viewTools=document.querySelector('.sizeBar');
+ const zoom=document.createElement('label');zoom.className='maxZoom';zoom.innerHTML='<span>Preview zoom</span><input type="range" id="maxPreviewZoom" min="70" max="130" step="5" value="100"><b id="maxZoomValue">100%</b>';
+ viewTools?.appendChild(zoom);
+ function resizeGrid(){
+  let saved={};try{saved=JSON.parse(localStorage.getItem('arcana-design-max-panes')||'{}')}catch{}
+  let left=Math.min(550,Math.max(290,Number(saved.left)||365)),right=Math.min(390,Math.max(190,Number(saved.right)||260));
+  const update=()=>{grid.style.setProperty('--design-left',left+'px');grid.style.setProperty('--design-right',right+'px')};update();
+  for(const side of ['left','right']){
+   const grip=document.createElement('div');grip.className='maxSplitter '+side;grip.title='Drag to resize '+side+' workspace column';grip.setAttribute('role','separator');grip.setAttribute('aria-label','Resize '+side+' panel');grid.appendChild(grip);
+   let dragging=false;let startX=0,startValue=0;
+   grip.addEventListener('pointerdown',event=>{if(event.button!==0)return;dragging=true;startX=event.clientX;startValue=side==='left'?left:right;grip.setPointerCapture(event.pointerId);grip.classList.add('dragging');event.preventDefault()});
+   grip.addEventListener('pointermove',event=>{if(!dragging)return;const delta=event.clientX-startX;if(side==='left')left=Math.max(290,Math.min(550,startValue+delta));else right=Math.max(190,Math.min(390,startValue-delta));update()});
+   const finish=()=>{if(!dragging)return;dragging=false;grip.classList.remove('dragging');try{localStorage.setItem('arcana-design-max-panes',JSON.stringify({left,right}))}catch{}};
+   grip.addEventListener('pointerup',finish);grip.addEventListener('pointercancel',finish);
+  }
+ }
+ resizeGrid();
+ zoom.querySelector('input')?.addEventListener('input',e=>{const value=Number(e.target.value);$('browser').style.zoom=(value/100).toFixed(2);$('maxZoomValue').textContent=value+'%';});
  const foot=document.createElement('div');foot.className='maxStatus';foot.id='maxStatus';foot.setAttribute('role','status');foot.textContent='Studio ready. Changes stay on the preview domain.';stage.appendChild(foot);
  const actionbar=document.querySelector('.top-actions');
  const importBtn=document.createElement('button');importBtn.className='controlBtn';importBtn.dataset.maxAction='import';importBtn.textContent='Import JSON';actionbar.insertBefore(importBtn,actionbar.querySelector('a'));
@@ -171,7 +199,7 @@ export function installDesignMax(){
  document.addEventListener('click',e=>{
   const action=e.target.closest('[data-max-action]');
   if(action){switch(action.dataset.maxAction){
-   case 'undo':undo();break;case 'redo':redo();break;
+   case 'undo':undo();break;case 'redo':redo();break;case 'fullscreen':{const stage=document.querySelector('.stage');stage.classList.toggle('maxPreviewFullscreen');action.setAttribute('aria-pressed',String(stage.classList.contains('maxPreviewFullscreen')));action.textContent=stage.classList.contains('maxPreviewFullscreen')?'✕ Exit fullscreen':'⛶ Fullscreen';break;}
    case 'compare':compare=compare==='before'?'after':'before';refresh();report('Preview: '+compare.toUpperCase()+' · draft remains untouched');break;
    case 'shuffle':remix();break;case 'save':{const arr=vaultData();let index=arr.findIndex(v=>!v);if(index<0)index=0;saveSlot(index);break;}
    case 'export':exportAll();break;case 'import':fileInput.click();break;
@@ -183,7 +211,7 @@ export function installDesignMax(){
   const go=e.target.closest('[data-max-goto]');if(go){$('maxFieldSearch').value='';const t=go.dataset.maxGoto;for(const p of document.querySelectorAll('.panel'))p.hidden=p.id!=='panel-'+t;for(const b of document.querySelectorAll('[data-tab]'))b.classList.toggle('active',b.dataset.tab===t);const field=document.querySelector('[data-max-container="'+go.dataset.maxFocus+'"]');field?.scrollIntoView({block:'center',behavior:'smooth'});field?.querySelector('[data-max-field]')?.focus();return;}
  });
  fileInput.addEventListener('change',()=>{if(fileInput.files?.[0])void importAll(fileInput.files[0]);fileInput.value='';});
- document.addEventListener('keydown',e=>{if(!(e.ctrlKey||e.metaKey))return;
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelector('.stage')?.classList.remove('maxPreviewFullscreen');const b=document.querySelector('[data-max-action="fullscreen"]');if(b){b.textContent='⛶ Fullscreen';b.setAttribute('aria-pressed','false');}}if(!(e.ctrlKey||e.metaKey))return;
  if(e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();}
  if(e.key.toLowerCase()==='s'){e.preventDefault();const list=vaultData();const i=list.findIndex(v=>!v);saveSlot(i<0?0:i);}
  });
