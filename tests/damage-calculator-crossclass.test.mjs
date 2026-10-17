@@ -34,7 +34,7 @@ test('Deflection has SEPARATE caps for retaliation and block chance',()=>{
  assert.deepEqual(s.effects.map(x=>[x.raw,x.value]),[[38,25],[76,40]]);
 });
 test('Magic Blast + Unstable Energy, Cascade and Pyroclasm have 100% effects caps',()=>{
- const blast=calculateSkillOutputs(OBSERVED_SKILL_CASES.mageMagicBlastTrigger);
+ const blast=calculateSkillOutputs(OBSERVED_SKILL_CASES.mageUnstableEnergyTrigger);
  const cascade=calculateSkillOutputs(OBSERVED_SKILL_CASES.mageArcaneCascade);
  const pyro=calculateSkillOutputs(OBSERVED_SKILL_CASES.magePyroclasm);
  assert.equal(blast.effects[0].raw,140);
@@ -52,6 +52,13 @@ test('Mighty Strikes still scales above allocatable rank without an invented eff
 test('Locked/zero rank without unlocked flag does NOT incorrectly acquire ACS',()=>{
  const s=skillRanks({allocated:0,maxAllocated:5,acs:17,unlocked:false});
  assert.equal(s.effective,0);
+});
+test('Warrior Culling + Executioner combine raw 22+19=41%, clipped at 35%',()=>{
+ const c=calculateSkillOutputs(OBSERVED_SKILL_CASES.warriorCullingStrike);
+ const e=calculateSkillOutputs(OBSERVED_SKILL_CASES.warriorExecutioner);
+ const combined=sharedSkillCap([c.effects[0].value,e.effects[0].value],35);
+ assert.equal(combined.raw,41);
+ assert.equal(combined.value,35);
 });
 test('Shared trap damage cap is applied to SUM not per skill alone',()=>{
  const combined=sharedSkillCap([15,9],35);
