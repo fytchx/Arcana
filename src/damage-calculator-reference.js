@@ -6,6 +6,7 @@
  * Screenshot version: lower-level hunter, Lv 94, ML 87.
  */
 export const HUNTER_2026_10_17 = Object.freeze({
+  className: 'Archer',
   attack: {
     weapon: {min: 895, max: 1280},
     jewelry: {min: 122, max: 203},
