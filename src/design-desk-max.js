@@ -37,13 +37,13 @@ const panelHTML=g=>'<section class="panel maxPanel" id="panel-'+g.id+'" hidden><
  return '<label class="control maxField" data-max-container="'+f.key+'" data-max-find="'+esc(f.label.toLowerCase()+' '+g.name.toLowerCase())+'">'+heading+c+'</label>';
  }).join('')+'</div></section>';
 const uiCSS=`
-.grid{--design-left:365px;--design-right:260px;grid-template-columns:var(--design-left) minmax(380px,1fr) var(--design-right);position:relative}
+.desk .grid{--design-left:365px;--design-right:260px;grid-template-columns:var(--design-left) minmax(380px,1fr) var(--design-right);position:relative}
 .maxSplitter{position:absolute;top:0;bottom:0;width:8px;z-index:29;cursor:col-resize;background:transparent;touch-action:none}
 .maxSplitter:hover,.maxSplitter.dragging{background:#9777d34d}
 .maxSplitter.left{left:calc(var(--design-left) - 4px)}.maxSplitter.right{right:calc(var(--design-right) - 4px)}
 .maxPreviewFullscreen{position:fixed!important;inset:0!important;z-index:1000!important;width:100vw!important;height:100dvh!important}
 .maxZoom{font-size:10px;color:#b9aace;display:flex;align-items:center;gap:7px}.maxZoom input{width:90px;accent-color:#ad87ee}.maxZoom b{font:700 11px ui-monospace,monospace;min-width:39px}
-@media(max-width:1100px){.grid{grid-template-columns:350px minmax(400px,1fr)}.maxSplitter.right{display:none}}
+@media(max-width:1100px){.desk .grid{grid-template-columns:350px minmax(400px,1fr)}.maxSplitter.right{display:none}}
 @media(max-width:850px){.maxSplitter{display:none}}
 
 .maxPanel .maxLead{margin:-4px 0 18px;font-size:11px;line-height:1.6;color:#a8b1c7}
