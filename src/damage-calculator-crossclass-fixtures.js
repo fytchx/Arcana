@@ -21,6 +21,7 @@ export const RETALIATION_WARRIOR_2026_10_17=Object.freeze({
       gearSets:29,gems:12,timeBoost:63},
     combatStanceFactor:1.25,rollMinFactor:0.70,blockedFactor:1.75,
   },
+  combat:{critChance:392.4,critDamage:1502,doubleHitChance:281,doubleDamageChance:597,bossDamage:100},
   references:{attackMin:26100000,attackMax:36940000,retaliationMin:58740000000,
     retaliationMax:83920000000,retaliationAvg:71330000000,
     petBonusNotMeasured:true,critChance:392.4,doubleHitChance:281,
@@ -41,6 +42,7 @@ export const ATTACK_MAGE_2026_10_17=Object.freeze({
       intelligenceOther:107.4,petIncreasedIntelligence:112.5,guild:77.8,
       echoBlessings:9,gearSets:29,gems:28.9,timeBoost:64,combatStance:25}
   },
+  combat:{critChance:531.1,critDamage:1625,doubleHitChance:407,doubleDamageChance:966,bossDamage:100},
   references:{attackMin:23330000000,attackMax:34120000000,
     procMagicBlastRawChance:140,procMagicBlastAppliedChance:100,
     procArcaneCascadeRawChance:144,procArcaneCascadeAppliedChance:100,
