@@ -33,7 +33,7 @@ export function calculateRetaliation(input={}) {
   const rollMinFactor=Math.min(1,clean(input.rollMinFactor));
   const max=basePool*layeredFactor*combatStanceFactor;
   const min=max*rollMinFactor;
-  const conditionalBlockedFactor=input.blockedFactor===undefined?null:clean(input.blockedFactor);
+  const conditionalBlockedFactor=input.blockedFactor===undefined||input.blockedFactor===null||input.blockedFactor===''?null:clean(input.blockedFactor);
   return {
     known:true,kind:'retaliation',defense,basePoolPct,basePool,layerBreakdown:breakdown,
     layeredFactor,combatStanceFactor,rollMinFactor,
