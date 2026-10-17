@@ -64,7 +64,7 @@ test('unknown item ID or unknown bonus ID never supplies made-up stats',()=>{
  assert.match(x.blockers.join(' '),/unrecognized bonus/);
 });
 test('non-damage bonus is explicitly skipped rather than treated as zero damage',()=>{
- const x=projectBuildStudioDamage(build({ring:equipment('prosperous',14)}));
+ const x=projectBuildStudioDamage(build({ring:equipment('prosperous',20)}));
  assert.equal(x.known,false);
  assert.equal(x.rows.length,0);
  assert.equal(x.skipped.length,1);
@@ -98,7 +98,7 @@ test('unrecognized or incomplete drafts cannot apply partial results',()=>{
 });
 test('no guessed gear stats beyond verified exact bonus stages',()=>{
  const x=projectBuildStudioDamage(build({
-  head:equipment('brutal',15,'game:item:visionary-hood'),
+  head:equipment('brutal',10,'game:item:visionary-hood'),
   chest:equipment('thorned',15,'game:item:wardplate'),
  }));
  assert.equal(x.known,true);
