@@ -1,5 +1,6 @@
 import {SKILL_CLASS_NAMES,SKILL_CATALOG,classCapSkills,compareConfiguredSkillCaps} from './damage-calculator-config-caps.js';
 import {SKILL_EFFECT_DEFINITIONS,compareSkillDamageEffects} from './damage-calculator-skill-effects.js';
+import {calculateAttack,calculatePet,relativeDifference} from './damage-calculator-engine.js';
 
 /**
  * Skill planner: one class at a time, but retain per-class allocations and ACS.
@@ -48,6 +49,7 @@ const css=`.dcRoot .dcSkillSettings{display:grid;grid-template-columns:repeat(2,
 const number=(v,max=1000)=>v!==''&&v!==null&&Number.isFinite(Number(v))?Math.max(0,Math.min(max,Math.floor(Number(v)))):0;
 const fmt=v=>Number(v).toLocaleString('en-US',{maximumFractionDigits:2});
 let plan;
+let getReference=null;
 function make(tag,content,cls){
  const node=document.createElement(tag);
  if(content!==null&&content!==undefined)node.textContent=content;
@@ -94,6 +96,41 @@ function stageCard(key,name,unit,note,comparison){
   make('small',note));
  return card;
 }
+function projectionCard(derived){
+ const reference=typeof getReference==='function'?getReference():null;
+ if(!reference?.attack)return null;
+ const className=reference.className||'Archer / Hunter';
+ const refClass=Object.entries(SKILL_CLASS_NAMES).find(([,name])=>
+  className.toLowerCase().startsWith(name.toLowerCase()))?.[0];
+ if(Number(refClass)!==plan.classId){
+  return make('p','Load the matching '+SKILL_CLASS_NAMES[plan.classId]+' example to preview the effect on actual Attack/Pet totals. Other-class tooltip stages are not interchangeable.','dcValidation');
+ }
+ const baselineAttack={...reference.attack,
+  additive:{...reference.attack.additive,classSkills:derived.sheetStages.attackClassPct}};
+ const acsAttack={...reference.attack,
+  additive:{...reference.attack.additive,classSkills:derived.afterOneACS.attackPct}};
+ const before=calculateAttack(baselineAttack);
+ const after=calculateAttack(acsAttack);
+ const attackGain=relativeDifference(before.min,after.min);
+ const card=make('article',null,'dcSkillCard');
+ card.append(make('strong','+1 ACS · projected sheet change'),
+  make('div','Attack: '+fmt(before.min)+' → '+fmt(after.min)+' minimum; '+fmt(before.max)+' → '+fmt(after.max)+' maximum'),
+  make('small','Attack gain: '+(attackGain?(attackGain.percentChange>0?'+':'')+fmt(attackGain.percentChange)+'%':'not available')+' (class-skill subtotal replaced, not added).','dcSkillDelta'));
+ if(reference.pet?.layers&&Object.keys(reference.pet.layers).length){
+  const petBefore=calculatePet({...(reference.pet||{}),
+   layers:{...reference.pet.layers,classSkills:derived.sheetStages.petClassPct},
+   flat:{...reference.pet.flat,classSkills:derived.sheetStages.petClassFlat}});
+  const petAfter=calculatePet({...(reference.pet||{}),
+   layers:{...reference.pet.layers,classSkills:derived.afterOneACS.petPct},
+   flat:{...reference.pet.flat,classSkills:derived.afterOneACS.petFlat}});
+  const petGain=relativeDifference(petBefore.layerFactor,petAfter.layerFactor);
+  card.append(make('small','Pet percentage multiplier: ×'+fmt(petBefore.layerFactor)+
+   ' → ×'+fmt(petAfter.layerFactor)+'. '+(petGain?('+'+fmt(petGain.percentChange)+'% from % layers'):'')+
+   '. Flat changes are only reflected in final damage when an actual pet base is supplied.'));
+ }
+ card.append(make('small','Holds every other screenshot value fixed. Conditional procs, crit, enemy defense, target health and unverified pet base growth are excluded.'));
+ return card;
+}
 function renderOutputs(panel){
  const target=panel.querySelector('.dcSkillOutputArea');if(!target)return;
  const input={classId:plan.classId,allClassSkills:currentAcs(),skills:currentSkills()};
@@ -131,10 +168,13 @@ function renderOutputs(panel){
    classId:plan.classId,attackClassPct:derived.sheetStages.attackClassPct,
    petClassPct:derived.sheetStages.petClassPct,petClassFlat:derived.sheetStages.petClassFlat,
   }}));
+  renderOutputs(panel);
  });
+ const projected=projectionCard(derived);
  const parts=[make('h3','Derived class skill bonuses','dcSkillStageHeading'),
   make('p','These rates come from documented class skill descriptions. +1 ACS shows what actually changes across all unlocked skills. No output here is silently added to your screenshot totals.','dcIntro'),
   stats,apply];
+ if(projected)parts.push(projected);
  if(conditional.children.length)parts.push(make('h3','Conditional skill damage','dcSkillStageHeading'),conditional);
  parts.push(make('h3','Configured skill caps','dcSkillStageHeading'),
   make('p','The October 17 game config caps these outputs separately. Shared caps are applied once; procs and loot chances are never treated as guaranteed Attack damage.','dcIntro'),
@@ -206,7 +246,8 @@ export function damageSkillPlannerView(){
  load();
  return '<style>'+css+'</style><section id="dcSkillPlanner" data-dc-panel="skills" hidden><div class="dcSkillControlArea"></div><div class="dcSkillOutputArea" aria-live="polite"></div></section>';
 }
-export function mountSkillPlanner(root){
+export function mountSkillPlanner(root,referenceGetter=null){
+ if(typeof referenceGetter==='function')getReference=referenceGetter;
  const panel=root?.querySelector('#dcSkillPlanner');
  if(!panel||panel.dataset.skillMounted==='yes')return;
  panel.dataset.skillMounted='yes';load();renderControls(panel);renderOutputs(panel);
