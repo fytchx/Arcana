@@ -40,7 +40,8 @@ export function compareQuickPetSetups(build={},current=[],proposed=[]){
  const a=normalizeQuickPetSetup(current),b=normalizeQuickPetSetup(proposed);
  const pet=build?.pet;
  const missing=[];
- if(!pet || !pet.layers || typeof pet.layers!=='object')
+ if(!pet || !pet.layers || typeof pet.layers!=='object' ||
+    !Object.values(pet.layers).some(supplied))
    return {known:false,reason:'Enter your measured Pet Damage breakdown first.',missing:['pet.layers']};
  const contributions=setup=>{
   const changes={};
