@@ -1,0 +1,50 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {MAX_FIELDS,MAX_GROUPS,MAX_DEFAULTS,cleanMaxValue,normalizeMax,applyMax} from '../src/design-max-controls.js';
+import {PROCEDURAL_TEXTURES} from '../src/procedural-textures.js';
+const read=path=>readFile(new URL(path,import.meta.url),'utf8');
+test('desktop system has a large but validated real control surface',()=>{
+ assert.ok(MAX_FIELDS.length>=65);
+ assert.ok(MAX_GROUPS.length>=7);
+ assert.equal(new Set(MAX_FIELDS.map(x=>x.key)).size,MAX_FIELDS.length);
+ for(const f of MAX_FIELDS){assert.ok(f.label&&f.type&&f.default!==undefined);}
+ assert.equal(cleanMaxValue('pageWidth',99999),1800);
+ assert.equal(cleanMaxValue('pageWidth',-100),740);
+ assert.equal(cleanMaxValue('bgColor','url(javascript:evil)'),null);
+ assert.equal(cleanMaxValue('cardMode','<script>'),null);
+ assert.equal(cleanMaxValue('nonexistent','cat'),null);
+ assert.equal(normalizeMax({pageWidth:2000,bgColor:'#abc123',hoverScale:500}).pageWidth,1800);
+ assert.equal(normalizeMax({pageWidth:2000,bgColor:'#abc123',hoverScale:500}).hoverScale,106);
+ assert.equal(normalizeMax({}).navBlur,MAX_DEFAULTS.navBlur);
+});
+test('all advanced controls drive real tokens, data attributes, or compositing inputs',async()=>{
+ const source=await read('../src/design-max-controls.js');
+ const css=await read('../design-max.css');
+ for(const f of MAX_FIELDS)assert.ok(source.includes('v.'+f.key),'Missing renderer binding: '+f.key);
+ for(const selector of ['data-design-max="true"','--max-bg-gradient','--max-glow-gradient','--max-card-shadow','--max-cta-shadow','--max-nav-height','--max-grid-gap','data-max-motion','data-max-card'])assert.ok(css.includes(selector),selector);
+ const styles=new Map(),doc={documentElement:{dataset:{},style:{setProperty(k,v){styles.set(k,v)}}},defaultView:{getComputedStyle:()=>({getPropertyValue:()=> '#0D1019'})}};
+ assert.equal(applyMax(doc,{bgColor:'#aabbcc',pageWidth:1410,buttonShape:'capsule'}),true);
+ assert.equal(doc.documentElement.dataset.designMax,'true');
+ assert.equal(doc.documentElement.dataset.maxButtons,'capsule');
+ assert.equal(styles.get('--max-page-width'),'1410px');
+ assert.match(styles.get('--max-bg-gradient'),/#AABBCC/);
+});
+test('the desktop site is isolated and can preview actual pages safely',async()=>{
+ const [desktop,server,theme,controls,index,maxDesk]=await Promise.all(['../design-desktop.html','../server.mjs','../src/theme.js','../src/design-controls.js','../index.html','../src/design-desk-max.js'].map(read));
+ assert.match(server,/design-desktop\.html/);
+ assert.match(server,/design-max\.css/);
+ assert.match(index,/design-max\.css/);
+ assert.match(desktop,/installDesignMax\(\)/);
+ assert.match(desktop,/arcana-design-desk/);
+ assert.match(desktop,/labs\/build/);
+ assert.match(theme,/arcana-preview-app-preview\.up\.railway\.app/);
+ assert.match(controls,/externalPreview/);
+ assert.match(maxDesk,/PRIVATE DRAFT/);
+ assert.match(maxDesk,/replaceDesignDraft/);
+ assert.match(maxDesk,/importAll/);
+ assert.match(maxDesk,/exportAll/);
+ assert.match(maxDesk,/maxVaultGrid/);
+ assert.doesNotMatch(maxDesk,/fetch\s*\(\s*['"]\/api\/site\/theme/);
+ assert.equal(PROCEDURAL_TEXTURES.length,10);
+});
