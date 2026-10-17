@@ -490,6 +490,85 @@ with sync_playwright() as playwright:
     page.screenshot(path=str(OUT/'account_beta_member_mobile.png'),full_page=True)
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Authenticated account screen horizontal overflow'
 
+
+    # Dedicated Damage Calculator end-to-end checks on an Android-sized
+    # viewport. Verify tab visibility, a genuinely blank baseline, pet A/B,
+    # recorded tooltip anchor, linked INT, Build Studio review, route return,
+    # scenario replacement, focus retention and horizontal overflow.
+    page.evaluate("location.hash='#/calculators/damage'")
+    page.wait_for_selector('#arcanaDamageCalculator',timeout=10000)
+    damage=page.locator('#arcanaDamageCalculator')
+    assert damage.locator('[data-dc-tab]').count()==7, 'Missing Damage Calculator tabs'
+    assert damage.locator('#dcResults').count()==1, 'Damage Calculator results missing'
+    damage.locator('[data-dc-clear]').click()
+    assert 'Not measured' in damage.locator('#dcResults').inner_text(), 'Clear retained a screenshot measurement'
+    assert damage.locator('[data-dc-tab="pet"]').get_attribute('aria-selected')=='false'
+    damage.locator('[data-dc-tab="pet"]').click()
+    assert damage.locator('#dcPetQuick').is_visible(), 'Four-pet quick compare did not open'
+    assert damage.locator('[data-dc-tab="pet"]').get_attribute('aria-selected')=='true'
+    assert damage.locator('#dcAttributeLab').is_hidden()
+    pet_baseline=damage.locator('#dcPetQuick [data-dc-field="pet.layers.equipmentAffixes"]')
+    pet_baseline.fill('100')
+    assert pet_baseline.input_value()=='100', 'Pet numeric input lost focus during a rerender'
+    damage.locator('[data-dc-pet-demo]').click()
+    assert '20%' in damage.locator('#dcPetQuickResult').inner_text(), '2 vs 4 Pet gain was not computed'
+    damage.locator('[data-dc-pet-observed]').fill('15')
+    summary=damage.locator('#dcPetQuickResult').inner_text()
+    assert '18' in summary and '15' in summary, 'Observed ×15 tooltip was not used for ×18 projection: '+summary
+    assert damage.locator('#dcPetQuick [data-dc-pet-apply]').is_enabled(), 'Valid Pet what-if must be applyable'
+    damage.locator('#dcPetQuick [data-dc-pet-apply]').click()
+    assert 'Pet layer' in damage.locator('#dcChanges').inner_text() or 'equipmentAffixes' in damage.locator('#dcChanges').inner_text(), 'Pet scenario handoff lost the stage'
+    # New measured baseline invalidates the old whole-tooltip anchor instead
+    # of deceptively projecting x15 against a different build.
+    pet_baseline.fill('120')
+    assert damage.locator('[data-dc-pet-observed]').input_value()=='', 'Observed tooltip calibration survived a changed character snapshot'
+    damage.locator('[data-dc-tab="attributes"]').click()
+    assert damage.locator('#dcAttributeLab').is_visible(), 'Linked attributes tab is hidden'
+    damage.locator('[data-dc-attr-stat]').select_option('INT')
+    damage.locator('[data-dc-attr-origin]').select_option('other')
+    damage.locator('[data-dc-attr-points]').fill('100')
+    for source,value in [
+      ('attack.layers.intelligenceOther','19.2'),
+      ('pet.layers.intelligence','10.5'),
+      ('combat.doubleDamageChance','89'),
+    ]:
+        field=damage.locator('#dcAttributeFields [data-dc-field="'+source+'"]')
+        assert field.count()==1, 'Linked Stat source field missing: '+source
+        field.fill(value)
+    assert damage.locator('[data-dc-attr-apply]').is_enabled(), 'Full effective INT projection cannot apply'
+    preview=damage.locator('#dcAttributePreview').inner_text()
+    assert 'Double Damage' in preview and 'Pet multiplier' in preview, 'Linked INT projection omits dependent stages'
+    damage.locator('[data-dc-attr-apply]').click()
+    changes=damage.locator('#dcChanges').inner_text()
+    assert 'Double damage' in changes or 'Double Damage' in changes, 'Linked INT chance stage was not sent to what-if'
+    damage.locator('[data-dc-tab="studio"]').click()
+    assert damage.locator('#dcStudioImport').is_visible(), 'Build Studio import tab hidden'
+    assert damage.locator('#dcStudioImport [data-route="labs/build"]').count()==1, 'No return link to Build Studio'
+    assert damage.locator('#dcStudioImportContent').count()==1, 'Saved-build review missing'
+    # The offline fixture has no browser storage origin. Validate the exact
+    # source-to-stage mapping separately in the JS module, without faking an
+    # in-game account or secretly persisting a gear build.
+    stage=page.evaluate("""async () => {
+      const {projectBuildStudioDamage,buildStudioScenarioChanges}=await import('@arcana/damage-build-studio-bridge.js');
+      const draft={className:'Warrior',equipment:{
+        ring:{id:'game:item:warriors-ring',rarity:5,bonusId:'fierce',bonusTier:5,roll:14},
+      }};
+      const projected=projectBuildStudioDamage(draft);
+      return buildStudioScenarioChanges(projected,{className:'Warrior',attack:{layers:{dropBonus:99}}});
+    }""")
+    assert stage['ok']==True and stage['changes']['attack.layers.dropBonus']==14, 'Studio item stage replacement incorrect'
+    damage.locator('[data-dc-tab="skills"]').click()
+    assert damage.locator('[data-dc-panel="skills"]').is_visible(), 'ACS skill planner tab hidden'
+    damage.locator('[data-dc-tab="pet"]').click()
+    assert damage.locator('#dcPetQuick').is_visible(), 'Returning to Pet comparison lost its panel'
+    for width in (320,390,768):
+        page.set_viewport_size({'width':width,'height':844})
+        assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Damage Calculator horizontal overflow at '+str(width)
+    page.set_viewport_size({'width':390,'height':844})
+    page.screenshot(path=str(OUT/'damage_calculator_pet_mobile.png'),full_page=True)
+    damage.locator('[data-dc-tab="attributes"]').click()
+    page.screenshot(path=str(OUT/'damage_calculator_linked_stats_mobile.png'),full_page=True)
+
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
     print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
     browser.close()
