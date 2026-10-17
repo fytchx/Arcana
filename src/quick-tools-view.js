@@ -8,15 +8,15 @@ export function initialQuickRange(snapshot,raw={}){
  const stages=allStages(snapshot);
  const hasSaved=raw&&raw.fromStage&&raw.toStage;
  if(hasSaved)return normalizeRange(raw,snapshot,{stage:'A4'});
- const a4=stages.find(s=>s.id==='A4'),a5=stages.find(s=>s.id==='A5');
- if(a4&&a5)return normalizeRange({fromStage:'A4',fromLevel:a4.max,toStage:'A5',toLevel:a5.max},snapshot,{stage:'A4'});
+ const a1=stages.find(s=>s.id==='A1'),a2=stages.find(s=>s.id==='A2');
+ if(a1&&a2)return normalizeRange({fromStage:'A1',fromLevel:0,toStage:'A2',toLevel:0},snapshot,{stage:'A1'});
  return normalizeRange(raw,snapshot,{stage:stages[0]?.id});
 }
 export function quickUpgradePanel(snapshot,raw={},options={}){
- const page=options.page===true;const prefix=page?'pathfinder':'home';
+ const page=options.page===true;
  const classes='quickCosts '+(page?'quickCostsFull':'quickCostsHome');
- const heading=page?'<div class="quickEyebrow">INSTANT MATERIAL CALCULATOR</div><h2>Upgrade Costs</h2><p>Pick any starting and target upgrade. Get the full material total immediately.</p>':
- '<div class="quickCostsHead"><div><span class="quickEyebrow">FASTEST WAY TO PLAN AN UPGRADE</span><h2>Upgrade Costs</h2><p>From → To. No build required.</p></div><span class="quickHint">About 3 seconds</span></div>';
+ const heading=page?'<div class="quickEyebrow">UPGRADE COST CALCULATOR</div><h2>Upgrade Costs</h2><p>Select the starting and target upgrades to calculate materials and Gold.</p>':
+ '<div class="quickCostsHead"><div><span class="quickEyebrow">UPGRADE COST CALCULATOR</span><h2>Upgrade Costs</h2><p>Materials and Gold for any upgrade range.</p></div><span class="quickHint">A1 → A2</span></div>';
  const inner=quickUpgradeContent(snapshot,raw,{page,error:options.error||''});
  return '<section class="'+classes+'" aria-label="Quick upgrade cost calculator">'+heading+'<div id="pathRangeContent">'+inner+'</div>'+
  (page?'<div class="quickCostsExtra"><button type="button" data-route="calculators/pathfinder" data-params="view=timeline">Explore the upgrade map →</button></div>':
@@ -41,5 +41,5 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  const details='<details class="quickMaterialDetails" '+(options.page?'open':'')+'><summary>All materials '+(quote.materials.length?'('+quote.materials.length+')':'')+'</summary><div class="quickMaterialList">'+quote.materials.map(m=>'<div class="quickMaterial"><span>'+esc(m.name)+'</span><strong>'+money(m.quantity)+'</strong></div>').join('')+'</div></details>';
  const featured=quote.materials.length?'<div class="quickMaterialList">'+list+'</div>':'<p class="quickEmpty">These upgrade checkpoints are identical. No materials required.</p>';
  return fields+summary+featured+(remaining>0?'<div class="quickMoreLabel">+'+remaining+' more material types below</div>':'')+details+
- '<p class="quickSource">Base recipes only. Does not include failed attempts; item-slot cost differences have not been verified.</p>';
+ '<p class="quickSource">Recipe material and Gold totals. Failed attempts are not included.</p>';
 }
