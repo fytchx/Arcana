@@ -32,17 +32,13 @@ const set=(object,path,value)=>{
 const clone=object=>JSON.parse(JSON.stringify(object));
 
 /**
- * Returns a pure source-preserving proposal, not a mutation or validated
- * in-game build. A missing stage is always skipped, never filled with zero.
- * Origin is required for STR/INT hero attack to choose the correct stage.
+ * The exact affected *measured source fields* for an effective stat change.
+ * One shared implementation controls the engine, compact form, and handoff.
  */
-export function previewLinkedAttributeChange(build={},input={}){
- const stat=String(input.stat||'').toUpperCase();
+export function linkedAttributeStageFields(statInput,originInput){
+ const stat=String(statInput||'').toUpperCase();
  if(!CHANNELS[stat])throw new RangeError('Choose STR, INT, or DEX');
- const delta=Number(input.effectivePoints);
- if(!measured(input.effectivePoints)||delta===0||Math.abs(delta)>1000000)
-  throw new RangeError('Enter a nonzero effective stat-point change within 1,000,000 points');
- const origin=stat==='DEX'?'total':input.origin;
+ const origin=stat==='DEX'?'total':originInput;
  if(stat!=='DEX'&&origin!=='item'&&origin!=='other')
   throw new RangeError('Select item or non-item source for STR/INT');
  const config=CHANNELS[stat];
@@ -56,6 +52,23 @@ export function previewLinkedAttributeChange(build={},input={}){
  if(config.combatRate)paths.push({
   path:config.combat,rate:config.combatRate,kind:'combat',
   detail:'Double Damage chance only, not unconditional damage'});
+ return paths;
+}
+
+/**
+ * Returns a pure source-preserving proposal, not a mutation or validated
+ * in-game build. A missing stage is always skipped, never filled with zero.
+ * Origin is required for STR/INT hero attack to choose the correct stage.
+ */
+export function previewLinkedAttributeChange(build={},input={}){
+ const stat=String(input.stat||'').toUpperCase();
+ if(!CHANNELS[stat])throw new RangeError('Choose STR, INT, or DEX');
+ const delta=Number(input.effectivePoints);
+ if(!measured(input.effectivePoints)||delta===0||Math.abs(delta)>1000000)
+  throw new RangeError('Enter a nonzero effective stat-point change within 1,000,000 points');
+ const origin=stat==='DEX'?'total':input.origin;
+ const paths=linkedAttributeStageFields(stat,origin);
+ const config=CHANNELS[stat];
  const candidate=clone(build);
  const applied=[],skipped=[];
  for(const {path,rate,kind,detail} of paths){
