@@ -2,6 +2,7 @@ import {calculateAttack, calculatePet, combatReference, compareBuilds, relativeD
 import {calculateRetaliation} from './retaliation-damage-engine.js';
 import {RETALIATION_WARRIOR_2026_10_17 as WARRIOR,ATTACK_MAGE_2026_10_17 as MAGE} from './damage-calculator-crossclass-fixtures.js';
 import {HUNTER_2026_10_17 as EXAMPLE} from './damage-calculator-reference.js';
+import {damageSkillPlannerView,mountSkillPlanner,skillPlannerExample,clearSkillPlanner} from './damage-calculator-skills-ui.js';
 
 const STORE_KEY = 'arcana:damage-calculator:2026-10-17';
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -182,9 +183,9 @@ export function damageCalculatorView(){
  </style>
  <p class="dcIntro">Compare an actual build against a what-if version, with Attack Damage, pet multipliers and combat probabilities kept in their proper stages. Start with the supplied Beastmaster benchmark or clear it for a different character.</p>
  <div class="dcActions"><button type="button" class="btn secondary" data-dc-example="hunter">Hunter</button><button type="button" class="btn secondary" data-dc-example="mage">AD Mage</button><button type="button" class="btn secondary" data-dc-example="warrior">Retal Warrior</button><button type="button" class="btn secondary" data-dc-clear>Clear values</button><button type="button" class="btn secondary" data-dc-removeall>Clear comparisons</button></div>
- <div class="dcTabs" role="tablist" aria-label="Calculator sections"><button type="button" class="btn secondary" data-dc-tab="attack" aria-selected="true">Attack</button><button type="button" class="btn secondary" data-dc-tab="pet" aria-selected="false">Pets</button><button type="button" class="btn secondary" data-dc-tab="combat" aria-selected="false">Combat</button><button type="button" class="btn secondary" data-dc-tab="retaliation" aria-selected="false">Retaliation</button></div>
+ <div class="dcTabs" role="tablist" aria-label="Calculator sections"><button type="button" class="btn secondary" data-dc-tab="attack" aria-selected="true">Attack</button><button type="button" class="btn secondary" data-dc-tab="pet" aria-selected="false">Pets</button><button type="button" class="btn secondary" data-dc-tab="combat" aria-selected="false">Combat</button><button type="button" class="btn secondary" data-dc-tab="retaliation" aria-selected="false">Retaliation</button><button type="button" class="btn secondary" data-dc-tab="skills" aria-selected="false">Skills + ACS</button></div>
  <section aria-live="polite" id="dcResults">${results()}</section>
- <section class="dcWork" id="dcInputs">${SETS.map(([section,heading,paths])=>`<div data-dc-panel="${section}">${inputs(section,heading,paths)}</div>`).join('')}</section>
+ <section class="dcWork" id="dcInputs">${SETS.map(([section,heading,paths])=>`<div data-dc-panel="${section}">${inputs(section,heading,paths)}</div>`).join('')}${damageSkillPlannerView()}</section>
  <section class="dcScenario"><h3>Compare against a scenario</h3><p class="dcIntro">Change one or more sources. Each replacement belongs to the exact same layer as its original value; it is never stacked on top of the existing total.</p><div class="dcScenarioControls"><label>Add/change a source<select id="dcAddSource">${NUMERIC_PATHS.map(([label,path])=>`<option value="${esc(path)}">${esc(label)}</option>`).join('')}</select></label><button type="button" class="btn primary" data-dc-add>Add change</button></div><div id="dcChanges">${changesMarkup()}</div></section>
  <p class="notice">The example uses rounded in-game values. Crit damage semantics, exact pet base growth, target mitigation, elemental weakness and true DPS need further verification. This calculator does not invent those values.</p>
  </section>`;
@@ -206,7 +207,7 @@ export function mountDamageCalculator(){
  const root=document.querySelector('#arcanaDamageCalculator');
  if(!root || root.dataset.dcMounted==='yes')return;
  root.dataset.dcMounted='yes';
- load();updateNumbers(root);
+ load();updateNumbers(root);mountSkillPlanner(root);
  root.addEventListener('input',e=>{
   if(e.target.matches('[data-dc-field]')){
    setAt(state.baseline,e.target.dataset.dcField,cleanNumber(e.target.value));
@@ -221,8 +222,8 @@ export function mountDamageCalculator(){
   const btn=e.target.closest('button');
   if(!btn)return;
   if(btn.dataset.dcTab){state.mode=btn.dataset.dcTab;updatePanels(root);return;}
-  if(btn.hasAttribute('data-dc-example')){const id=btn.dataset.dcExample;state.baseline=clone(id==='warrior'?WARRIOR:id==='mage'?MAGE:EXAMPLE);state.changes={};state.mode=id==='warrior'?'retaliation':'attack';persist();updateNumbers(root);return;}
-  if(btn.hasAttribute('data-dc-clear')){state.baseline=initial();for(const [label,path] of NUMERIC_PATHS)setAt(state.baseline,path,0);state.changes={};persist();updateNumbers(root);return;}
+  if(btn.hasAttribute('data-dc-example')){const id=btn.dataset.dcExample;state.baseline=clone(id==='warrior'?WARRIOR:id==='mage'?MAGE:EXAMPLE);state.changes={};state.mode=id==='warrior'?'retaliation':'attack';persist();skillPlannerExample(id,root);updateNumbers(root);return;}
+  if(btn.hasAttribute('data-dc-clear')){state.baseline=initial();for(const [label,path] of NUMERIC_PATHS)setAt(state.baseline,path,0);state.changes={};persist();clearSkillPlanner(root);updateNumbers(root);return;}
   if(btn.hasAttribute('data-dc-removeall')){state.changes={};persist();updateNumbers(root);return;}
   if(btn.hasAttribute('data-dc-add')){const path=root.querySelector('#dcAddSource')?.value;if(LABELS.has(path)){state.changes[path]=valueAt(state.baseline,path)||0;persist();updateNumbers(root);}return;}
   if(btn.hasAttribute('data-dc-remove')){delete state.changes[btn.dataset.dcRemove];persist();updateNumbers(root);}
