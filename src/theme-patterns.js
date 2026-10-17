@@ -1,3 +1,4 @@
+import {PROCEDURAL_TEXTURES} from './procedural-textures.js';
 // Every texture is CSS-generated. No third-party image downloads or assets.
 export const THEME_PATTERNS=Object.freeze([
  ['contours','Arcane waves','Arcane'],['rings','Mystic rings','Arcane'],['stars','Starlight','Cosmic'],
@@ -28,5 +29,5 @@ export const THEME_PATTERNS=Object.freeze([
  ['goldleaf','Gold leaf','Relic'],['dragon-scale','Dragon scales','Relic'],['temple','Temple engravings','Relic'],
  ['shadow-floral','Shadow blossoms','Relic'],['star-chart','Celestial chart','Relic'],
  ['mana','Mana streams','Relic'],['rune-dust','Runestone dust','Relic']
-].map(([id,name,category])=>Object.freeze({id,name,category})));
+].map(([id,name,category])=>Object.freeze({id,name,category})).concat(PROCEDURAL_TEXTURES.map(p=>Object.freeze({id:p.id,name:p.name,category:'Procedural'}))));
 export const THEME_PATTERN_IDS=Object.freeze(THEME_PATTERNS.map(x=>x.id));
