@@ -15,21 +15,20 @@ const fixture={
  ]])),transitions:Array.from({length:30},(_,i)=>({rank:i+1,gold:'300',materials:[{slug:'core',quantity:3}]}))}},
  materials:[{slug:'iron',name:'Iron'},{slug:'silver',name:'Silver'},{slug:'stone',name:'Stone'},{slug:'core',name:'Core'}]
 };
-test('direct homepage tools require no nested menu',()=>{
- const home=homeScreen(quickUpgradePanel(null,{}));
- const first=home.indexOf('quickDashboard'),featured=home.indexOf('class="launchHero"');
- assert.ok(first>=0&&first<featured);
- for(const route of ['calculators/pathfinder','calculators/pet','calculators/damage'])assert.ok(home.includes('data-route="'+route+'"'));
- assert.match(home,/data-params="view=range"/);
- assert.match(home,/id="pathRangeContent"/);
+test('homepage preserves Build Studio and presents only three destinations',()=>{
+ const home=homeScreen();
+ assert.ok(home.indexOf('class="launchHero"')<home.indexOf('class="launchQuick"'));
+ assert.equal((home.match(/class="launchQuickCard"/g)||[]).length,3);
+ assert.doesNotMatch(home,/quickDashboard|quickActions|id="pathRangeContent"|data-route="calculators\/pet"|data-route="calculators\/damage"/);
+ for(const id of ['pathfinder','tools','builds'])assert.match(home,new RegExp('data-arg="'+id+'"'));
 });
-test('quick range defaults to A4 +30 → A5 +30 in real 30-step sources and preserves saved choices',()=>{
+test('first-use calculator defaults to A1 +0 → A2 +0 while preserving saved checkpoints',()=>{
  const full=structuredClone(fixture);for(const level of Object.values(full.codex.awaken.rows)){
   while(level.length<30)level.push({...level.at(-1),current:level.length,target:level.length+1});
  }
  const q=initialQuickRange(full,{});
- assert.equal(q.fromStage,'A4');assert.equal(q.toStage,'A5');
- assert.equal(q.fromLevel,30);assert.equal(q.toLevel,30);
+ assert.equal(q.fromStage,'A1');assert.equal(q.toStage,'A2');
+ assert.equal(q.fromLevel,0);assert.equal(q.toLevel,0);
  const saved=initialQuickRange(full,{fromStage:'A3',fromLevel:9,toStage:'A9',toLevel:16});
  assert.deepEqual({fromStage:saved.fromStage,fromLevel:saved.fromLevel,toStage:saved.toStage,toLevel:saved.toLevel},{fromStage:'A3',fromLevel:9,toStage:'A9',toLevel:16});
 });
@@ -37,7 +36,7 @@ test('quick upgrade rendering uses source-backed quote and clear failure guards'
  const html=quickUpgradePanel(fixture,{fromStage:'T1',fromLevel:0,toStage:'T1',toLevel:2});
  const result=quoteRange(fixture,{fromStage:'T1',fromLevel:0,toStage:'T1',toLevel:2});
  assert.equal(result.gold,300n);
- for(const token of ['data-path-from-stage','data-path-from-level','data-path-to-stage','data-path-to-level','Gold','300','Iron','Base recipes only'])assert.ok(html.includes(token),token);
+ for(const token of ['data-path-from-stage','data-path-from-level','data-path-to-stage','data-path-to-level','Gold','300','Iron','Recipe material and Gold totals'])assert.ok(html.includes(token),token);
  assert.match(quickUpgradeContent(null,{}),/Loading game upgrade recipes/);
  const back=quickUpgradeContent(fixture,{fromStage:'A2',fromLevel:1,toStage:'A1',toLevel:1});
  assert.match(back,/target must be after/);
@@ -60,12 +59,14 @@ test('damage inputs are bounded and stored independently of Build Studio',()=>{
  assert.equal(readDamageLab(store).base,123456);
  assert.equal(readDamageLab(store).doubleHit,20);
 });
-test('app homepage is wired to live verified recipes, no new independent upgrade math',async()=>{
+test('Pathfinder uses verified recipes and the homepage has no calculator',async()=>{
  const [app,page,server]=await Promise.all(['../src/app.js','../index.html','../server.mjs'].map(x=>readFile(new URL(x,import.meta.url),'utf8')));
- assert.ok(app.includes('quickUpgradePanel(recipeState.data,state.pathfinderRange,{error:recipeState.error})'));
+ assert.match(app,/function home\(\)\{return homeScreen\(\)\}/);
+ assert.match(app,/quickUpgradePanel\(recipeState.data,state.pathfinderRange/);
  assert.match(app,/quickUpgradeContent\(recipeState\.data,current/);
  assert.match(app,/initialQuickRange\(payload,state\.pathfinderRange\)/);
  assert.match(app,/case 'calculators\/damage':return calcDamage/);
  assert.match(app,/function pathfinderHub\(legacyView='range'\)/);
  assert.match(page,/quick-tools\.css/);assert.match(server,/quick-tools\.css/);
+ assert.match(page,/home-three\.css/);assert.match(server,/home-three\.css/);
 });
