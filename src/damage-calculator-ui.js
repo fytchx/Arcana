@@ -292,7 +292,13 @@ export function mountDamageCalculator(){
  });
  root.addEventListener('input',e=>{
   if(e.target.matches('[data-dc-field]')){
-   setAt(state.baseline,e.target.dataset.dcField,optionalNumber(e.target.value));
+   const key=e.target.dataset.dcField,value=optionalNumber(e.target.value);
+   setAt(state.baseline,key,value);
+   // The compact four-pet baseline repeats four fields also available in
+   // Advanced Pet inputs. Update only their mirrors, not the focused field.
+   root.querySelectorAll('[data-dc-field]').forEach(other=>{
+    if(other!==e.target && other.dataset.dcField===key)other.value=value===null?'':value;
+   });
    persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,()=>state.baseline);
   }
   if(e.target.matches('[data-dc-scenario]')){
