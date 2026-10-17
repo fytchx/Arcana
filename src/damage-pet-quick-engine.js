@@ -36,7 +36,15 @@ export function normalizeQuickPetSetup(input){
  * Current A is already in the sheet; proposed B is a replacement, NOT extra
  * stacked pets. Shared source percentage points add within their one row.
  */
-export function compareQuickPetSetups(build={},current=[],proposed=[]){
+export function compareQuickPetSetups(build={},current=[],proposed=[],options={}){
+ // Use an observed tooltip multiplier to anchor comparisons even when a
+ // player has only supplied the affected breakdown rows. This is a ratio
+ // projection, not a reconstruction of missing stages.
+ const anchorInput=options?.observedMultiplier;
+ const hasAnchor=anchorInput!==null&&anchorInput!==undefined&&anchorInput!=='';
+ const anchor=Number(anchorInput);
+ if(hasAnchor&&(!Number.isFinite(anchor)||anchor<=0||anchor>1e100))
+  return {known:false,reason:'Observed Pet multiplier must be a positive finite number.',missing:['observedMultiplier']};
  const a=normalizeQuickPetSetup(current),b=normalizeQuickPetSetup(proposed);
  const pet=build?.pet;
  const missing=[];
@@ -77,11 +85,22 @@ export function compareQuickPetSetups(build={},current=[],proposed=[]){
  const original=calculatePet(pet),changed=calculatePet(scenario);
  const ratio=relativeDifference(original.layerFactor,changed.layerFactor);
  if(!ratio)return {known:false,reason:'The baseline pet multiplier must be positive.',missing:[]};
- return {known:true,current:a,proposed:b,measuredMultiplier:original.layerFactor,
-   proposedMultiplier:changed.layerFactor,ratio:ratio.ratio,percentChange:ratio.percentChange,
-   damageRange:changed.min===null?null:{min:changed.min,max:changed.max},
-   stages:stageChanges,metric:'Pet tooltip multiplier, not DPS',
+ const reference=hasAnchor?anchor:original.layerFactor;
+ const projected=reference*ratio.ratio;
+ if(!Number.isFinite(projected))
+  return {known:false,reason:'Projected multiplier is outside supported range.',missing:[]};
+ // A rounded measured total already contains unknown unaffected factors.
+ // Never claim the modeled known stages alone are a full actual multiplier.
+ const damageRange=changed.min===null?null:{
+  min:changed.min*(reference/original.layerFactor),
+  max:changed.max*(reference/original.layerFactor),
+ };
+ return {known:true,current:a,proposed:b,measuredMultiplier:reference,
+   proposedMultiplier:projected,ratio:ratio.ratio,percentChange:ratio.percentChange,
+   damageRange,anchoredToTooltip:hasAnchor,
+   stages:stageChanges,metric:hasAnchor?'Observed Pet tooltip multiplier with source-stage ratio':'Product of entered Pet percentage layers only',
    notes:['INT/DEX inputs are effective stat points after other scaling.',
      'All changes replace CURRENT contributions within their measured breakdown rows.',
+     'Without an observed total Pet multiplier, the result may omit unaffected stages.',
      'This does not infer rarity rolls, actual pet level scaling, ACS or real DPS.']};
 }
