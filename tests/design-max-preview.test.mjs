@@ -50,3 +50,20 @@ test('the desktop site is isolated and can preview actual pages safely',async()=
  assert.doesNotMatch(maxDesk,/fetch\s*\(\s*['"]\/api\/site\/theme/);
  assert.equal(PROCEDURAL_TEXTURES.length,10);
 });
+
+test('the embedded site keeps real viewport breakpoints instead of stretching cards',async()=>{
+ const [html,app,editor]=await Promise.all(['../design-desktop.html','../src/design-desktop-app.js','../src/design-desk-max.js'].map(read));
+ assert.match(html,/id="previewWindow"/);
+ assert.match(html,/data-preview-viewport="desktop"/);
+ assert.match(html,/data-preview-viewport="compact"/);
+ assert.match(html,/data-preview-viewport="phone"/);
+ assert.match(app,/desktop:\{width:1180,height:900\}/);
+ assert.match(app,/compact:\{width:830,height:820\}/);
+ assert.match(app,/phone:\{width:430,height:850\}/);
+ assert.match(app,/iframe\.style\.width=viewport\.width/);
+ assert.match(app,/iframe\.style\.height=viewport\.height/);
+ assert.match(app,/new ResizeObserver\(layoutPreviewFrame\)/);
+ assert.match(editor,/arcana:preview-zoom/);
+ assert.doesNotMatch(editor,/\$\('browser'\)\.style\.zoom/);
+ assert.match(html,/Desktop workstation/);
+});
