@@ -14,76 +14,70 @@ export const WIKI_TOPICS = Object.freeze(WIKI_CATEGORIES.map(c=>({slug:c.id,titl
 const link=(label,detail,route,iconName='arrow',params=null)=>({label,detail,route,icon:iconName,params});
 const topic=slug=>link(WIKI_TOPICS.find(x=>x.slug===slug)?.title||slug,'Explore the topic hub','wiki/category','book',{slug});
 export const HOME_MENUS=Object.freeze({
- wiki:{title:'Wiki',detail:'Find game mechanics without digging through unrelated pages.',links:[
-  link('Open ArcanaWiki','Browse published wiki categories.','wiki','book'),
-  link('Classes','Browse the five playable classes.','wiki/category','shield',{slug:'classes'}),
+ wiki:{title:'ArcanaWiki',detail:'Game information, equipment references, classes and mechanics.',links:[
+  link('Open ArcanaWiki','Game information, systems and articles.','wiki','book'),
+  link('Classes','All five playable classes.','wiki/category','shield',{slug:'classes'}),
   link('Equipment','Upgrades, reforging and sockets.','wiki/category','shield',{slug:'equipment'}),
-  link('Item Codex','Look up equipment and verified game artwork.','wiki/items','shield'),
-  link('All Topics','See every published wiki category.','wiki/topics','layers')
+  link('Item Codex','Equipment descriptions and artwork.','wiki/items','shield'),
+  link('All Topics','Complete wiki category index.','wiki/topics','layers')
  ]},
- tools:{title:'Tools',detail:'Companion calculators. Gear upgrades live in Pathfinder.',links:[
-  link('Pet Compound Calculator','Inspect pet Compound and Drop Bonus.','calculators/pet','paw'),
-  link('Pet Affix Costs','Calculate shard requirements for affixes.','calculators/affixes','calculator'),
-  link('Damage Lab','Compare potential stat upgrades in a transparent experimental model.','calculators/damage','calculator'),
- link('ML Farming Comparator','Compare monster farming speed.','calculators/ml-farm','sword'),
-  link('Guild Skill Planner','Plan and share guild skill allocations.','labs/guild-tree','shield')
+ pathfinder:{title:'Pathfinder',detail:'Item upgrading, materials, enhancement costs, equipment comparison and upgrade planning.',links:[
+  link('Upgrade Costs','Total materials and Gold between two upgrade levels.','calculators/pathfinder','calculator',{view:'range'}),
+  link('Upgrade Map','Browse all ranks, enhancements and materials.','calculators/pathfinder','layers',{view:'timeline'}),
+  link('Rarity Reference','Equipment rarities and upgrade information.','calculators/pathfinder','shield',{view:'upgrade'}),
+  link('Compare Equipment','Compare equipment and item upgrades.','calculators/pathfinder','compare',{view:'compare'}),
+  link('Material Reference','Materials and their wiki entries.','wiki/library','box',{kind:'material'})
  ]},
- guides:{title:'Guides',detail:'Read, learn and contribute to the community.',links:[
-  link('Player Guides','Read curated ArcanaWiki guides.','wiki/guides','book'),
-  link('Season 2 Guide','Essential systems for the current season.','wiki/article','layers',{id:'season-2'}),
-  link('Community Guides','Player-submitted guides and walkthroughs.','community','users'),
-  link('Publish a Guide','Create a guide with your account.','community/create','edit',{kind:'guide'}),
+ tools:{title:'Tools',detail:'Pet calculators, farming tools, guild planning and damage analysis.',links:[
+  link('Pet Compound Calculator','Pet rarity, Compound level and bonus values.','calculators/pet','paw'),
+  link('Pet Affix Calculator','Pet Shard costs and affix upgrade planning.','calculators/affixes','calculator'),
+  link('ML Farming Comparator','Compare Monster Level farming efficiency.','calculators/ml-farm','sword'),
+  link('Guild Skill Planner','Allocate, compare and share guild skill points.','labs/guild-tree','shield'),
+  link('Damage Calculator · Work in Progress','Damage comparisons and build upgrade analysis in development.','calculators/damage','calculator')
+ ]},
+ builds:{title:'Builds & Guides',detail:'Player guides, community builds, sharing and character planning.',links:[
+  link('Player Guides','Guides for classes, progression and game systems.','wiki/guides','book'),
+  link('Community Builds & Guides','Browse player-written guides and shared setups.','community','users'),
+  link('Open Build Studio','Equipment, pets, runes and skills in one build.','labs/build','shield'),
+  link('Publish a Guide','Create and share a player guide.','community/create','edit',{kind:'guide'}),
+  link('Publish a Build','Share a Build Studio setup.','community/create','edit',{kind:'build'}),
+  link('Rune Forge · Build Studio','Manage runewords and rune placement.','labs/runes','gem'),
+  link('Passive Tree · Build Studio','Allocate character passives.','labs/passives','layers'),
+  link('Class Skills · Build Studio','Plan class skill branches and ranks.','labs/skills','git')
+ ]},
+ guides:{title:'Player Guides',detail:'Published guides and community contributions.',links:[
+  link('Player Guides','Browse player guides.','wiki/guides','book'),
+  link('Season 2 Guide','Season 2 progression and systems.','wiki/article','layers',{id:'season-2'}),
+  link('Community Guides','Browse community guides and builds.','community','users'),
+  link('Publish a Guide','Create a player guide.','community/create','edit',{kind:'guide'}),
   link('Wiki Studio','Editor publishing workspace.','wiki/studio','book')
  ]},
- builds:{title:'Builds',detail:'Build Studio is the home for equipment, runes, skills and pet bonuses.',links:[
-  link('Open Build Studio','Your connected character workspace.','labs/build','shield'),
-  link('Rune Forge · Build Studio','Edit the rune grid saved with your build.','labs/runes','gem'),
-  link('Passive Tree · Build Studio','Allocate character passives for your build.','labs/passives','layers'),
-  link('Class Skills · Build Studio','Plan class skills in the same workspace.','labs/skills','git'),
-  link('Community Builds & Guides','Discover setups other players have shared.','community','users'),
-  link('Publish a Build','Share a snapshot from your Build Studio.','community/create','edit',{kind:'build'})
- ]},
- pathfinder:{title:'Pathfinder',detail:'Every character equipment upgrade in one place.',links:[
-  link('Quick Upgrade Costs','Go straight to From → To materials.','calculators/pathfinder','calculator',{view:'range'}),
- link('Pathfinder','Upgrade Map, From → To, Cost Reference, and Compare.','calculators/pathfinder','layers'),
-  link('Materials · Wiki','Browse verified material references.','wiki/library','box',{kind:'material'})
- ]},
- social:{title:'Guild & Raid Finder',detail:'Find players, recruit members and plan group content.',links:[
-  link('Find a Guild','Browse guild recruitment profiles.','lfg/guilds','users'),
-  link('Find a Raid','Browse current raid listings.','lfg/raids','users'),
-  link('Guild Skill Planner','Plan guild progression together.','labs/guild-tree','shield'),
+ social:{title:'Guild & Raid Finder',detail:'Guild recruitment, raid groups and player community.',links:[
+  link('Find a Guild','Guild listings and recruitment.','lfg/guilds','users'),
+  link('Find a Raid','Raid listings and groups.','lfg/raids','users'),
+  link('Guild Skill Planner','Plan guild skill bonuses.','labs/guild-tree','shield'),
   link('Player Community','Profiles, guides and shared builds.','community','users')
  ]}
 });
 export const HOME_CARDS=Object.freeze([
- {id:'wiki',title:'Wiki',detail:'Game systems & articles',icon:'feature-wiki'},
- {id:'tools',title:'Tools',detail:'Calculators & planners',icon:'feature-calculator'},
- {id:'guides',title:'Guides',detail:'Learn & contribute',icon:'feature-guides'},
- {id:'builds',title:'Builds',detail:'Create & share setups',icon:'feature-build-studio'},
- {id:'pathfinder',title:'Pathfinder',detail:'Swipe through upgrade costs',icon:'feature-upgrade'},
- {id:'social',title:'Guild & Raid Finder',detail:'Groups & recruitment',icon:'feature-guild-finder'}
+ {id:'pathfinder',title:'Pathfinder',detail:'Item upgrade costs, materials, equipment comparison and upgrade maps.',icon:'feature-upgrade'},
+ {id:'tools',title:'Tools',detail:'Pet Compound, affix costs, farming, guild skills and damage planning.',icon:'feature-calculator'},
+ {id:'builds',title:'Builds & Guides',detail:'Player guides, shared builds, publishing and character planning.',icon:'feature-guides'}
 ]);
 const attrs=x=>'data-route="'+esc(x.route)+'"'+(x.params?' data-params="'+esc(new URLSearchParams(x.params).toString())+'"':'');
 const navrow=x=>'<button type="button" class="launchNavRow" '+attrs(x)+'><span class="launchNavIcon">'+icon(x.icon||'arrow',20)+'</span><span class="launchNavCopy"><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',17)+'</button>';
-export function homeScreen(quickUpgrade=''){
- const quickActions='<section class="quickDashboard" aria-label="Quick calculators">'+
-  '<div class="quickAccessLabel"><h2>Quick Calculators</h2><small>Answers first. No character setup.</small></div>'+
-  '<nav class="quickActions" aria-label="Direct calculator links">'+
-   '<button type="button" class="quickAction" data-route="calculators/pathfinder" data-params="view=range"><span class="quickActionIcon">'+icon('feature-upgrade',24)+'</span><span class="quickActionText"><strong>Upgrade Costs</strong><small>From → To</small></span></button>'+
-   '<button type="button" class="quickAction" data-route="calculators/pet"><span class="quickActionIcon">'+icon('paw',24)+'</span><span class="quickActionText"><strong>Pet Compound</strong><small>Bonus calculator</small></span></button>'+
-   '<button type="button" class="quickAction" data-route="calculators/damage"><span class="quickActionIcon">'+icon('calculator',24)+'</span><span class="quickActionText"><strong>Damage Lab</strong><small>Compare stat upgrades</small></span></button>'+
-  '</nav>'+quickUpgrade+'</section>';
- return quickActions+'<section class="launchHero" aria-label="Featured Build Studio">'+
+export function homeScreen(){
+ return '<section class="launchHero" aria-label="Featured Build Studio">'+
   '<svg class="launchHeroArcaneSeal" viewBox="0 0 160 160" fill="none" aria-hidden="true" focusable="false"><circle cx="80" cy="80" r="66"/><circle cx="80" cy="80" r="53"/><circle cx="80" cy="80" r="35"/><path d="M80 5v26m0 98v26M5 80h26m98 0h26M25 25l19 19m72 72 19 19m0-110-19 19m-72 72-19 19M80 40l40 40-40 40-40-40zM80 54l26 26-26 26-26-26z"/><circle cx="80" cy="15" r="3"/><circle cx="145" cy="80" r="3"/><circle cx="80" cy="145" r="3"/><circle cx="15" cy="80" r="3"/></svg>'+
   '<div class="launchHeroHeader"><span class="launchHeroArt" aria-hidden="true">'+icon('feature-build-studio',38)+'</span>'+
   '<div class="launchHeroText"><span class="launchEyebrow">THE HEART OF ARCANA</span><h1>Build Studio</h1>'+
   '<p>Gear, runes, pets and skill trees. One connected build.</p></div></div>'+
   '<button type="button" class="launchHeroCTA" data-route="labs/build" aria-label="Enter Build Studio"><span class="launchHeroCTASigil" aria-hidden="true">'+icon('feature-rune-forge',22)+'</span><span class="launchHeroCTACopy"><strong>Enter Build Studio</strong><small>Forge your perfect setup</small></span>'+icon('arrow',20)+'</button>'+
   '</section>'+
-  '<section class="launchQuick" aria-label="Quick Access"><div class="launchSectionTop"><h2>Quick Access</h2><button type="button" data-route="directory" class="launchSeeAll">See All '+icon('arrow',16)+'</button></div>'+
+  '<section class="launchQuick" aria-label="Explore Arcana"><div class="launchSectionTop"><h2>Explore Arcana</h2><button type="button" data-route="directory" class="launchSeeAll">See All '+icon('arrow',16)+'</button></div>'+
   '<div class="launchQuickGrid">'+HOME_CARDS.map(x=>'<button type="button" class="launchQuickCard" data-action="homemenu" data-arg="'+esc(x.id)+'" aria-label="Open '+esc(x.title)+' menu"><span class="launchQuickEmblem" aria-hidden="true">'+icon(x.icon,90)+'</span><span class="launchQuickIcon">'+icon(x.icon,32)+'</span><span class="launchQuickCopy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></span><span class="launchQuickArrow">'+icon('arrow',17)+'</span></button>').join('')+'</div></section>'+
   '<section class="launchFeatured" aria-label="Useful and Featured"><div class="launchSectionTop"><h2>Useful &amp; Featured</h2></div>'+
-  '<p class="launchFeaturedIntro">Featured articles, player guides, builds and updates will live here as they are published.</p>'+
+  '<p class="launchFeaturedIntro">Player guides, shared builds, articles and site updates.</p>'+
   '<div class="launchFeaturedGrid">'+[
    link('Player Guides','Browse walkthroughs and game tips.','wiki/guides','book'),
    link('Community Builds','Explore setups shared by players.','community','users'),
@@ -92,7 +86,7 @@ export function homeScreen(quickUpgrade=''){
 }
 export function homeSubmenu(id){
  const menu=HOME_MENUS[id]; if(!menu)return '';
- return '<div class="launchMenu" role="group" aria-label="'+esc(menu.title)+' destinations"><div class="launchMenuIntro"><span class="launchEyebrow">QUICK ACCESS</span><h2>'+esc(menu.title)+'</h2><p>'+esc(menu.detail)+'</p></div><div class="launchMenuLinks">'+menu.links.map(navrow).join('')+'</div></div>';
+ return '<div class="launchMenu" role="group" aria-label="'+esc(menu.title)+' destinations"><div class="launchMenuIntro"><span class="launchEyebrow">EXPLORE ARCANA</span><h2>'+esc(menu.title)+'</h2><p>'+esc(menu.detail)+'</p></div><div class="launchMenuLinks">'+menu.links.map(navrow).join('')+'</div></div>';
 }
 const extras=[
  link('About IdleArc','Game overview and navigation.','wiki/about','info'),
@@ -116,7 +110,7 @@ export const DIRECTORY=Object.freeze([...extras,...Object.values(HOME_MENUS).fla
 export function directoryView(){
  const groups=new Map();
  for(const x of DIRECTORY){const letter=x.label.charAt(0).toUpperCase();if(!groups.has(letter))groups.set(letter,[]);groups.get(letter).push(x);}
- return '<div class="launchPage"><span class="launchEyebrow">ALL DESTINATIONS</span><h1>Explore Arcana A–Z</h1><p>Every primary destination in one alphabetized list. No guessing which section something is hiding in.</p><div class="launchAlphabet">'+[...groups].map(([letter,links])=>'<section class="launchAlphabetGroup"><h2>'+esc(letter)+'</h2><div>'+links.map(navrow).join('')+'</div></section>').join('')+'</div></div>';
+ return '<div class="launchPage"><span class="launchEyebrow">ALL DESTINATIONS</span><h1>Explore Arcana A–Z</h1><p>All Arcana destinations, organized alphabetically.</p><div class="launchAlphabet">'+[...groups].map(([letter,links])=>'<section class="launchAlphabetGroup"><h2>'+esc(letter)+'</h2><div>'+links.map(navrow).join('')+'</div></section>').join('')+'</div></div>';
 }
 export function wikiTopicsView(){
  return '<div class="launchPage"><span class="launchEyebrow">ARCANAWIKI</span><h1>Wiki Categories</h1><p>Choose a topic to see its published articles.</p><div class="launchMenuLinks">'+WIKI_TOPICS.map(c=>navrow(link(c.title,c.detail,'wiki/category',c.icon,{slug:c.slug}))).join('')+'</div></div>';
