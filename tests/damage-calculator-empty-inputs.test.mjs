@@ -59,4 +59,5 @@ test('Retaliation requires observed numbers and structured pools, but permits ex
   assert.equal(calculateRetaliation({...base,globalRatio:''}).known, false);
   assert.equal(calculateRetaliation({...base,combatStanceFactor:null}).known, false);
   assert.equal(calculateRetaliation({...base,layers:null}).known, false);
+  assert.equal(calculateRetaliation({...base,blockedFactor:null}).blockedFactor, null);
 });
