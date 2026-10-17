@@ -107,3 +107,13 @@ test('no guessed gear stats beyond verified exact bonus stages',()=>{
  assert.ok(paths.includes('retaliation.baseBonuses.reflectingGear'));
  assert.ok(!paths.some(x=>x.includes('weapon')||x.includes('pet.base')||x.includes('ACS')));
 });
+
+test('cannot transfer Warrior gear bonuses over an Archer tooltip snapshot',()=>{
+ const x=projectBuildStudioDamage(build({ring:equipment('fierce',14)}));
+ const bad=buildStudioScenarioChanges(x,{className:'Archer',attack:{layers:{dropBonus:25}}});
+ assert.equal(bad.ok,false);
+ assert.match(bad.reason,/does not match/);
+ assert.deepEqual(bad.changes,{});
+ const allowed=buildStudioScenarioChanges(x,{className:'Warrior',attack:{layers:{dropBonus:25}}});
+ assert.equal(allowed.ok,true);
+});
