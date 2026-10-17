@@ -40,8 +40,8 @@ test('all six homepage cards, hero, featured links and submenu destinations use 
  assert.match(home,/data-refined-icon="feature-tools"/);
  assert.match(home,/data-refined-icon="feature-guild-raid"/);
  const submenu=homeSubmenu('tools');
- assert.equal((submenu.match(/class="launchNavRow"/g)||[]).length,6);
- assert.equal((submenu.match(/data-refined-icon="feature-/g)||[]).length,6);
+ assert.equal((submenu.match(/class="launchNavRow"/g)||[]).length,7);
+ assert.equal((submenu.match(/data-refined-icon="feature-/g)||[]).length,7);
 });
 test('Build Studio tabs and browsable gallery render the actual 62 icons',async()=>{
  const tabs=labsTabs();
