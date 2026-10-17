@@ -122,7 +122,7 @@ export function installDesignMax(){
   }
  }
  resizeGrid();
- zoom.querySelector('input')?.addEventListener('input',e=>{const value=Number(e.target.value);$('browser').style.zoom=(value/100).toFixed(2);$('maxZoomValue').textContent=value+'%';});
+ zoom.querySelector('input')?.addEventListener('input',e=>{const value=Number(e.target.value);$('maxZoomValue').textContent=value+'%';window.dispatchEvent(new CustomEvent('arcana:preview-zoom',{detail:value}));});
  const foot=document.createElement('div');foot.className='maxStatus';foot.id='maxStatus';foot.setAttribute('role','status');foot.textContent='Studio ready. Changes stay on the preview domain.';stage.appendChild(foot);
  const actionbar=document.querySelector('.top-actions');
  const importBtn=document.createElement('button');importBtn.className='controlBtn';importBtn.dataset.maxAction='import';importBtn.textContent='Import JSON';actionbar.insertBefore(importBtn,actionbar.querySelector('a'));
