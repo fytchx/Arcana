@@ -84,7 +84,14 @@ with sync_playwright() as playwright:
     page.set_default_timeout(3000)
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
-    page.set_content(HTML,wait_until='domcontentloaded')
+    # Test under a genuine (intercepted) HTTP origin. about:blank is opaque
+    # and denies localStorage, which the modern theme/preferences runtime uses.
+    # No real network or account access is required for this fixture.
+    page.route('http://arcana.test/**',lambda route: route.fulfill(
+        status=200,content_type='text/html; charset=utf-8',body=HTML)
+        if route.request.resource_type=='document' else
+        route.fulfill(status=404,body='Mock-only fixture'))
+    page.goto('http://arcana.test/',wait_until='domcontentloaded')
     try:
         page.wait_for_selector('.launchHero',timeout=15000)
     except Exception:
