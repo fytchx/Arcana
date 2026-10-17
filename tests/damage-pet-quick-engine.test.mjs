@@ -66,3 +66,52 @@ test('switching a slot from pet % to effective INT changes BOTH source groups ap
  assert.equal(result.stages.find(x=>x.source==='equipmentAffixes').delta,-15);
  assert.equal(result.stages.find(x=>x.source==='intelligence').delta,5);
 });
+
+test('observed ×15 multiplier calibrates a partial stage and keeps the ratio exact',()=>{
+ const input={pet:{layers:{equipmentAffixes:100}}};
+ const A=four(slot('petEquipmentPct',20));
+ const B=four(slot('petEquipmentPct',40));
+ const result=compareQuickPetSetups(input,A,B,{observedMultiplier:15});
+ assert.equal(result.known,true);
+ assert.equal(result.anchoredToTooltip,true);
+ assert.equal(result.measuredMultiplier,15);
+ assert.ok(Math.abs(result.proposedMultiplier-16.5)<1e-9);
+ assert.ok(Math.abs(result.percentChange-10)<1e-10);
+ assert.equal(result.damageRange,null);
+ assert.equal(input.pet.layers.equipmentAffixes,100,'reference must not mutate');
+});
+
+test('without an observed tooltip total, x result is only the product of entered layers',()=>{
+ const input={pet:{layers:{equipmentAffixes:100}}};
+ const A=four(slot('petEquipmentPct',20));
+ const B=four(slot('petEquipmentPct',40));
+ const result=compareQuickPetSetups(input,A,B);
+ assert.equal(result.known,true);
+ assert.equal(result.anchoredToTooltip,false);
+ assert.equal(result.measuredMultiplier,2);
+ assert.equal(result.proposedMultiplier,2.2);
+ assert.match(result.metric,/entered Pet percentage layers/);
+});
+
+test('observed multiplier refuses zero, negatives, fake strings and infinity',()=>{
+ const input={pet:{layers:{equipmentAffixes:100}}};
+ for(const observedMultiplier of [0,-1,'bad',Infinity]){
+  const result=compareQuickPetSetups(input,four(),four(),{observedMultiplier});
+  assert.equal(result.known,false);
+  assert.match(result.reason,/positive finite/);
+ }
+});
+
+test('anchored damage keeps base/flat stages and does not invent pet base',()=>{
+ const raw=structuredClone(H);
+ const A=four(slot('petEquipmentPct',10));
+ const B=four(slot('petEquipmentPct',20));
+ const unknown=compareQuickPetSetups(raw,A,B,{observedMultiplier:132.24});
+ assert.equal(unknown.damageRange,null);
+ raw.pet.base={min:100,max:200};
+ const known=compareQuickPetSetups(raw,A,B,{observedMultiplier:132.24});
+ assert.equal(known.known,true);
+ const factor=known.proposedMultiplier;
+ assert.ok(Math.abs(known.damageRange.min-(100+690)*factor)<1e-8);
+ assert.ok(Math.abs(known.damageRange.max-(200+690)*factor)<1e-8);
+});
