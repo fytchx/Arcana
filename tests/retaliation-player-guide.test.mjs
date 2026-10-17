@@ -13,10 +13,13 @@ test('Retaliation Warrior guide and build stay consistent with the submitted in-
  for(const expected of ['Retaliation %','Defense','Block Chance','Strength','8.21B','6.76B','9.66B','2,145','7.67M','84%','Increased Strength','Legendary','Crit Chance','Crit Damage','Torch','Red','Blue','Bulwark Stance']){
   assert.ok(content.includes(expected),'Guide dropped source detail: '+expected);
  }
- for(const expected of ['What the recent testing tells me','What I am still testing','50%','blocked','Double Hit','attack speed','damage formula','Guild Defense']){
+ for(const expected of ['Damage interactions','Where the build can go next','50%','blocked','Double Hit','Double Damage','Crit Chance','Crit Damage','Guild Defense']){
   assert.ok(guide.sections.some(s=>s.title===expected||String(s.body||'').includes(expected)),'Recent mechanic finding dropped: '+expected);
  }
- assert.match(guide.sections.find(s=>s.title==='What I am still testing').body,/not pinned down one exact retaliation formula/);
+ assert.match(guide.sections.find(s=>s.title==='Damage interactions').body,/Double Damage/);
+ assert.match(guide.sections.find(s=>s.title==='Where the build can go next').body,/best balance could change/);
+ assert.doesNotMatch(content,/What I am still testing|not pinned down one exact|Double Damage isn't a stat/i);
+
  const action=guide.actions.find(x=>x.route==='labs/build?build=warrior-retaliation-zane');
  assert.ok(action,'Matching Build Studio action missing');
  const build=demoBuilds['warrior-retaliation-zane'];
