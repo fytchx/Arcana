@@ -165,6 +165,12 @@ function restorePreviewAppearanceOnce(){
  }catch{}
 }
 export function initTheme(){
+ if(typeof location!=='undefined'&&location.hostname==='arcana-preview-app-preview.up.railway.app'&&new URLSearchParams(location.search).has('arcana-design-desk')&&window.parent!==window){
+  window.addEventListener('message',event=>{
+   if(event.origin!==location.origin||event.source!==window.parent||event.data?.type!=='arcana:design-desk-sync')return;
+   applyTheme(currentScope);
+  });
+ }
  restorePreviewAppearanceOnce();
  applyTheme();
  void refreshTheme();
