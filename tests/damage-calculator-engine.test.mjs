@@ -51,7 +51,7 @@ test('critical chance overflow and uncapped hits/damage', () => {
   assert.equal(overflowRoll(250).guaranteed, 3);
   assert.equal(overflowRoll(250).chanceOfNext, 50);
   assert.equal(overflowRoll(250).expected, 3.5);
-  assert.equal(x.doubleDamage.expected, 1.89);
+  assert.ok(Math.abs(x.doubleDamage.expected - 1.89) < 1e-10);
   assert.equal(x.alphaStrike.conditionalExpectedFactor, 1.18);
 });
 
