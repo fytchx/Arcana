@@ -31,7 +31,7 @@ test('all advanced controls drive real tokens, data attributes, or compositing i
  assert.match(styles.get('--max-bg-gradient'),/#AABBCC/);
 });
 test('the desktop site is isolated and can preview actual pages safely',async()=>{
- const [desktop,server,theme,controls,index,maxDesk]=await Promise.all(['../design-desktop.html','../server.mjs','../src/theme.js','../src/design-controls.js','../index.html','../src/design-desk-max.js'].map(read));
+ const [desktop,server,theme,controls,index,maxDesk,desktopApp]=await Promise.all(['../design-desktop.html','../server.mjs','../src/theme.js','../src/design-controls.js','../index.html','../src/design-desk-max.js','../src/design-desktop-app.js'].map(read));
  assert.match(server,/design-desktop\.html/);
  assert.match(server,/design-max\.css/);
  assert.match(index,/design-max\.css/);
