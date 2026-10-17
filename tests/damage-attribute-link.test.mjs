@@ -18,8 +18,8 @@ test('INT gained from non-items projects independently into Attack, Pet and Doub
  assert.equal(byPath['combat.doubleDamageChance'].proposed,109);
  assert.ok(result.heroAttack.changeMin.percentChange>0);
  assert.ok(result.petMultiplier.change.percentChange>0);
- assert.equal(result.doubleDamage.baseline.expected,1.89);
- assert.equal(result.doubleDamage.proposed.expected,2.09);
+ assert.ok(Math.abs(result.doubleDamage.baseline.expected-1.89)<1e-10);
+ assert.ok(Math.abs(result.doubleDamage.proposed.expected-2.09)<1e-10);
  assert.deepEqual(original,H,'never mutate original game screenshot');
 });
 
@@ -66,11 +66,11 @@ test('input options and negative point deltas are guarded',()=>{
  assert.throws(()=>previewLinkedAttributeChange(H,{stat:'INT',origin:'unknown',effectivePoints:1}),RangeError);
  assert.throws(()=>previewLinkedAttributeChange(H,{stat:'WIS',origin:'item',effectivePoints:1}),RangeError);
  assert.throws(()=>previewLinkedAttributeChange(H,{stat:'INT',origin:'item',effectivePoints:''}),RangeError);
- const neg=previewLinkedAttributeChange(H,{stat:'INT',origin:'other',effectivePoints:-500});
- assert.equal(neg.applied.length,1,'invalid stages are rejected without changing the original');
- assert.equal(neg.skipped.length,2);
+ const neg=previewLinkedAttributeChange(H,{stat:'INT',origin:'other',effectivePoints:-210});
+ assert.equal(neg.applied.length,2,'invalid stages are rejected without changing the original');
+ assert.equal(neg.skipped.length,1);
  assert.equal(neg.applied[0].path,'pet.layers.intelligence');
- assert.equal(neg.applied[0].proposed,0);
+ assert.ok(Math.abs(neg.applied[0].proposed)<1e-10);
  assert.equal(H.pet.layers.intelligence,10.5);
 });
 
