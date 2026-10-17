@@ -32,7 +32,7 @@ export function readDamageLab(store=globalThis.localStorage){try{return normaliz
 export function saveDamageLab(value,store=globalThis.localStorage){const clean=normalizeDamageLab(value);try{store?.setItem(DAMAGE_LAB_KEY,JSON.stringify(clean))}catch{}return clean}
 export function theoreticalFactor(x){
  const p=normalizeDamageLab(x);
- return (1+p.attackBonus/100)*(1+p.critChance/100*p.critBonus/100)*(1+p.doubleHit/100)*(1+p.doubleDamage/100);
+ return (p.scope==='retaliation'?1:(1+p.attackBonus/100))*(1+p.critChance/100*p.critBonus/100)*(1+p.doubleHit/100)*(1+p.doubleDamage/100);
 }
 export function estimateDamageLab(raw){
  const p=normalizeDamageLab(raw),baseline=p.base*theoreticalFactor(p);
@@ -52,7 +52,7 @@ export function damageLabView(raw={}){
  field(key+'Value','New value (%)',p[key+'Value'],0,100000,'Currently: '+p[p[key+'Stat']]+'%')+
  '<div class="damageOutcome"><span>Theoretical improvement</span><strong class="'+(result.gain>=0?'damagePositive':'')+'">'+(result.gain>0?'+':'')+fmt(result.gain)+'%</strong><small>Expected damage / trigger: '+fmt(result.expected)+(result.perSecond!==null?' · Modelled per sec: '+fmt(result.perSecond):'')+'</small></div></section>';
  return '<div class="damageLab" aria-label="Damage Lab"><header class="damageLabHead"><span class="quickEyebrow">EXPERIMENTAL COMPARISON ENGINE</span><h1>Damage Lab</h1><p>Compare two stat upgrades in seconds. No character import or full skill tree required.</p></header>'+
- '<div class="damageModelWarning"><strong>Important: this is a hypothetical damage model, not IdleArc’s verified server formula.</strong> It treats bonus Attack Damage as a linear multiplier, crits as extra hit damage, and Double Hit / Double Damage as independent chances to add one full hit or double damage. Do not use the percentage shown as a guaranteed in-game DPS increase. INT%, class skills and pet scaling are excluded until their formulas are validated.</div>'+
+ '<div class="damageModelWarning"><strong>Important: this is a hypothetical damage model, not IdleArc’s verified server formula.</strong> It treats bonus Attack Damage as a linear multiplier, crits as extra hit damage, and Double Hit / Double Damage as independent chances to add one full hit or double damage. Do not use the percentage shown as a guaranteed in-game DPS increase. INT%, class skills and pet scaling are excluded until their formulas are validated. In retaliation mode, normal Attack Damage % is deliberately excluded because retaliation is not a normal weapon hit.</div>'+
  '<section class="damagePanel"><h2>1. Current stats</h2><div class="damageFieldGrid">'+
  field('base','Unmodified hit / retaliation damage',p.base,0,1e15,'Use a consistent pre-multiplier baseline.')+
  field('attackBonus','Increased Attack Damage %',p.attackBonus,0,100000)+
