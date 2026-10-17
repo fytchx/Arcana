@@ -59,3 +59,11 @@ Committed to this same draft feature branch after the first recovery checkpoint:
 **CI warning remains:** Arcana Checks on the updated head still reports `failure` for both source and mobile jobs with **zero steps** in both jobs, and job logs were unavailable. This does not demonstrate a test assertion failure. Runner provisioning/account/Actions configuration needs diagnosis. Do not describe CI as green.
 
 **Release:** Still draft PR #33, unmerged, undeployed. Next stage: reliable CI or local full repo tests, browser/mobile QA, more source-verified Rogue/Druid and pet/combat event coverage. Do not convert marginal percentage-point rankings to real gear advice until actual obtainable source costs/rolls are known.
+
+### Continuation validation checkpoint (after PR head 387f45e)
+
+- The two NEW test files were executed in an isolated V8 test harness with Node-style assertion shims: **8/8 passing**.
+- Fresh parse check of the updated calculator UI passed.
+- This is **not** a green `npm run check`, nor a browser/mobile run, because repository code execution/CI runner remains unavailable from this session.
+- An erased conditional blocked-hit multiplier returns `null` rather than a false ×0; the regression assertion is included.
+- The draft PR remains the only work branch for this iteration.
