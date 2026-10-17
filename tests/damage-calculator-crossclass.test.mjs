@@ -65,3 +65,13 @@ test('Shared trap damage cap is applied to SUM not per skill alone',()=>{
  assert.equal(combined.value,24);
  assert.equal(sharedSkillCap([30,27],35).value,35);
 });
+
+test('Class attack totals from ACS match all three screenshot classes',()=>{
+ const classOutput=(allocated,maxAllocated,acs,rate)=>calculateSkillOutputs({allocated,maxAllocated,acs,unlocked:true,effects:[{id:'ad',perLevel:rate,stage:'attack-additive'}]}).effects[0].value;
+ const warrior=classOutput(10,10,17,5)+classOutput(5,5,17,3);
+ const mage=classOutput(10,10,17,5)+classOutput(5,5,17,3)+classOutput(5,5,17,2);
+ const archer=classOutput(3,10,5,5)+classOutput(1,5,5,3);
+ assert.equal(warrior,201);
+ assert.equal(mage,245);
+ assert.equal(archer,58);
+});
