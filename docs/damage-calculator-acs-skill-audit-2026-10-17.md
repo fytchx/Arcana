@@ -145,3 +145,13 @@
 5. When convenient, Rogue and Druid examples for cross-class coverage. Baselines from Archer, Mage and Warrior alone cannot confirm all 90 skills.
 
 **APK / network evidence:** the previously supplied 1.3.6 base APK contains asset art but lacks its required ABI split compiled code. Previous `.pcapng` captures held encrypted traffic. Full client combat implementation and current server-side formulas were **not** recovered. This matrix deliberately does not claim a complete game-code review.
+
+
+## October 17 user-provided current config and Reality Warp clarification
+
+- Uploaded plain-text note `Notes_261017_094319.txt` starts with a JSON object and version `2026-10-17-001+chat+realms+...`.
+- **Incomplete transfer:** the file ends at **exactly 20,000 characters**, mid-value in `itemization.monster_material_requirements.awaken_overrides_by_band`; ordinary `JSON.parse` fails at offset 19,998. **The current `class_skill_caps` section is NOT present in the available bytes**. Do not mislabel this as a complete/validated current configuration, even though the version header is useful.
+- User clarified expected rule: treat ACS as bonus effective ranks, calculate every skill effect independently, clip only effects for which the game states a hard cap. Other effects on the same skill keep scaling, without clipping to the unrelated effect's cap.
+- New Mage Reality Warp screenshot: **5 allocated +17 ACS = effective 22**, Double Hit bonus `22×2%=+44%` still scales. Boss Damage raw `22×5%=110%` is displayed as **100% applied (110% raw) / 100% max**. This is another direct two-output cap example.
+- One allocated point +20 ACS also yields effective 21, Double Hit +42%, Boss Damage +100% applied (105% raw). No reason to invest beyond 1 point merely to increase the *capped Boss Damage* contribution, but +2% per additional effective rank can still improve Double Hit.
+- Updated source-backed `mageRealityWarp` example and regression test in the development branch. Need the **untruncated current JSON** to ingest all `class_skill_caps` records and stop asking for manual cap confirmations for routine skills. Conditional proc/overlap behavior remains a distinct combat-validation question.
