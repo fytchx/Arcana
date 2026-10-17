@@ -22,6 +22,7 @@ export const HOME_MENUS=Object.freeze({
   link('All Wiki topics','Browse every topic, with more coming as content is published.','wiki/topics','layers')
  ]},
  tools:{title:'Tools',detail:'Calculators and planners. Rune Forge and skill trees live inside Build Studio.',links:[
+  link('Damage Calculator','Compare player damage, pets and combat outcomes.','calculators/damage','calculator'),
   link('Upgrade Cost Calculator','Plan equipment upgrades.','calculators/upgrade','calculator'),
   link('Equipment Comparison','Compare two equipment bases.','calculators/compare','compare'),
   link('Pet Compound Calculator','Inspect pet Compound and Drop Bonus.','calculators/pet','paw'),
