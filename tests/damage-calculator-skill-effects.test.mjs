@@ -100,3 +100,32 @@ test('Opt-in sheet replacement is stage-preserving: never add to the old subtota
  assert.equal(calculateAttack(next.attack).min,calculateAttack(H.attack).min);
  assert.equal(calculatePet(next.pet).layerFactor,calculatePet(H.pet).layerFactor);
 });
+
+test('Hunter +1 ACS updates hero stage by ~1.77%, pet multiplier by ~9.09%',()=>{
+ const x=compareSkillDamageEffects({classId:2,allClassSkills:5,
+  skills:given([3,3],[12,1],[14,1],[15,1])});
+ const base=calculateAttack(H.attack);
+ const nextAttack=structuredClone(H.attack);
+ nextAttack.additive.classSkills=x.afterOneACS.attackPct;
+ const after=calculateAttack(nextAttack);
+ const attackDelta=(after.min/base.min-1)*100;
+ assert.ok(attackDelta>1.7 && attackDelta<1.9);
+ const oldPet=calculatePet(H.pet);
+ const nextPet=structuredClone(H.pet);
+ nextPet.layers.classSkills=x.afterOneACS.petPct;
+ const newPet=calculatePet(nextPet);
+ assert.ok(Math.abs(100*(newPet.layerFactor/oldPet.layerFactor-1)-9.090909)<.0001);
+});
+test('Mage and Warrior +1 ACS projection uses independent multiplier stack unchanged',()=>{
+ for(const [classId,pairs,fixture,expectedPoints] of [
+  [1,[[8,10],[50,5]],W,8],
+  [3,[[5,10],[17,5],[19,5]],M,10],
+ ]){
+  const x=compareSkillDamageEffects({classId,allClassSkills:17,skills:given(...pairs)});
+  assert.equal(x.gainsOneACS.attackPct,expectedPoints);
+  const attack=structuredClone(fixture.attack);
+  attack.additive.classSkills=x.afterOneACS.attackPct;
+  assert.ok(calculateAttack(attack).min>calculateAttack(fixture.attack).min);
+  assert.deepEqual(attack.layers,fixture.attack.layers,'ACS changes class-skill stage, not other layers');
+ }
+});
