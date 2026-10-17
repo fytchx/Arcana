@@ -4,6 +4,8 @@ import {rankPercentagePointGains} from './damage-calculator-marginals.js';
 import {petQuickCompareView,mountPetQuickCompare,refreshPetQuickCompare} from './damage-pet-quick-ui.js';
 import {previewLinkedAttributeChange} from './damage-attribute-link.js';
 import {damageAttributeView,mountDamageAttribute,refreshDamageAttribute} from './damage-attribute-ui.js';
+import {readBuildStudioDamage,buildStudioScenarioChanges} from './damage-build-studio-bridge.js';
+import {damageStudioImportView,mountDamageStudioImport,refreshDamageStudioImport} from './damage-studio-import-ui.js';
 import {RETALIATION_WARRIOR_2026_10_17 as WARRIOR,ATTACK_MAGE_2026_10_17 as MAGE} from './damage-calculator-crossclass-fixtures.js';
 import {HUNTER_2026_10_17 as EXAMPLE} from './damage-calculator-reference.js';
 import {damageSkillPlannerView,mountSkillPlanner,skillPlannerExample,clearSkillPlanner} from './damage-calculator-skills-ui.js';
@@ -229,11 +231,11 @@ export function damageCalculatorView(){
  </style>
  <p class="dcIntro">Compare an actual build against a what-if version, with Attack Damage, pet multipliers and combat probabilities kept in their proper stages. Start with a screenshot benchmark or choose Clear values for a genuinely blank character. Empty inputs mean unknown, not zero.</p>
  <div class="dcActions"><button type="button" class="btn secondary" data-dc-example="hunter">Hunter</button><button type="button" class="btn secondary" data-dc-example="mage">AD Mage</button><button type="button" class="btn secondary" data-dc-example="warrior">Retal Warrior</button><button type="button" class="btn secondary" data-dc-clear>Clear values</button><button type="button" class="btn secondary" data-dc-removeall>Clear comparisons</button></div>
- <div class="dcTabs" role="tablist" aria-label="Calculator sections"><button type="button" class="btn secondary" data-dc-tab="attack" aria-selected="true">Attack</button><button type="button" class="btn secondary" data-dc-tab="pet" aria-selected="false">Pets</button><button type="button" class="btn secondary" data-dc-tab="combat" aria-selected="false">Combat</button><button type="button" class="btn secondary" data-dc-tab="retaliation" aria-selected="false">Retaliation</button><button type="button" class="btn secondary" data-dc-tab="attributes" aria-selected="false">Linked Stats</button><button type="button" class="btn secondary" data-dc-tab="skills" aria-selected="false">Skills + ACS</button></div>
+ <div class="dcTabs" role="tablist" aria-label="Calculator sections"><button type="button" class="btn secondary" data-dc-tab="attack" aria-selected="true">Attack</button><button type="button" class="btn secondary" data-dc-tab="pet" aria-selected="false">Pets</button><button type="button" class="btn secondary" data-dc-tab="combat" aria-selected="false">Combat</button><button type="button" class="btn secondary" data-dc-tab="retaliation" aria-selected="false">Retaliation</button><button type="button" class="btn secondary" data-dc-tab="attributes" aria-selected="false">Linked Stats</button><button type="button" class="btn secondary" data-dc-tab="studio" aria-selected="false">Build Studio Import</button><button type="button" class="btn secondary" data-dc-tab="skills" aria-selected="false">Skills + ACS</button></div>
  <section aria-live="polite" id="dcResults">${results()}</section>
  ${marginalPanel()}
  ${petQuickCompareView()}
- <section class="dcWork" id="dcInputs">${SETS.map(([section,heading,paths])=>`<div data-dc-panel="${section}">${inputs(section,heading,paths)}</div>`).join('')}${damageAttributeView()}${damageSkillPlannerView()}</section>
+ <section class="dcWork" id="dcInputs">${SETS.map(([section,heading,paths])=>`<div data-dc-panel="${section}">${inputs(section,heading,paths)}</div>`).join('')}${damageAttributeView()}${damageStudioImportView()}${damageSkillPlannerView()}</section>
  <section class="dcScenario"><h3>Compare against a scenario</h3><p class="dcIntro">Change one or more sources. Each replacement belongs to the exact same layer as its original value; it is never stacked on top of the existing total.</p><div class="dcScenarioControls"><label>Add/change a source<select id="dcAddSource">${NUMERIC_PATHS.map(([label,path])=>`<option value="${esc(path)}">${esc(label)}</option>`).join('')}</select></label><button type="button" class="btn primary" data-dc-add>Add change</button></div><div id="dcChanges">${changesMarkup()}</div></section>
  <p class="notice">The presets use rounded in-game values. A blank character never inherits hidden Hunter stats. Crit damage semantics, exact pet base growth, target mitigation, elemental weakness and true DPS need further verification.</p>
  </section>`;
@@ -251,16 +253,28 @@ function updateNumbers(root) {
  root.querySelector('#dcChanges').innerHTML=changesMarkup();
  updateMarginals(root);
  refreshPetQuickCompare(root,()=>state.baseline);
- refreshDamageAttribute(root,()=>state.baseline);
+ refreshDamageAttribute(root,()=>state.baseline);refreshDamageStudioImport(root,()=>state.baseline);
  updatePanels(root);
 }
 export function mountDamageCalculator(){
  const root=document.querySelector('#arcanaDamageCalculator');
  if(!root || root.dataset.dcMounted==='yes')return;
  root.dataset.dcMounted='yes';
- load();updateNumbers(root);mountSkillPlanner(root,()=>state.baseline);mountPetQuickCompare(root,()=>state.baseline);mountDamageAttribute(root,()=>state.baseline);
+ load();updateNumbers(root);mountSkillPlanner(root,()=>state.baseline);mountPetQuickCompare(root,()=>state.baseline);mountDamageAttribute(root,()=>state.baseline);mountDamageStudioImport(root,()=>state.baseline);
  // Explicit user action replaces the SAME stages in the manual screenshot
  // reference. These are never added on top of the original aggregate values.
+ root.addEventListener('dc-apply-studio-equipment',e=>{
+  // Re-read the saved Build Studio draft and recompute trusted numeric
+  // totals from item metadata. Never accept numbers from a DOM event.
+  const source=readBuildStudioDamage();
+  const result=buildStudioScenarioChanges(source,state.baseline);
+  if(!result.ok)return;
+  const valid=new Set(NUMERIC_PATHS.map(x=>x[1]));
+  if(!Object.entries(result.changes).every(([key,value])=>
+   valid.has(key)&&Number.isFinite(value)&&value>=0))return;
+  for(const [key,value] of Object.entries(result.changes))state.changes[key]=value;
+  persist();updateNumbers(root);
+ });
  root.addEventListener('dc-apply-linked-attributes',e=>{
   const input=e.detail||{};
   let calculated;
@@ -316,11 +330,11 @@ export function mountDamageCalculator(){
    root.querySelectorAll('[data-dc-field]').forEach(other=>{
     if(other!==e.target && other.dataset.dcField===key)other.value=value===null?'':value;
    });
-   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,()=>state.baseline);refreshDamageAttribute(root,()=>state.baseline);
+   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,()=>state.baseline);refreshDamageAttribute(root,()=>state.baseline);refreshDamageStudioImport(root,()=>state.baseline);
   }
   if(e.target.matches('[data-dc-scenario]')){
    state.changes[e.target.dataset.dcScenario]=optionalNumber(e.target.value);
-   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,()=>state.baseline);refreshDamageAttribute(root,()=>state.baseline);
+   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,()=>state.baseline);refreshDamageAttribute(root,()=>state.baseline);refreshDamageStudioImport(root,()=>state.baseline);
   }
  });
  root.addEventListener('click',e=>{
