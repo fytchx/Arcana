@@ -77,10 +77,11 @@ export function petQuickCompareView(){
  '<p><b>INT/DEX:</b> enter effective character-sheet points added by that pet, after any Increased INT/DEX scaling. Raw increased-stat percentages cannot safely be converted without knowing the affected stat pool. Those must be converted to effective points first.</p>'+
  '<div class="dcPetQuickColumns"><section class="dcPetQuickColumn"><h4>Current setup (A)</h4><div id="dcPetCurrent"></div></section>'+
  '<section class="dcPetQuickColumn"><h4>Proposed setup (B)</h4><div id="dcPetProposed"></div></section></div>'+
- '<div class="dcPetQuickActions"><button type="button" class="btn secondary" data-dc-pet-copy>Copy current → proposed</button>'+
+ '<div class="dcPetQuickActions"><button type="button" class="btn secondary" data-dc-pet-demo>Example: 2 vs 4 (+20pp)</button>'+
+ '<button type="button" class="btn secondary" data-dc-pet-copy>Copy current → proposed</button>'+
  '<button type="button" class="btn secondary" data-dc-pet-reset>Reset four slots</button></div>'+
  '<div id="dcPetQuickResult" aria-live="polite"></div>'+
- '<p class="dcValidation">Only the observed Pet multiplier stages are compared. This does NOT predict real DPS, combat procs, pet base scaling, ACS, or how unverified hatch bonuses feed the tooltip. A missing breakdown source must be entered in the Pets tab first.</p></section>';
+ '<p class="dcValidation">The example uses illustrative +20 percentage-point contributions to the measured equipment Pet Damage row, not real pet hatch-roll promises. Only the observed Pet multiplier stages are compared. This does NOT predict real DPS, combat procs, pet base scaling, ACS, or how unverified hatch bonuses feed the tooltip. A missing breakdown source must be entered in the Pets tab first.</p></section>';
 }
 export function mountPetQuickCompare(root,getBuild){
  const panel=root?.querySelector('#dcPetQuick');
@@ -120,6 +121,12 @@ export function mountPetQuickCompare(root,getBuild){
      detail:{stages:comparison.stages.map(s=>({source:s.source,value:s.proposedStage}))}})
    );
    return;
+  }
+  if(button.hasAttribute('data-dc-pet-demo')){
+   const row=()=>({source:'petEquipmentPct',value:20});
+   stored={current:[row(),row(),{source:'none',value:0},{source:'none',value:0}],
+           proposed:[row(),row(),row(),row()]};
+   save();repaint();return;
   }
   if(button.hasAttribute('data-dc-pet-reset')){stored=blank();save();repaint();}
   if(button.hasAttribute('data-dc-pet-copy')){stored.proposed=clone(stored.current);save();repaint();}
