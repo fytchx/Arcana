@@ -46,6 +46,12 @@ export const OBSERVED_SKILL_CASES=Object.freeze({
   mageArcaneCascade:{allocated:1,maxAllocated:5,acs:17,unlocked:true,effects:[
     {id:'trigger-chance',perLevel:8,cap:100,stage:'proc'},
   ]},
+  // Mage Reality Warp 2026-10-17: 5 allocated +17 ACS = 22 effective.
+  // Double Hit increases 2%/level; Boss Damage capped at 100%.
+  mageRealityWarp:{allocated:5,maxAllocated:5,acs:17,unlocked:true,effects:[
+    {id:'double-hit-chance',perLevel:2,cap:null,stage:'combat-double-hit'},
+    {id:'boss-damage',perLevel:5,cap:100,stage:'combat-boss-damage'},
+  ]},
   magePyroclasm:{allocated:5,maxAllocated:5,acs:17,unlocked:true,effects:[
     {id:'crit-explosion-extra',perLevel:5,cap:100,stage:'crit-only'},
   ]},
