@@ -111,7 +111,7 @@ function results(){
  <div class="dcResult"><span>Attack multiplier breakdown</span><strong>×${scen.attack.additiveFactor.toFixed(3)} / ×${scen.attack.layerFactor.toFixed(2)}</strong><small>Summed additive first; ${fmt(scen.attack.flatBonus)} flat added after; independent layers multiply.</small></div>
  </div>
  <div class="dcCombatNumbers"><span>Crit: <b>${fmt(scen.combat.crit.effectiveChance)}%</b> chance, <b>+${fmt(scen.combat.crit.overflowCritDamage)}%</b> overflow damage</span><span>Double Damage: <b>×${fmt(scen.combat.doubleDamage.expected)}</b> mean multiplier</span><span>Double Hit: <b>${fmt(scen.combat.doubleHit.expected)}</b> expected hits on surviving targets</span><span>Alpha Strike: <b>${fmt(scen.combat.alphaStrike.chance)}%</b> proc chance</span></div>
- <p class="dcValidation">${extra?extra+' what-if change'+(extra===1?'':'s')+' applied.':'Example baseline unchanged.'} Screenshot benchmark: 175.6K–243.8K attack and ×132.24 pet. Differences of ~0.1% are expected from game-display rounding.</p>`;
+ <p class="dcValidation">${extra?extra+' what-if change'+(extra===1?'':'s')+' applied.':'Example baseline unchanged.'} Example reference: 175.6K–243.8K attack and ×132.24 pet multiplier. Small differences reflect rounded display values.</p>`;
 }
 function changesMarkup(){
  const paths=[...Object.keys(state.changes)];
@@ -154,7 +154,7 @@ export function damageCalculatorView(){
  <section aria-live="polite" id="dcResults">${results()}</section>
  <section class="dcWork" id="dcInputs">${SETS.map(([section,heading,paths])=>`<div data-dc-panel="${section}">${inputs(section,heading,paths)}</div>`).join('')}</section>
  <section class="dcScenario"><h3>Compare against a scenario</h3><p class="dcIntro">Change one or more sources. Each replacement belongs to the exact same layer as its original value; it is never stacked on top of the existing total.</p><div class="dcScenarioControls"><label>Add/change a source<select id="dcAddSource">${NUMERIC_PATHS.map(([label,path])=>`<option value="${esc(path)}">${esc(label)}</option>`).join('')}</select></label><button type="button" class="btn primary" data-dc-add>Add change</button></div><div id="dcChanges">${changesMarkup()}</div></section>
- <p class="notice">The sample uses rounded in-game screenshot values. Crit damage semantics, exact pet base growth, target mitigation, elemental weakness and true DPS need further verification. This calculator does not invent those values.</p>
+ <p class="notice">The example uses rounded in-game values. Crit damage semantics, exact pet base growth, target mitigation, elemental weakness and true DPS need further verification. This calculator does not invent those values.</p>
  </section>`;
 }
 function updatePanels(root){
