@@ -1,4 +1,5 @@
 /* Desktop-only experimental design controls. Never submitted to the site publish API. */
+import {PROCEDURAL_TEXTURES,proceduralTexture} from './procedural-textures.js';
 export const MAX_STORAGE='arcana-design-max-preview-v2';
 const range=(key,label,min,max,value,unit='%')=>({key,label,type:'range',min,max,default:value,unit});
 const color=(key,label,value)=>({key,label,type:'color',default:value});
@@ -22,6 +23,19 @@ export const MAX_GROUPS=Object.freeze([
  range('pageSaturation','Content saturation',50,160,100),
  range('pageContrast','Content contrast',75,140,100),
  range('pageBrightness','Content brightness',75,135,100)]},
+ {id:'texture-stack',name:'Texture Stacking',subtitle:'Independent secondary SVG layer, blending, positioning and per-surface targeting',fields:[
+ choice('layerMode','Layer system',[['off','Off · single original texture'],['dual','Two active texture layers']],'off'),
+ choice('secondaryPattern','Second texture',[['none','None'],...PROCEDURAL_TEXTURES.map(p=>[p.id,p.name])],'none'),
+ choice('layerTarget','Extra layer placement',[['background','Page only'],['cards','Cards only'],['both','Page + cards']],'cards'),
+ choice('layerColorMode','Extra layer color source',[['accent','Follow site accent'],['custom','Independent color']],'accent'),
+ color('layerColor','Extra layer color','#88AAFF'),
+ range('layerIntensity','Second layer intensity',0,100,27),
+ range('layerSize','Second layer size',40,260,100),
+ range('layerWeight','Second layer line weight',40,250,100),
+ range('layerGlow','Second layer glow',0,12,0,' px'),
+ choice('layerBlend','Layer blend mode',[['normal','Normal'],['screen','Screen'],['multiply','Multiply'],['overlay','Overlay'],['soft-light','Soft light']],'normal'),
+ range('layerOffsetX','Second layer horizontal offset',0,100,50),
+ range('layerOffsetY','Second layer vertical offset',0,100,50)]},
  {id:'surfaces',name:'Surfaces',subtitle:'Panels, materials, boundaries and elevation',fields:[
  choice('cardMode','Panel material',[['inherit','Follow Arcana'],['solid','Solid'],['glass','Frosted glass'],['flat','Flat'],['gradient','Gradient'],['textured','Textured']],'inherit'),
  color('cardTint','Card tint','#222139'),
@@ -107,6 +121,7 @@ export function applyMax(doc,raw){
  root.dataset.maxButtons=v.buttonShape;root.dataset.maxHeading=v.headingStyle;
  root.dataset.maxBorder=v.borderStyle;root.dataset.maxCard=v.cardMode;
  root.dataset.maxMotion=v.motionMode;root.dataset.maxQuality=v.quality;
+ root.dataset.maxLayer=v.layerMode;root.dataset.maxLayerTarget=v.layerTarget;
  const core={};
  const set=(key,value)=>root.style.setProperty('--max-'+key,value);
  const setPx=(key,value)=>set(key,value+'px');
@@ -136,6 +151,9 @@ export function applyMax(doc,raw){
  setPx('page-width',v.pageWidth);setPx('page-padding',v.pagePadding);setPx('card-gap',v.sectionGap);
  set('quick-columns',v.quickColumns);setPx('grid-gap',v.gridGap);setPx('tile-height',v.tileHeight);
  setPx('quick-pad',v.quickPadding);setPx('feature-height',v.featureHeight);setPx('feature-pad',v.featurePadding);
+ const second=proceduralTexture(v.secondaryPattern,v.layerColorMode==='accent'?(doc.defaultView?.getComputedStyle(root).getPropertyValue('--theme-highlight').trim()||'#A78BFA'):v.layerColor,v.layerWeight,v.layerIntensity,v.layerGlow);
+ set('layer-url',second?.url||'none');set('layer-size',second?(second.size*v.layerSize/100).toFixed(1)+'px':'120px');
+ set('layer-blend',v.layerBlend);set('layer-position',v.layerOffsetX+'% '+v.layerOffsetY+'%');
  setPx('nav-height',v.navHeight);setPct('nav-alpha',v.navOpacity);setPx('nav-blur',v.navBlur);
  setPx('nav-radius',v.navRadius);setPx('nav-stroke',v.navStroke);
  setPx('hover-duration',v.hoverDuration);setPx('hover-raise',v.hoverLift);set('hover-scale',(v.hoverScale/100).toFixed(2));
