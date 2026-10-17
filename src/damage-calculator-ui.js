@@ -1,6 +1,7 @@
 import {blankDamageBuild, compareBuilds, relativeDifference} from './damage-calculator-engine.js';
 import {calculateRetaliation} from './retaliation-damage-engine.js';
 import {rankPercentagePointGains} from './damage-calculator-marginals.js';
+import {petQuickCompareView,mountPetQuickCompare,refreshPetQuickCompare} from './damage-pet-quick-ui.js';
 import {RETALIATION_WARRIOR_2026_10_17 as WARRIOR,ATTACK_MAGE_2026_10_17 as MAGE} from './damage-calculator-crossclass-fixtures.js';
 import {HUNTER_2026_10_17 as EXAMPLE} from './damage-calculator-reference.js';
 import {damageSkillPlannerView,mountSkillPlanner,skillPlannerExample,clearSkillPlanner} from './damage-calculator-skills-ui.js';
@@ -229,6 +230,7 @@ export function damageCalculatorView(){
  <div class="dcTabs" role="tablist" aria-label="Calculator sections"><button type="button" class="btn secondary" data-dc-tab="attack" aria-selected="true">Attack</button><button type="button" class="btn secondary" data-dc-tab="pet" aria-selected="false">Pets</button><button type="button" class="btn secondary" data-dc-tab="combat" aria-selected="false">Combat</button><button type="button" class="btn secondary" data-dc-tab="retaliation" aria-selected="false">Retaliation</button><button type="button" class="btn secondary" data-dc-tab="skills" aria-selected="false">Skills + ACS</button></div>
  <section aria-live="polite" id="dcResults">${results()}</section>
  ${marginalPanel()}
+ ${petQuickCompareView()}
  <section class="dcWork" id="dcInputs">${SETS.map(([section,heading,paths])=>`<div data-dc-panel="${section}">${inputs(section,heading,paths)}</div>`).join('')}${damageSkillPlannerView()}</section>
  <section class="dcScenario"><h3>Compare against a scenario</h3><p class="dcIntro">Change one or more sources. Each replacement belongs to the exact same layer as its original value; it is never stacked on top of the existing total.</p><div class="dcScenarioControls"><label>Add/change a source<select id="dcAddSource">${NUMERIC_PATHS.map(([label,path])=>`<option value="${esc(path)}">${esc(label)}</option>`).join('')}</select></label><button type="button" class="btn primary" data-dc-add>Add change</button></div><div id="dcChanges">${changesMarkup()}</div></section>
  <p class="notice">The presets use rounded in-game values. A blank character never inherits hidden Hunter stats. Crit damage semantics, exact pet base growth, target mitigation, elemental weakness and true DPS need further verification.</p>
@@ -246,13 +248,14 @@ function updateNumbers(root) {
  root.querySelector('#dcResults').innerHTML=results();
  root.querySelector('#dcChanges').innerHTML=changesMarkup();
  updateMarginals(root);
+ refreshPetQuickCompare(root,asScenario);
  updatePanels(root);
 }
 export function mountDamageCalculator(){
  const root=document.querySelector('#arcanaDamageCalculator');
  if(!root || root.dataset.dcMounted==='yes')return;
  root.dataset.dcMounted='yes';
- load();updateNumbers(root);mountSkillPlanner(root,()=>state.baseline);
+ load();updateNumbers(root);mountSkillPlanner(root,()=>state.baseline);mountPetQuickCompare(root,asScenario);
  // Explicit user action replaces the SAME stages in the manual screenshot
  // reference. These are never added on top of the original aggregate values.
  root.addEventListener('dc-apply-skill-sheet',e=>{
@@ -275,11 +278,11 @@ export function mountDamageCalculator(){
  root.addEventListener('input',e=>{
   if(e.target.matches('[data-dc-field]')){
    setAt(state.baseline,e.target.dataset.dcField,optionalNumber(e.target.value));
-   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);
+   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,asScenario);
   }
   if(e.target.matches('[data-dc-scenario]')){
    state.changes[e.target.dataset.dcScenario]=optionalNumber(e.target.value);
-   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);
+   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,asScenario);
   }
  });
  root.addEventListener('click',e=>{
