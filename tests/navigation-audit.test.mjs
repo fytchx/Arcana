@@ -16,7 +16,8 @@ test('primary screens do not repeat their dock entries or gear-tool panels',asyn
  assert.equal(HOME_CARDS.length,6);
  assert.equal(new Set(HOME_CARDS.map(x=>x.id)).size,6);
  assert.equal(HOME_MENUS.tools.links.some(x=>['calculators/upgrade','calculators/compare','calculators/pathfinder'].includes(x.route)),false);
- assert.equal(HOME_MENUS.pathfinder.links.filter(x=>x.route==='calculators/pathfinder').length,1);
+ assert.equal(HOME_MENUS.pathfinder.links.filter(x=>x.route==='calculators/pathfinder').length,2);
+ assert.equal(new Set(HOME_MENUS.pathfinder.links.filter(x=>x.route==='calculators/pathfinder').map(x=>x.params?.view||'timeline')).size,2);
  assert.equal(DIRECTORY.length,new Set(DIRECTORY.map(x=>x.route+'?'+JSON.stringify(x.params||{}))).size);
  const options=app.slice(app.indexOf('function menu(){'),app.indexOf('function themeColorPreview'));
  assert.doesNotMatch(options,/Useful destinations/);
