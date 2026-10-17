@@ -248,16 +248,31 @@ function updateNumbers(root) {
  root.querySelector('#dcResults').innerHTML=results();
  root.querySelector('#dcChanges').innerHTML=changesMarkup();
  updateMarginals(root);
- refreshPetQuickCompare(root,asScenario);
+ refreshPetQuickCompare(root,()=>state.baseline);
  updatePanels(root);
 }
 export function mountDamageCalculator(){
  const root=document.querySelector('#arcanaDamageCalculator');
  if(!root || root.dataset.dcMounted==='yes')return;
  root.dataset.dcMounted='yes';
- load();updateNumbers(root);mountSkillPlanner(root,()=>state.baseline);mountPetQuickCompare(root,asScenario);
+ load();updateNumbers(root);mountSkillPlanner(root,()=>state.baseline);mountPetQuickCompare(root,()=>state.baseline);
  // Explicit user action replaces the SAME stages in the manual screenshot
  // reference. These are never added on top of the original aggregate values.
+ root.addEventListener('dc-apply-pet-comparison',e=>{
+  const updates=e.detail?.stages;
+  if(!Array.isArray(updates)||!updates.length)return;
+  // Never trust paths from DOM events. Only existing measured Pet tooltip
+  // percentage-layer sources may be forwarded to the main scenario.
+  const allowed=new Set([
+   'equipmentAffixes','companionDrop','intelligence','dexterity',
+  ]);
+  for(const row of updates){
+   if(!allowed.has(row?.source)||!Number.isFinite(row?.value)||row.value<0)return;
+   if(!Number.isFinite(Number(state.baseline.pet?.layers?.[row.source])))return;
+  }
+  for(const row of updates)state.changes['pet.layers.'+row.source]=row.value;
+  persist();updateNumbers(root);
+ });
  root.addEventListener('dc-apply-skill-sheet',e=>{
   const d=e.detail||{};
   const safe=n=>Number.isFinite(Number(n))?Math.max(0,Number(n)):0;
@@ -278,11 +293,11 @@ export function mountDamageCalculator(){
  root.addEventListener('input',e=>{
   if(e.target.matches('[data-dc-field]')){
    setAt(state.baseline,e.target.dataset.dcField,optionalNumber(e.target.value));
-   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,asScenario);
+   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,()=>state.baseline);
   }
   if(e.target.matches('[data-dc-scenario]')){
    state.changes[e.target.dataset.dcScenario]=optionalNumber(e.target.value);
-   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,asScenario);
+   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,()=>state.baseline);
   }
  });
  root.addEventListener('click',e=>{
