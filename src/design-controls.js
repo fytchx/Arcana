@@ -1,10 +1,12 @@
 import {THEME_PATTERN_IDS} from './theme-patterns.js';
+import {proceduralTexture} from './procedural-textures.js';
 import {HERO_CTA_STYLE_IDS} from './hero-cta-styles.js';
 // Admin-only local appearance experimentation. Never alters community theme data.
 export const DESIGN_KEY='arcana-admin-design-preview-v1';
 export const DEFAULT_DESIGN=Object.freeze({
   main:'#0D1019',card:'#191E2B',action:'#A98BFF',text:'#F5F5FB',
   pattern:'contours',intensity:22,glow:18,edges:42,roundness:13,
+  textureColorMode:'accent',textureColor:'#A57CFF',textureWeight:100,textureGlow:0,
   buttonRoundness:11,buttonFill:82,
  secondaryAccent:'#38BDF8',borderColor:'#66708B',mutedText:'#A8B2C4',navBar:'#191E2B',buttonText:'#0A0C14',
  fontFamily:'system',density:'comfortable',buttonStyle:'gradient',heroActionStyle:'integrated',heroSize:'balanced',
@@ -13,8 +15,8 @@ export const DEFAULT_DESIGN=Object.freeze({
  patternTarget:'all',
  iconMode:'two-tone',fontSize:100,cardPadding:14,cardShadow:30,headerOpacity:95,patternScale:100,borderWidth:1,buttonHeight:45,accentBlend:25
 });
-const numbers={intensity:[0,100],glow:[0,100],edges:[0,100],roundness:[3,28],buttonRoundness:[3,30],buttonFill:[35,100],fontSize:[90,115],cardPadding:[8,22],cardShadow:[0,100],headerOpacity:[65,100],patternScale:[60,180],borderWidth:[0,3],buttonHeight:[40,58],accentBlend:[0,100],heroActionWidth:[65,100],heroActionHeight:[44,70],heroActionGlow:[0,100],heroActionBorder:[0,3]};
-const colors=new Set(['main','card','action','text','secondaryAccent','borderColor','mutedText','navBar','buttonText']);
+const numbers={textureWeight:[40,250],textureGlow:[0,12],intensity:[0,100],glow:[0,100],edges:[0,100],roundness:[3,28],buttonRoundness:[3,30],buttonFill:[35,100],fontSize:[90,115],cardPadding:[8,22],cardShadow:[0,100],headerOpacity:[65,100],patternScale:[60,180],borderWidth:[0,3],buttonHeight:[40,58],accentBlend:[0,100],heroActionWidth:[65,100],heroActionHeight:[44,70],heroActionGlow:[0,100],heroActionBorder:[0,3]};
+const colors=new Set(['main','card','action','text','secondaryAccent','borderColor','mutedText','navBar','buttonText','textureColor']);
 // Accept pasted #A78BFA or A78BFA, never partial values or CSS strings.
 export function normalizeDesignHex(value){
  const raw=String(value||'').trim();
@@ -45,6 +47,7 @@ export const DESIGN_FIELDS=Object.keys(DEFAULT_DESIGN);
 export function validateDesignField(key,value){
  if(colors.has(key))return normalizeDesignHex(value);
  if(key==='pattern')return THEME_PATTERN_IDS.includes(value)?value:null;
+ if(key==='textureColorMode')return ['accent','custom'].includes(value)?value:null;
  if(key==='iconMode')return ['two-tone','neutral','accent','muted'].includes(value)?value:null;
  if(key==='fontFamily')return ['system','rounded','serif','mono'].includes(value)?value:null;
  if(key==='density')return ['comfortable','compact','spacious'].includes(value)?value:null;
@@ -153,6 +156,14 @@ export function applyDesign(root=globalThis.document?.documentElement){
   delete root.dataset.arcanaDesignButtonStyle;
  }
  if(active){root.style.setProperty('--bg',values.main);root.style.setProperty('--panel',values.card);root.style.setProperty('--accent',values.action);root.style.setProperty('--line',values.borderColor);root.style.setProperty('--panel2',values.navBar);root.style.setProperty('--accentTint',`color-mix(in srgb, ${values.action} 13%, transparent)`);root.style.setProperty('--radius',values.roundness+'px');}
+ const svgTexture=proceduralTexture(values.pattern,values.textureColorMode==='accent'?values.action:values.textureColor,values.textureWeight,values.intensity,values.textureGlow);
+ if(svgTexture){
+  root.style.setProperty('--arcana-texture',svgTexture.url);
+  root.style.setProperty('--arcana-texture-size',`calc(${svgTexture.size}px * var(--arcana-pattern-scale,1))`);
+  root.style.setProperty('--arcana-procedural-url',svgTexture.url);
+ }else{
+  root.style.removeProperty('--arcana-texture');root.style.removeProperty('--arcana-texture-size');root.style.removeProperty('--arcana-procedural-url');
+ }
  root.dataset.arcanaDesignPattern=values.pattern;
  root.dataset.arcanaPatternTarget=values.patternTarget;
  root.dataset.arcanaHeroCardStyle=values.heroCardStyle;
