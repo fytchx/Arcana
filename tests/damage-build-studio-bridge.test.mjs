@@ -96,15 +96,17 @@ test('unrecognized or incomplete drafts cannot apply partial results',()=>{
  assert.equal(buildStudioScenarioChanges(x).ok,false);
  assert.deepEqual(buildStudioScenarioChanges(x).changes,{});
 });
-test('no guessed gear stats beyond verified exact bonus stages',()=>{
+test('whole-character Crit Damage is excluded rather than overwritten by an item-only subtotal',()=>{
  const x=projectBuildStudioDamage(build({
   head:equipment('brutal',10,'game:item:visionary-hood'),
   chest:equipment('thorned',15,'game:item:wardplate'),
  }));
  assert.equal(x.known,true);
  const paths=x.rows.map(r=>r.path);
- assert.ok(paths.includes('combat.critDamage'));
+ assert.ok(!paths.includes('combat.critDamage'));
  assert.ok(paths.includes('retaliation.baseBonuses.reflectingGear'));
+ assert.equal(x.skipped.length,1);
+ assert.match(x.skipped[0].reason,/equipment-only subtotal/);
  assert.ok(!paths.some(x=>x.includes('weapon')||x.includes('pet.base')||x.includes('ACS')));
 });
 
