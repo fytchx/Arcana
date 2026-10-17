@@ -119,3 +119,27 @@ html[data-design-max="true"][data-max-quality="performance"] body{background-att
 @media(prefers-reduced-motion:reduce){
  html[data-design-max="true"] *{animation:none!important;transition:none!important}
 }
+
+/* Reconcile ambient composition with Arcana's existing texture placement rules. */
+html[data-design-max="true"] #content.homeFullscreen{
+ background-image:var(--max-vignette),var(--max-glow-gradient),var(--max-bg-gradient)!important;
+ background-color:transparent!important;
+ background-repeat:no-repeat!important;
+}
+html[data-design-max="true"][data-arcana-pattern-target="background"] #content.homeFullscreen,
+html[data-design-max="true"][data-arcana-pattern-target="all"] #content.homeFullscreen{
+ background-image:var(--arcana-texture),var(--max-vignette),var(--max-glow-gradient),var(--max-bg-gradient)!important;
+ background-size:var(--arcana-texture-size),cover,cover,cover!important;
+ background-repeat:repeat,no-repeat,no-repeat,no-repeat!important;
+}
+html[data-design-max="true"] .launchPage :is(.launchMenuLinks>a,.launchMenuLinks>button,.pathRangeWorkspace,.wikiArticleCard,.communityPage .playerCard){
+ border-color:color-mix(in srgb,var(--max-border) var(--max-card-border-alpha),transparent)!important;
+ border-width:var(--max-panel-border)!important;
+ box-shadow:var(--max-card-shadow);
+}
+html[data-design-max="true"] :is(.btn,.launchSeeAll){
+ box-shadow:var(--max-button-shadow);
+ transition:transform var(--max-hover-duration) ease,filter var(--max-hover-duration) ease;
+}
+html[data-design-max="true"] :is(.btn,.launchSeeAll):hover{transform:translateY(calc(-1 * var(--max-hover-raise)))}
+html[data-design-max="true"][data-max-motion="off"] :is(.btn,.launchSeeAll){transition:none!important}
