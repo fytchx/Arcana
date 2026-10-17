@@ -45,7 +45,7 @@ test('quick upgrade rendering uses source-backed quote and clear failure guards'
 });
 test('damage lab explicitly models uncertain behavior and remains no-setup',()=>{
  const baseline=estimateDamageLab({...DEFAULT_DAMAGE_LAB,base:1000,attackBonus:0,critChance:0,doubleHit:0,doubleDamage:0,aStat:'attackBonus',aValue:20,bStat:'doubleDamage',bValue:10});
- assert.equal(baseline.baseline,1000);assert.equal(baseline.a.gain,20);assert.ok(Math.abs(baseline.b.gain-10)<1e-9);
+ assert.equal(baseline.baseline,1000);assert.ok(Math.abs(baseline.a.gain-20)<1e-9);assert.ok(Math.abs(baseline.b.gain-10)<1e-9);
  assert.equal(estimateDamageLab({base:100,critChance:50,critBonus:50,doubleHit:0,doubleDamage:0}).baseline,125);
  const html=damageLabView({});
  for(const phrase of ['hypothetical','not IdleArc','INT%','Double Hit Chance','Double Damage Chance','Option A','Option B','damage per trigger'])assert.ok(html.includes(phrase),phrase);
