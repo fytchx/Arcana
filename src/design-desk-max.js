@@ -106,7 +106,7 @@ export function installDesignMax(){
  };
  const restore=data=>{
   restoring=true;
-  try{replaceDesignDraft(data.core);saveMax(data.max);compare='after';syncValues();refresh();report('History restored locally.')}finally{restoring=false}
+  try{replaceDesignDraft(data.core);saveMax(data.max);compare='after';syncValues();window.dispatchEvent(new Event('arcana:design-change'));refresh();report('History restored locally.')}finally{restoring=false}
  };
  const undo=()=>{if(cursor>0){restore(history[--cursor]);}else report('Already at the oldest snapshot.');};
  const redo=()=>{if(cursor<history.length-1){restore(history[++cursor]);}else report('No newer snapshot.');};
@@ -139,12 +139,12 @@ export function installDesignMax(){
  function useRecipe(index){const rec=recs[index];if(!rec)return;const [name,base,pattern,accent,background,material,strength]=rec;const baseDesign=DESIGN_PRESETS[base]||DESIGN_PRESETS.violet;const {name:_n,...preset}=baseDesign;
   compare='after';replaceDesignDraft({...readDesign(),...preset,pattern,textureColor:accent,textureColorMode:'custom',intensity:strength,textureGlow:2,textureWeight:105});
   saveMax({...MAX_DEFAULTS,bgColor:accent,bgStrength:strength,glowColor:accent,cardTint:background,cardMode:material,glowStrength:24});
-  addHistory('recipe');syncValues();refresh();report('Recipe applied: '+name+'. Customize every setting.');}
+  addHistory('recipe');syncValues();window.dispatchEvent(new Event('arcana:design-change'));refresh();report('Recipe applied: '+name+'. Customize every setting.');}
  function remix(){const textures=PROCEDURAL_TEXTURES;const design=readDesign();const random=arr=>arr[Math.floor(Math.random()*arr.length)];
   const pattern=random(textures);const accent=random(['#A78BFA','#45EAD8','#EDB96E','#FC719A','#8FC7FF','#A1E28F']);
   replaceDesignDraft({...design,pattern:pattern.id,action:accent,intensity:15+Math.floor(Math.random()*36),textureWeight:70+Math.floor(Math.random()*100),textureGlow:Math.floor(Math.random()*6),heroCardStyle:random(['flat','glass','etched','minimal','accent-edge'])});
   saveMax({...readMax(),bgColor:accent,glowColor:accent,bgStrength:8+Math.floor(Math.random()*30),glowStrength:10+Math.floor(Math.random()*35),cardMode:random(['inherit','glass','gradient','flat'])});
-  addHistory('remix');syncValues();refresh();report('Remixed palette, texture, lighting and feature. Nothing published.');}
+  addHistory('remix');syncValues();window.dispatchEvent(new Event('arcana:design-change'));refresh();report('Remixed palette, texture, lighting and feature. Nothing published.');}
  function exportAll(){const payload={format:'arcana-design-desk',version:2,createdAt:new Date().toISOString(),...snapshot()};
   const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='arcana-design-'+Date.now()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);report('Exported all core + advanced design values.');}
  async function importAll(file){try{if(file.size>200000)throw Error('File is too large');const raw=JSON.parse(await file.text());
