@@ -65,6 +65,14 @@ export function validateDesignField(key,value){
 }
 let publishedDesign=null;
 let previewEnabled=false;
+let externalPreview=null;
+export function setExternalDesignPreview(input){
+ if(input===null){externalPreview=null;applyDesign(globalThis.document?.documentElement);return true;}
+ if(!input||typeof input!=='object'||Array.isArray(input))return false;
+ const candidate={...DEFAULT_DESIGN};
+ for(const key of DESIGN_FIELDS){const value=validateDesignField(key,input[key]);if(value!==null)candidate[key]=value;}
+ externalPreview=candidate;applyDesign(globalThis.document?.documentElement);return true;
+}
 export function setPublishedDesign(value){
  publishedDesign=value&&typeof value==='object'?Object.fromEntries(DESIGN_FIELDS.map(key=>[key,validateDesignField(key,value[key])??DEFAULT_DESIGN[key]])):null;
  applyDesign(globalThis.document?.documentElement);
@@ -123,7 +131,7 @@ export function applyDesign(root=globalThis.document?.documentElement){
  const published=publishedDesign!==null;
  const active=admin||published;
  root.dataset.arcanaDesignActive=String(active);
- const values=admin?readDesign():publishedDesign||DEFAULT_DESIGN;
+ const values=inDesktopFrame&&externalPreview?externalPreview:admin?readDesign():publishedDesign||DEFAULT_DESIGN;
  for(const [k,css] of Object.entries({main:'--theme-main',card:'--theme-secondary',action:'--arcana-action-color',text:'--arcana-design-text',secondaryAccent:'--arcana-secondary-accent',borderColor:'--arcana-border-color',mutedText:'--arcana-muted-text',navBar:'--arcana-nav-panel',buttonText:'--arcana-button-text'})){
   if(active){root.style.setProperty(css,values[k]);if(k==='main')root.style.setProperty('--bg',values[k]);if(k==='card')root.style.setProperty('--panel',values[k]);}
   else if(css.startsWith('--arcana-'))root.style.removeProperty(css);
