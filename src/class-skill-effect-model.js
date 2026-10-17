@@ -40,7 +40,7 @@ export const OBSERVED_SKILL_CASES=Object.freeze({
     {id:'block-chance',perLevel:2,cap:25,stage:'combat-block'},
     {id:'retaliation',perLevel:4,cap:40,stage:'retaliation-base'},
   ]},
-  mageMagicBlastTrigger:{allocated:1,maxAllocated:5,acs:17,unlocked:true,effects:[
+  mageUnstableEnergyTrigger:{allocated:1,maxAllocated:5,acs:17,unlocked:true,effects:[
     {id:'trigger-chance',base:50,perLevel:5,cap:100,stage:'proc'},
   ]},
   mageArcaneCascade:{allocated:1,maxAllocated:5,acs:17,unlocked:true,effects:[
@@ -53,6 +53,9 @@ export const OBSERVED_SKILL_CASES=Object.freeze({
     {id:'attack-pct',perLevel:5,cap:null,stage:'attack-additive'},
   ]},
   warriorCullingStrike:{allocated:5,maxAllocated:5,acs:17,unlocked:true,effects:[
-    {id:'execute-threshold',perLevel:1,cap:35,stage:'execute'},
+    {id:'culling-part',perLevel:1,cap:null,stage:'execute'},
+  ]},
+  warriorExecutioner:{allocated:2,maxAllocated:5,acs:17,unlocked:true,effects:[
+    {id:'executioner-part',perLevel:1,cap:null,stage:'execute'},
   ]},
 });
