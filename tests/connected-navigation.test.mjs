@@ -106,7 +106,7 @@ test('Application keeps connected destinations and exposes a universal home path
  const code=await app();
  assert.doesNotMatch(code,/globalHomeBar\(dest\)/);
   assert.match(code,/node\('content'\)\.innerHTML=simpleBackBar\(dest\)\+siteNoticeMarkup\(dest\)\+routeView\(\)/);
- assert.match(code,/homeScreen\(\)/);
+ assert.match(code,/homeScreen\\(quickUpgradePanel\\(recipeState\\.data,state\\.pathfinderRange\\)\\)/);
  assert.match(code,/case 'directory':return directoryView\(\)/);
  assert.match(code,/case 'wiki\/category':return wikiCategory/);
  assert.match(code,/case 'homemenu':if\(arg==='pathfinder'\)go\('calculators\/pathfinder'\)/);
