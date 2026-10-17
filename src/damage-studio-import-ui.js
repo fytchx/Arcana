@@ -27,6 +27,8 @@ function output(baseline){
   html+='<p class="dcValidation">Exact equipment subtotal changes will <b>replace</b> the matching fields in your what-if scenario. Screenshot totals will not be added twice. Unrelated Attack/Pet, skill, rune and pet-source bonuses are untouched.</p>'+
     '<button type="button" class="btn primary dcStudioApply" data-dc-studio-apply>Apply '+parsed.rows.length+
      ' verified equipment subtotal'+(parsed.rows.length===1?'':'s')+' to what-if</button>';
+ }else if(parsed.known&&!projection.ok){
+  html+='<p class="dcStudioWarning" role="status">'+safe(projection.reason)+'</p>';
  }else if(!parsed.blockers.length){
   html+='<p class="dcValidation">No supported exact damage rolls found. Save an item with a verified exact roll in Build Studio, then refresh.</p>';
  }
