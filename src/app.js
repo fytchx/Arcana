@@ -173,7 +173,7 @@ const homeDisclosure=(key,kicker,title,description,content)=>
 const homeSecondary=(route,title,description,symbol)=>
  '<button type="button" class="arcanaHomeSecondary" data-route="'+esc(route)+'"><span class="arcanaHomeSecondaryIcon">'+icon(symbol,19)+'</span>'+
  '<span><strong>'+esc(title)+'</strong><small>'+esc(description)+'</small></span><span class="arcanaHomeSecondaryArrow">'+icon('arrow',17)+'</span></button>';
-function home(){return homeScreen(quickUpgradePanel(recipeState.data,state.pathfinderRange));}
+function home(){return homeScreen(quickUpgradePanel(recipeState.data,state.pathfinderRange,{error:recipeState.error}));}
 function featuredView(){
  const items=[
   ['Build Studio','Create, save and compare fully connected equipment, runes and skills.','labs/build','flask'],
@@ -265,7 +265,7 @@ function pathfinderHub(legacyView='range'){
  const header='<header class="pathfinderHubHead"><span class="pathfinderHubIcon">'+icon('feature-upgrade',36)+'</span><div><span class="eyebrow">GEAR PROGRESSION</span><h1>Pathfinder</h1><p>Every gear upgrade, in one place.</p></div></header>';
  const chooser='<nav class="pathfinderHubTabs" aria-label="Pathfinder tools">'+tabs.map(([id,title,glyph])=>'<button type="button" class="'+(id===selected?'active':'')+'" data-route="calculators/pathfinder" data-params="view='+id+'" aria-current="'+(id===selected?'page':'false')+'">'+icon(glyph,19)+'<span>'+title+'</span></button>').join('')+'</nav>';
  const wait='<div class="pathWaiting" role="status"><p>'+esc(recipeState.error||'Loading verified upgrade recipes…')+'</p><button type="button" data-action="path-refresh" class="btn secondary">Retry</button></div>';
- const inner=selected==='range'?quickUpgradePanel(recipeState.data,state.pathfinderRange,{page:true}):selected==='upgrade'?calcUpgrade(true):selected==='compare'?calcCompare(true):pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error,state.pathfinderRange,{includeRange:false,catalog:verifiedState.entries});
+ const inner=selected==='range'?quickUpgradePanel(recipeState.data,state.pathfinderRange,{page:true,error:recipeState.error}):selected==='upgrade'?calcUpgrade(true):selected==='compare'?calcCompare(true):pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error,state.pathfinderRange,{includeRange:false,catalog:verifiedState.entries});
  return '<div class="studioPage pathfinderHub">'+nav+header+chooser+'<div class="pathfinderHubContent">'+inner+'</div></div>';
 }
 function calcPathfinder(){return pathfinderHub()}
