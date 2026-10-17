@@ -268,7 +268,8 @@ export function mountDamageCalculator(){
   ]);
   for(const row of updates){
    if(!allowed.has(row?.source)||!Number.isFinite(row?.value)||row.value<0)return;
-   if(!Number.isFinite(Number(state.baseline.pet?.layers?.[row.source])))return;
+   const measured=state.baseline.pet?.layers?.[row.source];
+   if(measured===null||measured===undefined||measured===''||!Number.isFinite(Number(measured)))return;
   }
   for(const row of updates)state.changes['pet.layers.'+row.source]=row.value;
   persist();updateNumbers(root);
