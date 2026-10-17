@@ -24,6 +24,7 @@ This iteration extends the existing October 17 **90-skill / 24-cap** manifest. I
 - **Allocated points** limited by that specific skill's current config maximum; **effective rank** = allocated + ACS for explicitly unlocked skills. ACS never automatically unlocks a locked skill.
 - Independently compute every uncapped output and every cap group, then compare the **applied gain from one extra ACS**, not raw uncapped gains.
 - Restore each class's own allocation and ACS when switching class; migrate the older cap-only planner's stored data.
+- **+1 ACS damage preview:** for the same class as the active benchmark, the planner recomputes the sheet Attack range with the class-skills additive subtotal replaced, holding all other stages fixed. It also compares the Pet percentage multiplier, keeping unknown pet-base/flat effects separate. Hunter baseline produces **+1.77% displayed Attack** and **+9.09% Pet percentage multiplier** for +1 ACS; Warrior and Mage previews are also numerically reconstructed. A mismatched class refuses to project onto the wrong character screenshot.
 - Output preview is not applied to screenshot baseline implicitly. **Only** an explicit button replaces the existing manual Attack class-skills subtotal / Pet class-skills % / Pet flat class-skills input. This is a **replacement at the correct stage**, never an addition that doubles counted bonuses. The Pet flat field is also editable in the main calculator.
 - Selecting the existing Hunter, Mage or Warrior examples loads source-matched skill allocations. Other classes start blank.
 
@@ -40,9 +41,7 @@ This iteration extends the existing October 17 **90-skill / 24-cap** manifest. I
 | Druid, ACS +2 | Gnaw 5+2 × 8%, One Soul 1+2 × 5%; Dam Builder 2+2 × 15 flat | **+71% Pet and +60 flat per pet**, not +131% |
 | Hunter +1 ACS | Attack +5%+3%; Pet +12%+8% | **+8% class Attack; +20% Pet layer** |
 
-Added `tests/damage-calculator-skill-effects.test.mjs` with 11 source/ACS/isolation/staging regressions. Previous cap and cross-class suites are preserved.
-
-## Validation status and release blockers
+Added `tests/damage-calculator-skill-effects.test.mjs` with **13** source/ACS/isolation/staging and screenshot-projection regressions. All 13 passed in an isolated JavaScript execution harness. Previous cap and cross-class suites are preserved but were not rerun in the full Node pipeline. \n## Validation status and release blockers
 
 Static JavaScript syntax checks of all changed production modules succeeded in an isolated evaluator. Direct smoke checks reproduced Hunter (58/120), Warrior (201), Mage (245), Rogue (110 in another custom setup), and Druid (71/60) skill subtotals. The layout source inventory confirms all **67** main numeric input paths are assigned to exactly one section after the extra Pet flat field.
 
