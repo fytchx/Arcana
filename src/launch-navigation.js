@@ -24,7 +24,8 @@ export const HOME_MENUS=Object.freeze({
  tools:{title:'Tools',detail:'Companion calculators. Gear upgrades live in Pathfinder.',links:[
   link('Pet Compound Calculator','Inspect pet Compound and Drop Bonus.','calculators/pet','paw'),
   link('Pet Affix Costs','Calculate shard requirements for affixes.','calculators/affixes','calculator'),
-  link('ML Farming Comparator','Compare monster farming speed.','calculators/ml-farm','sword'),
+  link('Damage Lab','Compare potential stat upgrades in a transparent experimental model.','calculators/damage','calculator'),
+ link('ML Farming Comparator','Compare monster farming speed.','calculators/ml-farm','sword'),
   link('Guild Skill Planner','Plan and share guild skill allocations.','labs/guild-tree','shield')
  ]},
  guides:{title:'Guides',detail:'Read, learn and contribute to the community.',links:[
@@ -43,7 +44,8 @@ export const HOME_MENUS=Object.freeze({
   link('Publish a Build','Share a snapshot from your Build Studio.','community/create','edit',{kind:'build'})
  ]},
  pathfinder:{title:'Pathfinder',detail:'Every character equipment upgrade in one place.',links:[
-  link('Pathfinder','Upgrade Map, From → To, Cost Reference, and Compare.','calculators/pathfinder','layers'),
+  link('Quick Upgrade Costs','Go straight to From → To materials.','calculators/pathfinder','calculator',{view:'range'}),
+ link('Pathfinder','Upgrade Map, From → To, Cost Reference, and Compare.','calculators/pathfinder','layers'),
   link('Materials · Wiki','Browse verified material references.','wiki/library','box',{kind:'material'})
  ]},
  social:{title:'Guild & Raid Finder',detail:'Find players, recruit members and plan group content.',links:[
@@ -63,8 +65,15 @@ export const HOME_CARDS=Object.freeze([
 ]);
 const attrs=x=>'data-route="'+esc(x.route)+'"'+(x.params?' data-params="'+esc(new URLSearchParams(x.params).toString())+'"':'');
 const navrow=x=>'<button type="button" class="launchNavRow" '+attrs(x)+'><span class="launchNavIcon">'+icon(x.icon||'arrow',20)+'</span><span class="launchNavCopy"><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',17)+'</button>';
-export function homeScreen(){
- return '<section class="launchHero" aria-label="Featured Build Studio">'+
+export function homeScreen(quickUpgrade=''){
+ const quickActions='<section class="quickDashboard" aria-label="Quick calculators">'+
+  '<div class="quickAccessLabel"><h2>Quick Calculators</h2><small>Answers first. No character setup.</small></div>'+
+  '<nav class="quickActions" aria-label="Direct calculator links">'+
+   '<button type="button" class="quickAction" data-route="calculators/pathfinder" data-params="view=range"><span class="quickActionIcon">'+icon('feature-upgrade',24)+'</span><span class="quickActionText"><strong>Upgrade Costs</strong><small>From → To</small></span></button>'+
+   '<button type="button" class="quickAction" data-route="calculators/pet"><span class="quickActionIcon">'+icon('paw',24)+'</span><span class="quickActionText"><strong>Pet Compound</strong><small>Bonus calculator</small></span></button>'+
+   '<button type="button" class="quickAction" data-route="calculators/damage"><span class="quickActionIcon">'+icon('calculator',24)+'</span><span class="quickActionText"><strong>Damage Lab</strong><small>Compare stat upgrades</small></span></button>'+
+  '</nav>'+quickUpgrade+'</section>';
+ return quickActions+'<section class="launchHero" aria-label="Featured Build Studio">'+
   '<svg class="launchHeroArcaneSeal" viewBox="0 0 160 160" fill="none" aria-hidden="true" focusable="false"><circle cx="80" cy="80" r="66"/><circle cx="80" cy="80" r="53"/><circle cx="80" cy="80" r="35"/><path d="M80 5v26m0 98v26M5 80h26m98 0h26M25 25l19 19m72 72 19 19m0-110-19 19m-72 72-19 19M80 40l40 40-40 40-40-40zM80 54l26 26-26 26-26-26z"/><circle cx="80" cy="15" r="3"/><circle cx="145" cy="80" r="3"/><circle cx="80" cy="145" r="3"/><circle cx="15" cy="80" r="3"/></svg>'+
   '<div class="launchHeroHeader"><span class="launchHeroArt" aria-hidden="true">'+icon('feature-build-studio',38)+'</span>'+
   '<div class="launchHeroText"><span class="launchEyebrow">THE HEART OF ARCANA</span><h1>Build Studio</h1>'+
