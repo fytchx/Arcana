@@ -157,7 +157,7 @@ with sync_playwright() as playwright:
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Icon gallery overflows mobile horizontally'
     page.evaluate("location.hash='#/settings'")
     page.locator('.arcanaSettings').wait_for(timeout=8000)
-    assert page.locator('.arcanaThemeReadOnly').count()==1, 'Public accounts must not edit Arcana themes'
+    assert 'design settings are managed centrally by Arcana administrators' in page.locator('.arcanaSettings').inner_text(), 'Guest display settings should explain admin-managed themes'
     assert page.locator('.slateAccentChoice').count()==0, 'Accent editor visible to a guest'
     assert page.locator('[data-app-pref="reduceMotion"]').count()==1, 'Accessible display settings missing'
     page.evaluate("location.hash='#/home'")
