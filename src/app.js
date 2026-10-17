@@ -51,6 +51,7 @@ import {currentAccount,refreshAccount,accountStatus} from './community-ui.js';
 import {searchAsYouType} from './search-as-you-type.js';
 import {writeDesign,resetDesign,normalizeDesignHex,applyDesignPreset,undoDesign,readDesign,DESIGN_PRESETS} from './design-controls.js';
 import {wireDesignMiniPreview,syncDesignMiniPreview,endDesignMiniSession,focusDesignMiniPreview,showDesignMiniPage} from './design-mini-preview.js';
+import {PROCEDURAL_TEXTURES,proceduralTexture} from './procedural-textures.js';
 import {wireThemeVault} from './theme-studio-vault.js';
 import {suggestedButtonText} from './theme-studio-audit.js';
 import {initGeneralChat} from './general-chat.js';
@@ -551,7 +552,7 @@ function syncWorkshopInputs(){
   const key=e.dataset.designField;if(!Object.hasOwn(design,key))continue;
   e.value=String(design[key]);
   const value=document.querySelector('[data-design-value="'+key+'"]');
-  if(value)value.textContent=design[key]+(px.has(key)?' px':'%');
+  if(value)value.textContent=design[key]+(px.has(key)?' px':key==='textureWeight'?'%':key==='textureGlow'?' px':'%');
  }
  for(const e of document.querySelectorAll('.arcanaDesignLab [data-design-hex]')){
   e.value=design[e.dataset.designHex]||'';
@@ -560,6 +561,7 @@ function syncWorkshopInputs(){
   if(label)label.textContent='HEX code';
  }
  for(const tile of document.querySelectorAll('.arcanaDesignLab [data-theme-pattern]'))tile.setAttribute('aria-pressed',String(tile.dataset.themePattern===design.pattern));
+ for(const p of PROCEDURAL_TEXTURES){const tile=document.querySelector('.arcanaDesignLab [data-theme-pattern="'+p.id+'"] .themePatternThumb');if(tile){const paint=proceduralTexture(p.id,design.textureColorMode==='accent'?design.action:design.textureColor,design.textureWeight,76,0);if(paint){tile.style.setProperty('--thumb-pattern',paint.url);tile.style.backgroundSize='88px 88px';}}}
  for(const button of document.querySelectorAll('.arcanaDesignLab [data-hero-cta-style]'))button.setAttribute('aria-pressed',String(button.dataset.heroCtaStyle===design.heroActionStyle));
  for(const preset of document.querySelectorAll('.arcanaDesignLab .designPreset')){
   const matches=preset.dataset.presetSearch&&preset.dataset.arg;
