@@ -1,4 +1,4 @@
-import {applyDesign,setPublishedDesign,currentPublishedDesign} from './design-controls.js';
+import {applyDesign,setPublishedDesign,currentPublishedDesign,setExternalDesignPreview} from './design-controls.js';
 /**
  * Arcana design bridge. Read-only client; the owner changes palettes in the
  * existing authenticated Design Control service. Never expose write credentials.
@@ -168,6 +168,7 @@ export function initTheme(){
  if(typeof location!=='undefined'&&location.hostname==='arcana-preview-app-preview.up.railway.app'&&new URLSearchParams(location.search).has('arcana-design-desk')&&window.parent!==window){
   window.addEventListener('message',event=>{
    if(event.origin!==location.origin||event.source!==window.parent||event.data?.type!=='arcana:design-desk-sync')return;
+   setExternalDesignPreview(event.data.core||null);
    applyTheme(currentScope);
   });
  }
