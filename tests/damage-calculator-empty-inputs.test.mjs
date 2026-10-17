@@ -51,6 +51,21 @@ test('an explicit zero is measured input; empty pet base is unknown', () => {
   assert.equal(calculatePet(build.pet).min, 0);
 });
 
+test('partial raw pet base does not fabricate a zero endpoint', () => {
+  const build = blankDamageBuild();
+  build.pet.base.min = 100;
+  build.pet.layers.equipmentAffixes = 50;
+  const partial = calculatePet(build.pet);
+  assert.equal(partial.baseComplete, false);
+  assert.equal(partial.min, null);
+  assert.equal(partial.max, null);
+  build.pet.base.max = 200;
+  const complete = calculatePet(build.pet);
+  assert.equal(complete.baseComplete, true);
+  assert.equal(complete.min, 150);
+  assert.equal(complete.max, 300);
+});
+
 test('Retaliation requires observed numbers and structured pools, but permits explicit zero', () => {
   const base = {defense:0,globalRatio:0,baseBonuses:{deflection:0},
     layers:{guild:0},combatStanceFactor:1,rollMinFactor:0.7};
