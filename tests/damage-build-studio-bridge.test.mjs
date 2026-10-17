@@ -119,3 +119,15 @@ test('cannot transfer Warrior gear bonuses over an Archer tooltip snapshot',()=>
  const allowed=buildStudioScenarioChanges(x,{className:'Warrior',attack:{layers:{dropBonus:25}}});
  assert.equal(allowed.ok,true);
 });
+
+test('configured gear with an unspecified bonus is NOT proof of zero damage bonus',()=>{
+ const b=build({
+  ring:equipment('fierce',14),
+  ring2:{id:'game:item:adventurers-ring',rarity:5,awaken:0,bonusId:null,bonusTier:5,roll:null},
+ });
+ const x=projectBuildStudioDamage(b);
+ assert.equal(x.known,false);
+ assert.equal(x.rows.length,1,'known roll stays visible for review');
+ assert.ok(x.blockers.some(v=>v.includes('unspecified')));
+ assert.equal(buildStudioScenarioChanges(x).ok,false);
+});
