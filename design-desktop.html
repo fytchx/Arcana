@@ -107,7 +107,7 @@ function syncInputs(){
 function renderPatterns(){
  const d=readDesign();const q=el('filter').value.trim().toLowerCase();
  const patterns=THEME_PATTERNS.filter(p=>(category==='All'||category==='Procedural'&&p.category==='Procedural'||category===p.category)&&(!q||(p.name+' '+p.category).toLowerCase().includes(q)));
- el('patternList').innerHTML=patterns.map(p=>{const v=proceduralTexture(p.id,hueColor(d),d.textureWeight,85,0);const pic=v?'background-image:'+v.url+';background-size:76px 76px;':'background-image:radial-gradient(circle at 70% 35%,#ad8bfa33,transparent 55%),repeating-linear-gradient(35deg,transparent 0 14px,#a891ed24 15px,transparent 16px,transparent 30px);';return '<button class="textureButton '+(p.id===d.pattern?'active':'')+'" data-pattern="'+p.id+'" title="'+esc(p.name)+'"><span class="textureVisual" style="'+pic+'"></span><span class="label">'+esc(p.name)+'</span></button>';}).join('')||'<div class="empty">No patterns match.</div>';
+ el('patternList').innerHTML=patterns.map(p=>{const v=proceduralTexture(p.id,hueColor(d),d.textureWeight,85,0);const pic=v?'background-image:'+v.url+';background-size:76px 76px;':'background-image:radial-gradient(circle at 70% 35%,#ad8bfa33,transparent 55%),repeating-linear-gradient(35deg,transparent 0 14px,#a891ed24 15px,transparent 16px,transparent 30px);';return '<button class="textureButton '+(p.id===d.pattern?'active':'')+'" data-pattern="'+p.id+'" title="'+esc(p.name)+'"><span class="textureVisual" style="'+pic.replaceAll('"','&quot;')+'"></span><span class="label">'+esc(p.name)+'</span></button>';}).join('')||'<div class="empty">No patterns match.</div>';
 }
 function setThemeVars(doc,d){
  const root=doc.documentElement;if(!root)return;
