@@ -43,3 +43,19 @@ Last verified: 2026-10-17. This is a recovery pointer for when ChatGPT conversat
 
 ## Resume prompt
 "Continue Arcana Damage Calculator from `fytchx/Arcana` draft PR #33. First read `docs/damage-calculator-chat-recovery.md`, the PR description and current branch files. Work in short committed batches, reporting exactly what was saved and tested. Don't merge or deploy without validation."
+
+## 2026-10-17 continuation: measured/blank state and Marginal Gains Lab
+
+Committed to this same draft feature branch after the first recovery checkpoint:
+
+- `src/damage-calculator-engine.js`: `blankDamageBuild()` creates truly empty builds. An entered zero is distinct from an unknown/null field. Attack now reports `known` and `complete` input coverage; Pet remains unknown when pre-bonus pet base is absent.
+- `src/retaliation-damage-engine.js`: required unset/null defense, global ratio, stance, and roll factors no longer turn into a fabricated zero Retaliation result.
+- `src/damage-calculator-ui.js`: Clear values removes ALL screenshot-derived values, renders unknown/partial coverage honestly, allows cleared inputs to return to unknown, and shows only measured combat/pet breakdowns.
+- New `src/damage-calculator-marginals.js` and UI Marginal Gains Lab: for an entered Attack/Pet snapshot, rank what `+1`, `+10`, or `+100` **percentage points** to each **already measured** source would do. Correctly distinguishes additive Attack % from independent layers and shows percent change without inventing specific equipment/pet roll availability or DPS. The mobile accordion is collapsed by default, and scenario edits refresh it.
+- Tests: `tests/damage-calculator-empty-inputs.test.mjs` and `tests/damage-calculator-marginals.test.mjs`.
+
+**Validation performed:** Parsed updated UI JavaScript in a V8 evaluator; executed updated pure math modules in isolation: Hunter, Mage and Warrior Attack screenshot anchors, Warrior Retaliation tooltip anchor, blank-vs-zero behavior and example Pet/Attack marginal rankings. These targeted checks passed. This is NOT the full Node test suite or browser/mobile QA.
+
+**CI warning remains:** Arcana Checks on the updated head still reports `failure` for both source and mobile jobs with **zero steps** in both jobs, and job logs were unavailable. This does not demonstrate a test assertion failure. Runner provisioning/account/Actions configuration needs diagnosis. Do not describe CI as green.
+
+**Release:** Still draft PR #33, unmerged, undeployed. Next stage: reliable CI or local full repo tests, browser/mobile QA, more source-verified Rogue/Druid and pet/combat event coverage. Do not convert marginal percentage-point rankings to real gear advice until actual obtainable source costs/rolls are known.
