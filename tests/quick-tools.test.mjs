@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {quickUpgradePanel,quickUpgradeContent,initialQuickRange} from '../src/quick-tools-view.js';
-import {quoteRange} from '../src/pathfinder-range.js';
+import {quoteRange,saveRange,readRange} from '../src/pathfinder-range.js';
 import {DEFAULT_DAMAGE_LAB,normalizeDamageLab,estimateDamageLab,damageLabView,saveDamageLab,readDamageLab} from '../src/damage-lab.js';
 import {homeScreen} from '../src/launch-navigation.js';
 const fixture={
@@ -69,4 +69,30 @@ test('Pathfinder uses verified recipes and the homepage has no calculator',async
  assert.match(app,/function pathfinderHub\(legacyView='range'\)/);
  assert.match(page,/quick-tools\.css/);assert.match(server,/quick-tools\.css/);
  assert.match(page,/home-three\.css/);assert.match(server,/home-three\.css/);
+});
+
+test('upgrade checkpoints persist after leaving the calculator and reloading the site',()=>{
+ const cache=new Map(),store={getItem:k=>cache.get(k),setItem:(k,v)=>cache.set(k,v)};
+ const input={fromStage:'A4',fromLevel:25,toStage:'A5',toLevel:30};
+ saveRange(input,store);
+ const restored=readRange(store);
+ assert.deepEqual(restored,input);
+ const full=structuredClone(fixture);
+ for(const row of Object.values(full.codex.awaken.rows)){
+  while(row.length<30)row.push({...row.at(-1),current:row.length,target:row.length+1});
+ }
+ assert.deepEqual(initialQuickRange(full,restored),input);
+});
+test('homepage navigation keeps wiki and guild recruitment accessible from global menu',async()=>{
+ const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+ const nav=await readFile(new URL('../src/launch-navigation.js',import.meta.url),'utf8');
+ const css=await readFile(new URL('../home-three.css',import.meta.url),'utf8');
+ for(const section of ["{id:'pathfinder'","{id:'tools'","{id:'builds'"])assert.ok(nav.includes(section));
+ assert.match(nav,/Damage Calculator · Work in Progress/);
+ assert.match(app,/\['wiki','ArcanaWiki'/);
+ assert.match(app,/\['lfg','Guild & Raid Finder'/);
+ assert.match(app,/WORK IN PROGRESS/);
+ assert.doesNotMatch(app,/return damageLabView/);
+ assert.match(css,/grid-template-columns:minmax\(0,1fr\)!important/);
+ assert.match(css,/overflow-y:visible!important/);
 });
