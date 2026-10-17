@@ -23,6 +23,22 @@ const normalizedRange = value => {
   const r = range(value);
   return {min: Math.min(r.min, r.max), max: Math.max(r.min, r.max)};
 };
+const supplied = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
+const suppliedRange = value => supplied(value?.min) || supplied(value?.max);
+
+/**
+ * Start a new character without silently retaining Hunter screenshot values.
+ * Null means "not measured"; explicit zero means the player entered zero.
+ * The calculator can still calculate partial stages while marking coverage.
+ */
+export function blankDamageBuild() {
+  return {
+    className: 'Custom',
+    attack: {weapon:{min:null,max:null},jewelry:{min:null,max:null},additive:{},flat:{},layers:{}},
+    pet: {base:{min:null,max:null},flat:{},layers:{}},
+    combat: {}, retaliation: {},
+  };
+}
 
 /** Percentage layers stack independently. Percentages inside a single stage add. */
 export function percentageProduct(layers = {}) {
@@ -48,12 +64,14 @@ export function calculateAttack(input = {}) {
   const additiveFactor = Math.max(0, 1 + additivePct / 100);
   const flatBonus = sum(input.flat);
   const layers = percentageProduct(input.layers);
+  const known = suppliedRange(input.weapon) || suppliedRange(input.jewelry);
+  const complete = ['min','max'].every(end => supplied(input.weapon?.[end]) && supplied(input.jewelry?.[end]));
   const preLayers = {
     min: Math.max(0, base.min * additiveFactor + flatBonus),
     max: Math.max(0, base.max * additiveFactor + flatBonus),
   };
   return {
-    kind: 'attack', base, additivePct, additiveFactor,
+    kind: 'attack', known, complete, base, additivePct, additiveFactor,
     flatBonus, preLayers, layerFactor: layers.factor,
     layerBreakdown: layers.breakdown,
     min: preLayers.min * layers.factor,
@@ -70,7 +88,7 @@ export function calculateAttack(input = {}) {
  * omit it and use only layerFactor for multiplier-only comparisons.
  */
 export function calculatePet(input = {}) {
-  const hasBase = input.base && [input.base.min, input.base.max].some(x => x !== null && x !== undefined && x !== '');
+  const hasBase = suppliedRange(input.base);
   const base = hasBase ? normalizedRange(input.base) : null;
   const flatBonus = sum(input.flat);
   const layers = percentageProduct(input.layers);
