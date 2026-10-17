@@ -7,12 +7,13 @@ const clone=x=>JSON.parse(JSON.stringify(x));
 const escape=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const decimal=x=>Number.isFinite(x)?x.toLocaleString('en-US',{maximumFractionDigits:2}):'Unknown';
 const blank=()=>({current:blankQuickPetSetup(),proposed:blankQuickPetSetup(),observedMultiplier:null,observedFor:null});
-const snapshotKey=build=>JSON.stringify({
+export const petQuickSnapshotKey=build=>JSON.stringify({
  className:build?.className||'',
  petLayers:Object.entries(build?.pet?.layers||{}).sort(([a],[b])=>a.localeCompare(b)),
  petFlat:build?.pet?.flat||{},petBase:build?.pet?.base??null,
 });
 const observedValue=x=>x===null||x===undefined||x===''?null:Number(x);
+const snapshotKey=petQuickSnapshotKey;
 let stored=null;
 function load(){
  if(stored)return stored;
