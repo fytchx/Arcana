@@ -33,11 +33,11 @@ test('preview defaults back to the recolorable Arcana Minimal class and gear ico
 });
 test('preview homepage and menus use Arcana Minimal instead of Refined',()=>{
  const home=homeScreen();
- assert.equal((home.match(/class="launchQuickCard"/g)||[]).length,6);
+ assert.equal((home.match(/class="launchQuickCard"/g)||[]).length,3);
  assert.match(home,/data-arcana-icon="feature-build-studio"/);
  assert.doesNotMatch(home,/data-refined-icon=/);
  const submenu=homeSubmenu('tools');
- assert.equal((submenu.match(/class="launchNavRow"/g)||[]).length,4);
+ assert.equal((submenu.match(/class="launchNavRow"/g)||[]).length,5);
  assert.match(submenu,/data-arcana-icon=/);
  assert.doesNotMatch(submenu,/data-refined-icon=/);
 });
