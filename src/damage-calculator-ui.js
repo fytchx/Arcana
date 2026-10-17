@@ -85,6 +85,7 @@ function setAt(obj,path,value) {
 function cleanNumber(v){if(v===''||v===null||v===undefined)return 0;const n=Number(v);return Number.isFinite(n)?Math.max(-1e8,Math.min(1e8,n)):0;}
 function esc(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function fmt(n){return n===null||n===undefined?'Not available':Number(n).toLocaleString('en-US',{maximumFractionDigits:1});}
+function fmtDamage(n){if(n===null||n===undefined)return 'Not measured';const v=Number(n),a=Math.abs(v);return a>=1e12?(v/1e12).toFixed(2)+'T':a>=1e9?(v/1e9).toFixed(2)+'B':a>=1e6?(v/1e6).toFixed(2)+'M':a>=1e4?(v/1e3).toFixed(2)+'K':fmt(v);}
 function pct(n){return n===null||n===undefined?'Needs full input':(n>0?'+':'')+n.toFixed(2)+'%';}
 function inputs(section,heading,paths){
  return `<details class="dcDetails" ${section==='attack'&&heading==='Attack base'?'open':''}><summary>${esc(heading)}</summary><div class="dcFields">${paths.map(path=>{
@@ -126,7 +127,7 @@ function asScenario(){
 function results(){
  const comp=compareBuilds(state.baseline,asScenario());
  const base=comp.baseline,scen=comp.scenario;
- const attackRange=x=>fmt(x.min)+' – '+fmt(x.max);
+ const attackRange=x=>fmtDamage(x.min)+' – '+fmtDamage(x.max);
  const extra=Object.keys(state.changes).length;
  const current=asScenario();
  const retA=calculateRetaliation(state.baseline.retaliation);
@@ -139,7 +140,7 @@ function results(){
  <div class="dcResult"><span>Attack damage range</span><strong>${attackRange(scen.attack)}</strong><small>Before crit, Double Hit, Double Damage and enemy mitigation</small><b>Change ${pct(comp.changes.attack.min?.percentChange)}</b></div>
  <div class="dcResult"><span>Pet damage multiplier</span><strong>${hasPet?'×'+scen.pet.layerFactor.toFixed(2):'Not measured'}</strong><small>${!hasPet?'Load a pet reference or enter pet bonuses.':scen.pet.min === null ? 'Enter a pre-bonus pet base to calculate final damage.' : 'Estimated pet damage: '+fmt(scen.pet.min)+' – '+fmt(scen.pet.max)} Flat +${fmt(scen.pet.flatBonus)} added before multipliers.</small><b>Change ${hasPet?pct(comp.changes.petMultiplier?.percentChange):'Not measured'}</b></div>
  <div class="dcResult"><span>Attack multiplier breakdown</span><strong>×${scen.attack.additiveFactor.toFixed(3)} / ×${scen.attack.layerFactor.toFixed(2)}</strong><small>Summed additive first; ${fmt(scen.attack.flatBonus)} flat added after; independent layers multiply.</small></div>
- <div class="dcResult"><span>Retaliation per enemy attack</span><strong>${retB.known?fmt(retB.min)+" – "+fmt(retB.max):"Not measured"}</strong><small>${retB.known?"Unblocked display range, ×"+fmt(retB.blockedFactor)+" conditional blocked-hit factor is separate. Not DPS.":"Load Warrior or provide Defense, base-pool, and Retaliation multipliers."}</small><b>Change ${pct(retChange?.percentChange)}</b></div>
+ <div class="dcResult"><span>Retaliation per enemy attack</span><strong>${retB.known?fmtDamage(retB.min)+" – "+fmtDamage(retB.max):"Not measured"}</strong><small>${retB.known?"Unblocked display range, ×"+fmt(retB.blockedFactor)+" conditional blocked-hit factor is separate. Not DPS.":"Load Warrior or provide Defense, base-pool, and Retaliation multipliers."}</small><b>Change ${pct(retChange?.percentChange)}</b></div>
  </div>
  <div class="dcCombatNumbers"><span>${hasCombat?"Crit:":"Combat stats not measured. "} <b>${fmt(scen.combat.crit.effectiveChance)}%</b> chance, <b>+${fmt(scen.combat.crit.overflowCritDamage)}%</b> overflow damage</span><span>Double Damage: <b>×${fmt(scen.combat.doubleDamage.expected)}</b> mean multiplier</span><span>Double Hit: <b>${fmt(scen.combat.doubleHit.expected)}</b> expected hits on surviving targets</span><span>Alpha Strike: <b>${fmt(scen.combat.alphaStrike.chance)}%</b> proc chance</span></div>
  <p class="dcValidation">${extra?extra+' what-if change'+(extra===1?'':'s')+' applied.':'Example baseline unchanged.'} Reference: ${esc(sample)}. Values are reconstructed from rounded in-game tooltips. Conditional procs, caps, enemy mitigation and actual DPS require separate checks.</p>`;
