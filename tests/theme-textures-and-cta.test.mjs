@@ -1,3 +1,4 @@
+import {PROCEDURAL_TEXTURES,proceduralTexture} from '../src/procedural-textures.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -7,20 +8,27 @@ import {THEME_PATTERNS} from '../src/theme-patterns.js';
 import {designPanel,settingsView} from '../src/launch-navigation.js';
 
 const read=p=>readFile(new URL(p,import.meta.url),'utf8');
-test('texture library includes 64 unique visual finishes with matching live, preview and gallery drawings',async()=>{
+test('texture library includes 74 unique visual finishes with matching live, preview and gallery drawings',async()=>{
  const css=await read('../arcana-contour.css'),form=designPanel({showPreview:false});
- assert.equal(THEME_PATTERNS.length,64);
- assert.equal(new Set(THEME_PATTERNS.map(p=>p.id)).size,64);
+ assert.equal(THEME_PATTERNS.length,74);
+ assert.equal(new Set(THEME_PATTERNS.map(p=>p.id)).size,74);
  for(const texture of THEME_PATTERNS){
   assert.equal(validateDesignField('pattern',texture.id),texture.id);
-  assert.ok(css.includes('data-preview-pattern="'+texture.id+'"'),texture.id+' thumb missing');
-  assert.ok(css.includes('data-arcana-design-pattern="'+texture.id+'"'),texture.id+' live missing');
-  if(!['plain','contours'].includes(texture.id))assert.ok(css.includes('data-mini-pattern="'+texture.id+'"'),texture.id+' mini missing');
+  if(texture.category==='Procedural'){
+   assert.ok(proceduralTexture(texture.id,'#ffffff',100,22,2)?.svg.includes('<svg'),texture.id+' SVG missing');
+   assert.ok(css.includes('data-preview-pattern^="procedural-"')&&css.includes('data-arcana-design-pattern^="procedural-"')&&css.includes('data-mini-pattern^="procedural-"'),'Shared vector painting selectors missing');
+  }else{
+   assert.ok(css.includes('data-preview-pattern="'+texture.id+'"'),texture.id+' thumb missing');
+   assert.ok(css.includes('data-arcana-design-pattern="'+texture.id+'"'),texture.id+' live missing');
+   if(!['plain','contours'].includes(texture.id))assert.ok(css.includes('data-mini-pattern="'+texture.id+'"'),texture.id+' mini missing');
+  }
   assert.ok(form.includes('data-theme-pattern="'+texture.id+'"'),texture.id+' picker missing');
  }
- assert.ok(form.includes('64 texture finishes'));
+ assert.ok(form.includes('74 texture finishes'));
  assert.ok(form.includes('data-design-field="patternTarget"'));
  assert.ok(form.includes('Where to show textures'));
+ assert.equal(PROCEDURAL_TEXTURES.length,10);
+ for(const f of ['textureColor','textureWeight','textureGlow','textureColorMode'])assert.ok(form.includes('data-design-field="'+f+'"'),f+' control missing');
 });
 test('Build Studio entrance has 16 distinct selectable treatments and safe controls',async()=>{
  const css=await read('../theme-studio-finishes.css'),app=await read('../src/app.js'),mini=await read('../src/design-mini-preview.js'),form=designPanel({showPreview:false});
