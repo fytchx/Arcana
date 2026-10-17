@@ -38,6 +38,7 @@ const NUMERIC_PATHS = [
   ['Pet flat · runes','pet.flat.runes','pet'],
   ['Pet flat · guild','pet.flat.guild','pet'],
   ['Pet flat · passive','pet.flat.passive','pet'],
+  ['Pet flat · class skills','pet.flat.classSkills','pet'],
   ['Pet layer · equipment affixes %','pet.layers.equipmentAffixes','pet'],
   ['Pet layer · DEX contribution %','pet.layers.dexterity','pet'],
   ['Pet layer · INT contribution %','pet.layers.intelligence','pet'],
@@ -99,12 +100,12 @@ const SETS = [
  ['attack','Flat damage after additive %',NUMERIC_PATHS.slice(9,12).map(x=>x[1])],
  ['attack','Independent attack multipliers',NUMERIC_PATHS.slice(12,25).map(x=>x[1])],
  ['pet','Pet base before any bonuses (optional)',NUMERIC_PATHS.slice(25,27).map(x=>x[1])],
- ['pet','Flat damage applied to each pet',NUMERIC_PATHS.slice(27,30).map(x=>x[1])],
- ['pet','Independent pet multipliers',NUMERIC_PATHS.slice(30,42).map(x=>x[1])],
- ['combat','Critical hits, overflow and procs',NUMERIC_PATHS.slice(42,48).map(x=>x[1])],
- ['retaliation','Defense and Retaliation base',NUMERIC_PATHS.slice(48,53).map(x=>x[1])],
- ['retaliation','Independent Retaliation multipliers',NUMERIC_PATHS.slice(53,63).map(x=>x[1])],
- ['retaliation','Conditional Retaliation factors',NUMERIC_PATHS.slice(63).map(x=>x[1])],
+ ['pet','Flat damage applied to each pet',NUMERIC_PATHS.slice(27,31).map(x=>x[1])],
+ ['pet','Independent pet multipliers',NUMERIC_PATHS.slice(31,43).map(x=>x[1])],
+ ['combat','Critical hits, overflow and procs',NUMERIC_PATHS.slice(43,49).map(x=>x[1])],
+ ['retaliation','Defense and Retaliation base',NUMERIC_PATHS.slice(49,54).map(x=>x[1])],
+ ['retaliation','Independent Retaliation multipliers',NUMERIC_PATHS.slice(54,64).map(x=>x[1])],
+ ['retaliation','Conditional Retaliation factors',NUMERIC_PATHS.slice(64).map(x=>x[1])],
 ];
 let state=null;
 function load(){
@@ -208,6 +209,25 @@ export function mountDamageCalculator(){
  if(!root || root.dataset.dcMounted==='yes')return;
  root.dataset.dcMounted='yes';
  load();updateNumbers(root);mountSkillPlanner(root);
+ // Explicit user action replaces the SAME stages in the manual screenshot
+ // reference. These are never added on top of the original aggregate values.
+ root.addEventListener('dc-apply-skill-sheet',e=>{
+  const d=e.detail||{};
+  const safe=n=>Number.isFinite(Number(n))?Math.max(0,Number(n)):0;
+  setAt(state.baseline,'attack.additive.classSkills',safe(d.attackClassPct));
+  delete state.changes['attack.additive.classSkills'];
+  if(state.baseline.pet?.layers || safe(d.petClassPct)>0){
+   setAt(state.baseline,'pet.layers.classSkills',safe(d.petClassPct));
+   delete state.changes['pet.layers.classSkills'];
+  }
+  if(state.baseline.pet?.flat || safe(d.petClassFlat)>0){
+   setAt(state.baseline,'pet.flat.classSkills',safe(d.petClassFlat));
+   delete state.changes['pet.flat.classSkills'];
+  }
+  const classes={1:'Warrior',2:'Archer',3:'Mage',4:'Rogue',5:'Druid'};
+  state.baseline.className=(classes[d.classId]||'Custom')+' · skill plan';
+  persist();updateNumbers(root);
+ });
  root.addEventListener('input',e=>{
   if(e.target.matches('[data-dc-field]')){
    setAt(state.baseline,e.target.dataset.dcField,cleanNumber(e.target.value));
