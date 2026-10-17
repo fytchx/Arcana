@@ -45,6 +45,7 @@ function appearanceView(){
   '<div class="adminPublishedStatus"><strong>'+ (published?'Published theme v'+state.config.revision:'No unified theme published yet')+'</strong><span>'+(state.config?.updatedAt?'Last publish: '+esc(new Date(state.config.updatedAt).toLocaleString()):'Existing Arcana appearance remains until your first publish.')+'</span></div>'+
   '<div class="adminPublishBar"><button class="btn primary" data-admin-command="publish-theme" '+(state.busy?'disabled':'')+'>'+icon('check',16)+' Publish to everyone</button><button class="btn secondary" data-admin-command="discard-theme" '+(state.busy?'disabled':'')+'>Restore published design</button></div>'+
   '<p class="adminHelp">Preview edits stay on your device. Publishing updates the central server, so guests and signed-in members see the same appearance. Older local color preferences are ignored.</p>')+
+ '<div class="arcanaDesktopDeskInvite"><strong>NEW · Desktop Design Workspace</strong><span>Full-size Arcana preview, all current theme controls, and ten programmable textures.</span><a href="/design-desktop.html" target="_blank" rel="noopener">Open desktop editor ↗</a></div>'+ 
  '<div class="themeStudioWorkbench" aria-label="Arcana Theme Studio workspace">'+
  '<div class="themeStudioEditor" id="themeStudioEditor">'+designPanel({showPreview:false})+'</div>'+
  '<aside class="themeStudioPreview" id="themeStudioPreview" aria-label="Persistent real-time design preview">'+designMiniMarkup()+'</aside></div>'+
