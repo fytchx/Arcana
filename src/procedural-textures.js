@@ -1,4 +1,5 @@
 // Arcana procedural texture primitives, shared by the desktop design desk and Theme Studio.
+// Desktop preview includes the full Build Studio button catalog and preserved theme drafts.
 // Original vector shapes, one-color, independently configurable; no external assets.
 // Preview release: all 74 texture IDs are validated; source is shared with the desktop desk.
 const textureDefinitions=[
