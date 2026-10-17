@@ -146,8 +146,8 @@ with sync_playwright() as playwright:
     assert page.locator('#bottomNav').count()==0, 'Legacy bottom navigation must stay removed'
     assert page.locator('#arcanaDock button').count()==5, 'Persistent five-tab dock missing'
     assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1, 'Build Studio is not featured'
-    assert page.locator('.launchQuickCard').count()==6, 'Exactly six launch navigation cards are required'
-    assert page.locator('.launchQuickCard .arcanaIcon').count()>=18, 'Themeable SVG icons missing from launch navigation'
+    assert page.locator('.launchQuickCard').count()==3, 'Modern Arcana must retain its three home navigation cards'
+    assert page.locator('.launchQuickCard .arcanaIcon').count()>=3, 'Themeable SVG icons missing from modern home'
     assert page.locator('.launchHeroArt .arcanaIcon').get_attribute('data-arcana-icon')=='feature-build-studio', 'Build Studio emblem must use Arcana Minimal'
     # The icon gallery is a real route and every registered asset is previewable.
     page.evaluate("location.hash='#/icons'")
@@ -176,10 +176,9 @@ with sync_playwright() as playwright:
     assert page.locator('.launchFeatured').is_hidden(), 'Featured section should live in bottom navigation'
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Two-column home has horizontal overflow'
 
-    for menu_id in ('wiki','tools','guides','builds','pathfinder','social'):
+    for menu_id in ('pathfinder','tools','builds'):
         assert page.locator('.launchQuickCard[data-arg="'+menu_id+'"]').count()==1, 'Missing home card '+menu_id
-    page.locator('.launchQuickCard[data-arg="wiki"]').click()
-    page.locator('#layer [data-route="wiki"]').click()
+    page.evaluate("location.hash='#/wiki'")
     assert page.locator('.wikiV1Categories [data-route="wiki/category"]').count()>=5
     page.locator('.wikiV1Categories [data-params="slug=equipment"]').click()
     assert page.locator('.wikiCrumbTrail').count()==1
@@ -190,8 +189,7 @@ with sync_playwright() as playwright:
     page.wait_for_timeout(170)
     assert page.locator('.wikiCategoryPage').count()==1
     page.locator('#arcanaDock [data-route="home"]').click()
-    page.locator('.launchQuickCard[data-arg="wiki"]').click()
-    page.locator('#layer [data-route="wiki"]').click()
+    page.evaluate("location.hash='#/wiki'")
     page.locator('.wikiCodexLaunch').click()
     assert page.locator('.wikiLibrary h1').inner_text()=='Item Codex'
     rail=page.locator('.wikiCategoryScroll')
