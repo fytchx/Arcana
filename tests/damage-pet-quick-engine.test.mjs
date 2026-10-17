@@ -40,6 +40,7 @@ test('unknown breakdown cannot be forged into a damage result',()=>{
  const A=four(slot('petEquipmentPct',20));
  assert.equal(compareQuickPetSetups({},A,A).known,false);
  assert.equal(compareQuickPetSetups({pet:{layers:{}}},A,A).known,false);
+ assert.equal(compareQuickPetSetups({pet:{layers:{}}},four(),four()).known,false);
  const missing=compareQuickPetSetups(H,four(slot('petEquipmentPct',null)),A);
  assert.equal(missing.known,false);
  assert.ok(missing.missing.some(x=>x.includes('value')));
