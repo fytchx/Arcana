@@ -67,3 +67,18 @@ Committed to this same draft feature branch after the first recovery checkpoint:
 - This is **not** a green `npm run check`, nor a browser/mobile run, because repository code execution/CI runner remains unavailable from this session.
 - An erased conditional blocked-hit multiplier returns `null` rather than a false ×0; the regression assertion is included.
 - The draft PR remains the only work branch for this iteration.
+
+## 2026-10-17 continuation checkpoint: four-slot Pet A/B Lab
+
+- New `src/damage-pet-quick-engine.js`: source-preserving comparison of exactly **4 current vs 4 proposed slots** using the already-measured Pet Damage tooltip as the baseline. Existing current bonuses are **subtracted before proposed ones are applied**, avoiding double-counting. The module rejects unknown breakdown rows, unfilled values and inconsistent totals; it does not fabricate pet base damage.
+- The allowed source channels are explicitly named and bounded: equipment Pet Damage %, Companions drop bonus %, effective extra INT points (0.05% pet damage each), and effective extra DEX points (0.1% each). **Effective INT/DEX** means stat points after increased-attribute calculations, **not** raw Increased INT/DEX roll %. No unverified conversion of a hatch bonus into a tooltip stage.
+- New `src/damage-pet-quick-ui.js`: mobile-first A/B slot editor on the Damage Calculator's **Pets tab**; separate persistent preferences; result × multiplier, relative gain and source breakdown; copy current to proposed, reset, illustrative 2×20 vs 4×20 comparison, and **Send proposed sources to what-if**.
+- `src/damage-calculator-ui.js` links the Pet Lab and stage-safe applies its computed measured rows into main what-if fields. The lab always calibrates against the saved **baseline**, not the scenario, so repeated application cannot compound changes accidentally.
+- `src/damage-calculator-engine.js`: two required observed endpoints now gate pre-bonus pet damage output. A single entered endpoint remains unknown.
+- New `tests/damage-pet-quick-engine.test.mjs` and extended `tests/damage-calculator-empty-inputs.test.mjs`.
+
+### Verification and limits
+- **12/12 focused assertions passed in an isolated V8 harness with Node-style assertion shims**, including source deltas, mixed INT/DEX, unknown/inconsistent stages, correct pet-base optionality and stage replacements.
+- Five production modules parsed in a V8 syntax check; Hunter Attack remains within +0.002% and the calculated Pet tooltip multiplier within -0.066% of screenshot references.
+- Full `node --test`, `npm run check`, GitHub Actions runner execution, and real mobile browser QA remain **unverified**. GitHub Actions continues returning jobs marked failed with zero steps. No merge/deploy.
+- The quick comparison is intentionally **not** an automated pet hatch rarity/compound optimizer: exact effect-to-tooltip mapping, increased-attribute stat pools, ACS and real combat events need independent source confirmation before such recommendations can be calculated authoritatively.
