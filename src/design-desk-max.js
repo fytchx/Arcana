@@ -2,6 +2,7 @@
 import {readDesign,replaceDesignDraft,DESIGN_PRESETS,DEFAULT_DESIGN,normalizeDesignHex,validateDesignField,DESIGN_FIELDS} from './design-controls.js';
 import {MAX_FIELDS,MAX_GROUPS,MAX_DEFAULTS,readMax,saveMax,writeMax,applyMax,normalizeMax} from './design-max-controls.js';
 import {PROCEDURAL_TEXTURES} from './procedural-textures.js';
+import {THEME_PATTERNS} from './theme-patterns.js';
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const VAULT='arcana-design-max-vault-v1',BACKUP='arcana-design-max-last-import-v1';
@@ -46,6 +47,7 @@ const uiCSS=`
 @media(max-width:1100px){.desk .grid{grid-template-columns:350px minmax(400px,1fr)}.maxSplitter.right{display:none}}
 @media(max-width:850px){.maxSplitter{display:none}}
 
+.libraryNav{max-height:124px;overflow:auto;padding-bottom:6px;scrollbar-width:thin}
 .maxPanel .maxLead{margin:-4px 0 18px;font-size:11px;line-height:1.6;color:#a8b1c7}
 .maxCount{float:right;color:#9a90ac;font-size:9px;letter-spacing:.07em}
 .maxField{padding:11px 10px 8px;border:1px solid #37394e;border-radius:10px;background:#151827;margin:0 0 8px}
@@ -95,6 +97,11 @@ export function installDesignMax(){
  const info=document.createElement('section');info.id='panel-guide';info.className='panel';info.hidden=true;
  info.innerHTML='<div class="sectionTitle">Studio diagnostics</div><div id="maxDiagnostics" class="maxHelp">Checking preview…</div><p class="maxInfo">Only this test environment supports the advanced design layer. Publishing is intentionally disabled here.</p><p class="maxInfo"><b>Shortcuts:</b> <span class="maxHotkey">Ctrl/⌘ + Z</span> Undo, <span class="maxHotkey">Ctrl/⌘ + Shift + Z</span> Redo, <span class="maxHotkey">Ctrl/⌘ + S</span> Save snapshot.</p>';
  recipe.after(info);const it=document.createElement('button');it.dataset.tab='guide';it.textContent='Diagnostics';tabs.append(it);
+ const categoryBar=document.querySelector('.libraryNav');
+ if(categoryBar){
+  const names=['Procedural','All',...new Set(THEME_PATTERNS.map(p=>p.category))].filter((name,i,arr)=>arr.indexOf(name)===i);
+  categoryBar.innerHTML=names.map(name=>'<button data-category="'+esc(name)+'" class="'+(name==='Procedural'?'active':'')+'">'+esc(name==='Procedural'?'New 10':name)+'</button>').join('');
+ }
  const toolbar=document.createElement('div');toolbar.className='maxToolbar';toolbar.innerHTML='<span class="maxPanorama">CREATOR TOOLKIT</span><button data-max-action="undo" title="Undo Ctrl+Z">↶ Undo</button><button data-max-action="redo" title="Redo Ctrl+Shift+Z">↷ Redo</button><button data-max-action="compare" aria-pressed="false">◫ Before / After</button><button data-max-action="fullscreen" aria-pressed="false">⛶ Fullscreen</button><button data-max-action="shuffle">✧ Remix</button><button data-max-action="save" title="Save to first empty vault slot">Save snapshot</button><span class="maxSpacer"></span><span class="maxPill">PRIVATE DRAFT · NO PUBLISH</span>';
  const stage=document.querySelector('.stage');stage.insertBefore(toolbar,stage.firstChild);
  const grid=document.querySelector('.grid');
