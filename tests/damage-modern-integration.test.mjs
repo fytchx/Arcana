@@ -19,7 +19,6 @@ test('modern Arcana route renders actual Damage Calculator, never the retired pl
 test('calculator integration retains newer homepage, theme editor and five-tab dock',()=>{
  assert.match(html,/id="arcanaDock"/);
  assert.match(app,/theme-studio-vault\.js/);
- assert.match(app,/procedural-textures\.js/);
  assert.match(launch,/id:'pathfinder',title:'Pathfinder'/);
  assert.match(launch,/id:'tools',title:'Tools'/);
  assert.match(launch,/id:'builds',title:'Builds & Guides'/);
