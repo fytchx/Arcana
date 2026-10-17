@@ -1,5 +1,6 @@
 import {blankDamageBuild, compareBuilds, relativeDifference} from './damage-calculator-engine.js';
 import {calculateRetaliation} from './retaliation-damage-engine.js';
+import {rankPercentagePointGains} from './damage-calculator-marginals.js';
 import {RETALIATION_WARRIOR_2026_10_17 as WARRIOR,ATTACK_MAGE_2026_10_17 as MAGE} from './damage-calculator-crossclass-fixtures.js';
 import {HUNTER_2026_10_17 as EXAMPLE} from './damage-calculator-reference.js';
 import {damageSkillPlannerView,mountSkillPlanner,skillPlannerExample,clearSkillPlanner} from './damage-calculator-skills-ui.js';
@@ -115,14 +116,14 @@ function load(){
  try{
   const saved=JSON.parse(localStorage.getItem(STORE_KEY)||'null');
   if(saved?.baseline?.attack?.weapon && saved?.baseline?.pet?.layers){
-    state={baseline:saved.baseline,changes:saved.changes||{},mode:'attack'};
+    state={baseline:saved.baseline,changes:saved.changes||{},mode:'attack',marginalPoints:[1,10,100].includes(saved.marginalPoints)?saved.marginalPoints:10};
     return state;
   }
  }catch{}
- state={baseline:initial(),changes:{},mode:'attack'};
+ state={baseline:initial(),changes:{},mode:'attack',marginalPoints:10};
  return state;
 }
-function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify({baseline:state.baseline,changes:state.changes}));}catch{}}
+function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify({baseline:state.baseline,changes:state.changes,marginalPoints:state.marginalPoints}));}catch{}}
 function asScenario(){
  const obj=clone(state.baseline);
  for(const [path,value] of Object.entries(state.changes))if(LABELS.has(path))setAt(obj,path,optionalNumber(value));
@@ -149,6 +150,35 @@ function results(){
  <div class="dcCombatNumbers">${hasCombat?`<span>Crit: <b>${fmt(scen.combat.crit.effectiveChance)}%</b> chance, <b>+${fmt(scen.combat.crit.overflowCritDamage)}%</b> overflow damage</span><span>Double Damage: <b>×${fmt(scen.combat.doubleDamage.expected)}</b> mean multiplier</span><span>Double Hit: <b>${fmt(scen.combat.doubleHit.expected)}</b> expected hits on surviving targets</span><span>Alpha Strike: <b>${fmt(scen.combat.alphaStrike.chance)}%</b> proc chance</span>`:'<span>Combat statistics not measured in this reference. Enter your real Crit, Double Hit and Double Damage values to compare them.</span>'}</div>
  <p class="dcValidation">${extra?extra+' what-if change'+(extra===1?'':'s')+' applied.':'Example baseline unchanged.'} Reference: ${esc(sample)}. Values are reconstructed from rounded in-game tooltips. Conditional procs, caps, enemy mitigation and actual DPS require separate checks.</p>`;
 }
+function marginalRows(){
+ const current=asScenario(),points=state.marginalPoints||10;
+ return ['pet','attack'].map(kind=>{
+  const gain=rankPercentagePointGains(current,kind,points);
+  const heading=kind==='pet'?'Pet multiplier':'Displayed attack';
+  if(!gain.known)return '<section class="dcMarginalGroup"><h4>'+heading+'</h4><p class="dcValidation">Enter measured '+kind+' sources to compare gains.</p></section>';
+  const top=gain.rows.slice(0,7);
+  return '<section class="dcMarginalGroup"><h4>'+heading+'</h4>'+
+   (top.length?top.map(row=>{
+    const name=LABELS.get(row.path)?.label.split(' · ').at(-1)||row.source;
+    return '<div class="dcMarginalRow"><span>'+esc(name)+' <small>('+esc(row.displayStage)+')</small></span>'+
+      '<b>+'+row.percentGain.toFixed(2)+'%</b></div>';
+   }).join(''):'<p class="dcValidation">No measurable percentage layers yet.</p>')+'</section>';
+ }).join('');
+}
+function marginalPanel(){
+ return '<details id="dcMarginal" class="dcMarginal"><summary>Marginal gains lab · compare % sources</summary>'+
+  '<p class="dcIntro">See which already-entered percentage layer yields the biggest relative gain for the same added percentage points. This compares tooltip stages, not specific obtainable rolls, stat-point costs, procs or DPS.</p>'+
+  '<div class="dcMarginalActions" aria-label="Added percentage points">'+[1,10,100].map(n=>
+    '<button type="button" class="btn secondary" data-dc-marginal="'+n+'" aria-pressed="'+String((state.marginalPoints||10)===n)+'">+'+n+' pp</button>'
+   ).join('')+'</div><div class="dcMarginalGrid" id="dcMarginalRows">'+marginalRows()+'</div></details>';
+}
+function updateMarginals(root){
+ const rows=root.querySelector('#dcMarginalRows');
+ if(rows)rows.innerHTML=marginalRows();
+ root.querySelectorAll('[data-dc-marginal]').forEach(btn=>
+  btn.setAttribute('aria-pressed',String(Number(btn.dataset.dcMarginal)===(state.marginalPoints||10))));
+}
+
 function changesMarkup(){
  const paths=[...Object.keys(state.changes)];
  return paths.map(path=>`<div class="dcChangeRow"><span>${esc(LABELS.get(path)?.label||path)}</span><label>Scenario value<input aria-label="Scenario value for ${esc(path)}" data-dc-scenario="${esc(path)}" type="number" inputmode="decimal" step="any" value="${esc(state.changes[path])}"></label><button type="button" data-dc-remove="${esc(path)}" class="btn secondary" aria-label="Remove ${esc(path)} change">Remove</button></div>`).join('');
@@ -182,12 +212,23 @@ export function damageCalculatorView(){
  .dcRoot .dcChangeRow span{font-size:13px}.dcRoot .dcChangeRow label{font-size:11px}
  .dcRoot .dcActions{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
  .dcRoot .dcActions button{min-height:44px}
+ .dcRoot .dcMarginal{border:1px solid #7775;border-radius:14px;padding:14px;margin:14px 0;background:#6f638215}
+ .dcRoot .dcMarginal summary{cursor:pointer;min-height:44px;padding:10px 0;font-weight:700}
+ .dcRoot .dcMarginalActions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+ .dcRoot .dcMarginalActions button{min-height:44px;flex:1;min-width:75px}
+ .dcRoot .dcMarginalActions button[aria-pressed="true"]{outline:2px solid var(--accent,#b89bff)}
+ .dcRoot .dcMarginalGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:14px}
+ .dcRoot .dcMarginalGroup{min-width:0}.dcRoot .dcMarginalGroup h4{margin:5px 0}
+ .dcRoot .dcMarginalRow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px solid #7774;padding:9px 2px;font-size:13px}
+ .dcRoot .dcMarginalRow span{min-width:0}.dcRoot .dcMarginalRow small{display:block;opacity:.7;line-height:1.5}
+ .dcRoot .dcMarginalRow b{white-space:nowrap;color:#8bdaa0}
  @media(max-width:440px){.dcRoot .dcChangeRow{grid-template-columns:1fr auto}.dcRoot .dcChangeRow span{grid-column:1/-1}.dcRoot .dcScenarioControls{grid-template-columns:1fr}}
  </style>
  <p class="dcIntro">Compare an actual build against a what-if version, with Attack Damage, pet multipliers and combat probabilities kept in their proper stages. Start with a screenshot benchmark or choose Clear values for a genuinely blank character. Empty inputs mean unknown, not zero.</p>
  <div class="dcActions"><button type="button" class="btn secondary" data-dc-example="hunter">Hunter</button><button type="button" class="btn secondary" data-dc-example="mage">AD Mage</button><button type="button" class="btn secondary" data-dc-example="warrior">Retal Warrior</button><button type="button" class="btn secondary" data-dc-clear>Clear values</button><button type="button" class="btn secondary" data-dc-removeall>Clear comparisons</button></div>
  <div class="dcTabs" role="tablist" aria-label="Calculator sections"><button type="button" class="btn secondary" data-dc-tab="attack" aria-selected="true">Attack</button><button type="button" class="btn secondary" data-dc-tab="pet" aria-selected="false">Pets</button><button type="button" class="btn secondary" data-dc-tab="combat" aria-selected="false">Combat</button><button type="button" class="btn secondary" data-dc-tab="retaliation" aria-selected="false">Retaliation</button><button type="button" class="btn secondary" data-dc-tab="skills" aria-selected="false">Skills + ACS</button></div>
  <section aria-live="polite" id="dcResults">${results()}</section>
+ ${marginalPanel()}
  <section class="dcWork" id="dcInputs">${SETS.map(([section,heading,paths])=>`<div data-dc-panel="${section}">${inputs(section,heading,paths)}</div>`).join('')}${damageSkillPlannerView()}</section>
  <section class="dcScenario"><h3>Compare against a scenario</h3><p class="dcIntro">Change one or more sources. Each replacement belongs to the exact same layer as its original value; it is never stacked on top of the existing total.</p><div class="dcScenarioControls"><label>Add/change a source<select id="dcAddSource">${NUMERIC_PATHS.map(([label,path])=>`<option value="${esc(path)}">${esc(label)}</option>`).join('')}</select></label><button type="button" class="btn primary" data-dc-add>Add change</button></div><div id="dcChanges">${changesMarkup()}</div></section>
  <p class="notice">The presets use rounded in-game values. A blank character never inherits hidden Hunter stats. Crit damage semantics, exact pet base growth, target mitigation, elemental weakness and true DPS need further verification.</p>
@@ -204,6 +245,7 @@ function updateNumbers(root) {
  });
  root.querySelector('#dcResults').innerHTML=results();
  root.querySelector('#dcChanges').innerHTML=changesMarkup();
+ updateMarginals(root);
  updatePanels(root);
 }
 export function mountDamageCalculator(){
@@ -233,7 +275,7 @@ export function mountDamageCalculator(){
  root.addEventListener('input',e=>{
   if(e.target.matches('[data-dc-field]')){
    setAt(state.baseline,e.target.dataset.dcField,optionalNumber(e.target.value));
-   persist();root.querySelector('#dcResults').innerHTML=results();
+   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);
   }
   if(e.target.matches('[data-dc-scenario]')){
    state.changes[e.target.dataset.dcScenario]=optionalNumber(e.target.value);
@@ -243,6 +285,7 @@ export function mountDamageCalculator(){
  root.addEventListener('click',e=>{
   const btn=e.target.closest('button');
   if(!btn)return;
+  if(btn.dataset.dcMarginal){state.marginalPoints=Number(btn.dataset.dcMarginal);persist();updateMarginals(root);return;}
   if(btn.dataset.dcTab){state.mode=btn.dataset.dcTab;updatePanels(root);return;}
   if(btn.hasAttribute('data-dc-example')){const id=btn.dataset.dcExample;state.baseline=clone(id==='warrior'?WARRIOR:id==='mage'?MAGE:EXAMPLE);state.changes={};state.mode=id==='warrior'?'retaliation':'attack';persist();skillPlannerExample(id,root);updateNumbers(root);return;}
   if(btn.hasAttribute('data-dc-clear')){state.baseline=blankDamageBuild();state.changes={};persist();clearSkillPlanner(root);updateNumbers(root);return;}
