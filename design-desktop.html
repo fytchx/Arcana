@@ -69,7 +69,7 @@ a{color:inherit;text-decoration:none}.desk{height:100dvh;display:flex;flex-direc
 <div class="panel" id="panel-presets" hidden><div class="sectionTitle">Current Arcana theme presets</div><div class="presetList" id="presets"></div><div class="note">Presets replace palette and pattern choices, while keeping the full editing system available.</div></div>
 </aside>
 <main class="stage"><div class="stageTools"><div><strong>Live Arcana Preview</strong><small>Actual preview deployment in a resizable browser frame, not a fake screenshot</small></div>
-<div class="routeTabs" id="routeTabs"><button class="active" data-route="home">Home</button><button data-route="studio">Build Studio</button><button data-route="calculators/pathfinder">Pathfinder</button><button data-route="wiki/library">Wiki</button><button data-route="user">Profile</button></div></div>
+<div class="routeTabs" id="routeTabs"><button class="active" data-route="home">Home</button><button data-route="labs/build">Build Studio</button><button data-route="calculators/pathfinder">Pathfinder</button><button data-route="wiki/library">Wiki</button><button data-route="user">Profile</button></div></div>
 <div class="viewport"><div class="browser" id="browser"><div class="browserBar"><div class="browserDots"><i></i><i></i><i></i></div><span class="address" id="address">arcana-preview-app-preview.up.railway.app/#/home</span><button class="controlBtn" id="reload" title="Reload actual Arcana preview">↻</button></div><iframe id="liveFrame" title="Arcana live preview" src="/?arcana-design-desk=1#/home"></iframe></div></div>
 <div class="sizeBar"><div class="sizeTabs" id="sizes"><button class="active" data-width="100%">Desktop</button><button data-width="830px">Compact</button><button data-width="430px">Phone viewport</button></div><small>Editor designed for desktop. Preview any screen size. <b id="viewStatus">Local draft · Never published</b></small></div>
 </main>
@@ -80,8 +80,9 @@ import {readDesign,writeDesign,applyDesignPreset,undoDesign,resetDesign,DESIGN_P
 import {THEME_PATTERNS} from './src/theme-patterns.js';
 import {PROCEDURAL_TEXTURES,proceduralTexture} from './src/procedural-textures.js';
 import {HERO_CTA_STYLES} from './src/hero-cta-styles.js';
+import {installDesignMax} from './src/design-desk-max.js';
 const el=id=>document.getElementById(id),esc=s=>String(s).replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;');
-const routes=['home','studio','calculators/pathfinder','wiki/library','user'];
+const routes=['home','labs/build','calculators/pathfinder','wiki/library','user'];
 const hueColor=v=>v.textureColorMode==='accent'?v.action:v.textureColor;
 const ranges=[['intensity','Pattern intensity',0,100,'%'],['patternScale','Pattern size',60,180,'%'],['textureWeight','Line weight',40,250,'%'],['textureGlow','Texture glow',0,12,' px'],['glow','Global glow',0,100,'%'],['edges','Border intensity',0,100,'%'],['cardShadow','Card shadow',0,100,'%'],['roundness','Card corners',3,28,' px'],['buttonRoundness','Button corners',3,30,' px'],['buttonFill','Button color strength',35,100,'%'],['heroActionWidth','Build Studio button width',65,100,'%'],['heroActionGlow','Build Studio button glow',0,100,'%'],['heroActionHeight','Build Studio button height',44,70,' px'],['heroActionBorder','Build Studio button border',0,3,' px'],['buttonHeight','Global button height',40,58,' px'],['borderWidth','Border width',0,3,' px']];
 const colors=[['main','Background'],['card','Panels'],['action','Primary accent'],['secondaryAccent','Second accent'],['text','Text'],['mutedText','Muted text'],['borderColor','Border color'],['navBar','Navigation'],['buttonText','Button text']];
@@ -110,25 +111,14 @@ function renderPatterns(){
  const patterns=THEME_PATTERNS.filter(p=>(category==='All'||category==='Procedural'&&p.category==='Procedural'||category===p.category)&&(!q||(p.name+' '+p.category).toLowerCase().includes(q)));
  el('patternList').innerHTML=patterns.map(p=>{const v=proceduralTexture(p.id,hueColor(d),d.textureWeight,85,0);const pic=v?'background-image:'+v.url+';background-size:76px 76px;':'background-image:radial-gradient(circle at 70% 35%,#ad8bfa33,transparent 55%),repeating-linear-gradient(35deg,transparent 0 14px,#a891ed24 15px,transparent 16px,transparent 30px);';return '<button class="textureButton '+(p.id===d.pattern?'active':'')+'" data-pattern="'+p.id+'" title="'+esc(p.name)+'"><span class="textureVisual" style="'+pic.replaceAll('"','&quot;')+'"></span><span class="label">'+esc(p.name)+'</span></button>';}).join('')||'<div class="empty">No patterns match.</div>';
 }
-function setThemeVars(doc,d){
- const root=doc.documentElement;if(!root)return;
- root.dataset.arcanaDesignActive='true';root.dataset.arcanaDesignPattern=d.pattern;root.dataset.arcanaPatternTarget=d.patternTarget;
- const set=(k,v)=>root.style.setProperty(k,v,'important');
- const palette={'--theme-main':d.main,'--theme-secondary':d.card,'--theme-highlight':d.action,'--arcana-design-text':d.text,'--arcana-action-color':d.action,'--arcana-secondary-accent':d.secondaryAccent,'--arcana-border-color':d.borderColor,'--arcana-muted-text':d.mutedText,'--arcana-nav-panel':d.navBar,'--arcana-button-text':d.buttonText,'--bg':d.main,'--panel':d.card,'--accent':d.action,'--line':d.borderColor,'--text':d.text,'--arcana-design-font-family':d.fontFamily==='serif'?'Georgia,serif':d.fontFamily==='mono'?'ui-monospace,monospace':'system-ui,sans-serif','--arcana-wave-opacity':d.intensity/100,'--arcana-pattern-alpha':Math.round(d.intensity*.16)+'%','--arcana-premium-pattern-alpha':Math.round(d.intensity*.35)+'%','--arcana-pattern-scale':d.patternScale/100,'--arcana-glow-alpha':d.glow/100,'--arcana-edge-alpha':d.edges/100,'--arcana-card-radius':d.roundness+'px','--arcana-button-radius':d.buttonRoundness+'px','--arcana-button-fill':d.buttonFill+'%','--arcana-header-opacity':d.headerOpacity+'%','--arcana-shadow-depth':d.cardShadow/100,'--arcana-hero-cta-width':d.heroActionWidth+'%','--arcana-hero-cta-glow':d.heroActionGlow/100,'--arcana-accent-blend':d.accentBlend+'%','--arcana-texture-size':'calc(120px * var(--arcana-pattern-scale))'};
- for(const [key,value] of Object.entries(palette))set(key,String(value));
- root.dataset.arcanaHeroActionStyle=d.heroActionStyle;root.dataset.arcanaHeroCardStyle=d.heroCardStyle;root.dataset.arcanaDesignButtons=d.buttonStyle;root.dataset.arcanaDesignDensity=d.density;
- const t=proceduralTexture(d.pattern,hueColor(d),d.textureWeight,d.intensity,d.textureGlow);
- if(t){set('--arcana-texture',t.url);set('--arcana-procedural-url',t.url);set('--arcana-texture-size','calc('+t.size+'px * var(--arcana-pattern-scale))');}
- else{root.style.removeProperty('--arcana-texture');root.style.removeProperty('--arcana-procedural-url');root.style.removeProperty('--arcana-texture-size');}
-}
 function applyPreview(){
  const iframe=el('liveFrame');if(!frameReady)return;
  try{
-  const doc=iframe.contentDocument;if(!doc)return;
-  setThemeVars(doc,readDesign());
   const d=readDesign();
-  const status=el('viewStatus');status.textContent=d.pattern.replaceAll('procedural-','')+' · '+d.intensity+'% intensity';
- }catch(e){el('viewStatus').textContent='Preview still loading';}
+  iframe.contentWindow.postMessage({type:'arcana:design-desk-sync',core:d},location.origin);
+  window.dispatchEvent(new Event('arcana:design-desk-preview'));
+  el('viewStatus').textContent=d.pattern.replaceAll('procedural-','')+' · '+d.intensity+'% intensity';
+ }catch(e){el('viewStatus').textContent='Preview unavailable: '+String(e.message||e);}
 }
 function updated(){syncInputs();renderPatterns();applyPreview();}
 document.addEventListener('input',e=>{
@@ -147,11 +137,12 @@ document.addEventListener('click',e=>{
  const b=e.target.closest('[data-route]');if(b){route=b.dataset.route;for(const bt of document.querySelectorAll('[data-route]'))bt.classList.toggle('active',bt===b);el('address').textContent=location.host+'/#/'+route;frameReady=false;el('liveFrame').src='/?arcana-design-desk=1#/'+route;return;}
  const width=e.target.closest('[data-width]');if(width){el('browser').style.maxWidth=width.dataset.width;for(const bt of document.querySelectorAll('[data-width]'))bt.classList.toggle('active',bt===width);return;}
 });
-el('undo').addEventListener('click',()=>{undoDesign();updated()});
-el('reset').addEventListener('click',()=>{if(confirm('Reset this local draft? This does not affect the public site.')){resetDesign();updated();}});
-el('export').addEventListener('click',()=>{const data=new Blob([JSON.stringify(readDesign(),null,2)],{type:'application/json'});const url=URL.createObjectURL(data);const a=document.createElement('a');a.href=url;a.download='arcana-theme-preview.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500)});
+el('undo').addEventListener('click',()=>document.querySelector('[data-max-action="undo"]')?.click());
+el('reset').addEventListener('click',()=>document.querySelector('[data-max-action="reset"]')?.click());
+el('export').addEventListener('click',()=>document.querySelector('[data-max-action="export"]')?.click());
 el('reload').addEventListener('click',()=>{frameReady=false;el('liveFrame').src='/?arcana-design-desk='+Date.now()+'#/'+route});
 el('liveFrame').addEventListener('load',()=>{frameReady=true;applyPreview();setTimeout(applyPreview,250);setTimeout(applyPreview,1500);setTimeout(applyPreview,4000)});
 window.addEventListener('arcana:design-change',()=>{syncInputs();renderPatterns();applyPreview()});
 syncInputs();renderPatterns();
+installDesignMax();
 </script></body></html>
