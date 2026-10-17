@@ -88,12 +88,14 @@ export function calculateAttack(input = {}) {
  * omit it and use only layerFactor for multiplier-only comparisons.
  */
 export function calculatePet(input = {}) {
-  const hasBase = suppliedRange(input.base);
-  const base = hasBase ? normalizedRange(input.base) : null;
+  // A single endpoint is not a valid pet damage range. Keep the result
+  // unknown until BOTH pre-bonus pet endpoints have been measured.
+  const baseComplete = supplied(input.base?.min) && supplied(input.base?.max);
+  const base = baseComplete ? normalizedRange(input.base) : null;
   const flatBonus = sum(input.flat);
   const layers = percentageProduct(input.layers);
   return {
-    kind: 'pet', base, flatBonus, layerFactor: layers.factor,
+    kind: 'pet', base, baseComplete, flatBonus, layerFactor: layers.factor,
     layerBreakdown: layers.breakdown,
     min: base ? Math.max(0, base.min + flatBonus) * layers.factor : null,
     max: base ? Math.max(0, base.max + flatBonus) * layers.factor : null,
