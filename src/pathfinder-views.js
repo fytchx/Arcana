@@ -70,5 +70,5 @@ export function pathfinderView(equipment,raw,snapshot,error=''){
  '<section class="pfPanel"><h2>1. Set your upgrade goals</h2>'+controls(p)+gearRows(equipment,p,snapshot)+headline(result,p)+'</section>'+
  '<section class="pfPanel"><h2>2. Every material required</h2><p>Totals are combined across every equipped item. Enter what you already have.</p>'+materialTable(result,p)+'</section>'+
  farmTable(result,p)+
- '<p class="pfNote">Source: '+esc(snapshot.sourceVersion||snapshot.source||'October 2026')+'. Snapshot costs extend through A30. Pity, real-time inventory and exact drop rates are not automatically known.</p></div>';
+ '</div>';
 }
