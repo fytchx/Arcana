@@ -1,3 +1,4 @@
+import {PROCEDURAL_TEXTURES,proceduralTexture} from '../src/procedural-textures.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -38,21 +39,30 @@ test('preview remains live across five pages, three devices, before-after, plus 
  assert.match(html,/data-mini-grip/);
  assert.doesNotMatch(html,/<iframe/);
 });
-test('64 textures are uniquely named, correctly validated and represented in site/mini/thumbnail CSS',async()=>{
+test('74 textures are uniquely named, correctly validated and represented in site/mini/thumbnail CSS',async()=>{
  const css=await read('../arcana-contour.css');
- assert.equal(THEME_PATTERNS.length,64);
- assert.equal(new Set(THEME_PATTERN_IDS).size,64);
+ assert.equal(THEME_PATTERNS.length,74);
+ assert.equal(new Set(THEME_PATTERN_IDS).size,74);
  const html=designPanel({showPreview:false});
  for(const p of THEME_PATTERNS){
   assert.equal(validateDesignField('pattern',p.id),p.id,p.id);
   assert.ok(p.name&&p.category);
-  assert.ok(css.includes('data-arcana-design-pattern="'+p.id+'"'),'Missing public texture '+p.id);
-  assert.ok(css.includes('data-preview-pattern="'+p.id+'"'),'Missing texture swatch '+p.id);
   assert.match(html,new RegExp('data-theme-pattern="'+p.id+'"'));
-  if(!['contours','plain'].includes(p.id))assert.ok(css.includes('data-mini-pattern="'+p.id+'"'),'Missing mini texture '+p.id);
+  if(p.category==='Procedural'){
+   const image=proceduralTexture(p.id,'#A57CFF',100,30,2);
+   assert.ok(image?.svg.includes('<svg')&&image?.url.startsWith('url('),p.id+' vector missing');
+   for(const key of ['data-arcana-design-pattern^="procedural-"','data-preview-pattern^="procedural-"','data-mini-pattern^="procedural-"'])assert.ok(css.includes(key),key);
+  }else{
+   assert.ok(css.includes('data-arcana-design-pattern="'+p.id+'"'),'Missing public texture '+p.id);
+   assert.ok(css.includes('data-preview-pattern="'+p.id+'"'),'Missing texture swatch '+p.id);
+   if(!['contours','plain'].includes(p.id))assert.ok(css.includes('data-mini-pattern="'+p.id+'"'),'Missing mini texture '+p.id);
+  }
  }
  assert.equal(validateDesignField('pattern','<script>'),null);
  assert.equal(DEFAULT_DESIGN.pattern,'contours');
+ assert.equal(PROCEDURAL_TEXTURES.length,10);
+ assert.equal(validateDesignField('textureWeight',500),250);
+ assert.equal(validateDesignField('textureColor','javascript:evil'),null);
 });
 test('draft vault has four private snapshots and authenticated import controls',async()=>{
  const html=themeVaultMarkup(),source=await read('../src/theme-studio-vault.js');
