@@ -184,7 +184,8 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
   '<button class="btn primary" data-action="clonebuild" data-arg="'+esc(b.id)+'">'+icon('edit',16)+' Use as my build</button>':
   '<button class="btn primary" data-action="savebuild">'+icon('check',16)+' Save draft</button>'+
   '<button class="btn secondary" data-action="sharebuild">'+icon('link',16)+' Share</button>'+
-  '<button class="btn secondary" data-action="savecloud">'+icon('check',16)+' Save to Account</button>';
+  '<button class="btn secondary" data-action="savecloud">'+icon('check',16)+' Save to Account</button>'+
+  '<button class="btn secondary" data-action="damagefrombuild">'+icon('calculator',16)+' Open Damage Calculator</button>';
  const profile= '<section class="studioProfile" aria-label="Build profile">'+
   '<div class="studioProfileMain"><div class="studioProfileVisual">'+
   '<span class="studioPortraitIcon">'+previewPortrait+'</span>'+
@@ -604,6 +605,7 @@ case 'sharepassives':{
  break;
 }
 case 'sharebuild':{const b=ensureDraft();persistDraft();void shareBuildToken(b).then(token=>{const url=location.origin+location.pathname+'#/labs/build?share='+encodeURIComponent(token);if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Shareable build link copied')).catch(()=>window.prompt('Copy your build link',url));else window.prompt('Copy your build link',url);}).catch(err=>toast(String(err.message||err)));break;}
+case 'damagefrombuild':persistDraft();go('calculators/damage');break;
 case 'savebuild':if(state.draft)saveDraft(state.draft);toast('Build saved on this device.');break;case 'runesave':persistDraft();toast('Rune grid saved with your character.');break;
 case 'runefamily':{const family=RUNE_FAMILIES.includes(arg)?arg:'Fury',def=RUNE_FAMILY_DETAILS[family];state.runeFamily=family;if(state.runeSelected){mutateRunes(b=>{const r=b.runeBoard.find(r=>r.id===state.runeSelected);if(r){r.family=family;r.primary=def.primary}})}else{state.runeSecondary=def.suggestedSecondary;render()}break;}
 case 'runeshape':{const shape=arg in RUNE_SHAPES?arg:'small';state.runeShape=shape;if(state.runeSelected){const b=ensureDraft(),r=b.runeBoard.find(r=>r.id===state.runeSelected);if(!r)break;const candidate={...r,shape,w:RUNE_SHAPES[shape].w,h:RUNE_SHAPES[shape].h};const issue=runeIssue(b.runeBoard,candidate,r.id,b.monsterLevel);if(issue){toast(issue);break;}mutateRunes(b=>{Object.assign(b.runeBoard.find(x=>x.id===state.runeSelected),{shape,w:candidate.w,h:candidate.h})});}else render();break;}
