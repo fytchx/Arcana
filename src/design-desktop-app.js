@@ -74,8 +74,7 @@ function applyPreview(){
   el('viewStatus').textContent=d.pattern.replaceAll('procedural-','')+' · '+d.intensity+'% intensity';
  }catch(e){el('viewStatus').textContent='Preview unavailable: '+String(e.message||e);}
 }
-function updated(){syncInputs();renderPatterns();
-layoutPreviewFrame();applyPreview();}
+function updated(){syncInputs();renderPatterns();applyPreview();}
 document.addEventListener('input',e=>{
  const i=e.target;
  if(i.matches('[data-field]')){
@@ -102,5 +101,5 @@ window.addEventListener('resize',layoutPreviewFrame);
 if(typeof ResizeObserver!=='undefined'){const previewResize=new ResizeObserver(layoutPreviewFrame);previewResize.observe(el('previewWindow'));}
 
 window.addEventListener('arcana:design-change',()=>{syncInputs();renderPatterns();applyPreview()});
-syncInputs();renderPatterns();
+syncInputs();renderPatterns();layoutPreviewFrame();
 try{installDesignMax();document.documentElement.dataset.deskReady='true';window.dispatchEvent(new CustomEvent('arcana:desk-ready'));}catch(error){document.documentElement.dataset.deskReady='partial';console.error('DESIGN_STUDIO_SETUP_ERROR',error);window.dispatchEvent(new CustomEvent('arcana:desk-error',{detail:String(error?.message||error)}));}
