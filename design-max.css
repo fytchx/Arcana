@@ -54,3 +54,68 @@ html[data-design-max="true"] #content.homeFullscreen .launchQuickCard{
 html[data-design-max="true"] #content.homeFullscreen :is(.launchHero,.launchQuickCard):hover{
  transform:translateY(calc(-1 * var(--max-hover-raise))) scale(var(--max-hover-scale))!important;
 }
+
+html[data-design-max="true"] #content.homeFullscreen .launchHeroCTA{
+ border-radius:var(--max-cta-radius)!important;margin-inline:var(--max-cta-inset)!important;
+ box-shadow:var(--max-cta-shadow)!important;
+ transition:transform var(--max-hover-duration) ease,filter var(--max-hover-duration) ease!important;
+}
+html[data-design-max="true"] #content.homeFullscreen .launchHeroCTA:hover{
+ filter:brightness(1.08);transform:translateY(calc(-1 * var(--max-hover-raise)))!important;
+}
+html[data-design-max="true"] :is(.launchPage h1,.launchPage h2,.launchPage h3,#content.homeFullscreen .launchHero h1,#content.homeFullscreen .launchSectionTop h2){
+ letter-spacing:var(--max-title-track)!important;font-weight:var(--max-title-weight)!important;
+ text-shadow:var(--max-text-glow);
+}
+html[data-design-max="true"] :is(.launchQuickCard,.launchHeroCTA,.btn,.launchSeeAll){letter-spacing:var(--max-body-track)}
+html[data-design-max="true"] :is(.launchQuickCard .launchQuickIcon,.launchHeroArt,.launchHeroCTASigil) svg{
+ transform:scale(var(--max-icon-scale));transform-origin:center;
+ transition:transform var(--max-hover-duration) ease;
+}
+html[data-design-max="true"] #app.shell .top{
+ min-height:var(--max-nav-height)!important;height:auto!important;
+ background:color-mix(in srgb,var(--arcana-nav-panel,var(--theme-secondary)) var(--max-nav-alpha),transparent)!important;
+ backdrop-filter:blur(var(--max-nav-blur));
+ border-bottom:var(--max-nav-stroke) solid var(--theme-border)!important;
+}
+html[data-design-max="true"] #arcanaDock{
+ backdrop-filter:blur(var(--max-nav-blur));border-radius:var(--max-nav-radius)!important;
+}
+html[data-design-max="true"] #content:not(.homeFullscreen) :is(.launchMenuLinks button,.launchMenuLinks a,.pathBiomeGroup,.pathRangeWorkspace,.wikiArticleCard){
+ border-radius:var(--max-panel-radius)!important;
+}
+html[data-design-max="true"][data-max-buttons="capsule"] :is(.btn,.launchHeroCTA){border-radius:999px!important}
+html[data-design-max="true"][data-max-buttons="sharp"] :is(.btn,.launchHeroCTA){border-radius:2px!important}
+html[data-design-max="true"][data-max-buttons="rounded"] :is(.btn,.launchHeroCTA){border-radius:var(--max-cta-radius)!important}
+html[data-design-max="true"][data-max-heading="uppercase"] :is(.launchPage h1,.launchHero h1){text-transform:uppercase!important}
+html[data-design-max="true"][data-max-heading="smallcaps"] :is(.launchPage h1,.launchHero h1){font-variant:small-caps!important}
+html[data-design-max="true"][data-max-heading="normal"] :is(.launchPage h1,.launchHero h1){text-transform:none!important}
+html[data-design-max="true"][data-max-border="dashed"] :is(.launchHero,.launchQuickCard){border-style:dashed!important}
+html[data-design-max="true"][data-max-border="double"] :is(.launchHero,.launchQuickCard){border-style:double!important}
+html[data-design-max="true"][data-max-border="solid"] :is(.launchHero,.launchQuickCard){border-style:solid!important}
+html[data-design-max="true"][data-max-card="glass"] #content.homeFullscreen :is(.launchHero,.launchQuickCard){
+ background-color:color-mix(in srgb,var(--theme-secondary) 50%,transparent)!important;backdrop-filter:blur(13px);
+}
+html[data-design-max="true"][data-max-card="flat"] #content.homeFullscreen :is(.launchHero,.launchQuickCard){box-shadow:none!important}
+html[data-design-max="true"][data-max-card="solid"] #content.homeFullscreen :is(.launchHero,.launchQuickCard){background-color:var(--theme-secondary)!important}
+html[data-design-max="true"][data-max-card="gradient"] #content.homeFullscreen :is(.launchHero,.launchQuickCard){
+ background:linear-gradient(140deg,var(--max-surface),var(--theme-main))!important;
+}
+html[data-design-max="true"][data-max-card="textured"] #content.homeFullscreen :is(.launchHero,.launchQuickCard){
+ background:var(--arcana-texture),var(--max-surface)!important;background-size:var(--arcana-texture-size)!important;
+}
+html[data-design-max="true"][data-max-motion="off"] #content :is(.launchHero,.launchHeroCTA,.launchQuickCard){
+ transition:none!important;animation:none!important;
+}
+html[data-design-max="true"][data-max-quality="performance"] #content :is(.launchHero,.launchQuickCard){
+ backdrop-filter:none!important;box-shadow:none!important;
+}
+html[data-design-max="true"][data-max-quality="performance"] body{background-attachment:scroll!important}
+@media(max-width:700px){
+ html[data-design-max="true"] #content.homeFullscreen .launchQuickGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html[data-design-max="true"] #content.homeFullscreen{padding:10px!important;max-width:100%!important}
+ html[data-design-max="true"] #content.homeFullscreen .launchQuickCard{min-height:80px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-design-max="true"] *{animation:none!important;transition:none!important}
+}
