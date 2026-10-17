@@ -1,4 +1,6 @@
-import {calculateAttack, calculatePet, combatReference, compareBuilds} from './damage-calculator-engine.js';
+import {calculateAttack, calculatePet, combatReference, compareBuilds, relativeDifference} from './damage-calculator-engine.js';
+import {calculateRetaliation} from './retaliation-damage-engine.js';
+import {RETALIATION_WARRIOR_2026_10_17 as WARRIOR,ATTACK_MAGE_2026_10_17 as MAGE} from './damage-calculator-crossclass-fixtures.js';
 import {HUNTER_2026_10_17 as EXAMPLE} from './damage-calculator-reference.js';
 
 const STORE_KEY = 'arcana:damage-calculator:2026-10-17';
@@ -53,6 +55,24 @@ const NUMERIC_PATHS = [
   ['Double damage chance %','combat.doubleDamageChance','combat'],
   ['Alpha Strike chance %','combat.alphaStrikeChance','combat'],
   ['Boss damage %','combat.bossDamage','combat'],
+  ['Retaliation · Defense','retaliation.defense','retaliation'],
+  ['Retaliation · Global ratio','retaliation.globalRatio','retaliation'],
+  ['Retaliation base · Reflecting %','retaliation.baseBonuses.reflectingGear','retaliation'],
+  ['Retaliation base · Deflection %','retaliation.baseBonuses.deflection','retaliation'],
+  ['Retaliation base · Bulwark %','retaliation.baseBonuses.bulwarkStance','retaliation'],
+  ['Retaliation layer · Strength %','retaliation.layers.strength','retaliation'],
+  ['Retaliation layer · Pet increased Strength %','retaliation.layers.petIncreasedStrength','retaliation'],
+  ['Retaliation layer · Pet Retaliation %','retaliation.layers.petRetaliation','retaliation'],
+  ['Retaliation layer · Talisman %','retaliation.layers.talismanInscription','retaliation'],
+  ['Retaliation layer · Runes %','retaliation.layers.runes','retaliation'],
+  ['Retaliation layer · Guild %','retaliation.layers.guild','retaliation'],
+  ['Retaliation layer · Echo Blessings %','retaliation.layers.echoBlessings','retaliation'],
+  ['Retaliation layer · Gear Sets %','retaliation.layers.gearSets','retaliation'],
+  ['Retaliation layer · Gems %','retaliation.layers.gems','retaliation'],
+  ['Retaliation layer · Time Boost %','retaliation.layers.timeBoost','retaliation'],
+  ['Retaliation · Stance factor','retaliation.combatStanceFactor','retaliation'],
+  ['Retaliation · Minimum displayed roll factor','retaliation.rollMinFactor','retaliation'],
+  ['Retaliation · Blocked attack factor','retaliation.blockedFactor','retaliation'],
 ];
 const LABELS = new Map(NUMERIC_PATHS.map(([label,path,section]) => [path,{label,section}]));
 function valueAt(obj,path) {return path.split('.').reduce((cur,key)=>cur?.[key],obj);}
@@ -79,7 +99,10 @@ const SETS = [
  ['pet','Pet base before any bonuses (optional)',NUMERIC_PATHS.slice(25,27).map(x=>x[1])],
  ['pet','Flat damage applied to each pet',NUMERIC_PATHS.slice(27,30).map(x=>x[1])],
  ['pet','Independent pet multipliers',NUMERIC_PATHS.slice(30,42).map(x=>x[1])],
- ['combat','Critical hits, overflow and procs',NUMERIC_PATHS.slice(42).map(x=>x[1])],
+ ['combat','Critical hits, overflow and procs',NUMERIC_PATHS.slice(42,48).map(x=>x[1])],
+ ['retaliation','Defense and Retaliation base',NUMERIC_PATHS.slice(48,53).map(x=>x[1])],
+ ['retaliation','Independent Retaliation multipliers',NUMERIC_PATHS.slice(53,63).map(x=>x[1])],
+ ['retaliation','Conditional Retaliation factors',NUMERIC_PATHS.slice(63).map(x=>x[1])],
 ];
 let state=null;
 function load(){
@@ -105,13 +128,21 @@ function results(){
  const base=comp.baseline,scen=comp.scenario;
  const attackRange=x=>fmt(x.min)+' – '+fmt(x.max);
  const extra=Object.keys(state.changes).length;
+ const current=asScenario();
+ const retA=calculateRetaliation(state.baseline.retaliation);
+ const retB=calculateRetaliation(current.retaliation);
+ const hasPet=current.pet?.layers && Object.keys(current.pet.layers).length>0;
+ const hasCombat=current.combat && Object.keys(current.combat).length>0;
+ const retChange=(retA.known && retB.known)?relativeDifference(retA.max,retB.max):null;
+ const sample=state.baseline.className||'Archer / Hunter';
  return `<div class="dcResultGrid">
  <div class="dcResult"><span>Attack damage range</span><strong>${attackRange(scen.attack)}</strong><small>Before crit, Double Hit, Double Damage and enemy mitigation</small><b>Change ${pct(comp.changes.attack.min?.percentChange)}</b></div>
- <div class="dcResult"><span>Pet damage multiplier</span><strong>×${scen.pet.layerFactor.toFixed(2)}</strong><small>${scen.pet.min === null ? 'Enter a pre-bonus pet base to calculate final damage.' : 'Estimated pet damage: '+fmt(scen.pet.min)+' – '+fmt(scen.pet.max)} Flat +${fmt(scen.pet.flatBonus)} added before multipliers.</small><b>Change ${pct(comp.changes.petMultiplier?.percentChange)}</b></div>
+ <div class="dcResult"><span>Pet damage multiplier</span><strong>${hasPet?'×'+scen.pet.layerFactor.toFixed(2):'Not measured'}</strong><small>${!hasPet?'Load a pet reference or enter pet bonuses.':scen.pet.min === null ? 'Enter a pre-bonus pet base to calculate final damage.' : 'Estimated pet damage: '+fmt(scen.pet.min)+' – '+fmt(scen.pet.max)} Flat +${fmt(scen.pet.flatBonus)} added before multipliers.</small><b>Change ${hasPet?pct(comp.changes.petMultiplier?.percentChange):'Not measured'}</b></div>
  <div class="dcResult"><span>Attack multiplier breakdown</span><strong>×${scen.attack.additiveFactor.toFixed(3)} / ×${scen.attack.layerFactor.toFixed(2)}</strong><small>Summed additive first; ${fmt(scen.attack.flatBonus)} flat added after; independent layers multiply.</small></div>
+ <div class="dcResult"><span>Retaliation per enemy attack</span><strong>${retB.known?fmt(retB.min)+" – "+fmt(retB.max):"Not measured"}</strong><small>${retB.known?"Unblocked display range, ×"+fmt(retB.blockedFactor)+" conditional blocked-hit factor is separate. Not DPS.":"Load Warrior or provide Defense, base-pool, and Retaliation multipliers."}</small><b>Change ${pct(retChange?.percentChange)}</b></div>
  </div>
- <div class="dcCombatNumbers"><span>Crit: <b>${fmt(scen.combat.crit.effectiveChance)}%</b> chance, <b>+${fmt(scen.combat.crit.overflowCritDamage)}%</b> overflow damage</span><span>Double Damage: <b>×${fmt(scen.combat.doubleDamage.expected)}</b> mean multiplier</span><span>Double Hit: <b>${fmt(scen.combat.doubleHit.expected)}</b> expected hits on surviving targets</span><span>Alpha Strike: <b>${fmt(scen.combat.alphaStrike.chance)}%</b> proc chance</span></div>
- <p class="dcValidation">${extra?extra+' what-if change'+(extra===1?'':'s')+' applied.':'Example baseline unchanged.'} Example reference: 175.6K–243.8K attack and ×132.24 pet multiplier. Small differences reflect rounded display values.</p>`;
+ <div class="dcCombatNumbers"><span>${hasCombat?"Crit:":"Combat stats not measured. "} <b>${fmt(scen.combat.crit.effectiveChance)}%</b> chance, <b>+${fmt(scen.combat.crit.overflowCritDamage)}%</b> overflow damage</span><span>Double Damage: <b>×${fmt(scen.combat.doubleDamage.expected)}</b> mean multiplier</span><span>Double Hit: <b>${fmt(scen.combat.doubleHit.expected)}</b> expected hits on surviving targets</span><span>Alpha Strike: <b>${fmt(scen.combat.alphaStrike.chance)}%</b> proc chance</span></div>
+ <p class="dcValidation">${extra?extra+' what-if change'+(extra===1?'':'s')+' applied.':'Example baseline unchanged.'} Reference: ${esc(sample)}. Values are reconstructed from rounded in-game tooltips. Conditional procs, caps, enemy mitigation and actual DPS require separate checks.</p>`;
 }
 function changesMarkup(){
  const paths=[...Object.keys(state.changes)];
@@ -149,8 +180,8 @@ export function damageCalculatorView(){
  @media(max-width:440px){.dcRoot .dcChangeRow{grid-template-columns:1fr auto}.dcRoot .dcChangeRow span{grid-column:1/-1}.dcRoot .dcScenarioControls{grid-template-columns:1fr}}
  </style>
  <p class="dcIntro">Compare an actual build against a what-if version, with Attack Damage, pet multipliers and combat probabilities kept in their proper stages. Start with the supplied Beastmaster benchmark or clear it for a different character.</p>
- <div class="dcActions"><button type="button" class="btn secondary" data-dc-load>Load tested Hunter example</button><button type="button" class="btn secondary" data-dc-clear>Clear values</button><button type="button" class="btn secondary" data-dc-removeall>Clear comparisons</button></div>
- <div class="dcTabs" role="tablist" aria-label="Calculator sections"><button type="button" class="btn secondary" data-dc-tab="attack" aria-selected="true">Attack</button><button type="button" class="btn secondary" data-dc-tab="pet" aria-selected="false">Pets</button><button type="button" class="btn secondary" data-dc-tab="combat" aria-selected="false">Combat</button></div>
+ <div class="dcActions"><button type="button" class="btn secondary" data-dc-example="hunter">Hunter</button><button type="button" class="btn secondary" data-dc-example="mage">AD Mage</button><button type="button" class="btn secondary" data-dc-example="warrior">Retal Warrior</button><button type="button" class="btn secondary" data-dc-clear>Clear values</button><button type="button" class="btn secondary" data-dc-removeall>Clear comparisons</button></div>
+ <div class="dcTabs" role="tablist" aria-label="Calculator sections"><button type="button" class="btn secondary" data-dc-tab="attack" aria-selected="true">Attack</button><button type="button" class="btn secondary" data-dc-tab="pet" aria-selected="false">Pets</button><button type="button" class="btn secondary" data-dc-tab="combat" aria-selected="false">Combat</button><button type="button" class="btn secondary" data-dc-tab="retaliation" aria-selected="false">Retaliation</button></div>
  <section aria-live="polite" id="dcResults">${results()}</section>
  <section class="dcWork" id="dcInputs">${SETS.map(([section,heading,paths])=>`<div data-dc-panel="${section}">${inputs(section,heading,paths)}</div>`).join('')}</section>
  <section class="dcScenario"><h3>Compare against a scenario</h3><p class="dcIntro">Change one or more sources. Each replacement belongs to the exact same layer as its original value; it is never stacked on top of the existing total.</p><div class="dcScenarioControls"><label>Add/change a source<select id="dcAddSource">${NUMERIC_PATHS.map(([label,path])=>`<option value="${esc(path)}">${esc(label)}</option>`).join('')}</select></label><button type="button" class="btn primary" data-dc-add>Add change</button></div><div id="dcChanges">${changesMarkup()}</div></section>
@@ -189,7 +220,7 @@ export function mountDamageCalculator(){
   const btn=e.target.closest('button');
   if(!btn)return;
   if(btn.dataset.dcTab){state.mode=btn.dataset.dcTab;updatePanels(root);return;}
-  if(btn.hasAttribute('data-dc-load')){state.baseline=initial();state.changes={};persist();updateNumbers(root);return;}
+  if(btn.hasAttribute('data-dc-example')){const id=btn.dataset.dcExample;state.baseline=clone(id==='warrior'?WARRIOR:id==='mage'?MAGE:EXAMPLE);state.changes={};state.mode=id==='warrior'?'retaliation':'attack';persist();updateNumbers(root);return;}
   if(btn.hasAttribute('data-dc-clear')){state.baseline=initial();for(const [label,path] of NUMERIC_PATHS)setAt(state.baseline,path,0);state.changes={};persist();updateNumbers(root);return;}
   if(btn.hasAttribute('data-dc-removeall')){state.changes={};persist();updateNumbers(root);return;}
   if(btn.hasAttribute('data-dc-add')){const path=root.querySelector('#dcAddSource')?.value;if(LABELS.has(path)){state.changes[path]=valueAt(state.baseline,path)||0;persist();updateNumbers(root);}return;}
