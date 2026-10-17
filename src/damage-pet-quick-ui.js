@@ -116,7 +116,8 @@ export function mountPetQuickCompare(root,getBuild){
   if(button.hasAttribute('data-dc-pet-copy')){stored.proposed=clone(stored.current);save();repaint();}
  });
  // Main damage inputs / what-if scenarios live outside this section.
- root.addEventListener('input',event=>{if(event.target.matches('[data-dc-field],[data-dc-scenario]'))update(root,getBuild);});
- root.addEventListener('dc-apply-skill-sheet',()=>queueMicrotask(()=>update(root,getBuild)));
  return ()=>update(root,getBuild);
+}
+export function refreshPetQuickCompare(root,getBuild){
+ if(root?.querySelector('#dcPetQuick')?.dataset.petQuickMounted==='yes')update(root,getBuild);
 }
