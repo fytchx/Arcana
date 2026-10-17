@@ -279,7 +279,7 @@ export function mountDamageCalculator(){
   }
   if(e.target.matches('[data-dc-scenario]')){
    state.changes[e.target.dataset.dcScenario]=optionalNumber(e.target.value);
-   persist();root.querySelector('#dcResults').innerHTML=results();
+   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);
   }
  });
  root.addEventListener('click',e=>{
