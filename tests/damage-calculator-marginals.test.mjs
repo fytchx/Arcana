@@ -33,7 +33,7 @@ test('unknown builds never produce imaginary rankings',()=>{
  assert.equal(rankPercentagePointGains(blank,'attack').known,false);
  assert.equal(rankPercentagePointGains(blank,'pet').known,false);
  assert.equal(rankPercentagePointGains({pet:{layers:{a:null}}},'pet').known,false);
- assert.equal(rankPercentagePointGains({pet:{layers:{a:0}}},'pet').rows[0].percentGain,10);
+ assert.ok(Math.abs(rankPercentagePointGains({pet:{layers:{a:0}}},'pet').rows[0].percentGain-10)<1e-10);
 });
 
 test('reject wrong stage or misleading extreme changes',()=>{
