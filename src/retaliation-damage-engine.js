@@ -14,11 +14,14 @@
 const clean=(v)=>Number.isFinite(Number(v))?Math.max(0,Math.min(Number(v),1e12)):0;
 const add=(x)=>Object.values(x||{}).reduce((n,v)=>n+clean(v),0);
 export function calculateRetaliation(input={}) {
-  const required=['defense','globalRatio','baseBonuses','layers','combatStanceFactor','rollMinFactor'];
-  // Distinguish an unknown defense ratio or roll envelope from zero.
-  const ready=input.defense!==undefined && input.globalRatio!==undefined &&
-    input.baseBonuses!==undefined && input.layers!==undefined &&
-    input.combatStanceFactor!==undefined && input.rollMinFactor!==undefined;
+  // A blank field is unknown, NOT zero. Zero is valid only when entered.
+  // The structured pools must also be explicitly provided.
+  const supplied=value=>value!==null && value!==undefined && value!=='' &&
+    Number.isFinite(Number(value));
+  const isGroup=value=>value!==null && typeof value==='object' && !Array.isArray(value);
+  const ready=supplied(input.defense) && supplied(input.globalRatio) &&
+    isGroup(input.baseBonuses) && isGroup(input.layers) &&
+    supplied(input.combatStanceFactor) && supplied(input.rollMinFactor);
   if(!ready)return {known:false,reason:'Requires defense, global ratio, base-pool sources, individual layers, stance and observed roll envelope',min:null,max:null};
   const defense=clean(input.defense);
   const globalRatio=clean(input.globalRatio);
