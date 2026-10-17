@@ -68,7 +68,7 @@ test('non-damage bonus is explicitly skipped rather than treated as zero damage'
  assert.equal(x.known,false);
  assert.equal(x.rows.length,0);
  assert.equal(x.skipped.length,1);
- assert.match(x.skipped[0].reason,/does not map/);
+ assert.match(x.skipped[0].reason,/equipment-only subtotal/);
 });
 test('illegal class slot and unknown class are not imported',()=>{
  const x=projectBuildStudioDamage(build({weapon:equipment('fierce',14,'game:item:wooden-bow')}));
