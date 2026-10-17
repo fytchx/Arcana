@@ -62,6 +62,10 @@ export function projectBuildStudioDamage(build){
   if(!entry.bonusId){
    if(raw&&typeof raw==='object'&&raw.bonusId)
     result.blockers.push(slot+': unrecognized bonus ID '+String(raw.bonusId).slice(0,50));
+   else if(entry.rarity!==1)
+    result.blockers.push(slot+': item Drop Bonus is unspecified. An empty picker is not proof of no bonus; confirm this item before importing an equipment subtotal.');
+   // Normal items have no standard Drop Bonus. All other unevaluated gear
+   // blocks claims of an exhaustive equipment subtotal.
    continue;
   }
   const bonus=configured.get(entry.bonusId);
