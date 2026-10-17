@@ -5,10 +5,10 @@ import {HOME_CARDS,HOME_MENUS,DIRECTORY,WIKI_TOPICS,homeScreen,homeSubmenu,direc
 import {ACCENT_PRESETS,selectedAccent,setAccent,themeStatus} from '../src/theme.js';
 
 const routes=new Set(['home','directory','user','recent','settings','icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/category','wiki/items','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','calculators/damage','community','community/create','account','beta','lfg/raids','lfg/guilds']);
-test('six home cards open real submenu groups',()=>{
- assert.deepEqual(HOME_CARDS.map(x=>x.title),['Wiki','Tools','Guides','Builds','Pathfinder','Guild & Raid Finder']);
+test('three destination cards open their appropriate sections',()=>{
+ assert.deepEqual(HOME_CARDS.map(x=>x.title),['Pathfinder','Tools','Builds & Guides']);
  const html=homeScreen();
- assert.equal((html.match(/data-action="homemenu"/g)||[]).length,6);
+ assert.equal((html.match(/data-action="homemenu"/g)||[]).length,3);
  assert.match(html,/BUILD STUDIO|Build Studio/);
  assert.match(html,/data-route="labs\/build"/);
  assert.match(html,/Useful &amp; Featured/);
