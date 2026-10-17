@@ -35,8 +35,10 @@ test('the desktop site is isolated and can preview actual pages safely',async()=
  assert.match(server,/design-desktop\.html/);
  assert.match(server,/design-max\.css/);
  assert.match(index,/design-max\.css/);
- assert.match(desktop,/installDesignMax\(\)/);
+ assert.match(desktop,/src\/design-desktop-app\.js/);
+ assert.match(desktopApp,/installDesignMax\(\)/);
  assert.match(desktop,/arcana-design-desk/);
+ assert.match(desktop,/arcanaBootNotice/);
  assert.match(desktop,/labs\/build/);
  assert.match(theme,/arcana-preview-app-preview\.up\.railway\.app/);
  assert.match(controls,/externalPreview/);
