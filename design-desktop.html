@@ -88,6 +88,12 @@ const ranges=[['intensity','Pattern intensity',0,100,'%'],['patternScale','Patte
 const colors=[['main','Background'],['card','Panels'],['action','Primary accent'],['secondaryAccent','Second accent'],['text','Text'],['mutedText','Muted text'],['borderColor','Border color'],['navBar','Navigation'],['buttonText','Button text']];
 const selects=[['buttonStyle','Buttons',[['gradient','Gradient'],['solid','Solid'],['outline','Outline']]],['heroCardStyle','Build Studio feature card',[['blended','Blended'],['flat','Flat'],['frameless','Frameless'],['etched','Etched'],['glass','Smoked glass'],['raised','Raised'],['accent-edge','Accent edge'],['metallic','Brushed alloy'],['minimal','Minimal']]],['heroActionStyle','Build Studio button',HERO_CTA_STYLES.map(x=>[x.id,x.name])],['heroSize','Feature card size',[['compact','Compact'],['balanced','Balanced'],['showcase','Showcase']]],['heroActionAlign','Feature button alignment',[['start','Left'],['center','Center'],['end','Right']]],['heroCardEmblem','Feature emblem',[['subtle','Subtle'],['hidden','Hidden'],['prominent','Prominent']]],['heroActionIcon','Feature button icon',[['show','Icon + arrow'],['hide','No icon'],['arrow-only','Arrow only']]],['heroActionSubtitle','Feature subtitle',[['auto','Automatic'],['show','Always visible'],['hide','Hidden']]],['density','Layout density',[['compact','Compact'],['comfortable','Comfortable'],['spacious','Spacious']]],['fontFamily','Typeface',[['system','System'],['rounded','Rounded'],['serif','Serif'],['mono','Monospace']]]];
 let category='Procedural',route='home',frameReady=false;
+const legacyThumbs=new Map();
+fetch('/arcana-contour.css',{cache:'force-cache'}).then(r=>{if(!r.ok)throw Error('Texture styles unavailable');return r.text()}).then(sheet=>{
+ const rule=/\.themePatternThumb\[data-preview-pattern="([^"]+)"\]\{--thumb-pattern:([^}]+)\}/g;
+ let m;while((m=rule.exec(sheet))!==null)legacyThumbs.set(m[1],m[2]);
+ renderPatterns();
+}).catch(()=>{ /* Never invent thumbnail art if the existing stylesheet is unavailable. */ });
 const rangeMarkup=([key,label,min,max,unit])=>'<label class="control"><div class="controlTop"><span>'+esc(label)+'</span><output data-out="'+key+'"></output></div><input type="range" data-field="'+key+'" min="'+min+'" max="'+max+'"></label>';
 const colorMarkup=([key,label])=>'<label class="control"><div class="controlTop"><span>'+label+'</span></div><div class="colorRow"><input type="color" data-field="'+key+'"><input type="text" data-hex="'+key+'" maxlength="7" spellcheck="false" aria-label="'+label+' hex"></div></label>';
 el('textureSliders').innerHTML=ranges.slice(0,4).map(rangeMarkup).join('');
@@ -107,9 +113,18 @@ function syncInputs(){
  const customHex=document.querySelector('[data-hex="textureColor"]');if(customHex)customHex.disabled=d.textureColorMode!=='custom';
 }
 function renderPatterns(){
- const d=readDesign();const q=el('filter').value.trim().toLowerCase();
+ const d=readDesign(),q=el('filter').value.trim().toLowerCase();
  const patterns=THEME_PATTERNS.filter(p=>(category==='All'||category==='Procedural'&&p.category==='Procedural'||category===p.category)&&(!q||(p.name+' '+p.category).toLowerCase().includes(q)));
- el('patternList').innerHTML=patterns.map(p=>{const v=proceduralTexture(p.id,hueColor(d),d.textureWeight,85,0);const pic=v?'background-image:'+v.url+';background-size:76px 76px;':'background-image:radial-gradient(circle at 70% 35%,#ad8bfa33,transparent 55%),repeating-linear-gradient(35deg,transparent 0 14px,#a891ed24 15px,transparent 16px,transparent 30px);';return '<button class="textureButton '+(p.id===d.pattern?'active':'')+'" data-pattern="'+p.id+'" title="'+esc(p.name)+'"><span class="textureVisual" style="'+pic.replaceAll('"','&quot;')+'"></span><span class="label">'+esc(p.name)+'</span></button>';}).join('')||'<div class="empty">No patterns match.</div>';
+ el('patternList').innerHTML=patterns.map(p=>{
+  const v=proceduralTexture(p.id,hueColor(d),d.textureWeight,85,0);
+  const legacy=legacyThumbs.get(p.id);
+  const fallback='--thumb-ink:color-mix(in srgb,'+d.action+' 58%,transparent);--thumb-alt:color-mix(in srgb,'+d.secondaryAccent+' 40%,transparent);';
+  const pic=v?'background-image:'+v.url+';background-size:76px 76px;':
+    legacy?fallback+'--thumb-pattern:'+legacy+';background-image:var(--thumb-pattern);background-size:64px 64px;':
+    'background-image:none;';
+  const badge=v?'SVG':'CSS';
+  return '<button class="textureButton '+(p.id===d.pattern?'active':'')+'" data-pattern="'+p.id+'" title="'+esc(p.name)+'"><span class="textureVisual" style="'+pic.replaceAll('"','&quot;')+'"></span><span class="label">'+esc(p.name)+' <small>'+badge+'</small></span></button>';
+ }).join('')||'<div class="empty">No patterns match.</div>';
 }
 function applyPreview(){
  const iframe=el('liveFrame');if(!frameReady)return;
