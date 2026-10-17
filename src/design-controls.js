@@ -118,7 +118,8 @@ export function resetDesign(){
 }
 export function applyDesign(root=globalThis.document?.documentElement){
  if(!root)return;
- const admin=root.dataset.arcanaAdminDesign==='true'&&previewEnabled;
+ const inDesktopFrame=typeof location!=='undefined'&&location.hostname==='arcana-preview-app-preview.up.railway.app'&&new URLSearchParams(location.search).has('arcana-design-desk')&&typeof window!=='undefined'&&window.parent!==window;
+ const admin=(root.dataset.arcanaAdminDesign==='true'&&previewEnabled)||inDesktopFrame;
  const published=publishedDesign!==null;
  const active=admin||published;
  root.dataset.arcanaDesignActive=String(active);
