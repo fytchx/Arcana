@@ -39,7 +39,8 @@ function results(build){
   '<div><small>Relative pet multiplier change</small><strong>'+escape(delta)+'</strong></div></div>'+
   (result.damageRange?'<p class="dcValidation">Projected per-pet pre-crit damage '+decimal(result.damageRange.min)+'–'+decimal(result.damageRange.max)+'.</p>':
    '<p class="dcValidation">Actual pet damage not shown: the raw pre-bonus pet base is unknown. Multiplier comparison only.</p>')+
-  (result.stages.length?'<details class="dcPetQuickBreakdown"><summary>Show source-level changes</summary>'+
+  (result.stages.length?'<button type="button" class="btn primary" data-dc-pet-apply>Send proposed sources to what-if</button>'+ 
+  '<details class="dcPetQuickBreakdown"><summary>Show source-level changes</summary>'+
    result.stages.map(x=>'<div class="dcPetQuickStage"><span>'+escape(x.source)+'</span><b>'+decimal(x.measuredBaseline)+'% → '+decimal(x.proposedStage)+'%</b></div>').join('')+
    '</details>':'');
 }
@@ -112,6 +113,14 @@ export function mountPetQuickCompare(root,getBuild){
  panel.addEventListener('click',event=>{
   const button=event.target.closest('button');
   if(!button)return;
+  if(button.hasAttribute('data-dc-pet-apply')){
+   const comparison=compareQuickPetSetups(getBuild(),stored.current,stored.proposed);
+   if(comparison.known&&comparison.stages.length)panel.dispatchEvent(
+    new CustomEvent('dc-apply-pet-comparison',{bubbles:true,
+     detail:{stages:comparison.stages.map(s=>({source:s.source,value:s.proposedStage}))}})
+   );
+   return;
+  }
   if(button.hasAttribute('data-dc-pet-reset')){stored=blank();save();repaint();}
   if(button.hasAttribute('data-dc-pet-copy')){stored.proposed=clone(stored.current);save();repaint();}
  });
