@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arcana / Desktop Theme Studio Preview</title>
+<style>
+:root{color-scheme:dark;--bg:#090b12;--surface:#111522;--surface2:#191d2d;--edge:#30384a;--bright:#a991ff;--text:#edf0fc;--muted:#939db4}
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{background:var(--bg);color:var(--text);font:13px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #c3aaff;outline-offset:2px}
+a{color:inherit;text-decoration:none}.desk{height:100dvh;display:flex;flex-direction:column;min-height:650px;overflow:hidden}
+.top{flex:none;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:13px 21px;border-bottom:1px solid var(--edge);background:linear-gradient(90deg,#151325,#0e121b)}
+.brand{display:flex;gap:12px;align-items:center}.mark{width:36px;height:36px;border:1px solid #8b67cc;background:linear-gradient(145deg,#3c285f,#151324);border-radius:11px;display:grid;place-items:center;font-size:22px;color:#caaeff;box-shadow:0 0 18px #6c42c321}.eyebrow{font:750 10px/1.4 system-ui;letter-spacing:.17em;text-transform:uppercase;color:#b9a2f8}
+.brand h1{font-size:18px;line-height:1.15;letter-spacing:-.025em;margin:2px 0 0}.muted{color:var(--muted)}.top-actions{display:flex;align-items:center;gap:8px}.status{font-size:11px;color:#a7eaca;background:#183529;border:1px solid #2e6447;border-radius:99px;padding:6px 10px;margin-right:5px}
+.controlBtn{display:inline-flex;gap:8px;align-items:center;justify-content:center;background:#22263a;border:1px solid #464b67;border-radius:9px;color:#e3dcff;padding:8px 11px;min-height:35px;font-size:11px;font-weight:750}.controlBtn:hover{border-color:#b596ff;background:#29213f}.controlBtn.primary{border-color:#9373d5;background:#6b49b6;color:white}
+.grid{display:grid;grid-template-columns:335px minmax(450px,1fr) 258px;flex:1;min-height:0}.inspector,.library{min-height:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#4e4b6a transparent;background:#10131e}
+.inspector{border-right:1px solid var(--edge)}.library{border-left:1px solid var(--edge)}.sidebarTitle{padding:17px 18px 12px}.sidebarTitle h2{margin:2px 0 4px;font-size:19px;letter-spacing:-.03em}.sidebarTitle p{margin:0;color:var(--muted);font-size:11px;line-height:1.55}
+.tabbar{display:flex;gap:4px;padding:0 14px 13px;border-bottom:1px solid var(--edge);flex-wrap:wrap}
+.tabbar button{border:1px solid transparent;background:transparent;border-radius:7px;padding:7px 8px;font-weight:740;color:#aab3c8;font-size:11px}.tabbar button.active{border-color:#6f5a9c;background:#28213b;color:#ebddff}
+.panel{padding:18px}.panel[hidden]{display:none!important}.sectionTitle{font-size:11px;letter-spacing:.13em;color:#c3b4e4;text-transform:uppercase;font-weight:800;margin-bottom:13px}.control{display:block;margin-bottom:17px}
+.controlTop{display:flex;justify-content:space-between;gap:7px;align-items:center;margin-bottom:7px}.controlTop span{font-weight:720;font-size:12px}.controlTop output{font:760 11px ui-monospace,monospace;color:#c7b2fd}
+.control input[type=range]{width:100%;accent-color:#a489ff;cursor:pointer;height:7px}.control select,.control input[type=text],.control input[type=number]{width:100%;min-height:37px;padding:8px 10px;border:1px solid #44465f;color:#f1eefd;background:#191b2a;border-radius:8px}.colorRow{display:flex;gap:8px}.colorRow input[type=color]{width:48px;height:38px;flex:none;border-radius:8px;border:1px solid #55486e;background:#222033;padding:3px}.colorRow input[type=text]{flex:1;font:750 12px ui-monospace,monospace}
+.note{border:1px solid #53436c;border-radius:10px;background:#201a32;padding:12px;margin:12px 0;color:#c8b5e6;font-size:11px;line-height:1.6}.note strong{color:#f0e7ff}.finePrint{font-size:11px;line-height:1.5;color:#8d95ae}.divider{margin:20px 0;border:0;border-top:1px solid var(--edge)}
+.presetList{display:grid;gap:7px}.preset{display:flex;align-items:center;gap:10px;background:#181b29;border:1px solid #34374b;padding:9px;border-radius:10px;text-align:left;color:#e8e4fa;min-height:54px}.preset:hover,.preset.active{border-color:#9b7be0;background:#29203a}.swatches{width:37px;display:grid;grid-template-columns:repeat(2,17px);gap:2px;flex:none}.swatches i{height:17px;border-radius:3px;border:1px solid #fff2}.preset strong{font-size:12px}.preset small{display:block;font-size:10px;color:#a9a5b9}
+.stage{display:flex;flex-direction:column;min-width:0;min-height:0;background:radial-gradient(ellipse at 50% 3%,#1b2037 0%,#0a0d16 58%)}
+.stageTools{flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-bottom:1px solid var(--edge);background:#0c1019c9}
+.stageTools strong{font-size:13px}.stageTools small{color:var(--muted);display:block;font-size:10px}.routeTabs{display:flex;gap:5px;flex-wrap:wrap}.routeTabs button,.sizeTabs button{border:1px solid #3d4159;background:#191d2b;color:#b4b9d0;padding:7px 10px;border-radius:8px;font-weight:760;font-size:11px}.routeTabs button.active,.sizeTabs button.active{background:#46315f;border-color:#9a75d9;color:#fff}
+.viewport{flex:1;min-height:0;overflow:auto;padding:19px;display:flex;align-items:flex-start;justify-content:center}
+.browser{width:100%;max-width:1300px;height:100%;min-height:455px;display:flex;flex-direction:column;border:1px solid #40465f;border-radius:13px;overflow:hidden;box-shadow:0 22px 80px #0009;background:#0b0d16;transition:max-width .18s}
+.browserBar{height:40px;flex:none;background:#1b1e2c;display:flex;gap:11px;align-items:center;padding:0 12px;border-bottom:1px solid #303547}
+.browserDots{display:flex;gap:5px}.browserDots i{width:8px;height:8px;background:#596078;border-radius:50%}.browserDots i:first-child{background:#bd647a}.browserDots i:nth-child(2){background:#be986a}.browserDots i:nth-child(3){background:#5a9a83}
+.address{border-radius:7px;background:#111521;color:#8f99b3;padding:5px 10px;font:10px ui-monospace,monospace;flex:1;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.browser iframe{width:100%;height:100%;min-height:0;border:0;background:#0d1019;flex:1}
+.sizeBar{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 19px;border-top:1px solid var(--edge);flex:none;background:#111522}
+.sizeTabs{display:flex;gap:6px}.sizeBar small{color:#9cabc0;font-size:10px}
+.libraryHead{padding:17px 13px 13px;border-bottom:1px solid var(--edge)}.libraryHead h3{font-size:14px;margin:3px 0 6px}.libraryHead p{font-size:11px;line-height:1.55;color:var(--muted);margin:0}
+.librarySearch{width:100%;margin-top:11px;padding:9px 10px;border:1px solid #44465d;background:#171b29;border-radius:8px;color:#f3eeff;min-height:37px}
+.libraryNav{display:flex;gap:4px;flex-wrap:wrap;margin:10px 0}.libraryNav button{font-size:10px;color:#afb0c7;border:1px solid #48405f;border-radius:7px;padding:6px 8px;background:#191728}.libraryNav button.active{color:white;background:#4c346a;border-color:#9270c6}
+.patternList{padding:11px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start}.textureButton{position:relative;padding:0;background:#191724;border:1px solid #40415a;color:#eee5ff;border-radius:10px;overflow:hidden;text-align:left;min-height:100px}.textureButton.active{border:2px solid #b391fb;box-shadow:0 0 0 2px #9067dc2b}
+.textureButton:hover{border-color:#b391fb}.textureVisual{display:block;position:absolute;inset:0 0 25px;opacity:.88;background-color:#171827;background-repeat:repeat;background-size:80px 80px}.textureButton:after{content:'';position:absolute;inset:20px 0 0;background:linear-gradient(transparent,#12111c 74%);pointer-events:none}.textureButton span.label{position:absolute;left:7px;right:4px;bottom:6px;font-size:10px;z-index:1;font-weight:760;line-height:1.25}
+.empty{grid-column:1/-1;font-size:11px;color:var(--muted);padding:10px}
+.frameHint{display:flex;gap:12px;align-items:center}.frameHint b{color:#aebaff}
+@media(max-width:1300px){.grid{grid-template-columns:300px minmax(390px,1fr) 205px}.stageTools{flex-wrap:wrap}.routeTabs{gap:3px}}
+@media(max-width:990px){.grid{grid-template-columns:315px minmax(350px,1fr)}.library{display:none}.viewport{padding:10px}.top{padding:10px}.status{display:none}}
+@media(max-width:730px){.desk{min-width:730px}.finePrint{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body><div class="desk">
+<header class="top"><div class="brand"><div class="mark">✧</div><div><div class="eyebrow">ARCANA / CREATOR TOOLS / TEST ENVIRONMENT</div><h1>Design System Workspace <span class="muted" style="font-size:12px;font-weight:500">/ Desktop Edition</span></h1></div></div>
+<div class="top-actions"><span class="status">● PREVIEW ONLY</span><button class="controlBtn" id="undo">↶ Undo</button><button class="controlBtn" id="reset">Reset draft</button><button class="controlBtn" id="export">Export JSON</button><a class="controlBtn primary" href="/#/home" target="_blank" rel="noopener">↗ Open Arcana</a></div></header>
+<div class="grid">
+<aside class="inspector"><div class="sidebarTitle"><div class="eyebrow">01 / Live editor</div><h2>Theme Studio</h2><p>The controls from Arcana's current design system, now in a dedicated desktop workspace.</p></div>
+<nav class="tabbar" id="editorTabs"><button class="active" data-tab="texture">Texture</button><button data-tab="colors">Colors</button><button data-tab="components">Components</button><button data-tab="presets">Presets</button></nav>
+<div class="panel" id="panel-texture">
+<div class="sectionTitle">Texture &amp; rendering</div>
+<label class="control"><div class="controlTop"><span>Active texture</span></div><select data-field="pattern" id="patternSelect"></select></label>
+<label class="control"><div class="controlTop"><span>Apply texture to</span></div><select data-field="patternTarget"><option value="all">Backgrounds + cards</option><option value="background">Page backgrounds</option><option value="cards">Cards only</option></select></label>
+<div class="note"><strong>Procedural texture engine</strong><br>These are genuine SVG patterns, not static images. Their color, scale, weight and glow are independent of the site palette.</div>
+<label class="control"><div class="controlTop"><span>Texture color source</span></div><select data-field="textureColorMode"><option value="accent">Follow primary accent</option><option value="custom">Independent color</option></select></label>
+<label class="control"><div class="controlTop"><span>Custom texture color</span></div><div class="colorRow"><input type="color" data-field="textureColor"><input type="text" data-hex="textureColor" maxlength="7" spellcheck="false" aria-label="Texture color hex"></div></label>
+<div id="textureSliders"></div>
+<hr class="divider"><div class="sectionTitle">Layer lighting</div><div id="lightSliders"></div>
+<p class="finePrint">Changes use the same client-side draft model as the existing Theme Studio. Nothing here calls the publish endpoint.</p>
+</div>
+<div class="panel" id="panel-colors" hidden><div class="sectionTitle">Site palette</div><div id="colorFields"></div><hr class="divider"><div id="paletteSliders"></div></div>
+<div class="panel" id="panel-components" hidden><div class="sectionTitle">Buttons / Feature card</div>
+<div id="componentFields"></div><hr class="divider"><div class="sectionTitle">Shape &amp; spacing</div><div id="componentSliders"></div>
+<div class="note">Build Studio stays the centerpiece. Its feature card and entrance button can be adjusted without changing the rest of the navigation.</div></div>
+<div class="panel" id="panel-presets" hidden><div class="sectionTitle">Current Arcana theme presets</div><div class="presetList" id="presets"></div><div class="note">Presets replace palette and pattern choices, while keeping the full editing system available.</div></div>
+</aside>
+<main class="stage"><div class="stageTools"><div><strong>Live Arcana Preview</strong><small>Actual preview deployment in a resizable browser frame, not a fake screenshot</small></div>
+<div class="routeTabs" id="routeTabs"><button class="active" data-route="home">Home</button><button data-route="studio">Build Studio</button><button data-route="calculators/pathfinder">Pathfinder</button><button data-route="wiki/library">Wiki</button><button data-route="user">Profile</button></div></div>
+<div class="viewport"><div class="browser" id="browser"><div class="browserBar"><div class="browserDots"><i></i><i></i><i></i></div><span class="address" id="address">arcana-preview-app-preview.up.railway.app/#/home</span><button class="controlBtn" id="reload" title="Reload actual Arcana preview">↻</button></div><iframe id="liveFrame" title="Arcana live preview" src="/?arcana-design-desk=1#/home"></iframe></div></div>
+<div class="sizeBar"><div class="sizeTabs" id="sizes"><button class="active" data-width="100%">Desktop</button><button data-width="830px">Compact</button><button data-width="430px">Phone viewport</button></div><small>Editor designed for desktop. Preview any screen size. <b id="viewStatus">Local draft · Never published</b></small></div>
+</main>
+<aside class="library"><div class="libraryHead"><div class="eyebrow">02 / Asset browser</div><h3>Procedural Library</h3><p>Ten new colorable surfaces alongside Arcana's existing texture engine.</p><input class="librarySearch" id="filter" type="search" placeholder="Find a texture…" autocomplete="off"><nav class="libraryNav"><button data-category="Procedural" class="active">New 10</button><button data-category="All">All</button><button data-category="Material">Materials</button><button data-category="Relic">Relics</button></nav></div><div class="patternList" id="patternList"></div></aside>
+</div></div>
+<script type="module">
+import {readDesign,writeDesign,applyDesignPreset,undoDesign,resetDesign,DESIGN_PRESETS,DEFAULT_DESIGN} from './src/design-controls.js';
+import {THEME_PATTERNS} from './src/theme-patterns.js';
+import {PROCEDURAL_TEXTURES,proceduralTexture} from './src/procedural-textures.js';
+const el=id=>document.getElementById(id),esc=s=>String(s).replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;');
+const routes=['home','studio','calculators/pathfinder','wiki/library','user'];
+const hueColor=v=>v.textureColorMode==='accent'?v.action:v.textureColor;
+const ranges=[['intensity','Pattern intensity',0,100,'%'],['patternScale','Pattern size',60,180,'%'],['textureWeight','Line weight',40,250,'%'],['textureGlow','Texture glow',0,12,' px'],['glow','Global glow',0,100,'%'],['edges','Border intensity',0,100,'%'],['cardShadow','Card shadow',0,100,'%'],['roundness','Card corners',3,28,' px'],['buttonRoundness','Button corners',3,30,' px'],['buttonFill','Button color strength',35,100,'%'],['heroActionWidth','Build Studio button width',65,100,'%'],['heroActionGlow','Build Studio button glow',0,100,'%']];
+const colors=[['main','Background'],['card','Panels'],['action','Primary accent'],['secondaryAccent','Second accent'],['text','Text'],['mutedText','Muted text'],['borderColor','Border color'],['navBar','Navigation'],['buttonText','Button text']];
+const selects=[['buttonStyle','Buttons',[['gradient','Gradient'],['solid','Solid'],['outline','Outline']]],['heroCardStyle','Build Studio feature card',[['blended','Blended'],['flat','Flat'],['frameless','Frameless'],['etched','Etched'],['glass','Smoked glass'],['raised','Raised'],['accent-edge','Accent edge'],['metallic','Brushed alloy'],['minimal','Minimal']]],['heroActionStyle','Build Studio button',[['integrated','Integrated'],['spotlight','Spotlight'],['minimal','Minimal']]],['density','Layout density',[['compact','Compact'],['comfortable','Comfortable'],['spacious','Spacious']]],['fontFamily','Typeface',[['system','System'],['rounded','Rounded'],['serif','Serif'],['mono','Monospace']]]];
+let category='Procedural',route='home',frameReady=false;
+const rangeMarkup=([key,label,min,max,unit])=>'<label class="control"><div class="controlTop"><span>'+esc(label)+'</span><output data-out="'+key+'"></output></div><input type="range" data-field="'+key+'" min="'+min+'" max="'+max+'"></label>';
+const colorMarkup=([key,label])=>'<label class="control"><div class="controlTop"><span>'+label+'</span></div><div class="colorRow"><input type="color" data-field="'+key+'"><input type="text" data-hex="'+key+'" maxlength="7" spellcheck="false" aria-label="'+label+' hex"></div></label>';
+el('textureSliders').innerHTML=ranges.slice(0,4).map(rangeMarkup).join('');
+el('lightSliders').innerHTML=ranges.slice(4,7).map(rangeMarkup).join('');
+el('paletteSliders').innerHTML=rangeMarkup(['headerOpacity','Header opacity',65,100,'%'])+rangeMarkup(['accentBlend','Accent blend',0,100,'%']);
+el('colorFields').innerHTML=colors.map(colorMarkup).join('');
+el('componentSliders').innerHTML=ranges.slice(7).map(rangeMarkup).join('');
+el('componentFields').innerHTML=selects.map(([key,label,options])=>'<label class="control"><div class="controlTop"><span>'+label+'</span></div><select data-field="'+key+'">'+options.map(([id,title])=>'<option value="'+id+'">'+title+'</option>').join('')+'</select></label>').join('');
+el('patternSelect').innerHTML=THEME_PATTERNS.map(p=>'<option value="'+p.id+'">'+p.name+' · '+p.category+'</option>').join('');
+el('presets').innerHTML=Object.entries(DESIGN_PRESETS).map(([key,p])=>'<button class="preset" data-preset="'+key+'"><span class="swatches"><i style="background:'+p.main+'"></i><i style="background:'+p.card+'"></i><i style="background:'+p.action+'"></i><i style="background:'+p.secondaryAccent+'"></i></span><span><strong>'+p.name+'</strong><small>'+p.pattern.replaceAll('-',' ')+'</small></span></button>').join('');
+function syncInputs(){
+ const d=readDesign();for(const input of document.querySelectorAll('[data-field]')){const value=d[input.dataset.field];if(value!==undefined&&document.activeElement!==input)input.value=value;}
+ for(const input of document.querySelectorAll('[data-hex]')){const value=d[input.dataset.hex];if(value!==undefined&&document.activeElement!==input)input.value=value.toUpperCase();}
+ for(const out of document.querySelectorAll('[data-out]')){const r=ranges.find(x=>x[0]===out.dataset.out);out.textContent=d[out.dataset.out]+(r?.[4]||'');}
+ for(const btn of document.querySelectorAll('[data-preset]')){const p=DESIGN_PRESETS[btn.dataset.preset];btn.classList.toggle('active',d.main===p.main&&d.action===p.action&&d.pattern===p.pattern);}
+ const custom=document.querySelector('[data-field="textureColor"]');if(custom)custom.disabled=d.textureColorMode!=='custom';
+ const customHex=document.querySelector('[data-hex="textureColor"]');if(customHex)customHex.disabled=d.textureColorMode!=='custom';
+}
+function renderPatterns(){
+ const d=readDesign();const q=el('filter').value.trim().toLowerCase();
+ const patterns=THEME_PATTERNS.filter(p=>(category==='All'||category==='Procedural'&&p.category==='Procedural'||category===p.category)&&(!q||(p.name+' '+p.category).toLowerCase().includes(q)));
+ el('patternList').innerHTML=patterns.map(p=>{const v=proceduralTexture(p.id,hueColor(d),d.textureWeight,85,0);const pic=v?'background-image:'+v.url+';background-size:76px 76px;':'background-image:radial-gradient(circle at 70% 35%,#ad8bfa33,transparent 55%),repeating-linear-gradient(35deg,transparent 0 14px,#a891ed24 15px,transparent 16px,transparent 30px);';return '<button class="textureButton '+(p.id===d.pattern?'active':'')+'" data-pattern="'+p.id+'" title="'+esc(p.name)+'"><span class="textureVisual" style="'+pic+'"></span><span class="label">'+esc(p.name)+'</span></button>';}).join('')||'<div class="empty">No patterns match.</div>';
+}
+function setThemeVars(doc,d){
+ const root=doc.documentElement;if(!root)return;
+ root.dataset.arcanaDesignActive='true';root.dataset.arcanaDesignPattern=d.pattern;root.dataset.arcanaPatternTarget=d.patternTarget;
+ const set=(k,v)=>root.style.setProperty(k,v,'important');
+ const palette={'--theme-main':d.main,'--theme-secondary':d.card,'--theme-highlight':d.action,'--arcana-design-text':d.text,'--arcana-action-color':d.action,'--arcana-secondary-accent':d.secondaryAccent,'--arcana-border-color':d.borderColor,'--arcana-muted-text':d.mutedText,'--arcana-nav-panel':d.navBar,'--arcana-button-text':d.buttonText,'--bg':d.main,'--panel':d.card,'--accent':d.action,'--line':d.borderColor,'--text':d.text,'--arcana-design-font-family':d.fontFamily==='serif'?'Georgia,serif':d.fontFamily==='mono'?'ui-monospace,monospace':'system-ui,sans-serif','--arcana-wave-opacity':d.intensity/100,'--arcana-pattern-alpha':Math.round(d.intensity*.16)+'%','--arcana-premium-pattern-alpha':Math.round(d.intensity*.35)+'%','--arcana-pattern-scale':d.patternScale/100,'--arcana-glow-alpha':d.glow/100,'--arcana-edge-alpha':d.edges/100,'--arcana-card-radius':d.roundness+'px','--arcana-button-radius':d.buttonRoundness+'px','--arcana-button-fill':d.buttonFill+'%','--arcana-header-opacity':d.headerOpacity+'%','--arcana-shadow-depth':d.cardShadow/100,'--arcana-hero-cta-width':d.heroActionWidth+'%','--arcana-hero-cta-glow':d.heroActionGlow/100,'--arcana-accent-blend':d.accentBlend+'%','--arcana-texture-size':'calc(120px * var(--arcana-pattern-scale))'};
+ for(const [key,value] of Object.entries(palette))set(key,String(value));
+ root.dataset.arcanaHeroActionStyle=d.heroActionStyle;root.dataset.arcanaHeroCardStyle=d.heroCardStyle;root.dataset.arcanaDesignButtons=d.buttonStyle;root.dataset.arcanaDesignDensity=d.density;
+ const t=proceduralTexture(d.pattern,hueColor(d),d.textureWeight,d.intensity,d.textureGlow);
+ if(t){set('--arcana-texture',t.url);set('--arcana-procedural-url',t.url);set('--arcana-texture-size','calc('+t.size+'px * var(--arcana-pattern-scale))');}
+ else{root.style.removeProperty('--arcana-texture');root.style.removeProperty('--arcana-procedural-url');root.style.removeProperty('--arcana-texture-size');}
+}
+function applyPreview(){
+ const iframe=el('liveFrame');if(!frameReady)return;
+ try{
+  const doc=iframe.contentDocument;if(!doc)return;
+  setThemeVars(doc,readDesign());
+  const d=readDesign();
+  const status=el('viewStatus');status.textContent=d.pattern.replaceAll('procedural-','')+' · '+d.intensity+'% intensity';
+ }catch(e){el('viewStatus').textContent='Preview still loading';}
+}
+function updated(){syncInputs();renderPatterns();applyPreview();}
+document.addEventListener('input',e=>{
+ const i=e.target;
+ if(i.matches('[data-field]')){
+  if(writeDesign(i.dataset.field,i.value))updated();
+ }else if(i.matches('[data-hex]')){
+  const value=i.value.trim();if(/^#?[0-9a-fA-F]{6}$/.test(value)){writeDesign(i.dataset.hex,value.startsWith('#')?value:'#'+value);updated();}
+ }else if(i.id==='filter'){renderPatterns();}
+});
+document.addEventListener('click',e=>{
+ const tab=e.target.closest('[data-tab]');if(tab){for(const b of document.querySelectorAll('[data-tab]'))b.classList.toggle('active',b===tab);for(const p of document.querySelectorAll('.panel'))p.hidden=p.id!=='panel-'+tab.dataset.tab;return;}
+ const p=e.target.closest('[data-pattern]');if(p){writeDesign('pattern',p.dataset.pattern);updated();return;}
+ const preset=e.target.closest('[data-preset]');if(preset){applyDesignPreset(preset.dataset.preset);updated();return;}
+ const cat=e.target.closest('[data-category]');if(cat){category=cat.dataset.category;for(const b of document.querySelectorAll('[data-category]'))b.classList.toggle('active',b===cat);renderPatterns();return;}
+ const b=e.target.closest('[data-route]');if(b){route=b.dataset.route;for(const bt of document.querySelectorAll('[data-route]'))bt.classList.toggle('active',bt===b);el('address').textContent=location.host+'/#/'+route;frameReady=false;el('liveFrame').src='/?arcana-design-desk=1#/'+route;return;}
+ const width=e.target.closest('[data-width]');if(width){el('browser').style.maxWidth=width.dataset.width;for(const bt of document.querySelectorAll('[data-width]'))bt.classList.toggle('active',bt===width);return;}
+});
+el('undo').addEventListener('click',()=>{undoDesign();updated()});
+el('reset').addEventListener('click',()=>{if(confirm('Reset this local draft? This does not affect the public site.')){resetDesign();updated();}});
+el('export').addEventListener('click',()=>{const data=new Blob([JSON.stringify(readDesign(),null,2)],{type:'application/json'});const url=URL.createObjectURL(data);const a=document.createElement('a');a.href=url;a.download='arcana-theme-preview.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500)});
+el('reload').addEventListener('click',()=>{frameReady=false;el('liveFrame').src='/?arcana-design-desk='+Date.now()+'#/'+route});
+el('liveFrame').addEventListener('load',()=>{frameReady=true;applyPreview();setTimeout(applyPreview,250);setTimeout(applyPreview,1500);setTimeout(applyPreview,4000)});
+window.addEventListener('arcana:design-change',()=>{syncInputs();renderPatterns();applyPreview()});
+syncInputs();renderPatterns();
+</script></body></html>
