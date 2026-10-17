@@ -17,13 +17,13 @@ export function quickUpgradePanel(snapshot,raw={},options={}){
  const classes='quickCosts '+(page?'quickCostsFull':'quickCostsHome');
  const heading=page?'<div class="quickEyebrow">INSTANT MATERIAL CALCULATOR</div><h2>Upgrade Costs</h2><p>Pick any starting and target upgrade. Get the full material total immediately.</p>':
  '<div class="quickCostsHead"><div><span class="quickEyebrow">FASTEST WAY TO PLAN AN UPGRADE</span><h2>Upgrade Costs</h2><p>From → To. No build required.</p></div><span class="quickHint">About 3 seconds</span></div>';
- const inner=quickUpgradeContent(snapshot,raw,{page});
+ const inner=quickUpgradeContent(snapshot,raw,{page,error:options.error||''});
  return '<section class="'+classes+'" aria-label="Quick upgrade cost calculator">'+heading+'<div id="pathRangeContent">'+inner+'</div>'+
  (page?'<div class="quickCostsExtra"><button type="button" data-route="calculators/pathfinder" data-params="view=timeline">Explore the upgrade map →</button></div>':
  '<div class="quickCostsExtra"><button type="button" data-route="calculators/pathfinder" data-params="view=range">Open full calculator →</button></div>')+'</section>';
 }
 export function quickUpgradeContent(snapshot,raw={},options={}){
- if(!snapshot)return '<div class="quickWaiting" role="status"><span class="quickSpinner" aria-hidden="true"></span>Loading game upgrade recipes…</div>';
+ if(!snapshot)return options.error?'<div class="quickError" role="status">'+esc(options.error)+' <button type="button" data-action="path-refresh">Retry recipes</button></div>':'<div class="quickWaiting" role="status"><span class="quickSpinner" aria-hidden="true"></span>Loading game upgrade recipes…</div>';
  const range=initialQuickRange(snapshot,raw),stages=allStages(snapshot);
  if(!stages.length)return '<p class="quickError">Upgrade recipes are not available.</p>';
  const quote=quoteRange(snapshot,range,{stage:range.fromStage});
