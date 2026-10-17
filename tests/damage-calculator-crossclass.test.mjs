@@ -60,6 +60,16 @@ test('Warrior Culling + Executioner combine raw 22+19=41%, clipped at 35%',()=>{
  assert.equal(combined.raw,41);
  assert.equal(combined.value,35);
 });
+
+test('Reality Warp clips Boss Damage but lets Double Hit increase beyond 100%',()=>{
+ const s=calculateSkillOutputs(OBSERVED_SKILL_CASES.mageRealityWarp);
+ assert.equal(s.allocated,5);
+ assert.equal(s.effective,22);
+ assert.deepEqual(s.effects.map(x=>[x.raw,x.value]),[[44,44],[110,100]]);
+ const onePoint=calculateSkillOutputs({...OBSERVED_SKILL_CASES.mageRealityWarp,allocated:1,acs:20});
+ assert.equal(onePoint.effective,21);
+ assert.deepEqual(onePoint.effects.map(x=>[x.raw,x.value]),[[42,42],[105,100]]);
+});
 test('Shared trap damage cap is applied to SUM not per skill alone',()=>{
  const combined=sharedSkillCap([15,9],35);
  assert.equal(combined.value,24);
