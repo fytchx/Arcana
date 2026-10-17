@@ -30,6 +30,8 @@ const NUMERIC_PATHS = [
   ['Attack layer · gems %','attack.layers.gems','attack'],
   ['Attack layer · time boost %','attack.layers.timeBoost','attack'],
   ['Attack layer · combat stance %','attack.layers.combatStance','attack'],
+  ['Pet base · minimum before buffs','pet.base.min','pet'],
+  ['Pet base · maximum before buffs','pet.base.max','pet'],
   ['Pet flat · runes','pet.flat.runes','pet'],
   ['Pet flat · guild','pet.flat.guild','pet'],
   ['Pet flat · passive','pet.flat.passive','pet'],
@@ -74,9 +76,10 @@ const SETS = [
  ['attack','Additive attack percentages',NUMERIC_PATHS.slice(4,9).map(x=>x[1])],
  ['attack','Flat damage after additive %',NUMERIC_PATHS.slice(9,12).map(x=>x[1])],
  ['attack','Independent attack multipliers',NUMERIC_PATHS.slice(12,25).map(x=>x[1])],
- ['pet','Flat damage applied to each pet',NUMERIC_PATHS.slice(25,28).map(x=>x[1])],
- ['pet','Independent pet multipliers',NUMERIC_PATHS.slice(28,40).map(x=>x[1])],
- ['combat','Critical hits, overflow and procs',NUMERIC_PATHS.slice(40).map(x=>x[1])],
+ ['pet','Pet base before any bonuses (optional)',NUMERIC_PATHS.slice(25,27).map(x=>x[1])],
+ ['pet','Flat damage applied to each pet',NUMERIC_PATHS.slice(27,30).map(x=>x[1])],
+ ['pet','Independent pet multipliers',NUMERIC_PATHS.slice(30,42).map(x=>x[1])],
+ ['combat','Critical hits, overflow and procs',NUMERIC_PATHS.slice(42).map(x=>x[1])],
 ];
 let state=null;
 function load(){
@@ -104,7 +107,7 @@ function results(){
  const extra=Object.keys(state.changes).length;
  return `<div class="dcResultGrid">
  <div class="dcResult"><span>Attack damage range</span><strong>${attackRange(scen.attack)}</strong><small>Before crit, Double Hit, Double Damage and enemy mitigation</small><b>Change ${pct(comp.changes.attack.min?.percentChange)}</b></div>
- <div class="dcResult"><span>Pet damage multiplier</span><strong>×${scen.pet.layerFactor.toFixed(2)}</strong><small>Pet base/level scaling not supplied. Flat +${fmt(scen.pet.flatBonus)} added before multipliers.</small><b>Change ${pct(comp.changes.petMultiplier?.percentChange)}</b></div>
+ <div class="dcResult"><span>Pet damage multiplier</span><strong>×${scen.pet.layerFactor.toFixed(2)}</strong><small>${scen.pet.min === null ? 'Enter a pre-bonus pet base to calculate final damage.' : 'Estimated pet damage: '+fmt(scen.pet.min)+' – '+fmt(scen.pet.max)} Flat +${fmt(scen.pet.flatBonus)} added before multipliers.</small><b>Change ${pct(comp.changes.petMultiplier?.percentChange)}</b></div>
  <div class="dcResult"><span>Attack multiplier breakdown</span><strong>×${scen.attack.additiveFactor.toFixed(3)} / ×${scen.attack.layerFactor.toFixed(2)}</strong><small>Summed additive first; ${fmt(scen.attack.flatBonus)} flat added after; independent layers multiply.</small></div>
  </div>
  <div class="dcCombatNumbers"><span>Crit: <b>${fmt(scen.combat.crit.effectiveChance)}%</b> chance, <b>+${fmt(scen.combat.crit.overflowCritDamage)}%</b> overflow damage</span><span>Double Damage: <b>×${fmt(scen.combat.doubleDamage.expected)}</b> mean multiplier</span><span>Double Hit: <b>${fmt(scen.combat.doubleHit.expected)}</b> expected hits on surviving targets</span><span>Alpha Strike: <b>${fmt(scen.combat.alphaStrike.chance)}%</b> proc chance</span></div>
