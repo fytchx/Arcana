@@ -14,10 +14,9 @@ const SLOT_KEYS=['torch','head','neck','weapon','chest','offhand','ring','belt',
 const TARGETS=Object.freeze({
  fierce:{path:'attack.layers.dropBonus',channel:'Hero Attack · equipment Drop Bonus %'},
  companions:{path:'pet.layers.equipmentAffixes',channel:'Pet Damage · equipment affix %'},
- precise:{path:'combat.critChance',channel:'Critical Chance · equipment %'},
- brutal:{path:'combat.critDamage',channel:'Critical Damage · equipment %'},
- relentless:{path:'combat.doubleHitChance',channel:'Double Hit Chance · equipment %'},
- devastating:{path:'combat.doubleDamageChance',channel:'Double Damage Chance · equipment %'},
+ // Combat fields hold whole-character totals. Equipment-only values may not
+ // replace them or we would erase skill/attribute/pet/rune contributions.
+ // Such rolls are audited as excluded until provenance-aware subtotals exist.
  thorned:{path:'retaliation.baseBonuses.reflectingGear',channel:'Retaliation base · Reflecting gear %'},
 });
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v));
@@ -82,7 +81,7 @@ export function projectBuildStudioDamage(build){
   const target=TARGETS[entry.bonusId];
   if(!target){
    result.skipped.push({slot,item:base.name,bonus:bonus.name,
-    reason:'This verified bonus does not map to an established Damage Calculator stage.'});
+    reason:'Not imported: no safe equipment-only subtotal exists for this whole-character stat.'});
    continue;
   }
   result.rollCount++;
