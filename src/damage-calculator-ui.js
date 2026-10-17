@@ -208,7 +208,7 @@ export function mountDamageCalculator(){
  const root=document.querySelector('#arcanaDamageCalculator');
  if(!root || root.dataset.dcMounted==='yes')return;
  root.dataset.dcMounted='yes';
- load();updateNumbers(root);mountSkillPlanner(root);
+ load();updateNumbers(root);mountSkillPlanner(root,()=>state.baseline);
  // Explicit user action replaces the SAME stages in the manual screenshot
  // reference. These are never added on top of the original aggregate values.
  root.addEventListener('dc-apply-skill-sheet',e=>{
