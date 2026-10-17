@@ -62,7 +62,7 @@ test('damage inputs are bounded and stored independently of Build Studio',()=>{
 });
 test('app homepage is wired to live verified recipes, no new independent upgrade math',async()=>{
  const [app,page,server]=await Promise.all(['../src/app.js','../index.html','../server.mjs'].map(x=>readFile(new URL(x,import.meta.url),'utf8')));
- assert.match(app,/quickUpgradePanel\(recipeState\.data,state\.pathfinderRange\)/);
+ assert.ok(app.includes('quickUpgradePanel(recipeState.data,state.pathfinderRange,{error:recipeState.error})'));
  assert.match(app,/quickUpgradeContent\(recipeState\.data,current/);
  assert.match(app,/initialQuickRange\(payload,state\.pathfinderRange\)/);
  assert.match(app,/case 'calculators\/damage':return calcDamage/);
