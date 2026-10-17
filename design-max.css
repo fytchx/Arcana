@@ -143,3 +143,21 @@ html[data-design-max="true"] :is(.btn,.launchSeeAll){
 }
 html[data-design-max="true"] :is(.btn,.launchSeeAll):hover{transform:translateY(calc(-1 * var(--max-hover-raise)))}
 html[data-design-max="true"][data-max-motion="off"] :is(.btn,.launchSeeAll){transition:none!important}
+
+/* Layer two: optional, independent vector tile. Never affects an unselected design. */
+html[data-design-max="true"][data-max-layer="dual"]:is([data-max-layer-target="background"],[data-max-layer-target="both"]) #content.homeFullscreen{
+ background-image:var(--max-layer-url),var(--arcana-texture),var(--max-vignette),var(--max-glow-gradient),var(--max-bg-gradient)!important;
+ background-size:var(--max-layer-size),var(--arcana-texture-size),cover,cover,cover!important;
+ background-position:var(--max-layer-position),center,center,center,center!important;
+ background-repeat:repeat,repeat,no-repeat,no-repeat,no-repeat!important;
+ background-blend-mode:var(--max-layer-blend),normal,normal,normal,normal;
+}
+html[data-design-max="true"][data-max-layer="dual"]:is([data-max-layer-target="cards"],[data-max-layer-target="both"])[data-arcana-pattern-target]:not([data-arcana-pattern-target="background"]) #content.homeFullscreen :is(.launchHero,.launchQuickCard):after{
+ background-image:var(--max-layer-url),var(--arcana-texture)!important;
+ background-size:var(--max-layer-size),var(--arcana-texture-size)!important;
+ background-position:var(--max-layer-position),center!important;
+ background-repeat:repeat,repeat!important;
+ background-blend-mode:var(--max-layer-blend),normal!important;
+ mask-image:none!important;-webkit-mask-image:none!important;
+ opacity:1!important;display:block!important;
+}
