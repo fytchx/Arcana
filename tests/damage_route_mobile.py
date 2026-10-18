@@ -109,6 +109,28 @@ with sync_playwright() as playwright:
     assert calc.locator('#dcStudioImport').is_visible(), 'Build Studio import panel cannot open'
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Horizontal overflow in calculator on mobile'
     page.screenshot(path=str(OUT/'damage-modern-route-mobile.png'),full_page=True)
+    # User's EXISTING public Warrior build ID must resolve to the real
+    # 28-screenshot character, not the former empty guide placeholder.
+    page.evaluate("location.hash='#/labs/build?build=warrior-retaliation-zane'")
+    page.wait_for_selector('.obsRoot',timeout=10000)
+    assert page.locator('.obsRoot').count()==1, 'No observed character audit'
+    assert page.locator('.loadoutSlot').count()==11, 'Missing Warrior gear loadout slots'
+    assert '11 / 11 equipped' in page.locator('.studioEquipmentHeading').inner_text(), 'Actual 11 equipment items were not placed'
+    assert '265' in page.locator('#obs-stats').inner_text(), 'Wrong character level'
+    assert '28,560,000' in page.locator('#obs-stats').inner_text(), 'Observed Defense not preserved'
+    assert '183,630,000,000' in page.locator('#obs-stats').inner_text(), 'Retaliation result not preserved'
+    assert page.locator('#obs-pets .obsCard').count()==4, 'All four actual pets must be visible'
+    assert page.locator('#obs-talismans .obsCard').count()==2, 'Both inscribed talismans must be visible'
+    assert page.locator('#obs-runes .obsRune').count()==35, 'Observed 6×6 rune grid is incomplete'
+    assert 'not shown' in page.locator('#obs-unknown').inner_text().lower() or 'not' in page.locator('#obs-unknown').inner_text().lower()
+    page.screenshot(path=str(OUT/'warrior-real-build-overview-mobile.png'),full_page=True)
+    # The real interactive Rune Forge must show all 35 positioned runes,
+    # with explicitly unresolved secondary choices, not a fake stat bonus.
+    page.evaluate("location.hash='#/labs/runes?build=warrior-retaliation-zane'")
+    page.wait_for_selector('#arcanaRuneBoard',timeout=10000)
+    assert page.locator('#arcanaRuneBoard .runePlaced').count()==35, 'Rune Forge did not import real positions'
+    assert page.locator('#arcanaRuneBoard .runePlaced').first.get_attribute('aria-label').find('Secondary not verified')>=0
+    page.screenshot(path=str(OUT/'warrior-real-rune-grid-mobile.png'),full_page=True)
     assert not errors, 'Unexpected JavaScript errors: '+repr(errors)
     print(json.dumps({'status':'PASS','home_cards':3,'dock_tabs':5,
                       'calculator_tabs':7,'uncaught_js_errors':len(errors)}))
