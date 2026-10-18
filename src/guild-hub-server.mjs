@@ -51,7 +51,8 @@ function publicGuild(g,viewer,detail=false){
  const base={id:g.id,name:g.name,tag:g.tag,bio:g.bio,status:g.status,crest:g.status==='approved'?g.crest:null,
  iconDataUrl:icon,createdAt:g.createdAt,memberCount:g.members.length,ownerId:g.ownerId,
  recruitmentOpen:g.recruitmentOpen===true,amMember:mine,canManage:staffAccess,memberRole:g.members.find(m=>m.id===viewer?.id)?.role||null,
- myApplication:g.applications.find(a=>a.id===viewer?.id)?.status||null};
+ myApplication:g.applications.find(a=>a.id===viewer?.id&&a.status==='pending')?.status||null,
+ pendingIconDataUrl:staffAccess&&moderator(viewer)&&g.icon?.status==='pending'?g.icon.pending:''};
  if(!detail)return base;
  return {...base,members:g.members.map(m=>({id:m.id,role:m.role,joinedAt:m.joinedAt,name:m.name})),
  posts:g.posts.filter(p=>g.status==='approved'&&(mine||staffAccess||p.kind==='announcement')).slice(-120).reverse(),
