@@ -10,7 +10,8 @@ import {classEmblem,readStudioPortrait,setStudioPortrait,clearStudioPortrait} fr
 import {passiveTitle} from './tree-art.js';
 import {normalizeBuild,putRune,removeRune,nextRuneId,petSummary,RUNE_SHAPES,RUNE_FAMILIES,RUNE_FAMILY_DETAILS,RUNE_SECONDARIES,PET_AFFIX_DEFS,statName,runeIssue,monsterLevelGrid,activeRuneBoard} from './labs-engine.js';
 import {labsTabs,runeGridView,runeOptionsUI,petLoadoutView,petCompoundCalculatorView,buildOverviewV7} from './labs-views.js';
-import {damageCalculatorView,mountDamageCalculator} from './damage-calculator-ui.js';
+import {damageCalculatorView,mountDamageCalculator,resetDamageCalculatorForCharacter} from './damage-calculator-ui.js';
+import {normalizeSandboxCharacter} from './sandbox-character.js';
 import {talismanBuildStudioView} from './talisman-ui.js';
 import {normalizeTalisman,talismansFromResponse} from './talisman-model.js';
 import {TALISMAN_INSCRIPTIONS} from './talisman-reference.js';
@@ -113,7 +114,7 @@ const item=value=>{
  const slot=gear?{main_hand:'weapon',off_hand:'offhand',amulet:'neck',ring:'ring'}[gear.slot]||gear.slot:null;
  return gear?{id:gear.id,kind:'item',title:gear.name,subtitle:'Verified Season 2 base equipment',slot,verified:true}:null;
 };const buildTemplate=id=>demoBuilds[id];
-const savedBuild=()=>state.draft&&state.draft.equipment?normalizeBuild(state.draft):null;
+const savedBuild=()=>{const fresh=loadDraft();return fresh?.equipment?normalizeBuild(fresh):state.draft&&state.draft.equipment?normalizeBuild(state.draft):null;};
 const shared={token:'',build:null,error:''};
 async function resolveShared(token){
  if(shared.token===token)return;
@@ -232,7 +233,7 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
   '<button class="btn primary" data-action="savebuild">'+icon('check',16)+' Save draft</button>'+
   '<button class="btn secondary" data-action="sharebuild">'+icon('link',16)+' Share</button>'+
   '<button class="btn secondary" data-action="savecloud">'+icon('check',16)+' Save to Account</button>'+
-  '<button class="btn secondary" data-action="damagefrombuild">'+icon('calculator',16)+' Open Damage Calculator</button>';
+  '<button class="btn secondary" data-action="damagefrombuild">'+icon('calculator',16)+' Open Character Sandbox</button>';
  const profile= '<section class="studioProfile" aria-label="Build profile">'+
   '<div class="studioProfileMain"><div class="studioProfileVisual">'+
   '<span class="studioPortraitIcon">'+previewPortrait+'</span>'+
@@ -723,7 +724,7 @@ case 'sharepassives':{
  break;
 }
 case 'sharebuild':{const b=ensureDraft();persistDraft();void shareBuildToken(b).then(token=>{const url=location.origin+location.pathname+'#/labs/build?share='+encodeURIComponent(token);if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Shareable build link copied')).catch(()=>window.prompt('Copy your build link',url));else window.prompt('Copy your build link',url);}).catch(err=>toast(String(err.message||err)));break;}
-case 'damagefrombuild':persistDraft();go('calculators/damage');break;
+case 'damagefrombuild':persistDraft();resetDamageCalculatorForCharacter();go('calculators/damage');break;
 case 'savebuild':if(state.draft)saveDraft(state.draft);toast('Build saved on this device.');break;case 'runesave':persistDraft();toast('Rune grid saved with your character.');break;
 case 'runefamily':{const family=RUNE_FAMILIES.includes(arg)?arg:'Fury',def=RUNE_FAMILY_DETAILS[family];state.runeFamily=family;if(state.runeSelected){mutateRunes(b=>{const r=b.runeBoard.find(r=>r.id===state.runeSelected);if(r){r.family=family;r.primary=def.primary}})}else{state.runeSecondary=def.suggestedSecondary;render()}break;}
 case 'runeshape':{const shape=arg in RUNE_SHAPES?arg:'small';state.runeShape=shape;if(state.runeSelected){const b=ensureDraft(),r=b.runeBoard.find(r=>r.id===state.runeSelected);if(!r)break;const candidate={...r,shape,w:RUNE_SHAPES[shape].w,h:RUNE_SHAPES[shape].h};const issue=runeIssue(b.runeBoard,candidate,r.id,b.monsterLevel);if(issue){toast(issue);break;}mutateRunes(b=>{Object.assign(b.runeBoard.find(x=>x.id===state.runeSelected),{shape,w:candidate.w,h:candidate.h})});}else render();break;}
@@ -1050,6 +1051,15 @@ document.addEventListener('change',e=>{
   if(input.value.trim()==='')delete next.inscriptions[stat];else next.inscriptions[stat]=Number(input.value);
  }else return;
  b.talismans[idx]=normalizeTalisman(next);persistDraft();render();
+});
+window.addEventListener('arcana:sandbox-adopt',e=>{
+ const source=e.detail?.character;if(!source||typeof source!=='object')return;
+ state.draft=normalizeSandboxCharacter(source);
+ state.draft.id='local-draft';state.draft.version='LOCAL';
+ saveDraft(state.draft);
+ resetDamageCalculatorForCharacter();
+ go('labs/build');
+ toast('Restored saved sandbox version. Your protected variants are unchanged.');
 });
 init();
 void initGameAssets();

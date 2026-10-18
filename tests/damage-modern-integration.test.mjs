@@ -22,5 +22,5 @@ test('calculator integration retains newer homepage, theme editor and five-tab d
  assert.match(launch,/id:'pathfinder',title:'Pathfinder'/);
  assert.match(launch,/id:'tools',title:'Tools'/);
  assert.match(launch,/id:'builds',title:'Builds & Guides'/);
- assert.match(app,/case 'damagefrombuild':persistDraft\(\);go\('calculators\/damage'\);break/);
+ assert.match(app,/case 'damagefrombuild':persistDraft\(\);resetDamageCalculatorForCharacter\(\);go\('calculators\/damage'\);break/);
 });

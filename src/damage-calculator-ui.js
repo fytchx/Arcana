@@ -1,4 +1,7 @@
 import {blankDamageBuild, compareBuilds, relativeDifference} from './damage-calculator-engine.js';
+import {loadDraft,saveDraft} from './session.js';
+import {normalizeDamageProfile,emptySandboxCharacter} from './sandbox-character.js';
+import {sandboxWorkspaceView,mountSandboxWorkspace,refreshSandboxWorkspace} from './sandbox-ui.js';
 import {calculateRetaliation} from './retaliation-damage-engine.js';
 import {rankPercentagePointGains} from './damage-calculator-marginals.js';
 import {petQuickCompareView,mountPetQuickCompare,refreshPetQuickCompare} from './damage-pet-quick-ui.js';
@@ -117,18 +120,36 @@ const SETS = [
 ];
 let state=null;
 function load(){
- if(state)return state;
+ const draft=loadDraft();
+ const shared=draft?.damageProfile?normalizeDamageProfile(draft.damageProfile):null;
+ if(state){
+  // Build Studio is the canonical working character. A restored snapshot
+  // replaces old manual stats instead of mixing two unrelated characters.
+  if(shared&&JSON.stringify(shared)!==JSON.stringify(state.baseline)){
+   state.baseline=shared;state.changes={};
+  }
+  return state;
+ }
  try{
   const saved=JSON.parse(localStorage.getItem(STORE_KEY)||'null');
   if(saved?.baseline?.attack?.weapon && saved?.baseline?.pet?.layers){
-    state={baseline:saved.baseline,changes:saved.changes||{},mode:'attack',marginalPoints:[1,10,100].includes(saved.marginalPoints)?saved.marginalPoints:10};
-    return state;
+   state={baseline:shared||normalizeDamageProfile(saved.baseline),changes:saved.changes||{},mode:'attack',
+    marginalPoints:[1,10,100].includes(saved.marginalPoints)?saved.marginalPoints:10};
+   return state;
   }
  }catch{}
- state={baseline:initial(),changes:{},mode:'attack',marginalPoints:10};
+ state={baseline:shared||initial(),changes:{},mode:'attack',marginalPoints:10};
  return state;
 }
-function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify({baseline:state.baseline,changes:state.changes,marginalPoints:state.marginalPoints}));}catch{}}
+function persist(){
+ try{
+  localStorage.setItem(STORE_KEY,JSON.stringify({baseline:state.baseline,changes:state.changes,marginalPoints:state.marginalPoints}));
+  const current=loadDraft()||emptySandboxCharacter();
+  current.damageProfile=normalizeDamageProfile(state.baseline);
+  saveDraft(current);
+ }catch{}
+}
+export function resetDamageCalculatorForCharacter(){state=null;}
 function asScenario(){
  const obj=clone(state.baseline);
  for(const [path,value] of Object.entries(state.changes))if(LABELS.has(path))setAt(obj,path,optionalNumber(value));
@@ -194,6 +215,9 @@ export function damageCalculatorView(){
  <style>
  .dcRoot{max-width:950px;margin:auto;color:var(--text,#f6f0ff)}
  .dcRoot .dcIntro{line-height:1.6;max-width:66ch;opacity:.85}
+ .dcRoot .dcAdvanced{margin-top:15px;border:1px solid #7775;border-radius:16px;padding:12px;background:#6f638210}
+ .dcRoot .dcAdvanced>summary{cursor:pointer;font-size:14px;font-weight:750;min-height:44px;padding:11px 5px}
+ .dcRoot .dcAdvanced>div{padding:6px 2px 10px}
  .dcRoot .dcTabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 18px}
  .dcRoot .dcTabs button{min-height:44px;flex:1;min-width:104px}
  .dcRoot .dcTabs button[aria-selected="true"]{outline:2px solid var(--accent,#b89bff)}
@@ -229,7 +253,9 @@ export function damageCalculatorView(){
  .dcRoot .dcMarginalRow b{white-space:nowrap;color:#8bdaa0}
  @media(max-width:440px){.dcRoot .dcChangeRow{grid-template-columns:1fr auto}.dcRoot .dcChangeRow span{grid-column:1/-1}.dcRoot .dcScenarioControls{grid-template-columns:1fr}}
  </style>
- <p class="dcIntro">Compare an actual build against a what-if version, with Attack Damage, pet multipliers and combat probabilities kept in their proper stages. Enter only the values you know, then compare what changes. Every new workspace starts empty, and unentered values stay unknown rather than becoming invented zeros.</p>
+ ${sandboxWorkspaceView()}
+ <details class="dcAdvanced" id="dcAdvancedControls"><summary>Advanced Damage Controls · Detailed stats, formulas and skill calculations</summary><div>
+ <p class="dcIntro">Enter only the values you know. These advanced manual damage stages feed the same saved Sandbox character as Build Studio; missing values remain unknown.</p>
  <div class="dcActions"><button type="button" class="btn secondary" data-dc-clear>Start blank / clear values</button><button type="button" class="btn secondary" data-dc-removeall>Clear comparisons</button></div>
  <div class="dcTabs" role="tablist" aria-label="Calculator sections"><button type="button" class="btn secondary" data-dc-tab="attack" aria-selected="true">Attack</button><button type="button" class="btn secondary" data-dc-tab="pet" aria-selected="false">Pets</button><button type="button" class="btn secondary" data-dc-tab="combat" aria-selected="false">Combat</button><button type="button" class="btn secondary" data-dc-tab="retaliation" aria-selected="false">Retaliation</button><button type="button" class="btn secondary" data-dc-tab="attributes" aria-selected="false">Linked Stats</button><button type="button" class="btn secondary" data-dc-tab="studio" aria-selected="false">Build Studio Import</button><button type="button" class="btn secondary" data-dc-tab="talismans" aria-selected="false">Talismans</button><button type="button" class="btn secondary" data-dc-tab="skills" aria-selected="false">Skills + ACS</button></div>
  <section aria-live="polite" id="dcResults">${results()}</section>
@@ -237,7 +263,8 @@ export function damageCalculatorView(){
  ${petQuickCompareView()}
  <section class="dcWork" id="dcInputs">${SETS.map(([section,heading,paths])=>`<div data-dc-panel="${section}">${inputs(section,heading,paths)}</div>`).join('')}${damageAttributeView()}${damageStudioImportView()}${talismanLabView()}${damageSkillPlannerView()}</section>
  <section class="dcScenario"><h3>Compare against a scenario</h3><p class="dcIntro">Change one or more sources. Each replacement belongs to the exact same layer as its original value; it is never stacked on top of the existing total.</p><div class="dcScenarioControls"><label>Add/change a source<select id="dcAddSource">${NUMERIC_PATHS.map(([label,path])=>`<option value="${esc(path)}">${esc(label)}</option>`).join('')}</select></label><button type="button" class="btn primary" data-dc-add>Add change</button></div><div id="dcChanges">${changesMarkup()}</div></section>
- <p class="notice">The presets use rounded in-game values. A blank character never inherits hidden Hunter stats. Crit damage semantics, exact pet base growth, target mitigation, elemental weakness and true DPS need further verification.</p>
+ <p class="notice">This is a partial, verified damage-stage model. Missing data stays unknown. Crit damage semantics, pet base growth, mitigation, elemental weakness and true DPS still need verification.</p>
+ </div></details>
  </section>`;
 }
 function updatePanels(root){
@@ -251,6 +278,7 @@ function updateNumbers(root) {
  });
  root.querySelector('#dcResults').innerHTML=results();
  root.querySelector('#dcChanges').innerHTML=changesMarkup();
+ refreshSandboxWorkspace(root);
  updateMarginals(root);
  refreshPetQuickCompare(root,()=>state.baseline);
  refreshDamageAttribute(root,()=>state.baseline);refreshDamageStudioImport(root,()=>state.baseline);
@@ -260,7 +288,7 @@ export function mountDamageCalculator(){
  const root=document.querySelector('#arcanaDamageCalculator');
  if(!root || root.dataset.dcMounted==='yes')return;
  root.dataset.dcMounted='yes';
- load();updateNumbers(root);mountSkillPlanner(root,()=>state.baseline);mountPetQuickCompare(root,()=>state.baseline);mountDamageAttribute(root,()=>state.baseline);mountDamageStudioImport(root,()=>state.baseline);mountTalismanLab(root);
+ load();mountSandboxWorkspace(root);updateNumbers(root);mountSkillPlanner(root,()=>state.baseline);mountPetQuickCompare(root,()=>state.baseline);mountDamageAttribute(root,()=>state.baseline);mountDamageStudioImport(root,()=>state.baseline);mountTalismanLab(root);
  // Explicit user action replaces the SAME stages in the manual screenshot
  // reference. These are never added on top of the original aggregate values.
  root.addEventListener('dc-apply-studio-equipment',e=>{
@@ -330,11 +358,11 @@ export function mountDamageCalculator(){
    root.querySelectorAll('[data-dc-field]').forEach(other=>{
     if(other!==e.target && other.dataset.dcField===key)other.value=value===null?'':value;
    });
-   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,()=>state.baseline);refreshDamageAttribute(root,()=>state.baseline);refreshDamageStudioImport(root,()=>state.baseline);
+   persist();refreshSandboxWorkspace(root);root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,()=>state.baseline);refreshDamageAttribute(root,()=>state.baseline);refreshDamageStudioImport(root,()=>state.baseline);
   }
   if(e.target.matches('[data-dc-scenario]')){
    state.changes[e.target.dataset.dcScenario]=optionalNumber(e.target.value);
-   persist();root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,()=>state.baseline);refreshDamageAttribute(root,()=>state.baseline);refreshDamageStudioImport(root,()=>state.baseline);
+   persist();refreshSandboxWorkspace(root);root.querySelector('#dcResults').innerHTML=results();updateMarginals(root);refreshPetQuickCompare(root,()=>state.baseline);refreshDamageAttribute(root,()=>state.baseline);refreshDamageStudioImport(root,()=>state.baseline);
   }
  });
  root.addEventListener('click',e=>{

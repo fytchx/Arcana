@@ -96,6 +96,9 @@ with sync_playwright() as playwright:
     page.evaluate("location.hash='#/calculators/damage'")
     page.wait_for_selector('#arcanaDamageCalculator',timeout=15000)
     calc=page.locator('#arcanaDamageCalculator')
+    assert calc.locator('#arcanaSandbox').is_visible(), 'Sandbox must be primary screen'
+    assert calc.locator('[data-sb-tab]').count()==3, 'Sandbox needs Character, Experiment, Results'
+    calc.locator('#dcAdvancedControls > summary').click()
     assert calc.locator('[data-dc-tab]').count()==8, 'Real calculator does not have eight sections'
     assert calc.locator('[data-dc-tab="pet"]').is_visible(), 'Pet comparison is not available'
     assert calc.locator('[data-dc-tab="attributes"]').is_visible(), 'Linked stats are not available'

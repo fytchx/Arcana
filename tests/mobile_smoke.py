@@ -434,6 +434,9 @@ with sync_playwright() as playwright:
     page.evaluate("location.hash='#/calculators/damage'")
     page.wait_for_selector('#arcanaDamageCalculator',timeout=10000)
     damage=page.locator('#arcanaDamageCalculator')
+    assert damage.locator('#arcanaSandbox').is_visible(), 'Character Sandbox failed to render'
+    assert damage.locator('[data-sb-tab]').count()==3, 'Sandbox primary tabs missing'
+    damage.locator('#dcAdvancedControls > summary').click()
     assert damage.locator('[data-dc-tab]').count()==8, 'Missing Damage Calculator tabs (including talismans)'
     assert damage.locator('#dcResults').count()==1, 'Damage Calculator results missing'
     damage.locator('[data-dc-clear]').click()
