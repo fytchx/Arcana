@@ -11,6 +11,7 @@ import {passiveTitle} from './tree-art.js';
 import {normalizeBuild,putRune,removeRune,nextRuneId,petSummary,RUNE_SHAPES,RUNE_FAMILIES,RUNE_FAMILY_DETAILS,RUNE_SECONDARIES,PET_AFFIX_DEFS,statName,runeIssue,monsterLevelGrid,activeRuneBoard} from './labs-engine.js';
 import {labsTabs,runeGridView,runeOptionsUI,petLoadoutView,petCompoundCalculatorView,buildOverviewV7} from './labs-views.js';
 import {damageCalculatorView,mountDamageCalculator} from './damage-calculator-ui.js';
+import {observedBuildAudit} from './observed-build-audit.js';
 import {normalizePublicFeed,lfgSearchEntries,rankSearch,lfgFilter,guildActivity,lfgDeepLink} from './lfg-core.js';
 import {lfgScreen,lfgDetail,lfgCard} from './lfg-views.js';
 import {verifiedGameSearchEntries,mergedSearch} from './verified-search.js';
@@ -246,7 +247,7 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
   '<button type="button" data-route="beta">'+icon('info',16)+' Report a problem</button>'+
   '</div></details></div></section>';
  const nav='<nav class="arcanaCrumbs" aria-label="Build Studio location"><button type="button" data-route="home">Home</button><span aria-hidden="true">›</span><span aria-current="page">Build Studio</span></nav>';
- return '<div class="studioPage">'+nav+profile+labsTabs('studio')+
+ return '<div class="studioPage">'+nav+profile+observedBuildAudit(b)+labsTabs('studio')+
  '<section class="studioPrimaryEquipment" aria-label="Equipment editor"><header class="studioEquipmentHeading"><h2>'+icon('shield',19)+' Equipment</h2><span>'+Object.values(b.equipment).filter(Boolean).length+' / '+LOADOUT_LAYOUT.length+' equipped</span></header>'+
  slots+'<p class="studioEquipmentHint">Select a slot to change equipment, rarity, awakening, or Drop Bonus.</p></section>'+ '<section class="pfPanel"><h2>Arcana Pathfinder</h2><p>Need to check an upgrade? Browse the cost of any rarity or awakening level without setting up your character or entering materials.</p><button class="btn primary" data-route="calculators/pathfinder">Browse upgrade costs '+icon('arrow',16)+'</button></section>'+
  '<details class="studioProgressDetails"><summary>'+icon('layers',16)+' Character & Rune Progression <span>ML '+(b.monsterLevel||1)+'</span></summary>'+
@@ -702,7 +703,8 @@ case 'petaffixstep':{
  const step=Number(arg);if(![1,10,25,50,100].includes(step))break;
  state.affixCostQuick=saveAffixCostPlan({...state.affixCostQuick,targetLevel:state.affixCostQuick.targetLevel+step});render();break;
 }case 'petaffixreset':{state.affixCostQuick=saveAffixCostPlan({...state.affixCostQuick,targetLevel:state.affixCostQuick.currentLevel});render();break;}
-case 'comparetier':{const tier=Number(arg);if(!Number.isInteger(tier)||tier<1||tier>6)break;state.compareTier=tier;render();break;}case 'pickcompare':picker('compare',arg);break;case 'chooseupgrade':picker('upgrade');break;case 'selectitem':chooseItem(arg);break;case 'clonebuild':{const source=parseRoute().query.get('share')?shared.build:buildTemplate(arg);if(!source){toast('Shared build unavailable');break;}state.draft=normalizeBuild(deepCopy(source));state.runeSelected=null;state.runeHistory=[];state.draft.id='local-draft';state.draft.title=String(source.title||'Copied build').replace(/demonstration/ig,'copied').slice(0,90);state.draft.version='LOCAL';saveDraft(state.draft);go('labs/build');toast('Build copied into your own local draft.');break;}
+case 'comparetier':{const tier=Number(arg);if(!Number.isInteger(tier)||tier<1||tier>6)break;state.compareTier=tier;render();break;}case 'pickcompare':picker('compare',arg);break;case 'chooseupgrade':picker('upgrade');break;case 'selectitem':chooseItem(arg);break;case 'obsjump':{if(['stats','equipment','pets','runes','talismans','guild','unknown'].includes(arg))document.getElementById('obs-'+arg)?.scrollIntoView({behavior:'smooth',block:'start'});break;}
+case 'clonebuild':{const source=parseRoute().query.get('share')?shared.build:buildTemplate(arg);if(!source){toast('Shared build unavailable');break;}state.draft=normalizeBuild(deepCopy(source));state.runeSelected=null;state.runeHistory=[];state.draft.id='local-draft';state.draft.title=String(source.title||'Copied build').replace(/demonstration/ig,'copied').slice(0,90);state.draft.version='LOCAL';saveDraft(state.draft);go('labs/build');toast('Build copied into your own local draft.');break;}
 case 'resetbuild':{if(!confirm('Start a new blank build? This replaces your current local Build Studio draft. Save or share it first if you want to keep a copy.'))break;state.draft=newPersonalBuild();clearStudioPortrait();saveDraft(state.draft);state.runeSelected=null;state.runeHistory=[];go('labs/build');toast('New blank build created.');break;}
 case 'savecloud':{persistDraft();void saveNewAccountBuild(ensureDraft()).then(b=>toast('Saved '+b.title+' to your account.')).catch(err=>toast(err.message||'Sign in to your account first.'));break;}
 case 'sharepassives':{
