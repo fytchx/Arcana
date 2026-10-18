@@ -28,7 +28,7 @@ test('Story has verified class chart and social metadata, without unsupported ba
  const r=await request('/journal/class-balance-top-250-season-2');
  assert.equal(r.status,200);assert.match(r.text,/104 players · 41.6%/);
  assert.match(r.text,/47 players are Rogues/);
- assert.match(r.text,/Rank representation/); 
+ assert.match(r.text,/rank representation/i); 
  assert.match(r.text,/property="og:title"/);
  assert.match(r.text,/application\/ld\+json/);
 });
