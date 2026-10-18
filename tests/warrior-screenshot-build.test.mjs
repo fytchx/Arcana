@@ -54,7 +54,7 @@ test('6x6 observed Rune preset is preserved without faking unknown secondary IDs
 });
 test('Build Studio audit makes observed stats, gems, 11 gear items, runes, 4 pets and both talismans visible',()=>{
  const html=observedBuildAudit(normalizeBuild(WARRIOR_OCT17_BUILD));
- for(const part of ['Real Warrior build','observed screenshot','28,560,000','183,630,000,000',
+ for(const part of ['Real Warrior build','recorded snapshot','28,560,000','183,630,000,000',
    'Sage Diadem','3 captured','Crow','Diablo','Wasp','Zbakus',
    'Talisman of Fury','Talisman of Iron','Rune preset 3','4,034','28.5%','Guild context']){
   if(part==='3 captured')continue;
