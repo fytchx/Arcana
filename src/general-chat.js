@@ -1,5 +1,6 @@
+import {guildBadge} from './guild-crest.js';
 // Simple public lobby: read-only for guests, posting requires an Arcana account.
-let timer=null,opened=false,me=null,loading=false;
+let timer=null,opened=false,me=null,loading=false,guildRegistry=[];
 const qs=id=>document.getElementById(id);
 const overlay=()=>qs('arcanaChatOverlay');
 function status(text){const el=qs('arcanaChatStatus');if(el)el.textContent=text;}
@@ -29,6 +30,7 @@ function drawMessages(items){
  for(const item of items){
   const card=document.createElement('article');card.className='arcanaChatMessage'+(me?.id===item.authorId?' mine':'');
   const head=document.createElement('header');const name=document.createElement('strong');name.textContent=item.name||'Arcana player';
+  name.insertAdjacentHTML('afterbegin',guildBadge(item,guildRegistry)+' ');
   const time=document.createElement('time');time.dateTime=item.createdAt;time.textContent=new Date(item.createdAt).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
   head.append(name,time);const body=document.createElement('p');body.textContent=item.message||'';card.append(head,body);
   authorControls(item,card);list.append(card);
@@ -53,6 +55,7 @@ async function openChat(currentAccount){
  qs('arcanaChatForm').hidden=!me;qs('arcanaChatSignIn').hidden=!!me;
  qs('arcanaChatMessages').replaceChildren();
  status('Loading messages…');
+ try{const response=await fetch('/api/guild-hub',{cache:'no-store'});if(response.ok)guildRegistry=(await response.json()).guilds||[];}catch{guildRegistry=[];}
  await refreshChat();timer=setInterval(()=>{void refreshChat()},12000);
 }
 export function initGeneralChat(currentAccount){
