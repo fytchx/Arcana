@@ -1,0 +1,36 @@
+.guildHubPage{width:min(1060px,100%);margin:0 auto;padding:16px clamp(12px,3vw,30px) 48px;color:var(--text,#eeeaf7)}
+.guildHubHero{padding:13px 0 20px}.guildHubHero h1{font-family:Georgia,serif;font-size:clamp(28px,5vw,43px);line-height:1.12;margin:7px 0 10px;letter-spacing:-.03em}
+.guildHubHero p{color:var(--muted,#bdb7cd);max-width:690px;line-height:1.55}.guildHubToolbar{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin:4px 0 22px}
+.guildHubFilter{display:grid;gap:6px;flex:1 1 240px;color:var(--muted,#bfb7cf);font-size:12px;font-weight:700}
+.guildHubFilter input{width:100%;min-height:44px}.guildHubGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:16px}
+.guildHubTile,.guildHubPanel,.guildHubCover,.guildHubForm,.guildHubNote{border:1px solid var(--stroke,var(--line,#514763));border-radius:16px;background:color-mix(in srgb,var(--panel,#1b1726) 94%,var(--theme-highlight,#b99cff) 6%);padding:clamp(16px,3vw,24px);box-shadow:0 6px 22px #08060e30}
+.guildHubTile h2{font:600 23px/1.2 Georgia,serif;margin:0 0 5px}.guildHubTile p{color:var(--muted,#bfb7cd);font-size:14px;line-height:1.55;overflow-wrap:anywhere;min-height:36px}
+.guildHubTileTop{display:flex;align-items:center;gap:14px;min-width:0}.guildHubTileTop>div{min-width:0}.guildHubTileTop h1{font:600 clamp(27px,5vw,38px)/1.1 Georgia,serif;overflow-wrap:anywhere;margin:4px 0 10px}
+.guildHubIdentity,.guildHubMeta,.guildHubActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.guildHubMeta{color:var(--muted,#bfb7cd);font-size:12px;margin:14px 0;gap:17px}.guildHubActions{margin-top:14px}
+.guildHubIcon{width:56px;height:56px;flex:none;object-fit:cover;border-radius:13px;border:1px solid var(--stroke,#504663);background:#21172c}.guildHubIconBlank{display:grid;place-items:center;color:var(--theme-highlight,#b99cff)}.guildHubBig{width:79px;height:79px}
+.arcanaGuildTag{display:inline-flex;align-items:center;gap:3px;vertical-align:middle;font-size:.84em;font-weight:800;line-height:1;color:#93919d;white-space:nowrap;letter-spacing:.035em}
+.arcanaGuildTag svg{display:block;flex:none;filter:drop-shadow(0 0 2px #30203c)}.arcanaGuildTag.isOfficial{color:var(--theme-highlight,#d2b2ff);text-shadow:0 0 8px color-mix(in srgb,var(--theme-highlight,#ab85ef) 30%,transparent)}
+.arcanaGuildTag.isUnregistered{color:#9a9aa1;text-shadow:none}.playerCardHead h2 .arcanaGuildTag{margin-right:7px}
+.guildHubEmpty,.guildHubNotice{padding:14px 18px;border:1px dashed var(--stroke,#574c67);border-radius:12px;color:var(--muted,#bfb7cd);line-height:1.55}
+.guildHubNotice{background:color-mix(in srgb,var(--theme-highlight,#b99cff) 12%,transparent);margin-top:15px}
+.guildHubNote{font-size:12px;line-height:1.7;margin-top:22px;color:var(--muted,#bfb7cd)}
+.guildHubBack{border:0;background:transparent;color:var(--theme-highlight,#c3a4ff);font:inherit;cursor:pointer;padding:9px 2px;margin-bottom:7px}
+.guildHubCover,.guildHubPanel{margin:0 0 16px}.guildHubBio{line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
+.guildHubPanel h2,.guildHubForm h2{margin:0 0 13px;font:600 23px Georgia,serif}.guildHubPanel>p{color:var(--muted,#bfb7cd);font-size:13px;line-height:1.55}
+.guildHubForm{display:grid;gap:17px;max-width:760px}.guildHubForm label{display:grid;gap:8px;color:var(--text,#f3ecfb);font-size:13px;font-weight:700}
+.guildHubForm :is(input:not([type=checkbox]),textarea,select),.guildHubFilter input{color:var(--text,#eee);background:var(--theme-main,#131019);border:1px solid var(--stroke,#554968);border-radius:10px;font:inherit;padding:12px;min-width:0;max-width:100%}
+.guildHubForm textarea{width:100%;resize:vertical;line-height:1.55}
+.guildHubForm :is(input,textarea,select):focus-visible{outline:2px solid var(--theme-highlight,#bda2f7);outline-offset:2px}
+.guildHubCheck{display:flex!important;flex-flow:row nowrap;align-items:center}.guildHubCheck input{width:20px;height:20px}
+.guildHubCrestEditor{display:grid;grid-template-columns:150px 1fr;align-items:start;gap:15px;border:1px solid var(--stroke,#594c6e);padding:16px;border-radius:14px}
+.guildHubCrestPreview{display:grid;place-items:center;min-height:135px;background:radial-gradient(ellipse at 50% 60%,#45305a,#17131f 70%);border:1px solid #66527c;border-radius:12px}
+.guildHubCrestControls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.guildHubCrestControls label{font-size:11px}.guildHubCrestControls input[type=color]{padding:3px!important;min-height:40px;width:100%}
+.guildHubRoster{display:grid;gap:5px}.guildHubMember{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:45px;padding:9px 12px;border:1px solid color-mix(in srgb,var(--stroke,#554964) 65%,transparent);border-radius:9px}
+.guildHubMemberName{border:0;background:none;color:var(--theme-highlight,#d1b7ff);font:inherit;font-weight:750;cursor:pointer;padding:6px 0}.guildHubMember>span{margin-right:auto;color:var(--muted,#bfb7cd);font-size:12px;text-transform:capitalize}
+.guildHubPost{border-bottom:1px solid var(--stroke,#514660);padding:13px 0}.guildHubPost:last-of-type{border-bottom:0}.guildHubPost header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.guildHubPost header strong{font-size:14px}.guildHubPost small{color:var(--muted,#bfb7cd);font-size:11px}.guildHubPost p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}
+.guildHubCompose{margin-top:18px;padding:17px;background:color-mix(in srgb,var(--panel,#231c2d) 85%,transparent)}
+.guildHubApplication{padding:12px;border:1px solid var(--stroke,#564a65);border-radius:10px;margin-bottom:10px}.guildHubApplication p{white-space:pre-wrap;color:var(--muted,#beb6cd)}
+.guildHubIconReview{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-top:14px}
+@media(max-width:560px){.guildHubToolbar .btn{flex:1 1 130px}.guildHubCrestEditor{grid-template-columns:1fr}.guildHubCrestPreview{min-height:125px}.guildHubMember>.btn{font-size:11px;padding:9px}.guildHubCrestControls{grid-template-columns:1fr 1fr}.guildHubTile{padding:17px}}
