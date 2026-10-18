@@ -9,7 +9,7 @@ const api=async(path,method='GET',payload)=>{
  return json;
 };
 const userPage=id=>'data-route="profile" data-params="id='+esc(id)+'"';
-const tag=g=>'<span class="arcanaGuildTag '+(g.status==='approved'?'isOfficial':'isUnregistered')+'">'+
+const tag=g=>'<span class="arcanaGuildTag '+(g.status==='approved'?'isOfficial finish-'+(['solid','glow','gradient'].includes(g.tagStyle?.finish)?g.tagStyle.finish:'solid'):'isUnregistered')+'"'+(g.status==='approved'&&/^#[0-9a-fA-F]{6}$/.test(g.tagStyle?.color||'')?' style="--guild-tag-color:'+g.tagStyle.color+'"':'')+'>'+
  (g.status==='approved'?renderCrest(g.crest,23):'')+'<span>['+esc(g.tag)+']</span></span>';
 const status=g=>g.status==='approved'?'Registered Guild':g.status==='pending'?'Pending approval':g.status==='suspended'?'Suspended':'Not approved';
 const empty=text=>'<p class="guildHubEmpty">'+esc(text)+'</p>';
@@ -42,12 +42,12 @@ function register(me){
  '<label>About your guild<textarea name="bio" maxlength="1500" rows="5" placeholder="Playstyle, recruitment, time zones, activities"></textarea></label>'+
  '<button class="btn primary" type="submit">Submit for approval</button><p class="mutedSmall">Pending tags are held during review. After approval, your guild will receive its own customizable crest, management page and member community.</p></form></section>';
 }
-const memberName=m=>'<button class="guildHubMemberName" '+userPage(m.id)+'>'+esc(m.name||'Player')+'</button>';
-function posts(g){
+const memberName=(m,g)=>'<button class="guildHubMemberName" '+userPage(m.id)+'>'+tag(g)+' '+esc(m.name||'Player')+'</button>';
+function posts(g,viewerId){
  const me=g.amMember,staff=g.canManage;
  return '<section class="guildHubPanel"><h2>Guild board</h2><p class="mutedSmall">Announcements are visible to everyone; member discussions stay within the guild.</p>'+
  (g.posts?.length?g.posts.map(p=>'<article class="guildHubPost"><header><strong>'+esc(p.kind==='announcement'?'📣 '+(p.title||'Announcement'):'Discussion')+'</strong><small>'+esc(p.authorName)+' · '+new Date(p.createdAt).toLocaleDateString()+'</small></header><p>'+esc(p.text)+'</p>'+
- (staff||p.authorId===window.arcanaGuildAccountId?actions('Remove','remove-post',p.id):'')+'</article>').join(''):empty('No posts yet.'))+
+ (staff||p.authorId===viewerId?actions('Remove','remove-post',p.id):'')+'</article>').join(''):empty('No posts yet.'))+
  (me?'<form class="guildHubForm guildHubCompose" data-gh-form="post" data-id="'+esc(g.id)+'">'+
  (staff?'<label>Post as<select name="kind"><option value="discussion">Member discussion</option><option value="announcement">Announcement</option></select></label>':'<input type="hidden" name="kind" value="discussion">')+
  '<label>Title (for announcements)<input name="title" maxlength="100" placeholder="Optional title"></label><label>Message<textarea name="text" maxlength="1800" rows="4" minlength="2" required placeholder="Tell your guild something"></textarea></label><button type="submit" class="btn primary">Post to board</button></form>':
@@ -67,8 +67,8 @@ function detail(g,me){
  (g.myApplication?'<p class="guildHubNotice">Your membership application is pending.</p>':'')+
  (!me?'<button class="btn secondary" data-route="account">Sign in to apply</button>':'')+
  (g.amMember&&g.memberRole!=='owner'?actions('Leave guild','leave',g.id):'')+'</section>'+
- '<section class="guildHubPanel"><h2>Roster</h2><div class="guildHubRoster">'+g.members.map(m=>'<div class="guildHubMember">'+memberName(m)+'<span>'+esc(m.role)+'</span></div>').join('')+'</div></section>'+
- posts(g)+'</section>';
+ '<section class="guildHubPanel"><h2>Roster</h2><div class="guildHubRoster">'+g.members.map(m=>'<div class="guildHubMember">'+memberName(m,g)+'<span>'+esc(m.role)+'</span></div>').join('')+'</div></section>'+
+ posts(g,me?.id)+'</section>';
 }
 function select(name,options,value){
  return '<label>'+name+'<select name="'+esc(name)+'" data-gh-crest>'+
@@ -84,7 +84,8 @@ function editor(g){
  (owner?'<form class="guildHubForm" data-gh-form="settings" data-id="'+esc(g.id)+'"><h2>Guild identity</h2><label>Name<input name="name" maxlength="64" minlength="3" required value="'+esc(g.name)+'"></label>'+
  '<label>Guild bio<textarea name="bio" maxlength="1500" rows="5">'+esc(g.bio)+'</textarea></label>'+
  '<label class="guildHubCheck"><input type="checkbox" name="recruitmentOpen" '+(g.recruitmentOpen?'checked':'')+'> Accept new applications</label>'+
- '<p class="mutedSmall">Your four-letter tag ['+esc(g.tag)+'] is permanent. Crest designs go live after approval.</p>'+
+ '<p class="mutedSmall">Your four-letter tag ['+esc(g.tag)+'] is permanent. Choose its color and finish, then build the crest below. Official styling appears after approval.</p>'+
+ '<div class="guildHubTagStyle"><label>Tag color<input type="color" name="tagColor" value="'+esc(g.tagStyle?.color||'#D2B2FF')+'"></label><label>Tag finish<select name="tagFinish"><option value="solid" '+(g.tagStyle?.finish==='solid'?'selected':'')+'>Solid</option><option value="glow" '+(g.tagStyle?.finish==='glow'?'selected':'')+'>Soft glow</option><option value="gradient" '+(g.tagStyle?.finish==='gradient'?'selected':'')+'>Gradient</option></select></label></div>'+
  '<div class="guildHubCrestEditor"><div class="guildHubCrestPreview" aria-live="polite">'+renderCrest(data,98)+'</div>'+
  '<div class="guildHubCrestControls">'+select('center',CREST_MARKS.length,data.center)+select('secondary',CREST_MARKS.length,data.secondary)+
  select('outline',CREST_OUTLINES.length,data.outline)+select('border',CREST_BORDERS.length,data.border)+
@@ -99,7 +100,7 @@ function editor(g){
  (m.role==='owner'?'':(owner?actions(m.role==='officer'?'Demote':'Make officer',m.role==='officer'?'member':'officer',m.id):'')+
  (owner||m.role==='member'?actions('Remove','remove-member',m.id):'')+
  (owner?actions('Transfer ownership','transfer',m.id):''))+'</div>').join('')+'</div></section>'+
- posts(g)+'</section>';
+ posts(g,null)+'</section>';
 }
 function modQueue(guilds){
  return '<section class="guildHubPage">'+header('Guild approval queue','Only Arcana moderators and administrators can approve new registered guilds and uploaded icons.')+
@@ -182,7 +183,7 @@ export function wireGuildHub({go,refresh,toast,currentAccount}){
     toast('Guild registration is pending approval.');go('guilds/view',{id:guild.id});
    }else if(form.dataset.ghForm==='settings'){
     const id=form.dataset.id;
-    await api('/'+id,'PATCH',{name:payload.name,bio:payload.bio,recruitmentOpen:!!payload.recruitmentOpen,crest:designFromForm(form)});
+    await api('/'+id,'PATCH',{name:payload.name,bio:payload.bio,recruitmentOpen:!!payload.recruitmentOpen,crest:designFromForm(form),tagStyle:{color:payload.tagColor,finish:payload.tagFinish}});
     toast('Guild settings and crest saved.');await reload();
    }else if(form.dataset.ghForm==='apply'){
     await api('/'+form.dataset.id+'/apply','POST',{note:payload.note});
