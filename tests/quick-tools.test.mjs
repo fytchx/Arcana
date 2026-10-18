@@ -65,7 +65,7 @@ test('Pathfinder uses verified recipes and the homepage has no calculator',async
  assert.match(app,/quickUpgradePanel\(recipeState.data,state.pathfinderRange/);
  assert.match(app,/quickUpgradeContent\(recipeState\.data,current/);
  assert.match(app,/initialQuickRange\(payload,state\.pathfinderRange\)/);
- assert.match(app,/case 'calculators\/damage':return calcDamage/);
+ assert.match(app,/case 'calculators\/damage':return layout\('Character Sandbox','ARCANA LABS',damageCalculatorView\(\),'calculator'\)/);
  assert.match(app,/function pathfinderHub\(legacyView='range'\)/);
  assert.match(page,/quick-tools\.css/);assert.match(server,/quick-tools\.css/);
  assert.match(page,/home-three\.css/);assert.match(server,/home-three\.css/);
@@ -88,10 +88,10 @@ test('homepage navigation keeps wiki and guild recruitment accessible from globa
  const nav=await readFile(new URL('../src/launch-navigation.js',import.meta.url),'utf8');
  const css=await readFile(new URL('../home-three.css',import.meta.url),'utf8');
  for(const section of ["{id:'pathfinder'","{id:'tools'","{id:'builds'"])assert.ok(nav.includes(section));
- assert.match(nav,/Damage Calculator · Work in Progress/);
+ assert.match(nav,/Character Sandbox/);
  assert.match(app,/\['wiki','ArcanaWiki'/);
  assert.match(app,/\['lfg','Guild & Raid Finder'/);
- assert.match(app,/WORK IN PROGRESS/);
+ assert.doesNotMatch(app,/function calcDamage\(/);
  assert.doesNotMatch(app,/return damageLabView/);
  assert.match(css,/grid-template-columns:minmax\(0,1fr\)!important/);
  assert.match(css,/overflow-y:visible!important/);

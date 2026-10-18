@@ -6,6 +6,7 @@ export const NAV_DESTINATIONS=Object.freeze({
  guides:{label:'Read player guides',detail:'Practical Season 2 walkthroughs',route:'wiki/guides',icon:'book'},
  reference:{label:'Explore game references',detail:'Browse all verified entries',route:'wiki/library',params:{kind:'all'},icon:'search'},
  search:{label:'Search Arcana',detail:'Find items, tools and guides',action:'search',icon:'search'},
+ damage:{label:'Damage Calculator',detail:'Attack, pets, skills and build comparisons',route:'calculators/damage',icon:'calculator'},
  upgrade:{label:'Calculate upgrade costs',detail:'Open the equipment calculator',route:'calculators/pathfinder',params:{view:'range'},icon:'calculator'},
  pathfinder:{label:'Arcana Pathfinder',detail:'Browse every upgrade recipe without setting up a character',route:'calculators/pathfinder',icon:'layers'},
  farm:{label:'Compare ML farming speed',detail:'Compare your actual ML XP per second',route:'calculators/ml-farm',icon:'sword'},

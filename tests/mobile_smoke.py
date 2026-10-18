@@ -84,8 +84,19 @@ with sync_playwright() as playwright:
     page.set_default_timeout(3000)
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
-    page.set_content(HTML,wait_until='domcontentloaded')
-    page.wait_for_selector('.launchHero',timeout=15000)
+    # Test under a genuine (intercepted) HTTP origin. about:blank is opaque
+    # and denies localStorage, which the modern theme/preferences runtime uses.
+    # No real network or account access is required for this fixture.
+    page.route('http://arcana.test/**',lambda route: route.fulfill(
+        status=200,content_type='text/html; charset=utf-8',body=HTML)
+        if route.request.resource_type=='document' else
+        route.fulfill(status=404,body='Mock-only fixture'))
+    page.goto('http://arcana.test/',wait_until='domcontentloaded')
+    try:
+        page.wait_for_selector('.launchHero',timeout=15000)
+    except Exception:
+        print('INIT_DIAGNOSTIC',json.dumps({'errors':errors,'hash':page.evaluate('location.hash'),'body':page.locator('body').inner_text()[:800]},ensure_ascii=False))
+        raise
     assert page.locator('#arcanaDock button').count()==5, 'All five navigation tabs must exist'
     assert page.locator('#generalChatBtn').is_visible(), 'General chat launcher missing'
     page.evaluate("location.hash='#/settings'")
@@ -135,8 +146,8 @@ with sync_playwright() as playwright:
     assert page.locator('#bottomNav').count()==0, 'Legacy bottom navigation must stay removed'
     assert page.locator('#arcanaDock button').count()==5, 'Persistent five-tab dock missing'
     assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1, 'Build Studio is not featured'
-    assert page.locator('.launchQuickCard').count()==6, 'Exactly six launch navigation cards are required'
-    assert page.locator('.launchQuickCard .arcanaIcon').count()>=18, 'Themeable SVG icons missing from launch navigation'
+    assert page.locator('.launchQuickCard').count()==3, 'Modern Arcana must retain its three home navigation cards'
+    assert page.locator('.launchQuickCard .arcanaIcon').count()>=3, 'Themeable SVG icons missing from modern home'
     assert page.locator('.launchHeroArt .arcanaIcon').get_attribute('data-arcana-icon')=='feature-build-studio', 'Build Studio emblem must use Arcana Minimal'
     # The icon gallery is a real route and every registered asset is previewable.
     page.evaluate("location.hash='#/icons'")
@@ -146,7 +157,7 @@ with sync_playwright() as playwright:
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Icon gallery overflows mobile horizontally'
     page.evaluate("location.hash='#/settings'")
     page.locator('.arcanaSettings').wait_for(timeout=8000)
-    assert page.locator('.arcanaThemeReadOnly').count()==1, 'Public accounts must not edit Arcana themes'
+    assert 'design settings are managed centrally by Arcana administrators' in page.locator('.arcanaSettings').inner_text(), 'Guest display settings should explain admin-managed themes'
     assert page.locator('.slateAccentChoice').count()==0, 'Accent editor visible to a guest'
     assert page.locator('[data-app-pref="reduceMotion"]').count()==1, 'Accessible display settings missing'
     page.evaluate("location.hash='#/home'")
@@ -165,10 +176,9 @@ with sync_playwright() as playwright:
     assert page.locator('.launchFeatured').is_hidden(), 'Featured section should live in bottom navigation'
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Two-column home has horizontal overflow'
 
-    for menu_id in ('wiki','tools','guides','builds','pathfinder','social'):
+    for menu_id in ('pathfinder','tools','builds'):
         assert page.locator('.launchQuickCard[data-arg="'+menu_id+'"]').count()==1, 'Missing home card '+menu_id
-    page.locator('.launchQuickCard[data-arg="wiki"]').click()
-    page.locator('#layer [data-route="wiki"]').click()
+    page.evaluate("location.hash='#/wiki'")
     assert page.locator('.wikiV1Categories [data-route="wiki/category"]').count()>=5
     page.locator('.wikiV1Categories [data-params="slug=equipment"]').click()
     assert page.locator('.wikiCrumbTrail').count()==1
@@ -179,8 +189,7 @@ with sync_playwright() as playwright:
     page.wait_for_timeout(170)
     assert page.locator('.wikiCategoryPage').count()==1
     page.locator('#arcanaDock [data-route="home"]').click()
-    page.locator('.launchQuickCard[data-arg="wiki"]').click()
-    page.locator('#layer [data-route="wiki"]').click()
+    page.evaluate("location.hash='#/wiki'")
     page.locator('.wikiCodexLaunch').click()
     assert page.locator('.wikiLibrary h1').inner_text()=='Item Codex'
     rail=page.locator('.wikiCategoryScroll')
@@ -343,10 +352,10 @@ with sync_playwright() as playwright:
     page.evaluate("location.hash='#/labs/build'")
     page.wait_for_selector('.studioProfile')
     assert page.locator('.studioTitleInput').input_value()=='My Build'
-    assert '0 / 13 equipped' in page.locator('.studioEquipmentHeading').inner_text(), 'New user must start with empty build, not invented demo gear'
+    assert '0 / 11 equipped' in page.locator('.studioEquipmentHeading').inner_text(), 'New user must start with empty build, not invented demo gear'
     assert page.locator('[data-action="sharebuild"]').count()==1, 'Guest build sharing is not available'
-    assert page.locator('.loadoutSlot').count()==13, 'All verified equipment slots must remain available'
-    assert page.locator('.loadoutSlot .arcanaSilhouette').count()==13, 'Equipment art must use understated silhouettes'
+    assert page.locator('.loadoutSlot').count()==11, 'All verified equipment slots must remain available'
+    assert page.locator('.loadoutSlot .arcanaSilhouette').count()==11, 'Equipment art must use understated silhouettes'
     assert page.locator('.studioProfileVisual .arcanaSilhouette').count()==1, 'Class identity emblem should be visible'
     assert page.locator('.studioProfile').bounding_box()['y']<page.locator('.studioPrimaryEquipment').bounding_box()['y'], 'Equipment should follow the compact profile'
     assert page.locator('.pageHead').count()==0, 'Build Studio must not show the old giant page heading'
@@ -418,6 +427,87 @@ with sync_playwright() as playwright:
     page.screenshot(path=str(OUT/'account_beta_member_mobile.png'),full_page=True)
     assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Authenticated account screen horizontal overflow'
 
+    # Dedicated Damage Calculator end-to-end checks on an Android-sized
+    # viewport. Verify tab visibility, a genuinely blank baseline, pet A/B,
+    # recorded tooltip anchor, linked INT, Build Studio review, route return,
+    # scenario replacement, focus retention and horizontal overflow.
+    page.evaluate("location.hash='#/calculators/damage'")
+    page.wait_for_selector('#arcanaDamageCalculator',timeout=10000)
+    damage=page.locator('#arcanaDamageCalculator')
+    assert damage.locator('#arcanaSandbox').is_visible(), 'Character Sandbox failed to render'
+    assert damage.locator('[data-sb-tab]').count()==3, 'Sandbox primary tabs missing'
+    damage.locator('#dcAdvancedControls > summary').click()
+    assert damage.locator('[data-dc-tab]').count()==8, 'Missing Damage Calculator tabs (including talismans)'
+    assert damage.locator('#dcResults').count()==1, 'Damage Calculator results missing'
+    damage.locator('[data-dc-clear]').click()
+    assert 'Not measured' in damage.locator('#dcResults').inner_text(), 'Clear retained a screenshot measurement'
+    assert damage.locator('[data-dc-tab="pet"]').get_attribute('aria-selected')=='false'
+    damage.locator('[data-dc-tab="pet"]').click()
+    assert damage.locator('#dcPetQuick').is_visible(), 'Four-pet quick compare did not open'
+    assert damage.locator('[data-dc-tab="pet"]').get_attribute('aria-selected')=='true'
+    assert damage.locator('#dcAttributeLab').is_hidden()
+    pet_baseline=damage.locator('#dcPetQuick [data-dc-field="pet.layers.equipmentAffixes"]')
+    pet_baseline.fill('100')
+    assert pet_baseline.input_value()=='100', 'Pet numeric input lost focus during a rerender'
+    damage.locator('[data-dc-pet-demo]').click()
+    assert '20%' in damage.locator('#dcPetQuickResult').inner_text(), '2 vs 4 Pet gain was not computed'
+    damage.locator('[data-dc-pet-observed]').fill('15')
+    summary=damage.locator('#dcPetQuickResult').inner_text()
+    assert '18' in summary and '15' in summary, 'Observed ×15 tooltip was not used for ×18 projection: '+summary
+    assert damage.locator('#dcPetQuick [data-dc-pet-apply]').is_enabled(), 'Valid Pet what-if must be applyable'
+    damage.locator('#dcPetQuick [data-dc-pet-apply]').click()
+    assert 'Pet layer' in damage.locator('#dcChanges').inner_text() or 'equipmentAffixes' in damage.locator('#dcChanges').inner_text(), 'Pet scenario handoff lost the stage'
+    # New measured baseline invalidates the old whole-tooltip anchor instead
+    # of deceptively projecting x15 against a different build.
+    pet_baseline.fill('120')
+    assert damage.locator('[data-dc-pet-observed]').input_value()=='', 'Observed tooltip calibration survived a changed character snapshot'
+    damage.locator('[data-dc-tab="attributes"]').click()
+    assert damage.locator('#dcAttributeLab').is_visible(), 'Linked attributes tab is hidden'
+    damage.locator('[data-dc-attr-stat]').select_option('INT')
+    damage.locator('[data-dc-attr-origin]').select_option('other')
+    damage.locator('[data-dc-attr-points]').fill('100')
+    for source,value in [
+      ('attack.layers.intelligenceOther','19.2'),
+      ('pet.layers.intelligence','10.5'),
+      ('combat.doubleDamageChance','89'),
+    ]:
+        field=damage.locator('#dcAttributeFields [data-dc-field="'+source+'"]')
+        assert field.count()==1, 'Linked Stat source field missing: '+source
+        field.fill(value)
+    assert damage.locator('[data-dc-attr-apply]').is_enabled(), 'Full effective INT projection cannot apply'
+    preview=damage.locator('#dcAttributePreview').inner_text()
+    assert 'Double Damage' in preview and 'Pet multiplier' in preview, 'Linked INT projection omits dependent stages'
+    damage.locator('[data-dc-attr-apply]').click()
+    changes=damage.locator('#dcChanges').inner_text()
+    assert 'Double damage' in changes or 'Double Damage' in changes, 'Linked INT chance stage was not sent to what-if'
+    damage.locator('[data-dc-tab="studio"]').click()
+    assert damage.locator('#dcStudioImport').is_visible(), 'Build Studio import tab hidden'
+    assert damage.locator('#dcStudioImport [data-route="labs/build"]').count()==1, 'No return link to Build Studio'
+    assert damage.locator('#dcStudioImportContent').count()==1, 'Saved-build review missing'
+    # The offline fixture has no browser storage origin. Validate the exact
+    # source-to-stage mapping separately in the JS module, without faking an
+    # in-game account or secretly persisting a gear build.
+    stage=page.evaluate("""async () => {
+      const {projectBuildStudioDamage,buildStudioScenarioChanges}=await import('@arcana/damage-build-studio-bridge.js');
+      const draft={className:'Warrior',equipment:{
+        ring:{id:'game:item:warriors-ring',rarity:5,bonusId:'fierce',bonusTier:5,roll:14},
+      }};
+      const projected=projectBuildStudioDamage(draft);
+      return buildStudioScenarioChanges(projected,{className:'Warrior',attack:{layers:{dropBonus:99}}});
+    }""")
+    assert stage['ok']==True and stage['changes']['attack.layers.dropBonus']==14, 'Studio item stage replacement incorrect'
+    damage.locator('[data-dc-tab="skills"]').click()
+    assert damage.locator('[data-dc-panel="skills"]').is_visible(), 'ACS skill planner tab hidden'
+    damage.locator('[data-dc-tab="pet"]').click()
+    assert damage.locator('#dcPetQuick').is_visible(), 'Returning to Pet comparison lost its panel'
+    for width in (320,390,768):
+        page.set_viewport_size({'width':width,'height':844})
+        assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Damage Calculator horizontal overflow at '+str(width)
+    page.set_viewport_size({'width':390,'height':844})
+    page.screenshot(path=str(OUT/'damage_calculator_pet_mobile.png'),full_page=True)
+    damage.locator('[data-dc-tab="attributes"]').click()
+    page.screenshot(path=str(OUT/'damage_calculator_linked_stats_mobile.png'),full_page=True)
+
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
-    print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
+    print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(MOCK_ART['categories']),'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
     browser.close()

@@ -5,6 +5,7 @@
  */
 import {VERIFIED_GAME_DATA} from './verified-game-data.js';
 import {normalizedPetBonusTargets} from './pet-simple-math.js';
+import {normalizeTalismanLoadout} from './talisman-model.js';
 const DATA=VERIFIED_GAME_DATA;
 // Grid growth milestones read from the in-game Rune Grid expansion table (monster level, not character level).
 export const RUNE_GRID_STAGES=Object.freeze([
@@ -63,6 +64,7 @@ export function removeRune(placed,id){return placed.filter(r=>r.id!==id)};
 export function nextRuneId(placed){let i=1;while(placed.some(r=>r.id===`rune-${i}`))i++;return `rune-${i}`;}
 export function normalizeBuild(build){
  const b=structuredClone(build||{});b.equipment=b.equipment||{};
+ b.talismans=normalizeTalismanLoadout(b.talismans);
  if(!Array.isArray(b.runes))b.runes=[];
  if(!Array.isArray(b.pets))b.pets=[];
  b.runeBoard=Array.isArray(b.runeBoard)?b.runeBoard.map(normalizeRune).filter((r,i,a)=>!runeIssue(a.slice(0,i),r,null,300)):[];
