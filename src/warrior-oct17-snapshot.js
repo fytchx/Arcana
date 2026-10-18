@@ -32,7 +32,7 @@ export const WARRIOR_OCT17_GEAR=Object.freeze([
   ['Brilliant Garnet 100% Lv38']),
  gear('belt','game:item:scholars-belt',"Scholar's Belt",'Legendary','A3 +24','thorned',5,17,'+52 All Attributes',
   ['Strength +132','Double Damage Chance +32%','Critical Damage +38%','Double Hit Chance +32%','Defense +121%'],
-  ['Brilliant Garnet 99% Lv38','Brilliant Garnet 90% Lv38']),
+  ['Brilliant Garnet 99% Lv38','Brilliant Garnet 99% Lv38']),
  gear('ring','game:item:warriors-ring',"Warrior's Ring",'Legendary','A3 +27','thorned',5,17.62,'+263 Strength',
   ['Defense +131%','Strength +134','Double Damage Chance +36%','Critical Damage +33%','Double Hit Chance +33%'],
   ['Brilliant Garnet 99% Lv38']),
@@ -41,7 +41,7 @@ export const WARRIOR_OCT17_GEAR=Object.freeze([
   ['Brilliant Garnet 91% Lv38','Brilliant Garnet 100% Lv38']),
  gear('feet','game:item:grounded-treads','Grounded Treads','Legendary','A4','thorned',6,24.57,'+4,561 Defense; +20% Block Chance',
   ['Increased Defense +531%','Critical Chance +43%','Double Damage Chance +40%','Critical Damage +36%','Defense +368'],
-  ['Flawless Garnet 98% Lv38','Flawless Garnet 88% Lv38'])
+  ['Flawless Garnet 92% Lv38','Flawless Garnet 88% Lv38'])
 ]);
 const pet=(name,compound,hatch,bonus,shards,affixes)=>({
  equipped:true,name,rarity:'Legendary',compound,
