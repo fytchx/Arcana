@@ -8,7 +8,19 @@ const RAW_BONUSES={"fierce":["Fierce","attack_damage_percent",2,{"2":[2,4],"3":[
 export const RARITIES=Object.freeze(['Normal','Uncommon','Rare','Epic','Legendary','Infernal']);
 export const CLASS_CODES=Object.freeze({Warrior:1,Archer:2,Mage:3,Rogue:4,Druid:5});
 const slug=s=>String(s).toLowerCase().replace(/['’]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-export const GEAR_ITEMS=Object.freeze(Object.entries(RAW_ITEMS).map(([name,[slot,twoHanded,allowedClasses]])=>Object.freeze({id:'game:item:'+slug(name),name,slot,twoHanded,allowedClasses})));
+// Additional base names are visible on the supplied October 17 Warrior
+// equipment screens. Only the shown class+slot legality is established.
+// All other Oct 9 items retain their original config-sourced restrictions.
+const SCREENSHOT_WARRIOR_ITEMS={
+ Sword:['main_hand',false,[1]],
+ Shield:['off_hand',false,[1]],
+ Armor:['chest',false,[1]],
+ Gloves:['hands',false,[1]]
+};
+export const GEAR_ITEMS=Object.freeze(Object.entries({...RAW_ITEMS,...SCREENSHOT_WARRIOR_ITEMS}).map(([name,[slot,twoHanded,allowedClasses]])=>Object.freeze({
+ id:'game:item:'+slug(name),name,slot,twoHanded,allowedClasses,
+ source:SCREENSHOT_WARRIOR_ITEMS[name]?'2026-10-17 Warrior screenshot':'2026-10-09 verified config'
+})));
 export const DROP_BONUSES=Object.freeze(Object.entries(RAW_BONUSES).map(([id,[name,stat,minTier,values]])=>Object.freeze({id,name,stat,minTier,values})));
 const BY_ID=new Map(GEAR_ITEMS.map(g=>[g.id,g]));
 const BY_NAME=new Map(GEAR_ITEMS.map(g=>[slug(g.name),g]));
