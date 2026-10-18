@@ -506,5 +506,5 @@ with sync_playwright() as playwright:
     page.screenshot(path=str(OUT/'damage_calculator_linked_stats_mobile.png'),full_page=True)
 
     assert errors==[], 'JavaScript exceptions: '+repr(errors)
-    print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
+    print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','home_cards':3,'damage_tabs':damage.locator('[data-dc-tab]').count(),'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
     browser.close()
