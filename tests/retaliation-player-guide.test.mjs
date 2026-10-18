@@ -27,7 +27,7 @@ test('existing Retaliation Warrior guide follows the new October 17 in-game buil
  assert.equal(build.className,'Warrior');
  assert.equal(build.characterLevel,265);
  assert.equal(build.monsterLevel,220);
- assert.equal(build.version,'PLAYER SCREENSHOT');
+ assert.equal(build.version,'PLAYER BUILD');
  assert.equal(Object.keys(build.equipment).length,11);
  assert.equal(build.observed.stats.retaliationAverage,183630000000);
  assert.deepEqual(build.petSetup.map(p=>p.name),['Crow','Diablo','Wasp','Zbakus']);
