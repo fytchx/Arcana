@@ -21,6 +21,10 @@ const statusActive=g=>['pending','approved'].includes(g.status);
 const staff=(g,id)=>g.ownerId===id||g.members.some(m=>m.id===id&&m.role==='officer');
 const member=(g,id)=>g.members.some(m=>m.id===id);
 const moderator=user=>can(user,'community:hide');
+const tagStyle=(value)=>{
+ if(!value||typeof value!=='object'||Array.isArray(value)||typeof value.color!=='string'||!/^#[0-9a-fA-F]{6}$/.test(value.color)||!['solid','glow','gradient'].includes(value.finish))fail(422,'Choose a valid tag color and finish.');
+ return {color:value.color.toUpperCase(),finish:value.finish};
+};
 const defaultCrest=()=>({center:0,secondary:0,outline:0,border:0,colors:['#E9D7FF','#9785E8','#39235E','#F5E9BA']});
 export function validateCrest(input){
  if(!input||typeof input!=='object'||Array.isArray(input))fail(422,'Choose a valid crest design.');
@@ -45,14 +49,15 @@ async function audit(action,g,actor,detail=''){
  await appendFile(resolve(ROOT(),'moderation.jsonl'),JSON.stringify({action,guildId:g.id,actor,detail,at:now()})+'\n',{mode:0o600});
 }
 function publicGuild(g,viewer,detail=false){
- const staffAccess=!!viewer&&(staff(g,viewer.id)||moderator(viewer));
+ const staffAccess=!!viewer&&staff(g,viewer.id);
+ const reviewAccess=!!viewer&&moderator(viewer);
  const mine=!!viewer&&member(g,viewer.id);
- const icon=(g.icon?.status==='approved'?g.icon.value:'');
- const base={id:g.id,name:g.name,tag:g.tag,bio:g.bio,status:g.status,crest:g.status==='approved'?g.crest:null,
+ const icon=(g.icon?.status==='approved'||g.icon?.status==='pending'?g.icon.value:'');
+ const base={id:g.id,name:g.name,tag:g.tag,bio:g.bio,status:g.status,crest:g.status==='approved'||mine||reviewAccess?g.crest:null,tagStyle:g.tagStyle||{color:'#D2B2FF',finish:'glow'},
  iconDataUrl:icon,createdAt:g.createdAt,memberCount:g.members.length,ownerId:g.ownerId,
  recruitmentOpen:g.recruitmentOpen===true,amMember:mine,canManage:staffAccess,memberRole:g.members.find(m=>m.id===viewer?.id)?.role||null,
  myApplication:g.applications.find(a=>a.id===viewer?.id&&a.status==='pending')?.status||null,
- pendingIconDataUrl:staffAccess&&moderator(viewer)&&g.icon?.status==='pending'?g.icon.pending:''};
+ pendingIconDataUrl:reviewAccess&&g.icon?.status==='pending'?g.icon.pending:''};
  if(!detail)return base;
  return {...base,members:g.members.map(m=>({id:m.id,role:m.role,joinedAt:m.joinedAt,name:m.name})),
  posts:g.posts.filter(p=>g.status==='approved'&&(mine||staffAccess||p.kind==='announcement')).slice(-120).reverse(),
@@ -112,7 +117,7 @@ export async function handleGuildHubRequest(req,res,url){
    if(all.some(g=>statusActive(g)&&g.tag===tag))fail(409,'This guild tag is already claimed or pending review.');
    if(all.some(g=>statusActive(g)&&g.ownerId===user.id))fail(409,'You already own a guild awaiting review or approved.');
    const id=randomUUID(),at=now();
-   const g={id,name,tag,bio,ownerId:user.id,status:'pending',crest:defaultCrest(),icon:null,recruitmentOpen:true,
+   const g={id,name,tag,bio,ownerId:user.id,status:'pending',crest:defaultCrest(),tagStyle:{color:'#D2B2FF',finish:'glow'},icon:null,recruitmentOpen:true,
     members:[{id:user.id,name:clean(user.profile?.displayName||user.discordName,50),role:'owner',joinedAt:at}],
     applications:[],posts:[],createdAt:at,updatedAt:at,moderationReason:''};
    await saveAtomic(filename(id),g);await updateMembership(user.id,g,true);await audit('registration-requested',g,user.id);
@@ -158,6 +163,7 @@ export async function handleGuildHubRequest(req,res,url){
    if(body.name!==undefined){const name=clean(body.name,64);if(name.length<3)fail(422,'Name must contain at least three characters.');g.name=name;}
    if(body.bio!==undefined)g.bio=clean(body.bio,1500);
    if(body.crest!==undefined)g.crest=validateCrest(body.crest);
+   if(body.tagStyle!==undefined)g.tagStyle=tagStyle(body.tagStyle);
    if(typeof body.recruitmentOpen==='boolean')g.recruitmentOpen=body.recruitmentOpen;
    // Approved four-letter tags never change through an unreviewed edit.
   }else if(op==='icon'&&m==='POST'){
