@@ -74,6 +74,7 @@ export function homeScreen(){
   '<p>Gear, runes, pets and skill trees. One connected build.</p></div></div>'+
   '<button type="button" class="launchHeroCTA" data-route="labs/build" aria-label="Enter Build Studio"><span class="launchHeroCTASigil" aria-hidden="true">'+icon('feature-rune-forge',22)+'</span><span class="launchHeroCTACopy"><strong>Enter Build Studio</strong><small>Forge your perfect setup</small></span>'+icon('arrow',20)+'</button>'+
   '</section>'+
+  '<section class="journalHomeTeaser" aria-label="Latest from Arcana Journal"><div class="journalHomeTop"><span>ARCANA JOURNAL</span><a href="/journal">All stories →</a></div><a class="journalHomeArticle" href="/journal/class-balance-top-250-season-2" data-journal-latest><span class="journalHomeCategory">META &amp; BALANCE · OCT 18</span><strong>Class Balance: The Top 250 Tells a Story</strong><small>What the leaderboard reveals about the Season 2 meta.</small><span class="journalHomeRead">Read the analysis →</span></a></section>'+
   '<section class="launchQuick" aria-label="Explore Arcana"><div class="launchSectionTop"><h2>Explore Arcana</h2><button type="button" data-route="directory" class="launchSeeAll">See All '+icon('arrow',16)+'</button></div>'+
   '<div class="launchQuickGrid">'+HOME_CARDS.map(x=>'<button type="button" class="launchQuickCard" data-action="homemenu" data-arg="'+esc(x.id)+'" aria-label="Open '+esc(x.title)+' menu"><span class="launchQuickEmblem" aria-hidden="true">'+icon(x.icon,90)+'</span><span class="launchQuickIcon">'+icon(x.icon,32)+'</span><span class="launchQuickCopy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></span><span class="launchQuickArrow">'+icon('arrow',17)+'</span></button>').join('')+'</div></section>'+
   '<section class="launchFeatured" aria-label="Useful and Featured"><div class="launchSectionTop"><h2>Useful &amp; Featured</h2></div>'+
@@ -89,6 +90,7 @@ export function homeSubmenu(id){
  return '<div class="launchMenu" role="group" aria-label="'+esc(menu.title)+' destinations"><div class="launchMenuIntro"><span class="launchEyebrow">EXPLORE ARCANA</span><h2>'+esc(menu.title)+'</h2><p>'+esc(menu.detail)+'</p></div><div class="launchMenuLinks">'+menu.links.map(navrow).join('')+'</div></div>';
 }
 const extras=[
+ link('Arcana Journal','IdleArc news, class balance, opinion and development updates.','journal','book'),
  link('About IdleArc','Game overview and navigation.','wiki/about','info'),
  link('Account & Profile','Your player card and account.','account','users'),
  link('App Settings','Display and accessibility preferences.','settings','cog'),
@@ -136,7 +138,7 @@ export function userCenterView(profile=null){
  link('Icon Library','Browse Arcana icon styles.','icons','gem'),
  link('My Build Studio','Jump back into your character.','labs/build','shield'),
  link('Beta Feedback','Report anything that needs fixing.','beta','info'),
- ...(profile?.roles?.some(r=>['admin','creator'].includes(r.id||r))?[link('Admin Dashboard','Private traffic statistics and management tools.','admin','shield')]:[])
+ ...(profile?.roles?.some(r=>['admin','creator'].includes(r.id||r))?[link('Admin Dashboard','Private traffic statistics and management tools.','admin','shield'),link('Journal Studio','Write, edit and publish Journal articles.','journal-studio','edit')]:[])
  ].map(navrow).join('')+'</div></div>';
 }
 const PREF_KEY='arcana-launch-prefs';

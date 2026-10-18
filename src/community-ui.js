@@ -60,9 +60,9 @@ const communityPostCard=p=>'<article class="communityPostCard"><span class="eyeb
  '<div class="communityPostActions"><button class="btn secondary" data-route="community/post" data-params="id='+esc(p.id)+'">Open '+icon('arrow',15)+'</button>'+
  (p.authorId?'<button class="btn secondary" data-route="profile" data-params="id='+esc(p.authorId)+'">Player card</button>':'')+'</div></article>';
 function communityView(){
- return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">MADE BY THE COMMUNITY</span><h1>Player builds & guides</h1><p>Share how you actually play. These are member contributions, separate from the curated ArcanaWiki.</p>'+
+ return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">THE ARCANA COMMUNITY</span><h1>Players, builds &amp; stories</h1><p>Follow IdleArc news and meta discussion, read the Journal, and find builds and guides shared by players.</p>'+
  (state.me?'<button class="btn primary" data-route="community/create">'+icon('plus',17)+' Share a build or guide</button>':'<button class="btn secondary" data-route="account">Get a player card</button>')+'</div>'+
- '<div class="communityPostGrid">'+(state.posts.length?state.posts.map(communityPostCard).join(''):notice('No community contributions here yet. The tools and Wiki remain free to browse.'))+'</div></div>';
+ '<section class="communityJournalGateway"><a href="/journal"><span class="journalEyebrow">ARCANA JOURNAL</span><strong>IdleArc news, meta &amp; opinions</strong><small>Leaderboard analysis, game updates, and development stories.</small><span>Read the Journal →</span></a></section><h2 class="communityContributionTitle">Player builds &amp; guides</h2><div class="communityPostGrid">'+(state.posts.length?state.posts.map(communityPostCard).join(''):notice('No community contributions here yet. The tools and Wiki remain free to browse.'))+'</div></div>';
 }
 const niceParagraphs=body=>String(body||'').split(/\n\s*\n/).filter(Boolean).map(p=>'<p>'+esc(p)+'</p>').join('');
 function detailView(){

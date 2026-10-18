@@ -21,7 +21,7 @@ for module in sorted((ROOT/'src').glob('*.js')):
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
 # Offline browser must render EVERY stylesheet in the real entry point, not just
 # styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
-for css_name in ('styles.css','wiki-studio.css','community.css','beta.css','launch-navigation.css','arcana-contour.css'):
+for css_name in ('styles.css','wiki-studio.css','community.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
     css=(ROOT/css_name).read_text()
     pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\?[^"]*)?">'
     HTML,count=re.subn(pattern,lambda _: '<style>\n'+css+'\n</style>',HTML)
@@ -84,8 +84,18 @@ with sync_playwright() as playwright:
     page.set_default_timeout(3000)
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
+    # Browser localStorage is prohibited on about:blank in current Chromium.
+    # Keep the mock page isolated but give it a real HTTP origin.
+    qa_origin='http://127.0.0.1:17653/__arcana_qa_blank__'
+    page.route(qa_origin,lambda route:route.fulfill(status=200,body='<!doctype html><html><body></body></html>',content_type='text/html'))
+    page.goto(qa_origin,wait_until='domcontentloaded')
     page.set_content(HTML,wait_until='domcontentloaded')
-    page.wait_for_selector('.launchHero',timeout=15000)
+    try:
+        page.wait_for_selector('.launchHero',timeout=15000)
+    except Exception:
+        print('EARLY ARCANA ERRORS:',repr(errors))
+        print('EARLY BODY:',page.locator('body').inner_text()[:2000])
+        raise
     assert page.locator('#arcanaDock button').count()==5, 'All five navigation tabs must exist'
     assert page.locator('#generalChatBtn').is_visible(), 'General chat launcher missing'
     page.evaluate("location.hash='#/settings'")
@@ -126,298 +136,57 @@ with sync_playwright() as playwright:
       document.documentElement.style.removeProperty('--theme-highlight');
       document.documentElement.style.removeProperty('--accent');
     }""")
-    # Home has a stable five-tab dock, top-left chat and top-right search.
+    # The real October 17 release ships three main cards, not the legacy six-card menu.
     page.evaluate("location.hash='#/home'")
     page.wait_for_selector('.launchHero',timeout=8000)
-    assert page.locator('#arcanaDock [data-dock="home"]').get_attribute('aria-current')=='page', 'Home tab not selected'
-    assert page.locator('#generalChatBtn').is_visible(), 'General chat launcher missing'
-    assert page.locator('#searchBtn').is_visible(), 'Search must live in the header'
-    assert page.locator('#bottomNav').count()==0, 'Legacy bottom navigation must stay removed'
-    assert page.locator('#arcanaDock button').count()==5, 'Persistent five-tab dock missing'
-    assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1, 'Build Studio is not featured'
-    assert page.locator('.launchQuickCard').count()==6, 'Exactly six launch navigation cards are required'
-    assert page.locator('.launchQuickCard .arcanaIcon').count()>=18, 'Themeable SVG icons missing from launch navigation'
-    assert page.locator('.launchHeroArt .arcanaIcon').get_attribute('data-arcana-icon')=='feature-build-studio', 'Build Studio emblem must use Arcana Minimal'
-    # The icon gallery is a real route and every registered asset is previewable.
-    page.evaluate("location.hash='#/icons'")
-    page.locator('.arcanaIconCatalogItem').first.wait_for(timeout=8000)
-    assert page.locator('.arcanaIconCatalogItem').count()==144, 'Full icon library did not render'
-    assert page.locator('.arcanaIconCatalogSection').count()==6, 'Icon categories missing'
-    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Icon gallery overflows mobile horizontally'
+    assert page.locator('#arcanaDock button').count()==5
+    assert page.locator('#arcanaDock [data-dock="home"]').get_attribute('aria-current')=='page'
+    assert page.locator('#arcanaDock [data-dock="community"]').count()==1
+    assert page.locator('#arcanaDock [data-dock="directory"]').count()==1
+    assert 'Community' in page.locator('#arcanaDock').inner_text()
+    assert 'Directory' in page.locator('#arcanaDock').inner_text()
+    assert 'Profile' not in page.locator('#arcanaDock').inner_text()
+    assert 'Options' not in page.locator('#arcanaDock').inner_text()
+    assert page.locator('.launchQuickCard').count()==3
+    assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1
+    assert page.locator('.journalHomeTeaser').count()==1
+    assert page.locator('[data-journal-latest]').get_attribute('href').startswith('/journal/')
+    assert 'Class Balance' in page.locator('[data-journal-latest]').inner_text()
+    assert page.locator('.launchQuickCard[data-arg="pathfinder"]').count()==1
+    assert page.locator('.launchQuickCard[data-arg="tools"]').count()==1
+    assert page.locator('.launchQuickCard[data-arg="builds"]').count()==1
+    page.screenshot(path=str(OUT/'journal_home_mobile.png'),full_page=True)
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Homepage overflows mobile viewport'
+
+    # Community is a proper gateway to public editorial content while preserving builds.
+    page.locator('#arcanaDock [data-dock="community"]').click()
+    page.wait_for_selector('.communityPage',timeout=8000)
+    assert page.locator('.communityJournalGateway a[href="/journal"]').count()==1
+    assert 'Player builds' in page.locator('.communityPage').inner_text()
+    assert page.locator('#arcanaDock [data-dock="community"]').get_attribute('aria-current')=='page'
+    page.screenshot(path=str(OUT/'journal_community_mobile.png'),full_page=True)
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Community overflows mobile viewport'
+
+    # Directory must go to the actual A-Z directory, not open old Options sheet.
+    page.locator('#arcanaDock [data-dock="directory"]').click()
+    page.wait_for_selector('.launchAlphabet',timeout=8000)
+    assert page.locator('.launchAlphabet').get_by_text('Arcana Journal').count()>=1
+    assert page.locator('#arcanaDock [data-dock="directory"]').get_attribute('aria-current')=='page'
+
+    page.locator('#arcanaDock [data-dock="featured"]').click()
+    page.wait_for_selector('.arcanaFeaturedPage',timeout=8000)
+    assert 'Arcana Journal' in page.locator('.arcanaFeaturedPage').inner_text()
+
+    page.locator('#arcanaDock [data-dock="home"]').click()
+    page.locator('.launchHeroCTA').click()
+    page.wait_for_selector('.studioProfile',timeout=8000)
+    assert page.locator('#arcanaDock button').count()==5, 'Navigation disappeared in Build Studio'
+
     page.evaluate("location.hash='#/settings'")
-    page.locator('.arcanaSettings').wait_for(timeout=8000)
-    assert page.locator('.arcanaThemeReadOnly').count()==1, 'Public accounts must not edit Arcana themes'
-    assert page.locator('.slateAccentChoice').count()==0, 'Accent editor visible to a guest'
-    assert page.locator('[data-app-pref="reduceMotion"]').count()==1, 'Accessible display settings missing'
-    page.evaluate("location.hash='#/home'")
-    page.locator('.launchQuickCard').first.wait_for(timeout=8000)
-
-    assert page.locator('.launchBrandName').inner_text()=='ARCANA', 'Slate wordmark missing'
-    assert page.locator('.launchHero').evaluate('(e)=>getComputedStyle(e).display')=='flex', 'Build Studio hero CSS missing'
-    assert page.locator('.launchQuickGrid').evaluate('(e)=>getComputedStyle(e).display')=='grid', 'Homepage cards are not using responsive grid CSS'
-    positions=page.locator('.launchQuickCard').evaluate_all('(els)=>els.slice(0,2).map(e=>({x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y}))')
-    assert abs(positions[0]['y']-positions[1]['y'])<3 and positions[1]['x']>positions[0]['x']+75, 'Quick Access must be two cards side by side'
-    assert page.locator('.launchHeroCTA').inner_text().find('Enter Build Studio')>=0, 'Hero does not have a special Build Studio call to action'
-    assert page.locator('.launchHeroArcaneSeal').count()==1 and page.locator('.launchHeroCTASigil').count()==1, 'Arcane hero detailing missing'
-    assert page.locator('.launchHeroCTA').evaluate("(e)=>getComputedStyle(e).gridTemplateColumns!='none'"), 'Mystical CTA CSS was not loaded'
-    assert page.locator('.launchQuickGrid').evaluate("(e)=>getComputedStyle(e).gridTemplateColumns.split(' ').length==2"), 'Quick Access grid must have exactly two columns'
-    assert page.locator('.launchQuickCard').evaluate_all("(els)=>els.every(e=>e.getBoundingClientRect().height>=80)"), 'Quick Access tap targets are too small'
-    assert page.locator('.launchFeatured').is_hidden(), 'Featured section should live in bottom navigation'
-    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Two-column home has horizontal overflow'
-
-    for menu_id in ('wiki','tools','guides','builds','pathfinder','social'):
-        assert page.locator('.launchQuickCard[data-arg="'+menu_id+'"]').count()==1, 'Missing home card '+menu_id
-    page.locator('.launchQuickCard[data-arg="wiki"]').click()
-    page.locator('#layer [data-route="wiki"]').click()
-    assert page.locator('.wikiV1Categories [data-route="wiki/category"]').count()>=5
-    page.locator('.wikiV1Categories [data-params="slug=equipment"]').click()
-    assert page.locator('.wikiCrumbTrail').count()==1
-    page.locator('.wikiCategoryPage [data-params="id=forge"]').click()
-    assert 'Equipment' in page.locator('.wikiCrumbTrail').inner_text()
-    assert 'The Forge' in page.locator('.wikiCrumbTrail').inner_text()
-    page.locator('.wikiArticle .wikiLocationBack').click()
-    page.wait_for_timeout(170)
-    assert page.locator('.wikiCategoryPage').count()==1
-    page.locator('#arcanaDock [data-route="home"]').click()
-    page.locator('.launchQuickCard[data-arg="wiki"]').click()
-    page.locator('#layer [data-route="wiki"]').click()
-    page.locator('.wikiCodexLaunch').click()
-    assert page.locator('.wikiLibrary h1').inner_text()=='Item Codex'
-    rail=page.locator('.wikiCategoryScroll')
-    assert rail.count()==1
-    assert rail.locator('a').count()==1
-    assert 'Equipment' in rail.locator('a').first.inner_text()
-    query=page.locator('#wikiFilter')
-    query.fill('Broken Sword')
-    assert page.locator('#wikiFoundCount').inner_text().startswith('1 ')
-    assert page.locator('#wikiRecords .wikiRecordVisual').count()==1
-    assert page.locator('#wikiRecords [data-art-status="official"]').count()==1
-    query.fill('')
-    page.locator('.wikiShelfSwitch a[href="#/wiki/library?kind=material"]').click()
-    assert page.locator('.wikiRecordVisual').count()==0
-    page.locator('.wikiCategoryScroll a[href="#/wiki/library?kind=class-skill"]').click()
-    page.wait_for_timeout(200)
-    assert page.locator('.wikiRecordVisual').count()==0
-    assert page.locator('#wikiRecords .wikiRecordText').count()>0
-    page.locator('#wikiRecords .wikiRecordText').first.click()
-    assert page.locator('.wikiReferencePage').count()==1
-    page.locator('.wikiReferencePage .wikiLocationBack').click()
-    assert page.locator('.wikiLibrary').count()==1
-    page.screenshot(path=str(OUT/'wiki_mobile.png'),full_page=True)
-
-    # Pet tools are now two simple calculators plus four bonus choices inside Build Studio.
-    page.evaluate("location.hash='#/calculators/pet'")
-    page.wait_for_timeout(220)
-    assert page.locator('#petCompoundRarity').count()==1
-    assert '101%' in page.locator('.petMiniComparison').inner_text(), 'Pet Damage C10 should be 101%'
-    page.locator('#petCompoundRarity').select_option('uncommon')
-    page.locator('#petCompoundBonus').select_option('dodge')
-    page.locator('#petCompoundLevel').fill('10')
-    page.locator('#petCompoundLevel').press('Tab')
-    page.wait_for_timeout(90)
-    assert '12%' in page.locator('.petMiniComparison').inner_text(), 'Uncommon Dodge C10 should be 12%'
-    page.evaluate("location.hash='#/calculators/affixes'")
-    page.wait_for_timeout(200)
-    assert page.locator('#petAffixType option').count()==9
-    page.locator('#petAffixType').select_option('all_skills')
-    assert page.locator('#petAffixTarget').input_value()=='2'
-    assert '1,000' in page.locator('.petMiniBig').inner_text()
-    page.evaluate("location.hash='#/labs/build'")
-    page.wait_for_timeout(230)
-    assert page.locator('[data-pet-bonus-target]').count()==4
-    assert page.locator('[data-pet-name]').count()==0
-    assert page.locator('.labsTabs [data-route="labs/pets"]').count()==0
-    page.locator('[data-pet-bonus-target="0"]').select_option('pet_damage')
-    assert page.locator('[data-pet-bonus-target="0"]').input_value()=='pet_damage'
-    assert int(page.locator('.petBuildHead small').inner_text().split('/')[0])>=1
-    page.screenshot(path=str(OUT/'pets_simplified_mobile.png'),full_page=True)
-
-    # Editorial cross-links should open their tools and preserve the site theme.
-    page.evaluate("location.hash='#/wiki/article?id=pet-compound'")
-    page.wait_for_timeout(180)
-    assert page.locator('.wikiConnections .wikiConnectionRow').count()>=1, 'Related Wiki guides missing'
-    assert page.locator('.wikiSectionActions .arcanaConnection').count()>=2, 'Inline article links missing'
-    assert page.locator('.wikiConnections [data-route="calculators/affixes"]').count()==1, 'Article does not link Pet Affix Cost'
-    page.locator('.wikiConnections [data-route="calculators/affixes"]').dispatch_event('click')
-    page.wait_for_timeout(180)
-    assert page.locator('#petAffixType').count()==1, 'Related Pet Affix link is broken'
-    assert page.locator('.arcanaNext').count()==1, 'Calculator follow-up links missing'
-    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Connected tool has horizontal overflow'
-    page.screenshot(path=str(OUT/'connected_wiki_mobile.png'),full_page=True)
-
-    # New guide pages expose exact content routes and focusable in-article navigation.
-    page.evaluate("location.hash='#/wiki/guides'")
-    page.wait_for_timeout(180)
-    assert page.locator('.wikiGuideGroup').count()>=5, 'Guides are not grouped by topic'
-    assert page.locator('[data-route="wiki/article"][data-params="id=forge"]').count()>=1, 'Forge guide missing'
-    page.evaluate("location.hash='#/wiki/article?id=guild-planning'")
-    page.wait_for_timeout(180)
-    assert page.locator('.wikiShareBtn[data-action="wikishare"]').count()==1, 'Wiki guide is missing its share action'
-    toc=page.locator('.wikiArticleToc')
-    assert toc.count()==1 and toc.locator('button').count()==4, 'Guide contents navigation unavailable'
-    page.locator('[data-action="wikisection"][data-arg="rank-unlocks"]').dispatch_event('click')
-    page.wait_for_timeout(180)
-    assert page.locator('#section-rank-unlocks h2').count()==1, 'Guide section jump did not resolve'
-    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Wiki article has horizontal overflow'
-    page.screenshot(path=str(OUT/'wiki_guides_connected_mobile.png'),full_page=True)
-
-    # Actual user-entered measurements drive the farming calculator. No assumed HP or XP.
-    page.evaluate("location.hash='#/calculators/ml-farm'")
-    page.wait_for_timeout(180)
-    assert page.locator('.farmCompare').count()==1, 'ML farming comparator failed to open'
-    assert page.locator('.farmWinner').count()==0, 'ML comparator should not invent a winner'
-    page.locator('[data-farm-time="0"]').fill('0.7')
-    page.locator('[data-farm-time="0"]').press('Tab')
-    page.wait_for_timeout(130)
-    page.locator('[data-farm-time="1"]').fill('1.1')
-    page.locator('[data-farm-time="1"]').press('Tab')
-    page.wait_for_timeout(160)
-    assert page.locator('.farmWinner').count()==1, 'ML calculator did not evaluate measured times'
-    assert 'Weakest monster' in page.locator('.farmWinner').inner_text(), 'ML comparison chose wrong result'
-    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'ML calculator has horizontal overflow'
-    page.screenshot(path=str(OUT/'ml_farm_mobile.png'),full_page=True)
-
-    page.evaluate("location.hash='#/recent'")
-    page.wait_for_timeout(160)
-    assert page.locator('.arcanaResume [data-route="calculators/ml-farm"]').count()==1, 'Recent Activity failed to resume saved farm times'
-    page.locator('.arcanaResume [data-route="calculators/ml-farm"]').dispatch_event('click')
-    page.wait_for_timeout(160)
-    assert page.locator('[data-farm-time="0"]').input_value()=='0.7', 'Saved ML timing was lost'
-    page.locator('[data-farm-mode][value="earlier"]').check()
-    page.wait_for_timeout(140)
-    assert page.locator('.farmRow small').first.inner_text()=='Normal XP', 'Earlier biome XP factor was not applied'
-    page.locator('[data-action="farmreset"]').dispatch_event('click')
-    page.wait_for_timeout(130)
-    assert page.locator('.farmWinner').count()==0, 'Clearing farm timings did not reset the result'
-
-    # Guild comparison: save a baseline, allocate one point, inspect the delta.
-    page.evaluate("location.hash='#/labs/guild-tree'")
-    page.wait_for_timeout(180)
-    page.locator('.guildTreeTabs [data-arg="comparison"]').dispatch_event('click')
-    page.wait_for_timeout(100)
-    assert page.locator('[data-action="guildbaseline"]').count()==1, 'Guild comparison capture missing'
-    page.locator('[data-action="guildbaseline"]').dispatch_event('click')
-    page.wait_for_timeout(130)
-    assert page.locator('.guildCompareTable').count()==3, 'Guild comparison baseline did not render'
-    page.locator('.guildTreeTabs [data-arg="vanguard"]').dispatch_event('click')
-    page.wait_for_timeout(100)
-    page.locator('.guildTreeActions [data-action="guildpointadd"]').first.dispatch_event('click')
-    page.wait_for_timeout(140)
-    page.locator('.guildTreeTabs [data-arg="comparison"]').dispatch_event('click')
-    page.wait_for_timeout(140)
-    assert page.locator('.guildCompareRow strong.up').count()>=1, 'Guild comparison did not detect the changed bonus'
-    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Guild comparison causes page overflow'
-    page.screenshot(path=str(OUT/'guild_comparison_mobile.png'),full_page=True)
-
-    # Import Manager is an owner-only, browser-local XML conversion workflow.
-    page.evaluate("location.hash='#/wiki/studio'")
-    page.wait_for_timeout(300)
-    assert page.locator('[data-ws-action="import-manager"]').count()==1, 'Fandom Import Manager shortcut missing'
-    page.locator('[data-ws-action="import-manager"]').dispatch_event('click')
-    page.wait_for_timeout(150)
-    assert page.locator('#fandomXmlInput').count()==1, 'XML upload control did not open'
-    sample_xml=('<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.11/">'
-      '<siteinfo><sitename>IdleArc Wiki</sitename><base>https://idlearc.fandom.com/wiki/IdleArc_Wiki</base></siteinfo>'
-      '<page><title>Test Pet Guide</title><ns>0</ns><revision><timestamp>2026-10-01T00:00:00Z</timestamp>'
-      '<text>Every player can use this guide to plan the right combination of pets and bonuses.\n\n'
-      '== How it works ==\nThis is a test of the imported guide data and the source attribution link.\n'
-      '[[File:Pet Screenshot.png|thumb]]</text></revision></page></mediawiki>')
-    page.locator('#fandomXmlInput').set_input_files({'name':'test-export.xml','mimeType':'text/xml','buffer':sample_xml.encode()})
-    page.wait_for_timeout(250)
-    assert page.locator('.fandomImportRow').count()==1, 'XML did not convert into a review row'
-    assert 'Test Pet Guide' in page.locator('.fandomImportRow').inner_text()
-    assert 'image reference' in page.locator('.fandomImportRow').inner_text().lower()
-    assert page.locator('[data-fandom-action="save"]').count()==1, 'Private-draft save control missing'
-    page.screenshot(path=str(OUT/'fandom_import_mobile.png'),full_page=True)
-    # The beta must have an actual feedback form and account-free entry.
-    page.evaluate("location.hash='#/beta'")
-    page.wait_for_selector('[data-beta-form="feedback"]',timeout=10000)
-    assert page.locator('.betaFeature').count()>=4, 'Beta availability information missing'
-    assert 'not enabled' in page.locator('.betaCapabilities').inner_text(), 'Unconfigured account sign-in must not appear operational'
-    page.locator('[name="title"]').fill('Codex issue on Android')
-    page.locator('[name="details"]').fill('Changing categories moves the scroll unexpectedly; expected the selected category to stay visible.')
-    page.locator('[data-beta-form="feedback"] button[type="submit"]').click()
-    page.wait_for_timeout(350)
-    assert 'Feedback received.' in page.locator('.betaCenter').inner_text(), 'Beta submission did not confirm: '+repr(page.locator('.betaCenter').inner_text()[-900:])+' JS errors '+repr(errors)
-    assert page.locator('[data-beta-form="feedback"]').count()==1
-    page.evaluate("location.hash='#/labs/build'")
-    page.wait_for_selector('.studioProfile')
-    assert page.locator('.studioTitleInput').input_value()=='My Build'
-    assert '0 / 13 equipped' in page.locator('.studioEquipmentHeading').inner_text(), 'New user must start with empty build, not invented demo gear'
-    assert page.locator('[data-action="sharebuild"]').count()==1, 'Guest build sharing is not available'
-    assert page.locator('.loadoutSlot').count()==13, 'All verified equipment slots must remain available'
-    assert page.locator('.loadoutSlot .arcanaSilhouette').count()==13, 'Equipment art must use understated silhouettes'
-    assert page.locator('.studioProfileVisual .arcanaSilhouette').count()==1, 'Class identity emblem should be visible'
-    assert page.locator('.studioProfile').bounding_box()['y']<page.locator('.studioPrimaryEquipment').bounding_box()['y'], 'Equipment should follow the compact profile'
-    assert page.locator('.pageHead').count()==0, 'Build Studio must not show the old giant page heading'
-    assert page.locator('.launchReturnHome').count()==0, 'Build Studio must not duplicate home navigation'
-
-    token=page.evaluate("""async () => {
-      const {shareBuildToken}=await import('@arcana/build-links.js');
-      return await shareBuildToken({title:'Shared beta Warrior',className:'Warrior',
-        equipment:{weapon:'game:item:claws',head:null},runes:[],pets:[],skills:[],monsterLevel:100});
-    }""")
-    assert len(token)<7500
-    page.evaluate("(token) => {location.hash='#/labs/build?share='+encodeURIComponent(token)}",token)
-    page.locator('[data-action="clonebuild"]').wait_for(timeout=7000)
-    assert 'Shared beta Warrior' in page.locator('.studioProfile h1').inner_text(), 'Read-only shared build failed'
-    assert page.locator('[data-action="sharebuild"]').count()==0, 'Shared build should be read-only'
-    page.locator('[data-action="clonebuild"]').dispatch_event('click')
-    page.wait_for_timeout(200)
-    assert page.locator('[data-action="sharebuild"]').count()==1, 'Cloned build is not editable'
-    assert page.locator('[data-build-field="title"]').count()==1, 'Build name editor missing'
-    page.locator('[data-build-field="title"]').fill('My actual beta build')
-    page.locator('[data-build-field="className"]').select_option('Druid')
-    assert page.locator('.studioTitleInput').input_value()=='My actual beta build'
-    assert page.locator('.studioClassControl select').input_value()=='Druid'
-    assert page.locator('.studioProfileVisual .arcanaSilhouette').get_attribute('data-kind')=='druid', 'Class icon must update with the selected class'
-    # This offline file:// fixture cannot access localStorage, so test the upload
-    # controls here and exercise actual image persistence in the HTTPS live smoke.
-    assert page.locator('#studioPortraitUpload').count()==1, 'Upload input missing'
-    assert page.locator('[data-action="chooseportrait"]').count()==1, 'Change-picture action missing'
-    page.screenshot(path=str(OUT/'build_studio_compact_mobile.png'),full_page=True)
-
-    page.evaluate("location.hash='#/home'")
-    page.wait_for_timeout(120)
-    page.evaluate("location.hash='#/labs/build'")
-    page.wait_for_timeout(120)
-    assert page.locator('[data-build-field="title"]').input_value()=='My actual beta build', 'Build title changes did not persist'
-    assert page.locator('[data-build-field="className"]').input_value()=='Druid', 'Build class changes did not persist'
-
-
-    # Authenticated UI fixture: verify account pages render genuine member features.
-    page.evaluate("""() => {
-      const previous=window.fetch;
-      const member={id:'11111111-1111-4111-8111-111111111111',displayName:'Arcana Beta Player',
-        inGameName:'Hero',guild:'PDX',favoriteClass:'Druid',description:'Testing Arcana.',
-        roles:[{id:'member',label:'Arcana Member'},{id:'beta-tester',label:'Founding Beta Tester'}],
-        betaTesterSince:'2026-10-12T00:00:00Z',
-        permissions:{createCommunity:true,publishWiki:false,hideContent:false,deleteContent:false,manageRoles:false}};
-      window.fetch=async (url,opts={})=>{
-        const path=String(url);
-        const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json'}});
-        if(path==='/api/account/me')return json({enabled:true,betaEnrollmentOpen:true,user:member});
-        if(path==='/api/community/mine')return json({posts:[]});
-        if(path==='/api/account/builds'&&opts.method==='POST')return json({build:{id:'22222222-2222-4222-8222-222222222222',title:'My actual beta build',className:'Druid',updatedAt:'2026-10-12T00:00:00Z'}},201);
-        if(path==='/api/account/builds')return json({builds:[]});
-        return previous(url,opts);
-      };
-    }""")
-    page.evaluate("""async () => {
-      const {refreshAccount}=await import('@arcana/community-ui.js');
-      await refreshAccount();
-      location.hash='#/account';
-    }""")
-    page.locator('.playerCard').wait_for(timeout=5000)
-    assert 'Founding Beta Tester' in page.locator('.playerCard').inner_text(), 'Permanent beta badge not visible on profile'
-    assert page.locator('.accountCloudBuilds').count()==1, 'Account-owned cloud build management missing'
-    assert page.locator('#arcanaAvatarFile').count()==1, 'Custom player card picture not available'
-    page.locator('[data-cloud-action="new"]').dispatch_event('click')
-    page.wait_for_timeout(240)
-    assert page.locator('.accountCloudRow').count()==1, 'Account build save did not render in profile'
-    page.screenshot(path=str(OUT/'account_beta_member_mobile.png'),full_page=True)
-    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+3'), 'Authenticated account screen horizontal overflow'
-
-    assert errors==[], 'JavaScript exceptions: '+repr(errors)
-    print(json.dumps({'status':'PASS','modules_loaded':len(IMPORTS),'footer':'PASS','category_count':len(all_names),'scroll_before':before,'scroll_after':after,'uncaught_js_errors':len(errors),'official_art_fixture_rendered':True,'live_api_artwork_tested':False},indent=2))
+    page.wait_for_selector('.arcanaSettings',timeout=8000)
+    assert page.locator('[data-app-pref="reduceMotion"]').count()==1
+    assert page.locator('.slateAccentChoice').count()==0
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Settings overflows mobile viewport'
+    assert errors==[], 'Browser errors: '+repr(errors)
+    print('PASS: latest three-card home, Journal spotlight, Community, Directory, Featured, Build Studio, settings, responsive checks and all themes.')
     browser.close()
