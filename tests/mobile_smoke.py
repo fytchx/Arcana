@@ -85,7 +85,12 @@ with sync_playwright() as playwright:
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
     page.set_content(HTML,wait_until='domcontentloaded')
-    page.wait_for_selector('.launchHero',timeout=15000)
+    try:
+        page.wait_for_selector('.launchHero',timeout=15000)
+    except Exception:
+        print('EARLY ARCANA ERRORS:',repr(errors))
+        print('EARLY BODY:',page.locator('body').inner_text()[:2000])
+        raise
     assert page.locator('#arcanaDock button').count()==5, 'All five navigation tabs must exist'
     assert page.locator('#generalChatBtn').is_visible(), 'General chat launcher missing'
     page.evaluate("location.hash='#/settings'")
