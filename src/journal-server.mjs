@@ -70,8 +70,8 @@ async function storyPage(slug){
 }
 async function auth(req,res){
  const user=await accountUser(req);
- if(!user)return fail(res,401,'Sign in to Arcana to edit Journal articles.');
- if(!can(user,'site:manage'))return fail(res,403,'Admin or Creator access required.');
+ if(!user){fail(res,401,'Sign in to Arcana to edit Journal articles.');return null;}
+ if(!can(user,'site:manage')){fail(res,403,'Admin or Creator access required.');return null;}
  return user;
 }
 function validate(payload,old){
