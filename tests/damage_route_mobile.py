@@ -96,10 +96,12 @@ with sync_playwright() as playwright:
     page.evaluate("location.hash='#/calculators/damage'")
     page.wait_for_selector('#arcanaDamageCalculator',timeout=15000)
     calc=page.locator('#arcanaDamageCalculator')
-    assert calc.locator('[data-dc-tab]').count()==7, 'Real calculator does not have seven sections'
+    assert calc.locator('[data-dc-tab]').count()==8, 'Real calculator does not have eight sections'
     assert calc.locator('[data-dc-tab="pet"]').is_visible(), 'Pet comparison is not available'
     assert calc.locator('[data-dc-tab="attributes"]').is_visible(), 'Linked stats are not available'
     assert calc.locator('[data-dc-tab="studio"]').is_visible(), 'Build Studio import is not available'
+    assert calc.locator('[data-dc-tab="talismans"]').is_visible(), 'Talisman comparison is not available'
+    assert calc.locator('[data-dc-example]').count()==0, 'Private screenshot presets leaked into public UI'
     assert not page.get_by_text('WORK IN PROGRESS',exact=True).count(), 'Old placeholder still displayed'
     calc.locator('[data-dc-tab="pet"]').click()
     assert calc.locator('#dcPetQuick').is_visible(), 'Pet panel cannot open'
@@ -107,9 +109,16 @@ with sync_playwright() as playwright:
     assert calc.locator('#dcAttributeLab').is_visible(), 'Attributes panel cannot open'
     calc.locator('[data-dc-tab="studio"]').click()
     assert calc.locator('#dcStudioImport').is_visible(), 'Build Studio import panel cannot open'
+    calc.locator('[data-dc-tab="talismans"]').click()
+    assert calc.locator('#dcTalismanLab').is_visible(), 'Talisman panel cannot open'
+    assert calc.locator('[data-dct-field="slug"]').count()==4, 'Talisman A/B expects two slots per side'
+    calc.locator('[data-dct-field="slug"]').first.select_option('spirit')
+    calc.locator('[data-dct-field="level"]').first.fill('9')
+    calc.locator('[data-dct-field="level"]').first.press('Tab')
+    assert '66' in calc.locator('#dcTalismanLab').inner_text(), 'Configured level 9 Spirit Pet Damage not displayed'
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Horizontal overflow in calculator on mobile'
     page.screenshot(path=str(OUT/'damage-modern-route-mobile.png'),full_page=True)
     assert not errors, 'Unexpected JavaScript errors: '+repr(errors)
     print(json.dumps({'status':'PASS','home_cards':3,'dock_tabs':5,
-                      'calculator_tabs':7,'uncaught_js_errors':len(errors)}))
+                      'calculator_tabs':8,'uncaught_js_errors':len(errors)}))
     browser.close()
