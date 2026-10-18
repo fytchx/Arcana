@@ -14,7 +14,7 @@ export async function hydrateJournalPreview(){
   const current=cache[0];if(!current||!document.contains(link))return;
   link.href=current.url;
   const title=link.querySelector('strong'),category=link.querySelector('.journalHomeCategory'),subtitle=link.querySelector('small');
-  if(title)title.textContent=current.title;
+  if(title)title.textContent=current.teaserTitle||current.title;
   if(subtitle)subtitle.textContent=current.subtitle;
   const date=new Date(current.publishedAt);
   if(category)category.textContent=current.category.toUpperCase()+' · '+date.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase();
