@@ -43,6 +43,51 @@ export const WARRIOR_OCT17_GEAR=Object.freeze([
   ['Increased Defense +531%','Critical Chance +43%','Double Damage Chance +40%','Critical Damage +36%','Defense +368'],
   ['Flawless Garnet 92% Lv38','Flawless Garnet 88% Lv38'])
 ]);
+// Each socket roll transcribed from the actual equipment screenshots. The
+// in-game gem modifiers remain read-only until Studio supports per-socket data.
+export const WARRIOR_OCT17_GEM_ROLLS=Object.freeze({
+ weapon:[
+  'Flawless Lapis 91% Lv39: +3.79% Attack Damage, +3.79% Pet Damage, +3.79% Retaliation, +23.3% Critical Damage, +37.27 Life on Kill, +3.49% Dodge Chance',
+  'Flawless Lapis 98% Lv38: +4.01% Attack Damage, +4.01% Pet Damage, +4.01% Retaliation, +6.17% Double Damage Chance, +39.51 Life on Kill, +12.35% Gold Gain',
+  'Flawless Lapis 99% Lv38: +4.05% Attack Damage, +4.05% Pet Damage, +4.05% Retaliation, +6.24% Double Hit Chance, +19.96 Life on Hit, +374.2 Max Health'
+ ],
+ offhand:[],
+ chest:[
+  'Flawless Garnet 85% Lv38: +8.35% Defense, +21.42% Critical Damage, +321.3 Max Health, +10.71% Gold Gain',
+  'Brilliant Garnet 93% Lv38: +5.63% Defense, +3.52% Double Hit Chance, +7.03% EXP Gain'
+ ],
+ head:[
+  'Brilliant Garnet 98% Lv38: +5.93% Defense, +14.82% Critical Damage, +3.7% Double Damage Chance',
+  'Brilliant Garnet 100% Lv38: +6.05% Defense, +10.08 Life on Hit, +20.16 Life on Kill'
+ ],
+ torch:[
+  'Flawless Jade 95% Lv38: +4.67% Attack Damage, +23.94% Critical Damage, +19.15 Life on Hit, +3.59% Dodge Chance',
+  'Flawless Jade 100% Lv38: +4.91% Attack Damage, +3.78% Dodge Chance, +378 Max Health, +12.6% EXP Gain',
+  'Flawless Jade 80% Lv41: +4.12% Attack Damage, +5.28% Critical Chance, +21.12% Critical Damage, +5.28% Double Hit Chance',
+  'Flawless Jade 99% Lv38: +4.87% Attack Damage, +6.24% Critical Chance, +6.24% Double Hit Chance, +19.96 Life on Hit'
+ ],
+ neck:[
+  'Brilliant Garnet 97% Lv38: +48.89 Strength, +3.67% Critical Chance, +14.67% Critical Damage'
+ ],
+ ring2:[
+  'Brilliant Garnet 100% Lv38: +50.4 Strength, +15.12% Critical Damage, +151.2 Max Health'
+ ],
+ belt:[
+  'Brilliant Garnet 99% Lv38: +49.9 Strength, +3.74% Double Damage Chance, +9.98 Life on Hit',
+  'Brilliant Garnet 99% Lv38: +49.9 Strength, +3.74% Double Damage Chance, +7.48% Gold Gain'
+ ],
+ ring:[
+  'Brilliant Garnet 99% Lv38: +49.9 Strength, +9.98 Life on Hit, +7.48% EXP Gain'
+ ],
+ hands:[
+  'Brilliant Garnet 91% Lv38: +5.5% Defense, +137.6 Max Health, +6.88% EXP Gain',
+  'Brilliant Garnet 100% Lv38: +6.05% Defense, +15.12% Critical Damage, +2.27% Dodge Chance'
+ ],
+ feet:[
+  'Flawless Garnet 92% Lv38: +9.04% Defense, +23.18% Critical Damage, +5.8% Double Damage Chance, +347.8 Max Health',
+  'Flawless Garnet 88% Lv38: +8.65% Defense, +5.54% Double Damage Chance, +17.74 Life on Hit, +35.48 Life on Kill'
+ ]
+});
 const pet=(name,compound,hatch,bonus,shards,affixes)=>({
  equipped:true,name,rarity:'Legendary',compound,
  hatchBonus:hatch,observedHatchPercent:bonus,sharedAffixShards:shards,
@@ -101,7 +146,7 @@ export const WARRIOR_OCT17_OBSERVED=Object.freeze({
   retaliationAverage:183630000000
  },
  guild:{name:'[PDX] Paradox',bonusPct:{attack:77.8,petDamage:77.8,retaliation:77.8,flatAttack:1005,flatPet:2130,defense:35},boostPercent:50},
- equipment:WARRIOR_OCT17_GEAR,
+ equipment:WARRIOR_OCT17_GEAR.map(g=>({...g,gemRolls:WARRIOR_OCT17_GEM_ROLLS[g.slot]||[]})),
  pets:WARRIOR_OCT17_PETS,
  runes:{preset:3,columns:6,rows:6,grid:WARRIOR_OCT17_RUNE_GRID,secondaryIconsVerified:false,
   summedBonuses:['Defense +4,034','Retaliation +358.8%','Attack Damage +1,906',
