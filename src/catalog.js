@@ -1,26 +1,7 @@
+import {WARRIOR_OCT17_BUILD} from './warrior-oct17-snapshot.js';
 /* Single public object registry for the connected demo. Real-data ingestion comes later. */
 export const demoBuilds = {
-  'warrior-retaliation-zane': {
-    id:'warrior-retaliation-zane',
-    title:'Zane’s Retaliation Warrior · Season 2',
-    className:'Warrior',
-    owner:'Zane (kiffens_)',
-    version:'PLAYER GUIDE',
-    monsterLevel:208,
-    summary:'My retaliation-focused Warrior build: Defense, Block Chance, Strength and a four-pet setup.',
-    equipment:{},
-    skills:['Deflection','Bulwark Stance'],
-    runes:['Fury','Fortitude','Vitality','Wisdom','Precision'],
-    runeBoard:[],
-    pets:['Defense','Increased Strength','Retaliation','Retaliation'],
-    petSetup:[
-      {equipped:true,name:'Defense target',hatchBonus:'defense'},
-      {equipped:true,name:'% Strength target',hatchBonus:'increased_strength'},
-      {equipped:true,name:'Retaliation target 1',hatchBonus:'retaliation'},
-      {equipped:true,name:'Retaliation target 2',hatchBonus:'retaliation'}
-    ],
-    notes:'My priorities are Retaliation %, Defense, Block Chance and Strength, in that order. I aim for red gems in armor and jewelry, blue in the weapon and whatever is useful on the Torch. My four pet targets are Defense, Increased Strength and two Retaliation bonuses. Current snapshot: Lv 196, ML 208, 2,145 GS, 7.67M Defense and 84% Block. My displayed retaliation ranges from 6.76B to 9.66B with an 8.21B midpoint. Blocked enemy attacks receive 50% more retaliation damage. Crit Chance, Crit Damage, Double Hit and Double Damage all interact with retaliation, making offensive secondaries worth comparing with more Defense or Retaliation %. The strongest mix may shift as the build progresses. I have left the specific gear choices, pet Compound levels, rune positions and skill-point allocations open in the planner so you can customize them for your own character.'
-  },
+  'warrior-retaliation-zane': WARRIOR_OCT17_BUILD,
   'warrior-retaliation-demo': {
     id:'warrior-retaliation-demo', title:'Warrior Retaliation · demonstration build', className:'Warrior', owner:'Arcana Demo', version:'DEMO',
     summary:'An illustrative, editable example showing how an entire guide build opens inside Build Studio. Not a recommended or verified build.',
