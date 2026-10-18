@@ -434,7 +434,7 @@ with sync_playwright() as playwright:
     page.evaluate("location.hash='#/calculators/damage'")
     page.wait_for_selector('#arcanaDamageCalculator',timeout=10000)
     damage=page.locator('#arcanaDamageCalculator')
-    assert damage.locator('[data-dc-tab]').count()==7, 'Missing Damage Calculator tabs'
+    assert damage.locator('[data-dc-tab]').count()==8, 'Missing Damage Calculator tabs (including talismans)'
     assert damage.locator('#dcResults').count()==1, 'Damage Calculator results missing'
     damage.locator('[data-dc-clear]').click()
     assert 'Not measured' in damage.locator('#dcResults').inner_text(), 'Clear retained a screenshot measurement'
