@@ -11,6 +11,9 @@ import {passiveTitle} from './tree-art.js';
 import {normalizeBuild,putRune,removeRune,nextRuneId,petSummary,RUNE_SHAPES,RUNE_FAMILIES,RUNE_FAMILY_DETAILS,RUNE_SECONDARIES,PET_AFFIX_DEFS,statName,runeIssue,monsterLevelGrid,activeRuneBoard} from './labs-engine.js';
 import {labsTabs,runeGridView,runeOptionsUI,petLoadoutView,petCompoundCalculatorView,buildOverviewV7} from './labs-views.js';
 import {damageCalculatorView,mountDamageCalculator} from './damage-calculator-ui.js';
+import {talismanBuildStudioView} from './talisman-ui.js';
+import {normalizeTalisman} from './talisman-model.js';
+import {TALISMAN_INSCRIPTIONS} from './talisman-reference.js';
 import {normalizePublicFeed,lfgSearchEntries,rankSearch,lfgFilter,guildActivity,lfgDeepLink} from './lfg-core.js';
 import {lfgScreen,lfgDetail,lfgCard} from './lfg-views.js';
 import {verifiedGameSearchEntries,mergedSearch} from './verified-search.js';
@@ -251,6 +254,7 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
  slots+'<p class="studioEquipmentHint">Select a slot to change equipment, rarity, awakening, or Drop Bonus.</p></section>'+ '<section class="pfPanel"><h2>Arcana Pathfinder</h2><p>Need to check an upgrade? Browse the cost of any rarity or awakening level without setting up your character or entering materials.</p><button class="btn primary" data-route="calculators/pathfinder">Browse upgrade costs '+icon('arrow',16)+'</button></section>'+
  '<details class="studioProgressDetails"><summary>'+icon('layers',16)+' Character & Rune Progression <span>ML '+(b.monsterLevel||1)+'</span></summary>'+
  '<div class="studioML"><div><span class="eyebrow">RUNE GRID</span><strong>Monster Level '+(b.monsterLevel||1)+'</strong><small> · '+monsterLevelGrid(b.monsterLevel||1).cols+'×'+monsterLevelGrid(b.monsterLevel||1).rows+' cells</small></div><div class="studioMLActions"><label class="studioMLInput">ML<input aria-label="Build Monster Level" data-monster-level type="number" min="1" max="100000" inputmode="numeric" value="'+(b.monsterLevel||1)+'" '+(inspecting?'disabled':'')+'></label><button class="btn secondary" data-route="labs/runes">Runes '+icon('arrow',14)+'</button></div></div></details>'+
+ talismanBuildStudioView(b,inspecting)+
  '<div class="studioSecondaryGrid"><section class="sectionCard"><div class="sectionCardTop"><h3>'+icon('git',19)+' Skills & Runes</h3></div>'+
  '<div class="pillSet">'+(b.skills.map(v=>chip(v,'wide')).join('')||chip('No class skills chosen'))+'</div>'+
  '<div class="actionsGroup"><button class="btn secondary" data-route="labs/skills">Class Skills '+icon('arrow',14)+'</button><button class="btn secondary" data-route="labs/passives">Passive Tree '+icon('arrow',14)+'</button><button class="btn secondary" data-route="labs/runes">Rune Forge '+icon('arrow',14)+'</button></div></section>'+
@@ -1020,6 +1024,19 @@ const petKeys=['petCompound','petAffix','petAffixLevel','petUnlocked','petHatch'
  if(key==='petDrop'&&e.target.value.trim()!=='')p.equipped=true;
  persistDraft();render();
  }});document.addEventListener('submit',e=>{if(e.target.id==='guildForm'){e.preventDefault();void guildSave(e.target)}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.layer)closeLayer();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();showSearch()}});window.addEventListener('arcana:assets-loaded',()=>{if(parseRoute().route==='calculators/pathfinder')return;if(!state.layer)render();else if(state.layer.type==='search'){node('searchResults').innerHTML=state.search?resultMarkup(state.search):node('searchResults').innerHTML}});window.addEventListener('arcana:navigate',handleRoute);window.addEventListener('popstate',handleRoute);window.addEventListener('hashchange',handleRoute);if(!location.hash)history.replaceState(null,'','#/home');render();}
+document.addEventListener('change',e=>{
+ const input=e.target.closest('[data-build-talisman]');if(!input)return;
+ const route=parseRoute();if(route.route!=='labs/build'||route.query.get('build')||route.query.get('share'))return;
+ const idx=Number(input.dataset.talismanSlot);if(!Number.isInteger(idx)||idx<0||idx>1)return;
+ const b=ensureDraft(),next=structuredClone(b.talismans[idx]);
+ if(input.dataset.buildTalisman==='slug'){next.slug=input.value;next.level=null;next.inscriptions={};}
+ else if(input.dataset.buildTalisman==='level')next.level=input.value.trim()===''?null:Number(input.value);
+ else if(input.dataset.buildTalisman==='inscription'){
+  const stat=input.dataset.talismanStat;if(!Object.hasOwn(TALISMAN_INSCRIPTIONS,stat))return;
+  if(input.value.trim()==='')delete next.inscriptions[stat];else next.inscriptions[stat]=Number(input.value);
+ }else return;
+ b.talismans[idx]=normalizeTalisman(next);persistDraft();render();
+});
 init();
 void initGameAssets();
 void loadTrees();

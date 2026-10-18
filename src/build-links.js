@@ -3,7 +3,7 @@
 import {normalizeBuild} from './labs-engine.js';
 const MAX_LINK=7500,MAX_JSON=65000;
 const utf8=new TextEncoder(),utf8Decode=new TextDecoder('utf-8',{fatal:true});
-const keys=['id','title','summary','className','characterLevel','monsterLevel','equipment','skills','runes','runeBoard','petSetup','petBonusTargets','petMode','passiveAlloc','passiveFreeMode','classAllocById','notes'];
+const keys=['id','title','summary','className','characterLevel','monsterLevel','equipment','skills','runes','runeBoard','petSetup','petBonusTargets','petMode','talismans','passiveAlloc','passiveFreeMode','classAllocById','notes'];
 function snapshot(build){
  const normalized=normalizeBuild(build),clean={};
  for(const k of keys)if(normalized[k]!==undefined)clean[k]=normalized[k];
