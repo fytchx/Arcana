@@ -96,14 +96,36 @@ with sync_playwright() as playwright:
     page.evaluate("location.hash='#/calculators/damage'")
     page.wait_for_selector('#arcanaDamageCalculator',timeout=15000)
     calc=page.locator('#arcanaDamageCalculator')
-    assert calc.locator('#arcanaSandbox').is_visible(), 'Sandbox must be primary screen'
-    assert calc.locator('[data-sb-tab]').count()==3, 'Sandbox needs Character, Experiment, Results'
+    sandbox=calc.locator('#arcanaSandbox')
+    assert sandbox.is_visible(), 'Sandbox must be primary screen'
+    assert sandbox.locator('[data-sb-tab]').count()==3, 'Sandbox needs Character, Experiment, Results'
+    assert sandbox.locator('h2').inner_text()=='Experiment with your character', 'Sandbox start is not character-first'
+    assert '0 entered damage values' in sandbox.inner_text(), 'Fresh sandbox inherited screenshot values'
+    sandbox.locator('[data-sb-action="original"]').click()
+    assert 'Starting Point saved' in sandbox.inner_text(), 'Starting Point was not saved'
+    sandbox.locator('[data-sb-tab="experiment"]').click()
+    assert sandbox.locator('.sbChoices > button').count()==7, 'Sandbox experiment chooser is incomplete'
+    sandbox.locator('[data-sb-tab="results"]').click()
+    assert 'No changes detected' in sandbox.inner_text(), 'Blank original must match blank working'
+    sandbox.locator('[data-sb-tab="character"]').click()
+    sandbox.locator('[data-sb-name]').fill('Quick experiment')
+    sandbox.locator('[data-sb-action="save"]').click()
+    assert 'Quick experiment' in sandbox.inner_text(), 'Variant save was lost'
+    assert sandbox.locator('.sbVariantRow').count()==1, 'Variant not visible in list'
+    assert page.evaluate("JSON.parse(localStorage.getItem('arcana:sandbox:workspace:v1')).variants.length") == 1
     calc.locator('#dcAdvancedControls > summary').click()
     assert calc.locator('[data-dc-tab]').count()==8, 'Real calculator does not have eight sections'
     assert calc.locator('[data-dc-tab="pet"]').is_visible(), 'Pet comparison is not available'
     assert calc.locator('[data-dc-tab="attributes"]').is_visible(), 'Linked stats are not available'
     assert calc.locator('[data-dc-tab="studio"]').is_visible(), 'Build Studio import is not available'
     assert calc.locator('[data-dc-tab="talismans"]').is_visible(), 'Talisman comparison is not available'
+    # Enter a measured stat: the same character must be visible to Build Studio.
+    calc.locator('[data-dc-field="attack.weapon.min"]').first.fill('123')
+    assert page.evaluate("JSON.parse(localStorage.getItem('arcana-v3-local-build-1')).damageProfile.attack.weapon.min")==123, 'Manual stat not saved to canonical Build Studio character'
+    sandbox.locator('[data-sb-tab="results"]').click()
+    sandbox.locator('[data-sb-compare]').select_option('original')
+    assert 'changed source' in sandbox.inner_text(), 'Manual damage input did not affect sandbox A/B'
+    assert 'Full damage impact: not yet measured' in sandbox.inner_text(), 'Partial input must not fabricate full DPS'
     assert calc.locator('[data-dc-example]').count()==0, 'Private screenshot presets leaked into public UI'
     assert not page.get_by_text('WORK IN PROGRESS',exact=True).count(), 'Old placeholder still displayed'
     calc.locator('[data-dc-tab="pet"]').click()

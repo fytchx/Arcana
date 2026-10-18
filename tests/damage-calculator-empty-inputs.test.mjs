@@ -4,6 +4,7 @@ import {
   blankDamageBuild, calculateAttack, calculatePet, compareBuilds,
 } from '../src/damage-calculator-engine.js';
 import {calculateRetaliation} from '../src/retaliation-damage-engine.js';
+import {normalizeSandboxCharacter,compareSandboxCharacters} from '../src/sandbox-character.js';
 
 test('clear starts with truly unknown inputs, not leftover Hunter modifiers', () => {
   const blank = blankDamageBuild();
@@ -75,4 +76,16 @@ test('Retaliation requires observed numbers and structured pools, but permits ex
   assert.equal(calculateRetaliation({...base,combatStanceFactor:null}).known, false);
   assert.equal(calculateRetaliation({...base,layers:null}).known, false);
   assert.equal(calculateRetaliation({...base,blockedFactor:null}).blockedFactor, null);
+});
+
+test('same character damage profile stays compatible with partial Build Studio loadout',()=>{
+ const initial=normalizeSandboxCharacter({title:'Example',equipment:{},runes:[],talismans:[{slug:'spirit',level:9}],
+  damageProfile:{attack:{weapon:{min:0,max:null}}}});
+ assert.equal(initial.talismans[0].slug,'spirit');
+ assert.equal(initial.damageProfile.attack.weapon.min,0);
+ assert.equal(initial.damageProfile.attack.weapon.max,null);
+ const updated=structuredClone(initial);updated.damageProfile.attack.weapon.min=123;
+ const result=compareSandboxCharacters(initial,updated);
+ assert.ok(result.changedCategories.includes('stats'));
+ assert.equal(result.numbers.attack,null);
 });

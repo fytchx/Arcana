@@ -6,7 +6,7 @@ const ui=readFileSync(new URL('../src/damage-calculator-ui.js',import.meta.url),
 
 test('Build Studio action persists before opening Damage Calculator',()=>{
  assert.match(app,/data-action="damagefrombuild"/);
- assert.match(app,/case 'damagefrombuild':persistDraft\(\);go\('calculators\/damage'\);break/);
+ assert.match(app,/case 'damagefrombuild':persistDraft\(\);resetDamageCalculatorForCharacter\(\);go\('calculators\/damage'\);break/);
 });
 test('Damage Calculator integrates review-only import and independently validates source',()=>{
  assert.match(ui,/data-dc-tab="studio"/);
