@@ -189,6 +189,12 @@ export function mountSandboxWorkspace(calculatorRoot){
   render(root);
  });
 }
+export function addSandboxComparisonCandidate(character,name){
+ const result=saveSandboxVariant(read(),character,name);
+ if(!result.ok)return result;
+ if(!write(result.workspace))return {ok:false,error:'Browser storage could not save the guide variant.'};
+ activeView='results';notice='';return {ok:true,variant:result.variant};
+}
 export function refreshSandboxWorkspace(calculatorRoot){
  const root=calculatorRoot?.querySelector('#arcanaSandbox');if(root?.dataset.mounted==='yes')render(root);
 }

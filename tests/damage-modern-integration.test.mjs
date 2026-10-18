@@ -9,11 +9,11 @@ const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 test('modern Arcana route renders actual Damage Calculator, never the retired placeholder',()=>{
  const matches=[...app.matchAll(/case 'calculators\/damage'/g)];
  assert.equal(matches.length,1,'duplicate switch cases shadow the real calculator');
- assert.match(app,/case 'calculators\/damage':return layout\('Damage Calculator','ARCANA LABS',damageCalculatorView\(\),'calculator'\)/);
+ assert.match(app,/case 'calculators\/damage':return layout\('Character Sandbox','ARCANA LABS',damageCalculatorView\(\),'calculator'\)/);
  assert.doesNotMatch(app,/function calcDamage\(/);
  assert.doesNotMatch(app,/WORK IN PROGRESS<\/span><h1>Damage Calculator/);
  assert.match(app,/if\(dest==='calculators\/damage'\)queueMicrotask\(\(\)=>mountDamageCalculator\(\)\)/);
- assert.match(launch,/link\('Damage Calculator',[^\n]*'calculators\/damage'/);
+ assert.match(launch,/link\('Character Sandbox',[^\n]*'calculators\/damage'/);
 });
 
 test('calculator integration retains newer homepage, theme editor and five-tab dock',()=>{
