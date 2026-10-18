@@ -39,10 +39,10 @@ test('all twenty socketed gems retain their individually observed primary and se
  const items=WARRIOR_OCT17_OBSERVED.equipment;
  assert.equal(items.reduce((sum,g)=>sum+g.gemRolls.length,0),20);
  assert.equal(items.find(g=>g.slot==='offhand').gemRolls.length,0);
- assert.match(items.find(g=>g.slot==='weapon').gemRolls[0],/\\+3\\.79% Pet Damage/);
- assert.match(items.find(g=>g.slot==='torch').gemRolls[1],/\\+4\\.91% Attack Damage/);
+ assert.ok(items.find(g=>g.slot==='weapon').gemRolls[0].includes('+3.79% Pet Damage'));
+ assert.ok(items.find(g=>g.slot==='torch').gemRolls[1].includes('+4.91% Attack Damage'));
  assert.match(items.find(g=>g.slot==='feet').gemRolls[0],/Flawless Garnet 92%/);
- assert.match(items.find(g=>g.slot==='ring2').gemRolls[0],/\\+50\\.4 Strength/);
+ assert.ok(items.find(g=>g.slot==='ring2').gemRolls[0].includes('+50.4 Strength'));
  const belt=items.find(g=>g.slot==='belt').gemRolls;
  assert.equal(belt.length,2);
  assert.ok(belt.every(g=>g.includes('Brilliant Garnet 99% Lv38')));
