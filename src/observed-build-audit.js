@@ -93,7 +93,7 @@ export function observedBuildAudit(build){
  '<h2>Real Warrior build · recorded snapshot</h2>'+
  '<p>'+esc(o.source)+'. Values below are directly observed and are NOT proof of live-game stat formulas.</p>'+
  '<nav class="obsTabs" aria-label="Observed build sections">'+
- ['stats','equipment','pets','runes','talismans','guild','unknown'].map(s=>'<a href="#obs-'+s+'" data-obs-jump="'+s+'">'+s[0].toUpperCase()+s.slice(1)+'</a>').join('')+'</nav>'+
+ ['stats','equipment','pets','runes','talismans','guild','unknown'].map(s=>'<button type="button" data-action="obsjump" data-arg="'+s+'" data-obs-jump="'+s+'">'+s[0].toUpperCase()+s.slice(1)+'</button>').join('')+'</nav>'+
  '<section class="obsGroup" id="obs-stats"><h3>Character stats · Lv '+o.player.characterLevel+' / ML '+o.player.monsterLevel+'</h3>'+
  '<div class="obsGrid">'+row('Gear score',o.player.gearScore)+Object.entries(o.stats).map(([k,v])=>
   row(statLabels[k]||statName(k),percentKeys.has(k)?pretty(v)+'%':v)).join('')+'</div></section>'+
