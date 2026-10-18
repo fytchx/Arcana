@@ -3,10 +3,11 @@ import assert from 'node:assert/strict';
 import {GEAR_ITEMS,DROP_BONUSES,RARITIES,CLASS_CODES,baseItem,equipmentId,allowedItem,allowedGearForSlot,asGear,newGear,bonusRange,bonusUnit,gearIssues,gearLabel} from '../src/build-studio-data.js';
 
 test('verified equipment and Drop Bonus catalogs are complete',()=>{
- assert.equal(GEAR_ITEMS.length,40);
+ assert.equal(GEAR_ITEMS.filter(g=>g.source==='2026-10-09 verified config').length,40);
+ assert.equal(GEAR_ITEMS.filter(g=>g.source==='2026-10-17 Warrior screenshot').length,4);
  assert.equal(DROP_BONUSES.length,21);
  assert.equal(RARITIES.length,6);
- assert.equal(new Set(GEAR_ITEMS.map(x=>x.id)).size,40);
+ assert.equal(new Set(GEAR_ITEMS.map(x=>x.id)).size,44);
  for(const item of GEAR_ITEMS){
   assert.ok(item.id.startsWith('game:item:'));
   assert.ok(['main_hand','off_hand','head','chest','hands','feet','belt','ring','amulet','torch'].includes(item.slot));
