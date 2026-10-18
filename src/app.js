@@ -12,7 +12,7 @@ import {normalizeBuild,putRune,removeRune,nextRuneId,petSummary,RUNE_SHAPES,RUNE
 import {labsTabs,runeGridView,runeOptionsUI,petLoadoutView,petCompoundCalculatorView,buildOverviewV7} from './labs-views.js';
 import {damageCalculatorView,mountDamageCalculator} from './damage-calculator-ui.js';
 import {talismanBuildStudioView} from './talisman-ui.js';
-import {normalizeTalisman} from './talisman-model.js';
+import {normalizeTalisman,talismansFromResponse} from './talisman-model.js';
 import {TALISMAN_INSCRIPTIONS} from './talisman-reference.js';
 import {normalizePublicFeed,lfgSearchEntries,rankSearch,lfgFilter,guildActivity,lfgDeepLink} from './lfg-core.js';
 import {lfgScreen,lfgDetail,lfgCard} from './lfg-views.js';
@@ -1024,6 +1024,20 @@ const petKeys=['petCompound','petAffix','petAffixLevel','petUnlocked','petHatch'
  if(key==='petDrop'&&e.target.value.trim()!=='')p.equipped=true;
  persistDraft();render();
  }});document.addEventListener('submit',e=>{if(e.target.id==='guildForm'){e.preventDefault();void guildSave(e.target)}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.layer)closeLayer();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();showSearch()}});window.addEventListener('arcana:assets-loaded',()=>{if(parseRoute().route==='calculators/pathfinder')return;if(!state.layer)render();else if(state.layer.type==='search'){node('searchResults').innerHTML=state.search?resultMarkup(state.search):node('searchResults').innerHTML}});window.addEventListener('arcana:navigate',handleRoute);window.addEventListener('popstate',handleRoute);window.addEventListener('hashchange',handleRoute);if(!location.hash)history.replaceState(null,'','#/home');render();}
+document.addEventListener('change',e=>{
+ const input=e.target.closest('[data-build-talisman-file]');if(!input)return;
+ const route=parseRoute();if(route.route!=='labs/build'||route.query.get('build')||route.query.get('share'))return;
+ const file=input.files?.[0];if(!file)return;
+ if(file.size>1024*1024){toast('Talisman file exceeds the 1 MB limit.');return;}
+ void file.text().then(raw=>{
+  const payload=JSON.parse(raw);
+  if(!Array.isArray(payload?.talismans))throw Error('JSON does not contain a talismans array.');
+  const talismans=talismansFromResponse(payload);
+  if(!talismans.some(x=>x.slug))throw Error('No supported talisman entries were found.');
+  if(!confirm('Replace the two talisman slots in your local Build Studio draft with the imported talismans?'))return;
+  const b=ensureDraft();b.talismans=talismans;persistDraft();render();toast('Talisman data imported locally. Other response fields were discarded.');
+ }).catch(err=>toast('Talisman import: '+String(err.message||err)));
+});
 document.addEventListener('change',e=>{
  const input=e.target.closest('[data-build-talisman]');if(!input)return;
  const route=parseRoute();if(route.route!=='labs/build'||route.query.get('build')||route.query.get('share'))return;

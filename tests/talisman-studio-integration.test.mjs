@@ -14,6 +14,8 @@ test('Build Studio stores optional talismans and never inserts someone else’s 
  assert.match(html,/data-build-talisman="slug"/);
  assert.match(html,/Talisman of Fury/);
  assert.match(html,/value="25"/);
+ assert.match(html,/data-build-talisman-file/);
+ assert.match(app,/talismansFromResponse/);
  assert.match(app,/b\.talismans\[idx\]=normalizeTalisman\(next\)/);
 });
 test('Talisman state survives explicit build sharing and previews stay read-only',()=>{
