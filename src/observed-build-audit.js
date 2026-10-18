@@ -28,7 +28,7 @@ function equipment(o){
  return '<div class="obsCards">'+o.equipment.map(g=>'<details class="obsCard"><summary>'+
   '<strong>'+esc(g.name)+'</strong><span>'+esc(g.slot)+' · '+esc(g.rarity)+' · '+esc(g.stage)+'</span>'+
   '<small>'+esc(g.base||'')+'</small></summary><div class="obsCardBody">'+
-  row('Exact Drop Bonus',statName(g.bonusId)+' +'+pretty(g.roll)+'% (tier '+pretty(g.bonusTier)+')')+
+  row('Exact Drop Bonus',(g.bonusId==='thorned'?'Reflecting':g.bonusId==='armored'?'Armored':statName(g.bonusId))+' +'+pretty(g.roll)+'% (tier '+pretty(g.bonusTier)+')')+
   '<h5>Five observed item affixes</h5>'+sums(g.affixes)+
   '<h5>Socketed gems</h5>'+(g.gems.length?sums(g.gems):'<p>Gem details not visible in the submitted screen.</p>')+
   '</div></details>').join('')+'</div>';
@@ -72,7 +72,7 @@ export function observedBuildAudit(build){
  return '<style>'+
  '.studioPage .obsRoot{margin:18px 0;padding:16px;border:1px solid var(--border,#65749455);border-radius:16px;background:var(--surface,#1c2636);overflow-wrap:anywhere}'+
  '.studioPage .obsRoot h2{font-size:21px;margin:0 0 6px}.studioPage .obsRoot p{line-height:1.55;font-size:13px}'+
- '.studioPage .obsTabs{display:flex;flex-wrap:wrap;gap:6px}.studioPage .obsTabs a{padding:9px 11px;border:1px solid #8498ba66;border-radius:10px;font-size:12px;color:inherit;text-decoration:none}'+
+ '.studioPage .obsTabs{display:flex;flex-wrap:wrap;gap:6px}.studioPage .obsTabs button{padding:9px 11px;cursor:pointer;background:transparent;color:inherit;border:1px solid #8498ba66;border-radius:10px;font-size:12px;color:inherit;text-decoration:none}'+
  '.studioPage .obsGroup{padding-top:12px;margin-top:12px;border-top:1px solid #8698a33b}'+
  '.studioPage .obsLine{display:flex;gap:15px;justify-content:space-between;padding:8px 0;border-bottom:1px solid #8698a322;font-size:13px}'+
  '.studioPage .obsLine b{text-align:right;font-variant-numeric:tabular-nums}'+
