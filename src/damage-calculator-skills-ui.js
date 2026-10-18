@@ -80,7 +80,7 @@ function load(){
    return plan;
   }
  }catch{}
- plan=preset('hunter');return plan;
+ plan=blank();return plan;
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(plan));}catch{}}
 function label(text,control,cls){

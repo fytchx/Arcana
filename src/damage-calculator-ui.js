@@ -6,13 +6,12 @@ import {previewLinkedAttributeChange} from './damage-attribute-link.js';
 import {damageAttributeView,mountDamageAttribute,refreshDamageAttribute} from './damage-attribute-ui.js';
 import {readBuildStudioDamage,buildStudioScenarioChanges} from './damage-build-studio-bridge.js';
 import {damageStudioImportView,mountDamageStudioImport,refreshDamageStudioImport} from './damage-studio-import-ui.js';
-import {RETALIATION_WARRIOR_2026_10_17 as WARRIOR,ATTACK_MAGE_2026_10_17 as MAGE} from './damage-calculator-crossclass-fixtures.js';
-import {HUNTER_2026_10_17 as EXAMPLE} from './damage-calculator-reference.js';
-import {damageSkillPlannerView,mountSkillPlanner,skillPlannerExample,clearSkillPlanner} from './damage-calculator-skills-ui.js';
+import {damageSkillPlannerView,mountSkillPlanner,clearSkillPlanner} from './damage-calculator-skills-ui.js';
 
-const STORE_KEY = 'arcana:damage-calculator:2026-10-17';
+// v2 intentionally does not auto-import a legacy screenshot fixture or overwrite old local work.
+const STORE_KEY = 'arcana:damage-calculator:2026-10-18:blank-v2';
 const clone = value => JSON.parse(JSON.stringify(value));
-const initial = () => clone(EXAMPLE);
+const initial = () => blankDamageBuild();
 const NUMERIC_PATHS = [
   ['Attack base · weapon minimum','attack.weapon.min','attack'],
   ['Attack base · weapon maximum','attack.weapon.max','attack'],
@@ -229,8 +228,8 @@ export function damageCalculatorView(){
  .dcRoot .dcMarginalRow b{white-space:nowrap;color:#8bdaa0}
  @media(max-width:440px){.dcRoot .dcChangeRow{grid-template-columns:1fr auto}.dcRoot .dcChangeRow span{grid-column:1/-1}.dcRoot .dcScenarioControls{grid-template-columns:1fr}}
  </style>
- <p class="dcIntro">Compare an actual build against a what-if version, with Attack Damage, pet multipliers and combat probabilities kept in their proper stages. Start with a screenshot benchmark or choose Clear values for a genuinely blank character. Empty inputs mean unknown, not zero.</p>
- <div class="dcActions"><button type="button" class="btn secondary" data-dc-example="hunter">Hunter</button><button type="button" class="btn secondary" data-dc-example="mage">AD Mage</button><button type="button" class="btn secondary" data-dc-example="warrior">Retal Warrior</button><button type="button" class="btn secondary" data-dc-clear>Clear values</button><button type="button" class="btn secondary" data-dc-removeall>Clear comparisons</button></div>
+ <p class="dcIntro">Compare an actual build against a what-if version, with Attack Damage, pet multipliers and combat probabilities kept in their proper stages. Enter only the values you know, then compare what changes. Every new workspace starts empty, and unentered values stay unknown rather than becoming invented zeros.</p>
+ <div class="dcActions"><button type="button" class="btn secondary" data-dc-clear>Start blank / clear values</button><button type="button" class="btn secondary" data-dc-removeall>Clear comparisons</button></div>
  <div class="dcTabs" role="tablist" aria-label="Calculator sections"><button type="button" class="btn secondary" data-dc-tab="attack" aria-selected="true">Attack</button><button type="button" class="btn secondary" data-dc-tab="pet" aria-selected="false">Pets</button><button type="button" class="btn secondary" data-dc-tab="combat" aria-selected="false">Combat</button><button type="button" class="btn secondary" data-dc-tab="retaliation" aria-selected="false">Retaliation</button><button type="button" class="btn secondary" data-dc-tab="attributes" aria-selected="false">Linked Stats</button><button type="button" class="btn secondary" data-dc-tab="studio" aria-selected="false">Build Studio Import</button><button type="button" class="btn secondary" data-dc-tab="skills" aria-selected="false">Skills + ACS</button></div>
  <section aria-live="polite" id="dcResults">${results()}</section>
  ${marginalPanel()}
@@ -342,7 +341,6 @@ export function mountDamageCalculator(){
   if(!btn)return;
   if(btn.dataset.dcMarginal){state.marginalPoints=Number(btn.dataset.dcMarginal);persist();updateMarginals(root);return;}
   if(btn.dataset.dcTab){state.mode=btn.dataset.dcTab;updatePanels(root);return;}
-  if(btn.hasAttribute('data-dc-example')){const id=btn.dataset.dcExample;state.baseline=clone(id==='warrior'?WARRIOR:id==='mage'?MAGE:EXAMPLE);state.changes={};state.mode=id==='warrior'?'retaliation':'attack';persist();skillPlannerExample(id,root);updateNumbers(root);return;}
   if(btn.hasAttribute('data-dc-clear')){state.baseline=blankDamageBuild();state.changes={};persist();clearSkillPlanner(root);updateNumbers(root);return;}
   if(btn.hasAttribute('data-dc-removeall')){state.changes={};persist();updateNumbers(root);return;}
   if(btn.hasAttribute('data-dc-add')){const path=root.querySelector('#dcAddSource')?.value;if(LABELS.has(path)){state.changes[path]=valueAt(state.baseline,path)||0;persist();updateNumbers(root);}return;}
