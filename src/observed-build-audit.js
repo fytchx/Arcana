@@ -30,7 +30,7 @@ function equipment(o){
   '<small>'+esc(g.base||'')+'</small></summary><div class="obsCardBody">'+
   row('Exact Drop Bonus',(g.bonusId==='thorned'?'Reflecting':g.bonusId==='armored'?'Armored':statName(g.bonusId))+' +'+pretty(g.roll)+'% (tier '+pretty(g.bonusTier)+')')+
   '<h5>Five observed item affixes</h5>'+sums(g.affixes)+
-  '<h5>Socketed gems</h5>'+(g.gems.length?sums(g.gems):'<p>Gem details not visible in the submitted screen.</p>')+
+  '<h5>Socketed gems · exact rolls</h5>'+(g.gemRolls?.length?sums(g.gemRolls):'<p>No gems shown on this item.</p>')+
   '</div></details>').join('')+'</div>';
 }
 function pets(o){
