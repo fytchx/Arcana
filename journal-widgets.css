@@ -3,3 +3,76 @@
 .journalHomeTop{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.journalHomeTop span{font-size:11px;font-weight:850;letter-spacing:.16em;color:#80c7ff}.journalHomeTop a{font-size:12px;text-decoration:none;color:#7ab7ff;font-weight:700}
 .journalHomeArticle{display:flex;flex-direction:column;text-decoration:none;gap:5px}.journalHomeCategory{font-size:10px;letter-spacing:.1em;font-weight:800;color:#83bcf6}.journalHomeArticle strong{font-size:clamp(21px,4.4vw,27px);color:#f3f8ff;line-height:1.25;letter-spacing:-.018em}.journalHomeArticle small{font-size:12px;color:#a8bed9;line-height:1.5}.journalHomeRead{font-size:12px;color:#8cc2ff;font-weight:800;margin-top:8px}.journalHomeArticle:hover .journalHomeRead{text-decoration:underline}
 .communityJournalGateway{margin:18px 0 28px}.communityJournalGateway a{display:flex;flex-direction:column;gap:7px;padding:22px;border-radius:17px;border:1px solid #416d9e;background:radial-gradient(circle at right,#22558b55,transparent 53%),linear-gradient(135deg,#162c4b,#111d31);text-decoration:none}.communityJournalGateway strong{font-size:clamp(20px,4.4vw,28px);line-height:1.2;color:#f1f7ff}.communityJournalGateway small{font-size:13px;color:#b1c5dc;line-height:1.45}.communityJournalGateway a>span:last-child{font-size:13px;font-weight:850;color:#80bcff;margin-top:8px}.communityContributionTitle{margin:0 0 12px;font-size:21px;color:#eef5ff}
+
+
+/* Weighted home hierarchy: Studio 25% + Journal 25%; the three tools share 50%.
+   On phones the two primary cards are equal-height peers and three utility cards
+   use a compact rhythm. On large screens both rows divide the same available area. */
+#content.homeFullscreen .homeSpotlights{
+ display:grid!important;grid-template-columns:minmax(0,1fr);align-items:stretch;
+ gap:10px!important;margin:0 0 2px!important;min-width:0;width:100%;
+}
+#content.homeFullscreen .homeSpotlights>section{margin:0!important;min-width:0;width:100%;box-sizing:border-box}
+#content.homeFullscreen .homeSpotlights .launchHero{
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ justify-content:space-between!important;gap:10px!important;
+ height:100%!important;min-height:176px!important;
+ padding:15px 16px!important;
+}
+#content.homeFullscreen .homeSpotlights .launchHeroHeader{align-items:center!important;gap:12px!important}
+#content.homeFullscreen .homeSpotlights .launchHero h1{font-size:clamp(23px,5.8vw,32px)!important;margin:2px 0 5px!important}
+#content.homeFullscreen .homeSpotlights .launchHero p{font-size:clamp(11px,2.6vw,12px)!important;line-height:1.38!important;margin:0!important;max-width:33ch}
+#content.homeFullscreen .homeSpotlights .launchHeroArt{
+ width:48px!important;height:48px!important;min-width:48px!important;flex-basis:48px!important;
+}
+#content.homeFullscreen .homeSpotlights .launchHeroArt svg{width:29px!important;height:29px!important}
+#content.homeFullscreen .homeSpotlights .launchHeroCTA{min-height:49px!important;padding:8px 13px!important}
+#content.homeFullscreen .homeSpotlights .journalHomeTeaser{
+ display:flex!important;flex-direction:column!important;justify-content:space-between!important;
+ height:100%!important;min-height:176px!important;padding:15px 16px!important;
+ border:1px solid color-mix(in srgb,var(--theme-highlight,#80b3ff) 45%,var(--theme-border,#335274))!important;
+ background:
+  radial-gradient(circle at 96% 8%,color-mix(in srgb,var(--theme-highlight,#74b5ff) 15%,transparent),transparent 58%),
+  linear-gradient(133deg,color-mix(in srgb,var(--theme-secondary,#142643) 94%,var(--theme-highlight,#74b5ff) 6%),var(--theme-main,#0b1328))!important;
+}
+#content.homeFullscreen .homeSpotlights .journalHomeTop{margin-bottom:8px!important}
+#content.homeFullscreen .homeSpotlights .journalHomeTop span{color:var(--theme-accent-text,#80c7ff)!important}
+#content.homeFullscreen .homeSpotlights .journalHomeTop a{color:var(--theme-accent-text,#8ec4ff)!important}
+#content.homeFullscreen .homeSpotlights .journalHomeArticle{display:flex!important;flex-direction:column;justify-content:center;gap:4px!important;flex:1}
+#content.homeFullscreen .homeSpotlights .journalHomeArticle strong{
+ color:var(--theme-text,#eff6ff)!important;font-size:clamp(20px,5vw,27px)!important;
+ line-height:1.17!important;letter-spacing:-.028em;
+ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+#content.homeFullscreen .homeSpotlights .journalHomeArticle small{
+ color:var(--theme-muted,#afc0d6)!important;font-size:clamp(11px,2.55vw,12px)!important;line-height:1.36!important;
+ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+#content.homeFullscreen .homeSpotlights .journalHomeCategory{font-size:10px!important;color:var(--theme-accent-text,#8ec4ff)!important}
+#content.homeFullscreen .homeSpotlights .journalHomeRead{font-size:12px!important;color:var(--theme-accent-text,#8cc8ff)!important;margin-top:3px!important}
+#content.homeFullscreen .launchQuick{margin:0!important;gap:6px!important}
+#content.homeFullscreen .launchQuick .launchSectionTop{margin:0 2px 5px!important;min-height:28px}
+#content.homeFullscreen .launchQuick .launchSectionTop h2{font-size:clamp(16px,3.8vw,20px)!important}
+#content.homeFullscreen .launchQuickGrid{gap:9px!important;grid-auto-rows:1fr!important}
+#content.homeFullscreen .launchQuickCard{
+ min-height:110px!important;padding:12px 14px!important;gap:11px!important;
+ border-radius:14px!important;
+}
+#content.homeFullscreen .launchQuickEmblem svg{height:100px!important;width:100px!important}
+#content.homeFullscreen .launchQuickCopy small{line-height:1.35!important}
+@media(min-width:760px){
+ #content.homeFullscreen .homeSpotlights{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important}
+ #content.homeFullscreen .homeSpotlights .launchHero,
+ #content.homeFullscreen .homeSpotlights .journalHomeTeaser{min-height:215px!important;padding:19px 21px!important}
+ #content.homeFullscreen .homeSpotlights .journalHomeArticle strong{font-size:clamp(23px,2.7vw,30px)!important}
+ #content.homeFullscreen .launchQuickGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important}
+ #content.homeFullscreen .launchQuickCard{min-height:215px!important;padding:19px!important}
+ #content.homeFullscreen .launchQuickCard .launchQuickCopy small{font-size:12px!important}
+}
+@media(max-width:380px){
+ #content.homeFullscreen .homeSpotlights{gap:8px!important}
+ #content.homeFullscreen .homeSpotlights .launchHero,
+ #content.homeFullscreen .homeSpotlights .journalHomeTeaser{padding:12px 13px!important;min-height:170px!important}
+ #content.homeFullscreen .homeSpotlights .journalHomeArticle strong{font-size:19px!important}
+ #content.homeFullscreen .launchQuickCard{min-height:105px!important;padding:11px!important}
+}
