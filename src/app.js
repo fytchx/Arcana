@@ -226,7 +226,8 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
  const currentClass=inspecting?'<span class="studioClassReadonly">'+cls+'</span>':
   '<label class="studioClassControl"><span class="srOnly">Character class</span><select data-build-field="className" aria-label="Character class">'+clsOptions+'</select></label>';
  const profileActions=inspecting?
-  '<button class="btn primary" data-action="clonebuild" data-arg="'+esc(b.id)+'">'+icon('edit',16)+' Use as my build</button>':
+  '<button class="btn primary" data-action="clonebuild" data-arg="'+esc(b.id)+'">'+icon('edit',16)+' Use as my build</button>'+
+  (route.query.get('build')?'<button class="btn secondary" data-action="sharetemplate" data-arg="'+esc(b.id)+'">'+icon('link',16)+' Share full build</button>':''):
   '<button class="btn primary" data-action="savebuild">'+icon('check',16)+' Save draft</button>'+
   '<button class="btn secondary" data-action="sharebuild">'+icon('link',16)+' Share</button>'+
   '<button class="btn secondary" data-action="savecloud">'+icon('check',16)+' Save to Account</button>'+
@@ -704,6 +705,15 @@ case 'petaffixstep':{
  state.affixCostQuick=saveAffixCostPlan({...state.affixCostQuick,targetLevel:state.affixCostQuick.targetLevel+step});render();break;
 }case 'petaffixreset':{state.affixCostQuick=saveAffixCostPlan({...state.affixCostQuick,targetLevel:state.affixCostQuick.currentLevel});render();break;}
 case 'comparetier':{const tier=Number(arg);if(!Number.isInteger(tier)||tier<1||tier>6)break;state.compareTier=tier;render();break;}case 'pickcompare':picker('compare',arg);break;case 'chooseupgrade':picker('upgrade');break;case 'selectitem':chooseItem(arg);break;case 'obsjump':{if(['stats','equipment','pets','runes','talismans','guild','unknown'].includes(arg))document.getElementById('obs-'+arg)?.scrollIntoView({behavior:'smooth',block:'start'});break;}
+case 'sharetemplate':{
+ const selected=buildTemplate(arg);if(!selected){toast('Shared build unavailable');break;}
+ void shareBuildToken(selected).then(token=>{
+  const url=location.origin+location.pathname+'#/labs/build?share='+encodeURIComponent(token);
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Full build link copied')).catch(()=>window.prompt('Copy your build link',url));
+  else window.prompt('Copy your build link',url);
+ }).catch(err=>toast(err.message||'Could not generate full build link'));
+ break;
+}
 case 'clonebuild':{const source=parseRoute().query.get('share')?shared.build:buildTemplate(arg);if(!source){toast('Shared build unavailable');break;}state.draft=normalizeBuild(deepCopy(source));state.runeSelected=null;state.runeHistory=[];state.draft.id='local-draft';state.draft.title=String(source.title||'Copied build').replace(/demonstration/ig,'copied').slice(0,90);state.draft.version='LOCAL';saveDraft(state.draft);go('labs/build');toast('Build copied into your own local draft.');break;}
 case 'resetbuild':{if(!confirm('Start a new blank build? This replaces your current local Build Studio draft. Save or share it first if you want to keep a copy.'))break;state.draft=newPersonalBuild();clearStudioPortrait();saveDraft(state.draft);state.runeSelected=null;state.runeHistory=[];go('labs/build');toast('New blank build created.');break;}
 case 'savecloud':{persistDraft();void saveNewAccountBuild(ensureDraft()).then(b=>toast('Saved '+b.title+' to your account.')).catch(err=>toast(err.message||'Sign in to your account first.'));break;}
