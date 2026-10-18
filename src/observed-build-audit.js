@@ -89,9 +89,9 @@ export function observedBuildAudit(build){
  '.studioPage .obsRune b{font-size:19px}.studioPage .obsRune small{font-size:10px}.studioPage .obsRuneEmpty{opacity:.2;background:#555}'+
  '@media(max-width:410px){.studioPage .obsRoot{padding:11px}.studioPage .obsRuneGrid{grid-auto-rows:45px}.studioPage .obsLine{font-size:12px}}'+
  '</style><section class="obsRoot" aria-label="Player screenshot build audit">'+
- '<span class="eyebrow">PLAYER SCREENSHOT · '+esc(o.captured)+'</span>'+
- '<h2>Real Warrior build · recorded snapshot</h2>'+
- '<p>'+esc(o.source)+'. Values below are directly observed and are NOT proof of live-game stat formulas.</p>'+
+ '<span class="eyebrow">CURRENT BUILD · '+esc(o.captured)+'</span>'+ 
+ '<h2>Current Warrior loadout</h2>'+ 
+ '<p>Character stats and equipped bonuses as recorded on '+esc(o.captured)+'. Some game details are not editable in Build Studio yet.</p>'+
  '<nav class="obsTabs" aria-label="Observed build sections">'+
  ['stats','equipment','pets','runes','talismans','guild','unknown'].map(s=>'<button type="button" data-action="obsjump" data-arg="'+s+'" data-obs-jump="'+s+'">'+s[0].toUpperCase()+s.slice(1)+'</button>').join('')+'</nav>'+
  '<section class="obsGroup" id="obs-stats"><h3>Character stats · Lv '+o.player.characterLevel+' / ML '+o.player.monsterLevel+'</h3>'+
