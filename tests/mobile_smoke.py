@@ -145,7 +145,7 @@ with sync_playwright() as playwright:
     assert page.locator('#bottomNav').count()==0, 'Legacy bottom navigation must stay removed'
     assert page.locator('#arcanaDock button').count()==5, 'Persistent five-tab dock missing'
     assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1, 'Build Studio is not featured'
-    assert page.locator('.launchQuickCard').count()==6, 'Exactly six launch navigation cards are required'
+    assert page.locator('.launchQuickCard').count()==3, 'The three main navigation cards must remain intact'
     assert page.locator('.launchQuickCard .arcanaIcon').count()>=18, 'Themeable SVG icons missing from launch navigation'
     assert page.locator('.launchHeroArt .arcanaIcon').get_attribute('data-arcana-icon')=='feature-build-studio', 'Build Studio emblem must use Arcana Minimal'
     # The icon gallery is a real route and every registered asset is previewable.
