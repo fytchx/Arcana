@@ -35,6 +35,19 @@ test('all eleven screenshot items are in correct legal Warrior slots with actual
  }
  assert.ok(GEAR_ITEMS.filter(x=>x.source==='2026-10-17 Warrior screenshot').length>=4);
 });
+test('all twenty socketed gems retain their individually observed primary and secondary modifiers',()=>{
+ const items=WARRIOR_OCT17_OBSERVED.equipment;
+ assert.equal(items.reduce((sum,g)=>sum+g.gemRolls.length,0),20);
+ assert.equal(items.find(g=>g.slot==='offhand').gemRolls.length,0);
+ assert.match(items.find(g=>g.slot==='weapon').gemRolls[0],/\\+3\\.79% Pet Damage/);
+ assert.match(items.find(g=>g.slot==='torch').gemRolls[1],/\\+4\\.91% Attack Damage/);
+ assert.match(items.find(g=>g.slot==='feet').gemRolls[0],/Flawless Garnet 92%/);
+ assert.match(items.find(g=>g.slot==='ring2').gemRolls[0],/\\+50\\.4 Strength/);
+ const belt=items.find(g=>g.slot==='belt').gemRolls;
+ assert.equal(belt.length,2);
+ assert.ok(belt.every(g=>g.includes('Brilliant Garnet 99% Lv38')));
+});
+
 test('all four currently equipped named pets have actual compound level and verified affix slots',()=>{
  const x=normalizeBuild(WARRIOR_OCT17_BUILD);
  assert.deepEqual(x.petSetup.map(p=>p.name),['Crow','Diablo','Wasp','Zbakus']);
