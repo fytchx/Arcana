@@ -189,4 +189,4 @@ with sync_playwright() as playwright:
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Settings overflows mobile viewport'
     assert errors==[], 'Browser errors: '+repr(errors)
     print('PASS: latest three-card home, Journal spotlight, Community, Directory, Featured, Build Studio, settings, responsive checks and all themes.')
-browser.close()
+    browser.close()
