@@ -105,7 +105,7 @@ with sync_playwright() as playwright:
     assert 'Starting Point saved' in sandbox.inner_text(), 'Starting Point was not saved'
     sandbox.locator('[data-sb-tab="experiment"]').click()
     assert sandbox.locator('.sbChoices > button').count()==7, 'Sandbox experiment chooser is incomplete'
-    sandbox.locator('[data-sb-tab="results"]').click()
+    sandbox.locator('.sbTabbar [data-sb-tab="results"]').click()
     assert 'No changes detected' in sandbox.inner_text(), 'Blank original must match blank working'
     sandbox.locator('[data-sb-tab="character"]').click()
     sandbox.locator('[data-sb-name]').fill('Quick experiment')
@@ -122,7 +122,7 @@ with sync_playwright() as playwright:
     # Enter a measured stat: the same character must be visible to Build Studio.
     calc.locator('[data-dc-field="attack.weapon.min"]').first.fill('123')
     assert page.evaluate("JSON.parse(localStorage.getItem('arcana-v3-local-build-1')).damageProfile.attack.weapon.min")==123, 'Manual stat not saved to canonical Build Studio character'
-    sandbox.locator('[data-sb-tab="results"]').click()
+    sandbox.locator('.sbTabbar [data-sb-tab="results"]').click()
     sandbox.locator('[data-sb-compare]').select_option('original')
     assert 'changed source' in sandbox.inner_text(), 'Manual damage input did not affect sandbox A/B'
     assert 'Full damage impact: not yet measured' in sandbox.inner_text(), 'Partial input must not fabricate full DPS'
