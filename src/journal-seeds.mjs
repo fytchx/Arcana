@@ -97,5 +97,81 @@ This is **actively in development**, not a promise that every class, pet interac
 The end goal is simple: **build something, change something, see the difference.** And connect those experiments to the builds and guides players already use on Arcana.
 
 I'll share more as the calculator takes shape.`
+  },
+
+  {
+    slug:'idlearc-1-3-7-the-timing-couldnt-be-better',
+    title:"IdleArc 1.3.7: The Timing Couldn't Have Been Better",
+    teaserTitle:'IdleArc 1.3.7: A Step Forward',
+    subtitle:"The same day I published my concerns about the Season 2 meta, a patch landed with real class buffs and some genuinely welcome quality-of-life changes.",
+    category:'News',
+    author:'Zane',
+    publishedAt:'2026-10-18T14:45:00-07:00',
+    updatedAt:'2026-10-18T14:45:00-07:00',
+    published:true,
+    featured:true,
+    coverUrl:'',
+    body:`You genuinely couldn't make up this timing.
+
+I had just finished publishing my breakdown of the top 250 players and was getting ready to share it in Discord. The whole point of that article was that class balance needed attention beyond one Warrior nerf.
+
+And right as I was about to post it, **IdleArc 1.3.7 dropped.**
+
+The funny part? This update actually addresses some of the things I was complaining about. I'm happy to give credit where it's due. There are some good changes here.
+
+## Pet affix auto-reroll is a big win
+
+The standout feature for me is the new **Premium pet affix auto-reroll**. You pick the affix you want, and the system keeps rerolling until it hits that result or reaches the Pet Shard limit you've set.
+
+That's really close to what I had envisioned for pet affixes: less mindless repetition, more control over how you spend resources. The shard limit is especially important because nobody wants an automated system quietly burning through everything they've saved.
+
+It's a Premium feature, so that distinction matters, but as an implementation of the idea, I think it's solid.
+
+## The class changes are a welcome start
+
+The balance-related changes in the patch notes are worth looking at individually:
+
+- **Mage:** Magic Blast's damage per level increased from +3% to +4%. Arcane Surge can also instantly kill non-boss enemies at low HP.
+- **Archer:** Hunter's Mark now boosts your damage for the entire fight in every boss fight and Rift Raid.
+- **Druid:** The dodge chance cap increased from 90% to 95%, and Thick Pelt's max-health bonus went from +5% to +7% per level.
+- **Rogue:** First Strike now also boosts damage for the entire fight in every boss fight and Rift Raid.
+
+The Mage and Archer adjustments are particularly encouraging. Those are the classes I felt needed attention, so seeing both mentioned in the same update is a positive sign.
+
+The Rogue change is worth watching, too. Rogues already had the largest share of my top-250 leaderboard snapshot. A stronger or longer-lasting boss-fight benefit for Rogue doesn't automatically mean the class becomes more dominant, but it's one more reason we need to judge the whole meta instead of looking at changes in isolation.
+
+I also don't want to oversell this. **A buff on paper isn't proof that a class is competitive now.** We need to see how these changes feel in actual progression and where the leaderboard goes from here.
+
+## There's more here than class balance
+
+Version 1.3.7 also adds a **Monster Material Exchange**: trade five lower-biome monster materials for one chosen material from a higher biome. Premium players can use auto-convert.
+
+Bulk gem fusion is another welcome time-saver. You can fuse multiple gems of one rarity at once or use Bulk Fuse to process everything possible.
+
+There are smaller improvements I appreciate, too: separate Permanent and Seasonal push-notification settings, automatic Torch equipping at Monster Level 50 when your Torch slot is empty, a pet-shard balance shown in pet details, and the ability to lock or unlock active rune words right from the Runes tab.
+
+Pathfinder Treads also got a Gold and Experience Gain boost, and the update includes a bunch of fixes, including passive-tree respec errors and bonuses incorrectly carrying between realm characters. Those things might not generate as much discussion as class balance, but they matter to people playing every day.
+
+## Does this change my original article?
+
+**No, and I don't think it should.** That article is a snapshot of what the top 250 looked like when I counted it, before this patch. Those numbers were real at the time, and I'm not going to rewrite them just because the developers shipped an update a few hours later.
+
+But my outlook on where we're heading? Absolutely. I'm more optimistic now.
+
+The original issue remains: the Season 2 leaderboard was heavily concentrated in a few classes, and Mage and Archer were barely represented near the very top. These changes might help, but they haven't had time to show their impact yet.
+
+I wanted meaningful balance attention across the game instead of another isolated nerf. This patch isn't a complete balance pass, but it's movement in the right direction.
+
+## Where I stand now
+
+I still want to see a healthier spread of classes competing at the highest levels. I still think Rogue's position deserves close attention. And I still want Mage and Archer players to feel like they made a legitimate choice.
+
+At the same time, I'm genuinely glad to see progress. The new pet affix system is excellent, the quality-of-life changes are useful, and the class adjustments are encouraging.
+
+My criticism was never about demanding nerfs for the sake of nerfs. It was about wanting the game to get better.
+
+**If this is the direction we're heading, I'm all for it.**
+
+*Editor's note: This article discusses the October 18, 2026, version 1.3.7 patch notes. The top-250 data in the earlier Arcana Journal analysis was captured before these changes, and it should not be interpreted as a measurement of post-patch performance.*`
   }
 ]);

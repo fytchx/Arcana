@@ -150,8 +150,12 @@ with sync_playwright() as playwright:
     assert page.locator('.launchQuickCard').count()==3
     assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1
     assert page.locator('.journalHomeTeaser').count()==1
+    assert page.locator('.homeSpotlights > section').count()==2
+    hero_heights=page.locator('.homeSpotlights > section').evaluate_all('(els)=>els.map(e=>e.getBoundingClientRect().height)')
+    assert abs(hero_heights[0]-hero_heights[1])<28, 'Studio and Journal must be comparably prominent'
+    assert page.locator('[data-journal-latest]').get_attribute('href')=='/journal/idlearc-1-3-7-the-timing-couldnt-be-better'
     assert page.locator('[data-journal-latest]').get_attribute('href').startswith('/journal/')
-    assert 'Class Balance' in page.locator('[data-journal-latest]').inner_text()
+    assert 'IdleArc 1.3.7' in page.locator('[data-journal-latest]').inner_text()
     assert page.locator('.launchQuickCard[data-arg="pathfinder"]').count()==1
     assert page.locator('.launchQuickCard[data-arg="tools"]').count()==1
     assert page.locator('.launchQuickCard[data-arg="builds"]').count()==1
@@ -190,3 +194,4 @@ with sync_playwright() as playwright:
     assert errors==[], 'Browser errors: '+repr(errors)
     print('PASS: latest three-card home, Journal spotlight, Community, Directory, Featured, Build Studio, settings, responsive checks and all themes.')
     browser.close()
+

@@ -22,7 +22,7 @@ function combined(raw){
  return [...posts.values()].sort((a,b)=>Date.parse(b.publishedAt||b.updatedAt||0)-Date.parse(a.publishedAt||a.updatedAt||0));
 }
 async function list(publicOnly=true){const posts=combined(await state());return publicOnly?posts.filter(x=>x.published):posts;}
-const summary=post=>({slug:post.slug,title:post.title,subtitle:post.subtitle,author:post.author,category:post.category,publishedAt:post.publishedAt,updatedAt:post.updatedAt,featured:!!post.featured,coverUrl:post.coverUrl||'',url:'/journal/'+post.slug});
+const summary=post=>({slug:post.slug,title:post.title,teaserTitle:post.teaserTitle||post.title,subtitle:post.subtitle,author:post.author,category:post.category,publishedAt:post.publishedAt,updatedAt:post.updatedAt,featured:!!post.featured,coverUrl:post.coverUrl||'',url:'/journal/'+post.slug});
 const bandRows=[
  ['1–50',26,7,13,2,2],['51–100',21,13,11,4,1],['101–150',19,15,6,5,5],['151–200',20,14,13,3,0],['201–250',18,16,7,4,5]
 ];
