@@ -102,6 +102,7 @@ I'll share more as the calculator takes shape.`
   {
     slug:'idlearc-1-3-7-the-timing-couldnt-be-better',
     title:"IdleArc 1.3.7: The Timing Couldn't Have Been Better",
+    teaserTitle:'IdleArc 1.3.7: A Step Forward',
     subtitle:"The same day I published my concerns about the Season 2 meta, a patch landed with real class buffs and some genuinely welcome quality-of-life changes.",
     category:'News',
     author:'Zane',
