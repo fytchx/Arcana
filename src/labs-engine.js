@@ -49,7 +49,8 @@ export function normalizePetSlot(raw,legacyName=''){
 }
 export function normalizeRune(r,i){const family=RUNE_FAMILIES.includes(r?.family)?r.family:'Fury',sh=RUNE_SHAPES[r?.shape]||RUNE_SHAPES.small;
  return {id:String(r?.id||`rune-${i+1}`).slice(0,48),family,primary:RUNE_FAMILY_DETAILS[family].primary,
- secondary:RUNE_SECONDARIES.includes(r?.secondary)?r.secondary:firstSecondary(family),
+ secondary:r?.observedSecondaryUnknown===true?null:RUNE_SECONDARIES.includes(r?.secondary)?r.secondary:firstSecondary(family),
+ observedSecondaryUnknown:r?.observedSecondaryUnknown===true,
  shape:r?.shape in RUNE_SHAPES?r.shape:'small',x:bounded(r?.x,0,RUNE_COLS-1),y:bounded(r?.y,0,RUNE_ROWS-1),w:sh.w,h:sh.h,level:bounded(r?.level,1,999)};
 }
 export function runeIssue(placed,candidate,ignoredId=null,monsterLevel=300){
@@ -85,7 +86,7 @@ export function petSummary(pets,mode='seasonal'){
  return {minimum,spread,cap,equippedCount:equipped.length,slots:slots.map(p=>({...p,effective:p.equipped?Math.min(p.compound,cap):null,limited:p.equipped&&p.compound>cap}))};
 }
 export function validateBuildData(build){const b=normalizeBuild(build),errors=[];if(b.runeBoard.length>RUNE_COLS*RUNE_ROWS)errors.push('Too many runes');
- b.runeBoard.forEach((r,i)=>{const issue=runeIssue(b.runeBoard.slice(0,i),r);if(issue)errors.push(`${r.id}: ${issue}`);if(!RUNE_SECONDARIES.includes(r.secondary))errors.push('Invalid rune secondary')});
+ b.runeBoard.forEach((r,i)=>{const issue=runeIssue(b.runeBoard.slice(0,i),r);if(issue)errors.push(`${r.id}: ${issue}`);if(!(r.observedSecondaryUnknown===true&&r.secondary===null)&&!RUNE_SECONDARIES.includes(r.secondary))errors.push('Invalid rune secondary')});
  if(b.petSetup.length!==PET_EQUIPPED_MAX)errors.push('Expected four pet slots');
  if(!Number.isInteger(b.monsterLevel)||b.monsterLevel<1)errors.push('Invalid monster level');
  b.petSetup.forEach((p,i)=>{if(p.affixes.length!==PET_AFFIX_MAX)errors.push(`Pet ${i+1} requires ${PET_AFFIX_MAX} affix slots`);if(p.affixes.some((a,j)=>j>=p.unlockedAffixSlots&&a.slug))errors.push(`Pet ${i+1} has affixes in locked slots`)});
