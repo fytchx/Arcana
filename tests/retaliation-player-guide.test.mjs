@@ -33,7 +33,8 @@ test('existing Retaliation Warrior guide follows the new October 17 in-game buil
  assert.deepEqual(build.petSetup.map(p=>p.name),['Crow','Diablo','Wasp','Zbakus']);
  // A screenshot of a rune board does not show skill-point allocation; preserve
  // honesty and make that limitation explicit instead of filling fantasy values.
- assert.deepEqual(build.runeBoard,[]);
+ assert.equal(build.runeBoard.length,35);
+ assert.ok(build.runeBoard.every(r=>r.observedSecondaryUnknown&&r.secondary===null),'never guess the secondary stat icon');
  assert.deepEqual(build.classAllocById,{});
  assert.deepEqual(build.passiveAlloc,{});
  const normalized=normalizeBuild(build);
