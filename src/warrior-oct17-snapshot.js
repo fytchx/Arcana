@@ -27,7 +27,7 @@ export const WARRIOR_OCT17_GEAR=Object.freeze([
  gear('neck','game:item:warriors-amulet',"Warrior's Amulet",'Legendary','A4','thorned',5,15.99,'+292 Strength',
   ['Defense +142%','Double Damage Chance +43%','Double Hit Chance +36%','Strength +134','Critical Chance +40%'],
   ['Brilliant Garnet 97% Lv38']),
- gear('ring2','game:item:warriors-ring',"Warrior's Ring",'Epic','A4','thorned',9,42.24,'+290 Strength',
+ gear('ring2','game:item:warriors-ring',"Warrior's Ring",'Epic','A4','thorned',6,24.24,'+290 Strength',
   ['Defense +142%','Strength +147','Critical Damage +40%','Double Damage Chance +36%','Critical Chance +40%'],
   ['Brilliant Garnet 100% Lv38']),
  gear('belt','game:item:scholars-belt',"Scholar's Belt",'Legendary','A3 +24','thorned',5,17,'+52 All Attributes',
