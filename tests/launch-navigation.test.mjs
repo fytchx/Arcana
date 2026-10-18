@@ -78,3 +78,19 @@ test('only administrators set appearance; users can keep reduced motion',async()
  assert.match(css,/ARCANA SLATE/);
  assert.match(css,/grid-template-columns:minmax\(0,1fr\)/);
 });
+
+
+test('home puts Studio and live Journal on equal footing, with three secondary destinations',async()=>{
+ const html=homeScreen();
+ assert.match(html,/class="homeSpotlights"/);
+ assert.match(html,/class="launchHero"/);
+ assert.match(html,/class="journalHomeTeaser"/);
+ assert.match(html,/idlearc-1-3-7-the-timing-couldnt-be-better/);
+ assert.ok(html.indexOf('launchHero')<html.indexOf('journalHomeTeaser'));
+ assert.ok(html.indexOf('journalHomeTeaser')<html.indexOf('launchQuickGrid'));
+ assert.equal((html.match(/data-action="homemenu"/g)||[]).length,3);
+ const stylesheet=await readFile(new URL('../journal-widgets.css',import.meta.url),'utf8');
+ assert.match(stylesheet,/\.homeSpotlights/);
+ assert.match(stylesheet,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+ assert.match(stylesheet,/\.launchQuickGrid/);
+});
