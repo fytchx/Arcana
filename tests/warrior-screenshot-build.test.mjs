@@ -48,7 +48,9 @@ test('6x6 observed Rune preset is preserved without faking unknown secondary IDs
  assert.equal(WARRIOR_OCT17_RUNE_GRID.reduce((sum,r)=>sum+r.width,0),36);
  assert.equal(new Set(WARRIOR_OCT17_RUNE_GRID.map(r=>r.x+','+r.y)).size,WARRIOR_OCT17_RUNE_GRID.length);
  assert.equal(WARRIOR_OCT17_RUNE_GRID.filter(r=>r.level===63).length,3);
- assert.deepEqual(WARRIOR_OCT17_BUILD.runeBoard,[],'not enough evidence for true secondary allocation');
+ assert.equal(WARRIOR_OCT17_BUILD.runeBoard.length,35,'all visible runes have placements');
+ assert.ok(WARRIOR_OCT17_BUILD.runeBoard.every(r=>r.observedSecondaryUnknown&&r.secondary===null));
+ assert.equal(normalizeBuild(WARRIOR_OCT17_BUILD).runeBoard.length,35);
  assert.deepEqual(WARRIOR_OCT17_BUILD.classAllocById,{});
  assert.deepEqual(WARRIOR_OCT17_BUILD.passiveAlloc,{});
 });
