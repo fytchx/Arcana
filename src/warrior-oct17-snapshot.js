@@ -144,7 +144,11 @@ export const WARRIOR_OCT17_BUILD=Object.freeze({
  ])),
  skills:['Deflection','Bulwark Stance'],
  runes:[...new Set(WARRIOR_OCT17_RUNE_GRID.map(x=>x.family))],
- runeBoard:[], // Never invent unverified secondary stats to satisfy a shape UI.
+ runeBoard:WARRIOR_OCT17_RUNE_GRID.map((r,i)=>({
+  id:'observed-rune-'+(i+1),family:r.family,
+  shape:r.width===2?'wide':'small',
+  x:r.x,y:r.y,level:r.level,secondary:null,observedSecondaryUnknown:true
+ })), // Actual observed position+family+level; missing secondary deliberately NULL.
  petSetup:WARRIOR_OCT17_PETS.map(p=>({
   equipped:true,name:p.name,hatchBonus:p.hatchBonus,compound:p.compound,unlockedAffixSlots:4,
   affixes:p.affixes.map(({slug,level})=>({slug,level}))
