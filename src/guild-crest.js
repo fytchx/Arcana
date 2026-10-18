@@ -71,6 +71,8 @@ export function guildBadge(profile,registry=[]){
  const tag=String(profile?.guildTag||'').toUpperCase();
  if(!/^[A-Z]{4}$/.test(tag))return '';
  const official=registry.find(g=>g.status==='approved'&&g.tag===tag&&g.id===profile.guildId);
- return '<span class="arcanaGuildTag '+(official?'isOfficial':'isUnregistered')+'">'+
+ const color=official&&typeof official.tagStyle?.color==='string'&&/^#[0-9a-fA-F]{6}$/.test(official.tagStyle.color)?official.tagStyle.color:'';
+ const finish=official&&['solid','glow','gradient'].includes(official.tagStyle?.finish)?official.tagStyle.finish:'solid';
+ return '<span class="arcanaGuildTag '+(official?'isOfficial finish-'+finish:'isUnregistered')+'"'+(color?' style="--guild-tag-color:'+color+'"':'')+'>'+
   (official?renderCrest(official.crest,22):'')+'<span>['+tag+']</span></span>';
 }
