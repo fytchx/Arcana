@@ -10,7 +10,7 @@ async function request(path,method='GET',headers={}){
  return {handled,...res,text:String(res.body||'')};
 }
 test('Journal first articles use the measured 250-player snapshot',()=>{
- assert.equal(JOURNAL_SEEDS.length,2);
+ assert.equal(JOURNAL_SEEDS.length,3);
  assert.equal(JOURNAL_SEEDS[0].slug,'class-balance-top-250-season-2');
  assert.match(JOURNAL_SEEDS[0].body,/41.6%/);
  assert.match(JOURNAL_SEEDS[0].body,/not a complete diagnosis/);
@@ -43,8 +43,8 @@ test('Unknown and draft content never appears as a live story',async()=>{
  assert.equal(missing.status,404);
  const list=await request('/api/journal');
  assert.equal(list.status,200);
- assert.equal(JSON.parse(list.text).articles.length,2);
- assert.equal(JSON.parse(list.text).articles[0].slug,'class-balance-top-250-season-2');
+ assert.equal(JSON.parse(list.text).articles.length,3);
+ assert.equal(JSON.parse(list.text).articles[0].slug,'idlearc-1-3-7-the-timing-couldnt-be-better');
 });
 test('Guest publishing and editorial studio cannot be accessed',async()=>{
  const admin=await request('/api/journal/admin');assert.equal(admin.status,401);
@@ -54,4 +54,30 @@ test('SEO discovery endpoints include current public stories',async()=>{
  const robots=await request('/robots.txt');assert.equal(robots.status,200);assert.match(robots.text,/sitemap.xml/);
  const sitemap=await request('/sitemap.xml');assert.equal(sitemap.status,200);assert.match(sitemap.text,/class-balance-top-250-season-2/);
  const head=await request('/journal','HEAD');assert.equal(head.status,200);assert.equal(head.text,'');
+});
+
+
+test('October 18 update acknowledges changes without overwriting the original analysis',async()=>{
+ const earlier=JOURNAL_SEEDS[0];
+ assert.equal(earlier.slug,'class-balance-top-250-season-2');
+ assert.match(earlier.body,/104 Rogues/);
+ assert.match(earlier.body,/41.6%/);
+ const originalAnnouncement=JOURNAL_SEEDS[1];
+ assert.equal(originalAnnouncement.slug,'building-the-arcana-damage-calculator');
+ assert.match(originalAnnouncement.body,/character sandbox/);
+ const patch=JOURNAL_SEEDS[2];
+ assert.equal(patch.slug,'idlearc-1-3-7-the-timing-couldnt-be-better');
+ assert.match(patch.body,/pet affix auto-reroll/i);
+ assert.match(patch.body,/from \+3% to \+4%/);
+ assert.match(patch.body,/90% to 95%/);
+ assert.match(patch.body,/\+5% to \+7%/);
+ assert.match(patch.body,/Hunter's Mark/);
+ assert.match(patch.body,/First Strike/);
+ assert.match(patch.body,/five lower-biome/);
+ assert.match(patch.body,/before this patch/);
+ const story=await request('/journal/'+patch.slug);
+ assert.equal(story.status,200);
+ assert.match(story.text,/Editor&#39;s note/);
+ const page=await request('/journal');
+ assert.ok(page.text.indexOf('The Timing Couldn&#39;t Have Been Better')<page.text.indexOf('Class Balance: The Top 250'),'Patch follow-up should be the newest Journal story');
 });
