@@ -135,7 +135,7 @@ export const WARRIOR_OCT17_OBSERVED=Object.freeze({
 export const WARRIOR_OCT17_BUILD=Object.freeze({
  id:'warrior-retaliation-zane',
  title:'Zane’s Retaliation Warrior · October 17, 2026',
- className:'Warrior',owner:'Zane (kiffens_)',version:'PLAYER SCREENSHOT',
+ className:'Warrior',owner:'Zane (kiffens_)',version:'PLAYER BUILD',
  characterLevel:265,monsterLevel:220,
  summary:'Lv 265 · ML 220 · GS 3,030 · 28.56M Defense · 97% Block · observed 151.2B–216B Retaliation.',
  equipment:Object.fromEntries(WARRIOR_OCT17_GEAR.map(x=>[
@@ -156,5 +156,5 @@ export const WARRIOR_OCT17_BUILD=Object.freeze({
  pets:WARRIOR_OCT17_PETS.map(p=>p.name),
  passiveAlloc:{},classAllocById:{},
  observed:WARRIOR_OCT17_OBSERVED,
- notes:'October 17 real-player screenshot import. Equipped gear, four pets, talismans, gem details, observed 6×6 rune positions and combat stats are documented in the observed build audit. Skill/passive point allocations and exact rune secondary icons are NOT established by this capture. No unverified values were fabricated.'
+ notes:'October 17 current Warrior build. Equipped gear, four pets, talismans, gem details, observed 6×6 rune positions and combat stats are documented in the observed build audit. Skill/passive point allocations and exact rune secondary icons are NOT established by this capture. No unverified values were fabricated.'
 });
