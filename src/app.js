@@ -571,7 +571,7 @@ function syncWorkshopInputs(){
  for(const button of document.querySelectorAll('.arcanaDesignLab [data-hero-cta-style]'))button.setAttribute('aria-pressed',String(button.dataset.heroCtaStyle===design.heroActionStyle));
  for(const preset of document.querySelectorAll('.arcanaDesignLab .designPreset')){
   const matches=preset.dataset.presetSearch&&preset.dataset.arg;
-  if(matches)preset.classList.toggle('selected',preset.dataset.arg===Object.keys(DESIGN_PRESETS).find(id=>DESIGN_PRESETS[id].main===design.main&&DESIGN_PRESETS[id].action===design.action&&DESIGN_PRESETS[id].pattern===design.pattern));
+  if(matches){const selected=preset.dataset.arg===Object.keys(DESIGN_PRESETS).find(id=>DESIGN_PRESETS[id].main===design.main&&DESIGN_PRESETS[id].action===design.action&&DESIGN_PRESETS[id].pattern===design.pattern);preset.classList.toggle('selected',selected);preset.setAttribute('aria-pressed',String(selected));}
  }
  syncDesignMiniPreview();
 }
@@ -961,7 +961,7 @@ function wireThemeStudioControls(){
    const category=filter.dataset.themePatternFilter;
    const section=filter.closest('.themePatternLibrary');
    for(const button of section.querySelectorAll('[data-theme-pattern-filter]'))button.setAttribute('aria-pressed',String(button===filter));
-   for(const tile of section.querySelectorAll('[data-pattern-category]'))tile.hidden=category==='Premium'?!['Material','Atmosphere','Relic'].includes(tile.dataset.patternCategory):category!=='All'&&tile.dataset.patternCategory!==category;
+   for(const tile of section.querySelectorAll('[data-pattern-category]'))tile.hidden=category==='Premium'?!['Signature','Material','Atmosphere','Relic'].includes(tile.dataset.patternCategory):category!=='All'&&tile.dataset.patternCategory!==category;
   }
  });
 }
