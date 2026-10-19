@@ -220,7 +220,12 @@ with sync_playwright() as playwright:
     # Preview-only, browser-local art sandbox: no authenticated write path is used.
     page.evaluate("location.hash='#/theme-playground'")
     page.wait_for_selector('.themePlayground',timeout=8000)
-    assert page.locator('.designPresetSignature').count()==20
+    assert page.locator('.designPresetSignature').count()==24
+    assert page.locator('.designPsychedelicGrid .designPresetSignature').count()==4
+    live=page.frame_locator('[data-mini-live-frame]')
+    live.locator('#content.homeFullscreen .launchHero').wait_for(timeout=15000)
+    assert live.locator('body').count()==1, 'Theme preview failed to load the real current Arcana page'
+    page.screenshot(path=str(OUT/'current-arcana-live-mini.png'),full_page=True)
     assert page.locator('.designClassicCollection .designPreset').count()==18
     assert page.locator('[data-theme-save]').count()==12
     page.locator('.designPresetSignature[data-arg="astral"]').click()
