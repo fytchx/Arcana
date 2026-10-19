@@ -29,7 +29,7 @@ function waves(c,weight){
   const d='M'+top.map(a=>a.join(' ')).join('L')+'L'+bottom.map(a=>a.join(' ')).join('L')+'Z';
   body+=path(d,col,c.outline,weight);
  }
- return body;
+ return [-W,0,W].map(dy=>'<g transform="translate(0 '+dy+')">'+body+'</g>').join('');
 }
 function orbits(c,weight){
  const motifs=[[25,34,93,.35],[283,95,91,2.8],[133,285,116,4.4]];
