@@ -21,7 +21,7 @@ for module in sorted((ROOT/'src').glob('*.js')):
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
 # Offline browser must render EVERY stylesheet in the real entry point, not just
 # styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
-for css_name in ('styles.css','wiki-studio.css','community.css','guild-hub.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','signature-themes.css','theme-seamless.css','psychedelic-themes.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
+for css_name in ('styles.css','wiki-studio.css','community.css','guild-hub.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','signature-themes.css','theme-seamless.css','psychedelic-themes.css','desktop-home-refinement.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
     css=(ROOT/css_name).read_text()
     pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\?[^"]*)?">'
     HTML,count=re.subn(pattern,lambda _: '<style>\n'+css+'\n</style>',HTML)
@@ -189,6 +189,7 @@ with sync_playwright() as playwright:
 
     page.evaluate("location.hash='#/guilds'")
     page.wait_for_selector('.guildHubTile',timeout=8000)
+    assert '2–4 letter' in page.locator('.guildHubTagIntro').inner_text()
     assert page.locator('.guildHubTile svg.arcanaGuildCrest').count()==0, 'Retired guild crest is still visible'
     assert page.locator('.guildHubTile .arcanaGuildTag.isOfficial').count()==1
     page.locator('.guildHubTile [data-route="guilds/view"]').click()
@@ -204,6 +205,19 @@ with sync_playwright() as playwright:
     assert page.locator('[data-route="guilds/crest"]').count()==0
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Guild directory overflows mobile viewport'
     page.screenshot(path=str(OUT/'guild-tags-only-mobile.png'),full_page=True)
+    # Real desktop viewport: visible tertiary cards, readable type and bounded page.
+    desktop=browser.new_page(viewport={'width':1440,'height':900},device_scale_factor=1)
+    desktop.route(re.compile(r'^http://127\\.0\\.0\\.1:17653/\\?'),lambda route:route.fulfill(status=200,body=HTML,content_type='text/html'))
+    desktop.goto('http://127.0.0.1:17653/#/home')
+    desktop.wait_for_selector('.homeSpotlights .launchHero',timeout=15000)
+    assert desktop.locator('.launchFeatured').is_visible(), 'Desktop feature section hidden'
+    assert desktop.locator('.launchFeaturedGrid .launchFeatureRow').count()>=3, 'Desktop featured cards missing'
+    assert desktop.locator('#content.homeFullscreen').evaluate('e=>e.getBoundingClientRect().width')>=900, 'Desktop content too narrow'
+    assert desktop.locator('.launchQuickCopy strong').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)')>=20, 'Desktop cards are too small'
+    assert desktop.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Desktop homepage horizontal overflow'
+    desktop.screenshot(path=str(OUT/'desktop-home-full.png'),full_page=True)
+    desktop.close()
+
 
     page.locator('#arcanaDock [data-dock="featured"]').click()
     page.wait_for_selector('.arcanaFeaturedPage',timeout=8000)
