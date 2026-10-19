@@ -18,7 +18,7 @@ export const NAV_DESTINATIONS=Object.freeze({
  compound:{label:'Calculate Pet Compound',detail:'Preview rarity and Drop Bonus',route:'calculators/pet',icon:'paw'},
  affixes:{label:'Calculate pet affix costs',detail:'Plan Pet Shards to a target level',route:'calculators/affixes',icon:'calculator'},
  guildtree:{label:'Plan guild skill points',detail:'Allocate, compare and share guild bonuses',route:'labs/guild-tree',icon:'shield'},
- guilds:{label:'Find a guild',detail:'Browse active recruitment listings',route:'lfg/guilds',icon:'users'},
+ guilds:{label:'Guild Hub',detail:'Browse registered guilds and community pages',route:'guilds',icon:'users'},
  raids:{label:'Find a raid',detail:'Browse live raid groups',route:'lfg/raids',icon:'users'},
  compoundGuide:{label:'Understand Pet Compound',detail:'Read the Wiki explanation',route:'wiki/article',params:{id:'pet-compound'},icon:'book'},
  runeGuide:{label:'Understand the Rune Grid',detail:'See Monster Level unlocks',route:'wiki/article',params:{id:'rune-grid'},icon:'book'},

@@ -6,7 +6,7 @@ import {WIKI_ARTICLES,WIKI_CONNECTIONS,WIKI_CATEGORY_LIST,wikiArticleById} from 
 import {wikiArticleView,wikiRecordView,wikiLibraryView,wikiLandingView} from '../src/wiki-views.js';
 
 const app=()=>readFile(new URL('../src/app.js',import.meta.url),'utf8');
-const allRoutes=new Set(['home','labs','calculators','wiki','lfg','labs/build','labs/runes','labs/skills','labs/passives','labs/pets','labs/guild-tree','calculators/pet','calculators/affixes','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/ml-farm','lfg/raids','lfg/guilds','wiki/guides','wiki/article','wiki/library']);
+const allRoutes=new Set(['home','labs','calculators','wiki','lfg','labs/build','labs/runes','labs/skills','labs/passives','labs/pets','labs/guild-tree','calculators/pet','calculators/affixes','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/ml-farm','lfg/raids','lfg/guilds','guilds','wiki/guides','wiki/article','wiki/library']);
 
 test('Every recommended next step has an actual registered destination',()=>{
  for(const [page,keys] of Object.entries(NAV_FLOWS)){
@@ -58,7 +58,8 @@ test('Context cards emit navigable controls with escaped labels and query params
 test('Tool journeys and home quick actions are rendered with real controls',()=>{
  const panel=connectedNext('labs/guild-tree');
  assert.match(panel,/Recommended next steps/);
- assert.match(panel,/Find a guild/);
+ assert.match(panel,/Guild Hub/);
+ assert.match(panel,/data-route="guilds"/);
  assert.match(panel,/Read player guides|Season 2 essentials/);
  assert.equal(connectedNext('wiki/article'),'');
  assert.equal(connectedNext('home'),'');

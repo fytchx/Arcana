@@ -53,7 +53,8 @@ export const HOME_MENUS=Object.freeze({
   link('Wiki Studio','Editor publishing workspace.','wiki/studio','book')
  ]},
  social:{title:'Guild & Raid Finder',detail:'Guild recruitment, raid groups and player community.',links:[
-  link('Find a Guild','Guild listings and recruitment.','lfg/guilds','users'),
+  link('Guild Hub','Registered guild pages, applications and custom crests.','guilds','shield'),
+  link('Legacy Guild Listings','Older recruitment listings.','lfg/guilds','users'),
   link('Find a Raid','Raid listings and groups.','lfg/raids','users'),
   link('Guild Skill Planner','Plan guild skill bonuses.','labs/guild-tree','shield'),
   link('Player Community','Profiles, guides and shared builds.','community','users')
@@ -100,6 +101,7 @@ const extras=[
  link('Passive Skill Tree · Build Studio','Manage passive skills.','labs/passives','layers'),
  link('Rune Forge · Build Studio','Place runes in your current build.','labs/runes','gem'),
  link('Player Community','Published guides and player profiles.','community','users'),
+ link('Guild Hub','Guilds, member communities and crests.','guilds','shield'),
  link('Recent Activity','Return to work and recently viewed entries.','recent','clock'),
  link('Wiki Studio · Editors','Edit and publish wiki content.','wiki/studio','edit'),
  link('Beta Feedback','Send a bug report or suggestion.','beta','info'),

@@ -21,7 +21,7 @@ for module in sorted((ROOT/'src').glob('*.js')):
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
 # Offline browser must render EVERY stylesheet in the real entry point, not just
 # styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
-for css_name in ('styles.css','wiki-studio.css','community.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
+for css_name in ('styles.css','wiki-studio.css','community.css','guild-hub.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
     css=(ROOT/css_name).read_text()
     pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\?[^"]*)?">'
     HTML,count=re.subn(pattern,lambda _: '<style>\n'+css+'\n</style>',HTML)
@@ -68,13 +68,16 @@ window.fetch = async function(input) {
  if(path.includes('/api/beta/status')) return new Response(JSON.stringify({release:'arcana-real-accounts-beta-2026-10-13',feedbackEnabled:true,accountsConfigured:false,wikiStorageConfigured:true}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/beta/feedback')) return new Response(JSON.stringify({ok:true,reference:'test1234'}),{status:201,headers:{'content-type':'application/json'}});
  if(path.includes('/api/search/catalog')) return new Response(JSON.stringify(__MOCK_ENTRIES__),{status:200,headers:{'content-type':'application/json'}});
+ if(path.includes('/api/guild-hub/')) return new Response(JSON.stringify({guild:__MOCK_GUILD__}),{status:200,headers:{'content-type':'application/json'}});
+ if(path.includes('/api/guild-hub')) return new Response(JSON.stringify({guilds:[__MOCK_GUILD__]}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/guilds')) return new Response(JSON.stringify({guilds:[]}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/lfg/public')) return new Response(JSON.stringify({listings:[],plans:[],issues:[]}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/official-art/manifest.json')) return new Response(JSON.stringify(__MOCK_ART__),{status:200,headers:{'content-type':'application/json'}});
  return new Response('Unavailable in isolated QA',{status:404});
 };
 </script><script type="module">import '@arcana/app.js';</script></body>''')
-HTML=HTML.replace('__MOCK_ENTRIES__',json.dumps(MOCK_ENTRIES)).replace('__MOCK_ART__',json.dumps(MOCK_ART))
+MOCK_GUILD={'id':'11111111-1111-4111-8111-111111111111','name':'QA Test Guild','tag':'TEST','bio':'Mobile Guild Hub QA','status':'approved','crest':{'center':0,'secondary':1,'outline':0,'border':0,'colors':['#CCCCCC','#999999','#444444','#EEEEEE']},'tagStyle':{'color':'#D2B2FF','finish':'glow'},'recruitmentOpen':True,'memberCount':2,'members':[{'id':'22222222-2222-4222-8222-222222222222','name':'Sample Guild Leader','role':'owner','joinedAt':'2026-10-18T00:00:00Z'}],'posts':[],'amMember':False,'canManage':False,'myApplication':None,'iconDataUrl':''}
+HTML=HTML.replace('__MOCK_ENTRIES__',json.dumps(MOCK_ENTRIES)).replace('__MOCK_ART__',json.dumps(MOCK_ART)).replace('__MOCK_GUILD__',json.dumps(MOCK_GUILD))
 
 args=['--no-sandbox','--disable-dev-shm-usage']
 executable=shutil.which('chromium') or shutil.which('google-chrome') or None
@@ -177,6 +180,16 @@ with sync_playwright() as playwright:
     assert page.locator('.launchAlphabet').get_by_text('Arcana Journal').count()>=1
     assert page.locator('#arcanaDock [data-dock="directory"]').get_attribute('aria-current')=='page'
 
+    page.evaluate("location.hash='#/guilds'")
+    page.wait_for_selector('.guildHubTile',timeout=8000)
+    assert page.locator('.guildHubTile svg.arcanaGuildCrest').count()==1, 'Official guild crest missing from directory'
+    assert page.locator('.guildHubTile .arcanaGuildTag.isOfficial').count()==1
+    page.locator('.guildHubTile [data-route="guilds/view"]').click()
+    page.wait_for_selector('.guildHubCover',timeout=8000)
+    assert 'QA Test Guild' in page.locator('.guildHubCover').inner_text()
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Guild page overflows mobile viewport'
+    page.locator('.guildHubBack').click()
+    page.wait_for_selector('.guildHubTile',timeout=8000)
     page.locator('#arcanaDock [data-dock="featured"]').click()
     page.wait_for_selector('.arcanaFeaturedPage',timeout=8000)
     assert 'Arcana Journal' in page.locator('.arcanaFeaturedPage').inner_text()
