@@ -55,7 +55,7 @@ html[data-arcana-design-active="true"]:is([data-arcana-design-pattern="astral-so
  background-attachment:local;
 }
 .miniCanvas:is([data-mini-pattern="astral-sovereign"],[data-mini-pattern="abyssal-bloom"],[data-mini-pattern="infernal-obsidian"],[data-mini-pattern="opaline-eternity"],[data-mini-pattern="phantom-spectrum"],[data-mini-pattern="velvet-requiem"],[data-mini-pattern="emerald-sanctum"],[data-mini-pattern="golden-dynasty"],[data-mini-pattern="lunar-cathedral"],[data-mini-pattern="dragons-hoard"],[data-mini-pattern="sakura-dreamscape"],[data-mini-pattern="neon-revenant"],[data-mini-pattern="bloodmoon-covenant"],[data-mini-pattern="elysian-marble"],[data-mini-pattern="nebula-genesis"],[data-mini-pattern="desert-oracle"],[data-mini-pattern="iridescent-mirage"],[data-mini-pattern="forgotten-archive"],[data-mini-pattern="diamond-singularity"],[data-mini-pattern="void-emperor"]) :is(.miniHero,.miniTile):before{
- background-size:calc(165px * var(--mini-pattern-size,100%) / 100%)!important;
+ background-size:calc(165px * var(--mini-signature-scale,1.15))!important;
  opacity:calc(.25 + var(--mini-detail,.63) * .64)!important;
 }
 .designSignatureGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
