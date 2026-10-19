@@ -21,7 +21,7 @@ for module in sorted((ROOT/'src').glob('*.js')):
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
 # Offline browser must render EVERY stylesheet in the real entry point, not just
 # styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
-for css_name in ('styles.css','wiki-studio.css','community.css','guild-hub.css','guild-crest-workshop.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
+for css_name in ('styles.css','wiki-studio.css','community.css','guild-hub.css','guild-crest-workshop.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','signature-themes.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
     css=(ROOT/css_name).read_text()
     pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\?[^"]*)?">'
     HTML,count=re.subn(pattern,lambda _: '<style>\n'+css+'\n</style>',HTML)
@@ -217,6 +217,25 @@ with sync_playwright() as playwright:
     assert page.locator('[data-app-pref="reduceMotion"]').count()==1
     assert page.locator('.slateAccentChoice').count()==0
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Settings overflows mobile viewport'
+    # Preview-only, browser-local art sandbox: no authenticated write path is used.
+    page.evaluate("location.hash='#/theme-playground'")
+    page.wait_for_selector('.themePlayground',timeout=8000)
+    assert page.locator('.designPresetSignature').count()==20
+    assert page.locator('.designClassicCollection .designPreset').count()==18
+    assert page.locator('[data-theme-save]').count()==12
+    page.locator('.designPresetSignature[data-arg="astral"]').click()
+    assert page.locator('html').get_attribute('data-arcana-design-pattern')=='astral-sovereign'
+    assert page.evaluate("getComputedStyle(document.querySelector('.designPresetArt')).backgroundImage.includes('gradient')")
+    assert page.locator('[data-mini-canvas]').get_attribute('data-mini-pattern')=='astral-sovereign'
+    page.locator('[data-design-field="aura"]').fill('77')
+    assert page.evaluate("JSON.parse(localStorage.getItem('arcana-admin-design-preview-v1')).aura")==77
+    page.locator('[data-action="random-signature"]').click()
+    assert page.locator('html').get_attribute('data-arcana-design-pattern')!='astral-sovereign'
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Signature Playground overflows mobile viewport'
+    page.screenshot(path=str(OUT/'signature-playground-mobile.png'),full_page=True)
+    page.evaluate("location.hash='#/home'")
+    page.wait_for_selector('.launchHero',timeout=8000)
+    assert page.locator('html').get_attribute('data-arcana-design-active')!='true', 'Leaving Playground must disable private preview for visitors'
     assert errors==[], 'Browser errors: '+repr(errors)
     print('PASS: latest three-card home, Journal spotlight, Community, Directory, Featured, Build Studio, settings, responsive checks and all themes.')
     browser.close()
