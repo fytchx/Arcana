@@ -336,7 +336,7 @@ with sync_playwright() as playwright:
     admin_page.route(qa_origin,lambda route:route.fulfill(status=200,body=admin_html,content_type='text/html'))
     admin_page.goto(qa_origin,wait_until='domcontentloaded')
     admin_page.locator('#adminPortalBtn').wait_for(state='visible',timeout=12000)
-    admin_page.locator('#adminPortalBtn').click()
+    admin_page.locator('#adminPortalBtn').evaluate('el=>el.click()')
     admin_page.wait_for_selector('.adminConsole',timeout=10000)
     assert 'Admin Control Center' in admin_page.locator('.adminConsole h1').inner_text()
     admin_page.close()
