@@ -4,29 +4,29 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {resolve} from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
-import {safeGuildHubRequest,validTag,validateCrest} from '../src/guild-hub-server.mjs';
+import {safeGuildHubRequest,validTag} from '../src/guild-hub-server.mjs';
 import {saveAtomic,publicProfile} from '../src/account-server.mjs';
-import {renderCrest,CREST_MARKS,CREST_OUTLINES,CREST_BORDERS,guildBadge} from '../src/guild-crest.js';
+import {guildBadge,guildTagBadge} from '../src/guild-badge.js';
 
-test('25 distinct center/secondary glyph choices and 10 outline/border choices',()=>{
- assert.equal(CREST_MARKS.length,25);assert.equal(CREST_OUTLINES.length,10);assert.equal(CREST_BORDERS.length,10);
- assert.equal(new Set(CREST_MARKS).size,25);
- assert.equal(new Set(CREST_OUTLINES).size,10);
- assert.equal(new Set(CREST_BORDERS).size,10);
- assert.match(renderCrest({center:24,secondary:24,outline:9,border:9,colors:['#111111','#222222','#333333','#444444']},23),/<svg/);
- assert.ok(!renderCrest({center:5,colors:['<script>']}).includes('<script>'));
+test('four-letter guild tags render safely with custom colors but no crest',()=>{
  assert.ok(validTag('PDXO'));assert.ok(!validTag('ABC'));assert.ok(!validTag('1ABC'));assert.ok(!validTag('ABCDE'));
- assert.equal(validateCrest({center:24,secondary:24,outline:9,border:9,colors:['#111111','#222222','#333333','#444444']}).center,24);
- assert.throws(()=>validateCrest({center:25,secondary:0,outline:0,border:0,colors:['#111111','#222222','#333333','#444444']}),/Invalid center/);
- assert.throws(()=>validateCrest({center:0,secondary:0,outline:0,border:0,colors:['red','#222222','#333333','#444444']}),/four crest colors/);
+ assert.equal(guildBadge({guildTag:'ABC!'}),'');
+ const registry=[{id:'guild-a',status:'approved',tag:'PDXO',tagStyle:{color:'#32C9DF',finish:'glow'}}];
+ const official=guildBadge({guildTag:'PDXO',guildId:'guild-a'},registry);
+ assert.match(official,/isOfficial finish-glow/);
+ assert.match(official,/--guild-tag-color:#32C9DF/);
+ assert.doesNotMatch(official,/<svg|<img/);
+ assert.match(guildTagBadge(registry[0]),/\[PDXO\]/);
+ assert.match(guildBadge({guildTag:'PDXO',guildId:'wrong'},registry),/isUnregistered/);
+ assert.doesNotMatch(guildBadge({guildTag:'PDXO',guildId:'wrong'},registry),/--guild-tag-color/);
 });
 test('registered badges require matching authenticated membership identity',()=>{
- const registry=[{id:'guild-a',status:'approved',tag:'PDXO',crest:{center:1,secondary:2,outline:3,border:4,colors:['#111111','#222222','#333333','#444444']}}];
+ const registry=[{id:'guild-a',status:'approved',tag:'PDXO',tagStyle:{color:'#FFC000',finish:'gradient'}}];
  assert.match(guildBadge({guildTag:'PDXO',guildId:'guild-a'},registry),/isOfficial/);
  assert.match(guildBadge({guildTag:'PDXO',guildId:'bad'},registry),/isUnregistered/);
  assert.equal(guildBadge({guildTag:'hi!'},registry),'');
 });
-test('moderated registration, reserved tags, crest customization, applications and icons enforce permissions',async()=>{
+test('moderated registration, reserved tags, fancy colors and recruitment enforce permissions',async()=>{
  const root=await mkdtemp(resolve(tmpdir(),'arcana-guild-test-'));
  const old={data:process.env.ARCANA_ACCOUNT_DATA_DIR,base:process.env.ARCANA_AUTH_BASE_URL,client:process.env.ARCANA_DISCORD_CLIENT_ID,secret:process.env.ARCANA_DISCORD_CLIENT_SECRET};
  process.env.ARCANA_ACCOUNT_DATA_DIR=root;
@@ -66,17 +66,19 @@ test('moderated registration, reserved tags, crest customization, applications a
   const created=await call('/api/guild-hub/register','POST',{name:'Pacific Vanguard',tag:'ABCD',bio:'Raids and casual progression'},'owner');
   assert.equal(created.status,201);assert.equal(created.body.guild.status,'pending');
   const id=created.body.guild.id;
+  assert.equal(Object.hasOwn(created.body.guild,'crest'),false);
   assert.equal((await call('/api/guild-hub')).body.guilds.length,0);
   assert.equal((await call('/api/guild-hub/register','POST',{name:'Impersonators',tag:'abcd'},'other')).status,409);
-  const picture='data:image/png;base64,'+Buffer.from([137,80,78,71,13,10,26,10,...Array(20).fill(0)]).toString('base64');
-  assert.equal((await call('/api/guild-hub/'+id+'/icon','POST',{image:picture},'owner')).status,200);
+  assert.equal((await call('/api/guild-hub/'+id+'/icon','POST',{image:'unused'},'owner')).status,410);
   const review=await call('/api/guild-hub/moderation','GET',undefined,'mod');
-  assert.equal(review.status,200);assert.equal(review.body.guilds[0].pendingIconDataUrl,picture);
+  assert.equal(review.status,200);assert.equal(review.body.guilds.length,1);
   assert.equal((await call('/api/guild-hub/'+id+'/moderation','PATCH',{action:'approve'},'owner')).status,403);
   assert.equal((await call('/api/guild-hub/'+id+'/moderation','PATCH',{action:'approve'},'mod')).status,200);
-  assert.equal((await call('/api/guild-hub/'+id+'/moderation','PATCH',{action:'approve-icon'},'mod')).status,200);
+  assert.equal((await call('/api/guild-hub/'+id+'/moderation','PATCH',{action:'approve-icon'},'mod')).status,422);
   const listed=await call('/api/guild-hub');
-  assert.equal(listed.body.guilds.length,1);assert.equal(listed.body.guilds[0].iconDataUrl,picture);
+  assert.equal(listed.body.guilds.length,1);
+  assert.equal(Object.hasOwn(listed.body.guilds[0],'crest'),false);
+  assert.equal(Object.hasOwn(listed.body.guilds[0],'iconDataUrl'),false);
   assert.equal((await profileTag('ABCD','other')).status,409);
   assert.equal((await profileTag('zzzz','other')).status,200);
   const {readJSON}=await import('../src/account-server.mjs');
@@ -85,11 +87,13 @@ test('moderated registration, reserved tags, crest customization, applications a
   assert.equal((await call('/api/guild-hub/'+id+'/applications','PATCH',{action:'accept',userId:other.id},'owner')).status,200);
   const p=publicProfile(await readJSON(resolve(root,'users',other.id+'.json')));
   assert.equal(p.guildTag,'ABCD');assert.equal(p.guildId,id);
-  const custom={crest:{center:24,secondary:24,outline:9,border:9,colors:['#123456','#ABCDEF','#010101','#999999']},tagStyle:{color:'#54CB98',finish:'gradient'}};
+  const custom={tagStyle:{color:'#54CB98',finish:'gradient'}};
   assert.equal((await call('/api/guild-hub/'+id,'PATCH',custom,'other')).status,403);
   assert.equal((await call('/api/guild-hub/'+id,'PATCH',custom,'owner')).status,200);
   assert.equal((await call('/api/guild-hub/'+id)).body.guild.tagStyle.finish,'gradient');
-  assert.equal((await call('/api/guild-hub/'+id)).body.guild.crest.center,24);
+  assert.equal((await call('/api/guild-hub/'+id)).body.guild.tagStyle.color,'#54CB98');
+  assert.equal((await call('/api/guild-hub/'+id,'PATCH',{crest:{center:0}},'owner')).status,422);
+  assert.equal((await call('/api/guild-hub/'+id,'PATCH',{tagStyle:{color:'javascript:alert(1)',finish:'glow'}},'owner')).status,422);
   assert.equal((await call('/api/guild-hub/'+id+'/events','POST',{title:'Nope'},'owner')).status,404);
   assert.equal((await call('/api/guild-hub/'+id+'/posts','POST',{text:'Nope'},'owner')).status,404);
   assert.equal((await call('/api/guild-hub/'+id+'/members','PATCH',{action:'leave',userId:owner.id},'owner')).status,409);

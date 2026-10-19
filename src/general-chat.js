@@ -1,4 +1,4 @@
-import {guildBadge} from './guild-crest.js';
+import {guildBadge} from './guild-badge.js';
 // Simple public lobby: read-only for guests, posting requires an Arcana account.
 let timer=null,opened=false,me=null,loading=false,guildRegistry=[];
 const qs=id=>document.getElementById(id);
