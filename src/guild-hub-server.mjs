@@ -61,9 +61,7 @@ function publicGuild(g,viewer,detail=false){
  pendingIconDataUrl:reviewAccess&&g.icon?.status==='pending'?g.icon.pending:''};
  if(!detail)return base;
  return {...base,members:g.members.map(m=>({id:m.id,role:m.role,joinedAt:m.joinedAt,name:m.name})),
- posts:g.posts.filter(p=>g.status==='approved'&&(mine||staffAccess||p.kind==='announcement')).slice(-120).reverse(),
- applications:staffAccess?g.applications.filter(a=>a.status==='pending'):[],
- events:g.status==='approved'?(g.events||[]).slice(-60).sort((a,b)=>String(a.startsAt).localeCompare(String(b.startsAt))):[]};
+ applications:staffAccess?g.applications.filter(a=>a.status==='pending'):[]};
 }
 function picture(value){
  if(typeof value!=='string'||value.length>63000)fail(422,'Guild icon is too large.');
@@ -122,7 +120,7 @@ export async function handleGuildHubRequest(req,res,url){
    const id=randomUUID(),at=now();
    const g={id,name,tag,bio,ownerId:user.id,status:'pending',crest:defaultCrest(),tagStyle:{color:'#D2B2FF',finish:'glow'},icon:null,recruitmentOpen:true,
     members:[{id:user.id,name:clean(user.profile?.displayName||user.discordName,50),role:'owner',joinedAt:at}],
-    applications:[],posts:[],events:[],createdAt:at,updatedAt:at,moderationReason:''};
+    applications:[],createdAt:at,updatedAt:at,moderationReason:''};
    await saveAtomic(filename(id),g);await updateMembership(user.id,g,true);await audit('registration-requested',g,user.id);
    return g;
   });
@@ -136,9 +134,9 @@ export async function handleGuildHubRequest(req,res,url){
   if(g.status!=='approved'&&(!viewer||!moderator(viewer)&&!member(g,viewer.id)))fail(404,'Guild not found.');
   sendJSON(res,200,{guild:publicGuild(g,viewer,true)});return true;
  }
- if(m!=='POST'&&m!=='PATCH'&&m!=='DELETE')return false;
+ if(m!=='POST'&&m!=='PATCH')return false;
  checkOrigin(req);const user=await requireCapability(req);
- const body=m==='DELETE'?{}:await parseJSON(req,72000);
+ const body=await parseJSON(req,72000);
  const result=await queued(async()=>{
   const g=await current(id),isStaff=staff(g,user.id),isOwner=g.ownerId===user.id;
   const isMod=moderator(user);
@@ -212,40 +210,6 @@ export async function handleGuildHubRequest(req,res,url){
     if(!isOwner||target===g.ownerId)fail(403,'Only the owner may transfer ownership.');
     const previous=g.members.find(x=>x.id===g.ownerId);previous.role='officer';record.role='owner';g.ownerId=target;
    }else fail(422,'Invalid membership action.');
-  }else if(op==='events'&&m==='POST'){
-   if(g.status!=='approved'||!isStaff)fail(403,'Guild officers create guild events.');
-   const title=clean(body.title,100),description=clean(body.description,700),startsAt=Date.parse(body.startsAt);
-   if(title.length<3||!Number.isFinite(startsAt)||startsAt<Date.now()-3600000||startsAt>Date.now()+366*86400000)fail(422,'Choose a title and a valid event date.');
-   g.events=g.events||[];g.events.push({id:randomUUID(),title,description,startsAt:new Date(startsAt).toISOString(),createdAt:now(),creatorId:user.id,attendees:[]});
-   if(g.events.length>80)g.events=g.events.filter(e=>Date.parse(e.startsAt)>=Date.now()-35*86400000).slice(-70);
-  }else if(op==='events'&&m==='PATCH'){
-   if(!member(g,user.id)||g.status!=='approved')fail(403,'Guild membership required.');
-   const event=(g.events||[]).find(e=>e.id===body.eventId);
-   if(!event)fail(404,'Event not found.');
-   if(!['going','maybe','leave'].includes(body.action))fail(422,'Choose an RSVP status.');
-   event.attendees=event.attendees.filter(a=>a.id!==user.id);
-   if(body.action!=='leave')event.attendees.push({id:user.id,name:clean(user.profile?.displayName||user.discordName,50),status:body.action});
-  }else if(op==='events'&&m==='DELETE'){
-   if(!isStaff&&!isMod)fail(403,'Guild officers manage events.');
-   const event=(g.events||[]).find(e=>e.id===url.searchParams.get('eventId'));
-   if(!event)fail(404,'Event not found.');
-   g.events=g.events.filter(e=>e.id!==event.id);
-   await audit('event-deleted',g,user.id,event.id);
-  }else if(op==='posts'&&m==='POST'){
-   if(g.status!=='approved'||!member(g,user.id))fail(403,'Join this guild to post.');
-   const kind=body.kind==='announcement'?'announcement':'discussion';
-   if(kind==='announcement'&&!isStaff)fail(403,'Only guild staff may post announcements.');
-   const text=clean(body.text,1800),title=clean(body.title,100);
-   if(text.length<2||kind==='announcement'&&title.length<3)fail(422,'Add a useful message and announcement title.');
-   if(g.posts.filter(x=>x.authorId===user.id&&Date.now()-Date.parse(x.createdAt)<3600000).length>=15)fail(429,'Guild posting limit reached. Try later.');
-   g.posts.push({id:randomUUID(),authorId:user.id,authorName:clean(user.profile?.displayName||user.discordName,50),kind,title,text,createdAt:now()});
-   if(g.posts.length>250)g.posts=g.posts.slice(-250);
-  }else if(op==='posts'&&m==='DELETE'){
-   const post=g.posts.find(x=>x.id===url.searchParams.get('postId'));
-   if(!post)fail(404,'Message not found.');
-   if(post.authorId!==user.id&&!isStaff&&!isMod)fail(403,'Cannot delete another player message.');
-   g.posts=g.posts.filter(x=>x.id!==post.id);
-   await audit('post-deleted',g,user.id,post.id);
   }else fail(404,'Guild action not found.');
   g.updatedAt=now();await saveAtomic(filename(g.id),g);
   return g;
