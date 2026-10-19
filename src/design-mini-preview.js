@@ -10,7 +10,8 @@ const initial=storedPreview();
 const PAGES=Object.freeze({home:'home',studio:'labs/build',pathfinder:'calculators/pathfinder',wiki:'wiki',profile:'profile',guilds:'guilds'});
 let baseline=null,mode='after',page=Object.hasOwn(PAGES,initial.page)?initial.page:'home';
 let device=['phone','tablet','desktop'].includes(initial.device)?initial.device:'phone';
-let previewExpanded=initial.previewExpanded!==false;
+// Mobile previews start compact so the editor never arrives behind a giant sheet.
+let previewExpanded=typeof initial.previewExpanded==='boolean'?initial.previewExpanded:(typeof window==='undefined'||window.innerWidth>800);
 let previewMode=['dock','expanded','focus'].includes(initial.previewMode)?initial.previewMode:'dock';
 const storePreview=()=>{try{globalThis.localStorage?.setItem(PREVIEW_UI_KEY,JSON.stringify({page,device,previewExpanded,previewMode}))}catch{}};
 
@@ -57,6 +58,16 @@ export function syncDesignMiniPreview(){
  const palettePanel=globalThis.document.querySelector('.psyPalettePicker');
  if(palettePanel){const current=readDesign();palettePanel.dataset.psyActive=String(['groove-melt','orbit-jelly','doodle-rift','prism-puddle'].includes(current.pattern));palettePanel.dataset.psyMode=current.psyPaletteMode;}
  const section=canvas.closest('.designMiniPreview');
+ section.dataset.previewMode=previewMode;section.dataset.miniDevice=device;
+ const dock=section.closest('.themeStudioPreview');
+ if(dock){dock.dataset.previewMode=previewMode;dock.dataset.miniDevice=device;dock.dataset.previewExpanded=String(previewExpanded)}
+ for(const b of section.querySelectorAll('[data-mini-device]'))b.setAttribute('aria-pressed',String(b.dataset.miniDevice===device));
+ const focus=section.querySelector('[data-mini-size]');
+ if(focus){focus.textContent=previewMode==='focus'?'Dock':previewMode==='expanded'?'Full screen':'Larger';focus.setAttribute('aria-pressed',String(previewMode==='focus'))}
+ const toggle=section.querySelector('[data-mini-toggle]');
+ if(toggle){toggle.textContent=previewExpanded?'Collapse':'Open';toggle.setAttribute('aria-expanded',String(previewExpanded))}
+ const contents=section.querySelector('#miniPreviewContents');
+ if(contents)contents.hidden=!previewExpanded;
  const live=section.querySelector('[data-mini-live-frame]');
  const viewport=section.querySelector('[data-mini-real-viewport]');
  if(live&&viewport&&typeof window!=='undefined'){
@@ -69,16 +80,7 @@ export function syncDesignMiniPreview(){
   if(live.dataset.pageKey!==page){live.dataset.pageKey=page;live.addEventListener('load',paint,{once:true});live.src=location.origin+'/?arcanaMiniPreview=1#/'+PAGES[page];}
   else paint();
  }
- section.dataset.previewMode=previewMode;section.dataset.miniDevice=device;
- const dock=section.closest('.themeStudioPreview');
- if(dock){dock.dataset.previewMode=previewMode;dock.dataset.miniDevice=device;dock.dataset.previewExpanded=String(previewExpanded)}
- for(const b of section.querySelectorAll('[data-mini-device]'))b.setAttribute('aria-pressed',String(b.dataset.miniDevice===device));
- const focus=section.querySelector('[data-mini-size]');
- if(focus){focus.textContent=previewMode==='focus'?'Dock':previewMode==='expanded'?'Full screen':'Larger';focus.setAttribute('aria-pressed',String(previewMode==='focus'))}
- const toggle=section.querySelector('[data-mini-toggle]');
- if(toggle){toggle.textContent=previewExpanded?'Collapse':'Open';toggle.setAttribute('aria-expanded',String(previewExpanded))}
- const contents=section.querySelector('#miniPreviewContents');
- if(contents)contents.hidden=!previewExpanded;
+
 
  for(const b of section.querySelectorAll('[data-mini-compare]'))b.setAttribute('aria-pressed',String(b.dataset.miniCompare===mode));
  for(const b of section.querySelectorAll('button[data-mini-page]'))b.setAttribute('aria-pressed',String(b.dataset.miniPage===page));
