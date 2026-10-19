@@ -6,12 +6,12 @@ import {designPanel,settingsView} from '../src/launch-navigation.js';
 
 const read=path=>readFile(new URL(path,import.meta.url),'utf8');
 const patterns=['contours','rings','stars','grid','aurora','diagonal','hex','grain','crystal','nebula','weave','runes','circuit','topography','facets','scanlines','honeycomb','plain'];
-test('global appearance studio has 18 presets and 18 working pattern modes',async()=>{
+test('global appearance studio has 38 presets and classic pattern support',async()=>{
  const html=designPanel(),css=await read('../arcana-contour.css');
- assert.equal(Object.keys(DESIGN_PRESETS).length,18);
+ assert.equal(Object.keys(DESIGN_PRESETS).length,38);
  for(const [id,p] of Object.entries(DESIGN_PRESETS)){
   assert.match(html,new RegExp('data-arg="'+id+'"'));
-  assert.ok(patterns.includes(p.pattern),id+' uses a supported texture');
+  assert.equal(validateDesignField('pattern',p.pattern),p.pattern,id+' uses a supported texture');
   for(const key of ['main','card','action','text'])assert.ok(/^#[0-9a-fA-F]{6}$/.test(p[key]),id+':'+key);
  }
  for(const mode of patterns){
@@ -29,7 +29,9 @@ test('published theme styles work for guests without leaking editor controls',as
  assert.ok(css.includes('html[data-arcana-design-active="true"]'));
  assert.ok(!css.includes('html[data-arcana-admin-design="true"]'),'Appearance stylesheet should not be restricted to admin visitors');
  assert.match(css,/background:color-mix\(in srgb,var\(--arcana-nav-panel/,'Public navigation should remain opaque while honoring the admin blend preference');
- assert.match(app,/setDesignPreview\(adminDesign\)/);
+ assert.match(app,/setDesignPreview\(adminDesign\|\|tryOnTheme\(\)\)/);
+ assert.match(app,/isLocalThemePlayground/);
+ assert.match(app,/data-arcana-theme-try-on|arcanaThemeTryOn/);
 });
 test('mobile viewport never shrinks below a device-width view, and zoom-in remains available',async()=>{
  const html=await read('../index.html'),css=await read('../styles.css');
@@ -44,7 +46,7 @@ test('Pathfinder presents compact input rows and folded biome categories',async(
  assert.match(css,/\.pathfinderHub \.pathRangeInputs fieldset\{display:grid;grid-template-columns:minmax\(0,1\.3fr\) minmax\(90px,\.7fr\)/);
  assert.match(ui,/i===0\?'open'/);
  assert.match(view,/Materials by biome/);
- assert.match(view,/slot-specific/i);
+ assert.match(view,/Choose a slot to label your farming checklist/);
 });
 
 test('legacy upgrade entry points show verified full-range costs instead of partial tier-only totals',async()=>{

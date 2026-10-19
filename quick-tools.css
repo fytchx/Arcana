@@ -52,3 +52,32 @@
 @media(max-width:700px){.quickActions{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.quickAction{padding:10px 7px;flex-direction:column;justify-content:center;gap:4px;min-height:92px;text-align:center}.quickActionIcon{width:30px;height:30px}.quickActionText strong{font-size:11px}.quickActionText small{font-size:10px}.quickCosts{padding:13px}.quickHint{display:none}.quickEndpoints fieldset{grid-template-columns:1fr;padding:8px 9px;gap:8px}.quickEndpoints select{font-size:13px}.quickTotals strong{font-size:15px}.quickMaterialList{grid-template-columns:1fr}.damageFieldGrid,.damageCompareGrid{grid-template-columns:1fr}.damagePanel{padding:13px}}
 @media(min-width:850px){.quickActions{gap:12px}.quickCostsHome .quickEndpoints fieldset{max-width:none}.quickCostsHome .quickMaterialList{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.quickSpinner{animation:none}.quickAction{transition:none}}
+
+/* Native Pathfinder calculator: uses site palette and Design Workshop tokens. */
+.quickQuantity{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 13px;border:1px solid color-mix(in srgb,var(--theme-highlight) 24%,var(--line));border-radius:var(--arcana-card-radius,var(--radius));background:color-mix(in srgb,var(--theme-highlight) 5%,var(--theme-secondary))}
+.quickQuantityLabel{display:grid;gap:3px}.quickQuantityLabel label{font-size:13px;font-weight:800;color:var(--text)}.quickQuantityLabel small{font-size:11px;color:var(--muted)}
+.quickQuantityControls{display:flex;align-items:stretch;overflow:hidden;border:1px solid var(--line);border-radius:var(--arcana-button-radius,9px);height:38px;background:var(--theme-main)}
+.quickQuantityControls button{width:39px;border:0;background:color-mix(in srgb,var(--theme-highlight) 10%,var(--theme-secondary));color:var(--theme-highlight);font-weight:900;font-size:18px;cursor:pointer}
+.quickQuantityControls button:disabled{opacity:.35;cursor:default}.quickQuantityControls button:focus-visible,.quickMaterialWiki:focus-visible,.quickBiomeHead:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:-2px}
+.quickQuantityControls input{width:60px;text-align:center;background:var(--theme-main);color:var(--text);border:0;border-inline:1px solid var(--line);font:inherit;font-size:15px;font-weight:800;appearance:textfield}
+.quickQuantityControls input::-webkit-inner-spin-button,.quickQuantityControls input::-webkit-outer-spin-button{appearance:none;margin:0}
+.quickResultMeta{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:4px 1px;font-size:11px;color:var(--muted)}.quickResultMeta strong{color:var(--text);font-size:12px}
+.quickFarmFirst,.quickForgeSection{display:grid;gap:10px;min-width:0}
+.quickSectionTitle{display:flex;justify-content:space-between;align-items:baseline;gap:9px;flex-wrap:wrap}.quickSectionTitle h3{font-size:15px;letter-spacing:-.025em;margin:4px 0 0}.quickSectionTitle small{font-size:10px;color:var(--muted)}
+.quickBiomeGroup{border:1px solid var(--line);border-radius:var(--arcana-card-radius,var(--radius));background:color-mix(in srgb,var(--theme-main) 40%,var(--theme-secondary));overflow:hidden}
+.quickBiomeHead{display:flex;gap:10px;align-items:center;padding:11px 12px;list-style:none;cursor:pointer}.quickBiomeHead::-webkit-details-marker{display:none}
+.quickBiomeGroup[open] .quickBiomeHead{border-bottom:1px solid var(--line)}.quickBiomeName{font-weight:800;font-size:12px;color:var(--text);flex:1;min-width:0}
+.quickBiomeHead small{color:var(--muted);font-size:10px;white-space:nowrap}.quickBiomeChevron{font-size:20px;color:var(--theme-highlight);transition:transform .15s}
+.quickBiomeGroup[open] .quickBiomeChevron{transform:rotate(180deg)}
+.quickBiomeOrder{display:inline-grid;place-items:center;border-radius:7px;padding:6px;min-width:27px;background:color-mix(in srgb,var(--theme-highlight) 15%,var(--theme-secondary));color:var(--theme-highlight);font-size:10px;font-variant-numeric:tabular-nums;font-weight:900}
+.quickBiomeGroup .quickMaterialList{padding:9px;gap:7px}.quickBiomeGroup .quickMaterial{background:color-mix(in srgb,var(--theme-main) 64%,var(--theme-secondary))}
+.quickMaterialWiki{border:0;background:transparent;color:var(--text);text-align:left;font:inherit;font-size:11px;cursor:pointer;padding:2px 0;min-width:0;overflow-wrap:anywhere}.quickMaterialWiki:hover{color:var(--theme-highlight)}.quickMaterialWiki span{font-size:10px;color:var(--theme-highlight)}
+.quickMaterial strong .quickPerItem{display:block;font-weight:500;color:var(--muted);font-size:10px;margin-top:3px;white-space:nowrap}
+.quickForgeSection{border-top:1px solid var(--line);padding-top:12px;margin-top:2px}
+.quickResourceHighlights{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:8px}
+.quickGoldBlock{display:grid;gap:4px;padding:12px 13px;border:1px solid color-mix(in srgb,var(--theme-highlight) 25%,var(--line));border-radius:var(--arcana-card-radius,var(--radius));background:color-mix(in srgb,var(--theme-highlight) 8%,var(--theme-main))}
+.quickGoldBlock span,.quickGoldBlock small{font-size:10px;color:var(--muted)}.quickGoldBlock strong{font-size:clamp(16px,2.5vw,22px);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.quickResourceHighlights .quickMaterial{padding:11px 12px}
+.quickCostsExtra{flex-wrap:wrap;gap:12px}.quickCostsExtra button{color:var(--theme-highlight)}
+@media(max-width:700px){.quickBiomeGroup .quickMaterialList{grid-template-columns:1fr}.quickMaterialWiki{font-size:12px}.quickQuantity{padding:10px}}
+@media(prefers-reduced-motion:reduce){.quickBiomeChevron{transition:none}}

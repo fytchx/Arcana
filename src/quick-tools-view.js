@@ -2,6 +2,7 @@
  * No slot-specific prices or failure probabilities are invented. */
 import {allStages,quoteRange,normalizeRange} from './pathfinder-range.js';
 import {money} from './pathfinder-timeline.js';
+import {sourceMaterialGroups} from './pathfinder-material-groups.js';
 const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const opt=(id,label,current)=>'<option value="'+esc(id)+'"'+(id===current?' selected':'')+'>'+esc(label)+'</option>';
 export function initialQuickRange(snapshot,raw={}){
@@ -17,9 +18,9 @@ export function quickUpgradePanel(snapshot,raw={},options={}){
  const classes='quickCosts '+(page?'quickCostsFull':'quickCostsHome');
  const heading=page?'<div class="quickEyebrow">UPGRADE COST CALCULATOR</div><h2>Upgrade Costs</h2><p>Select the starting and target upgrades to calculate materials and Gold.</p>':
  '<div class="quickCostsHead"><div><span class="quickEyebrow">UPGRADE COST CALCULATOR</span><h2>Upgrade Costs</h2><p>Materials and Gold for any upgrade range.</p></div><span class="quickHint">A1 → A2</span></div>';
- const inner=quickUpgradeContent(snapshot,raw,{page,error:options.error||''});
+ const inner=quickUpgradeContent(snapshot,raw,{page,error:options.error||'',catalog:options.catalog||[]});
  return '<section class="'+classes+'" aria-label="Quick upgrade cost calculator">'+heading+'<div id="pathRangeContent">'+inner+'</div>'+
- (page?'<div class="quickCostsExtra"><button type="button" data-route="calculators/pathfinder" data-params="view=timeline">Explore the upgrade map →</button></div>':
+ (page?'<div class="quickCostsExtra"><button type="button" data-pf-save-list>Save farming checklist</button><button type="button" data-route="calculators/pathfinder" data-params="view=timeline">Explore the upgrade map →</button></div>':
  '<div class="quickCostsExtra"><button type="button" data-route="calculators/pathfinder" data-params="view=range">Open full calculator →</button></div>')+'</section>';
 }
 export function quickUpgradeContent(snapshot,raw={},options={}){
@@ -34,12 +35,35 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  '<fieldset><legend>FROM</legend><label><span>Rank</span><select data-path-from-stage aria-label="Starting upgrade rank">'+stageOptions(range.fromStage)+'</select></label><label><span>Level</span><select data-path-from-level aria-label="Starting enhancement level">'+levelOptions(from,range.fromLevel)+'</select></label></fieldset>'+
  '<span class="quickArrow" aria-hidden="true">→</span>'+
  '<fieldset><legend>TO</legend><label><span>Rank</span><select data-path-to-stage aria-label="Target upgrade rank">'+stageOptions(range.toStage)+'</select></label><label><span>Level</span><select data-path-to-level aria-label="Target enhancement level">'+levelOptions(to,range.toLevel)+'</select></label></fieldset></div>';
- if(quote.error)return fields+'<div class="quickError" role="status">'+esc(quote.error)+(quote.missing?.length?' Missing: '+esc(quote.missing.slice(0,3).join(', ')):'')+'</div>';
- const summary='<div class="quickTotals" role="status" aria-live="polite"><div><small>Gold</small><strong>'+money(quote.gold)+'</strong></div><div><small>Material types</small><strong>'+quote.materials.length+'</strong></div><div><small>Upgrade steps</small><strong>'+quote.steps+'</strong></div></div>';
- const list=quote.materials.slice(0,options.page?10:5).map(m=>'<div class="quickMaterial"><span>'+esc(m.name)+'</span><strong>'+money(m.quantity)+'</strong></div>').join('');
- const remaining=quote.materials.length-(options.page?10:5);
- const details='<details class="quickMaterialDetails" '+(options.page?'open':'')+'><summary>All materials '+(quote.materials.length?'('+quote.materials.length+')':'')+'</summary><div class="quickMaterialList">'+quote.materials.map(m=>'<div class="quickMaterial"><span>'+esc(m.name)+'</span><strong>'+money(m.quantity)+'</strong></div>').join('')+'</div></details>';
- const featured=quote.materials.length?'<div class="quickMaterialList">'+list+'</div>':'<p class="quickEmpty">These upgrade checkpoints are identical. No materials required.</p>';
- return fields+summary+featured+(remaining>0?'<div class="quickMoreLabel">+'+remaining+' more material types below</div>':'')+details+
- '<p class="quickSource">Recipe material and Gold totals. Failed attempts are not included.</p>';
+ const count=quote.itemCount;
+ const quantity='<div class="quickQuantity"><div class="quickQuantityLabel"><label for="pathItemQuantity">Items to upgrade</label><small>Same upgrade range for each item</small></div>'+
+ '<div class="quickQuantityControls"><button type="button" data-path-quantity-step="-1" aria-label="Remove one item"'+(count===1?' disabled':'')+'>−</button>'+
+ '<input type="number" id="pathItemQuantity" data-path-quantity aria-label="Number of items" min="1" max="100" inputmode="numeric" step="1" value="'+count+'">'+
+ '<button type="button" data-path-quantity-step="1" aria-label="Add one item"'+(count===100?' disabled':'')+'>+</button></div></div>';
+ if(quote.error)return fields+quantity+'<div class="quickError" role="status">'+esc(quote.error)+(quote.missing?.length?' Missing: '+esc(quote.missing.slice(0,3).join(', ')):'')+'</div>';
+ const perItemBySlug=new Map(quote.perItem.materials.map(m=>[m.slug,m.quantity]));
+ const materialRow=m=>{
+  const id='game:material:'+m.slug;
+  return '<div class="quickMaterial"><button type="button" class="quickMaterialWiki" data-route="wiki/reference" data-params="id='+esc(encodeURIComponent(id))+'" title="View '+esc(m.name)+' in ArcanaWiki">'+esc(m.name)+' <span aria-hidden="true">↗</span></button>'+
+  '<strong>'+money(m.quantity)+(count>1?'<small class="quickPerItem">'+money(perItemBySlug.get(m.slug)||0n)+' each</small>':'')+'</strong></div>';
+ };
+ const embers=quote.materials.filter(m=>m.slug==='abyssal-ember');
+ const groups=sourceMaterialGroups(quote.materials.filter(m=>m.slug!=='abyssal-ember'),snapshot.materials||[],options.catalog||[]);
+ const monsters=groups.filter(g=>g.kind==='biome'||g.kind==='unknown');
+ const other=groups.filter(g=>g.kind==='special').flatMap(g=>g.materials);
+ const meta='<div class="quickResultMeta" role="status" aria-live="polite"><strong>'+count+' item'+(count===1?'':'s')+'</strong><span>·</span><span>'+money(quote.steps)+' upgrade steps</span><span>·</span><span>'+quote.materials.length+' material types</span></div>';
+ const byBiome=monsters.map((g,i)=>{
+  const label=g.kind==='biome'?g.name:'Other monster drops';
+  return '<details class="quickBiomeGroup" '+(i===0?'open':'')+'><summary class="quickBiomeHead">'+(g.kind==='biome'?'<span class="quickBiomeOrder" aria-hidden="true">'+String(i+1).padStart(2,'0')+'</span>':'')+
+  '<span class="quickBiomeName">'+esc(label)+'</span><small>'+g.materials.length+' materials</small><span aria-hidden="true" class="quickBiomeChevron">⌄</span></summary>'+
+  '<div class="quickMaterialList">'+g.materials.map(materialRow).join('')+'</div></details>';
+ }).join('');
+ const monsterSection='<section class="quickFarmFirst" aria-label="Monster materials"><div class="quickSectionTitle"><h3>Monster materials</h3><small>Biome order</small></div>'+
+ (byBiome||'<p class="quickEmpty">No monster drops needed for this range.</p>')+'</section>';
+ const gold='<div class="quickGoldBlock"><span>Gold</span><strong>'+money(quote.gold)+'</strong>'+(count>1?'<small>'+money(quote.perItem.gold)+' per item</small>':'')+'</div>';
+ const forge='<section class="quickForgeSection" aria-label="Gold and other materials"><div class="quickSectionTitle"><h3>Gold & forge materials</h3></div>'+
+ '<div class="quickResourceHighlights">'+gold+embers.map(materialRow).join('')+'</div>'+
+ (other.length?'<div class="quickMaterialList">'+other.map(materialRow).join(''):'')+'</section>';
+ return fields+quantity+meta+monsterSection+forge+
+ '<p class="quickSource">Recipe material and Gold totals. Base costs exclude failed attempts. All selected items use the same upgrade range.</p>';
 }

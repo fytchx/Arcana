@@ -1182,3 +1182,9 @@ body,#app.shell{max-width:100%;min-width:0}
  :where(input[type="text"],input[type="search"],input[type="number"],input[type="email"],select,textarea){font-size:max(16px,1em)}
  :where(button,a[role="button"],summary){-webkit-tap-highlight-color:transparent}
 }
+
+/* Player-authored guides: keep attribution visible inside the themed ArcanaWiki layout. */
+.wikiGuideByline{font-size:11px;color:var(--theme-accent-text);font-weight:700;margin-top:auto}
+.wikiArticleCredit{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:12px 14px;margin-top:17px;background:var(--theme-highlight-soft);border:1px solid var(--theme-highlight-border);border-radius:10px;font-size:12px;color:var(--soft)}
+.wikiArticleCredit strong{color:var(--theme-accent-text)}
+.wikiArticleCredit span{line-height:1.5}

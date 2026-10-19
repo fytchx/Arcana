@@ -21,7 +21,7 @@ for module in sorted((ROOT/'src').glob('*.js')):
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
 # Offline browser must render EVERY stylesheet in the real entry point, not just
 # styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
-for css_name in ('styles.css','wiki-studio.css','community.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
+for css_name in ('styles.css','wiki-studio.css','community.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','signature-themes.css','theme-seamless.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
     css=(ROOT/css_name).read_text()
     pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\?[^"]*)?">'
     HTML,count=re.subn(pattern,lambda _: '<style>\n'+css+'\n</style>',HTML)
@@ -68,7 +68,6 @@ window.fetch = async function(input) {
  if(path.includes('/api/beta/status')) return new Response(JSON.stringify({release:'arcana-real-accounts-beta-2026-10-13',feedbackEnabled:true,accountsConfigured:false,wikiStorageConfigured:true}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/beta/feedback')) return new Response(JSON.stringify({ok:true,reference:'test1234'}),{status:201,headers:{'content-type':'application/json'}});
  if(path.includes('/api/search/catalog')) return new Response(JSON.stringify(__MOCK_ENTRIES__),{status:200,headers:{'content-type':'application/json'}});
- if(path.includes('/api/guilds')) return new Response(JSON.stringify({guilds:[]}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/lfg/public')) return new Response(JSON.stringify({listings:[],plans:[],issues:[]}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/official-art/manifest.json')) return new Response(JSON.stringify(__MOCK_ART__),{status:200,headers:{'content-type':'application/json'}});
  return new Response('Unavailable in isolated QA',{status:404});
@@ -191,6 +190,58 @@ with sync_playwright() as playwright:
     assert page.locator('[data-app-pref="reduceMotion"]').count()==1
     assert page.locator('.slateAccentChoice').count()==0
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Settings overflows mobile viewport'
+    # Preview-only, browser-local art sandbox: no authenticated write path is used.
+    page.evaluate("location.hash='#/theme-playground'")
+    page.wait_for_selector('.themePlayground',timeout=8000)
+    assert page.locator('.designPresetSignature').count()==20
+    assert page.locator('.designClassicCollection .designPreset').count()==18
+    assert page.locator('[data-theme-save]').count()==12
+    page.locator('.designPresetSignature[data-arg="astral"]').click()
+    assert page.locator('html').get_attribute('data-arcana-design-pattern')=='astral-sovereign'
+    assert page.evaluate("getComputedStyle(document.querySelector('.designPresetArt')).backgroundImage.includes('gradient')")
+    assert page.locator('[data-mini-canvas]').get_attribute('data-mini-pattern')=='astral-sovereign'
+    page.locator('[data-design-field="aura"]').evaluate("el=>{el.value='77';el.dispatchEvent(new Event('input',{bubbles:true}))}")
+    assert page.evaluate("JSON.parse(localStorage.getItem('arcana-admin-design-preview-v1')).aura")==77
+    page.locator('[data-action="random-signature"]').click()
+    assert page.locator('html').get_attribute('data-arcana-design-pattern')!='astral-sovereign'
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Signature Playground overflows mobile viewport'
+    # Actual Chromium paint-layer checks: no square tile boundaries on any material family.
+    for texture in ('astral-sovereign','abyssal-bloom','moire','grid','fog','contours'):
+        page.locator('[data-theme-pattern="'+texture+'"]').evaluate('el=>el.click()')
+        page.wait_for_timeout(70)
+        fields=page.evaluate("""() => {
+            const card=document.querySelector('.miniCanvas .miniHome .miniHero');
+            const style=getComputedStyle(card,'::before');
+            const thumb=document.querySelector('.themePatternThumb[data-preview-pattern="'+document.documentElement.dataset.arcanaDesignPattern+'"]');
+            const thumbStyle=thumb?getComputedStyle(thumb):null;
+            return {pattern:document.querySelector('[data-mini-canvas]').dataset.miniPattern,
+                repeat:style.backgroundRepeat,size:style.backgroundSize,image:style.backgroundImage,
+                mask:style.maskImage,thumbRepeat:thumbStyle?.backgroundRepeat,thumbSize:thumbStyle?.backgroundSize};
+        }""")
+        assert fields['pattern']==texture, 'Mini preview out of sync: '+str(fields)
+        assert 'gradient' in fields['image'], 'Missing texture image: '+texture
+        assert set(fields['repeat'].split(', '))=={'no-repeat'}, 'Texture tiles on '+texture+': '+str(fields)
+        assert set(fields['size'].split(', '))=={'100% 100%'}, 'Texture cuts off on '+texture+': '+str(fields)
+        assert set(fields['thumbRepeat'].split(', '))=={'no-repeat'}, 'Finish thumbnail tiles on '+texture
+        assert set(fields['thumbSize'].split(', '))=={'100% 100%'}, 'Finish thumb cutoff on '+texture
+        if texture in ('astral-sovereign','moire','contours'):
+            page.screenshot(path=str(OUT/('seamfree-'+texture+'.png')),full_page=True)
+    # Restore the Signature look for a full-site test.
+    page.locator('[data-theme-pattern="astral-sovereign"]').evaluate('el=>el.click()')
+    page.screenshot(path=str(OUT/'signature-playground-mobile.png'),full_page=True)
+    page.locator('[data-action="theme-try-on"]').click()
+    page.wait_for_selector('.launchHero',timeout=8000)
+    assert page.locator('html').get_attribute('data-arcana-design-active')=='true', 'Try-on must apply the homepage theme'
+    assert page.locator('html').get_attribute('data-arcana-admin-design')=='false', 'Try-on must not elevate admin privileges'
+    assert page.evaluate("getComputedStyle(document.querySelector('.launchHero'),'::after').backgroundImage.includes('gradient')"), 'Try-on must style the actual homepage'
+    real=page.evaluate("""() => {const css=getComputedStyle(document.querySelector('.launchHero'),'::after');return {repeat:css.backgroundRepeat,size:css.backgroundSize}}""")
+    assert set(real['repeat'].split(', '))=={'no-repeat'} and set(real['size'].split(', '))=={'100% 100%'}, 'Real homepage still has a tiling seam: '+str(real)
+    page.evaluate("location.hash='#/theme-playground'")
+    page.wait_for_selector('.themePlayground',timeout=8000)
+    page.locator('[data-action="theme-try-off"]').click()
+    page.evaluate("location.hash='#/home'")
+    page.wait_for_selector('.launchHero',timeout=8000)
+    assert page.locator('html').get_attribute('data-arcana-design-active')!='true', 'Leaving Playground must disable local try-on'
     assert errors==[], 'Browser errors: '+repr(errors)
     print('PASS: latest three-card home, Journal spotlight, Community, Directory, Featured, Build Studio, settings, responsive checks and all themes.')
     browser.close()

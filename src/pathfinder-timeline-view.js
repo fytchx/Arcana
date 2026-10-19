@@ -46,7 +46,7 @@ export function pathfinderRangeContent(snapshot,quick,raw={},catalog=[]){
  const quote=quoteRange(snapshot,raw,quick),{range,stages}=quote;
  const from=stages.find(s=>s.id===range.fromStage),to=stages.find(s=>s.id===range.toStage);
  const stageOpts=(selected)=>stages.map(s=>option(s.id,s.tier?s.name+' ('+s.id+')':s.id,selected)).join('');
- const controls='<div class="pathRangeSlot"><label>Equipment slot <select data-path-range-slot aria-label="Equipment slot for planning">'+PATHFINDER_SLOTS.map(x=>option(x.id,x.label,quick?.slot)).join('')+'</select></label><small>Select a slot for your checklist. Slot-specific prices are not yet verified.</small></div><div class="pathRangeInputs">'+
+ const controls='<div class="pathRangeSlot"><label>Equipment slot <select data-path-range-slot aria-label="Equipment slot for planning">'+PATHFINDER_SLOTS.map(x=>option(x.id,x.label,quick?.slot)).join('')+'</select></label><small>Choose a slot to label your farming checklist.</small></div><div class="pathRangeInputs">'+
  '<fieldset><legend>FROM</legend><label>Rarity / rank<select data-path-from-stage aria-label="From upgrade stage">'+stageOpts(range.fromStage)+'</select></label>'+
  '<label>Enhancement<select data-path-from-level aria-label="From enhancement level">'+rangeLevelOptions(from,range.fromLevel)+'</select></label></fieldset>'+
  '<span class="pathRangeArrow" aria-hidden="true">→</span>'+
@@ -58,8 +58,7 @@ export function pathfinderRangeContent(snapshot,quick,raw={},catalog=[]){
  '<div><small>Material types</small><strong>'+quote.materials.length+'</strong></div></div>'+
  (quote.materials.length?'<h4>Materials by biome</h4><p class="pathGroupGuide">Open a biome to see its materials. Unverified sources and special currencies stay separate.</p>'+groupedMaterialMarkup(quote.materials,snapshot,catalog):
  '<p class="pathFree">These checkpoints are identical, so no upgrade is needed.</p>');
- return controls+'<div class="pathRangeOutput" role="status" aria-live="polite">'+summary+'</div>'+(!quote.error&&quote.complete&&quote.materials.length?'<div class="pathSaveList"><button type="button" class="btn primary" data-pf-save-list>Save a farming checklist to my profile</button><small>Log in with Discord to track your progress from any device.</small></div>':'')+'<p class="pathSlotNote"><strong>Equipment slot cost accuracy:</strong> '+(recipeSlotStatus(snapshot)==='not-verified'?'The verified recipe snapshot has one shared cost table. It does not establish whether rings, necklaces, weapons, armor or other equipment actually cost the same in-game. Slot-specific differences are currently unverified.':'This snapshot contains slot metadata, but exact slot adjustments have not yet been verified. Generic recipe totals are shown.')+'</p>'+
- '<p class="pathRangeFoot">Base recipe totals include intervening enhancements and tier / rank transitions. Failed attempts are excluded.</p>';
+ return controls+'<div class="pathRangeOutput" role="status" aria-live="polite">'+summary+'</div>'+(!quote.error&&quote.complete&&quote.materials.length?'<div class="pathSaveList"><button type="button" class="btn primary" data-pf-save-list>Save a farming checklist to my profile</button><small>Log in with Discord to track your progress from any device.</small></div>':'')+'<p class="pathRangeFoot">Base recipe totals include intervening enhancements and tier / rank transitions. Failed attempts are excluded.</p>';
 }
 export function pathfinderRangePanel(snapshot,quick,raw={},catalog=[]){
  return '<details class="pathRangePanel" id="pathRangePanel"><summary><span><strong>Calculate From → To</strong>'+
@@ -92,7 +91,7 @@ export function pathfinderView(raw,snapshot,error='',rangePlan={},options={}){
  '<input id="pathStepRange" data-path-range aria-label="Selected upgrade level" type="range" min="0" max="'+active.max+'" value="'+view.level+'" step="1" aria-valuetext="'+esc(stageStepLabel(active,view.level))+'" style="--path-progress:'+(active.max?Math.round(view.level/active.max*100):0)+'%">'+
  pathfinderStepDetail(model,options.catalog)+pathfinderChapterDetail(model,options.catalog)+(options.includeRange===false?'':pathfinderRangePanel(snapshot,view,rangePlan,options.catalog))+
  '</section>'+
- '<p class="pathSource">Source: '+esc(snapshot.sourceVersion||snapshot.source||'October 2026 verified-cost snapshot')+'. Base Gold and material amounts per upgrade, before failed attempts. This source has only generic tier recipes. It cannot verify slot-specific cost differences. A1–A30 are supported where source data is available.</p>'+
+ '<p class="pathSource">Source: '+esc(snapshot.sourceVersion||snapshot.source||'October 2026 verified-cost snapshot')+'. Base Gold and material amounts per upgrade, before failed attempts. A1–A30 are supported where source data is available.</p>'+
  '<div class="pathActions"><button type="button" class="btn secondary" data-route="labs/build">Back to Build Studio</button><button type="button" class="btn secondary" data-route="wiki/library" data-params="kind=material">Materials in the Wiki</button></div>'+
  '</div>';
 }
