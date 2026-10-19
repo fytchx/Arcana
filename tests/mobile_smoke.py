@@ -235,7 +235,7 @@ with sync_playwright() as playwright:
     page.screenshot(path=str(OUT/'signature-playground-mobile.png'),full_page=True)
     page.locator('[data-action="theme-try-on"]').click()
     page.wait_for_selector('.launchHero',timeout=8000)
-    assert page.locator('html').get_attribute('data-arcana-design-active')=='true', 'Try-on must apply real site's theme'
+    assert page.locator('html').get_attribute('data-arcana-design-active')=='true', 'Try-on must apply the homepage theme'
     assert page.locator('html').get_attribute('data-arcana-admin-design')=='false', 'Try-on must not elevate admin privileges'
     assert page.evaluate("getComputedStyle(document.querySelector('.launchHero'),'::after').backgroundImage.includes('gradient')"), 'Try-on must style the actual homepage'
     page.evaluate("location.hash='#/theme-playground'")
