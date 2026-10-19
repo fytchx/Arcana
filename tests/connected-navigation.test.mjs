@@ -112,7 +112,9 @@ test('Application keeps connected destinations and exposes a universal home path
  assert.match(code,/case 'wiki\/category':return wikiCategory/);
  assert.match(code,/case 'homemenu':if\(arg==='pathfinder'\)go\('calculators\/pathfinder'\)/);
  assert.match(code,/case 'labs':return buildStudio\(\)/);
- assert.match(code,/node\('searchBtn'\)\.onclick/);
+ assert.match(code,/syncAdminPortal\(\)/);
+  assert.match(code,/function searchFeatured\(/);
+  assert.match(code,/case 'search':showSearch/);
  assert.match(code,/data-route="home"/);
  assert.match(code,/SEARCHABLE_TOOLS/);
  assert.match(code,/searchExtras\(\)\.find\(x=>x\.id===id\)/);
