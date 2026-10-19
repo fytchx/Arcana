@@ -1,7 +1,7 @@
 name: Signature Collection QA
 on:
   push:
-    branches: [feature/arcana-signature-collection-2026-10-18, feature/psychedelic-patterns-real-theme-preview-2026-10-19, feature/guild-tags-only-theme-qa-2026-10-19, fix/boot-loader-guild-tags-responsive-home-2026-10-19, release-candidate/guild-tags-psychedelic-2026-10-19]
+    branches: [feature/arcana-signature-collection-2026-10-18, feature/psychedelic-patterns-real-theme-preview-2026-10-19, feature/guild-tags-only-theme-qa-2026-10-19, fix/boot-loader-guild-tags-responsive-home-2026-10-19, release-candidate/guild-tags-psychedelic-2026-10-19, feature/arcana-connected-ux-audit-2026-10-19]
   workflow_dispatch:
 permissions:
   contents: read
