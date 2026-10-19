@@ -54,6 +54,8 @@ export function syncDesignMiniPreview(){
  const psych=psychedelicSvg(v.pattern,v);
  if(psych)canvas.style.setProperty('--psychedelic-texture',psych);else canvas.style.removeProperty('--psychedelic-texture');
  syncPsychedelicSamples(globalThis.document,readDesign());
+ const palettePanel=globalThis.document.querySelector('.psyPalettePicker');
+ if(palettePanel){const current=readDesign();palettePanel.dataset.psyActive=String(['groove-melt','orbit-jelly','doodle-rift','prism-puddle'].includes(current.pattern));palettePanel.dataset.psyMode=current.psyPaletteMode;}
  const section=canvas.closest('.designMiniPreview');
  const live=section.querySelector('[data-mini-live-frame]');
  const viewport=section.querySelector('[data-mini-real-viewport]');
