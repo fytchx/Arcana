@@ -62,9 +62,9 @@ export const HOME_MENUS=Object.freeze({
  ]}
 });
 export const HOME_CARDS=Object.freeze([
- {id:'pathfinder',title:'Pathfinder',detail:'Item upgrade costs, materials, equipment comparison and upgrade maps.',icon:'feature-upgrade'},
- {id:'tools',title:'Tools',detail:'Pet Compound, affix costs, farming, guild skills and damage planning.',icon:'feature-calculator'},
- {id:'builds',title:'Builds & Guides',detail:'Player guides, shared builds, publishing and character planning.',icon:'feature-guides'}
+ {id:'pathfinder',title:'Pathfinder',detail:'See exactly what your next upgrade costs, from materials to gold.',icon:'feature-upgrade'},
+ {id:'tools',title:'Tools',detail:'Run the numbers on pets, farming, affixes and guild skills.',icon:'feature-calculator'},
+ {id:'builds',title:'Builds, Guides & Wiki',detail:'Read the strategy, inspect the build, and try it yourself.',icon:'feature-guides'}
 ]);
 const attrs=x=>'data-route="'+esc(x.route)+'"'+(x.params?' data-params="'+esc(new URLSearchParams(x.params).toString())+'"':'');
 const navrow=x=>'<button type="button" class="launchNavRow" '+attrs(x)+'><span class="launchNavIcon">'+icon(x.icon||'arrow',20)+'</span><span class="launchNavCopy"><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',17)+'</button>';
@@ -73,18 +73,18 @@ export function homeScreen(){
   '<svg class="launchHeroArcaneSeal" viewBox="0 0 160 160" fill="none" aria-hidden="true" focusable="false"><circle cx="80" cy="80" r="66"/><circle cx="80" cy="80" r="53"/><circle cx="80" cy="80" r="35"/><path d="M80 5v26m0 98v26M5 80h26m98 0h26M25 25l19 19m72 72 19 19m0-110-19 19m-72 72-19 19M80 40l40 40-40 40-40-40zM80 54l26 26-26 26-26-26z"/><circle cx="80" cy="15" r="3"/><circle cx="145" cy="80" r="3"/><circle cx="80" cy="145" r="3"/><circle cx="15" cy="80" r="3"/></svg>'+
   '<div class="launchHeroHeader"><span class="launchHeroArt" aria-hidden="true">'+icon('feature-build-studio',38)+'</span>'+
   '<div class="launchHeroText"><span class="launchEyebrow">THE HEART OF ARCANA</span><h1>Build Studio</h1>'+
-  '<p>Gear, runes, pets and skill trees. One connected build.</p></div></div>'+
+  '<p>Test the gear, runes, pets and skills behind your next great setup.</p></div></div>'+
   '<button type="button" class="launchHeroCTA" data-route="labs/build" aria-label="Enter Build Studio"><span class="launchHeroCTASigil" aria-hidden="true">'+icon('feature-rune-forge',22)+'</span><span class="launchHeroCTACopy"><strong>Enter Build Studio</strong><small>Forge your perfect setup</small></span>'+icon('arrow',20)+'</button>'+
   '</section>'+
   '<section class="journalHomeTeaser" aria-label="Latest from Arcana Journal"><div class="journalHomeTop"><span>ARCANA JOURNAL</span><a href="/journal">All stories →</a></div><a class="journalHomeArticle" href="/journal/idlearc-1-3-7-the-timing-couldnt-be-better" data-journal-latest><span class="journalHomeCategory">NEWS · OCT 18</span><strong>IdleArc 1.3.7: A Step Forward</strong><small>A welcome update arrives just as our class balance analysis goes live.</small><span class="journalHomeRead">Read the story →</span></a></section></div>'+
   '<section class="launchQuick" aria-label="Explore Arcana"><div class="launchSectionTop"><h2>Explore Arcana</h2><button type="button" data-route="directory" class="launchSeeAll">See All '+icon('arrow',16)+'</button></div>'+
   '<div class="launchQuickGrid">'+HOME_CARDS.map(x=>'<button type="button" class="launchQuickCard" data-action="homemenu" data-arg="'+esc(x.id)+'" aria-label="Open '+esc(x.title)+' menu"><span class="launchQuickEmblem" aria-hidden="true">'+icon(x.icon,90)+'</span><span class="launchQuickIcon">'+icon(x.icon,32)+'</span><span class="launchQuickCopy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></span><span class="launchQuickArrow">'+icon('arrow',17)+'</span></button>').join('')+'</div></section>'+
-  '<section class="launchFeatured" aria-label="Useful and Featured"><div class="launchSectionTop"><h2>Useful &amp; Featured</h2></div>'+
-  '<p class="launchFeaturedIntro">Player guides, shared builds, articles and site updates.</p>'+
+  '<section class="launchFeatured arcanaKnowledgeBridge" aria-label="Learn, build and share"><div class="launchSectionTop"><h2>One connected knowledge base</h2></div>'+
+  '<p class="launchFeaturedIntro">Read a guide, check the Wiki, open a build and test it. Everything leads somewhere useful.</p>'+
   '<div class="launchFeaturedGrid">'+[
-   link('Player Guides','Browse walkthroughs and game tips.','wiki/guides','book'),
-   link('Community Builds','Explore setups shared by players.','community','users'),
-   link('Feedback & Updates','Help improve Arcana ahead of launch.','beta','info')
+   link('Player Guides','Find proven strategies and progression advice.','wiki/guides','book'),
+   link('Community Builds','See players’ builds, then try them in Build Studio.','community','users'),
+   link('ArcanaWiki','Look up the mechanics behind every decision.','wiki','book')
   ].map(x=>'<button type="button" class="launchFeatureRow" '+attrs(x)+'><span class="launchFeatureIcon">'+icon(x.icon,20)+'</span><span><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',16)+'</button>').join('')+'</div></section>';
 }
 export function homeSubmenu(id){
