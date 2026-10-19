@@ -15,7 +15,7 @@ const getJSON=async(url,options)=>{
 };
 const fields=[
  ['displayName','Display name','text',50],['inGameName','IdleArc character name','text',48],
- ['guild','Guild (free text)','text',70],['guildTag','Four-letter guild tag','text',4],['favoriteClass','Favorite class or build','text',45],
+ ['guild','Guild (free text)','text',70],['guildTag','Guild tag (2–4 letters)','text',4],['favoriteClass','Favorite class or build','text',45],
  ['raidStatus','Daily raid teams','text',90],['guildStatus','Guild recruitment','text',90]
 ];
 const profileCard=(p,{full=false}={})=>{
@@ -41,7 +41,7 @@ const profileForm=p=>{
  fields.map(([key,label,type,max])=>'<label>'+label+'<input name="'+key+'" type="'+type+'" maxlength="'+max+'" value="'+esc(p[key]||'')+'"></label>').join('')+
  '<label>Player card picture (optional)<input id="arcanaAvatarFile" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" class="btn secondary" data-community-action="clear-avatar">Remove picture</button><p id="arcanaAvatarStatus" class="mutedSmall" role="status"></p>'+ 
  '<label>About your character and what you are looking for<textarea name="description" maxlength="500" rows="5" placeholder="Builds you enjoy, raid team goals, or guild details">'+esc(p.description||'')+'</textarea></label>'+
- '<button class="btn primary" type="submit">Save player card</button><p class="mutedSmall">Four-letter tags must be unclaimed or belong to your registered guild. Unregistered tags are gray; registered tags display an official crest. <button class="inlineLink" type="button" data-route="guilds">Explore guilds</button></p><p class="mutedSmall">Everything on this card is public. Only share details you want other players to see. Guild and class information is self-reported.</p></form>';
+ '<button class="btn primary" type="submit">Save player card</button><p class="mutedSmall">Tags may be 2–4 letters (A–Z) and must be unclaimed or belong to your registered guild. Unregistered tags remain gray; approved registered tags use their chosen colors. <button class="inlineLink" type="button" data-route="guilds">Explore guilds</button></p><p class="mutedSmall">Everything on this card is public. Only share details you want other players to see. Guild and class information is self-reported.</p></form>';
 };
 function accountView(){
  if(state.me===undefined)return notice('Loading your Arcana account…');
