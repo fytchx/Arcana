@@ -112,6 +112,7 @@ export async function handleGuildHubRequest(req,res,url){
   const body=await parseJSON(req,12000);
   const tag=String(body?.tag||'').toUpperCase(),name=clean(body?.name,64),bio=clean(body?.bio,1500);
   if(!validTag(tag))fail(422,'A guild tag must contain exactly four letters.');
+  if(user.profile?.guildId)fail(409,'Leave your current Arcana guild before registering another.');
   if(name.length<3)fail(422,'Guild name must contain at least three characters.');
   const result=await queued(async()=>{
    const all=await guilds();
