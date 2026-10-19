@@ -42,7 +42,7 @@ test('shared shaders draw in real Arcana, gallery, signature art and five-page m
  for(const control of ['aura','sheen','detail'])assert.ok(panel.includes('data-design-field="'+control+'"'));
  assert.match(panel,/designUnifiedPresetGrid/);
  assert.equal((panel.match(/data-collection="signature"/g)||[]).length,20);
- assert.match(panel,/Classic Collection/);
+ assert.equal((panel.match(/data-collection="classic"/g)||[]).length,18);
  assert.match(panel,/Surprise me/);
  assert.match(panel,/All 42 presets/);
  assert.match(mini,/--mini-signature-scale/);
