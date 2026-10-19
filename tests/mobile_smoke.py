@@ -314,6 +314,19 @@ with sync_playwright() as playwright:
     # Restore the Signature look for a full-site test.
     page.locator('[data-theme-pattern="astral-sovereign"]').evaluate('el=>el.click()')
     page.screenshot(path=str(OUT/'signature-playground-mobile.png'),full_page=True)
+    # Theme preview must stay alongside the editor while scrolling on desktop.
+    page.set_viewport_size({'width':1360,'height':860})
+    page.evaluate('window.scrollTo(0,520)')
+    page.wait_for_timeout(200)
+    top_a=page.locator('.themeStudioPreview').evaluate('e=>e.getBoundingClientRect().top')
+    page.evaluate('window.scrollTo(0,1050)')
+    page.wait_for_timeout(200)
+    top_b=page.locator('.themeStudioPreview').evaluate('e=>e.getBoundingClientRect().top')
+    assert abs(top_a-top_b)<50, 'Desktop theme preview does not follow the editor scroll: '+repr((top_a,top_b))
+    page.screenshot(path=str(OUT/'theme-desktop-sticky-preview.png'),full_page=True)
+    page.set_viewport_size({'width':390,'height':844})
+    page.evaluate('window.scrollTo(0,0)')
+
     page.locator('[data-action="theme-try-on"]').click()
     page.wait_for_selector('.launchHero',timeout=8000)
     assert page.locator('html').get_attribute('data-arcana-design-active')=='true', 'Try-on must apply the homepage theme'
