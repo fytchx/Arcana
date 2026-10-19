@@ -13,13 +13,24 @@ with sync_playwright() as playwright:
  browser=playwright.chromium.launch(headless=True,args=['--disable-dev-shm-usage','--no-sandbox'])
  page=browser.new_page(viewport={'width':390,'height':844},device_scale_factor=1)
  errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
- response=page.goto(URL,wait_until='domcontentloaded',timeout=55000)
- try:
-  page.locator('#content.homeFullscreen .launchHero').wait_for(timeout=18000)
- except Exception:
-  print('PERF SITE DEBUG',json.dumps({'httpStatus':response.status if response else None,'url':page.url,'title':page.title(),'body':page.locator('body').inner_text()[:1500],'errors':errors}))
-  page.screenshot(path=str(OUT/'public-performance-debug.png'),full_page=True)
-  raise
+ # Railway may be promoting the candidate while GitHub CI starts. Wait for
+ # the *actual* latest deploy to become healthy instead of treating a transient
+ # 502 at cutover as a JS rendering regression.
+ response=None
+ for attempt in range(15):
+  response=page.goto(URL,wait_until='domcontentloaded',timeout=25000)
+  if response is not None and response.status==200:
+   try:
+    page.locator('#content.homeFullscreen .launchHero').wait_for(timeout=12000)
+    break
+   except Exception:
+    pass
+  print('Preview deployment warming:',attempt+1,'HTTP',response.status if response else None)
+  if attempt==14:
+   print('PERF SITE DEBUG',json.dumps({'httpStatus':response.status if response else None,'url':page.url,'title':page.title(),'body':page.locator('body').inner_text()[:1000],'errors':errors}))
+   page.screenshot(path=str(OUT/'public-performance-debug.png'),full_page=True)
+   raise RuntimeError('Latest Railway preview never became healthy during visitor QA')
+  page.wait_for_timeout(10000)
  assert page.locator('[data-mini-live-frame]').count()==0,'Visitors must never load the designer iframe'
  assert page.locator('.arcanaDesignLab').count()==0,'Visitors must never load the theme editor'
  results=page.evaluate("""async ()=>{
