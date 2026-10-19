@@ -29,7 +29,9 @@ test('published theme styles work for guests without leaking editor controls',as
  assert.ok(css.includes('html[data-arcana-design-active="true"]'));
  assert.ok(!css.includes('html[data-arcana-admin-design="true"]'),'Appearance stylesheet should not be restricted to admin visitors');
  assert.match(css,/background:color-mix\(in srgb,var\(--arcana-nav-panel/,'Public navigation should remain opaque while honoring the admin blend preference');
- assert.match(app,/setDesignPreview\(adminDesign\)/);
+ assert.match(app,/setDesignPreview\(adminDesign\|\|tryOnTheme\(\)\)/);
+ assert.match(app,/isLocalThemePlayground/);
+ assert.match(app,/data-arcana-theme-try-on|arcanaThemeTryOn/);
 });
 test('mobile viewport never shrinks below a device-width view, and zoom-in remains available',async()=>{
  const html=await read('../index.html'),css=await read('../styles.css');
