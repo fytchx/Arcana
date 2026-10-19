@@ -87,6 +87,15 @@ test('moderated registration, reserved tags, applications, posts, and icons pers
   assert.equal(p.guildTag,'ABCD');assert.equal(p.guildId,id);
   assert.equal((await call('/api/guild-hub/'+id+'/posts','POST',{kind:'discussion',text:'Secret team chat'},'other')).status,200);
   assert.equal((await call('/api/guild-hub/'+id+'/posts','POST',{kind:'announcement',title:'Welcome',text:'We are live'},'owner')).status,200);
+  const eventTime=new Date(Date.now()+86400000).toISOString();
+  assert.equal((await call('/api/guild-hub/'+id+'/events','POST',{title:'Weekly raid',description:'Bring your best build',startsAt:eventTime},'other')).status,403);
+  assert.equal((await call('/api/guild-hub/'+id+'/events','POST',{title:'Weekly raid',description:'Bring your best build',startsAt:eventTime},'owner')).status,200);
+  const event=(await call('/api/guild-hub/'+id)).body.guild.events[0];
+  assert.equal(event.title,'Weekly raid');assert.equal(event.attendees.length,0);
+  assert.equal((await call('/api/guild-hub/'+id+'/events','PATCH',{eventId:event.id,action:'going'},'other')).status,200);
+  assert.equal((await call('/api/guild-hub/'+id+'/events','PATCH',{eventId:event.id,action:'going'},'owner')).status,200);
+  assert.equal((await call('/api/guild-hub/'+id)).body.guild.events[0].attendees.length,2);
+
   const guest=await call('/api/guild-hub/'+id);
   assert.equal(guest.body.guild.posts.length,1);assert.equal(guest.body.guild.posts[0].kind,'announcement');
   const memberView=await call('/api/guild-hub/'+id,'GET',undefined,'other');
