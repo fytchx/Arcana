@@ -117,7 +117,7 @@ export function resetDesign(){
 }
 export function applyDesign(root=globalThis.document?.documentElement){
  if(!root)return;
- const admin=root.dataset.arcanaAdminDesign==='true'&&previewEnabled;
+ const admin=(root.dataset.arcanaAdminDesign==='true'||root.dataset.arcanaThemeTryOn==='true')&&previewEnabled;
  const published=publishedDesign!==null;
  const active=admin||published;
  root.dataset.arcanaDesignActive=String(active);
