@@ -226,7 +226,12 @@ with sync_playwright() as playwright:
     assert page.locator('.designPresetSignature').count()==24
     assert page.locator('.designPsychedelicGrid .designPresetSignature').count()==4
     live=page.frame_locator('[data-mini-live-frame]')
-    live.locator('#content.homeFullscreen .launchHero').wait_for(timeout=15000)
+    try:
+        live.locator('#content.homeFullscreen .launchHero').wait_for(timeout=12000)
+    except Exception:
+        print('LIVE FRAME DEBUG',page.locator('[data-mini-live-frame]').evaluate("""el=>({url:el.src,docURL:el.contentDocument?.URL,body:el.contentDocument?.body?.innerText?.slice(0,1400),ready:el.contentDocument?.readyState,content:el.contentDocument?.querySelector('#content')?.innerHTML?.slice(0,900)})"""))
+        print('LIVE FRAME PAGE ERRORS',repr(errors))
+        raise
     assert live.locator('body').count()==1, 'Theme preview failed to load the real current Arcana page'
     page.screenshot(path=str(OUT/'current-arcana-live-mini.png'),full_page=True)
     assert page.locator('.designClassicCollection .designPreset').count()==18
