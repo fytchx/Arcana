@@ -151,7 +151,7 @@ const searchExtras=()=>[
 function track(id){if(!id)return;state.recent=remember(id)}
 const isAppearanceAdmin=()=>Boolean(currentAccount()?.roles?.some(role=>['admin','creator'].includes(typeof role==='string'?role:role.id)));
 // The unlisted preview-domain Playground edits only local draft state. Server-side publish remains protected.
-const isLocalThemePlayground=()=>typeof location!=='undefined'&&location.hostname==='arcana-preview-app-preview.up.railway.app'&&parseRoute().route==='theme-playground';
+const isLocalThemePlayground=()=>typeof location!=='undefined'&&['arcana-preview-app-preview.up.railway.app','127.0.0.1','localhost'].includes(location.hostname)&&parseRoute().route==='theme-playground';
 const canEditThemeDraft=()=>isAppearanceAdmin()||isLocalThemePlayground();
 const themePlaygroundView=()=>'<div class="launchPage themePlayground"><span class="launchEyebrow">ARCANA PREVIEW · LOCAL ONLY</span><h1>Theme Playground</h1><p>Try all 38 presets, remix light and materials, and save up to twelve designs. This browser-only preview cannot publish anything to the real site.</p><div class="themeStudioWorkbench"><div class="themeStudioEditor">'+designPanel({showPreview:false})+'</div><aside class="themeStudioPreview" aria-label="Live theme preview">'+designMiniMarkup()+'</aside></div></div>'; 
 function crumbTrail(title){
