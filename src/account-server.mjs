@@ -189,7 +189,7 @@ export async function handleAccountRequest(req,res,url){
   const profile={...user.profile};
   if(Object.hasOwn(fields,'guildTag')){
    const tag=String(fields.guildTag||'').trim().toUpperCase();
-   if(tag&&!/^[A-Z]{4}$/.test(tag))throw error(422,'Guild tag must be four letters (A-Z).');
+   if(tag&&!/^[A-Z]{2,4}$/.test(tag))throw error(422,'Guild tag must be 2–4 letters (A-Z).');
    profile.guildTag=tag;
   }
   for(const key of profileFields)if(Object.hasOwn(fields,key))profile[key]=safeText(fields[key],fieldLengths[key]);
