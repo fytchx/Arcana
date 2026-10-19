@@ -1,0 +1,37 @@
+/* Arcana psychedelic pattern family: mathematically tileable, recolorable SVG motifs.
+   No baked image assets or borrowed stock designs. */
+:is(html[data-arcana-design-pattern="groove-melt"],html[data-arcana-design-pattern="orbit-jelly"],html[data-arcana-design-pattern="doodle-rift"],html[data-arcana-design-pattern="prism-puddle"]){--arcana-texture:var(--psychedelic-texture)!important;--arcana-texture-size:calc(360px * var(--arcana-pattern-scale,1))}
+:is(.miniCanvas[data-mini-pattern="groove-melt"],.miniCanvas[data-mini-pattern="orbit-jelly"],.miniCanvas[data-mini-pattern="doodle-rift"],.miniCanvas[data-mini-pattern="prism-puddle"]){--mini-pattern:var(--psychedelic-texture)!important}
+:is(.themePatternThumb[data-preview-pattern="groove-melt"],.themePatternThumb[data-preview-pattern="orbit-jelly"],.themePatternThumb[data-preview-pattern="doodle-rift"],.themePatternThumb[data-preview-pattern="prism-puddle"]){--thumb-pattern:var(--psychedelic-texture)!important;background-color:#151428}
+:is(.designPresetArt[data-signature-art="groove-melt"],.designPresetArt[data-signature-art="orbit-jelly"],.designPresetArt[data-signature-art="doodle-rift"],.designPresetArt[data-signature-art="prism-puddle"]){background-image:var(--psychedelic-texture)!important;background-color:var(--preset-main)}
+/* These four motifs are authored to MATCH at their borders. They MUST repeat.
+   The earlier global seam fix intentionally disables raster-repeat for non-tileable fields. */
+:is(html[data-arcana-design-active="true"][data-arcana-design-pattern="groove-melt"],html[data-arcana-design-active="true"][data-arcana-design-pattern="orbit-jelly"],html[data-arcana-design-active="true"][data-arcana-design-pattern="doodle-rift"],html[data-arcana-design-active="true"][data-arcana-design-pattern="prism-puddle"]) #content:not(.homeFullscreen),
+:is(html[data-arcana-design-active="true"][data-arcana-design-pattern="groove-melt"],html[data-arcana-design-active="true"][data-arcana-design-pattern="orbit-jelly"],html[data-arcana-design-active="true"][data-arcana-design-pattern="doodle-rift"],html[data-arcana-design-active="true"][data-arcana-design-pattern="prism-puddle"]) :is(.pathRangeWorkspace,.pathfinderHubHead),
+:is(html[data-arcana-design-active="true"][data-arcana-design-pattern="groove-melt"],html[data-arcana-design-active="true"][data-arcana-design-pattern="orbit-jelly"],html[data-arcana-design-active="true"][data-arcana-design-pattern="doodle-rift"],html[data-arcana-design-active="true"][data-arcana-design-pattern="prism-puddle"]) #content.homeFullscreen :is(.launchHero,.launchQuickCard):after,
+:is(html[data-arcana-design-active="true"][data-arcana-design-pattern="groove-melt"],html[data-arcana-design-active="true"][data-arcana-design-pattern="orbit-jelly"],html[data-arcana-design-active="true"][data-arcana-design-pattern="doodle-rift"],html[data-arcana-design-active="true"][data-arcana-design-pattern="prism-puddle"])[data-arcana-pattern-target="background"] #content.homeFullscreen{
+ background-repeat:repeat!important;background-size:var(--arcana-texture-size)!important;background-position:top left!important
+}
+:is(.miniCanvas[data-mini-pattern="groove-melt"],.miniCanvas[data-mini-pattern="orbit-jelly"],.miniCanvas[data-mini-pattern="doodle-rift"],.miniCanvas[data-mini-pattern="prism-puddle"]) :is(.miniHero,.miniTile):before,
+:is(.miniCanvas[data-mini-pattern="groove-melt"],.miniCanvas[data-mini-pattern="orbit-jelly"],.miniCanvas[data-mini-pattern="doodle-rift"],.miniCanvas[data-mini-pattern="prism-puddle"])[data-mini-pattern-target="background"]{
+ background-repeat:repeat!important;background-size:calc(360px * var(--mini-signature-scale,1))!important;background-position:top left!important
+}
+:is(.themePatternThumb[data-preview-pattern="groove-melt"],.themePatternThumb[data-preview-pattern="orbit-jelly"],.themePatternThumb[data-preview-pattern="doodle-rift"],.themePatternThumb[data-preview-pattern="prism-puddle"]){background-repeat:repeat!important;background-size:210px 210px!important;background-position:top left!important}
+:is(.designPresetArt[data-signature-art="groove-melt"],.designPresetArt[data-signature-art="orbit-jelly"],.designPresetArt[data-signature-art="doodle-rift"],.designPresetArt[data-signature-art="prism-puddle"]){background-repeat:repeat!important;background-size:255px 255px!important;background-position:top left!important}
+.psyPalettePicker{padding:12px;border:1px solid color-mix(in srgb,var(--theme-highlight) 32%,var(--line));border-radius:12px;background:linear-gradient(140deg,color-mix(in srgb,var(--theme-secondary) 96%,transparent),color-mix(in srgb,var(--theme-highlight) 5%,var(--theme-secondary)))}
+.psyPalettePicker header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between}
+.psyPalettePicker header strong{font-size:13px;color:var(--text)}
+.psyPalettePicker p{margin:6px 0 10px!important;font-size:11px;line-height:1.5;color:var(--muted)}
+.psyColorsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.psyColorsGrid .designControl{min-width:0}
+.psyPalettePicker[data-psy-active="false"]{display:none}
+.psyPalettePicker[data-psy-mode="theme"] .psyCustomColors{display:none}
+.psyPalettePicker .psyPaletteStatus{font-size:11px;color:var(--theme-highlight);font-weight:700}
+.psychedelicPresetsIntro{margin:14px 0 10px;padding:13px 15px;border-radius:13px;border:1px solid color-mix(in srgb,var(--theme-highlight) 23%,var(--line));background:linear-gradient(135deg,#1c1836,#171a37);color:#f6efff}
+.psychedelicPresetsIntro span{display:block;font-size:10px;letter-spacing:.18em;font-weight:800;color:#e3bdff}
+.psychedelicPresetsIntro h3{font-size:18px;margin:4px 0;color:#fff}
+.psychedelicPresetsIntro p{margin:3px 0 0!important;font-size:12px;line-height:1.5;color:#cfc5df}
+.designPsychedelicGrid .designPresetArt{height:105px}
+.themePatternTile[data-pattern-category="Psychedelic"]{border-color:color-mix(in srgb,var(--theme-highlight) 25%,var(--line))}
+.designPsychedelicGrid .designPresetArtCard{backdrop-filter:none}
+@media(max-width:420px){.psyColorsGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
