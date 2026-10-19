@@ -6,12 +6,12 @@ import {WIKI_ARTICLES} from '../src/wiki-data.js';
 import {wikiLandingView,wikiCategoryView,wikiArticleView,wikiRecordCard,wikiRecordView} from '../src/wiki-views.js';
 import {VERIFIED_ITEM_SNAPSHOT} from '../src/verified-item-snapshot.js';
 import {resolveOfficialSprite} from '../src/assets.js';
-test('approved Wiki tree has 8 unique parents and 30 unique article IDs, ten existing',()=>{
+test('approved Wiki tree has 8 unique parents and 31 unique article IDs, eleven existing',()=>{
  const entries=wikiPlannedArticles(),ids=entries.map(e=>e.id);
  assert.equal(WIKI_CATEGORIES.length,8);
- assert.equal(entries.length,30);
- assert.equal(entries.filter(e=>e.existing).length,10);
- assert.equal(new Set(ids).size,30);
+ assert.equal(entries.length,31);
+ assert.equal(entries.filter(e=>e.existing).length,11);
+ assert.equal(new Set(ids).size,31);
  assert.equal(new Set(WIKI_CATEGORIES.map(c=>c.id)).size,8);
  assert.equal(ids.filter(id=>id==='guide-builds').length,0,'Legacy guide demonstration stays in Guides instead of polluting mechanics');
  for(const row of entries){assert.equal(wikiParentCategory(row.id)?.id,row.parent);assert.ok(wikiCategory(row.parent));}

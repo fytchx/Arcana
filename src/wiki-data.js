@@ -1,4 +1,5 @@
 import {VERIFIED_CLASS_SKILL_TREES} from './verified-class-skills.js';
+import {BRUTO_PROGRESSION_GUIDE} from './bruto-progression-guide.js';
 // Short class introductions sourced from the verified skill branches.
 // Full skill effects are held by Class Skills, not duplicated on the Wiki.
 const CLASS_OVERVIEWS=Object.freeze([
@@ -86,6 +87,7 @@ export const WIKI_ARTICLES=Object.freeze([
   {title:'Reforge and compare',body:'Combining three identical items reforges them into an item of the next rarity. In the Codex you can compare an equipment base by its configured implicit-stat ranges, then open the Forge cost reference for its tier progression.'},
   {title:'Build around purpose',body:'An item with the right effects for a farming build can be useful even when a different base has a larger raw stat. Compare what each item contributes to your actual build rather than treating rarity as a complete ranking.'}],actions:[{label:'Browse Item Codex',route:'wiki/library?kind=item',icon:'shield'},{label:'Compare equipment',route:'calculators/compare',icon:'compare'},{label:'Read Forge guide',route:'wiki/article?id=forge',icon:'book'}],source:'official-patch',sourceUrl:'https://idlearc.com/patch-notes/1-3-1'},
 
+ BRUTO_PROGRESSION_GUIDE,
  ...CLASS_OVERVIEWS
 ]);
 export const WIKI_CATEGORY_LIST=Object.freeze([
@@ -113,6 +115,7 @@ export function recordKindLabel(kind){return ({item:'Equipment',material:'Materi
    Future articles can add related guide IDs, Codex categories, and tool links
    without changing routing or hardcoding UI components. */
 export const WIKI_CONNECTIONS=Object.freeze({
+ 'bruto-season-2-progression':{articles:['monster-level','forge','pet-affix-costs','rune-grid'],collections:['monster','material','rune','runeword'],tools:['pathfinder','farm','petlab','runes'],sectionLinks:{'The biome-to-biome loop':['pathfinder','farm'],'Conflux: take the daily and get out':['farm'],'Invest in pet affixes early':['petlab','affixes'],'Talismans and your ruby budget':['build'],'Rune priorities for attack builds':['runes'],'Rune priorities for pet builds':['runes'],'Four rune loadouts worth saving':['runes'],'How to calculate the value of a damage upgrade':['build'] }},
  'retaliation-warrior-zane':{articles:['gems','rune-grid','pet-compound'],collections:['class-skill','runeword','pet-bonus'],tools:['build','runes','petlab']},
  'pet-compound':{articles:['season-2','guide-builds'],collections:['pet','pet-bonus','pet-affix'],tools:['compound','petlab','affixes'],sectionLinks:{'The quick answer':['compound'],'Seasonal versus Permanent':['petlab'],'Affixes are a different system':['affixes','petAffixes']}},
  'rune-grid':{articles:['season-2','guide-builds'],collections:['rune','runeword'],tools:['runes','build'],sectionLinks:{'Progression milestones':['runes'],'Plan without losing your work':['build']}},
