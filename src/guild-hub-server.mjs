@@ -25,19 +25,6 @@ const tagStyle=(value)=>{
  if(!value||typeof value!=='object'||Array.isArray(value)||typeof value.color!=='string'||!/^#[0-9a-fA-F]{6}$/.test(value.color)||!['solid','glow','gradient'].includes(value.finish))fail(422,'Choose a valid tag color and finish.');
  return {color:value.color.toUpperCase(),finish:value.finish};
 };
-const defaultCrest=()=>({center:0,secondary:0,outline:0,border:0,colors:['#E9D7FF','#9785E8','#39235E','#F5E9BA']});
-export function validateCrest(input){
- if(!input||typeof input!=='object'||Array.isArray(input))fail(422,'Choose a valid crest design.');
- const nums=[['center',25],['secondary',25],['outline',10],['border',10]];
- const output={};
- for(const [key,max] of nums){
-  if(!Number.isInteger(input[key])||input[key]<0||input[key]>=max)fail(422,'Invalid '+key+' crest shape.');
-  output[key]=input[key];
- }
- if(!Array.isArray(input.colors)||input.colors.length!==4||input.colors.some(v=>typeof v!=='string'||!/^#[0-9a-fA-F]{6}$/.test(v)))fail(422,'Choose four crest colors.');
- output.colors=input.colors.map(v=>v.toUpperCase());
- return output;
-}
 async function guilds(){
  let names;try{names=(await readdir(DIR())).filter(n=>n.endsWith('.json')&&UUID.test(n.slice(0,-5))).slice(0,maxItems);}
  catch(e){if(e.code==='ENOENT')return [];throw e;}
@@ -52,28 +39,14 @@ function publicGuild(g,viewer,detail=false){
  const staffAccess=!!viewer&&staff(g,viewer.id);
  const reviewAccess=!!viewer&&moderator(viewer);
  const mine=!!viewer&&member(g,viewer.id);
- const icon=(g.icon?.status==='approved'||g.icon?.status==='pending'?g.icon.value:'');
- const base={id:g.id,name:g.name,tag:g.tag,bio:g.bio,status:g.status,crest:g.status==='approved'||mine||reviewAccess?g.crest:null,tagStyle:g.tagStyle||{color:'#D2B2FF',finish:'glow'},
- iconDataUrl:icon,createdAt:g.createdAt,memberCount:g.members.length,ownerId:g.ownerId,
+ const base={id:g.id,name:g.name,tag:g.tag,bio:g.bio,status:g.status,tagStyle:g.tagStyle||{color:'#D2B2FF',finish:'glow'},
+ createdAt:g.createdAt,memberCount:g.members.length,ownerId:g.ownerId,
  recruitmentOpen:g.recruitmentOpen===true,amMember:mine,canManage:staffAccess,memberRole:g.members.find(m=>m.id===viewer?.id)?.role||null,
  myApplication:g.applications.find(a=>a.id===viewer?.id&&a.status==='pending')?.status||null,
- moderationReason:mine||reviewAccess?g.moderationReason||'':'',
- pendingIconDataUrl:reviewAccess&&g.icon?.status==='pending'?g.icon.pending:''};
+ moderationReason:mine||reviewAccess?g.moderationReason||'':''};
  if(!detail)return base;
  return {...base,members:g.members.map(m=>({id:m.id,role:m.role,joinedAt:m.joinedAt,name:m.name})),
  applications:staffAccess?g.applications.filter(a=>a.status==='pending'):[]};
-}
-function picture(value){
- if(typeof value!=='string'||value.length>63000)fail(422,'Guild icon is too large.');
- const m=value.match(/^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})$/);
- if(!m)fail(422,'Upload PNG, JPG or WebP only.');
- const b=Buffer.from(m[2],'base64');
- if(b.length<16||b.length>46000)fail(422,'Guild icon must be under 45 KB after resizing.');
- const valid=m[1]==='png'?b.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])):
-  m[1]==='webp'?b.toString('ascii',0,4)==='RIFF'&&b.toString('ascii',8,12)==='WEBP':
-  b[0]===255&&b[1]===216&&b[2]===255;
- if(!valid)fail(422,'Guild icon file signature is invalid.');
- return value;
 }
 async function updateMembership(userId,guild,join){
  const a=await readJSON(userfile(userId));if(!a||a.suspended)return;
@@ -104,7 +77,7 @@ export async function handleGuildHubRequest(req,res,url){
  if(p==='/api/guild-hub/moderation'&&m==='GET'){
   const mod=await requireCapability(req,'community:hide');
   const all=await guilds();
-  sendJSON(res,200,{guilds:all.filter(g=>g.status==='pending'||g.icon?.status==='pending').map(g=>publicGuild(g,mod))});return true;
+  sendJSON(res,200,{guilds:all.filter(g=>g.status==='pending').map(g=>publicGuild(g,mod))});return true;
  }
  if(p==='/api/guild-hub/register'&&m==='POST'){
   checkOrigin(req);const user=await requireCapability(req,'community:create');
@@ -118,7 +91,7 @@ export async function handleGuildHubRequest(req,res,url){
    if(all.some(g=>statusActive(g)&&g.tag===tag))fail(409,'This guild tag is already claimed or pending review.');
    if(all.some(g=>statusActive(g)&&g.ownerId===user.id))fail(409,'You already own a guild awaiting review or approved.');
    const id=randomUUID(),at=now();
-   const g={id,name,tag,bio,ownerId:user.id,status:'pending',crest:defaultCrest(),tagStyle:{color:'#D2B2FF',finish:'glow'},icon:null,recruitmentOpen:true,
+   const g={id,name,tag,bio,ownerId:user.id,status:'pending',tagStyle:{color:'#D2B2FF',finish:'glow'},recruitmentOpen:true,
     members:[{id:user.id,name:clean(user.profile?.displayName||user.discordName,50),role:'owner',joinedAt:at}],
     applications:[],createdAt:at,updatedAt:at,moderationReason:''};
    await saveAtomic(filename(id),g);await updateMembership(user.id,g,true);await audit('registration-requested',g,user.id);
@@ -136,7 +109,8 @@ export async function handleGuildHubRequest(req,res,url){
  }
  if(m!=='POST'&&m!=='PATCH')return false;
  checkOrigin(req);const user=await requireCapability(req);
- const body=await parseJSON(req,72000);
+ if(op==='icon'&&m==='POST')fail(410,'Guild page icons are no longer supported.');
+ const body=await parseJSON(req,12000);
  const result=await queued(async()=>{
   const g=await current(id),isStaff=staff(g,user.id),isOwner=g.ownerId===user.id;
   const isMod=moderator(user);
@@ -152,10 +126,6 @@ export async function handleGuildHubRequest(req,res,url){
    }else if(action==='restore'&&g.status==='suspended'){
     const all=await guilds();if(all.some(x=>x.id!==g.id&&statusActive(x)&&x.tag===g.tag))fail(409,'Tag is claimed by another guild.');
     g.status='approved';g.moderationReason='';await clearTagImpersonators(g);
-   }else if(action==='approve-icon'&&g.icon?.status==='pending'){
-    g.icon={value:g.icon.pending,status:'approved'};await audit('icon-approved',g,user.id);
-   }else if(action==='reject-icon'&&g.icon?.status==='pending'){
-    g.icon=g.icon.value?{value:g.icon.value,status:'approved'}:null;await audit('icon-rejected',g,user.id);
    }else fail(422,'Review action is not valid for this guild.');
    await audit(action,g,user.id,clean(body.reason,300));
   }else if(!op&&m==='PATCH'){
@@ -163,16 +133,10 @@ export async function handleGuildHubRequest(req,res,url){
    if(!['pending','approved'].includes(g.status))fail(403,'This guild is not editable.');
    if(body.name!==undefined){const name=clean(body.name,64);if(name.length<3)fail(422,'Name must contain at least three characters.');g.name=name;}
    if(body.bio!==undefined)g.bio=clean(body.bio,1500);
-   if(body.crest!==undefined)g.crest=validateCrest(body.crest);
+   if(body.crest!==undefined)fail(422,'Guild crests have been retired.');
    if(body.tagStyle!==undefined)g.tagStyle=tagStyle(body.tagStyle);
    if(typeof body.recruitmentOpen==='boolean')g.recruitmentOpen=body.recruitmentOpen;
    // Approved four-letter tags never change through an unreviewed edit.
-  }else if(op==='icon'&&m==='POST'){
-   if(!isOwner)fail(403,'Only the guild owner can upload the page icon.');
-   if(!['pending','approved'].includes(g.status))fail(403,'Guild is not active.');
-   const value=picture(body.image);
-   g.icon={value:g.icon?.status==='approved'?g.icon.value:'',pending:value,status:'pending'};
-   await audit('icon-submitted',g,user.id);
   }else if(op==='apply'&&m==='POST'){
    if(g.status!=='approved'||!g.recruitmentOpen)fail(403,'This guild is not accepting applications.');
    if(member(g,user.id))fail(409,'You already belong to this guild.');
