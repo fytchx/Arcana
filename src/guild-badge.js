@@ -1,5 +1,5 @@
 // Arcana guild identity is text only. Never render a user-provided crest or image.
-const validTag=value=>/^[A-Z]{4}$/.test(String(value||''));
+const validTag=value=>/^[A-Z]{2,4}$/.test(String(value||''));
 const color=value=>/^#[0-9a-fA-F]{6}$/.test(value||'')?value:'#D2B2FF';
 const finish=value=>['solid','glow','gradient'].includes(value)?value:'solid';
 export function guildBadge(profile,registry=[]){
