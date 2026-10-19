@@ -14,7 +14,7 @@ export async function handleGeneralChat(req,res,url){
   const list=await allMessages(),limit=Math.max(1,Math.min(100,Number(url.searchParams.get('limit'))||70));
   const visible=list.filter(x=>!x.deleted).slice(-limit);
   const ids=[...new Set(visible.map(x=>x.authorId))];
-  const people=new Map(await Promise.all(ids.map(async id=>[id,await readJSON(resolve(dataRoot(),'users',id+'.json')))])));
+  const people=new Map();for(const id of ids)people.set(id,await readJSON(resolve(dataRoot(),'users',id+'.json')));
   sendJSON(res,200,{messages:visible.map(({id,authorId,name,message,createdAt})=>({id,authorId,name,message,createdAt,guildTag:people.get(authorId)?.profile?.guildTag||'',guildId:people.get(authorId)?.profile?.guildId||''})),updatedAt:new Date().toISOString()});return true;
  }
  if(path==='/api/chat/messages'&&method==='POST'){
