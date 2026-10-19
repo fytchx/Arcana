@@ -93,7 +93,11 @@ with sync_playwright() as playwright:
     page.route(qa_origin,lambda route:route.fulfill(status=200,body='<!doctype html><html><body></body></html>',content_type='text/html'))
     # The real-page theme miniature navigates a same-origin iframe. Serve this identical
     # compiled offline Arcana entrypoint there rather than letting Chromium hit an empty port.
-    page.route(re.compile(r'^http://127\\.0\\.0\\.1:17653/\\?arcanaMiniPreview=1'),lambda route:route.fulfill(status=200,body=HTML,content_type='text/html'))
+    frame_requests=[]
+    def serve_mini_frame(route):
+        frame_requests.append(route.request.url)
+        route.fulfill(status=200,body=HTML,content_type='text/html')
+    page.route(re.compile(r'^http://127\\.0\\.0\\.1:17653/\\?arcanaMiniPreview=1'),serve_mini_frame)
     page.goto(qa_origin,wait_until='domcontentloaded')
     page.set_content(HTML,wait_until='domcontentloaded')
     try:
@@ -230,6 +234,8 @@ with sync_playwright() as playwright:
         live.locator('#content.homeFullscreen .launchHero').wait_for(timeout=12000)
     except Exception:
         print('LIVE FRAME DEBUG',page.locator('[data-mini-live-frame]').evaluate("""el=>({url:el.src,docURL:el.contentDocument?.URL,body:el.contentDocument?.body?.innerText?.slice(0,1400),ready:el.contentDocument?.readyState,content:el.contentDocument?.querySelector('#content')?.innerHTML?.slice(0,900)})"""))
+        print('FRAME REQUESTS',repr(frame_requests))
+        print('ALL FRAMES',repr([(frame.url,frame.locator('body').count(),frame.locator('body').inner_text()[:180]) for frame in page.frames]))
         print('LIVE FRAME PAGE ERRORS',repr(errors))
         raise
     assert live.locator('body').count()==1, 'Theme preview failed to load the real current Arcana page'
