@@ -164,7 +164,7 @@ export const designPanel=({showPreview=true}={})=>{
   const picture=premium?'<span class="designPresetArt" data-signature-art="'+p.pattern+'" aria-hidden="true"><span class="designPresetArtCard"><b>ARCANA</b><i>✦</i><small>'+(p.collection==='psychedelic'?'Psychedelic':'Signature')+'</small></span></span>':'<span class="designPresetSwatches"><i></i><i></i><i></i><i></i></span>';
   return '<button class="designPreset '+(premium?'designPresetSignature ':'')+(active?'selected':'')+'" type="button" data-action="design-preset" data-arg="'+id+'" data-collection="'+(p.collection||'classic')+'" data-preset-search="'+esc((p.name+' '+p.pattern+' '+(p.tagline||'')).toLowerCase())+'" aria-pressed="'+active+'" style="'+css+'">'+picture+'<span class="designPresetCopy"><strong>'+esc(p.name)+'</strong><small>'+esc(premium?p.tagline:p.pattern.replace(/-/g,' ')+' texture')+'</small></span></button>';
  });
- const signaturePresets=presetCards.slice(18).join('');
+ const signaturePresets=presetCards.slice(18,38).join('');
  const classicPresets=presetCards.slice(0,18).join('');
  const psychedelicPresets=presetCards.slice(38).join('');
  const activePsy=PSYCHEDELIC_IDS.includes(d.pattern);
