@@ -232,12 +232,37 @@ with sync_playwright() as playwright:
     page.locator('[data-action="random-signature"]').click()
     assert page.locator('html').get_attribute('data-arcana-design-pattern')!='astral-sovereign'
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Signature Playground overflows mobile viewport'
+    # Actual Chromium paint-layer checks: no square tile boundaries on any material family.
+    for texture in ('astral-sovereign','abyssal-bloom','moire','grid','fog','contours'):
+        page.locator('[data-theme-pattern="'+texture+'"]').evaluate('el=>el.click()')
+        page.wait_for_timeout(70)
+        fields=page.evaluate("""() => {
+            const card=document.querySelector('.miniCanvas .miniHome .miniHero');
+            const style=getComputedStyle(card,'::before');
+            const thumb=document.querySelector('.themePatternThumb[data-preview-pattern="'+document.documentElement.dataset.arcanaDesignPattern+'"]');
+            const thumbStyle=thumb?getComputedStyle(thumb):null;
+            return {pattern:document.querySelector('[data-mini-canvas]').dataset.miniPattern,
+                repeat:style.backgroundRepeat,size:style.backgroundSize,image:style.backgroundImage,
+                mask:style.maskImage,thumbRepeat:thumbStyle?.backgroundRepeat,thumbSize:thumbStyle?.backgroundSize};
+        }""")
+        assert fields['pattern']==texture, 'Mini preview out of sync: '+str(fields)
+        assert 'gradient' in fields['image'], 'Missing texture image: '+texture
+        assert set(fields['repeat'].split(', '))=={'no-repeat'}, 'Texture tiles on '+texture+': '+str(fields)
+        assert set(fields['size'].split(', '))=={'100% 100%'}, 'Texture cuts off on '+texture+': '+str(fields)
+        assert fields['thumbRepeat']=='no-repeat', 'Finish thumbnail tiles on '+texture
+        assert fields['thumbSize']=='100% 100%', 'Finish thumb cutoff on '+texture
+        if texture in ('astral-sovereign','moire','contours'):
+            page.locator('[data-mini-canvas]').screenshot(path=str(OUT/('seamfree-'+texture+'.png')))
+    # Restore the Signature look for a full-site test.
+    page.locator('[data-theme-pattern="astral-sovereign"]').evaluate('el=>el.click()')
     page.screenshot(path=str(OUT/'signature-playground-mobile.png'),full_page=True)
     page.locator('[data-action="theme-try-on"]').click()
     page.wait_for_selector('.launchHero',timeout=8000)
     assert page.locator('html').get_attribute('data-arcana-design-active')=='true', 'Try-on must apply the homepage theme'
     assert page.locator('html').get_attribute('data-arcana-admin-design')=='false', 'Try-on must not elevate admin privileges'
     assert page.evaluate("getComputedStyle(document.querySelector('.launchHero'),'::after').backgroundImage.includes('gradient')"), 'Try-on must style the actual homepage'
+    real=page.evaluate("""() => {const css=getComputedStyle(document.querySelector('.launchHero'),'::after');return {repeat:css.backgroundRepeat,size:css.backgroundSize}}""")
+    assert real['repeat']=='no-repeat' and real['size']=='100% 100%', 'Real homepage still has a tiling seam: '+str(real)
     page.evaluate("location.hash='#/theme-playground'")
     page.wait_for_selector('.themePlayground',timeout=8000)
     page.locator('[data-action="theme-try-off"]').click()
