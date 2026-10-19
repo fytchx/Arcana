@@ -14,7 +14,9 @@ const points=(cx,cy,r,seed=0,count=72)=>{
  result.push([rnd(cx+Math.cos(t)*rr),rnd(cy+Math.sin(t)*rr)]);}
  return 'M'+result.map(p=>p.join(' ')).join('L')+'Z';
 };
-const offsetCopies=(make)=>[-W,0,W].map(dx=>[-W,0,W].map(dy=>'<g transform="translate('+dx+' '+dy+')">'+make+'</g>').join('')).join('');
+// One vector definition is reused at the nine tile-edge offsets (instead of
+// duplicating the same path data nine times in every visitor's SVG).
+const offsetCopies=make=>'<defs><g id="motif-art">'+make+'</g></defs>'+[-W,0,W].map(dx=>[-W,0,W].map(dy=>'<use href="#motif-art" transform="translate('+dx+' '+dy+')"/>').join('')).join('');
 const path=(d,fill,stroke='none',sw=0)=>'<path d="'+d+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'" stroke-linejoin="round" stroke-linecap="round"/>';
 const blob=(x,y,r,seed,c,o,weight)=>[path(points(x,y,r,seed),c.primary,o,weight),path(points(x+9,y-5,r*.75,seed+1.1),c.secondary,o,weight*.65),path(points(x+3,y+3,r*.48,seed+2.1),c.accent,o,weight*.55),'<circle cx="'+(x-r*.12)+'" cy="'+(y-r*.15)+'" r="'+rnd(r*.16)+'" fill="'+c.background+'" opacity=".85"/>'].join('');
 const star=(x,y,r,color)=>path('M'+x+' '+(y-r)+'Q'+(x+r*.16)+' '+(y-r*.16)+' '+(x+r)+' '+y+'Q'+(x+r*.16)+' '+(y+r*.16)+' '+x+' '+(y+r)+'Q'+(x-r*.16)+' '+(y+r*.16)+' '+(x-r)+' '+y+'Q'+(x-r*.16)+' '+(y-r*.16)+' '+x+' '+(y-r)+'Z',color);
@@ -29,7 +31,7 @@ function waves(c,weight){
   const d='M'+top.map(a=>a.join(' ')).join('L')+'L'+bottom.map(a=>a.join(' ')).join('L')+'Z';
   body+=path(d,col,c.outline,weight);
  }
- return [-W,0,W].map(dy=>'<g transform="translate(0 '+dy+')">'+body+'</g>').join('');
+ return '<defs><g id="flow-bands">'+body+'</g></defs>'+[-W,0,W].map(dy=>'<use href="#flow-bands" transform="translate(0 '+dy+')"/>').join('');
 }
 function orbits(c,weight){
  const motifs=[[25,34,93,.35],[283,95,91,2.8],[133,285,116,4.4]];
@@ -91,8 +93,8 @@ export function psychedelicSvg(id,values={}){
 export function applyPsychedelicTexture(root,values){
  if(!root)return;
  const css=psychedelicSvg(values.pattern,values);
- if(css)root.style.setProperty('--psychedelic-texture',css);
- else root.style.removeProperty('--psychedelic-texture');
+ if(css&&root.style.getPropertyValue('--psychedelic-texture')!==css)root.style.setProperty('--psychedelic-texture',css);
+ else if(!css&&root.style.getPropertyValue('--psychedelic-texture'))root.style.removeProperty('--psychedelic-texture');
 }
 export function syncPsychedelicSamples(root=globalThis.document,values={}){
  if(!root?.querySelectorAll)return;
