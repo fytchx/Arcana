@@ -50,7 +50,7 @@ export async function loadAdminTraffic(refresh,{force=false}={}){
   const d=await res.json();
   if(!res.ok)throw Error(d.error||'Unable to load traffic statistics.');
   state.data=d;state.error='';state.loadedAt=Date.now();
- }catch(e){state.error=e.message||'Traffic service unavailable';state.data=null;}
+ }catch(e){state.error=e.message||'Traffic service unavailable';state.data=null;state.loadedAt=Date.now();}
  finally{state.loading=false;if(location.hash.startsWith('#/admin'))refresh();}
 }
 export function wireAdminTraffic({refresh}){
