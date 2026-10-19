@@ -224,6 +224,8 @@ with sync_playwright() as playwright:
     page.wait_for_selector('.themePlayground',timeout=8000)
     assert page.locator('.designPresetSignature').count()==24
     assert page.locator('.designPsychedelicGrid .designPresetSignature').count()==4
+    if page.locator('[data-mini-toggle]').get_attribute('aria-expanded')=='false':
+        page.locator('[data-mini-toggle]').click()
     live=page.frame_locator('[data-mini-live-frame]')
     try:
         live.locator('#content.homeFullscreen .launchHero').wait_for(timeout=12000)
