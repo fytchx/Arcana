@@ -135,7 +135,7 @@ export async function refreshTheme(){
  if(typeof fetch==='undefined')return applyTheme();
  try{
   // This first-party endpoint is the authoritative published design for every user.
-  const res=await fetch('/api/site/theme',{cache:'no-store',credentials:'omit'});
+  const res=await fetch('/api/site/theme',{cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(6500)});
   if(!res.ok)throw new Error('Public site config '+res.status);
   const site=await res.json();
   setPublishedDesign(site?.design||null);
@@ -167,7 +167,7 @@ function restorePreviewAppearanceOnce(){
 export function initTheme(){
  restorePreviewAppearanceOnce();
  applyTheme();
- void refreshTheme();
+ void refreshTheme().finally(()=>{if(typeof document!=='undefined')document.dispatchEvent(new Event('arcana:theme-ready'));});
  if(typeof window!=='undefined'){
   window.setInterval(()=>{if(!document.hidden)void refreshTheme()},240000);
   window.addEventListener('focus',()=>{void refreshTheme()});
