@@ -91,7 +91,6 @@ function moderate(me){
 }
 export function guildHubPage(route,query,me){
  const id=query.get('id'),g=state.detail?.id===id?state.detail:null;
- if(route==='guilds/crest')return directory(me);
  if(route==='guilds/register')return registration(me);
  if(route==='guilds/view')return detail(g,me);
  if(route==='guilds/manage')return manage(g,me);
