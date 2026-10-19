@@ -17,7 +17,7 @@ const filename=id=>resolve(DIR(),id+'.json');
 const userfile=id=>resolve(USERS(),id+'.json');
 const now=()=>new Date().toISOString();
 const maxItems=2500;
-const statusActive=g=>['pending','approved'].includes(g.status);
+const statusActive=g=>['pending','approved','suspended'].includes(g.status);
 const staff=(g,id)=>g.ownerId===id||g.members.some(m=>m.id===id&&m.role==='officer');
 const member=(g,id)=>g.members.some(m=>m.id===id);
 const moderator=user=>can(user,'community:hide');
@@ -57,6 +57,7 @@ function publicGuild(g,viewer,detail=false){
  iconDataUrl:icon,createdAt:g.createdAt,memberCount:g.members.length,ownerId:g.ownerId,
  recruitmentOpen:g.recruitmentOpen===true,amMember:mine,canManage:staffAccess,memberRole:g.members.find(m=>m.id===viewer?.id)?.role||null,
  myApplication:g.applications.find(a=>a.id===viewer?.id&&a.status==='pending')?.status||null,
+ moderationReason:mine||reviewAccess?g.moderationReason||'':'',
  pendingIconDataUrl:reviewAccess&&g.icon?.status==='pending'?g.icon.pending:''};
  if(!detail)return base;
  return {...base,members:g.members.map(m=>({id:m.id,role:m.role,joinedAt:m.joinedAt,name:m.name})),
