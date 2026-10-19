@@ -60,7 +60,7 @@ function detail(g,me){
  '<section class="guildHubCover"><div class="guildHubTileTop">'+
  (g.iconDataUrl?'<img class="guildHubIcon guildHubBig" src="'+esc(g.iconDataUrl)+'" alt="">':'<span class="guildHubIcon guildHubBig guildHubIconBlank">'+icon('shield',42)+'</span>')+
  '<div><span class="eyebrow">'+esc(status(g))+'</span><h1>'+esc(g.name)+'</h1><div class="guildHubIdentity">'+tag(g)+'</div></div></div>'+
- '<p class="guildHubBio">'+esc(g.bio||'This guild has not written its bio yet.')+'</p>'+
+ '<p class="guildHubBio">'+esc(g.bio||'This guild has not written its bio yet.')+'</p>'+ (g.moderationReason?'<p class="guildHubNotice">Review note: '+esc(g.moderationReason)+'</p>':'')+
  '<div class="guildHubMeta"><span>'+g.memberCount+' members</span><span>'+(g.recruitmentOpen?'Accepting applications':'Not recruiting')+'</span></div>'+
  (g.canManage?'<button class="btn primary" data-route="guilds/manage" data-params="id='+esc(g.id)+'">Open guild management</button>':'')+
  (apply?'<form class="guildHubForm guildHubApply" data-gh-form="apply" data-id="'+esc(g.id)+'"><label>Introduce yourself<textarea name="note" maxlength="500" rows="3" placeholder="What should this guild know about you?"></textarea></label><button type="submit" class="btn primary">Apply to join</button></form>':'')+
@@ -117,7 +117,7 @@ export function guildHubPage(route,query,me){
  return directory(me);
 }
 export async function loadGuildHub(route,query,refresh,me){
- const key=route+'?'+query.toString();
+ const key=route+'?'+query.toString()+'|'+(me?.id||'guest');
  if(state.loading||state.requested===key)return;
  state.loading=true;state.requested=key;
  try{
