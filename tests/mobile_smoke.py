@@ -175,7 +175,9 @@ with sync_playwright() as playwright:
     # Community is a proper gateway to public editorial content while preserving builds.
     page.locator('#arcanaDock [data-dock="community"]').click()
     page.wait_for_selector('.communityPage',timeout=8000)
-    assert page.locator('.communityJournalGateway a[href="/journal"]').count()==1
+    assert page.locator('.communityPathways a[href="/journal"]').count()==1
+    assert page.locator('.communityPathway').count()==4
+    assert page.locator('.communityPathways [data-route="wiki/guides"]').count()==1
     assert 'Player builds' in page.locator('.communityPage').inner_text()
     assert page.locator('#arcanaDock [data-dock="community"]').get_attribute('aria-current')=='page'
     page.screenshot(path=str(OUT/'journal_community_mobile.png'),full_page=True)
@@ -219,9 +221,13 @@ with sync_playwright() as playwright:
 
 
 
-    page.locator('#arcanaDock [data-dock="featured"]').click()
-    page.wait_for_selector('.arcanaFeaturedPage',timeout=8000)
-    assert 'Arcana Journal' in page.locator('.arcanaFeaturedPage').inner_text()
+    page.locator('#arcanaDock [data-dock="search"]').click()
+    page.wait_for_selector('.arcanaSearchDiscoverGrid',timeout=8000)
+    assert page.locator('.arcanaSearchDiscoverGrid button').count()==6
+    page.locator('#globalSearch').fill('Pathfinder')
+    assert page.locator('.arcanaSearchDiscover').count()==0, 'Featured suggestions must disappear when typing'
+    assert page.locator('#searchResults').count()==1
+    page.locator('#layer [data-close]').first.click()
 
     page.locator('#arcanaDock [data-dock="home"]').click()
     page.locator('.launchHeroCTA').click()
@@ -237,7 +243,8 @@ with sync_playwright() as playwright:
     page.evaluate("location.hash='#/theme-playground'")
     page.wait_for_selector('.themePlayground',timeout=8000)
     assert page.locator('.designPresetSignature').count()==24
-    assert page.locator('.designPsychedelicGrid .designPresetSignature').count()==4
+    assert page.locator('.designUnifiedPresetGrid [data-collection="psychedelic"]').count()==4
+    assert page.locator('.designUnifiedPresetGrid .designPreset').count()==42
     # True SVG <use> references must paint the colored motifs in Chromium.
     paints=page.evaluate("""async () => {
        const {psychedelicSvg,PSYCHEDELIC_IDS,PSYCHEDELIC_DEFAULTS}=await import('@arcana/psychedelic-patterns.js');
@@ -271,7 +278,7 @@ with sync_playwright() as playwright:
         raise
     assert live.locator('body').count()==1, 'Theme preview failed to load the real current Arcana page'
     page.screenshot(path=str(OUT/'current-arcana-live-mini.png'),full_page=True)
-    assert page.locator('.designClassicCollection .designPreset').count()==18
+    assert page.locator('.designUnifiedPresetGrid [data-collection="classic"]').count()==18
     assert page.locator('[data-theme-save]').count()==12
     page.locator('.designPresetSignature[data-arg="astral"]').click()
     assert page.locator('html').get_attribute('data-arcana-design-pattern')=='astral-sovereign'
