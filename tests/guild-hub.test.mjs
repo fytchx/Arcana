@@ -8,8 +8,8 @@ import {safeGuildHubRequest,validTag} from '../src/guild-hub-server.mjs';
 import {saveAtomic,publicProfile} from '../src/account-server.mjs';
 import {guildBadge,guildTagBadge} from '../src/guild-badge.js';
 
-test('four-letter guild tags render safely with custom colors but no crest',()=>{
- assert.ok(validTag('PDXO'));assert.ok(!validTag('ABC'));assert.ok(!validTag('1ABC'));assert.ok(!validTag('ABCDE'));
+test('2–4 letter guild tags render safely with custom colors but no crest',()=>{
+ assert.ok(validTag('PDXO'));assert.ok(validTag('PDX'));assert.ok(validTag('PX'));assert.ok(!validTag('P'));assert.ok(!validTag('1ABC'));assert.ok(!validTag('ABCDE'));
  assert.equal(guildBadge({guildTag:'ABC!'}),'');
  const registry=[{id:'guild-a',status:'approved',tag:'PDXO',tagStyle:{color:'#32C9DF',finish:'glow'}}];
  const official=guildBadge({guildTag:'PDXO',guildId:'guild-a'},registry);
@@ -61,7 +61,7 @@ test('moderated registration, reserved tags, fancy colors and recruitment enforc
   const owner=await create('owner'),other=await create('other'),mod=await create('mod',['moderator']);
   assert.equal((await call('/api/guild-hub/register','POST',{name:'Hax',tag:'PDXO'},null)).status,401);
   assert.equal((await call('/api/guild-hub/register','POST',{name:'Hax',tag:'PDXO'},'owner','https://example.com')).status,403);
-  assert.equal((await call('/api/guild-hub/register','POST',{name:'Hax',tag:'XXX'},'owner')).status,422);
+  assert.equal((await call('/api/guild-hub/register','POST',{name:'Hax',tag:'X'},'owner')).status,422);
   assert.equal((await profileTag('ABCD','other')).status,200);
   const created=await call('/api/guild-hub/register','POST',{name:'Pacific Vanguard',tag:'ABCD',bio:'Raids and casual progression'},'owner');
   assert.equal(created.status,201);assert.equal(created.body.guild.status,'pending');
@@ -99,6 +99,18 @@ test('moderated registration, reserved tags, fancy colors and recruitment enforc
   assert.equal((await call('/api/guild-hub/'+id+'/members','PATCH',{action:'leave',userId:owner.id},'owner')).status,409);
   assert.equal((await call('/api/guild-hub/'+id+'/members','PATCH',{action:'leave',userId:other.id},'other')).status,200);
   assert.equal((await readJSON(resolve(root,'users',other.id+'.json'))).profile.guildId,'');
+  const second=await create('second'),third=await create('third');
+  const short=await call('/api/guild-hub/register','POST',{name:'Paradox',tag:'PDX',bio:'Three-letter guild'},'second');
+  assert.equal(short.status,201);assert.equal(short.body.guild.tag,'PDX');
+  const shorter=await call('/api/guild-hub/register','POST',{name:'Two Letters',tag:'PX',bio:'Two-letter guild'},'third');
+  assert.equal(shorter.status,201);assert.equal(shorter.body.guild.tag,'PX');
+  assert.equal((await profileTag('PDX','other')).status,409,'Pending three-letter tag must be reserved');
+  assert.equal((await profileTag('PX','other')).status,409,'Pending two-letter tag must be reserved');
+  assert.equal((await profileTag('PT','other')).status,200,'Unregistered two-letter tags should be permitted');
+  assert.equal((await profileTag('P','other')).status,422);
+  assert.equal((await call('/api/guild-hub/'+short.body.guild.id+'/moderation','PATCH',{action:'approve'},'mod')).status,200);
+  assert.equal((await call('/api/guild-hub/'+shorter.body.guild.id+'/moderation','PATCH',{action:'approve'},'mod')).status,200);
+
  }finally{
   await rm(root,{recursive:true,force:true});
   for(const [k,v] of Object.entries(old)){const key=({data:'ARCANA_ACCOUNT_DATA_DIR',base:'ARCANA_AUTH_BASE_URL',client:'ARCANA_DISCORD_CLIENT_ID',secret:'ARCANA_DISCORD_CLIENT_SECRET'})[k];if(v===undefined)delete process.env[key];else process.env[key]=v;}
