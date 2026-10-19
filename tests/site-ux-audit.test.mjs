@@ -6,12 +6,12 @@ import {designPanel,settingsView} from '../src/launch-navigation.js';
 
 const read=path=>readFile(new URL(path,import.meta.url),'utf8');
 const patterns=['contours','rings','stars','grid','aurora','diagonal','hex','grain','crystal','nebula','weave','runes','circuit','topography','facets','scanlines','honeycomb','plain'];
-test('global appearance studio has 18 presets and 18 working pattern modes',async()=>{
+test('global appearance studio has 38 presets and classic pattern support',async()=>{
  const html=designPanel(),css=await read('../arcana-contour.css');
- assert.equal(Object.keys(DESIGN_PRESETS).length,18);
+ assert.equal(Object.keys(DESIGN_PRESETS).length,38);
  for(const [id,p] of Object.entries(DESIGN_PRESETS)){
   assert.match(html,new RegExp('data-arg="'+id+'"'));
-  assert.ok(patterns.includes(p.pattern),id+' uses a supported texture');
+  assert.equal(validateDesignField('pattern',p.pattern),p.pattern,id+' uses a supported texture');
   for(const key of ['main','card','action','text'])assert.ok(/^#[0-9a-fA-F]{6}$/.test(p[key]),id+':'+key);
  }
  for(const mode of patterns){
