@@ -36,7 +36,7 @@ export const HOME_MENUS=Object.freeze({
   link('Guild Skill Planner','Allocate, compare and share guild skill points.','labs/guild-tree','shield'),
   link('Damage Calculator · Work in Progress','Damage comparisons and build upgrade analysis in development.','calculators/damage','calculator')
  ]},
- builds:{title:'Builds & Guides',detail:'Player guides, community builds, sharing and character planning.',links:[
+ builds:{title:'Builds, Guides & Wiki',detail:'Player guides, community builds, sharing and character planning.',links:[
   link('Player Guides','Guides for classes, progression and game systems.','wiki/guides','book'),
   link('Community Builds & Guides','Browse player-written guides and shared setups.','community','users'),
   link('Open Build Studio','Equipment, pets, runes and skills in one build.','labs/build','shield'),
