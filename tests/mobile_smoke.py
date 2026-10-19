@@ -97,7 +97,7 @@ with sync_playwright() as playwright:
     def serve_mini_frame(route):
         frame_requests.append(route.request.url)
         route.fulfill(status=200,body=HTML,content_type='text/html')
-    page.route(re.compile(r'^http://127\\.0\\.0\\.1:17653/\\?arcanaMiniPreview=1'),serve_mini_frame)
+    page.route(re.compile(r'^http://127\.0\.0\.1:17653/\?arcanaMiniPreview=1'),serve_mini_frame)
     page.goto(qa_origin,wait_until='domcontentloaded')
     page.set_content(HTML,wait_until='domcontentloaded')
     try:
