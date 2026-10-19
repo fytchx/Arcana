@@ -23,17 +23,12 @@
 .guildHubForm textarea{width:100%;resize:vertical;line-height:1.55}
 .guildHubForm :is(input,textarea,select):focus-visible{outline:2px solid var(--theme-highlight,#bda2f7);outline-offset:2px}
 .guildHubCheck{display:flex!important;flex-flow:row nowrap;align-items:center}.guildHubCheck input{width:20px;height:20px}
-.guildHubCrestEditor{display:grid;grid-template-columns:150px 1fr;align-items:start;gap:15px;border:1px solid var(--stroke,#594c6e);padding:16px;border-radius:14px}
-.guildHubCrestPreview{display:grid;place-items:center;min-height:135px;background:radial-gradient(ellipse at 50% 60%,#45305a,#17131f 70%);border:1px solid #66527c;border-radius:12px}
-.guildHubCrestControls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.guildHubCrestControls label{font-size:11px}.guildHubCrestControls input[type=color]{padding:3px!important;min-height:40px;width:100%}
 .guildHubRoster{display:grid;gap:5px}.guildHubMember{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:45px;padding:9px 12px;border:1px solid color-mix(in srgb,var(--stroke,#554964) 65%,transparent);border-radius:9px}
 .guildHubMemberName{border:0;background:none;color:var(--theme-highlight,#d1b7ff);font:inherit;font-weight:750;cursor:pointer;padding:6px 0}.guildHubMember>span{margin-right:auto;color:var(--muted,#bfb7cd);font-size:12px;text-transform:capitalize}
 .guildHubPost{border-bottom:1px solid var(--stroke,#514660);padding:13px 0}.guildHubPost:last-of-type{border-bottom:0}.guildHubPost header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .guildHubPost header strong{font-size:14px}.guildHubPost small{color:var(--muted,#bfb7cd);font-size:11px}.guildHubPost p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}
 .guildHubCompose{margin-top:18px;padding:17px;background:color-mix(in srgb,var(--panel,#231c2d) 85%,transparent)}
 .guildHubApplication{padding:12px;border:1px solid var(--stroke,#564a65);border-radius:10px;margin-bottom:10px}.guildHubApplication p{white-space:pre-wrap;color:var(--muted,#beb6cd)}
-.guildHubIconReview{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-top:14px}
-@media(max-width:560px){.guildHubToolbar .btn{flex:1 1 130px}.guildHubCrestEditor{grid-template-columns:1fr}.guildHubCrestPreview{min-height:125px}.guildHubMember>.btn{font-size:11px;padding:9px}.guildHubCrestControls{grid-template-columns:1fr 1fr}.guildHubTile{padding:17px}}
 
 .arcanaGuildTag.isOfficial{color:var(--guild-tag-color,#d2b2ff)}.arcanaGuildTag.finish-solid{text-shadow:none}.arcanaGuildTag.finish-glow{text-shadow:0 0 8px var(--guild-tag-color,#d2b2ff)}.arcanaGuildTag.finish-gradient>span{background:linear-gradient(110deg,#fff,var(--guild-tag-color,#d2b2ff) 65%);-webkit-background-clip:text;background-clip:text;color:transparent}.guildHubTagStyle{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 
@@ -41,12 +36,22 @@
 .guildHubEvent h3{font-size:18px;margin:7px 0 4px}.guildHubEvent p{font-size:13px;color:var(--muted,#bfb6cd);line-height:1.6;white-space:pre-wrap}
 .guildHubEvent small{color:var(--muted,#bfb6cd);display:block;font-size:12px}.guildHubEvents .guildHubCompose h3{margin:0;font:600 20px Georgia,serif}
 
-.guildHubCrestCTA{position:relative;display:grid;grid-template-columns:100px minmax(0,1fr) auto;align-items:center;gap:18px;margin:0 0 24px;padding:20px;border:1px solid color-mix(in srgb,var(--theme-highlight,#bb9eff) 48%,var(--stroke,#50425e));border-radius:18px;background:linear-gradient(105deg,color-mix(in srgb,var(--theme-secondary,#271d36) 82%,#9568d8),var(--theme-main,#17121f));box-shadow:0 8px 26px #09071540}
-.guildHubCrestCTAIcon{display:grid;place-items:center;filter:drop-shadow(0 4px 7px #0007)}
-.guildHubCrestCTA h2{font:600 clamp(22px,3vw,29px)/1.15 Georgia,serif;margin:6px 0 7px}
-.guildHubCrestCTA p{font-size:13px;color:var(--muted,#c4b9ce);line-height:1.65;max-width:500px;margin:0}
-.guildHubCrestCTA .btn{white-space:nowrap}.guildHubDetailFooter,.guildHubOldListings{margin:20px 0}
 .guildHubMemberActions{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}.guildHubMemberActions .btn{font-size:11px;padding:8px}
 .guildHubPage .guildHubForm{max-width:none}.guildHubPage .guildHubApply{max-width:650px;margin:18px 0 0}
-@media(max-width:850px){.guildHubCrestCTA{grid-template-columns:82px minmax(0,1fr)}.guildHubCrestCTA .btn{grid-column:1/-1;justify-self:stretch;text-align:center}.guildHubCrestCTAIcon svg{width:80px;height:80px}}
-@media(max-width:420px){.guildHubCrestCTA{padding:14px;gap:8px;grid-template-columns:65px minmax(0,1fr)}.guildHubCrestCTAIcon svg{width:64px;height:64px}.guildHubCrestCTA h2{font-size:21px}.guildHubCrestCTA p{font-size:12px}}
+
+/* The Guild Hub now keeps identity deliberately simple: name, reserved tag and color. */
+.guildHubTagIntro{display:flex;align-items:center;gap:18px;margin:0 0 22px;padding:18px 21px;border:1px solid color-mix(in srgb,var(--theme-highlight,#ad90ed) 32%,var(--stroke,#524568));border-radius:16px;background:linear-gradient(125deg,color-mix(in srgb,var(--theme-secondary,#261d35) 93%,var(--theme-highlight,#b99cff)),var(--theme-main,#17121d))}
+.guildHubTagIntro h2{margin:0 0 5px;font:600 clamp(20px,3vw,26px)/1.17 Georgia,serif;color:var(--text)}
+.guildHubTagIntro p{font-size:13px;color:var(--muted);line-height:1.55;margin:0;max-width:680px}
+.guildHubTagMark{display:grid;place-items:center;flex:none;min-width:94px;padding:13px 10px;border:1px solid color-mix(in srgb,var(--theme-highlight,#c6aafa) 50%,transparent);border-radius:11px;background:color-mix(in srgb,var(--theme-highlight,#b99cff) 12%,transparent);color:var(--theme-highlight,#d2b2ff);font-size:18px;font-weight:900;letter-spacing:.07em}
+.guildHubTagLive{display:grid;place-items:center;min-height:96px;margin:12px 0;padding:18px;border:1px solid var(--line,#4f4860);border-radius:12px;background:color-mix(in srgb,var(--theme-main,#171121) 86%,var(--theme-secondary,#272032))}
+.guildHubTagLive .arcanaGuildTag{font-size:clamp(24px,5vw,36px);letter-spacing:.085em;line-height:1.25}
+.guildHubTagPanel .guildHubForm{display:grid;grid-template-columns:minmax(130px,1fr) minmax(150px,1fr) auto;align-items:end;gap:12px;padding:0;margin:14px 0;background:transparent;border:0;box-shadow:none}
+.guildHubTagPanel .guildHubForm label{margin:0}
+.guildHubTagPanel .guildHubForm input[type=color]{height:44px;min-height:44px;width:100%;padding:4px}
+.guildHubTagPanel .guildHubForm select{min-height:44px}
+.guildHubTagPanel .guildHubForm button{min-height:44px}
+.guildHubIconBlank{font-size:19px;font-weight:900;letter-spacing:.1em;background:linear-gradient(145deg,color-mix(in srgb,var(--theme-highlight,#bb9ffe) 19%,var(--theme-secondary,#252033)),var(--theme-main,#15121b))}
+.arcanaGuildTag.isOfficial.finish-gradient>span{color:transparent;background:linear-gradient(105deg,color-mix(in srgb,var(--guild-tag-color,#d2b2ff) 57%,white),var(--guild-tag-color,#d2b2ff) 70%);background-clip:text;-webkit-background-clip:text}
+@media(max-width:650px){.guildHubTagPanel .guildHubForm{grid-template-columns:1fr 1fr}.guildHubTagPanel .guildHubForm button{grid-column:1/-1}.guildHubTagIntro{padding:13px;gap:12px}.guildHubTagMark{min-width:78px;font-size:14px;padding:12px 5px}}
+@media(max-width:360px){.guildHubTagIntro{flex-wrap:wrap}.guildHubTagPanel .guildHubForm{grid-template-columns:1fr}.guildHubTagPanel .guildHubForm button{grid-column:1}}
