@@ -53,6 +53,24 @@ function posts(g,viewerId){
  '<label>Title (for announcements)<input name="title" maxlength="100" placeholder="Optional title"></label><label>Message<textarea name="text" maxlength="1800" rows="4" minlength="2" required placeholder="Tell your guild something"></textarea></label><button type="submit" class="btn primary">Post to board</button></form>':
  '<p class="mutedSmall">Join the guild to participate in member discussions.</p>')+'</section>';
 }
+function guildEvents(g,me){
+ const upcoming=(g.events||[]).filter(e=>Number.isFinite(Date.parse(e.startsAt))&&Date.parse(e.startsAt)>=Date.now()-86400000).slice(0,40);
+ return '<section class="guildHubPanel guildHubEvents"><h2>Guild events &amp; raids</h2><p class="mutedSmall">Schedule guild activities, announce raid times and track who is coming. All event times display in your local timezone.</p>'+
+ (upcoming.length?upcoming.map(ev=>{
+  const responses=ev.attendees||[],mine=responses.find(a=>a.id===me?.id);
+  const when=new Date(ev.startsAt).toLocaleString([], {dateStyle:'medium',timeStyle:'short'});
+  return '<article class="guildHubEvent"><span class="eyebrow">'+esc(when)+'</span><h3>'+esc(ev.title)+'</h3><p>'+esc(ev.description||'No additional details.')+'</p>'+
+  '<small>'+responses.filter(a=>a.status==='going').length+' going · '+responses.filter(a=>a.status==='maybe').length+' maybe</small>'+
+  (g.amMember?'<div class="guildHubActions">'+actions(mine?.status==='going'?'✓ Going':'I am going','event-going',ev.id,mine?.status==='going'?'secondary':'primary')+actions(mine?.status==='maybe'?'✓ Maybe':'Maybe','event-maybe',ev.id)+
+  (mine?actions('Cancel RSVP','event-leave',ev.id):'')+'</div>':'')+
+  (g.canManage?actions('Remove event','event-remove',ev.id):'')+'</article>';
+ }).join(''):empty('No upcoming guild events yet.'))+
+ (g.canManage?'<form class="guildHubForm guildHubCompose" data-gh-form="event" data-id="'+esc(g.id)+'">'+
+ '<h3>Schedule an event</h3><label>Event title<input name="title" maxlength="100" minlength="3" required placeholder="Weekend raid, guild meeting…"></label>'+
+ '<label>Date and time<input type="datetime-local" name="startsAt" required></label>'+
+ '<label>Details<textarea name="description" rows="3" maxlength="700" placeholder="Requirements, goal, or meeting details"></textarea></label>'+
+ '<button class="btn primary" type="submit">Add guild event</button></form>':'')+'</section>';
+}
 function detail(g,me){
  if(!g)return header('Guild','Loading guild profile…');
  const apply=me&&!g.amMember&&!g.myApplication&&g.status==='approved'&&g.recruitmentOpen&&!me.guildId;
@@ -68,13 +86,13 @@ function detail(g,me){
  (!me?'<button class="btn secondary" data-route="account">Sign in to apply</button>':'')+
  (g.amMember&&g.memberRole!=='owner'?actions('Leave guild','leave',g.id):'')+'</section>'+
  '<section class="guildHubPanel"><h2>Roster</h2><div class="guildHubRoster">'+g.members.map(m=>'<div class="guildHubMember">'+memberName(m,g)+'<span>'+esc(m.role)+'</span></div>').join('')+'</div></section>'+
- posts(g,me?.id)+'</section>';
+ guildEvents(g,me)+posts(g,me?.id)+'</section>';
 }
 function select(name,options,value){
  return '<label>'+name+'<select name="'+esc(name)+'" data-gh-crest>'+
  Array.from({length:options},(_,i)=>'<option value="'+i+'" '+(i===value?'selected':'')+'>'+name+' '+(i+1)+'</option>').join('')+'</select></label>';
 }
-function editor(g){
+function editor(g,me){
  if(!g)return header('Guild management','Loading guild data…');
  const owner=g.memberRole==='owner',data=g.crest||CREST_DEFAULT;
  const colors=data.colors||CREST_DEFAULT.colors;
@@ -100,7 +118,7 @@ function editor(g){
  (m.role==='owner'?'':(owner?actions(m.role==='officer'?'Demote':'Make officer',m.role==='officer'?'member':'officer',m.id):'')+
  (owner||m.role==='member'?actions('Remove','remove-member',m.id):'')+
  (owner?actions('Transfer ownership','transfer',m.id):''))+'</div>').join('')+'</div></section>'+
- posts(g,null)+'</section>';
+ guildEvents(g,me)+posts(g,me?.id)+'</section>';
 }
 function modQueue(guilds){
  return '<section class="guildHubPage">'+header('Guild approval queue','Only Arcana moderators and administrators can approve new registered guilds and uploaded icons.')+
@@ -112,7 +130,7 @@ export function guildHubPage(route,query,me){
  const id=query.get('id');
  if(route==='guilds/register')return register(me);
  if(route==='guilds/view')return detail(state.detail?.id===id?state.detail:null,me);
- if(route==='guilds/manage')return editor(state.detail?.id===id?state.detail:null);
+ if(route==='guilds/manage')return editor(state.detail?.id===id?state.detail:null,me);
  if(route==='guilds/moderation')return modQueue(state.moderation);
  return directory(me);
 }
@@ -188,6 +206,10 @@ export function wireGuildHub({go,refresh,toast,currentAccount}){
    }else if(form.dataset.ghForm==='apply'){
     await api('/'+form.dataset.id+'/apply','POST',{note:payload.note});
     toast('Application sent to guild leaders.');await reload();
+   }else if(form.dataset.ghForm==='event'){
+    const date=new Date(payload.startsAt);if(!Number.isFinite(date.getTime()))throw Error('Enter a valid date and time.');
+    await api('/'+form.dataset.id+'/events','POST',{title:payload.title,description:payload.description,startsAt:date.toISOString()});
+    toast('Guild event scheduled.');await reload();
    }else if(form.dataset.ghForm==='post'){
     await api('/'+form.dataset.id+'/posts','POST',payload);
     toast('Message posted.');await reload();
@@ -205,10 +227,12 @@ export function wireGuildHub({go,refresh,toast,currentAccount}){
     toast('Moderation decision saved.');await reload();return;
    }
    if(!id)throw Error('Open a guild first.');
-   if(action==='leave'||action==='remove-member'||action==='transfer'||action==='remove-post'){
-    if(!confirm(action==='transfer'?'Transfer guild ownership?':action==='remove-post'?'Delete this guild message?':action==='leave'?'Leave this guild?':'Remove this member?'))return;
+   if(action==='leave'||action==='remove-member'||action==='transfer'||action==='remove-post'||action==='event-remove'){
+    if(!confirm(action==='transfer'?'Transfer guild ownership?':action==='remove-post'||action==='event-remove'?'Delete this guild item?':action==='leave'?'Leave this guild?':'Remove this member?'))return;
    }
    if(action==='accept'||action==='decline')await api('/'+id+'/applications','PATCH',{action,userId:target});
+   else if(['event-going','event-maybe','event-leave'].includes(action))await api('/'+id+'/events','PATCH',{eventId:target,action:action==='event-going'?'going':action==='event-maybe'?'maybe':'leave'});
+   else if(action==='event-remove')await api('/'+id+'/events?eventId='+encodeURIComponent(target),'DELETE');
    else if(['officer','member','remove-member','transfer','leave'].includes(action))await api('/'+id+'/members','PATCH',{userId:action==='leave'?currentAccount()?.id:target,action:action==='remove-member'?'remove':action});
    else if(action==='remove-post')await api('/'+id+'/posts?postId='+encodeURIComponent(target),'DELETE');
    else return;
