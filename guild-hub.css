@@ -10,7 +10,7 @@
 .guildHubMeta{color:var(--muted,#bfb7cd);font-size:12px;margin:14px 0;gap:17px}.guildHubActions{margin-top:14px}
 .guildHubIcon{width:56px;height:56px;flex:none;object-fit:cover;border-radius:13px;border:1px solid var(--stroke,#504663);background:#21172c}.guildHubIconBlank{display:grid;place-items:center;color:var(--theme-highlight,#b99cff)}.guildHubBig{width:79px;height:79px}
 .arcanaGuildTag{display:inline-flex;align-items:center;gap:3px;vertical-align:middle;font-size:.84em;font-weight:800;line-height:1;color:#93919d;white-space:nowrap;letter-spacing:.035em}
-.arcanaGuildTag svg{display:block;flex:none;filter:drop-shadow(0 0 2px #30203c)}.arcanaGuildTag.isOfficial{color:var(--theme-highlight,#d2b2ff);text-shadow:0 0 8px color-mix(in srgb,var(--theme-highlight,#ab85ef) 30%,transparent)}
+.arcanaGuildTag.isOfficial{color:var(--theme-highlight,#d2b2ff);text-shadow:0 0 8px color-mix(in srgb,var(--theme-highlight,#ab85ef) 30%,transparent)}
 .arcanaGuildTag.isUnregistered{color:#9a9aa1;text-shadow:none}.playerCardHead h2 .arcanaGuildTag{margin-right:7px}
 .guildHubEmpty,.guildHubNotice{padding:14px 18px;border:1px dashed var(--stroke,#574c67);border-radius:12px;color:var(--muted,#bfb7cd);line-height:1.55}
 .guildHubNotice{background:color-mix(in srgb,var(--theme-highlight,#b99cff) 12%,transparent);margin-top:15px}
@@ -55,3 +55,5 @@
 .arcanaGuildTag.isOfficial.finish-gradient>span{color:transparent;background:linear-gradient(105deg,color-mix(in srgb,var(--guild-tag-color,#d2b2ff) 57%,white),var(--guild-tag-color,#d2b2ff) 70%);background-clip:text;-webkit-background-clip:text}
 @media(max-width:650px){.guildHubTagPanel .guildHubForm{grid-template-columns:1fr 1fr}.guildHubTagPanel .guildHubForm button{grid-column:1/-1}.guildHubTagIntro{padding:13px;gap:12px}.guildHubTagMark{min-width:78px;font-size:14px;padding:12px 5px}}
 @media(max-width:360px){.guildHubTagIntro{flex-wrap:wrap}.guildHubTagPanel .guildHubForm{grid-template-columns:1fr}.guildHubTagPanel .guildHubForm button{grid-column:1}}
+
+@media(max-width:560px){.guildHubTile{padding:17px}}
