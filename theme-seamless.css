@@ -1,0 +1,73 @@
+/* Arcana | Seamless texture engine v2.
+   Rendering full-surface gradients eliminates square image boundaries.
+   Loaded last and scoped to theme previews or published themes.
+   Pattern frequencies scale INSIDE the gradient, never by repeating an image tile. */
+html[data-arcana-design-active="true"][data-arcana-design-pattern]:not([data-arcana-design-pattern="plain"]){--arcana-texture-size:100% 100%}
+html[data-arcana-design-active="true"][data-arcana-design-pattern]:not([data-arcana-design-pattern="plain"]) #content:not(.homeFullscreen),html[data-arcana-design-active="true"][data-arcana-design-pattern]:not([data-arcana-design-pattern="plain"]) :is(.pathRangeWorkspace,.pathfinderHubHead),html[data-arcana-design-active="true"][data-arcana-design-pattern]:not([data-arcana-design-pattern="plain"]) #content.homeFullscreen :is(.launchHero,.launchQuickCard):after,
+html[data-arcana-design-active="true"][data-arcana-pattern-target="background"] #content.homeFullscreen{
+background-repeat:no-repeat!important;background-size:100% 100%!important;background-position:center center!important}
+.miniCanvas[data-mini-pattern]:not([data-mini-pattern="plain"]) :is(.miniHero,.miniTile):before,
+.miniCanvas[data-mini-pattern]:not([data-mini-pattern="plain"])[data-mini-pattern-target="background"],
+.themePatternThumb[data-preview-pattern]:not([data-preview-pattern="plain"]),.designPresetArt[data-signature-art]{
+background-repeat:no-repeat!important;background-size:100% 100%!important;background-position:center center!important}
+html[data-arcana-design-active="true"][data-arcana-design-pattern]:not([data-arcana-design-pattern="plain"])[data-arcana-design-pattern="contours"] #content.homeFullscreen :is(.launchHero,.launchQuickCard):after{-webkit-mask-image:none!important;mask-image:none!important;background-image:var(--arcana-texture)!important;background-color:transparent!important;opacity:1!important}
+.miniCanvas[data-mini-pattern="contours"] :is(.miniHero,.miniTile):before{-webkit-mask-image:none!important;mask-image:none!important;background-image:var(--mini-pattern)!important;background-color:transparent!important}
+html[data-arcana-design-pattern]{--seam-ink:var(--arcana-texture-ink);--seam-alt:var(--arcana-texture-secondary);--seam-scale:var(--arcana-pattern-scale,1)}
+.miniCanvas[data-mini-pattern]{--seam-ink:var(--mini-accent);--seam-alt:var(--mini-secondary);--seam-scale:var(--mini-signature-scale,1)}
+.themePatternThumb[data-preview-pattern]{--seam-ink:var(--thumb-ink);--seam-alt:var(--thumb-alt);--seam-scale:1}
+html[data-arcana-design-pattern="contours"],.miniCanvas[data-mini-pattern="contours"],.themePatternThumb[data-preview-pattern="contours"]{--seam-program:repeating-radial-gradient(ellipse at 18% 19%,transparent 0 calc(13px * var(--seam-scale,1)),var(--seam-ink) calc(14px * var(--seam-scale,1)),transparent calc(16px * var(--seam-scale,1)) calc(26px * var(--seam-scale,1))),repeating-radial-gradient(ellipse at 81% 85%,transparent 0 calc(17px * var(--seam-scale,1)),var(--seam-alt) calc(18px * var(--seam-scale,1)),transparent calc(20px * var(--seam-scale,1)) calc(35px * var(--seam-scale,1)))}
+html[data-arcana-design-pattern="contours"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="contours"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="contours"]{--thumb-pattern:var(--seam-program)}
+html[data-arcana-design-pattern="grid"],.miniCanvas[data-mini-pattern="grid"],.themePatternThumb[data-preview-pattern="grid"]{--seam-program:repeating-linear-gradient(90deg,var(--seam-ink) 0 1px,transparent 1px calc(32px * var(--seam-scale,1))),repeating-linear-gradient(0deg,var(--seam-alt) 0 1px,transparent 1px calc(32px * var(--seam-scale,1)))}
+html[data-arcana-design-pattern="grid"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="grid"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="grid"]{--thumb-pattern:var(--seam-program)}
+html[data-arcana-design-pattern="stars"],.miniCanvas[data-mini-pattern="stars"],.themePatternThumb[data-preview-pattern="stars"]{--seam-program:radial-gradient(circle at 13% 18%,var(--seam-ink) 0 1px,transparent 2px),radial-gradient(circle at 69% 9%,var(--seam-alt) 0 1.5px,transparent 3px),radial-gradient(circle at 38% 73%,var(--seam-ink) 0 1px,transparent 2px),radial-gradient(circle at 87% 59%,var(--seam-alt) 0 1px,transparent 3px),radial-gradient(circle at 54% 41%,var(--seam-ink) 0 2px,transparent 4px),radial-gradient(circle at 24% 90%,var(--seam-alt) 0 1.5px,transparent 3px)}
+html[data-arcana-design-pattern="stars"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="stars"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="stars"]{--thumb-pattern:var(--seam-program)}
+html[data-arcana-design-pattern="grain"],.miniCanvas[data-mini-pattern="grain"],.themePatternThumb[data-preview-pattern="grain"]{--seam-program:repeating-linear-gradient(137deg,transparent 0 calc(7px * var(--seam-scale,1)),var(--seam-ink) calc(8px * var(--seam-scale,1)),transparent calc(9px * var(--seam-scale,1)) calc(19px * var(--seam-scale,1))),repeating-linear-gradient(43deg,transparent 0 calc(13px * var(--seam-scale,1)),var(--seam-alt) calc(14px * var(--seam-scale,1)),transparent calc(15px * var(--seam-scale,1)) calc(27px * var(--seam-scale,1)))}
+html[data-arcana-design-pattern="grain"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="grain"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="grain"]{--thumb-pattern:var(--seam-program)}
+html[data-arcana-design-pattern="circuit"],.miniCanvas[data-mini-pattern="circuit"],.themePatternThumb[data-preview-pattern="circuit"]{--seam-program:repeating-linear-gradient(90deg,transparent 0 calc(28px * var(--seam-scale,1)),var(--seam-ink) calc(29px * var(--seam-scale,1)),transparent calc(30px * var(--seam-scale,1)) calc(61px * var(--seam-scale,1))),repeating-linear-gradient(0deg,transparent 0 calc(33px * var(--seam-scale,1)),var(--seam-alt) calc(34px * var(--seam-scale,1)),transparent calc(35px * var(--seam-scale,1)) calc(71px * var(--seam-scale,1))),radial-gradient(circle at 28% 37%,var(--seam-ink) 0 2px,transparent 4px),radial-gradient(circle at 74% 81%,var(--seam-alt) 0 2px,transparent 4px)}
+html[data-arcana-design-pattern="circuit"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="circuit"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="circuit"]{--thumb-pattern:var(--seam-program)}
+html[data-arcana-design-pattern="diamonds"],.miniCanvas[data-mini-pattern="diamonds"],.themePatternThumb[data-preview-pattern="diamonds"]{--seam-program:repeating-linear-gradient(45deg,transparent 0 calc(24px * var(--seam-scale,1)),var(--seam-ink) calc(25px * var(--seam-scale,1)),transparent calc(26px * var(--seam-scale,1)) calc(50px * var(--seam-scale,1))),repeating-linear-gradient(135deg,transparent 0 calc(24px * var(--seam-scale,1)),var(--seam-alt) calc(25px * var(--seam-scale,1)),transparent calc(26px * var(--seam-scale,1)) calc(50px * var(--seam-scale,1)))}
+html[data-arcana-design-pattern="diamonds"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="diamonds"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="diamonds"]{--thumb-pattern:var(--seam-program)}
+html[data-arcana-design-pattern="polka"],.miniCanvas[data-mini-pattern="polka"],.themePatternThumb[data-preview-pattern="polka"]{--seam-program:radial-gradient(circle at 12% 21%,var(--seam-ink) 0 2px,transparent 3px),radial-gradient(circle at 43% 49%,var(--seam-alt) 0 2px,transparent 3px),radial-gradient(circle at 76% 28%,var(--seam-ink) 0 2px,transparent 3px),radial-gradient(circle at 81% 77%,var(--seam-alt) 0 2px,transparent 3px),radial-gradient(circle at 25% 84%,var(--seam-ink) 0 2px,transparent 3px)}
+html[data-arcana-design-pattern="polka"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="polka"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="polka"]{--thumb-pattern:var(--seam-program)}
+html[data-arcana-design-pattern="constellations"],.miniCanvas[data-mini-pattern="constellations"],.themePatternThumb[data-preview-pattern="constellations"]{--seam-program:radial-gradient(circle at 15% 20%,var(--seam-ink) 0 2px,transparent 3px),radial-gradient(circle at 63% 58%,var(--seam-alt) 0 2px,transparent 3px),radial-gradient(circle at 83% 14%,var(--seam-ink) 0 1px,transparent 2px),linear-gradient(29deg,transparent 49.8%,var(--seam-ink) 50%,transparent 50.2%)}
+html[data-arcana-design-pattern="constellations"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="constellations"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="constellations"]{--thumb-pattern:var(--seam-program)}
+html[data-arcana-design-pattern="satin"],.miniCanvas[data-mini-pattern="satin"],.themePatternThumb[data-preview-pattern="satin"]{--seam-program:repeating-linear-gradient(110deg,transparent 0 calc(8px * var(--seam-scale,1)),var(--seam-ink) calc(9px * var(--seam-scale,1)),transparent calc(11px * var(--seam-scale,1)) calc(25px * var(--seam-scale,1))),linear-gradient(139deg,transparent 8%,var(--seam-alt) 32%,transparent 58%,var(--seam-ink) 85%,transparent)}
+html[data-arcana-design-pattern="satin"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="satin"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="satin"]{--thumb-pattern:var(--seam-program)}
+html[data-arcana-design-pattern="brushed-metal"],.miniCanvas[data-mini-pattern="brushed-metal"],.themePatternThumb[data-preview-pattern="brushed-metal"]{--seam-program:repeating-linear-gradient(90deg,transparent 0 calc(2px * var(--seam-scale,1)),var(--seam-ink) calc(3px * var(--seam-scale,1)),transparent calc(4px * var(--seam-scale,1)) calc(11px * var(--seam-scale,1))),linear-gradient(165deg,transparent 4%,var(--seam-alt) 49%,transparent 98%)}
+html[data-arcana-design-pattern="brushed-metal"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="brushed-metal"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="brushed-metal"]{--thumb-pattern:var(--seam-program)}
+html[data-arcana-design-pattern="pinstripes"],.miniCanvas[data-mini-pattern="pinstripes"],.themePatternThumb[data-preview-pattern="pinstripes"]{--seam-program:repeating-linear-gradient(90deg,transparent 0 calc(7px * var(--seam-scale,1)),var(--seam-ink) calc(8px * var(--seam-scale,1)),transparent calc(9px * var(--seam-scale,1)) calc(24px * var(--seam-scale,1)))}
+html[data-arcana-design-pattern="pinstripes"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="pinstripes"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="pinstripes"]{--thumb-pattern:var(--seam-program)}
+html[data-arcana-design-pattern="scanlines"],.miniCanvas[data-mini-pattern="scanlines"],.themePatternThumb[data-preview-pattern="scanlines"]{--seam-program:repeating-linear-gradient(0deg,transparent 0 calc(4px * var(--seam-scale,1)),var(--seam-ink) calc(5px * var(--seam-scale,1)),transparent calc(6px * var(--seam-scale,1)) calc(10px * var(--seam-scale,1)))}
+html[data-arcana-design-pattern="scanlines"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="scanlines"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="scanlines"]{--thumb-pattern:var(--seam-program)}
+html[data-arcana-design-pattern="honeycomb"],.miniCanvas[data-mini-pattern="honeycomb"],.themePatternThumb[data-preview-pattern="honeycomb"]{--seam-program:repeating-linear-gradient(60deg,transparent 0 calc(21px * var(--seam-scale,1)),var(--seam-ink) calc(22px * var(--seam-scale,1)),transparent calc(23px * var(--seam-scale,1)) calc(44px * var(--seam-scale,1))),repeating-linear-gradient(-60deg,transparent 0 calc(21px * var(--seam-scale,1)),var(--seam-alt) calc(22px * var(--seam-scale,1)),transparent calc(23px * var(--seam-scale,1)) calc(44px * var(--seam-scale,1)))}
+html[data-arcana-design-pattern="honeycomb"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="honeycomb"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="honeycomb"]{--thumb-pattern:var(--seam-program)}
+html[data-arcana-design-pattern="moire"],.miniCanvas[data-mini-pattern="moire"],.themePatternThumb[data-preview-pattern="moire"]{--seam-program:repeating-radial-gradient(ellipse at 31% 37%,transparent 0 calc(15px * var(--seam-scale,1)),var(--seam-ink) calc(16px * var(--seam-scale,1)),transparent calc(17px * var(--seam-scale,1)) calc(31px * var(--seam-scale,1))),repeating-radial-gradient(ellipse at 78% 59%,transparent 0 calc(13px * var(--seam-scale,1)),var(--seam-alt) calc(14px * var(--seam-scale,1)),transparent calc(16px * var(--seam-scale,1)) calc(29px * var(--seam-scale,1)))}
+html[data-arcana-design-pattern="moire"]{--arcana-texture:var(--seam-program)}
+.miniCanvas[data-mini-pattern="moire"]{--mini-pattern:var(--seam-program)}
+.themePatternThumb[data-preview-pattern="moire"]{--thumb-pattern:var(--seam-program)}
