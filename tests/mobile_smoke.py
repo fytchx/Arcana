@@ -224,6 +224,26 @@ with sync_playwright() as playwright:
     page.wait_for_selector('.themePlayground',timeout=8000)
     assert page.locator('.designPresetSignature').count()==24
     assert page.locator('.designPsychedelicGrid .designPresetSignature').count()==4
+    # True SVG <use> references must paint the colored motifs in Chromium.
+    paints=page.evaluate("""async () => {
+       const {psychedelicSvg,PSYCHEDELIC_IDS,PSYCHEDELIC_DEFAULTS}=await import('@arcana/psychedelic-patterns.js');
+       const output={};
+       for(const id of PSYCHEDELIC_IDS){
+         const css=psychedelicSvg(id,PSYCHEDELIC_DEFAULTS);
+         const img=new Image();img.src=css.substring(5,css.length-2);await img.decode();
+         const cv=document.createElement('canvas');cv.width=360;cv.height=360;
+         const ctx=cv.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);
+         const data=ctx.getImageData(0,0,360,360).data,seen=new Set();
+         for(let y=8;y<360;y+=13)for(let x=8;x<360;x+=13){
+          const pos=(y*360+x)*4;
+          seen.add([data[pos],data[pos+1],data[pos+2]].join(':'));
+         }
+         output[id]=seen.size;
+       }
+       return output;
+    }""")
+    assert all(count>=4 for count in paints.values()), 'Psychedelic vector SVG did not paint distinct colors: '+str(paints)
+
     if page.locator('[data-mini-toggle]').get_attribute('aria-expanded')=='false':
         page.locator('[data-mini-toggle]').click()
     live=page.frame_locator('[data-mini-live-frame]')
