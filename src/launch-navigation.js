@@ -156,7 +156,14 @@ export const designPanel=({showPreview=true}={})=>{
  const select=(key,label,opts)=>'<label class="designControl"><span>'+label+'</span><select data-design-field="'+key+'" aria-label="'+label+'">'+opts.map(([id,name])=>'<option value="'+id+'" '+(d[key]===id?'selected':'')+'>'+name+'</option>').join('')+'</select></label>';
  const group=(name,body,description='')=>{const groupId=name.startsWith('Colors')?'colors':name.startsWith('Background')?'textures':name.startsWith('Build')?'feature':name.startsWith('Cards')?'components':'type';return '<details class="designOptionSection" data-theme-group="'+groupId+'" '+(['colors','textures'].includes(groupId)?'open':'')+'><summary>'+name+'</summary>'+(description?'<p class="designOptionDescription">'+description+'</p>':'')+'<div class="designOptionControls">'+body+'</div></details>'};
  const featuredTextures=[...THEME_PATTERNS].sort((a,b)=>Number(['Psychedelic','Signature','Material','Atmosphere','Relic'].includes(b.category))-Number(['Psychedelic','Signature','Material','Atmosphere','Relic'].includes(a.category)));
- const presetCards=Object.entries(DESIGN_PRESETS).map(([id,p],index)=>{
+ const allEntries=Object.entries(DESIGN_PRESETS);
+ const curated=[
+  ...allEntries.filter(([,p])=>!['signature','psychedelic'].includes(p.collection)).slice(0,4),
+  ...allEntries.filter(([,p])=>p.collection==='signature').slice(0,4),
+  ...allEntries.filter(([,p])=>p.collection==='psychedelic').slice(0,4)
+ ];
+ const curatedKeys=new Set(curated.map(([id])=>id));
+ const presetCards=[...curated,...allEntries.filter(([id])=>!curatedKeys.has(id))].map(([id,p],index)=>{
   const active=p.main===d.main&&p.action===d.action&&p.pattern===d.pattern;
   const premium=['signature','psychedelic'].includes(p.collection);
   const css='--preset-main:'+p.main+';--preset-card:'+p.card+';--preset-primary:'+p.action+';--preset-secondary:'+p.secondaryAccent;
