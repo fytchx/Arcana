@@ -9,7 +9,9 @@ with sync_playwright() as p:
  ok=False;notes=[]
  for attempt in range(12):
   try:
-   response=page.goto(URL+'/#/guilds',wait_until='domcontentloaded',timeout=20000)
+   # Unique query forces a real network fetch on each retry. A same-URL
+   # hash navigation returns None instead of an HTTP response in Chromium.
+   response=page.goto(URL+'/?releaseProbe='+str(attempt)+'#/guilds',wait_until='domcontentloaded',timeout=20000)
    if not response or response.status!=200:raise AssertionError('HTTP '+str(response.status if response else None))
    page.locator('.guildHubTagIntro').wait_for(timeout=9000)
    assert page.locator('.crestStudio,.arcanaGuildCrest').count()==0,'Crest designer returned'
