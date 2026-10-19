@@ -85,3 +85,7 @@
  .designUnifiedPresetGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(min-width:1180px){.designUnifiedPresetGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+
+.themePresetCollection:not([data-show-all="true"]):not([data-searching="true"]) .designPresetUnified[data-preset-extra]{display:none!important}
+.themeShowMorePresets{width:100%;min-height:47px;margin:12px 0 0;padding:11px;border-radius:10px;border:1px solid color-mix(in srgb,var(--theme-highlight) 33%,var(--line));background:var(--theme-secondary);color:var(--theme-highlight);font-weight:800;font-size:13px}
+.themePresetCollection[data-searching="true"] .themeShowMorePresets{display:none}
