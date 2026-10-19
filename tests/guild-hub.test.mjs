@@ -26,7 +26,7 @@ test('registered badges require matching authenticated membership identity',()=>
  assert.match(guildBadge({guildTag:'PDXO',guildId:'bad'},registry),/isUnregistered/);
  assert.equal(guildBadge({guildTag:'hi!'},registry),'');
 });
-test('moderated registration, reserved tags, applications, posts, and icons persist without bypassing roles',async()=>{
+test('moderated registration, reserved tags, crest customization, applications and icons enforce permissions',async()=>{
  const root=await mkdtemp(resolve(tmpdir(),'arcana-guild-test-'));
  const old={data:process.env.ARCANA_ACCOUNT_DATA_DIR,base:process.env.ARCANA_AUTH_BASE_URL,client:process.env.ARCANA_DISCORD_CLIENT_ID,secret:process.env.ARCANA_DISCORD_CLIENT_SECRET};
  process.env.ARCANA_ACCOUNT_DATA_DIR=root;
@@ -85,21 +85,13 @@ test('moderated registration, reserved tags, applications, posts, and icons pers
   assert.equal((await call('/api/guild-hub/'+id+'/applications','PATCH',{action:'accept',userId:other.id},'owner')).status,200);
   const p=publicProfile(await readJSON(resolve(root,'users',other.id+'.json')));
   assert.equal(p.guildTag,'ABCD');assert.equal(p.guildId,id);
-  assert.equal((await call('/api/guild-hub/'+id+'/posts','POST',{kind:'discussion',text:'Secret team chat'},'other')).status,200);
-  assert.equal((await call('/api/guild-hub/'+id+'/posts','POST',{kind:'announcement',title:'Welcome',text:'We are live'},'owner')).status,200);
-  const eventTime=new Date(Date.now()+86400000).toISOString();
-  assert.equal((await call('/api/guild-hub/'+id+'/events','POST',{title:'Weekly raid',description:'Bring your best build',startsAt:eventTime},'other')).status,403);
-  assert.equal((await call('/api/guild-hub/'+id+'/events','POST',{title:'Weekly raid',description:'Bring your best build',startsAt:eventTime},'owner')).status,200);
-  const event=(await call('/api/guild-hub/'+id)).body.guild.events[0];
-  assert.equal(event.title,'Weekly raid');assert.equal(event.attendees.length,0);
-  assert.equal((await call('/api/guild-hub/'+id+'/events','PATCH',{eventId:event.id,action:'going'},'other')).status,200);
-  assert.equal((await call('/api/guild-hub/'+id+'/events','PATCH',{eventId:event.id,action:'going'},'owner')).status,200);
-  assert.equal((await call('/api/guild-hub/'+id)).body.guild.events[0].attendees.length,2);
-
-  const guest=await call('/api/guild-hub/'+id);
-  assert.equal(guest.body.guild.posts.length,1);assert.equal(guest.body.guild.posts[0].kind,'announcement');
-  const memberView=await call('/api/guild-hub/'+id,'GET',undefined,'other');
-  assert.equal(memberView.body.guild.posts.length,2);
+  const custom={crest:{center:24,secondary:24,outline:9,border:9,colors:['#123456','#ABCDEF','#010101','#999999']},tagStyle:{color:'#54CB98',finish:'gradient'}};
+  assert.equal((await call('/api/guild-hub/'+id,'PATCH',custom,'other')).status,403);
+  assert.equal((await call('/api/guild-hub/'+id,'PATCH',custom,'owner')).status,200);
+  assert.equal((await call('/api/guild-hub/'+id)).body.guild.tagStyle.finish,'gradient');
+  assert.equal((await call('/api/guild-hub/'+id)).body.guild.crest.center,24);
+  assert.equal((await call('/api/guild-hub/'+id+'/events','POST',{title:'Nope'},'owner')).status,404);
+  assert.equal((await call('/api/guild-hub/'+id+'/posts','POST',{text:'Nope'},'owner')).status,404);
   assert.equal((await call('/api/guild-hub/'+id+'/members','PATCH',{action:'leave',userId:owner.id},'owner')).status,409);
   assert.equal((await call('/api/guild-hub/'+id+'/members','PATCH',{action:'leave',userId:other.id},'other')).status,200);
   assert.equal((await readJSON(resolve(root,'users',other.id+'.json'))).profile.guildId,'');
