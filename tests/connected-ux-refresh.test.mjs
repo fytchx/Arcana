@@ -35,6 +35,9 @@ test('admin-only header and search discovery share public navigation without lea
  assert.match(app,/q\?resultMarkup\(q\):searchFeatured\(\)/);
  assert.match(css,/#adminPortalBtn\[hidden\]\{display:none!important\}/);
  assert.match(server,/'\/arcana-connected-ux.css'/);
+ const traffic=await read('src/admin-traffic-ui.js');
+ assert.match(traffic,/state\.loadedAt=Date\.now\(\);\}finally|state\.loadedAt=Date\.now\(\);\}/);
+ assert.match(traffic,/Traffic service unavailable/);
 });
 test('home hierarchy retains equal Build Studio, Journal, Pathfinder, Tools and connected guides',async()=>{
  const markup=homeScreen(),css=await read('arcana-connected-ux.css');
