@@ -3,6 +3,7 @@
 import {timelineStages,timelineModel} from './pathfinder-timeline.js';
 export const RANGE_KEY='arcana-pathfinder-checkpoints-v1';
 const clamp=(v,max)=>Math.max(0,Math.min(max,Number.isFinite(Number(v))?Math.trunc(Number(v)):0));
+export const normalizeItemQuantity=value=>Math.max(1,Math.min(100,Number.isFinite(Number(value))?Math.trunc(Number(value)):1));
 export const allStages=snapshot=>[...timelineStages(snapshot,'normal'),...timelineStages(snapshot,'awakened')];
 export function normalizeRange(raw={},snapshot=null,quick={}){
  const input=raw&&typeof raw==='object'?raw:{};
@@ -12,7 +13,8 @@ export function normalizeRange(raw={},snapshot=null,quick={}){
  const to=stages.find(s=>s.id===input.toStage)||from;
  return {
   fromStage:from?.id||'',fromLevel:clamp(input.fromLevel,from?.max||0),
-  toStage:to?.id||'',toLevel:clamp(input.toLevel??to?.max??0,to?.max||0)
+  toStage:to?.id||'',toLevel:clamp(input.toLevel??to?.max??0,to?.max||0),
+  ...(input.quantity===undefined?{}:{quantity:normalizeItemQuantity(input.quantity)})
  };
 }
 export function readRange(store=globalThis.localStorage){
@@ -21,15 +23,17 @@ export function readRange(store=globalThis.localStorage){
 }
 export function saveRange(raw,store=globalThis.localStorage){
  const value={fromStage:String(raw.fromStage||''),fromLevel:Number(raw.fromLevel)||0,
-  toStage:String(raw.toStage||''),toLevel:Number(raw.toLevel)||0};
+  toStage:String(raw.toStage||''),toLevel:Number(raw.toLevel)||0,
+  ...(raw.quantity===undefined?{}:{quantity:normalizeItemQuantity(raw.quantity)})};
  try{store?.setItem(RANGE_KEY,JSON.stringify(value))}catch{}
  return value;
 }
 export function quoteRange(snapshot,raw,quick={}){
  const stages=allStages(snapshot),range=normalizeRange(raw,snapshot,quick);
+ const itemCount=normalizeItemQuantity(range.quantity);
  const start=stages.findIndex(x=>x.id===range.fromStage);
  const stop=stages.findIndex(x=>x.id===range.toStage);
- const base={range,stages,steps:0,gold:0n,materials:[],complete:false,missing:[],error:''};
+ const base={range,stages,itemCount,perItem:null,steps:0,gold:0n,materials:[],complete:false,missing:[],error:''};
  if(start<0||stop<0)return {...base,error:'Upgrade costs are unavailable.'};
  if(stop<start||(stop===start&&range.toLevel<range.fromLevel))
   return {...base,error:'The target must be after the starting upgrade.'};
@@ -50,6 +54,10 @@ export function quoteRange(snapshot,raw,quick={}){
    if(!cost.free)steps++;
   }
  }
- return {...base,steps,gold,materials:[...tally.values()].sort((a,b)=>a.name.localeCompare(b.name)),
+ const perItemMaterials=[...tally.values()].sort((a,b)=>a.name.localeCompare(b.name));
+ const factor=BigInt(itemCount);
+ return {...base,steps:steps*itemCount,gold:gold*factor,
+  materials:perItemMaterials.map(m=>({...m,quantity:m.quantity*factor})),
+  perItem:{steps,gold,materials:perItemMaterials},
   complete:missing.length===0,missing,error:missing.length?'Some verified upgrade costs are missing. An incomplete total will not be presented.':''};
 }

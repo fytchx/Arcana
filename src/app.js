@@ -46,7 +46,7 @@ import {readFarmPlan,saveFarmPlan,farmCompareView} from './farm-compare.js';
 import {timelineStages,timelineModel,stageStepLabel,readQuickView,saveQuickView} from './pathfinder-timeline.js';
 import {pathfinderView,pathfinderStepDetail,pathfinderRangeContent} from './pathfinder-timeline-view.js';
 import {quickUpgradePanel,quickUpgradeContent,initialQuickRange} from './quick-tools-view.js';
-import {readRange,saveRange,allStages,quoteRange} from './pathfinder-range.js';
+import {readRange,saveRange,allStages,quoteRange,normalizeItemQuantity} from './pathfinder-range.js';
 import {sourceMaterialGroups} from './pathfinder-material-groups.js';
 import {saveFarmingList,wireFarmingLists} from './farming-lists-ui.js';
 import {homeScreen,homeSubmenu,directoryView,wikiTopicsView,wikiTopicView,wikiAboutView,userCenterView,settingsView,iconGalleryView,applyAppPrefs,changeAppPref} from './launch-navigation.js';
@@ -88,7 +88,7 @@ async function loadPublishedWikiArticles(){
   if(route==='wiki'||route==='wiki/guides'||route==='wiki/article')render();
  }catch(error){console.warn('Published Wiki unavailable:',error.message)}
 }
-async function loadVerifiedIndex(){if(verifiedState.loading||verifiedState.loaded)return;verifiedState.loading=true;try{const r=await fetch('/api/search/catalog',{signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error('Search index '+r.status);verifiedState.entries=verifiedGameSearchEntries(await r.json());verifiedState.loaded=true;verifiedState.error='';}catch(e){verifiedState.error='Game index temporarily unavailable';console.warn(e)}finally{verifiedState.loading=false;if(state.layer?.type==='search')refreshLiveSearch();const route=parseRoute().route;if(route==='calculators/pathfinder'&&recipeState.data){const box=node('pathRangeContent');if(box)box.innerHTML=quickUpgradeContent(recipeState.data,state.pathfinderRange,{page:true});refreshPathfinderStep();}if(route.startsWith('wiki')||route==='reference/detail')render()}}
+async function loadVerifiedIndex(){if(verifiedState.loading||verifiedState.loaded)return;verifiedState.loading=true;try{const r=await fetch('/api/search/catalog',{signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error('Search index '+r.status);verifiedState.entries=verifiedGameSearchEntries(await r.json());verifiedState.loaded=true;verifiedState.error='';}catch(e){verifiedState.error='Game index temporarily unavailable';console.warn(e)}finally{verifiedState.loading=false;if(state.layer?.type==='search')refreshLiveSearch();const route=parseRoute().route;if(route==='calculators/pathfinder'&&recipeState.data){const box=node('pathRangeContent');if(box)box.innerHTML=quickUpgradeContent(recipeState.data,state.pathfinderRange,{page:true,catalog:verifiedState.entries});refreshPathfinderStep();}if(route.startsWith('wiki')||route==='reference/detail')render()}}
 async function loadGuilds(force=false){if(guildState.loading||(!force&&guildState.updatedAt&&Date.now()-guildState.updatedAt<30000))return;guildState.loading=true;try{const r=await fetch(V11_GUILD_ENDPOINT,{signal:AbortSignal.timeout(9000),cache:'no-store'});if(!r.ok)throw Error('Guild directory '+r.status);const d=await r.json();guildState.guilds=(d.guilds||[]).map(normalizeGuild).filter(Boolean);guildState.loaded=true;guildState.error='';}catch(e){guildState.error='Guild listings temporarily unavailable';console.warn(e)}finally{guildState.updatedAt=Date.now();guildState.loading=false;if(parseRoute().route.startsWith('lfg/guild'))render();if(state.layer?.type==='search')refreshLiveSearch()}}
 const lfgState={listings:[],plans:[],loaded:false,loading:false,error:'',updatedAt:0,tab:'active',query:'',tier:'',characterClass:'',mightAmount:'',mightUnit:'M'};
 const allLfg=()=>[...lfgState.listings,...lfgState.plans];
@@ -268,7 +268,7 @@ function pathfinderHub(legacyView='range'){
  const header='<header class="pathfinderHubHead"><span class="pathfinderHubIcon">'+icon('feature-upgrade',36)+'</span><div><span class="eyebrow">GEAR PROGRESSION</span><h1>Pathfinder</h1><p>Every gear upgrade, in one place.</p></div></header>';
  const chooser='<nav class="pathfinderHubTabs" aria-label="Pathfinder tools">'+tabs.map(([id,title,glyph])=>'<button type="button" class="'+(id===selected?'active':'')+'" data-route="calculators/pathfinder" data-params="view='+id+'" aria-current="'+(id===selected?'page':'false')+'">'+icon(glyph,19)+'<span>'+title+'</span></button>').join('')+'</nav>';
  const wait='<div class="pathWaiting" role="status"><p>'+esc(recipeState.error||'Loading verified upgrade recipes…')+'</p><button type="button" data-action="path-refresh" class="btn secondary">Retry</button></div>';
- const inner=selected==='range'?quickUpgradePanel(recipeState.data,state.pathfinderRange,{page:true,error:recipeState.error}):selected==='upgrade'?calcUpgrade(true):selected==='compare'?calcCompare(true):pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error,state.pathfinderRange,{includeRange:false,catalog:verifiedState.entries});
+ const inner=selected==='range'?quickUpgradePanel(recipeState.data,state.pathfinderRange,{page:true,error:recipeState.error,catalog:verifiedState.entries}):selected==='upgrade'?calcUpgrade(true):selected==='compare'?calcCompare(true):pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error,state.pathfinderRange,{includeRange:false,catalog:verifiedState.entries});
  return '<div class="studioPage pathfinderHub">'+nav+header+chooser+'<div class="pathfinderHubContent">'+inner+'</div></div>';
 }
 function calcPathfinder(){return pathfinderHub()}
@@ -839,7 +839,7 @@ async function savePathfinderChecklist(button){
  if(!quote.complete||quote.error||!quote.materials.length)return toast('Select a valid complete upgrade route first.');
  const groups=sourceMaterialGroups(quote.materials,recipeState.data.materials,verifiedState.entries)
   .map(group=>({name:group.name,tier:group.tier,items:group.materials.map(m=>({slug:m.slug,name:m.name,quantity:String(m.quantity)}))}));
- const list={title:'Upgrade '+quote.range.fromStage+' +'+quote.range.fromLevel+' → '+quote.range.toStage+' +'+quote.range.toLevel,
+ const list={title:'Upgrade '+(quote.itemCount>1?quote.itemCount+' items · ':'')+quote.range.fromStage+' +'+quote.range.fromLevel+' → '+quote.range.toStage+' +'+quote.range.toLevel,
   slot:state.pathfinderQuick.slot,from:quote.range.fromStage+' +'+quote.range.fromLevel,
   to:quote.range.toStage+' +'+quote.range.toLevel,gold:String(quote.gold),
   sourceVersion:String(recipeState.data.sourceVersion||recipeState.data.source||''),groups};
@@ -848,6 +848,16 @@ async function savePathfinderChecklist(button){
  catch(error){toast(error.message);button.disabled=false;button.textContent='Save a farming checklist to my profile';}
 }
 function wirePathfinderQuick(){
+ document.addEventListener('click',e=>{
+  const button=e.target.closest('[data-path-quantity-step]');
+  if(!button||!recipeState.data)return;
+  const offset=Number(button.dataset.pathQuantityStep);
+  if(offset!==1&&offset!==-1)return;
+  const quantity=normalizeItemQuantity(normalizeItemQuantity(state.pathfinderRange.quantity)+offset);
+  state.pathfinderRange=saveRange({...state.pathfinderRange,quantity});
+  const content=node('pathRangeContent');
+  if(content)content.innerHTML=quickUpgradeContent(recipeState.data,state.pathfinderRange,{page:parseRoute().route!=='home',catalog:verifiedState.entries});
+ });
  document.addEventListener('click',e=>{const button=e.target.closest('[data-pf-save-list]');if(!button)return;e.preventDefault();if(!button.disabled)void savePathfinderChecklist(button);});
  document.addEventListener('input',e=>{
   if(!e.target.matches('[data-path-range]'))return;
@@ -859,7 +869,7 @@ function wirePathfinderQuick(){
  document.addEventListener('change',e=>{
   if(e.target.matches('[data-path-range]')){state.pathfinderQuick=saveQuickView(state.pathfinderQuick);centerPathRail('pathStepRail','data-path-step',state.pathfinderQuick.level,'smooth');return;}
   const d=e.target.dataset;
-  if(recipeState.data&&(d.pathFromStage!==undefined||d.pathFromLevel!==undefined||d.pathToStage!==undefined||d.pathToLevel!==undefined)){
+  if(recipeState.data&&(d.pathFromStage!==undefined||d.pathFromLevel!==undefined||d.pathToStage!==undefined||d.pathToLevel!==undefined||d.pathQuantity!==undefined)){
    const stages=allStages(recipeState.data);
    const current={...state.pathfinderRange};
    if(d.pathFromStage!==undefined){current.fromStage=e.target.value;current.fromLevel=Math.min(Number(current.fromLevel||0),stages.find(s=>s.id===current.fromStage)?.max||0);}
@@ -867,10 +877,11 @@ function wirePathfinderQuick(){
     current.toStage=e.target.value;
     current.toLevel=Math.min(Number(current.toLevel||0),stages.find(s=>s.id===current.toStage)?.max||0);
    }else if(d.pathFromLevel!==undefined)current.fromLevel=Number(e.target.value);
-   else current.toLevel=Number(e.target.value);
+   else if(d.pathToLevel!==undefined)current.toLevel=Number(e.target.value);
+   else if(d.pathQuantity!==undefined)current.quantity=normalizeItemQuantity(e.target.value);
    state.pathfinderRange=saveRange(current);
    const content=node('pathRangeContent');
-   if(content)content.innerHTML=quickUpgradeContent(recipeState.data,current,{page:parseRoute().route!=='home'});
+   if(content)content.innerHTML=quickUpgradeContent(recipeState.data,current,{page:parseRoute().route!=='home',catalog:verifiedState.entries});
    return;
   }
   if(e.target.matches('[data-path-slot]')){
