@@ -65,7 +65,7 @@
  #content.homeFullscreen .homeSpotlights{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}
  #content.homeFullscreen .homeSpotlights .launchHero,#content.homeFullscreen .homeSpotlights .journalHomeTeaser{height:clamp(285px,26vw,340px)!important;min-height:0!important}
  #content.homeFullscreen .launchQuickGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px!important}
- #content.homeFullscreen .launchQuickGrid .launchQuickCard{height:clamp(240px,22vw,295px)!important;min-height:0!important;align-content:center!important}
+ #content.homeFullscreen .launchQuickGrid .launchQuickCard{height:clamp(285px,26vw,340px)!important;min-height:0!important;align-content:center!important}
  #content.homeFullscreen .launchQuickCopy strong{font-size:clamp(20px,2.1vw,27px)!important}
  #content.homeFullscreen .launchQuickCopy small{font-size:clamp(13px,1.25vw,16px)!important;line-height:1.5!important}
 }
@@ -89,3 +89,7 @@
 .themePresetCollection:not([data-show-all="true"]):not([data-searching="true"]) .designPresetUnified[data-preset-extra]{display:none!important}
 .themeShowMorePresets{width:100%;min-height:47px;margin:12px 0 0;padding:11px;border-radius:10px;border:1px solid color-mix(in srgb,var(--theme-highlight) 33%,var(--line));background:var(--theme-secondary);color:var(--theme-highlight);font-weight:800;font-size:13px}
 .themePresetCollection[data-searching="true"] .themeShowMorePresets{display:none}
+
+#content.homeFullscreen :is(.launchHero,.journalHomeTeaser,.launchQuickCard,.arcanaKnowledgeBridge .launchFeatureRow){transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+@media(hover:hover){#content.homeFullscreen :is(.launchHeroCTA,.launchQuickCard,.arcanaKnowledgeBridge .launchFeatureRow):hover{transform:translateY(-3px);box-shadow:0 14px 30px #0004}}
+@media(prefers-reduced-motion:reduce){#content.homeFullscreen :is(.launchHero,.journalHomeTeaser,.launchQuickCard,.arcanaKnowledgeBridge .launchFeatureRow){transition:none!important}}
