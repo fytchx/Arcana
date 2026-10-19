@@ -72,7 +72,7 @@ function guildEvents(g,me){
  '<button class="btn primary" type="submit">Add guild event</button></form>':'')+'</section>';
 }
 function detail(g,me){
- if(!g)return header('Guild','Loading guild profile…');
+ if(!g)return header('Guild',state.error||'Loading guild profile…');
  const apply=me&&!g.amMember&&!g.myApplication&&g.status==='approved'&&g.recruitmentOpen&&!me.guildId;
  return '<section class="guildHubPage"><button class="guildHubBack" data-route="guilds">← All guilds</button>'+
  '<section class="guildHubCover"><div class="guildHubTileTop">'+
@@ -93,7 +93,7 @@ function select(name,options,value){
  Array.from({length:options},(_,i)=>'<option value="'+i+'" '+(i===value?'selected':'')+'>'+name+' '+(i+1)+'</option>').join('')+'</select></label>';
 }
 function editor(g,me){
- if(!g)return header('Guild management','Loading guild data…');
+ if(!g)return header('Guild management',state.error||'Loading guild data…');
  const owner=g.memberRole==='owner',data=g.crest||CREST_DEFAULT;
  const colors=data.colors||CREST_DEFAULT.colors;
  return '<section class="guildHubPage"><button class="guildHubBack" data-route="guilds/view" data-params="id='+esc(g.id)+'">← Guild page</button>'+
@@ -131,7 +131,7 @@ export function guildHubPage(route,query,me){
  if(route==='guilds/register')return register(me);
  if(route==='guilds/view')return detail(state.detail?.id===id?state.detail:null,me);
  if(route==='guilds/manage')return editor(state.detail?.id===id?state.detail:null,me);
- if(route==='guilds/moderation')return modQueue(state.moderation);
+ if(route==='guilds/moderation')return me?.permissions?.hideContent?modQueue(state.moderation):header('Restricted','Guild approvals are only available to Arcana moderators and administrators.');
  return directory(me);
 }
 export async function loadGuildHub(route,query,refresh,me){
