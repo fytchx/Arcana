@@ -39,6 +39,7 @@ export function syncDesignMiniPreview(){
  const v=mode==='before'?baseline:readDesign();
  for(const [name,value] of Object.entries({
   '--mini-main':v.main,'--mini-panel':v.card,'--mini-accent':v.action,'--mini-text':v.text,'--mini-secondary':v.secondaryAccent,'--mini-border':v.borderColor,'--mini-muted':v.mutedText,'--mini-nav':v.navBar,'--mini-button-text':v.buttonText,
+  '--mini-aura':String(v.aura/100),'--mini-sheen':String(v.sheen/100),'--mini-detail':String(v.detail/100),
   '--mini-alpha':String(v.intensity/100),'--mini-glow':Math.round(v.glow*.28)+'px',
   '--mini-edge':v.edges+'%','--mini-radius':v.roundness+'px','--mini-pattern-size':v.patternScale+'%','--mini-shadow-alpha':v.cardShadow/100,'--mini-font-scale':v.fontSize/100,'--mini-card-padding':v.cardPadding+'px','--mini-header-alpha':v.headerOpacity+'%','--mini-border-width':v.borderWidth+'px','--mini-button-height':v.buttonHeight+'px','--mini-blend':v.accentBlend+'%',
   '--mini-button-radius':v.buttonRoundness+'px','--mini-fill':v.buttonFill+'%',
