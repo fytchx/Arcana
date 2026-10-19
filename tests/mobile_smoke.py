@@ -21,7 +21,7 @@ for module in sorted((ROOT/'src').glob('*.js')):
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
 # Offline browser must render EVERY stylesheet in the real entry point, not just
 # styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
-for css_name in ('styles.css','wiki-studio.css','community.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','signature-themes.css','theme-seamless.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
+for css_name in ('styles.css','wiki-studio.css','community.css','guild-hub.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','signature-themes.css','theme-seamless.css','psychedelic-themes.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
     css=(ROOT/css_name).read_text()
     pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\?[^"]*)?">'
     HTML,count=re.subn(pattern,lambda _: '<style>\n'+css+'\n</style>',HTML)
@@ -68,12 +68,16 @@ window.fetch = async function(input) {
  if(path.includes('/api/beta/status')) return new Response(JSON.stringify({release:'arcana-real-accounts-beta-2026-10-13',feedbackEnabled:true,accountsConfigured:false,wikiStorageConfigured:true}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/beta/feedback')) return new Response(JSON.stringify({ok:true,reference:'test1234'}),{status:201,headers:{'content-type':'application/json'}});
  if(path.includes('/api/search/catalog')) return new Response(JSON.stringify(__MOCK_ENTRIES__),{status:200,headers:{'content-type':'application/json'}});
+ if(path.includes('/api/guild-hub/')) return new Response(JSON.stringify({guild:__MOCK_GUILD__}),{status:200,headers:{'content-type':'application/json'}});
+ if(path.includes('/api/guild-hub')) return new Response(JSON.stringify({guilds:[__MOCK_GUILD__]}),{status:200,headers:{'content-type':'application/json'}});
+ if(path.includes('/api/guilds')) return new Response(JSON.stringify({guilds:[]}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/api/lfg/public')) return new Response(JSON.stringify({listings:[],plans:[],issues:[]}),{status:200,headers:{'content-type':'application/json'}});
  if(path.includes('/official-art/manifest.json')) return new Response(JSON.stringify(__MOCK_ART__),{status:200,headers:{'content-type':'application/json'}});
  return new Response('Unavailable in isolated QA',{status:404});
 };
 </script><script type="module">import '@arcana/app.js';</script></body>''')
-HTML=HTML.replace('__MOCK_ENTRIES__',json.dumps(MOCK_ENTRIES)).replace('__MOCK_ART__',json.dumps(MOCK_ART))
+MOCK_GUILD={'id':'11111111-1111-4111-8111-111111111111','name':'QA Test Guild','tag':'TEST','bio':'Mobile Guild Hub QA','status':'approved','tagStyle':{'color':'#D2B2FF','finish':'glow'},'recruitmentOpen':True,'memberCount':2,'members':[{'id':'22222222-2222-4222-8222-222222222222','name':'Sample Guild Leader','role':'owner','joinedAt':'2026-10-18T00:00:00Z'}],'posts':[],'amMember':False,'canManage':False,'myApplication':None}
+HTML=HTML.replace('__MOCK_ENTRIES__',json.dumps(MOCK_ENTRIES)).replace('__MOCK_ART__',json.dumps(MOCK_ART)).replace('__MOCK_GUILD__',json.dumps(MOCK_GUILD))
 
 args=['--no-sandbox','--disable-dev-shm-usage']
 executable=shutil.which('chromium') or shutil.which('google-chrome') or None
@@ -87,6 +91,13 @@ with sync_playwright() as playwright:
     # Keep the mock page isolated but give it a real HTTP origin.
     qa_origin='http://127.0.0.1:17653/__arcana_qa_blank__'
     page.route(qa_origin,lambda route:route.fulfill(status=200,body='<!doctype html><html><body></body></html>',content_type='text/html'))
+    # The real-page theme miniature navigates a same-origin iframe. Serve this identical
+    # compiled offline Arcana entrypoint there rather than letting Chromium hit an empty port.
+    frame_requests=[]
+    def serve_mini_frame(route):
+        frame_requests.append(route.request.url)
+        route.fulfill(status=200,body=HTML,content_type='text/html')
+    page.route(re.compile(r'^http://127\.0\.0\.1:17653/\?arcanaMiniPreview=1'),serve_mini_frame)
     page.goto(qa_origin,wait_until='domcontentloaded')
     page.set_content(HTML,wait_until='domcontentloaded')
     try:
@@ -176,6 +187,24 @@ with sync_playwright() as playwright:
     assert page.locator('.launchAlphabet').get_by_text('Arcana Journal').count()>=1
     assert page.locator('#arcanaDock [data-dock="directory"]').get_attribute('aria-current')=='page'
 
+    page.evaluate("location.hash='#/guilds'")
+    page.wait_for_selector('.guildHubTile',timeout=8000)
+    assert page.locator('.guildHubTile svg.arcanaGuildCrest').count()==0, 'Retired guild crest is still visible'
+    assert page.locator('.guildHubTile .arcanaGuildTag.isOfficial').count()==1
+    page.locator('.guildHubTile [data-route="guilds/view"]').click()
+    page.wait_for_selector('.guildHubCover',timeout=8000)
+    assert 'QA Test Guild' in page.locator('.guildHubCover').inner_text()
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Guild page overflows mobile viewport'
+    page.locator('.guildHubBack').click()
+    page.wait_for_selector('.guildHubTile',timeout=8000)
+    # The retired designer route must not expose any crest UI.
+    page.evaluate("location.hash='#/guilds/crest'")
+    page.wait_for_selector('.guildHubTagIntro',timeout=8000)
+    assert page.locator('.crestStudio, .arcanaGuildCrest, [data-crest-workshop]').count()==0
+    assert page.locator('[data-route="guilds/crest"]').count()==0
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Guild directory overflows mobile viewport'
+    page.screenshot(path=str(OUT/'guild-tags-only-mobile.png'),full_page=True)
+
     page.locator('#arcanaDock [data-dock="featured"]').click()
     page.wait_for_selector('.arcanaFeaturedPage',timeout=8000)
     assert 'Arcana Journal' in page.locator('.arcanaFeaturedPage').inner_text()
@@ -193,12 +222,47 @@ with sync_playwright() as playwright:
     # Preview-only, browser-local art sandbox: no authenticated write path is used.
     page.evaluate("location.hash='#/theme-playground'")
     page.wait_for_selector('.themePlayground',timeout=8000)
-    assert page.locator('.designPresetSignature').count()==20
+    assert page.locator('.designPresetSignature').count()==24
+    assert page.locator('.designPsychedelicGrid .designPresetSignature').count()==4
+    # True SVG <use> references must paint the colored motifs in Chromium.
+    paints=page.evaluate("""async () => {
+       const {psychedelicSvg,PSYCHEDELIC_IDS,PSYCHEDELIC_DEFAULTS}=await import('@arcana/psychedelic-patterns.js');
+       const output={};
+       for(const id of PSYCHEDELIC_IDS){
+         const css=psychedelicSvg(id,PSYCHEDELIC_DEFAULTS);
+         const img=new Image();img.src=css.substring(5,css.length-2);await img.decode();
+         const cv=document.createElement('canvas');cv.width=360;cv.height=360;
+         const ctx=cv.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);
+         const data=ctx.getImageData(0,0,360,360).data,seen=new Set();
+         for(let y=8;y<360;y+=13)for(let x=8;x<360;x+=13){
+          const pos=(y*360+x)*4;
+          seen.add([data[pos],data[pos+1],data[pos+2]].join(':'));
+         }
+         output[id]=seen.size;
+       }
+       return output;
+    }""")
+    assert all(count>=4 for count in paints.values()), 'Psychedelic vector SVG did not paint distinct colors: '+str(paints)
+
+    if page.locator('[data-mini-toggle]').get_attribute('aria-expanded')=='false':
+        page.locator('[data-mini-toggle]').click()
+    live=page.frame_locator('[data-mini-live-frame]')
+    try:
+        live.locator('#content.homeFullscreen .launchHero').wait_for(timeout=12000)
+    except Exception:
+        print('LIVE FRAME DEBUG',page.locator('[data-mini-live-frame]').evaluate("""el=>({url:el.src,docURL:el.contentDocument?.URL,body:el.contentDocument?.body?.innerText?.slice(0,1400),ready:el.contentDocument?.readyState,content:el.contentDocument?.querySelector('#content')?.innerHTML?.slice(0,900)})"""))
+        print('FRAME REQUESTS',repr(frame_requests))
+        print('ALL FRAMES',repr([(frame.url,frame.locator('body').count(),frame.locator('body').inner_text()[:180]) for frame in page.frames]))
+        print('LIVE FRAME PAGE ERRORS',repr(errors))
+        raise
+    assert live.locator('body').count()==1, 'Theme preview failed to load the real current Arcana page'
+    page.screenshot(path=str(OUT/'current-arcana-live-mini.png'),full_page=True)
     assert page.locator('.designClassicCollection .designPreset').count()==18
     assert page.locator('[data-theme-save]').count()==12
     page.locator('.designPresetSignature[data-arg="astral"]').click()
     assert page.locator('html').get_attribute('data-arcana-design-pattern')=='astral-sovereign'
-    assert page.evaluate("getComputedStyle(document.querySelector('.designPresetArt')).backgroundImage.includes('gradient')")
+    assert page.evaluate("getComputedStyle(document.querySelector('.designPresetSignature[data-collection=signature] .designPresetArt')).backgroundImage.includes('gradient')")
+    assert page.evaluate("getComputedStyle(document.querySelector('.designPresetSignature[data-collection=psychedelic] .designPresetArt')).backgroundImage.includes('data:image/svg+xml')"), 'Recolorable motifs must display in premium swatches'
     assert page.locator('[data-mini-canvas]').get_attribute('data-mini-pattern')=='astral-sovereign'
     page.locator('[data-design-field="aura"]').evaluate("el=>{el.value='77';el.dispatchEvent(new Event('input',{bubbles:true}))}")
     assert page.evaluate("JSON.parse(localStorage.getItem('arcana-admin-design-preview-v1')).aura")==77

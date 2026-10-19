@@ -57,7 +57,7 @@ const asCreator=account=>({...account,isCreator:DISCORD_ID.test(process.env.ARCA
 export function publicProfile(account){
  const a=asCreator(account);
  return {id:a.id,displayName:a.profile?.displayName||a.discordName||'Arcana player',
- inGameName:a.profile?.inGameName||'',guild:a.profile?.guild||'',favoriteClass:a.profile?.favoriteClass||'',
+ inGameName:a.profile?.inGameName||'',guild:a.profile?.guild||'',guildTag:a.profile?.guildTag||'',guildId:a.profile?.guildId||'',favoriteClass:a.profile?.favoriteClass||'',
  description:a.profile?.description||'',avatarDataUrl:a.profile?.avatarDataUrl||'',raidStatus:a.profile?.raidStatus||'',guildStatus:a.profile?.guildStatus||'',
  roles:publicRoles(a),joinedAt:a.joinedAt||'',betaTesterSince:a.betaTesterSince||'',suspended:!!a.suspended};
 }
@@ -187,12 +187,22 @@ export async function handleAccountRequest(req,res,url){
   const fields=body?.profile;
   if(!fields||typeof fields!=='object'||Array.isArray(fields))throw error(400,'Profile object required.');
   const profile={...user.profile};
+  if(Object.hasOwn(fields,'guildTag')){
+   const tag=String(fields.guildTag||'').trim().toUpperCase();
+   if(tag&&!/^[A-Z]{4}$/.test(tag))throw error(422,'Guild tag must be four letters (A-Z).');
+   profile.guildTag=tag;
+  }
   for(const key of profileFields)if(Object.hasOwn(fields,key))profile[key]=safeText(fields[key],fieldLengths[key]);
   if(Object.hasOwn(fields,'avatarDataUrl'))profile.avatarDataUrl=validAvatar(fields.avatarDataUrl);
   if(profile.displayName.length<2)throw error(422,'Display name needs at least two characters.');
   const updated=await queued(async()=>{
    const current=await readJSON(accountFile(user.id));
    if(!current||current.suspended)throw error(403,'Account unavailable.');
+   if(profile.guildTag){
+    const {reservedGuildTag}=await import('./guild-hub-server.mjs');
+    const reserved=await reservedGuildTag(profile.guildTag);
+    if(reserved&&!reserved.members.some(m=>m.id===user.id))throw error(409,'This tag is reserved for members of a registered guild.');
+   }
    current.profile=profile;await saveAtomic(accountFile(user.id),current);return current;
   });
   sendJSON(res,200,{profile:selfProfile(updated)});return true;

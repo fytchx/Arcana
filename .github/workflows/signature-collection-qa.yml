@@ -1,7 +1,7 @@
 name: Signature Collection QA
 on:
   push:
-    branches: [feature/arcana-signature-collection-2026-10-18, release/arcana-three-features-2026-10-19]
+    branches: [feature/arcana-signature-collection-2026-10-18, feature/psychedelic-patterns-real-theme-preview-2026-10-19, feature/guild-tags-only-theme-qa-2026-10-19, release-candidate/guild-tags-psychedelic-2026-10-19]
   workflow_dispatch:
 permissions:
   contents: read
@@ -25,6 +25,7 @@ jobs:
       - run: python -m pip install 'playwright>=1.55,<2'
       - run: python -m playwright install --with-deps chromium
       - run: python tests/mobile_smoke.py
+      - run: python tests/public_theme_performance.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

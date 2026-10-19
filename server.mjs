@@ -11,6 +11,7 @@ import {safeSiteAdminRequest} from './src/site-admin-server.mjs';
 import { safeAccountBuildRequest } from './src/account-builds.mjs';
 import {safeFarmingListRequest} from './src/farming-lists-server.mjs';
 import { safeCommunityRequest } from './src/community-server.mjs';
+import { safeGuildHubRequest } from './src/guild-hub-server.mjs';
 import { safeGeneralChatRequest } from './src/general-chat-server.mjs';
 import { betaFeedbackRequest } from './src/beta-feedback-server.mjs';
 import { fileURLToPath } from 'node:url';
@@ -137,6 +138,7 @@ const server=http.createServer(async(req,res)=>{
    if(pathname.startsWith('/api/account/farming-lists')&&await safeFarmingListRequest(req,res,parsedUrl))return;
   if((pathname.startsWith('/api/account/')||pathname.startsWith('/api/profiles/')||pathname.startsWith('/api/admin/roles/'))&&await safeAccountRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/community/')&&await safeCommunityRequest(req,res,parsedUrl))return;
+  if(pathname.startsWith('/api/guild-hub')&&await safeGuildHubRequest(req,res,parsedUrl))return;
    if(pathname.startsWith('/api/chat/')&&await safeGeneralChatRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/beta/')&&await betaFeedbackRequest(req,res,parsedUrl))return;
   if(await handleWikiRequest(req,res,pathname))return;
@@ -179,7 +181,7 @@ const server=http.createServer(async(req,res)=>{
   }
   const normalized=pathname==='/'?'/index.html':pathname;
   // Serve only public frontend assets. Never expose account/session files or local Wiki data.
-  const publicPage=new Set(['/index.html','/privacy.html','/beta-rules.html','/styles.css','/wiki-studio.css','/community.css','/beta.css','/launch-navigation.css','/pathfinder-timeline.css','/quick-tools.css','/home-three.css','/arcana-contour.css','/theme-studio-finishes.css','/signature-themes.css','/theme-seamless.css','/traffic.css','/admin.css','/journal.css','/journal-widgets.css','/journal-studio.js','/googledcf6cfe1a260efea.html']).has(normalized);
+  const publicPage=new Set(['/index.html','/privacy.html','/beta-rules.html','/styles.css','/wiki-studio.css','/community.css','/guild-hub.css','/beta.css','/launch-navigation.css','/pathfinder-timeline.css','/quick-tools.css','/home-three.css','/arcana-contour.css','/theme-studio-finishes.css','/signature-themes.css','/theme-seamless.css','/psychedelic-themes.css','/traffic.css','/admin.css','/journal.css','/journal-widgets.css','/journal-studio.js','/googledcf6cfe1a260efea.html']).has(normalized);
   const publicModule=/^\/src\/[a-z][a-z0-9-]*\.js$/.test(normalized);
   const publicAsset=/^\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.(?:webp|svg|png|jpg|jpeg|json)$/.test(normalized);
   if(!publicPage&&!publicModule&&!publicAsset){send(res,404,'Not found');return;}

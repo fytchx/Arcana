@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {HOME_CARDS,HOME_MENUS,DIRECTORY,WIKI_TOPICS,homeScreen,homeSubmenu,directoryView,wikiTopicView,userCenterView,settingsView} from '../src/launch-navigation.js';
 import {ACCENT_PRESETS,selectedAccent,setAccent,themeStatus} from '../src/theme.js';
 
-const routes=new Set(['journal','journal-studio','journal-balance','home','directory','user','recent','settings','icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/category','wiki/items','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','calculators/damage','community','community/create','account','beta','lfg/raids','lfg/guilds']);
+const routes=new Set(['journal','journal-studio','journal-balance','home','directory','user','recent','settings','icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/category','wiki/items','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','calculators/damage','community','community/create','account','beta','lfg/raids','lfg/guilds','guilds','guilds/crest']);
 test('three destination cards open their appropriate sections',()=>{
  assert.deepEqual(HOME_CARDS.map(x=>x.title),['Pathfinder','Tools','Builds & Guides']);
  const html=homeScreen();

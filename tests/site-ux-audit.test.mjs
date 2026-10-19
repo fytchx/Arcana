@@ -8,7 +8,7 @@ const read=path=>readFile(new URL(path,import.meta.url),'utf8');
 const patterns=['contours','rings','stars','grid','aurora','diagonal','hex','grain','crystal','nebula','weave','runes','circuit','topography','facets','scanlines','honeycomb','plain'];
 test('global appearance studio has 38 presets and classic pattern support',async()=>{
  const html=designPanel(),css=await read('../arcana-contour.css');
- assert.equal(Object.keys(DESIGN_PRESETS).length,38);
+ assert.equal(Object.keys(DESIGN_PRESETS).length,42);
  for(const [id,p] of Object.entries(DESIGN_PRESETS)){
   assert.match(html,new RegExp('data-arg="'+id+'"'));
   assert.equal(validateDesignField('pattern',p.pattern),p.pattern,id+' uses a supported texture');
