@@ -1,5 +1,5 @@
 import {esc,icon} from './ui.js';
-import {guildBadge} from './guild-crest.js';
+import {guildBadge} from './guild-badge.js';
 import {cloudBuildView,loadAccountBuilds,wireCloudBuildUI} from './account-builds-ui.js';
 import {farmListsAccountView,loadFarmingLists} from './farming-lists-ui.js';
 const state={me:undefined,enabled:false,betaEnrollmentOpen:false,posts:[],myPosts:[],profilePosts:[],post:null,profile:null,loading:null,error:'',lastRoute:'',requested:'',guildRegistry:[]};
