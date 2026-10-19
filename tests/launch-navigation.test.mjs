@@ -6,7 +6,7 @@ import {ACCENT_PRESETS,selectedAccent,setAccent,themeStatus} from '../src/theme.
 
 const routes=new Set(['journal','journal-studio','journal-balance','home','directory','user','recent','settings','icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/category','wiki/items','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','calculators/damage','community','community/create','account','beta','lfg/raids','lfg/guilds','guilds','guilds/crest']);
 test('three destination cards open their appropriate sections',()=>{
- assert.deepEqual(HOME_CARDS.map(x=>x.title),['Pathfinder','Tools','Builds & Guides']);
+ assert.deepEqual(HOME_CARDS.map(x=>x.title),['Pathfinder','Tools','Builds, Guides & Wiki']);
  const html=homeScreen();
  assert.equal((html.match(/data-action="homemenu"/g)||[]).length,3);
  assert.match(html,/BUILD STUDIO|Build Studio/);
@@ -42,7 +42,9 @@ test('topic shells are navigable, safely escaped and do not invent article conte
 test('global home control is registered and the old bottom nav is absent',async()=>{
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
- assert.match(html,/id="searchBtn"/);
+ assert.match(html,/id="adminPortalBtn"/);
+  assert.match(html,/data-dock="search"/);
+  assert.doesNotMatch(html,/id="searchBtn"/);
  assert.match(html,/id="accountBtn"/);
  assert.doesNotMatch(html,/id="bottomNav"/);
  assert.doesNotMatch(app,/function globalHomeBar/);
