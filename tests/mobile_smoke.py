@@ -21,7 +21,7 @@ for module in sorted((ROOT/'src').glob('*.js')):
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
 # Offline browser must render EVERY stylesheet in the real entry point, not just
 # styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
-for css_name in ('styles.css','wiki-studio.css','community.css','guild-hub.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','signature-themes.css','theme-seamless.css','psychedelic-themes.css','desktop-home-refinement.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
+for css_name in ('styles.css','wiki-studio.css','community.css','guild-hub.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','signature-themes.css','theme-seamless.css','psychedelic-themes.css','desktop-home-refinement.css','arcana-connected-ux.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
     css=(ROOT/css_name).read_text()
     pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\?[^"]*)?">'
     HTML,count=re.subn(pattern,lambda _: '<style>\n'+css+'\n</style>',HTML)
@@ -327,6 +327,19 @@ with sync_playwright() as playwright:
     page.evaluate("location.hash='#/home'")
     page.wait_for_selector('.launchHero',timeout=8000)
     assert page.locator('html').get_attribute('data-arcana-design-active')!='true', 'Leaving Playground must disable local try-on'
+    # Synthetic authenticated QA browser, NOT the owner's real session or credentials.
+    # Header admin access must be based on server-returned roles; guest stays hidden.
+    assert page.locator('#adminPortalBtn').is_hidden(), 'Guest should never see admin controls'
+    admin_html=HTML.replace("if(path.includes('/api/wiki/import-access'))",
+        "if(path.includes('/api/account/me')) return new Response(JSON.stringify({user:{id:'qa-admin',displayName:'Arcana QA Admin',roles:[{id:'admin'}]},enabled:true}),{status:200,headers:{'content-type':'application/json'}}); if(path.includes('/api/wiki/import-access'))")
+    admin_page=browser.new_page(viewport={'width':390,'height':844})
+    admin_page.route(qa_origin,lambda route:route.fulfill(status=200,body=admin_html,content_type='text/html'))
+    admin_page.goto(qa_origin,wait_until='domcontentloaded')
+    admin_page.locator('#adminPortalBtn').wait_for(state='visible',timeout=12000)
+    admin_page.locator('#adminPortalBtn').click()
+    admin_page.wait_for_selector('.adminConsole',timeout=10000)
+    assert 'Admin Control Center' in admin_page.locator('.adminConsole h1').inner_text()
+    admin_page.close()
     assert errors==[], 'Browser errors: '+repr(errors)
     print('PASS: latest three-card home, Journal spotlight, Community, Directory, Featured, Build Studio, settings, responsive checks and all themes.')
     browser.close()
