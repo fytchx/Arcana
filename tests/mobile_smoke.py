@@ -21,7 +21,7 @@ for module in sorted((ROOT/'src').glob('*.js')):
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
 # Offline browser must render EVERY stylesheet in the real entry point, not just
 # styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
-for css_name in ('styles.css','wiki-studio.css','community.css','guild-hub.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
+for css_name in ('styles.css','wiki-studio.css','community.css','guild-hub.css','guild-crest-workshop.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
     css=(ROOT/css_name).read_text()
     pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\?[^"]*)?">'
     HTML,count=re.subn(pattern,lambda _: '<style>\n'+css+'\n</style>',HTML)
@@ -190,6 +190,19 @@ with sync_playwright() as playwright:
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Guild page overflows mobile viewport'
     page.locator('.guildHubBack').click()
     page.wait_for_selector('.guildHubTile',timeout=8000)
+    page.evaluate("location.hash='#/guilds/crest'")
+    page.wait_for_selector('.crestStudio',timeout=8000)
+    assert page.locator('[data-crest-choose="center"]').count()==25, 'Crest Studio main-shape library missing'
+    assert page.locator('[data-crest-choose="secondary"]').count()==25, 'Accent-shape library missing'
+    assert page.locator('[data-crest-choose="outline"]').count()==10, 'Outline library missing'
+    assert page.locator('[data-crest-choose="border"]').count()==10, 'Border library missing'
+    page.locator('[data-crest-choose="center"][data-value="8"]').click()
+    assert page.locator('[data-crest-choose="center"][data-value="8"]').get_attribute('aria-pressed')=='true'
+    page.locator('[data-crest-palette="2"]').click()
+    assert page.locator('[data-crest-preview] svg').count()>=1
+    page.screenshot(path=str(OUT/'guild-crest-studio-mobile.png'),full_page=True)
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Crest Designer overflows mobile viewport'
+
     page.locator('#arcanaDock [data-dock="featured"]').click()
     page.wait_for_selector('.arcanaFeaturedPage',timeout=8000)
     assert 'Arcana Journal' in page.locator('.arcanaFeaturedPage').inner_text()
