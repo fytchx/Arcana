@@ -6,7 +6,7 @@ html[data-arcana-design-active="true"][data-arcana-design-pattern]:not([data-arc
 html[data-arcana-design-active="true"][data-arcana-design-pattern]:not([data-arcana-design-pattern="plain"]) #content:not(.homeFullscreen),html[data-arcana-design-active="true"][data-arcana-design-pattern]:not([data-arcana-design-pattern="plain"]) :is(.pathRangeWorkspace,.pathfinderHubHead),html[data-arcana-design-active="true"][data-arcana-design-pattern]:not([data-arcana-design-pattern="plain"]) #content.homeFullscreen :is(.launchHero,.launchQuickCard):after,
 html[data-arcana-design-active="true"][data-arcana-pattern-target="background"] #content.homeFullscreen{
 background-repeat:no-repeat!important;background-size:100% 100%!important;background-position:center center!important}
-.miniCanvas[data-mini-pattern]:not([data-mini-pattern="plain"]) :is(.miniHero,.miniTile):before,
+.miniCanvas[data-mini-pattern][data-mini-pattern-target]:not([data-mini-pattern="plain"]) :is(.miniHero,.miniTile):before,
 .miniCanvas[data-mini-pattern]:not([data-mini-pattern="plain"])[data-mini-pattern-target="background"],
 .themePatternThumb[data-preview-pattern]:not([data-preview-pattern="plain"]),.designPresetArt[data-signature-art]{
 background-repeat:no-repeat!important;background-size:100% 100%!important;background-position:center center!important}
