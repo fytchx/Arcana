@@ -54,6 +54,7 @@ export const HOME_MENUS=Object.freeze({
  ]},
  social:{title:'Guild & Raid Finder',detail:'Guild recruitment, raid groups and player community.',links:[
   link('Guild Hub','Registered guild pages, applications and custom crests.','guilds','shield'),
+  link('Guild Crest Designer','Play with 25 emblems, 10 shields and layered colors.','guilds/crest','shield'),
   link('Legacy Guild Listings','Older recruitment listings.','lfg/guilds','users'),
   link('Find a Raid','Raid listings and groups.','lfg/raids','users'),
   link('Guild Skill Planner','Plan guild skill bonuses.','labs/guild-tree','shield'),
