@@ -244,7 +244,8 @@ with sync_playwright() as playwright:
     assert page.locator('[data-theme-save]').count()==12
     page.locator('.designPresetSignature[data-arg="astral"]').click()
     assert page.locator('html').get_attribute('data-arcana-design-pattern')=='astral-sovereign'
-    assert page.evaluate("getComputedStyle(document.querySelector('.designPresetArt')).backgroundImage.includes('gradient')")
+    assert page.evaluate("getComputedStyle(document.querySelector('.designPresetSignature[data-collection=signature] .designPresetArt')).backgroundImage.includes('gradient')")
+    assert page.evaluate("getComputedStyle(document.querySelector('.designPresetSignature[data-collection=psychedelic] .designPresetArt')).backgroundImage.includes('data:image/svg+xml')"), 'Recolorable motifs must display in premium swatches'
     assert page.locator('[data-mini-canvas]').get_attribute('data-mini-pattern')=='astral-sovereign'
     page.locator('[data-design-field="aura"]').evaluate("el=>{el.value='77';el.dispatchEvent(new Event('input',{bubbles:true}))}")
     assert page.evaluate("JSON.parse(localStorage.getItem('arcana-admin-design-preview-v1')).aura")==77
