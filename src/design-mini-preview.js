@@ -2,10 +2,13 @@
 import {arcanaIcon} from './arcana-icons.js';
 import {readDesign} from './design-controls.js';
 import {themeReadability} from './theme-studio-audit.js';
+import {decorateLiveFrame} from './theme-live-frame.js';
+import {psychedelicSvg,syncPsychedelicSamples} from './psychedelic-patterns.js';
 const PREVIEW_UI_KEY='arcana-theme-preview-layout-v2';
 const storedPreview=()=>{try{return JSON.parse(globalThis.localStorage?.getItem(PREVIEW_UI_KEY)||'{}')||{}}catch{return {}}};
 const initial=storedPreview();
-let baseline=null,mode='after',page=['home','studio','pathfinder','wiki','profile'].includes(initial.page)?initial.page:'home';
+const PAGES=Object.freeze({home:'home',studio:'labs/build',pathfinder:'calculators/pathfinder',wiki:'wiki',profile:'profile',guilds:'guilds'});
+let baseline=null,mode='after',page=Object.hasOwn(PAGES,initial.page)?initial.page:'home';
 let device=['phone','tablet','desktop'].includes(initial.device)?initial.device:'phone';
 let previewExpanded=initial.previewExpanded!==false;
 let previewMode=['dock','expanded','focus'].includes(initial.previewMode)?initial.previewMode:'dock';
@@ -18,7 +21,7 @@ const tile=(title,sub,id)=>'<div class="miniTile"><div class="miniTileIcon">'+ic
 export function designMiniMarkup(){
  start();
  return '<section class="designMiniPreview" aria-label="Live mini theme preview">'+'<div class="miniPreviewGrip" data-mini-grip title="Drag up or down to resize preview"></div>'+
- '<header class="miniPreviewHeader"><div><strong>Live preview</strong><small>Always beside your controls · updates instantly</small></div><div class="miniPreviewHeaderActions"><button type="button" data-mini-toggle aria-expanded="'+String(previewExpanded)+'" aria-controls="miniPreviewContents">'+(previewExpanded?'Collapse':'Open')+'</button><button type="button" data-mini-size="cycle" aria-pressed="'+String(previewMode==='focus')+'">'+(previewMode==='focus'?'Dock':previewMode==='expanded'?'Full screen':'Larger')+'</button></div></header>'+
+ '<header class="miniPreviewHeader"><div><strong>Live preview</strong><small>Current Arcana pages · your colors and textures</small></div><div class="miniPreviewHeaderActions"><button type="button" data-mini-toggle aria-expanded="'+String(previewExpanded)+'" aria-controls="miniPreviewContents">'+(previewExpanded?'Collapse':'Open')+'</button><button type="button" data-mini-size="cycle" aria-pressed="'+String(previewMode==='focus')+'">'+(previewMode==='focus'?'Dock':previewMode==='expanded'?'Full screen':'Larger')+'</button></div></header>'+
  '<div id="miniPreviewContents" class="miniPreviewContents" '+(previewExpanded?'':'hidden')+'><div class="miniPreviewToolbar"><div class="miniDeviceSwitch" role="group" aria-label="Simulated device width"><button type="button" data-mini-device="phone" aria-pressed="'+(device==='phone')+'">Phone</button><button type="button" data-mini-device="tablet" aria-pressed="'+(device==='tablet')+'">Tablet</button><button type="button" data-mini-device="desktop" aria-pressed="'+(device==='desktop')+'">Desktop</button></div><button type="button" data-mini-reset>Reset view</button></div><div class="miniCompare" role="group" aria-label="Before and After"><button type="button" data-mini-compare="before" aria-pressed="false">Before</button><button type="button" data-mini-compare="after" aria-pressed="true">After</button></div>'+
  '<div class="miniCanvas" data-mini-canvas data-mini-page="home" data-mini-pattern="contours" aria-label="Miniature Arcana homepage showing current appearance">'+
  '<div class="miniHeader"><span>'+icon('message-square')+'</span><b><i class="miniLogo"></i> ARCANA</b><span>'+icon('search')+'</span></div>'+
@@ -28,7 +31,8 @@ export function designMiniMarkup(){
  '<div class="miniPage miniWiki"><div class="miniHero miniWorkspace"><span class="miniHeroIcon">'+icon('book',26)+'</span><span><small>ARCANAWIKI</small><b>Discover the game</b><em>Guides, equipment and mechanics</em></span></div><div class="miniTabs"><b>Guides</b><span>Equipment</span><span>Biomes</span></div><div class="miniTiles">'+tile('Season 2','Start here','book')+tile('Equipment','Drop bonuses','shield')+'</div></div>'+
  '<div class="miniPage miniProfile"><div class="miniHero miniWorkspace"><span class="miniHeroIcon">'+icon('user',26)+'</span><span><small>YOUR PROFILE</small><b>Player center</b><em>Builds, activity and progress</em></span></div><div class="miniTabs"><b>Saved builds</b><span>Checklists</span><span>Activity</span></div><div class="miniMaterials"><b>Material checklist</b><small>12 / 19 collected</small><i></i></div><div class="miniTiles">'+tile('Build 1','Ready to share','shield')+tile('My guild','PDX','users')+'</div></div>'+
  '<div class="miniDock"><span>'+icon('home')+'<small>Home</small></span><span>'+icon('user')+'<small>Profile</small></span><span>'+icon('spark')+'<small>Featured</small></span><span>'+icon('clock')+'<small>Recent</small></span><span>'+icon('menu')+'<small>Options</small></span></div></div>'+
- '<div class="miniViews" role="group" aria-label="Choose example screen"><button data-mini-page="home" type="button" aria-pressed="true">Home</button><button data-mini-page="studio" type="button" aria-pressed="false">Build</button><button data-mini-page="pathfinder" type="button" aria-pressed="false">Pathfinder</button><button data-mini-page="wiki" type="button" aria-pressed="false">Wiki</button><button data-mini-page="profile" type="button" aria-pressed="false">Profile</button></div>'+
+ '<div class="miniRealViewport" data-mini-real-viewport><span class="miniRealLabel">REAL ARCANA · CURRENT BUILD</span><iframe data-mini-live-frame title="Current Arcana page with your draft theme" tabindex="-1" loading="eager" aria-hidden="true"></iframe></div>'+
+ '<div class="miniViews" role="group" aria-label="Choose example screen"><button data-mini-page="home" type="button" aria-pressed="true">Home</button><button data-mini-page="studio" type="button" aria-pressed="false">Build</button><button data-mini-page="pathfinder" type="button" aria-pressed="false">Pathfinder</button><button data-mini-page="wiki" type="button" aria-pressed="false">Wiki</button><button data-mini-page="profile" type="button" aria-pressed="false">Profile</button><button data-mini-page="guilds" type="button" aria-pressed="false">Guilds</button></div>'+
  '<section class="miniReadability" aria-label="Theme contrast check"><div><strong>Readability meter</strong><small>AA text target: 4.5:1</small></div><div class="miniReadabilityList">'+[['base','Page text'],['card','Panel text'],['button','Button label']].map(([id,label])=>'<div class="miniReadabilityRow" data-mini-readability="'+id+'"><span>'+label+'</span><strong data-mini-ratio="'+id+'">…</strong></div>').join('')+'</div><button type="button" data-mini-fix-contrast hidden>Fix button label contrast</button><small>Estimated flat-color contrast. Text over images and effects needs visual testing.</small></section>'+
  '<p class="miniCaption" data-mini-caption role="status">After: the design you are editing.</p></div></section>';
 }
@@ -47,7 +51,22 @@ export function syncDesignMiniPreview(){
  }))canvas.style.setProperty(name,value);
  canvas.dataset.miniDevice=device;canvas.dataset.miniPage=page;canvas.dataset.miniHeroAction=v.heroActionStyle;canvas.dataset.miniHeroSize=v.heroSize;canvas.dataset.miniPattern=v.pattern;canvas.dataset.miniFont=v.fontFamily;canvas.dataset.miniDensity=v.density;canvas.dataset.miniButtons=v.buttonStyle;canvas.dataset.miniHeroCard=v.heroCardStyle;canvas.dataset.miniHeroEmblem=v.heroCardEmblem;canvas.dataset.miniHeroAlign=v.heroActionAlign;canvas.dataset.miniHeroIcon=v.heroActionIcon;canvas.dataset.miniHeroSubtitle=v.heroActionSubtitle;canvas.dataset.miniPatternTarget=v.patternTarget;
  canvas.setAttribute('aria-label',(mode==='before'?'Before editing':'Current')+' '+page+' example');
+ const psych=psychedelicSvg(v.pattern,v);
+ if(psych)canvas.style.setProperty('--psychedelic-texture',psych);else canvas.style.removeProperty('--psychedelic-texture');
+ syncPsychedelicSamples(globalThis.document,readDesign());
  const section=canvas.closest('.designMiniPreview');
+ const live=section.querySelector('[data-mini-live-frame]');
+ const viewport=section.querySelector('[data-mini-real-viewport]');
+ if(live&&viewport&&typeof window!=='undefined'){
+  const sizes={phone:[390,790],tablet:[768,920],desktop:[1280,900]};
+  const [width,height]=sizes[device];
+  const scale=Math.min(1,Math.max(.19,(viewport.clientWidth||390)/width));
+  live.style.width=width+'px';live.style.height=height+'px';live.style.transform='scale('+scale+')';
+  viewport.style.height=Math.min(510,Math.round(height*scale))+'px';
+  const paint=()=>decorateLiveFrame(live,mode==='before'?baseline:readDesign());
+  if(live.dataset.pageKey!==page){live.dataset.pageKey=page;live.addEventListener('load',paint,{once:true});live.src=location.origin+'/?arcanaMiniPreview=1#/'+PAGES[page];}
+  else paint();
+ }
  section.dataset.previewMode=previewMode;section.dataset.miniDevice=device;
  const dock=section.closest('.themeStudioPreview');
  if(dock){dock.dataset.previewMode=previewMode;dock.dataset.miniDevice=device;dock.dataset.previewExpanded=String(previewExpanded)}
@@ -75,7 +94,7 @@ export function syncDesignMiniPreview(){
 
 }
 export function showDesignMiniPage(next){
- if(!['home','studio','pathfinder','wiki','profile'].includes(next))return;
+ if(!Object.hasOwn(PAGES,next))return;
  page=next;mode='after';storePreview();syncDesignMiniPreview();
 }
 export function focusDesignMiniPreview(){
@@ -91,7 +110,7 @@ export function wireDesignMiniPreview(){
   else if(b.hasAttribute('data-mini-device'))device=['phone','tablet','desktop'].includes(b.dataset.miniDevice)?b.dataset.miniDevice:device;
   else if(b.hasAttribute('data-mini-reset')){mode='after';page='home';device='phone';}
   else if(b.hasAttribute('data-mini-compare'))mode=b.dataset.miniCompare==='before'?'before':'after';
-  else if(b.hasAttribute('data-mini-page'))page=['home','studio','pathfinder','wiki','profile'].includes(b.dataset.miniPage)?b.dataset.miniPage:'home';
+  else if(b.hasAttribute('data-mini-page'))page=Object.hasOwn(PAGES,b.dataset.miniPage)?b.dataset.miniPage:'home';
   storePreview();
   syncDesignMiniPreview();
  });
@@ -123,4 +142,5 @@ export function wireDesignMiniPreview(){
  });
  document.addEventListener('pointercancel',()=>{start=null});
  window.addEventListener('arcana:design-change',syncDesignMiniPreview);
+ window.addEventListener('resize',()=>{if(document.querySelector('[data-mini-live-frame]'))syncDesignMiniPreview()});
 }
