@@ -206,17 +206,17 @@ with sync_playwright() as playwright:
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Guild directory overflows mobile viewport'
     page.screenshot(path=str(OUT/'guild-tags-only-mobile.png'),full_page=True)
     # Real desktop viewport: visible tertiary cards, readable type and bounded page.
-    desktop=browser.new_page(viewport={'width':1440,'height':900},device_scale_factor=1)
-    desktop.route(re.compile(r'^http://127\\.0\\.0\\.1:17653/\\?'),lambda route:route.fulfill(status=200,body=HTML,content_type='text/html'))
-    desktop.goto('http://127.0.0.1:17653/#/home')
-    desktop.wait_for_selector('.homeSpotlights .launchHero',timeout=15000)
-    assert desktop.locator('.launchFeatured').is_visible(), 'Desktop feature section hidden'
-    assert desktop.locator('.launchFeaturedGrid .launchFeatureRow').count()>=3, 'Desktop featured cards missing'
-    assert desktop.locator('#content.homeFullscreen').evaluate('e=>e.getBoundingClientRect().width')>=900, 'Desktop content too narrow'
-    assert desktop.locator('.launchQuickCopy strong').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)')>=20, 'Desktop cards are too small'
-    assert desktop.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Desktop homepage horizontal overflow'
-    desktop.screenshot(path=str(OUT/'desktop-home-full.png'),full_page=True)
-    desktop.close()
+    page.set_viewport_size({'width':1440,'height':900})
+    page.evaluate("location.hash='#/home'")
+    page.wait_for_selector('.homeSpotlights .launchHero',timeout=15000)
+    assert page.locator('.launchFeatured').is_visible(), 'Desktop feature section hidden'
+    assert page.locator('.launchFeaturedGrid .launchFeatureRow').count()>=3, 'Desktop featured cards missing'
+    assert page.locator('#content.homeFullscreen').evaluate('e=>e.getBoundingClientRect().width')>=900, 'Desktop content too narrow'
+    assert page.locator('.launchQuickCopy strong').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)')>=20, 'Desktop cards are too small'
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Desktop homepage horizontal overflow'
+    page.screenshot(path=str(OUT/'desktop-home-full.png'),full_page=True)
+    page.set_viewport_size({'width':390,'height':844})
+
 
 
     page.locator('#arcanaDock [data-dock="featured"]').click()
