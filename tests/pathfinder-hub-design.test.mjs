@@ -66,7 +66,7 @@ test('the protected workshop embeds a real mini sample with three example screen
  for(const section of ['home','studio','pathfinder'])
   assert.match(sample,new RegExp('data-mini-page="'+section+'"'));
  assert.match(sample,/data-mini-reset/);
- assert.doesNotMatch(sample,/<iframe/i);
+ assert.match(sample,/data-mini-live-frame/);
  assert.match(designPanel(),/designMiniPreview/);
  assert.doesNotMatch(settingsView({admin:false}),/designMiniPreview/);
 });
@@ -90,7 +90,7 @@ test('thirty-eight curated palettes can be applied and undone without a page ren
  const old=globalThis.localStorage,mem=new Map();
  try{
   globalThis.localStorage={getItem:k=>mem.get(k)||null,setItem:(k,v)=>mem.set(k,v),removeItem:k=>mem.delete(k)};
-  assert.equal(Object.keys(DESIGN_PRESETS).length,38);
+  assert.equal(Object.keys(DESIGN_PRESETS).length,42);
   assert.equal(applyDesignPreset('emerald'),true);
   assert.equal(readDesign().action,'#34E8A1');
   assert.equal(readDesign().main,'#071510');
