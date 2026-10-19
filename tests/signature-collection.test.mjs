@@ -10,7 +10,7 @@ const read=path=>readFile(new URL(path,import.meta.url),'utf8');
 test('twenty individually styled signature designs extend eighteen classics without losing their editable knobs',()=>{
  const ids=Object.keys(SIGNATURE_PRESETS),patterns=new Set(THEME_PATTERNS.filter(p=>p.category==='Signature').map(p=>p.id));
  assert.equal(ids.length,20);
- assert.equal(Object.keys(DESIGN_PRESETS).length,38);
+ assert.equal(Object.keys(DESIGN_PRESETS).length,42);
  assert.equal(patterns.size,20);
  assert.equal(new Set(ids.map(id=>SIGNATURE_PRESETS[id].pattern)).size,20);
  for(const id of ids){
@@ -43,7 +43,7 @@ test('shared shaders draw in real Arcana, gallery, signature art and five-page m
  assert.match(panel,/Signature Collection/);
  assert.match(panel,/Classic Collection/);
  assert.match(panel,/Surprise me/);
- assert.match(panel,/38 editable designs/);
+ assert.match(panel,/42 editable designs/);
  assert.match(mini,/--mini-signature-scale/);
  assert.match(css,/--arcana-signature-sheen/);
  assert.match(css,/--arcana-signature-aura/);
