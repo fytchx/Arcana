@@ -39,9 +39,9 @@ test('preview remains live across five pages, three devices, before-after, plus 
  assert.doesNotMatch(html,/<iframe/);
 });
 test('64 textures are uniquely named, correctly validated and represented in site/mini/thumbnail CSS',async()=>{
- const css=await read('../arcana-contour.css');
- assert.equal(THEME_PATTERNS.length,64);
- assert.equal(new Set(THEME_PATTERN_IDS).size,64);
+ const css=(await read('../arcana-contour.css'))+(await read('../signature-themes.css'));
+ assert.equal(THEME_PATTERNS.length,84);
+ assert.equal(new Set(THEME_PATTERN_IDS).size,84);
  const html=designPanel({showPreview:false});
  for(const p of THEME_PATTERNS){
   assert.equal(validateDesignField('pattern',p.id),p.id,p.id);
@@ -56,7 +56,7 @@ test('64 textures are uniquely named, correctly validated and represented in sit
 });
 test('draft vault has four private snapshots and authenticated import controls',async()=>{
  const html=themeVaultMarkup(),source=await read('../src/theme-studio-vault.js');
- assert.equal((html.match(/data-theme-save=/g)||[]).length,4);
+ assert.equal((html.match(/data-theme-save=/g)||[]).length,12);
  assert.match(html,/data-theme-json/);
  assert.match(html,/data-theme-export/);
  assert.match(html,/data-theme-import/);

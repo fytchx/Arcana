@@ -65,6 +65,11 @@ export const WIKI_CATEGORIES=Object.freeze([
         "existing": true
       },
       {
+        "id": "bruto-season-2-progression",
+        "title": "BruTo’s Season 2 Progression & Farming Guide",
+        "existing": true
+      },
+      {
         "id": "drop-bonus",
         "title": "Drop Bonus",
         "existing": false

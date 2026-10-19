@@ -2,7 +2,7 @@ import {readDesign,replaceDesignDraft,DESIGN_FIELDS,DEFAULT_DESIGN,validateDesig
 import {esc} from './ui.js';
 
 const KEY='arcana-owner-theme-snapshots-v1';
-const SLOT_COUNT=4;
+const SLOT_COUNT=12;
 const safeList=()=>{
  try{
   const raw=JSON.parse(localStorage.getItem(KEY)||'[]');
@@ -23,7 +23,7 @@ export const themeVaultMarkup=()=>{
   (ready?'<button type="button" data-theme-load="'+slot+'">Load</button><button type="button" data-theme-clear="'+slot+'" aria-label="Clear slot '+(slot+1)+'">×</button>':'')+
   '</div></div>';
  }).join('');
- return '<div class="themeVaultHeader"><h3>Design vault</h3><p>Four local drafts to experiment without losing your favorite look. These are not public themes.</p></div>'+
+ return '<div class="themeVaultHeader"><h3>Design vault</h3><p>Twelve named local drafts to experiment without losing your favorite look. These are not public themes.</p></div>'+
  '<div class="themeVaultGrid">'+cards+'</div>'+
  '<details class="themeVaultTransfer"><summary>Move a theme between devices</summary>'+
  '<p>Export the design as JSON to copy it to a different browser. Nothing is uploaded until you publish.</p>'+

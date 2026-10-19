@@ -1,5 +1,6 @@
 import {THEME_PATTERN_IDS} from './theme-patterns.js';
 import {HERO_CTA_STYLE_IDS} from './hero-cta-styles.js';
+import {SIGNATURE_PRESETS} from './signature-collection.js';
 // Admin-only local appearance experimentation. Never alters community theme data.
 export const DESIGN_KEY='arcana-admin-design-preview-v1';
 export const DEFAULT_DESIGN=Object.freeze({
@@ -11,9 +12,9 @@ export const DEFAULT_DESIGN=Object.freeze({
  heroActionWidth:100,heroActionAlign:'center',heroActionHeight:45,heroActionGlow:10,heroActionBorder:1,heroActionIcon:'show',heroActionSubtitle:'auto',
  heroCardStyle:'blended',heroCardEmblem:'subtle',
  patternTarget:'all',
- iconMode:'two-tone',fontSize:100,cardPadding:14,cardShadow:30,headerOpacity:95,patternScale:100,borderWidth:1,buttonHeight:45,accentBlend:25
+ iconMode:'two-tone',fontSize:100,cardPadding:14,cardShadow:30,headerOpacity:95,patternScale:100,borderWidth:1,buttonHeight:45,accentBlend:25,aura:50,sheen:50,detail:63
 });
-const numbers={intensity:[0,100],glow:[0,100],edges:[0,100],roundness:[3,28],buttonRoundness:[3,30],buttonFill:[35,100],fontSize:[90,115],cardPadding:[8,22],cardShadow:[0,100],headerOpacity:[65,100],patternScale:[60,180],borderWidth:[0,3],buttonHeight:[40,58],accentBlend:[0,100],heroActionWidth:[65,100],heroActionHeight:[44,70],heroActionGlow:[0,100],heroActionBorder:[0,3]};
+const numbers={intensity:[0,100],glow:[0,100],edges:[0,100],roundness:[3,28],buttonRoundness:[3,30],buttonFill:[35,100],fontSize:[90,115],cardPadding:[8,22],cardShadow:[0,100],headerOpacity:[65,100],patternScale:[60,180],borderWidth:[0,3],buttonHeight:[40,58],accentBlend:[0,100],heroActionWidth:[65,100],heroActionHeight:[44,70],heroActionGlow:[0,100],heroActionBorder:[0,3],aura:[0,100],sheen:[0,100],detail:[0,100]};
 const colors=new Set(['main','card','action','text','secondaryAccent','borderColor','mutedText','navBar','buttonText']);
 // Accept pasted #A78BFA or A78BFA, never partial values or CSS strings.
 export function normalizeDesignHex(value){
@@ -39,7 +40,8 @@ export const DESIGN_PRESETS=Object.freeze({
  quartz:{name:'Prismatic Quartz',main:'#10111E',card:'#25243A',action:'#F2ABFF',secondaryAccent:'#7DE2FF',text:'#F9F4FF',borderColor:'#74628C',mutedText:'#C7B9D7',navBar:'#1B1A2E',buttonText:'#160D1C',pattern:'facets',intensity:18,roundness:19},
  steel:{name:'Steel Tactician',main:'#111720',card:'#27303E',action:'#98B7D8',secondaryAccent:'#E2BC7A',text:'#F3F6FA',borderColor:'#657384',mutedText:'#B8C3D1',navBar:'#1B2533',buttonText:'#121820',pattern:'scanlines',intensity:12,density:'compact',roundness:7},
  gilded:{name:'Gilded Night',main:'#111015',card:'#26202A',action:'#F5C866',secondaryAccent:'#D0A4ED',text:'#FFF9ED',borderColor:'#76634E',mutedText:'#C8BCAF',navBar:'#201C23',buttonText:'#1D1509',pattern:'honeycomb',intensity:16,heroActionStyle:'spotlight'},
- ink:{name:'Ink & Starlight',main:'#0B0B13',card:'#1C1C2A',action:'#F4F4F9',secondaryAccent:'#998DFF',text:'#F3F3F8',borderColor:'#545467',mutedText:'#B4B4C7',navBar:'#171722',buttonText:'#101018',pattern:'stars',intensity:18,buttonStyle:'outline',glow:8}
+ ink:{name:'Ink & Starlight',main:'#0B0B13',card:'#1C1C2A',action:'#F4F4F9',secondaryAccent:'#998DFF',text:'#F3F3F8',borderColor:'#545467',mutedText:'#B4B4C7',navBar:'#171722',buttonText:'#101018',pattern:'stars',intensity:18,buttonStyle:'outline',glow:8},
+ ...SIGNATURE_PRESETS
 });
 export const DESIGN_FIELDS=Object.keys(DEFAULT_DESIGN);
 export function validateDesignField(key,value){
@@ -92,7 +94,7 @@ export function undoDesign(){
 }
 export function applyDesignPreset(key){
  const preset=DESIGN_PRESETS[key];if(!preset)return false;
- const {name,...values}=preset;
+ const {name,tagline,collection,...values}=preset;
  const old=readDesign(),next={...old,...values};
  try{localStorage.setItem(DESIGN_KEY,JSON.stringify(next))}catch{return false}
  priorDesign=old;priorEditKey='preset';lastEditAt=0;applyDesign(globalThis.document?.documentElement);
@@ -115,7 +117,7 @@ export function resetDesign(){
 }
 export function applyDesign(root=globalThis.document?.documentElement){
  if(!root)return;
- const admin=root.dataset.arcanaAdminDesign==='true'&&previewEnabled;
+ const admin=(root.dataset.arcanaAdminDesign==='true'||root.dataset.arcanaThemeTryOn==='true')&&previewEnabled;
  const published=publishedDesign!==null;
  const active=admin||published;
  root.dataset.arcanaDesignActive=String(active);
@@ -128,6 +130,9 @@ export function applyDesign(root=globalThis.document?.documentElement){
  root.style.setProperty('--arcana-pattern-alpha',Math.round(values.intensity*.16)+'%');
  root.style.setProperty('--arcana-premium-pattern-alpha',Math.round(values.intensity*.35)+'%');
  root.style.setProperty('--arcana-glow-alpha',String(values.glow/100));
+  root.style.setProperty('--arcana-signature-aura',String(values.aura/100));
+  root.style.setProperty('--arcana-signature-sheen',String(values.sheen/100));
+  root.style.setProperty('--arcana-signature-detail',String(values.detail/100));
  root.style.setProperty('--arcana-edge-alpha',String(values.edges/100));
  root.style.setProperty('--arcana-card-radius',values.roundness+'px');
  root.style.setProperty('--arcana-button-radius',values.buttonRoundness+'px');
