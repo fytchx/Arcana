@@ -11,7 +11,7 @@ test('three destination cards open their appropriate sections',()=>{
  assert.equal((html.match(/data-action="homemenu"/g)||[]).length,3);
  assert.match(html,/BUILD STUDIO|Build Studio/);
  assert.match(html,/data-route="labs\/build"/);
- assert.match(html,/Useful &amp; Featured/);
+ assert.match(html,/One connected knowledge base/);
  assert.match(html,/data-route="directory"/);
  for(const card of HOME_CARDS){const popup=homeSubmenu(card.id);assert.ok(popup.includes(card.title.replaceAll('&','&amp;')));assert.match(popup,/launchNavRow/);}
 });
