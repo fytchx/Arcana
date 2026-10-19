@@ -10,7 +10,7 @@ const ROOT=()=>resolve(dataRoot(),'guild-hub');
 const DIR=()=>resolve(ROOT(),'guilds');
 const USERS=()=>resolve(dataRoot(),'users');
 const UUID=/^[0-9a-f]{8}-[0-9a-f-]{27,36}$/;
-export const validTag=value=>typeof value==='string'&&/^[A-Za-z]{4}$/.test(value);
+export const validTag=value=>typeof value==='string'&&/^[A-Za-z]{2,4}$/.test(value);
 const clean=(v,n)=>String(v??'').trim().replace(/[\u0000-\u001f\u007f]/g,' ').slice(0,n);
 const fail=(code,message)=>{throw Object.assign(Error(message),{status:code});};
 const filename=id=>resolve(DIR(),id+'.json');
@@ -83,7 +83,7 @@ export async function handleGuildHubRequest(req,res,url){
   checkOrigin(req);const user=await requireCapability(req,'community:create');
   const body=await parseJSON(req,12000);
   const tag=String(body?.tag||'').toUpperCase(),name=clean(body?.name,64),bio=clean(body?.bio,1500);
-  if(!validTag(tag))fail(422,'A guild tag must contain exactly four letters.');
+  if(!validTag(tag))fail(422,'A guild tag must contain 2 to 4 letters.');
   if(user.profile?.guildId)fail(409,'Leave your current Arcana guild before registering another.');
   if(name.length<3)fail(422,'Guild name must contain at least three characters.');
   const result=await queued(async()=>{
@@ -136,7 +136,7 @@ export async function handleGuildHubRequest(req,res,url){
    if(body.crest!==undefined)fail(422,'Guild crests have been retired.');
    if(body.tagStyle!==undefined)g.tagStyle=tagStyle(body.tagStyle);
    if(typeof body.recruitmentOpen==='boolean')g.recruitmentOpen=body.recruitmentOpen;
-   // Approved four-letter tags never change through an unreviewed edit.
+   // Approved 2–4-letter tags never change through an unreviewed edit.
   }else if(op==='apply'&&m==='POST'){
    if(g.status!=='approved'||!g.recruitmentOpen)fail(403,'This guild is not accepting applications.');
    if(member(g,user.id))fail(409,'You already belong to this guild.');
