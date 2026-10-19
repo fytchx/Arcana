@@ -91,6 +91,9 @@ with sync_playwright() as playwright:
     # Keep the mock page isolated but give it a real HTTP origin.
     qa_origin='http://127.0.0.1:17653/__arcana_qa_blank__'
     page.route(qa_origin,lambda route:route.fulfill(status=200,body='<!doctype html><html><body></body></html>',content_type='text/html'))
+    # The real-page theme miniature navigates a same-origin iframe. Serve this identical
+    # compiled offline Arcana entrypoint there rather than letting Chromium hit an empty port.
+    page.route(re.compile(r'^http://127\\.0\\.0\\.1:17653/\\?arcanaMiniPreview=1'),lambda route:route.fulfill(status=200,body=HTML,content_type='text/html'))
     page.goto(qa_origin,wait_until='domcontentloaded')
     page.set_content(HTML,wait_until='domcontentloaded')
     try:
