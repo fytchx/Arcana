@@ -44,7 +44,7 @@ test('Pathfinder presents compact input rows and folded biome categories',async(
  assert.match(css,/\.pathfinderHub \.pathRangeInputs fieldset\{display:grid;grid-template-columns:minmax\(0,1\.3fr\) minmax\(90px,\.7fr\)/);
  assert.match(ui,/i===0\?'open'/);
  assert.match(view,/Materials by biome/);
- assert.match(view,/slot-specific/i);
+ assert.match(view,/Choose a slot to label your farming checklist/);
 });
 
 test('legacy upgrade entry points show verified full-range costs instead of partial tier-only totals',async()=>{
