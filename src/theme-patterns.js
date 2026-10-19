@@ -27,6 +27,8 @@ export const THEME_PATTERNS=Object.freeze([
  ['arcane-script','Arcane inscription','Relic'],['cracked-crystal','Cracked geode','Relic'],
  ['goldleaf','Gold leaf','Relic'],['dragon-scale','Dragon scales','Relic'],['temple','Temple engravings','Relic'],
  ['shadow-floral','Shadow blossoms','Relic'],['star-chart','Celestial chart','Relic'],
- ['mana','Mana streams','Relic'],['rune-dust','Runestone dust','Relic']
+ ['mana','Mana streams','Relic'],['rune-dust','Runestone dust','Relic'],
+ // Premium handcrafted procedural finishes; fully recolorable by the editor.
+ ['astral-sovereign','Celestial gold cartography','Signature'],['abyssal-bloom','Bioluminescent currents','Signature'],['infernal-obsidian','Molten volcanic fractures','Signature'],['opaline-eternity','Opaline crystal refraction','Signature'],['phantom-spectrum','Spectral holography','Signature'],['velvet-requiem','Embroidered wine velvet','Signature'],['emerald-sanctum','Luminous jade botanicals','Signature'],['golden-dynasty','Imperial gilded marble','Signature'],['lunar-cathedral','Moonlit silver vaults','Signature'],['dragons-hoard','Dragon-scale bronze','Signature'],['sakura-dreamscape','Porcelain blossoms','Signature'],['neon-revenant','Neon circuit phosphor','Signature'],['bloodmoon-covenant','Bloodmoon gothic tracery','Signature'],['elysian-marble','Champagne alabaster','Signature'],['nebula-genesis','Celestial vapor clouds','Signature'],['desert-oracle','Lapis sandstone engravings','Signature'],['iridescent-mirage','Jeweled interference','Signature'],['forgotten-archive','Illuminated manuscript','Signature'],['diamond-singularity','Prismatic black diamond','Signature'],['void-emperor','Black silver aura','Signature']
 ].map(([id,name,category])=>Object.freeze({id,name,category})));
 export const THEME_PATTERN_IDS=Object.freeze(THEME_PATTERNS.map(x=>x.id));
