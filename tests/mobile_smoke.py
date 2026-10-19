@@ -227,7 +227,7 @@ with sync_playwright() as playwright:
     assert page.locator('html').get_attribute('data-arcana-design-pattern')=='astral-sovereign'
     assert page.evaluate("getComputedStyle(document.querySelector('.designPresetArt')).backgroundImage.includes('gradient')")
     assert page.locator('[data-mini-canvas]').get_attribute('data-mini-pattern')=='astral-sovereign'
-    page.locator('[data-design-field="aura"]').fill('77')
+    page.locator('[data-design-field="aura"]').evaluate("el=>{el.value='77';el.dispatchEvent(new Event('input',{bubbles:true}))}")
     assert page.evaluate("JSON.parse(localStorage.getItem('arcana-admin-design-preview-v1')).aura")==77
     page.locator('[data-action="random-signature"]').click()
     assert page.locator('html').get_attribute('data-arcana-design-pattern')!='astral-sovereign'
