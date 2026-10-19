@@ -252,7 +252,7 @@ with sync_playwright() as playwright:
         assert set(fields['thumbRepeat'].split(', '))=={'no-repeat'}, 'Finish thumbnail tiles on '+texture
         assert set(fields['thumbSize'].split(', '))=={'100% 100%'}, 'Finish thumb cutoff on '+texture
         if texture in ('astral-sovereign','moire','contours'):
-            page.locator('[data-mini-canvas]').screenshot(path=str(OUT/('seamfree-'+texture+'.png')))
+            page.screenshot(path=str(OUT/('seamfree-'+texture+'.png')),full_page=True)
     # Restore the Signature look for a full-site test.
     page.locator('[data-theme-pattern="astral-sovereign"]').evaluate('el=>el.click()')
     page.screenshot(path=str(OUT/'signature-playground-mobile.png'),full_page=True)
