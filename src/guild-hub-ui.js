@@ -1,4 +1,4 @@
-import {esc,icon} from './ui.js';
+import {esc} from './ui.js';
 import {guildTagBadge} from './guild-badge.js';
 
 const state={list:[],detail:null,moderation:[],loading:false,requested:'',error:'',query:''};
