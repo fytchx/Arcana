@@ -18,7 +18,7 @@ test('texture library includes 84 unique visual finishes with matching live, pre
   if(!['plain','contours'].includes(texture.id))assert.ok(css.includes('data-mini-pattern="'+texture.id+'"'),texture.id+' mini missing');
   assert.ok(form.includes('data-theme-pattern="'+texture.id+'"'),texture.id+' picker missing');
  }
- assert.ok(form.includes('84 texture finishes'));
+ assert.ok(form.includes('84 seamless texture finishes'));
  assert.ok(form.includes('data-design-field="patternTarget"'));
  assert.ok(form.includes('Where to show textures'));
 });
