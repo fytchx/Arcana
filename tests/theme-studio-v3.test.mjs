@@ -36,12 +36,14 @@ test('preview remains live across five pages, three devices, before-after, plus 
  for(const mode of ['before','after'])assert.match(html,new RegExp('data-mini-compare="'+mode+'"'));
  assert.match(html,/data-mini-size/);
  assert.match(html,/data-mini-grip/);
- assert.doesNotMatch(html,/<iframe/);
+ assert.match(html,/data-mini-live-frame/);
+ assert.match(html,/REAL ARCANA/);
+ assert.match(html,/data-mini-page="guilds"/);
 });
 test('64 textures are uniquely named, correctly validated and represented in site/mini/thumbnail CSS',async()=>{
- const css=(await read('../arcana-contour.css'))+(await read('../signature-themes.css'));
- assert.equal(THEME_PATTERNS.length,84);
- assert.equal(new Set(THEME_PATTERN_IDS).size,84);
+ const css=(await read('../arcana-contour.css'))+(await read('../signature-themes.css'))+(await read('../psychedelic-themes.css'));
+ assert.equal(THEME_PATTERNS.length,88);
+ assert.equal(new Set(THEME_PATTERN_IDS).size,88);
  const html=designPanel({showPreview:false});
  for(const p of THEME_PATTERNS){
   assert.equal(validateDesignField('pattern',p.id),p.id,p.id);
