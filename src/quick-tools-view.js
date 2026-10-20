@@ -88,6 +88,13 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  '<label class="quickPityInput">Already failed this upgrade <span><input type="number" data-path-pity-count min="0" max="'+Math.max(0,pityCap-1)+'" step="1" inputmode="numeric" value="'+pityDone+'" aria-label="Pity attempts already counted"> / '+pityCap+'</span></label>'+
  '<details class="quickAssumptions"><summary>How failures and pity are calculated</summary><p>Upgrade success is guaranteed on the final numbered attempt, not an extra attempt afterward. Failed attempts spend 70% of listed Gold and materials. Expected costs include the chance of succeeding early. Current pity applies to the first pending upgrade of each item; later upgrade levels start fresh in this planner.</p></details></section>':
  '<p class="quickScenarioNote">Failure/pity scenarios unavailable: '+esc(scenarios.reason||'Verified failure odds missing')+'. Minimum recipe costs remain available.</p>';
- return plan+cards+meta+monsterSection+forge+
+ const pct=value=>(value*100).toLocaleString('en-US',{maximumFractionDigits:2})+'%';
+ const odds=scenarios.available&&scenarios.perStep.length?'<details class="quickOddsByStep"><summary><strong>Chance & pity for every upgrade</strong><small>'+scenarios.perStep.length+' steps · expand to view</small><span aria-hidden="true">⌄</span></summary>'+
+ '<div class="quickOddsGrid">'+scenarios.perStep.map(step=>
+  '<div class="quickOddsRow"><strong>'+esc(step.stage)+(step.level?' +'+step.level:' transition')+'</strong>'+
+  '<span>'+pct(1-step.failChance)+' success · '+pct(step.failChance)+' failure</span>'+
+  '<small>'+(step.failChance===0?'Guaranteed first try':'Pity '+step.pityCap+' attempts'+(step.pityCount?' · '+step.pityCount+' already counted':''))+'</small></div>'
+ ).join('')+'</div></details>':'';
+ return plan+cards+odds+meta+monsterSection+forge+
  '<p class="quickSource">Recipe material and Gold totals. '+(mode==='min'?'Minimum: one successful attempt per upgrade, excluding failures.':mode==='expected'?'Expected cost with pity and the 30% failed-attempt refund.':'Pity-limited maximum, with success on the final numbered attempt.')+' All selected items use the same upgrade range.</p>';
 }
