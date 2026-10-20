@@ -76,7 +76,7 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
   (other.length?'<div class="quickMaterialList quickMaterialListSorted">'+other.map(materialRow).join('')+'</div>':'')+'</div></details>';
  const attempts=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:1}).format(n);
  const labels={min:'Minimum',expected:'Expected',pity:'Pity maximum'};
- const firstStep=scenarios.available?scenarios.perStep[0]:null;
+ const firstStep=scenarios.available?(scenarios.perStep.find(step=>step.failChance>0)||scenarios.perStep[0]):null;
  const pityCap=firstStep?.pityCap||1;
  const pityDone=Math.max(0,Math.min(pityCap-1,Math.trunc(Number(range.pityCount)||0)));
  const cards=scenarios.available?'<section class="quickScenarioPicker" aria-label="Upgrade cost scenarios"><div class="quickScenarioHeading"><h3>Upgrade attempts</h3><span class="quickPityBadge">Pity '+pityDone+' / '+pityCap+'</span></div>'+
