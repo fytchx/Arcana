@@ -46,7 +46,8 @@ import {readFarmPlan,saveFarmPlan,farmCompareView} from './farm-compare.js';
 import {timelineStages,timelineModel,stageStepLabel,readQuickView,saveQuickView} from './pathfinder-timeline.js';
 import {pathfinderView,pathfinderStepDetail,pathfinderRangeContent} from './pathfinder-timeline-view.js';
 import {quickUpgradePanel,quickUpgradeContent,initialQuickRange} from './quick-tools-view.js';
-import {readRange,saveRange,allStages,quoteRange,normalizeItemQuantity} from './pathfinder-range.js';
+import {readRange,saveRange,allStages,quoteRange,normalizeItemQuantity,normalizeCostMode,normalizePityProgress} from './pathfinder-range.js';
+import {quoteFailureScenarios} from './pathfinder-failures.js';
 import {sourceMaterialGroups} from './pathfinder-material-groups.js';
 import {saveFarmingList,wireFarmingLists} from './farming-lists-ui.js';
 import {homeScreen,homeSubmenu,directoryView,wikiTopicsView,wikiTopicView,wikiAboutView,userCenterView,settingsView,iconGalleryView,designPanel,applyAppPrefs,changeAppPref} from './launch-navigation.js';
@@ -850,17 +851,30 @@ async function savePathfinderChecklist(button){
  if(!currentAccount()){toast('Sign in with Discord to save a checklist to your profile.');go('account');return;}
  const quote=quoteRange(recipeState.data,state.pathfinderRange,state.pathfinderQuick);
  if(!quote.complete||quote.error||!quote.materials.length)return toast('Select a valid complete upgrade route first.');
- const groups=sourceMaterialGroups(quote.materials,recipeState.data.materials,verifiedState.entries)
+ const scenarios=quoteFailureScenarios(recipeState.data,quote);
+ const requested=normalizeCostMode(state.pathfinderRange.costMode);
+ const costMode=scenarios.available?requested:'min';
+ const selected=scenarios.available?scenarios[costMode]:quote;
+ const groups=sourceMaterialGroups(selected.materials,recipeState.data.materials,verifiedState.entries)
   .map(group=>({name:group.name,tier:group.tier,items:group.materials.map(m=>({slug:m.slug,name:m.name,quantity:String(m.quantity)}))}));
- const list={title:'Upgrade '+(quote.itemCount>1?quote.itemCount+' items · ':'')+quote.range.fromStage+' +'+quote.range.fromLevel+' → '+quote.range.toStage+' +'+quote.range.toLevel,
+ const label={min:'Minimum',expected:'Estimated',pity:'Modeled pity ceiling'}[costMode];
+ const list={title:label+' · Upgrade '+(quote.itemCount>1?quote.itemCount+' items · ':'')+quote.range.fromStage+' +'+quote.range.fromLevel+' → '+quote.range.toStage+' +'+quote.range.toLevel,
   slot:state.pathfinderQuick.slot,from:quote.range.fromStage+' +'+quote.range.fromLevel,
-  to:quote.range.toStage+' +'+quote.range.toLevel,gold:String(quote.gold),
+  to:quote.range.toStage+' +'+quote.range.toLevel,gold:String(selected.gold),
   sourceVersion:String(recipeState.data.sourceVersion||recipeState.data.source||''),groups};
  button.disabled=true;button.textContent='Saving to profile…';
  try{await saveFarmingList(list);toast('Farming checklist saved to your account.');go('account');}
  catch(error){toast(error.message);button.disabled=false;button.textContent='Save a farming checklist to my profile';}
 }
 function wirePathfinderQuick(){
+ document.addEventListener('click',e=>{
+  const button=e.target.closest('[data-path-cost-mode]');
+  if(!button||!recipeState.data)return;
+  const mode=normalizeCostMode(button.dataset.pathCostMode);
+  state.pathfinderRange=saveRange({...state.pathfinderRange,costMode:mode});
+  const content=node('pathRangeContent');
+  if(content)content.innerHTML=quickUpgradeContent(recipeState.data,state.pathfinderRange,{page:parseRoute().route!=='home',catalog:verifiedState.entries});
+ });
  document.addEventListener('click',e=>{
   const button=e.target.closest('[data-path-quantity-step]');
   if(!button||!recipeState.data)return;
@@ -882,7 +896,7 @@ function wirePathfinderQuick(){
  document.addEventListener('change',e=>{
   if(e.target.matches('[data-path-range]')){state.pathfinderQuick=saveQuickView(state.pathfinderQuick);centerPathRail('pathStepRail','data-path-step',state.pathfinderQuick.level,'smooth');return;}
   const d=e.target.dataset;
-  if(recipeState.data&&(d.pathFromStage!==undefined||d.pathFromLevel!==undefined||d.pathToStage!==undefined||d.pathToLevel!==undefined||d.pathQuantity!==undefined)){
+  if(recipeState.data&&(d.pathFromStage!==undefined||d.pathFromLevel!==undefined||d.pathToStage!==undefined||d.pathToLevel!==undefined||d.pathQuantity!==undefined||d.pathPityProgress!==undefined)){
    const stages=allStages(recipeState.data);
    const current={...state.pathfinderRange};
    if(d.pathFromStage!==undefined){current.fromStage=e.target.value;current.fromLevel=Math.min(Number(current.fromLevel||0),stages.find(s=>s.id===current.fromStage)?.max||0);}
@@ -892,6 +906,7 @@ function wirePathfinderQuick(){
    }else if(d.pathFromLevel!==undefined)current.fromLevel=Number(e.target.value);
    else if(d.pathToLevel!==undefined)current.toLevel=Number(e.target.value);
    else if(d.pathQuantity!==undefined)current.quantity=normalizeItemQuantity(e.target.value);
+   else if(d.pathPityProgress!==undefined)current.pityProgress=normalizePityProgress(e.target.value);
    state.pathfinderRange=saveRange(current);
    const content=node('pathRangeContent');
    if(content)content.innerHTML=quickUpgradeContent(recipeState.data,current,{page:parseRoute().route!=='home',catalog:verifiedState.entries});
