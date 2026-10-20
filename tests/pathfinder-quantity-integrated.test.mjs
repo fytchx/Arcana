@@ -25,7 +25,9 @@ test('native calculator alphabetizes monster drops before collapsed gold and rar
  assert.ok(html.indexOf('Alpha')<html.indexOf('Beta'));assert.ok(html.indexOf('Beta')<html.indexOf('Gamma'));
  assert.ok(html.indexOf('Gamma')<html.indexOf('Gold &amp; rare materials'));
  assert.match(html,/data-material-section="monsters"/);assert.match(html,/data-material-section="special"/);
- assert.doesNotMatch(html,/<details[^>]*data-material-section="(?:monsters|special)"[^>]*open/);
+ assert.match(html,/<details[^>]*data-material-section="monsters"[^>]*open/);
+ assert.doesNotMatch(html,/<details[^>]*data-material-section="special"[^>]*open/);
+ assert.match(html,/data-path-accordion="route" open/);
 });
 test('incomplete recipe prevents total display',()=>{
  const bad=structuredClone(fixture);bad.codex.awaken.transitions=[];
