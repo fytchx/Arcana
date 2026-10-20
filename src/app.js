@@ -852,12 +852,11 @@ async function savePathfinderChecklist(button){
  const quote=quoteRange(recipeState.data,state.pathfinderRange,state.pathfinderQuick);
  if(!quote.complete||quote.error||!quote.materials.length)return toast('Select a valid complete upgrade route first.');
  const scenarios=quoteFailureScenarios(recipeState.data,quote);
- const requested=normalizeCostMode(state.pathfinderRange.costMode);
- const costMode=scenarios.available?requested:'min';
- const selected=scenarios.available?scenarios[costMode]:quote;
+ // Farming lists always reflect the same average estimate visible to players.
+ const selected=scenarios.available?scenarios.expected:quote;
  const groups=sourceMaterialGroups(selected.materials,recipeState.data.materials,verifiedState.entries)
   .map(group=>({name:group.name,tier:group.tier,items:group.materials.map(m=>({slug:m.slug,name:m.name,quantity:String(m.quantity)}))}));
- const label={min:'Minimum',expected:'Estimated',pity:'Modeled pity ceiling'}[costMode];
+ const label=scenarios.available?'Estimated':'Base';
  const list={title:label+' · Upgrade '+(quote.itemCount>1?quote.itemCount+' items · ':'')+quote.range.fromStage+' +'+quote.range.fromLevel+' → '+quote.range.toStage+' +'+quote.range.toLevel,
   slot:state.pathfinderQuick.slot,from:quote.range.fromStage+' +'+quote.range.fromLevel,
   to:quote.range.toStage+' +'+quote.range.toLevel,gold:String(selected.gold),
@@ -869,26 +868,18 @@ async function savePathfinderChecklist(button){
 function renderPathfinderCosts(current=state.pathfinderRange){
  const content=node('pathRangeContent');
  if(!content||!recipeState.data)return;
- const expanded=[...content.querySelectorAll('details[data-material-section][open]')].map(d=>d.dataset.materialSection);
+ // Persist both OPEN and CLOSED states; a rerender must not re-expand things.
+ const states=new Map([...content.querySelectorAll('details[data-material-section],details[data-path-accordion]')]
+  .map(d=>[d.dataset.materialSection?'materials:'+d.dataset.materialSection:'panel:'+d.dataset.pathAccordion,d.open]));
  const assumptionsOpen=content.querySelector('details.quickAssumptions')?.open===true;
- const oddsOpen=content.querySelector('details.quickOddsByStep')?.open===true;
  content.innerHTML=quickUpgradeContent(recipeState.data,current,{page:parseRoute().route!=='home',catalog:verifiedState.entries});
- for(const id of expanded){
-  const d=[...content.querySelectorAll('details[data-material-section]')].find(x=>x.dataset.materialSection===id);
-  if(d)d.open=true;
+ for(const d of content.querySelectorAll('details[data-material-section],details[data-path-accordion]')){
+  const key=d.dataset.materialSection?'materials:'+d.dataset.materialSection:'panel:'+d.dataset.pathAccordion;
+  if(states.has(key))d.open=states.get(key);
  }
  const note=content.querySelector('details.quickAssumptions');if(note)note.open=assumptionsOpen;
- const odds=content.querySelector('details.quickOddsByStep');if(odds)odds.open=oddsOpen;
 }
 function wirePathfinderQuick(){
- document.addEventListener('click',e=>{
-  const button=e.target.closest('[data-path-cost-mode]');
-  if(!button||!recipeState.data)return;
-  const mode=normalizeCostMode(button.dataset.pathCostMode);
-  state.pathfinderRange=saveRange({...state.pathfinderRange,costMode:mode});
-  const content=node('pathRangeContent');
-  renderPathfinderCosts();
- });
  document.addEventListener('click',e=>{
   const button=e.target.closest('[data-path-quantity-step]');
   if(!button||!recipeState.data)return;
@@ -896,7 +887,6 @@ function wirePathfinderQuick(){
   if(offset!==1&&offset!==-1)return;
   const quantity=normalizeItemQuantity(normalizeItemQuantity(state.pathfinderRange.quantity)+offset);
   state.pathfinderRange=saveRange({...state.pathfinderRange,quantity});
-  const content=node('pathRangeContent');
   renderPathfinderCosts();
  });
  document.addEventListener('click',e=>{const button=e.target.closest('[data-pf-save-list]');if(!button)return;e.preventDefault();if(!button.disabled)void savePathfinderChecklist(button);});
@@ -923,7 +913,6 @@ function wirePathfinderQuick(){
    else if(d.pathPityProgress!==undefined)current.pityProgress=normalizePityProgress(e.target.value);
    else if(d.pathPityCount!==undefined)current.pityCount=normalizePityCount(e.target.value);
    state.pathfinderRange=saveRange(current);
-   const content=node('pathRangeContent');
    renderPathfinderCosts(current);
    return;
   }

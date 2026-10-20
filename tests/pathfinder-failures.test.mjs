@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {pityStepModel,quoteFailureScenarios,PITY_MODEL} from '../src/pathfinder-failures.js';
 import {quoteRange,readRange,saveRange} from '../src/pathfinder-range.js';
-import {quickUpgradeContent} from '../src/quick-tools-view.js';
+import {quickUpgradeContent,shortGold} from '../src/quick-tools-view.js';
 import {readFile} from 'node:fs/promises';
 
 const snapshot={
@@ -22,6 +22,15 @@ const snapshot={
 };
 const fromTo={fromStage:'A1',fromLevel:0,toStage:'A1',toLevel:1};
 const qty=(result,slug)=>result.materials.find(m=>m.slug===slug)?.quantity??0n;
+test('gold is compact at K/M/B/T/Qa with zero precision loss in the tooltips',()=>{
+ assert.equal(shortGold(0n),'0');
+ assert.equal(shortGold(999n),'999');
+ assert.equal(shortGold(1350n),'1.35K');
+ assert.equal(shortGold(885000000n),'885M');
+ assert.equal(shortGold(6380000000n),'6.38B');
+ assert.equal(shortGold(14193828906313n),'14.19T');
+ assert.equal(shortGold(1000000000000000n),'1Qa');
+});
 
 test('pity progression matches observed 63% failed Infernal upgrade',()=>{
  const s=pityStepModel(.63);
@@ -58,17 +67,22 @@ test('quantity multiplies each scenario independently without removing biome and
   for(const m of one[mode].materials)assert.equal(qty(ten[mode],m.slug),m.quantity*10n);
  }
  const h=quickUpgradeContent(snapshot,{...fromTo,quantity:10,costMode:'expected'});
- for(const str of ['data-path-cost-mode="min"','data-path-cost-mode="expected"','data-path-cost-mode="pity"',
- 'data-path-pity-count','Already failed this upgrade','Pity 0 / 2','Grub', 'Abyssal Ember',
- 'Minimum','Expected','Pity maximum','10 items'])assert.ok(h.includes(str),str);
+ for(const str of ['data-path-accordion="route"','data-path-accordion="breakdown"',
+ 'data-path-pity-count','Already failed first pending upgrade','Grub','Abyssal Ember',
+ 'Minimum','Average','Pity maximum','10 items','Estimated upgrade costs'])assert.ok(h.includes(str),str);
+ assert.doesNotMatch(h,/data-path-cost-mode/,'average is automatically selected, not another tab');
  assert.ok(h.indexOf('Monster materials')<h.indexOf('Gold &amp; rare materials'));
  assert.match(h,/data-material-section="monsters"/);assert.match(h,/data-material-section="special"/);
- assert.match(h,/Chance & pity for every upgrade/);assert.match(h,/63% failure/);assert.match(h,/Pity 2 attempts/);
- assert.match(h,/<details class="quickOddsByStep">/);
- assert.doesNotMatch(h,/<details[^>]*data-material-section="(?:monsters|special)"[^>]*open/);
+ assert.match(h,/Chance &amp; pity for every upgrade/);assert.match(h,/63% failure/);assert.match(h,/Pity 2 attempts/);
+ assert.match(h,/<details class="quickOddsByStep" data-path-accordion="odds">/);
+ assert.match(h,/<details[^>]*data-material-section="monsters"[^>]*open/);
+ assert.doesNotMatch(h,/<details[^>]*data-material-section="special"[^>]*open/);
+ assert.match(h,/10 items/);
+ assert.match(h,/Estimated upgrade costs/);
  assert.match(h,/1,950/); // Estimated fragments = 195 * 10.
- const maxH=quickUpgradeContent(snapshot,{...fromTo,quantity:10,costMode:'pity'});
- assert.match(maxH,/2,300/);
+ const oldMode=quickUpgradeContent(snapshot,{...fromTo,quantity:10,costMode:'pity'});
+ assert.match(oldMode,/1,950/,'old saved mode must not override default average');
+ assert.doesNotMatch(oldMode,/<button[^>]*data-path-cost-mode/);
 });
 test('starting pity reduces modeled risk only for the first step and is preserved with quantity',()=>{
  const zero=quoteFailureScenarios(snapshot,quoteRange(snapshot,fromTo));
@@ -87,14 +101,14 @@ test('no failure probabilities means no false pity guarantee and base costs rema
  assert.equal(r.available,false);assert.match(r.reason,/not verified/);
  const html=quickUpgradeContent(missing,{...fromTo,costMode:'pity'});
  assert.match(html,/Failure\/pity scenarios unavailable/);
- assert.match(html,/885,000,000/);
+ assert.match(html,/885M Gold/);
  assert.doesNotMatch(html,/data-path-cost-mode="pity"/);
 });
 test('native site wire-up preserves quantity handlers, starting pity, scenario and checklist',async()=>{
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
  const css=await readFile(new URL('../quick-tools.css',import.meta.url),'utf8');
- for(const needle of ['data-path-cost-mode','data-path-quantity-step','d.pathPityCount','quoteFailureScenarios','selected.materials','selected.gold'])
+ for(const needle of ['data-path-accordion','data-path-quantity-step','d.pathPityCount','quoteFailureScenarios','selected.materials','selected.gold'])
   assert.ok(app.includes(needle),needle);
- for(const needle of ['.quickScenarioCard','var(--theme-main)','var(--theme-highlight)','@media(max-width:650px)'])
+ for(const needle of ['.quickAverageIntro','.quickAdvanced','.quickGoldSummary','var(--theme-main)','var(--theme-highlight)'])
   assert.ok(css.includes(needle),needle);
 });
