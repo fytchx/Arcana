@@ -93,3 +93,13 @@
 #content.homeFullscreen :is(.launchHero,.journalHomeTeaser,.launchQuickCard,.arcanaKnowledgeBridge .launchFeatureRow){transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
 @media(hover:hover){#content.homeFullscreen :is(.launchHeroCTA,.launchQuickCard,.arcanaKnowledgeBridge .launchFeatureRow):hover{transform:translateY(-3px);box-shadow:0 14px 30px #0004}}
 @media(prefers-reduced-motion:reduce){#content.homeFullscreen :is(.launchHero,.journalHomeTeaser,.launchQuickCard,.arcanaKnowledgeBridge .launchFeatureRow){transition:none!important}}
+
+/* Distinct home destinations: compact guide shortcuts instead of a second oversized hub. */
+@media(max-width:800px){
+ #content.homeFullscreen .launchFeatured.arcanaKnowledgeBridge{margin-top:18px!important;padding:17px!important}
+ #content.homeFullscreen .arcanaKnowledgeBridge .launchFeaturedIntro{margin-bottom:12px!important;font-size:12px!important}
+ #content.homeFullscreen .arcanaKnowledgeBridge .launchFeaturedGrid{gap:9px!important}
+ #content.homeFullscreen .arcanaKnowledgeBridge .launchFeatureRow{min-height:66px!important;padding:11px 13px!important}
+ #content.homeFullscreen .arcanaKnowledgeBridge .launchFeatureRow strong{font-size:14px!important}
+ #content.homeFullscreen .arcanaKnowledgeBridge .launchFeatureRow small{font-size:11px!important;line-height:1.4!important}
+}
