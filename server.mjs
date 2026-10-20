@@ -148,8 +148,9 @@ const server=http.createServer(async(req,res)=>{
   if(await handleTrafficRequest(req,res,parsedUrl))return;
   if(await safeSiteAdminRequest(req,res,parsedUrl))return;
   if((req.method==='GET'||req.method==='HEAD')&&seoPageByPath(pathname)){
-   const page=renderSeoPage(seoPageByPath(pathname));
-   send(res,200,req.method==='HEAD'?null:page,{'content-type':'text/html; charset=utf-8','cache-control':'no-store'});
+   const indexable=host==='arcanacompanion.xyz';
+   const page=renderSeoPage(seoPageByPath(pathname),{indexable});
+   send(res,200,req.method==='HEAD'?null:page,{'content-type':'text/html; charset=utf-8','cache-control':'no-store',...(indexable?{}:{'x-robots-tag':'noindex, nofollow'})});
    return;
   }
   if((req.method==='GET'||req.method==='HEAD')&&pathname.length>1&&pathname.endsWith('/')&&seoPageByPath(pathname.slice(0,-1))){
