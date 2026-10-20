@@ -7,7 +7,7 @@ import {timelineModel} from './pathfinder-timeline.js';
 export const PITY_MODEL=Object.freeze({
  source:'IdleArc game config 2026-10-17-001 + observed Oct 9 forge attempt',
  refundPercent:30,accelerationThreshold:0.5,accelerationMultiplier:1.5,
- note:'Modeled: a failed attempt advances pity by its base success chance (×1.5 when failure is at least 50%). The next attempt is treated as guaranteed when pity reaches 100%; pity resets after each successful upgrade. The exact server guarantee/reset behavior is not independently verified.'
+ note:'The game displays a guaranteed attempt cap such as 1/4: success happens ON the last counted attempt. The configured acceleration determines that cap. Existing pity is entered as completed attempts, not a percentage. New upgrade steps are modeled with fresh pity until carry-over behavior is verified.'
 });
 const SCALE=1000000000n;
 const netFailedCost=value=>(value*7n+5n)/10n; // Observed 135 fragments -> 95 on failure.
@@ -16,19 +16,23 @@ const clamp=(n,min,max)=>Number.isFinite(Number(n))?Math.max(min,Math.min(max,Nu
 export const normalizeCostMode=value=>['min','expected','pity'].includes(value)?value:'min';
 export const normalizePityProgress=value=>Math.round(clamp(value,0,100)*100)/100;
 /** An explicitly conditional model, not a claim that the game's pity guarantee is proven. */
-export function pityStepModel(failureChance,startingPity=0){
+export function pityStepModel(failureChance,startingPityCount=0){
  if(!Number.isFinite(failureChance)||failureChance<0||failureChance>=1)return null;
  const fail=clamp(failureChance,0,0.999999),success=1-fail;
- if(fail===0||startingPity>=1)return {expectedFailures:0,maxFailures:0,expectedAttempts:1,maxAttempts:1,pityDelta:0};
+ if(fail===0)return {expectedFailures:0,maxFailures:0,expectedAttempts:1,maxAttempts:1,pityCap:1,startingPityCount:0,pityDelta:0};
  const pityDelta=success*(fail>=PITY_MODEL.accelerationThreshold?PITY_MODEL.accelerationMultiplier:1);
  if(pityDelta<=0)return null;
- // After K failed attempts, pity reaches one and the next attempt succeeds.
- // Do not overstate a guarantee: this is only the planning model.
- const maxFailures=Math.max(0,Math.ceil((1-clamp(startingPity,0,1)-1e-12)/pityDelta));
+ // An N-attempt pity bar guarantees success ON attempt N, not attempt N+1.
+ // Verified against the A4 +27 -> +28 game UI: 78.5% fail -> 4 attempts.
+ const pityCap=Math.max(1,Math.ceil((1-1e-12)/pityDelta));
+ const progressed=Math.trunc(clamp(startingPityCount,0,pityCap-1));
+ const maxAttempts=Math.max(1,pityCap-progressed);
+ const maxFailures=maxAttempts-1;
  let expectedFailures=0,stillFailing=1;
- for(let i=0;i<maxFailures;i++){stillFailing*=fail;expectedFailures+=stillFailing;}
- return {expectedFailures,maxFailures,expectedAttempts:1+expectedFailures,maxAttempts:1+maxFailures,pityDelta};
+ for(let i=1;i<=maxFailures;i++){stillFailing*=fail;expectedFailures+=stillFailing;}
+ return {expectedFailures,maxFailures,expectedAttempts:1+expectedFailures,maxAttempts,pityCap,startingPityCount:progressed,pityDelta};
 }
+
 const mapOf=()=>new Map();
 const add=(map,m,qty)=>{if(!qty)return;const old=map.get(m.slug);map.set(m.slug,{slug:m.slug,name:m.name,quantity:(old?.quantity||0n)+qty});};
 const sorted=map=>[...map.values()].sort((a,b)=>a.name.localeCompare(b.name));
@@ -52,7 +56,7 @@ export function quoteFailureScenarios(snapshot,base){
    if(cost.free)continue;
    if(cost.failureChance===null||cost.failureChance===undefined)
     return {available:false,reason:'Failure odds are not verified for '+stage.id+' +'+level+'.'};
-   const startingPity=firstPaid?normalizePityProgress(range.pityProgress)/100:0;
+   const startingPity=firstPaid?Math.max(0,Math.trunc(Number(range.pityCount)||0)):0;
    const odds=pityStepModel(cost.failureChance,startingPity);
    if(!odds)return {available:false,reason:'Unsupported failure chance at '+stage.id+' +'+level+'.'};
    firstPaid=false;
@@ -65,7 +69,7 @@ export function quoteFailureScenarios(snapshot,base){
     add(ceilingMats,m,m.quantity+netFailedCost(m.quantity)*BigInt(odds.maxFailures));
    }
    perStep.push({stage:stage.id,level,failChance:cost.failureChance,
-    expectedAttempts:odds.expectedAttempts,maxAttempts:odds.maxAttempts,pityDelta:odds.pityDelta});
+    expectedAttempts:odds.expectedAttempts,maxAttempts:odds.maxAttempts,pityCap:odds.pityCap,pityCount:odds.startingPityCount,pityDelta:odds.pityDelta});
   }
  }
  const estimated={gold:expectedGold,materials:sorted(expectedMats),attempts:expectedSteps,failedAttempts:expectedFails};
