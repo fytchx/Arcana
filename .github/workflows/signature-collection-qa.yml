@@ -26,6 +26,7 @@ jobs:
       - run: python -m playwright install --with-deps chromium
       - run: python tests/mobile_smoke.py
       - run: python tests/public_theme_performance.py
+      - run: node tests/pathfinder-preview-endpoint.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
