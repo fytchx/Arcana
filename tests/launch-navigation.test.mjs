@@ -6,12 +6,16 @@ import {ACCENT_PRESETS,selectedAccent,setAccent,themeStatus} from '../src/theme.
 
 const routes=new Set(['journal','journal-studio','journal-balance','home','directory','user','recent','settings','icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/category','wiki/items','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','calculators/damage','community','community/create','account','beta','lfg/raids','lfg/guilds','guilds','guilds/crest']);
 test('three destination cards open their appropriate sections',()=>{
- assert.deepEqual(HOME_CARDS.map(x=>x.title),['Pathfinder','Tools','Builds, Guides & Wiki']);
+ assert.deepEqual(HOME_CARDS.map(x=>x.title),['Pathfinder','Tools','Guilds & Community']);
  const html=homeScreen();
  assert.equal((html.match(/data-action="homemenu"/g)||[]).length,3);
  assert.match(html,/BUILD STUDIO|Build Studio/);
  assert.match(html,/data-route="labs\/build"/);
- assert.match(html,/One connected knowledge base/);
+ assert.match(html,/Guides, Builds & Wiki/);
+ assert.doesNotMatch(html,/data-arg="builds"/);
+ assert.match(html,/data-arg="social"/);
+ assert.match(html,/data-route="wiki\/guides"/);
+ assert.match(html,/data-route="wiki"/);
  assert.match(html,/data-route="directory"/);
  for(const card of HOME_CARDS){const popup=homeSubmenu(card.id);assert.ok(popup.includes(card.title.replaceAll('&','&amp;')));assert.match(popup,/launchNavRow/);}
 });
