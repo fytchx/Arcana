@@ -163,3 +163,55 @@
 .quickOddsRow>span{font-size:11px;color:var(--muted)}
 .quickOddsRow>small{font-size:10px;color:var(--theme-highlight)}
 @media(max-width:650px){.quickOddsGrid{grid-template-columns:1fr}.quickOddsByStep>summary{padding:10px}.quickOddsByStep>summary small{font-size:9px}}
+
+/* Focused Pathfinder: route, one automatic average, farm list; extras on demand. */
+.pathfinderHub .quickCostsFull{gap:7px;padding:0}
+.pathfinderHub .quickCostsFull #pathRangeContent{display:grid;gap:8px}
+.quickPlanAccordion,.quickAdvanced{min-width:0;border:1px solid color-mix(in srgb,var(--theme-highlight) 25%,var(--line));border-radius:var(--arcana-card-radius,12px);background:color-mix(in srgb,var(--theme-main) 34%,var(--theme-secondary));overflow:hidden}
+.quickSummaryLine{display:flex;gap:9px;align-items:center;min-width:0;padding:11px 13px;list-style:none;cursor:pointer}
+.quickSummaryLine::-webkit-details-marker{display:none}
+.quickSummaryLine>strong{font-size:13px;color:var(--text);font-weight:850}
+.quickSummaryLine>span{font-size:12px;color:var(--text);margin-left:auto;min-width:0;overflow-wrap:anywhere}
+.quickSummaryLine>small{font-size:11px;color:var(--muted);margin-left:auto}
+.quickSummaryLine>b{font-size:17px;color:var(--theme-highlight);font-weight:400;flex:none}
+.quickPlanAccordion[open]>.quickSummaryLine,.quickAdvanced[open]>.quickSummaryLine{border-bottom:1px solid var(--line)}
+.quickPlanAccordion[open]>.quickSummaryLine>b,.quickAdvanced[open]>.quickSummaryLine>b{transform:rotate(180deg)}
+.quickPlanAccordion .quickPlanControls{border:0;border-radius:0;background:transparent;box-shadow:none;padding:11px;gap:9px}
+.quickPlanAccordion .quickPlanHeading{display:none}
+.quickAverageIntro{display:flex;justify-content:space-between;align-items:center;gap:10px;min-width:0;padding:10px 13px;border:1px solid color-mix(in srgb,var(--theme-highlight) 32%,var(--line));border-radius:var(--arcana-card-radius,12px);background:color-mix(in srgb,var(--theme-highlight) 10%,var(--theme-main))}
+.quickAverageIntro>div{display:grid;gap:3px;min-width:0}
+.quickAverageIntro strong{font-size:clamp(15px,2.2vw,18px);color:var(--text)}
+.quickAverageIntro small{font-size:11px;color:var(--muted)}
+.quickAverageIntro>span{font-size:11px;white-space:nowrap;text-align:right;color:var(--theme-highlight);font-weight:800}
+.quickCosts .quickMaterialSection.quickFarmFirst{border-color:color-mix(in srgb,var(--theme-highlight) 30%,var(--line))}
+.quickMaterialSection.quickFarmFirst>.quickSectionSummary{background:color-mix(in srgb,var(--theme-highlight) 7%,var(--theme-main))}
+.quickMaterialSection .quickGoldSummary{color:var(--theme-highlight);font-weight:850;font-variant-numeric:tabular-nums;white-space:normal;text-align:right}
+.quickMaterialSection .quickSectionSummary{gap:8px;min-height:43px}
+.quickMaterialSection .quickSectionSummary>small{font-size:11px}
+.quickAdvancedBody{display:grid;gap:12px;padding:11px 13px}
+.quickBudgetRows{display:grid;gap:0;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.quickBudgetRow{display:grid;grid-template-columns:minmax(115px,1fr) auto minmax(70px,auto);align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--theme-main) 35%,var(--theme-secondary))}
+.quickBudgetRow:last-child{border-bottom:0}
+.quickBudgetRow>div{display:grid;gap:2px;min-width:0}
+.quickBudgetRow>div>strong{font-size:12px;color:var(--text)}
+.quickBudgetRow>div>small{font-size:10px;color:var(--muted)}
+.quickBudgetRow>span{font-size:11px;color:var(--muted);white-space:nowrap}
+.quickBudgetRow>strong{font-size:13px;color:var(--text);text-align:right;white-space:nowrap}
+.quickAdvancedBody .quickPityInput{padding:4px 0}
+.quickAdvancedBody .quickAssumptions{margin-top:0}
+.quickAdvancedBody>p{font-size:11px;line-height:1.6;color:var(--muted);margin:0}
+.quickMaterialSection .quickMaterialWiki{display:grid;gap:2px}
+@media(max-width:700px){
+ .quickSummaryLine{padding:10px}
+ .quickSummaryLine>strong{font-size:12px}
+ .quickSummaryLine>span,.quickSummaryLine>small{font-size:10px}
+ .quickPlanAccordion .quickPlanControls{padding:9px}
+ .quickAverageIntro{padding:10px}
+ .quickAverageIntro strong{font-size:15px}
+ .quickAverageIntro>span{font-size:10px;white-space:normal}
+ .quickBudgetRow{grid-template-columns:minmax(88px,1fr) auto;gap:4px 9px;padding:9px}
+ .quickBudgetRow>span{grid-column:1;font-size:10px}
+ .quickBudgetRow>strong{grid-column:2;grid-row:1/3;font-size:12px}
+ .quickMaterialSection .quickGoldSummary{max-width:55%}
+}
+@media(max-width:370px){.quickSummaryLine{flex-wrap:wrap}.quickSummaryLine>span{order:3;flex-basis:100%;margin:0}.quickAverageIntro{align-items:flex-start;flex-direction:column;gap:3px}.quickAverageIntro>span{text-align:left}}
