@@ -20,7 +20,7 @@ test('homepage preserves Build Studio and presents only three destinations',()=>
  assert.ok(home.indexOf('class="launchHero"')<home.indexOf('class="launchQuick"'));
  assert.equal((home.match(/class="launchQuickCard"/g)||[]).length,3);
  assert.doesNotMatch(home,/quickDashboard|quickActions|id="pathRangeContent"|data-route="calculators\/pet"|data-route="calculators\/damage"/);
- for(const id of ['pathfinder','tools','builds'])assert.match(home,new RegExp('data-arg="'+id+'"'));
+ for(const id of ['pathfinder','tools','social'])assert.match(home,new RegExp('data-arg="'+id+'"'));
 });
 test('first-use calculator defaults to A1 +0 → A2 +0 while preserving saved checkpoints',()=>{
  const full=structuredClone(fixture);for(const level of Object.values(full.codex.awaken.rows)){
@@ -87,7 +87,7 @@ test('homepage navigation keeps wiki and guild recruitment accessible from globa
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
  const nav=await readFile(new URL('../src/launch-navigation.js',import.meta.url),'utf8');
  const css=await readFile(new URL('../home-three.css',import.meta.url),'utf8');
- for(const section of ["{id:'pathfinder'","{id:'tools'","{id:'builds'"])assert.ok(nav.includes(section));
+ for(const section of ["{id:'pathfinder'","{id:'tools'","{id:'social'"])assert.ok(nav.includes(section));
  assert.match(nav,/Damage Calculator · Work in Progress/);
  assert.match(app,/\['wiki','ArcanaWiki'/);
  assert.match(app,/\['lfg','Guild & Raid Finder'/);
