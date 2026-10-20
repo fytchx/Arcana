@@ -7,7 +7,7 @@ const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
 const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
 const loader=html.match(/<script id="arcana-boot-control">([\s\S]*?)<\/script>/)?.[1];
 
-function harness(){
+function harness({pausedFrames=false}={}){
  const listeners=new Map();
  function emitter(){
   return {
@@ -30,7 +30,7 @@ function harness(){
  let clock=0;const timers=[];
  function setTimeout(callback,delay){timers.push({at:clock+delay,callback});}
  function advance(ms){clock+=ms;while(true){const idx=timers.findIndex(timer=>timer.at<=clock);if(idx<0)break;const [timer]=timers.splice(idx,1);timer.callback();}}
- vm.runInNewContext(loader,{document,window,Date:{now:()=>clock},requestAnimationFrame:fn=>fn(),setTimeout});
+ vm.runInNewContext(loader,{document,window,Date:{now:()=>clock},requestAnimationFrame:fn=>{if(!pausedFrames)fn();},setTimeout});
  return {document,window,splash,underlay,skip,advance};
 }
 
@@ -67,6 +67,19 @@ test('a finger held during the fade cannot activate a hidden link',()=>{
  ui.document.emit('pointerup');
  ui.advance(80);
  assert.equal(ui.splash.removed,true,'release once pointer interaction ends');
+});
+
+test('stalled Android animation frames do not require the visitor to tap the screen',()=>{
+ const ui=harness({pausedFrames:true});
+ ui.window.emit('DOMContentLoaded');
+ ui.document.emit('arcana:app-ready');
+ ui.document.emit('arcana:theme-ready');
+ ui.advance(199);
+ assert.equal(ui.splash.done,false);
+ ui.advance(1);
+ assert.equal(ui.splash.done,true,'short timer fallback dismisses even when frames are suspended');
+ ui.advance(450);
+ assert.equal(ui.splash.removed,true);
 });
 
 test('a stalled app eventually exposes the existing recovery UI',()=>{
