@@ -31,6 +31,7 @@ export async function oct17MaterialRules(){
  }
  for(let tier=1;tier<=5;tier++)if(!validTable(rules.c?.[tier]))throw Error('Tier transition '+tier+' missing');
  if(!plain(rules.e)||!plain(rules.x))throw Error('Missing awakening supplemental materials');
+ if(!Array.isArray(rules.m)||rules.m.length!==79||rules.m.some(m=>!/^[a-z0-9-]+$/.test(m.slug)))throw Error('Material definitions incomplete');
  cached=Object.freeze(rules);
  return cached;
 }
@@ -49,6 +50,8 @@ export function applyOct17MaterialRules(snapshot,rules){
    const level=Number(row.target??Number(row.current)+1);
    if(!Number.isSafeInteger(level)||!current[String(level)]||seen.has(level))throw Error('Tier '+tier+' target mapping invalid');
    seen.add(level);row.monster_materials=copy(current[String(level)]);
+   // The new config specifies no other enhancement materials at normal tiers.
+   row.extra_materials=[];row.materials=[];
    delete row.unknown_monster_materials;
   }
  }
@@ -62,6 +65,7 @@ export function applyOct17MaterialRules(snapshot,rules){
    seen.add(level);row.monster_materials=copy(current[String(level)]);
    // Extra material thresholds are specified per enhancement level, not rank.
    row.extra_materials=copy(rules.e[String(level)]||[]);
+   row.materials=[];
    delete row.unknown_monster_materials;
   }
  }
@@ -69,6 +73,8 @@ export function applyOct17MaterialRules(snapshot,rules){
   const step=codex.tier_upgrades.find(x=>Number(x.from_tier)===tier);
   if(!step)throw Error('Tier '+tier+' transition missing');
   step.monster_materials=copy(rules.c[String(tier)]);
+  step.essence=copy([{slug:'uncommon-essence',quantity:1},{slug:'rare-essence',quantity:2},{slug:'epic-essence',quantity:3},{slug:'legendary-essence',quantity:5},{slug:'infernal-essence',quantity:10}][tier-1]);
+  step.extra_materials=[];step.materials=[];
   delete step.unknown_monster_materials;
  }
  const transitions=codex.awaken.transitions;
@@ -81,8 +87,9 @@ export function applyOct17MaterialRules(snapshot,rules){
   const key=available[0];
   if(!key||!Array.isArray(rules.x[String(key)]))throw Error('A'+rank+' transition material level unavailable');
   row.materials=copy(rules.x[String(key)]);
-  row.extra_materials=[];row.monster_materials={};
+  row.extra_materials=[];row.monster_materials={};row.essence=null;
  }
+ next.materials=copy(rules.m).map(m=>({slug:m.slug,name:m.name,type:m.type,monster_id:m.monster_id,sourceBiome:m.sourceBiome||'',sourceMonster:m.sourceMonster||'',tier:String(m.tier??'')}));
  next.materialSourceVersion=PATHFINDER_MATERIAL_SOURCE;
  next.materialSource='IdleArc /api/config/game itemization, verified 2026-10-17';
  next.sourceVersion=(snapshot.sourceVersion||'legacy cost snapshot')+' · materials '+PATHFINDER_MATERIAL_SOURCE;
