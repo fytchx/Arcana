@@ -49,7 +49,7 @@ test('sitemap includes landing routes alongside dynamic published Journal links'
  assert.match(journal,/SEO_PAGES\.map\(p=>\(\{url:p\.path,date:/);
  assert.match(journal,/\.\.\.publicPosts\.map/);
  assert.match(journal,/Sitemap:/);
- assert.match(journal,/sitemap\\.xml/);
+ assert.ok(journal.includes('sitemap.xml'))
  assert.match(journal,/<a href="\/pathfinder">Pathfinder<\/a>/);
  const index=await readFile(new URL('../index.html',import.meta.url),'utf8');
  assert.match(index,/<meta name="description" content="Arcana is a free IdleArc companion/);
