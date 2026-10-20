@@ -75,16 +75,19 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
   '<div class="quickSectionBody"><div class="quickResourceHighlights">'+gold+'</div>'+
   (other.length?'<div class="quickMaterialList quickMaterialListSorted">'+other.map(materialRow).join('')+'</div>':'')+'</div></details>';
  const attempts=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:1}).format(n);
- const labels={min:'Minimum',expected:'Expected',pity:'Pity ceiling*'};
- const cards=scenarios.available?'<section class="quickScenarioPicker" aria-label="Upgrade cost scenarios"><div class="quickSectionTitle"><h3>Include failed attempts</h3><small>Choose a budget</small></div>'+
+ const labels={min:'Minimum',expected:'Expected',pity:'Pity maximum'};
+ const firstStep=scenarios.available?scenarios.perStep[0]:null;
+ const pityCap=firstStep?.pityCap||1;
+ const pityDone=Math.max(0,Math.min(pityCap-1,Math.trunc(Number(range.pityCount)||0)));
+ const cards=scenarios.available?'<section class="quickScenarioPicker" aria-label="Upgrade cost scenarios"><div class="quickScenarioHeading"><h3>Upgrade attempts</h3><span class="quickPityBadge">Pity '+pityDone+' / '+pityCap+'</span></div>'+
  '<div class="quickScenarioGrid">'+['min','expected','pity'].map(key=>{
   const stat=scenarios[key],active=mode===key;
   return '<button type="button" class="quickScenarioCard'+(active?' active':'')+'" data-path-cost-mode="'+key+'" aria-pressed="'+active+'"><span>'+labels[key]+'</span>'+
-   '<strong>'+money(stat.gold)+' <small>Gold</small></strong><small>'+attempts(stat.attempts)+' attempts'+(key==='expected'?' · estimate':key==='pity'?' · model':'')+'</small></button>';
+   '<strong>'+money(stat.gold)+' <small>Gold</small></strong><small>'+attempts(stat.attempts)+' attempts'+(key==='expected'?' · estimate':key==='pity'?' · last attempt guaranteed':'')+'</small></button>';
  }).join('')+'</div>'+
- '<label class="quickPityInput">Starting pity for first upgrade <span><input type="number" data-path-pity-progress min="0" max="100" step="0.01" inputmode="decimal" value="'+(range.pityProgress??0)+'" aria-label="Starting pity percentage">%</span></label>'+
- '<p class="quickScenarioNote">Expected and ceiling costs include failed attempts with a 30% refund. *Pity ceiling assumes success is guaranteed after the modeled pity counter reaches 100%, and resets per successful upgrade. This is <strong>not yet a verified game maximum.</strong> Starting pity is applied to the first paid step of each selected item. Estimates are rounded up for planning.</p></section>':
+ '<label class="quickPityInput">Already failed this upgrade <span><input type="number" data-path-pity-count min="0" max="'+Math.max(0,pityCap-1)+'" step="1" inputmode="numeric" value="'+pityDone+'" aria-label="Pity attempts already counted"> / '+pityCap+'</span></label>'+
+ '<details class="quickAssumptions"><summary>How failures and pity are calculated</summary><p>Upgrade success is guaranteed on the final numbered attempt, not an extra attempt afterward. Failed attempts spend 70% of listed Gold and materials. Expected costs include the chance of succeeding early. Current pity applies to the first pending upgrade of each item; later upgrade levels start fresh in this planner.</p></details></section>':
  '<p class="quickScenarioNote">Failure/pity scenarios unavailable: '+esc(scenarios.reason||'Verified failure odds missing')+'. Minimum recipe costs remain available.</p>';
  return plan+cards+meta+monsterSection+forge+
- '<p class="quickSource">Recipe material and Gold totals. '+(mode==='min'?'Minimum: one successful attempt per upgrade, excluding failures.':mode==='expected'?'Estimated spend using the stated pity planning assumptions.':'Pity-model ceiling, not a guaranteed game maximum.')+' All selected items use the same upgrade range.</p>';
+ '<p class="quickSource">Recipe material and Gold totals. '+(mode==='min'?'Minimum: one successful attempt per upgrade, excluding failures.':mode==='expected'?'Expected cost with pity and the 30% failed-attempt refund.':'Pity-limited maximum, with success on the final numbered attempt.')+' All selected items use the same upgrade range.</p>';
 }
