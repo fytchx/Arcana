@@ -53,7 +53,7 @@ export const HOME_MENUS=Object.freeze({
   link('Publish a Guide','Create a player guide.','community/create','edit',{kind:'guide'}),
   link('Wiki Studio','Editor publishing workspace.','wiki/studio','book')
  ]},
- social:{title:'Guild & Raid Finder',detail:'Guild recruitment, raid groups and player community.',links:[
+ social:{title:'Guilds & Community',detail:'Guild pages, recruitment, raid groups and player community.',links:[
   link('Guild Hub','Registered guild pages, applications, and customizable official guild tags.','guilds','shield'),
   link('Legacy Guild Listings','Older recruitment listings.','lfg/guilds','users'),
   link('Find a Raid','Raid listings and groups.','lfg/raids','users'),
@@ -64,7 +64,7 @@ export const HOME_MENUS=Object.freeze({
 export const HOME_CARDS=Object.freeze([
  {id:'pathfinder',title:'Pathfinder',detail:'See exactly what your next upgrade costs, from materials to gold.',icon:'feature-upgrade'},
  {id:'tools',title:'Tools',detail:'Run the numbers on pets, farming, affixes and guild skills.',icon:'feature-calculator'},
- {id:'builds',title:'Builds, Guides & Wiki',detail:'Read the strategy, inspect the build, and try it yourself.',icon:'feature-guides'}
+ {id:'social',title:'Guilds & Community',detail:'Show your guild, find recruits and join the community.',icon:'feature-guild-finder'}
 ]);
 const attrs=x=>'data-route="'+esc(x.route)+'"'+(x.params?' data-params="'+esc(new URLSearchParams(x.params).toString())+'"':'');
 const navrow=x=>'<button type="button" class="launchNavRow" '+attrs(x)+'><span class="launchNavIcon">'+icon(x.icon||'arrow',20)+'</span><span class="launchNavCopy"><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',17)+'</button>';
@@ -79,8 +79,8 @@ export function homeScreen(){
   '<section class="journalHomeTeaser" aria-label="Latest from Arcana Journal"><div class="journalHomeTop"><span>ARCANA JOURNAL</span><a href="/journal">All stories →</a></div><a class="journalHomeArticle" href="/journal/idlearc-1-3-7-the-timing-couldnt-be-better" data-journal-latest><span class="journalHomeCategory">NEWS · OCT 18</span><strong>IdleArc 1.3.7: A Step Forward</strong><small>A welcome update arrives just as our class balance analysis goes live.</small><span class="journalHomeRead">Read the story →</span></a></section></div>'+
   '<section class="launchQuick" aria-label="Explore Arcana"><div class="launchSectionTop"><h2>Explore Arcana</h2><button type="button" data-route="directory" class="launchSeeAll">See All '+icon('arrow',16)+'</button></div>'+
   '<div class="launchQuickGrid">'+HOME_CARDS.map(x=>'<button type="button" class="launchQuickCard" data-action="homemenu" data-arg="'+esc(x.id)+'" aria-label="Open '+esc(x.title)+' menu"><span class="launchQuickEmblem" aria-hidden="true">'+icon(x.icon,90)+'</span><span class="launchQuickIcon">'+icon(x.icon,32)+'</span><span class="launchQuickCopy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></span><span class="launchQuickArrow">'+icon('arrow',17)+'</span></button>').join('')+'</div></section>'+
-  '<section class="launchFeatured arcanaKnowledgeBridge" aria-label="Learn, build and share"><div class="launchSectionTop"><h2>One connected knowledge base</h2></div>'+
-  '<p class="launchFeaturedIntro">Read a guide, check the Wiki, open a build and test it. Everything leads somewhere useful.</p>'+
+  '<section class="launchFeatured arcanaKnowledgeBridge" aria-label="Learn, build and share"><div class="launchSectionTop"><h2>Guides, Builds & Wiki</h2></div>'+
+  '<p class="launchFeaturedIntro">Explore strategies, player builds and the game reference, all in one place.</p>'+
   '<div class="launchFeaturedGrid">'+[
    link('Player Guides','Find proven strategies and progression advice.','wiki/guides','book'),
    link('Community Builds','See players’ builds, then try them in Build Studio.','community','users'),
