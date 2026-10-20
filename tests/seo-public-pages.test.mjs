@@ -21,6 +21,9 @@ test('search landing pages are distinct, crawlable, valid, and internally connec
   assert.match(html,/<html lang="en">/);
   assert.match(html,/name="description"/);
   assert.match(html,/name="robots" content="index,follow"/);
+  const preview=renderSeoPage(p,{indexable:false});
+  assert.match(preview,/name="robots" content="noindex,nofollow"/);
+  assert.ok(preview.includes('<link rel="canonical" href="'+SEO_ORIGIN+p.path+'">'));
   assert.match(html,/property="og:title"/);
   assert.match(html,/property="og:url"/);
   assert.match(html,/application\/ld\+json/);
@@ -37,7 +40,9 @@ test('search landing pages are distinct, crawlable, valid, and internally connec
 test('production server serves GET/HEAD and handles trailing slash without changing SPA',async()=>{
  const server=await readFile(new URL('../server.mjs',import.meta.url),'utf8');
  assert.match(server,/seoPageByPath\(pathname\)/);
- assert.match(server,/renderSeoPage\(seoPageByPath\(pathname\)\)/);
+ assert.match(server,/host==='arcanacompanion.xyz'/);
+ assert.match(server,/x-robots-tag/);
+ assert.match(server,/renderSeoPage\(seoPageByPath\(pathname\),\{indexable\}\)/);
  assert.match(server,/req\.method==='HEAD'\?null:page/);
  assert.match(server,/pathname\.endsWith\('\/'\)/);
  assert.match(server,/location':pathname\.slice\(0,-1\)/);
