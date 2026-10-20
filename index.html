@@ -51,7 +51,7 @@
   if(splash){splash.classList.add('arcanaBootDone');splash.setAttribute('aria-hidden','true');}
   setTimeout(release,450);
  }
- function check(){if(appReady&&themeReady)requestAnimationFrame(function(){requestAnimationFrame(done)});}
+ function check(){if(appReady&&themeReady){requestAnimationFrame(function(){requestAnimationFrame(done)});setTimeout(done,200);}}
  document.addEventListener('arcana:theme-ready',function(){themeReady=true;check();},{once:true});
  document.addEventListener('arcana:app-ready',function(){appReady=true;check();},{once:true});
  // A stalled module/connection shows the existing retry UI rather than trapping a visitor.
