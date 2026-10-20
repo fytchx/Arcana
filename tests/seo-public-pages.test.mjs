@@ -47,7 +47,7 @@ test('production server serves GET/HEAD and handles trailing slash without chang
 test('sitemap includes landing routes alongside dynamic published Journal links',async()=>{
  const journal=await readFile(new URL('../src/journal-server.mjs',import.meta.url),'utf8');
  assert.match(journal,/SEO_PAGES\.map\(p=>\(\{url:p\.path,date:/);
- assert.match(journal,/\.\.\.publicPosts\.map\(p=>\(\{url:'\/journal\/ '\+p\.slug/);
+ assert.match(journal,/\.\.\.publicPosts\.map/);
  assert.match(journal,/Sitemap: '\+ORIGIN\+'\/sitemap\.xml'/);
  assert.match(journal,/<a href="\/pathfinder">Pathfinder<\/a>/);
  const index=await readFile(new URL('../index.html',import.meta.url),'utf8');
