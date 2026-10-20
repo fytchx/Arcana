@@ -21,9 +21,9 @@ test('quantity bounds and old saved plans work',()=>{
 });
 test('native calculator alphabetizes monster drops before collapsed gold and rare materials',()=>{
  const html=quickUpgradePanel(fixture,{...range,quantity:10},{page:true,catalog});
- for(const x of ['pathItemQuantity','data-path-quantity-step="1"','10 items','First Biome','Second Biome','Third Biome','Gold & rare materials','Abyssal Ember','data-pf-save-list','data-route="wiki/reference"'])assert.ok(html.includes(x),x);
+ for(const x of ['pathItemQuantity','data-path-quantity-step="1"','10 items','First Biome','Second Biome','Third Biome','Gold &amp; rare materials','Abyssal Ember','data-pf-save-list','data-route="wiki/reference"'])assert.ok(html.includes(x),x);
  assert.ok(html.indexOf('Alpha')<html.indexOf('Beta'));assert.ok(html.indexOf('Beta')<html.indexOf('Gamma'));
- assert.ok(html.indexOf('Gamma')<html.indexOf('Gold & rare materials'));
+ assert.ok(html.indexOf('Gamma')<html.indexOf('Gold &amp; rare materials'));
  assert.match(html,/data-material-section="monsters"/);assert.match(html,/data-material-section="special"/);
  assert.doesNotMatch(html,/<details[^>]*data-material-section="(?:monsters|special)"[^>]*open/);
 });
