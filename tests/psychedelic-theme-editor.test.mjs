@@ -53,8 +53,9 @@ test('editor shows pattern-specific color controls and current live frame instea
  const editor=designPanel({showPreview:false}),preview=designMiniMarkup(),css=await read('../psychedelic-themes.css'),real=await read('../src/theme-live-frame.js');
  for(const key of ['psyPaletteMode','psyBackground','psyPrimary','psySecondary','psyAccent','psyOutline','psyStroke'])assert.ok(editor.includes('data-design-field="'+key+'"'),key);
  for(const id of PSYCHEDELIC_IDS){assert.ok(editor.includes('data-theme-pattern="'+id+'"'));assert.ok(css.includes('data-arcana-design-pattern="'+id+'"'));assert.ok(css.includes('data-mini-pattern="'+id+'"'));assert.ok(css.includes('data-preview-pattern="'+id+'"'));}
- assert.ok(editor.includes('Psychedelic Collection'));
- assert.ok(editor.includes('42 editable designs'));
+ assert.ok(editor.includes('themePresetCollection'));
+ assert.equal((editor.match(/data-collection="psychedelic"/g)||[]).length,4);
+ assert.ok(editor.includes('All 42 presets'));
  assert.ok(preview.includes('data-mini-live-frame'));
  assert.ok(preview.includes('data-mini-page="guilds"'));
  assert.match(real,/doc\.querySelector\('#content'\)/);

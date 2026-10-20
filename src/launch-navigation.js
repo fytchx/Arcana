@@ -36,7 +36,7 @@ export const HOME_MENUS=Object.freeze({
   link('Guild Skill Planner','Allocate, compare and share guild skill points.','labs/guild-tree','shield'),
   link('Damage Calculator · Work in Progress','Damage comparisons and build upgrade analysis in development.','calculators/damage','calculator')
  ]},
- builds:{title:'Builds & Guides',detail:'Player guides, community builds, sharing and character planning.',links:[
+ builds:{title:'Builds, Guides & Wiki',detail:'Player guides, community builds, sharing and character planning.',links:[
   link('Player Guides','Guides for classes, progression and game systems.','wiki/guides','book'),
   link('Community Builds & Guides','Browse player-written guides and shared setups.','community','users'),
   link('Open Build Studio','Equipment, pets, runes and skills in one build.','labs/build','shield'),
@@ -62,9 +62,9 @@ export const HOME_MENUS=Object.freeze({
  ]}
 });
 export const HOME_CARDS=Object.freeze([
- {id:'pathfinder',title:'Pathfinder',detail:'Item upgrade costs, materials, equipment comparison and upgrade maps.',icon:'feature-upgrade'},
- {id:'tools',title:'Tools',detail:'Pet Compound, affix costs, farming, guild skills and damage planning.',icon:'feature-calculator'},
- {id:'builds',title:'Builds & Guides',detail:'Player guides, shared builds, publishing and character planning.',icon:'feature-guides'}
+ {id:'pathfinder',title:'Pathfinder',detail:'See exactly what your next upgrade costs, from materials to gold.',icon:'feature-upgrade'},
+ {id:'tools',title:'Tools',detail:'Run the numbers on pets, farming, affixes and guild skills.',icon:'feature-calculator'},
+ {id:'builds',title:'Builds, Guides & Wiki',detail:'Read the strategy, inspect the build, and try it yourself.',icon:'feature-guides'}
 ]);
 const attrs=x=>'data-route="'+esc(x.route)+'"'+(x.params?' data-params="'+esc(new URLSearchParams(x.params).toString())+'"':'');
 const navrow=x=>'<button type="button" class="launchNavRow" '+attrs(x)+'><span class="launchNavIcon">'+icon(x.icon||'arrow',20)+'</span><span class="launchNavCopy"><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',17)+'</button>';
@@ -73,18 +73,18 @@ export function homeScreen(){
   '<svg class="launchHeroArcaneSeal" viewBox="0 0 160 160" fill="none" aria-hidden="true" focusable="false"><circle cx="80" cy="80" r="66"/><circle cx="80" cy="80" r="53"/><circle cx="80" cy="80" r="35"/><path d="M80 5v26m0 98v26M5 80h26m98 0h26M25 25l19 19m72 72 19 19m0-110-19 19m-72 72-19 19M80 40l40 40-40 40-40-40zM80 54l26 26-26 26-26-26z"/><circle cx="80" cy="15" r="3"/><circle cx="145" cy="80" r="3"/><circle cx="80" cy="145" r="3"/><circle cx="15" cy="80" r="3"/></svg>'+
   '<div class="launchHeroHeader"><span class="launchHeroArt" aria-hidden="true">'+icon('feature-build-studio',38)+'</span>'+
   '<div class="launchHeroText"><span class="launchEyebrow">THE HEART OF ARCANA</span><h1>Build Studio</h1>'+
-  '<p>Gear, runes, pets and skill trees. One connected build.</p></div></div>'+
+  '<p>Test the gear, runes, pets and skills behind your next great setup.</p></div></div>'+
   '<button type="button" class="launchHeroCTA" data-route="labs/build" aria-label="Enter Build Studio"><span class="launchHeroCTASigil" aria-hidden="true">'+icon('feature-rune-forge',22)+'</span><span class="launchHeroCTACopy"><strong>Enter Build Studio</strong><small>Forge your perfect setup</small></span>'+icon('arrow',20)+'</button>'+
   '</section>'+
   '<section class="journalHomeTeaser" aria-label="Latest from Arcana Journal"><div class="journalHomeTop"><span>ARCANA JOURNAL</span><a href="/journal">All stories →</a></div><a class="journalHomeArticle" href="/journal/idlearc-1-3-7-the-timing-couldnt-be-better" data-journal-latest><span class="journalHomeCategory">NEWS · OCT 18</span><strong>IdleArc 1.3.7: A Step Forward</strong><small>A welcome update arrives just as our class balance analysis goes live.</small><span class="journalHomeRead">Read the story →</span></a></section></div>'+
   '<section class="launchQuick" aria-label="Explore Arcana"><div class="launchSectionTop"><h2>Explore Arcana</h2><button type="button" data-route="directory" class="launchSeeAll">See All '+icon('arrow',16)+'</button></div>'+
   '<div class="launchQuickGrid">'+HOME_CARDS.map(x=>'<button type="button" class="launchQuickCard" data-action="homemenu" data-arg="'+esc(x.id)+'" aria-label="Open '+esc(x.title)+' menu"><span class="launchQuickEmblem" aria-hidden="true">'+icon(x.icon,90)+'</span><span class="launchQuickIcon">'+icon(x.icon,32)+'</span><span class="launchQuickCopy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></span><span class="launchQuickArrow">'+icon('arrow',17)+'</span></button>').join('')+'</div></section>'+
-  '<section class="launchFeatured" aria-label="Useful and Featured"><div class="launchSectionTop"><h2>Useful &amp; Featured</h2></div>'+
-  '<p class="launchFeaturedIntro">Player guides, shared builds, articles and site updates.</p>'+
+  '<section class="launchFeatured arcanaKnowledgeBridge" aria-label="Learn, build and share"><div class="launchSectionTop"><h2>One connected knowledge base</h2></div>'+
+  '<p class="launchFeaturedIntro">Read a guide, check the Wiki, open a build and test it. Everything leads somewhere useful.</p>'+
   '<div class="launchFeaturedGrid">'+[
-   link('Player Guides','Browse walkthroughs and game tips.','wiki/guides','book'),
-   link('Community Builds','Explore setups shared by players.','community','users'),
-   link('Feedback & Updates','Help improve Arcana ahead of launch.','beta','info')
+   link('Player Guides','Find proven strategies and progression advice.','wiki/guides','book'),
+   link('Community Builds','See players’ builds, then try them in Build Studio.','community','users'),
+   link('ArcanaWiki','Look up the mechanics behind every decision.','wiki','book')
   ].map(x=>'<button type="button" class="launchFeatureRow" '+attrs(x)+'><span class="launchFeatureIcon">'+icon(x.icon,20)+'</span><span><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',16)+'</button>').join('')+'</div></section>';
 }
 export function homeSubmenu(id){
@@ -102,7 +102,7 @@ const extras=[
  link('Passive Skill Tree · Build Studio','Manage passive skills.','labs/passives','layers'),
  link('Rune Forge · Build Studio','Place runes in your current build.','labs/runes','gem'),
  link('Player Community','Published guides and player profiles.','community','users'),
- link('Guild Hub','Guilds, member communities and crests.','guilds','shield'),
+ link('Guild Hub','Guild pages, recruitment and customizable tags.','guilds','shield'),
  link('Recent Activity','Return to work and recently viewed entries.','recent','clock'),
  link('Wiki Studio · Editors','Edit and publish wiki content.','wiki/studio','edit'),
  link('Beta Feedback','Send a bug report or suggestion.','beta','info'),
@@ -156,25 +156,29 @@ export const designPanel=({showPreview=true}={})=>{
  const select=(key,label,opts)=>'<label class="designControl"><span>'+label+'</span><select data-design-field="'+key+'" aria-label="'+label+'">'+opts.map(([id,name])=>'<option value="'+id+'" '+(d[key]===id?'selected':'')+'>'+name+'</option>').join('')+'</select></label>';
  const group=(name,body,description='')=>{const groupId=name.startsWith('Colors')?'colors':name.startsWith('Background')?'textures':name.startsWith('Build')?'feature':name.startsWith('Cards')?'components':'type';return '<details class="designOptionSection" data-theme-group="'+groupId+'" '+(['colors','textures'].includes(groupId)?'open':'')+'><summary>'+name+'</summary>'+(description?'<p class="designOptionDescription">'+description+'</p>':'')+'<div class="designOptionControls">'+body+'</div></details>'};
  const featuredTextures=[...THEME_PATTERNS].sort((a,b)=>Number(['Psychedelic','Signature','Material','Atmosphere','Relic'].includes(b.category))-Number(['Psychedelic','Signature','Material','Atmosphere','Relic'].includes(a.category)));
- const presetCards=Object.entries(DESIGN_PRESETS).map(([id,p])=>{
+ const allEntries=Object.entries(DESIGN_PRESETS);
+ const curated=[
+  ...allEntries.filter(([,p])=>!['signature','psychedelic'].includes(p.collection)).slice(0,4),
+  ...allEntries.filter(([,p])=>p.collection==='signature').slice(0,4),
+  ...allEntries.filter(([,p])=>p.collection==='psychedelic').slice(0,4)
+ ];
+ const curatedKeys=new Set(curated.map(([id])=>id));
+ const presetCards=[...curated,...allEntries.filter(([id])=>!curatedKeys.has(id))].map(([id,p],index)=>{
   const active=p.main===d.main&&p.action===d.action&&p.pattern===d.pattern;
   const premium=['signature','psychedelic'].includes(p.collection);
   const css='--preset-main:'+p.main+';--preset-card:'+p.card+';--preset-primary:'+p.action+';--preset-secondary:'+p.secondaryAccent;
   const picture=premium?'<span class="designPresetArt" data-signature-art="'+p.pattern+'" aria-hidden="true"><span class="designPresetArtCard"><b>ARCANA</b><i>✦</i><small>'+(p.collection==='psychedelic'?'Psychedelic':'Signature')+'</small></span></span>':'<span class="designPresetSwatches"><i></i><i></i><i></i><i></i></span>';
-  return '<button class="designPreset '+(premium?'designPresetSignature ':'')+(active?'selected':'')+'" type="button" data-action="design-preset" data-arg="'+id+'" data-collection="'+(p.collection||'classic')+'" data-preset-search="'+esc((p.name+' '+p.pattern+' '+(p.tagline||'')).toLowerCase())+'" aria-pressed="'+active+'" style="'+css+'">'+picture+'<span class="designPresetCopy"><strong>'+esc(p.name)+'</strong><small>'+esc(premium?p.tagline:p.pattern.replace(/-/g,' ')+' texture')+'</small></span></button>';
+  return '<button class="designPreset designPresetUnified '+(premium?'designPresetSignature ':'')+(active?'selected':'')+'" type="button" data-action="design-preset" data-arg="'+id+'" data-collection="'+(p.collection||'classic')+'" '+(index>=12?'data-preset-extra="true" ':'')+'data-preset-search="'+esc((p.name+' '+p.pattern+' '+(p.tagline||'')).toLowerCase())+'" aria-pressed="'+active+'" style="'+css+'">'+picture+'<span class="designPresetCopy"><strong>'+esc(p.name)+'</strong><small>'+esc(premium?p.tagline:p.pattern.replace(/-/g,' ')+' texture')+'</small></span></button>';
  });
- const signaturePresets=presetCards.slice(18,38).join('');
- const classicPresets=presetCards.slice(0,18).join('');
- const psychedelicPresets=presetCards.slice(38).join('');
+ const allPresets=presetCards.join('');
  const activePsy=PSYCHEDELIC_IDS.includes(d.pattern);
  const psySettings='<section class="psyPalettePicker" data-psy-active="'+activePsy+'" data-psy-mode="'+d.psyPaletteMode+'"><header><strong>Five-color pattern palette</strong><span class="psyPaletteStatus">Editable motif</span></header><p>Change the colors without changing the repeat. Match the website or build your own.</p>'+select('psyPaletteMode','Palette source', [['custom','My five colors'],['theme','Match website colors']])+'<div class="psyCustomColors"><div class="psyColorsGrid">'+color('psyBackground','Pattern background')+color('psyPrimary','Primary fill')+color('psySecondary','Secondary fill')+color('psyAccent','Accent fill')+color('psyOutline','Outline')+'</div>'+slider('psyStroke','Outline weight',0,100)+'</div></section>';
  return '<section class="slateSettingsBlock arcanaDesignLab"><span class="launchEyebrow">CREATOR WORKSPACE · LIVE DRAFT</span><h2>Theme Studio</h2><p>Edit colors, textures and components while your preview remains visible. Changes stay private until published.</p>'+
- '<nav class="themeStudioJumps" aria-label="Theme editor categories">'+[['colors','Colors'],['textures','Textures'],['feature','Feature'],['components','Cards'],['type','Type'],['vault','Vault']].map(([id,name])=>'<button type="button" data-theme-jump="'+id+'">'+name+'</button>').join('')+'</nav>'+
+ '<nav class="themeStudioJumps" aria-label="Jump to designer section">'+[['presets','Presets'],['colors','Colors'],['textures','Textures'],['feature','Homepage'],['components','Buttons'],['type','Text'],['vault','Saved']].map(([id,name])=>'<button type="button" data-theme-jump="'+id+'">'+name+'</button>').join('')+'</nav>'+
  (showPreview?designMiniMarkup():'')+
- '<div class="designPresetHeader"><h3>Theme presets</h3><p>42 editable designs in three collections. Change every color, texture, material and glow.</p></div><label class="designPresetSearch">Find a preset <input type="search" data-design-preset-search placeholder="Search names, moods or textures…" autocomplete="off"></label>'+
- '<div class="psychedelicPresetsIntro"><span>NEW · FOUR RECOLORABLE MATERIALS</span><h3>Psychedelic Collection</h3><p>Original, seamless illustrated patterns. Change all five colors and remix their outlines.</p></div><div class="designPresetGrid designSignatureGrid designPsychedelicGrid">'+psychedelicPresets+'</div>'+
-  '<div class="signatureCollectionIntro"><span>ARCANA EXCLUSIVE · 20 DESIGNS</span><h3>Signature Collection</h3><p>Handcrafted materials, engravings and illuminated surfaces, now without visible tile restarts. Every look is fully editable.</p><button class="signatureSurprise" type="button" data-action="random-signature">✦ Surprise me</button></div><div class="designPresetGrid designSignatureGrid">'+signaturePresets+'</div>'+
- '<details class="designClassicCollection"><summary>Classic Collection · 18 presets</summary><div class="designPresetGrid">'+classicPresets+'</div></details>'+
+ '<div class="themeEditorGuidance" role="status" data-theme-change-hint><strong>Start with a preset.</strong><span>Use Colors and Textures for most edits. The advanced sections are optional.</span></div>'+
+ '<section class="themePresetCollection" data-theme-group="presets" data-show-all="false" data-searching="false" aria-label="All Arcana presets"><div class="designPresetHeader"><h3>Choose a starting look</h3><p>All 42 presets in one library. Pick any look, then adjust its colors, materials, and details. Nothing is published automatically.</p></div><label class="designPresetSearch">Find a look<input type="search" data-design-preset-search placeholder="Search all 42 presets…" autocomplete="off"></label><div class="themeUnifiedPresetActions"><button type="button" data-action="random-signature">✦ Surprise me</button><span>One collection · every design editable</span></div><div class="designPresetGrid designUnifiedPresetGrid" id="themePresetsGrid">'+allPresets+'</div><button type="button" class="themeShowMorePresets" data-theme-preset-expand aria-expanded="false" aria-controls="themePresetsGrid">Show all 42 presets ↓</button><p class="designPresetEmpty" data-design-no-presets hidden>No presets match that search.</p></section>'+ 
+
  group('Colors &amp; accents',
  color('main','Background')+color('card','Panels')+color('action','Primary accent')+color('secondaryAccent','Second accent')+color('text','Text')+color('mutedText','Muted text')+color('borderColor','Border color')+color('navBar','Navigation bar')+color('buttonText','Button text'))+
  group('Background &amp; lighting',
@@ -182,7 +186,7 @@ export const designPanel=({showPreview=true}={})=>{
  select('patternTarget','Where to show textures',[['all','Backgrounds + cards'],['cards','Cards only'],['background','Page backgrounds only']])+
  '<details class="themePatternLibrary"><summary>Browse all 88 seamless texture finishes</summary><p>Four new recolorable psychedelic repeats, 20 Signature finishes, and 64 classic materials. Choose a pattern and customize its colors.</p><div class="themePatternFilters" role="group" aria-label="Pattern categories">'+['Premium','All',...new Set(THEME_PATTERNS.map(p=>p.category))].map(c=>'<button type="button" data-theme-pattern-filter="'+c+'" aria-pressed="'+(c==='Premium')+'">'+c+'</button>').join('')+'</div><div class="themePatternGrid">'+featuredTextures.map(p=>'<button type="button" class="themePatternTile" '+(['Psychedelic','Signature','Material','Atmosphere','Relic'].includes(p.category)?'':'hidden')+' data-theme-pattern="'+p.id+'" data-pattern-category="'+p.category+'" aria-pressed="'+String(d.pattern===p.id)+'" title="'+p.name+'"><span class="themePatternThumb" data-preview-pattern="'+p.id+'" aria-hidden="true"></span><span>'+p.name+'</span></button>').join('')+'</div></details>'+
  psySettings+slider('intensity','Pattern intensity',0,100)+slider('detail','Fine texture detail',0,100)+slider('aura','Atmospheric aura',0,100)+slider('sheen','Material sheen',0,100)+slider('patternScale','Pattern size',60,180)+slider('glow','Glow strength',0,100)+slider('cardShadow','Card shadow',0,100)+slider('edges','Border intensity',0,100)+slider('borderWidth','Border thickness',0,3)+slider('headerOpacity','Header opacity',65,100))+
- group('Build Studio feature',
+ group('Build Studio feature · Advanced',
  '<div class="heroCtaEditorIntro"><strong>Make the entrance fit the home screen.</strong><p>The Build Studio button is separate from other controls. Try a minimal style, then adjust its size, position, icons and finish.</p></div>'+
  '<details class="heroCtaLibrary" open><summary>Explore '+HERO_CTA_STYLES.length+' button designs</summary><div class="heroCtaGallery">'+HERO_CTA_STYLES.map(style=>
  '<button type="button" class="heroCtaChoice" data-hero-cta-style="'+style.id+'" aria-pressed="'+String(d.heroActionStyle===style.id)+'" title="'+esc(style.detail)+'"><span class="heroCtaSample" data-hero-sample="'+style.id+'"><i aria-hidden="true">◈</i><b>Build Studio</b><i aria-hidden="true">→</i></span><span><strong>'+esc(style.name)+'</strong><small>'+esc(style.detail)+'</small></span></button>'
@@ -196,11 +200,11 @@ export const designPanel=({showPreview=true}={})=>{
  '<div class="heroCtaEditorIntro"><strong>Or change the entire feature card.</strong><p>If the large Build Studio section feels out of place, change its surface and decorative artwork independently of the entrance button.</p></div>'+
  select('heroCardStyle','Feature card treatment',[['blended','Blended (current)'],['flat','Flat / seamless'],['frameless','No surrounding frame'],['etched','Etched panel'],['glass','Smoked glass'],['raised','Raised card'],['accent-edge','Accent edge'],['metallic','Brushed alloy'],['minimal','Minimal feature']])+
  select('heroCardEmblem','Decorative seal',[['subtle','Subtle'],['hidden','Hidden'],['prominent','Prominent']]),
- 'Only the homepage Build Studio feature is changed. Other navigation, tools and buttons stay untouched.')+
- group('Cards &amp; buttons',
+ 'Advanced controls, only for the homepage Build Studio feature. Select Home in the preview to see exactly what changes.')+
+ group('Cards &amp; buttons · Advanced',
  slider('roundness','Card corners',3,28)+slider('cardPadding','Card padding',8,22)+slider('buttonRoundness','Button corners',3,30)+slider('buttonFill','Button color strength',35,100)+slider('buttonHeight','Button height',40,58)+slider('accentBlend','Gradient accent balance',0,100)+
  select('buttonStyle','Button appearance',[['gradient','Gradient'],['solid','Solid'],['outline','Outlined']]))+
- group('Typography &amp; spacing',
+ group('Typography &amp; spacing · Advanced',
  select('iconMode','Icon treatment',[['two-tone','Two-tone'],['neutral','Neutral'],['accent','Accent'],['muted','Muted']])+
  select('fontFamily','Font style',[['system','Clean system'],['rounded','Soft rounded'],['serif','Classic serif'],['mono','Monospace']])+
  slider('fontSize','Text size',90,115)+select('density','Layout density',[['comfortable','Comfortable'],['compact','Compact'],['spacious','Spacious']]))+

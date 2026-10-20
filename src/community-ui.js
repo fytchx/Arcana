@@ -61,9 +61,15 @@ const communityPostCard=p=>'<article class="communityPostCard"><span class="eyeb
  '<div class="communityPostActions"><button class="btn secondary" data-route="community/post" data-params="id='+esc(p.id)+'">Open '+icon('arrow',15)+'</button>'+
  (p.authorId?'<button class="btn secondary" data-route="profile" data-params="id='+esc(p.authorId)+'">Player card</button>':'')+'</div></article>';
 function communityView(){
- return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">THE ARCANA COMMUNITY</span><h1>Players, builds &amp; stories</h1><p>Follow IdleArc news and meta discussion, read the Journal, and find builds and guides shared by players.</p>'+
- (state.me?'<button class="btn primary" data-route="community/create">'+icon('plus',17)+' Share a build or guide</button>':'<button class="btn secondary" data-route="account">Get a player card</button>')+'</div>'+
- '<section class="communityJournalGateway"><a href="/journal"><span class="journalEyebrow">ARCANA JOURNAL</span><strong>IdleArc news, meta &amp; opinions</strong><small>Leaderboard analysis, game updates, and development stories.</small><span>Read the Journal →</span></a></section><div class="communityGuildGateway"><button class="btn secondary" data-route="guilds">'+icon('shield',18)+' Explore Guild Hub and registered guilds</button></div><h2 class="communityContributionTitle">Player builds &amp; guides</h2><div class="communityPostGrid">'+(state.posts.length?state.posts.map(communityPostCard).join(''):notice('No community contributions here yet. The tools and Wiki remain free to browse.'))+'</div></div>';
+ return '<div class="communityPage communityConnected"><div class="communityHero"><span class="eyebrow">ARCANA COMMUNITY</span><h1>Find your people. Share what works.</h1><p>Guilds, player-created builds, and useful guides, connected with the rest of Arcana. No need to hunt through five different menus.</p>'+
+ (state.me?'<button class="btn primary" data-route="community/create">'+icon('plus',17)+' Share a build or guide</button>':'<button class="btn secondary" data-route="account">Sign in to share your build</button>')+'</div>'+
+ '<section class="communityPathways" aria-label="Explore community resources">'+
+ '<button type="button" class="communityPathway" data-route="guilds"><span>'+icon('shield',26)+'</span><strong>Guild Hub</strong><small>Find guilds, recruitment and members.</small><em>Explore guilds →</em></button>'+
+ '<button type="button" class="communityPathway" data-route="wiki/guides"><span>'+icon('book',26)+'</span><strong>Guides &amp; Wiki</strong><small>Published strategies and verified game knowledge.</small><em>Read guides →</em></button>'+
+ '<button type="button" class="communityPathway" data-route="labs/build"><span>'+icon('flask',26)+'</span><strong>Build Studio</strong><small>Inspect a setup and experiment with your own.</small><em>Try Build Studio →</em></button>'+
+ '<a class="communityPathway" href="/journal"><span>'+icon('clock',26)+'</span><strong>Arcana Journal</strong><small>News, analysis and balance discussions.</small><em>Latest stories →</em></a></section>'+
+ '<div class="communityContributionHead"><div><span class="eyebrow">FROM THE COMMUNITY</span><h2>Player builds &amp; guides</h2></div><button type="button" class="btn secondary" data-route="wiki/guides">Browse all guides →</button></div>'+
+ '<div class="communityPostGrid">'+(state.posts.length?state.posts.map(communityPostCard).join(''):notice('No community contributions yet. Browse the guides, plan a build, or be the first to share.'))+'</div></div>';
 }
 const niceParagraphs=body=>String(body||'').split(/\n\s*\n/).filter(Boolean).map(p=>'<p>'+esc(p)+'</p>').join('');
 function detailView(){

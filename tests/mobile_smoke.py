@@ -21,7 +21,7 @@ for module in sorted((ROOT/'src').glob('*.js')):
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
 # Offline browser must render EVERY stylesheet in the real entry point, not just
 # styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
-for css_name in ('styles.css','wiki-studio.css','community.css','guild-hub.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','signature-themes.css','theme-seamless.css','psychedelic-themes.css','desktop-home-refinement.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
+for css_name in ('styles.css','wiki-studio.css','community.css','guild-hub.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','signature-themes.css','theme-seamless.css','psychedelic-themes.css','desktop-home-refinement.css','arcana-connected-ux.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
     css=(ROOT/css_name).read_text()
     pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\?[^"]*)?">'
     HTML,count=re.subn(pattern,lambda _: '<style>\n'+css+'\n</style>',HTML)
@@ -175,7 +175,9 @@ with sync_playwright() as playwright:
     # Community is a proper gateway to public editorial content while preserving builds.
     page.locator('#arcanaDock [data-dock="community"]').click()
     page.wait_for_selector('.communityPage',timeout=8000)
-    assert page.locator('.communityJournalGateway a[href="/journal"]').count()==1
+    assert page.locator('.communityPathways a[href="/journal"]').count()==1
+    assert page.locator('.communityPathway').count()==4
+    assert page.locator('.communityPathways [data-route="wiki/guides"]').count()==1
     assert 'Player builds' in page.locator('.communityPage').inner_text()
     assert page.locator('#arcanaDock [data-dock="community"]').get_attribute('aria-current')=='page'
     page.screenshot(path=str(OUT/'journal_community_mobile.png'),full_page=True)
@@ -219,9 +221,13 @@ with sync_playwright() as playwright:
 
 
 
-    page.locator('#arcanaDock [data-dock="featured"]').click()
-    page.wait_for_selector('.arcanaFeaturedPage',timeout=8000)
-    assert 'Arcana Journal' in page.locator('.arcanaFeaturedPage').inner_text()
+    page.locator('#arcanaDock [data-dock="search"]').click()
+    page.wait_for_selector('.arcanaSearchDiscoverGrid',timeout=8000)
+    assert page.locator('.arcanaSearchDiscoverGrid button').count()==6
+    page.locator('#globalSearch').fill('Pathfinder')
+    assert page.locator('.arcanaSearchDiscover').count()==0, 'Featured suggestions must disappear when typing'
+    assert page.locator('#searchResults').count()==1
+    page.locator('#layer [data-close]').first.click()
 
     page.locator('#arcanaDock [data-dock="home"]').click()
     page.locator('.launchHeroCTA').click()
@@ -237,7 +243,8 @@ with sync_playwright() as playwright:
     page.evaluate("location.hash='#/theme-playground'")
     page.wait_for_selector('.themePlayground',timeout=8000)
     assert page.locator('.designPresetSignature').count()==24
-    assert page.locator('.designPsychedelicGrid .designPresetSignature').count()==4
+    assert page.locator('.designUnifiedPresetGrid [data-collection="psychedelic"]').count()==4
+    assert page.locator('.designUnifiedPresetGrid .designPreset').count()==42
     # True SVG <use> references must paint the colored motifs in Chromium.
     paints=page.evaluate("""async () => {
        const {psychedelicSvg,PSYCHEDELIC_IDS,PSYCHEDELIC_DEFAULTS}=await import('@arcana/psychedelic-patterns.js');
@@ -271,7 +278,7 @@ with sync_playwright() as playwright:
         raise
     assert live.locator('body').count()==1, 'Theme preview failed to load the real current Arcana page'
     page.screenshot(path=str(OUT/'current-arcana-live-mini.png'),full_page=True)
-    assert page.locator('.designClassicCollection .designPreset').count()==18
+    assert page.locator('.designUnifiedPresetGrid [data-collection="classic"]').count()==18
     assert page.locator('[data-theme-save]').count()==12
     page.locator('.designPresetSignature[data-arg="astral"]').click()
     assert page.locator('html').get_attribute('data-arcana-design-pattern')=='astral-sovereign'
@@ -307,6 +314,19 @@ with sync_playwright() as playwright:
     # Restore the Signature look for a full-site test.
     page.locator('[data-theme-pattern="astral-sovereign"]').evaluate('el=>el.click()')
     page.screenshot(path=str(OUT/'signature-playground-mobile.png'),full_page=True)
+    # Theme preview must stay alongside the editor while scrolling on desktop.
+    page.set_viewport_size({'width':1360,'height':860})
+    page.evaluate('window.scrollTo(0,520)')
+    page.wait_for_timeout(200)
+    top_a=page.locator('.themeStudioPreview').evaluate('e=>e.getBoundingClientRect().top')
+    page.evaluate('window.scrollTo(0,1050)')
+    page.wait_for_timeout(200)
+    top_b=page.locator('.themeStudioPreview').evaluate('e=>e.getBoundingClientRect().top')
+    assert abs(top_a-top_b)<50, 'Desktop theme preview does not follow the editor scroll: '+repr((top_a,top_b))
+    page.screenshot(path=str(OUT/'theme-desktop-sticky-preview.png'),full_page=True)
+    page.set_viewport_size({'width':390,'height':844})
+    page.evaluate('window.scrollTo(0,0)')
+
     page.locator('[data-action="theme-try-on"]').click()
     page.wait_for_selector('.launchHero',timeout=8000)
     assert page.locator('html').get_attribute('data-arcana-design-active')=='true', 'Try-on must apply the homepage theme'
@@ -320,6 +340,19 @@ with sync_playwright() as playwright:
     page.evaluate("location.hash='#/home'")
     page.wait_for_selector('.launchHero',timeout=8000)
     assert page.locator('html').get_attribute('data-arcana-design-active')!='true', 'Leaving Playground must disable local try-on'
+    # Synthetic authenticated QA browser, NOT the owner's real session or credentials.
+    # Header admin access must be based on server-returned roles; guest stays hidden.
+    assert page.locator('#adminPortalBtn').is_hidden(), 'Guest should never see admin controls'
+    admin_html=HTML.replace("if(path.includes('/api/wiki/import-access'))",
+        "if(path.includes('/api/account/me')) return new Response(JSON.stringify({user:{id:'qa-admin',displayName:'Arcana QA Admin',roles:[{id:'admin'}]},enabled:true}),{status:200,headers:{'content-type':'application/json'}}); if(path.includes('/api/wiki/import-access'))")
+    admin_page=browser.new_page(viewport={'width':390,'height':844})
+    admin_page.route(qa_origin,lambda route:route.fulfill(status=200,body=admin_html,content_type='text/html'))
+    admin_page.goto(qa_origin,wait_until='domcontentloaded')
+    admin_page.locator('#adminPortalBtn').wait_for(state='visible',timeout=12000)
+    admin_page.locator('#adminPortalBtn').evaluate('el=>el.click()')
+    admin_page.wait_for_selector('.adminConsole',timeout=10000)
+    assert 'Admin Control Center' in admin_page.locator('.adminConsole h1').inner_text()
+    admin_page.close()
     assert errors==[], 'Browser errors: '+repr(errors)
     print('PASS: latest three-card home, Journal spotlight, Community, Directory, Featured, Build Studio, settings, responsive checks and all themes.')
     browser.close()
