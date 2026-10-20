@@ -112,6 +112,9 @@ with sync_playwright() as playwright:
     page.wait_for_selector('.arcanaSignature',timeout=8000)
     assert errors==[], 'App failed to initialize: '+repr(errors)
     assert page.locator('.skipMain').count()==1, 'Accessible skip navigation missing'
+    # The loading screen deliberately shields all controls until fully removed.
+    page.wait_for_selector('#arcanaBoot',state='detached',timeout=15000)
+    assert not page.locator('#app').get_attribute('inert'), 'Homepage must unlock after splash exits'
     page.locator('.skipMain').dispatch_event('click')
     assert page.evaluate('document.activeElement.id')=='content', 'Skip navigation did not focus the main content'
     assert page.locator('.arcanaSignature').count()==1, 'Footer must appear exactly once'
@@ -168,7 +171,7 @@ with sync_playwright() as playwright:
     assert 'IdleArc 1.3.7' in page.locator('[data-journal-latest]').inner_text()
     assert page.locator('.launchQuickCard[data-arg="pathfinder"]').count()==1
     assert page.locator('.launchQuickCard[data-arg="tools"]').count()==1
-    assert page.locator('.launchQuickCard[data-arg="builds"]').count()==1
+    assert page.locator('.launchQuickCard[data-arg="social"]').count()==1, 'Guilds & Community tile missing'
     page.screenshot(path=str(OUT/'journal_home_mobile.png'),full_page=True)
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Homepage overflows mobile viewport'
 
@@ -349,6 +352,7 @@ with sync_playwright() as playwright:
     admin_page.route(qa_origin,lambda route:route.fulfill(status=200,body=admin_html,content_type='text/html'))
     admin_page.goto(qa_origin,wait_until='domcontentloaded')
     admin_page.locator('#adminPortalBtn').wait_for(state='visible',timeout=12000)
+    admin_page.wait_for_selector('#arcanaBoot',state='detached',timeout=15000)
     admin_page.locator('#adminPortalBtn').evaluate('el=>el.click()')
     admin_page.wait_for_selector('.adminConsole',timeout=10000)
     assert 'Admin Control Center' in admin_page.locator('.adminConsole h1').inner_text()
