@@ -1,0 +1,17 @@
+name: Pathfinder Live Material Audit
+on:
+  push:
+    branches: [audit/pathfinder-oct17-live-consistency-2026-10-20]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tests/audit-live-pathfinder-oct17.mjs
