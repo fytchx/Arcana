@@ -17,7 +17,7 @@ export function initialQuickRange(snapshot,raw={}){
 export function quickUpgradePanel(snapshot,raw={},options={}){
  const page=options.page===true;
  const classes='quickCosts '+(page?'quickCostsFull':'quickCostsHome');
- const heading=page?'<div class="quickEyebrow">UPGRADE COST CALCULATOR</div><h2>Upgrade Costs</h2><p>Select the starting and target upgrades to calculate materials and Gold.</p>':
+ const heading=page?'':
  '<div class="quickCostsHead"><div><span class="quickEyebrow">UPGRADE COST CALCULATOR</span><h2>Upgrade Costs</h2><p>Materials and Gold for any upgrade range.</p></div><span class="quickHint">A1 → A2</span></div>';
  const inner=quickUpgradeContent(snapshot,raw,{page,error:options.error||'',catalog:options.catalog||[]});
  return '<section class="'+classes+'" aria-label="Quick upgrade cost calculator">'+heading+'<div id="pathRangeContent">'+inner+'</div>'+
@@ -46,7 +46,9 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  '<div class="quickQuantityControls"><button type="button" data-path-quantity-step="-1" aria-label="Remove one item"'+(count===1?' disabled':'')+'>−</button>'+
  '<input type="number" id="pathItemQuantity" data-path-quantity aria-label="Number of items" min="1" max="100" inputmode="numeric" step="1" value="'+count+'">'+
  '<button type="button" data-path-quantity-step="1" aria-label="Add one item"'+(count===100?' disabled':'')+'>+</button></div></div>';
- if(quote.error)return fields+quantity+'<div class="quickError" role="status">'+esc(quote.error)+(quote.missing?.length?' Missing: '+esc(quote.missing.slice(0,3).join(', ')):'')+'</div>';
+ const planHead=options.page?'<div class="quickPlanHeading"><span class="quickEyebrow">GEAR PLANNER</span><h2>Upgrade costs</h2><p>From → To · set quantity · review total costs</p></div>':'';
+ const plan='<section class="quickPlanControls">'+planHead+fields+quantity+'</section>';
+ if(quote.error)return plan+'<div class="quickError" role="status">'+esc(quote.error)+(quote.missing?.length?' Missing: '+esc(quote.missing.slice(0,3).join(', ')):'')+'</div>';
  const perItemBySlug=new Map(rendered.perItem.materials.map(m=>[m.slug,m.quantity]));
  const materialRow=m=>{
   const id='game:material:'+m.slug;
@@ -82,6 +84,6 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  '<label class="quickPityInput">Starting pity for first upgrade <span><input type="number" data-path-pity-progress min="0" max="100" step="0.01" inputmode="decimal" value="'+(range.pityProgress??0)+'" aria-label="Starting pity percentage">%</span></label>'+
  '<p class="quickScenarioNote">Expected and ceiling costs include failed attempts with a 30% refund. *Pity ceiling assumes success is guaranteed after the modeled pity counter reaches 100%, and resets per successful upgrade. This is <strong>not yet a verified game maximum.</strong> Starting pity is applied to the first paid step of each selected item. Estimates are rounded up for planning.</p></section>':
  '<p class="quickScenarioNote">Failure/pity scenarios unavailable: '+esc(scenarios.reason||'Verified failure odds missing')+'. Minimum recipe costs remain available.</p>';
- return fields+quantity+cards+meta+monsterSection+forge+
+ return plan+cards+meta+monsterSection+forge+
  '<p class="quickSource">Recipe material and Gold totals. '+(mode==='min'?'Minimum: one successful attempt per upgrade, excluding failures.':mode==='expected'?'Estimated spend using the stated pity planning assumptions.':'Pity-model ceiling, not a guaranteed game maximum.')+' All selected items use the same upgrade range.</p>';
 }
