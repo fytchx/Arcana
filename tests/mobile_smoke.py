@@ -112,6 +112,9 @@ with sync_playwright() as playwright:
     page.wait_for_selector('.arcanaSignature',timeout=8000)
     assert errors==[], 'App failed to initialize: '+repr(errors)
     assert page.locator('.skipMain').count()==1, 'Accessible skip navigation missing'
+    # The loading screen deliberately shields all controls until fully removed.
+    page.wait_for_selector('#arcanaBoot',state='detached',timeout=15000)
+    assert not page.locator('#app').get_attribute('inert'), 'Homepage must unlock after splash exits'
     page.locator('.skipMain').dispatch_event('click')
     assert page.evaluate('document.activeElement.id')=='content', 'Skip navigation did not focus the main content'
     assert page.locator('.arcanaSignature').count()==1, 'Footer must appear exactly once'
