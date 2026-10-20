@@ -871,12 +871,14 @@ function renderPathfinderCosts(current=state.pathfinderRange){
  if(!content||!recipeState.data)return;
  const expanded=[...content.querySelectorAll('details[data-material-section][open]')].map(d=>d.dataset.materialSection);
  const assumptionsOpen=content.querySelector('details.quickAssumptions')?.open===true;
+ const oddsOpen=content.querySelector('details.quickOddsByStep')?.open===true;
  content.innerHTML=quickUpgradeContent(recipeState.data,current,{page:parseRoute().route!=='home',catalog:verifiedState.entries});
  for(const id of expanded){
   const d=[...content.querySelectorAll('details[data-material-section]')].find(x=>x.dataset.materialSection===id);
   if(d)d.open=true;
  }
  const note=content.querySelector('details.quickAssumptions');if(note)note.open=assumptionsOpen;
+ const odds=content.querySelector('details.quickOddsByStep');if(odds)odds.open=oddsOpen;
 }
 function wirePathfinderQuick(){
  document.addEventListener('click',e=>{
