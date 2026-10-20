@@ -171,7 +171,7 @@ with sync_playwright() as playwright:
     assert 'IdleArc 1.3.7' in page.locator('[data-journal-latest]').inner_text()
     assert page.locator('.launchQuickCard[data-arg="pathfinder"]').count()==1
     assert page.locator('.launchQuickCard[data-arg="tools"]').count()==1
-    assert page.locator('.launchQuickCard[data-arg="builds"]').count()==1
+    assert page.locator('.launchQuickCard[data-arg="social"]').count()==1, 'Guilds & Community tile missing'
     page.screenshot(path=str(OUT/'journal_home_mobile.png'),full_page=True)
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Homepage overflows mobile viewport'
 
