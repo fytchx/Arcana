@@ -1,3 +1,4 @@
+import {pathfinderZoneOrder} from './pathfinder-zones.js';
 /* Source-backed Pathfinder material grouping.
  * Never infer a monster's biome or tier from a material's name. An unresolved
  * source stays explicitly unverified until the game catalog identifies it. */
@@ -47,11 +48,18 @@ export function sourceMaterialGroups(materials=[],sourceMaterials=[],catalog=[])
  }
  const arranged=[...groups.values()].sort((a,b)=>{
   if(a.kind!==b.kind)return ({biome:0,unknown:1,special:2}[a.kind]-{biome:0,unknown:1,special:2}[b.kind]);
+  // The 12 verified IdleArc zones follow the in-game Select Biome order.
+  if(a.kind==='biome'&&b.kind==='biome'){
+   const zoneDiff=pathfinderZoneOrder(a.name)-pathfinderZoneOrder(b.name);
+   if(Number.isFinite(zoneDiff)&&zoneDiff!==0)return zoneDiff;
+   if(Number.isFinite(pathfinderZoneOrder(a.name))!==Number.isFinite(pathfinderZoneOrder(b.name)))
+    return Number.isFinite(pathfinderZoneOrder(a.name))?-1:1;
+  }
   return a.order-b.order||a.monsterOrder-b.monsterOrder||sortText(a.name,b.name);
  });
  for(const g of arranged)g.materials.sort((a,b)=>{
   const ma=source.get(keyFrom(a))||{},mb=source.get(keyFrom(b))||{};
-  return (number(ma.monster_id)||Number.MAX_SAFE_INTEGER)-(number(mb.monster_id)||Number.MAX_SAFE_INTEGER)||sortText(a.name,b.name);
+  return sortText(a.name,b.name)||(number(ma.monster_id)||Number.MAX_SAFE_INTEGER)-(number(mb.monster_id)||Number.MAX_SAFE_INTEGER);
  });
  return arranged;
 }

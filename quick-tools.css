@@ -215,3 +215,41 @@
  .quickMaterialSection .quickGoldSummary{max-width:55%}
 }
 @media(max-width:370px){.quickSummaryLine{flex-wrap:wrap}.quickSummaryLine>span{order:3;flex-basis:100%;margin:0}.quickAverageIntro{align-items:flex-start;flex-direction:column;gap:3px}.quickAverageIntro>span{text-align:left}}
+
+/* Biome-specific farm cards, using the official IdleArc biome sprite atlas.
+ * Symbols mirror the game biome picker; colors never recolor actual artwork.
+ * Material recipe and source assignments remain data-backed, not inferred. */
+.quickZoneList{display:grid;gap:10px}
+.quickZoneGroup{--path-zone-color:var(--theme-highlight);min-width:0;overflow:hidden;border:1px solid color-mix(in srgb,var(--path-zone-color) 47%,var(--line));border-left:3px solid var(--path-zone-color);border-radius:var(--arcana-card-radius,11px);background:color-mix(in srgb,var(--path-zone-color) 8%,var(--theme-main))}
+.quickZoneHead{display:flex;align-items:center;gap:11px;min-height:59px;padding:9px 11px;list-style:none;cursor:pointer;background:linear-gradient(105deg,color-mix(in srgb,var(--path-zone-color) 18%,var(--theme-secondary)),color-mix(in srgb,var(--path-zone-color) 5%,var(--theme-main)));color:var(--text)}
+.quickZoneHead::-webkit-details-marker{display:none}
+.quickZoneHead:focus-visible{outline:2px solid var(--path-zone-color);outline-offset:-3px}
+.quickZoneArt{position:relative;display:grid;place-items:center;flex:none;isolation:isolate;overflow:hidden;width:45px;height:45px;border-radius:10px;border:1px solid color-mix(in srgb,var(--path-zone-color) 75%,white 25%);background:color-mix(in srgb,var(--path-zone-color) 45%,#151922);box-shadow:inset 0 0 9px #0005}
+.quickZoneBackdrop{position:absolute;inset:0;z-index:0;background-image:url('/assets/official-art/biomes.webp');background-repeat:no-repeat;background-size:800% 300%;background-position:var(--path-zone-x,0%) var(--path-zone-y,0%);opacity:.95}
+.quickZoneArt::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(#07101a11,#07101aaa);pointer-events:none}
+.quickZoneGlyph{display:grid;place-items:center;position:relative;z-index:2;width:32px;height:32px;color:white;filter:drop-shadow(0 1px 3px #000b)}
+.quickZoneGlyph svg{display:block;width:27px;height:27px;overflow:visible}
+.quickZoneTitle{display:grid;gap:4px;min-width:0;flex:1}
+.quickZoneTitle strong{font-size:clamp(13px,2.3vw,15px);line-height:1.15;color:color-mix(in srgb,var(--path-zone-color) 64%,white 36%);font-weight:850}
+.quickZoneTitle small{font-size:10px;line-height:1.1;color:color-mix(in srgb,var(--path-zone-color) 52%,white 48%);font-weight:750}
+.quickZoneChevron{color:var(--path-zone-color);font-size:20px;line-height:1;margin-left:auto;transition:transform .15s}
+.quickZoneGroup[open]>.quickZoneHead{border-bottom:1px solid color-mix(in srgb,var(--path-zone-color) 29%,var(--line))}
+.quickZoneGroup[open]>.quickZoneHead .quickZoneChevron{transform:rotate(180deg)}
+.quickZoneContents{padding:10px}
+.quickZoneContents .quickMaterialListSorted{margin:0;gap:7px}
+.quickZoneContents .quickMaterial{min-width:0;min-height:48px;padding:9px 10px;border:1px solid color-mix(in srgb,var(--path-zone-color) 30%,var(--line));border-radius:var(--arcana-card-radius,8px);background:color-mix(in srgb,var(--path-zone-color) 6%,var(--theme-secondary))}
+.quickZoneContents .quickMaterialWiki{color:var(--text);min-width:0;font-weight:750}
+.quickZoneContents .quickMaterial strong{font-variant-numeric:tabular-nums;white-space:nowrap}
+.quickZoneContents .quickMaterialSource{color:var(--muted);font-weight:450}
+.quickZoneUnknown{--path-zone-color:var(--muted)}
+.quickZoneUnknown .quickZoneArt{background:var(--theme-secondary)}
+@media(max-width:700px){
+ .quickZoneList{gap:8px}
+ .quickZoneHead{gap:9px;min-height:54px;padding:8px}
+ .quickZoneArt{width:41px;height:41px;border-radius:9px}
+ .quickZoneGlyph svg{width:25px;height:25px}
+ .quickZoneContents{padding:8px}
+ .quickZoneContents .quickMaterial{padding:9px;min-height:44px}
+ .quickZoneTitle strong{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){.quickZoneChevron{transition:none}}

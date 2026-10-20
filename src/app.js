@@ -869,12 +869,13 @@ function renderPathfinderCosts(current=state.pathfinderRange){
  const content=node('pathRangeContent');
  if(!content||!recipeState.data)return;
  // Persist both OPEN and CLOSED states; a rerender must not re-expand things.
- const states=new Map([...content.querySelectorAll('details[data-material-section],details[data-path-accordion]')]
-  .map(d=>[d.dataset.materialSection?'materials:'+d.dataset.materialSection:'panel:'+d.dataset.pathAccordion,d.open]));
+ const panels='details[data-material-section],details[data-path-accordion],details[data-path-zone]';
+ const panelKey=d=>d.dataset.pathZone?'zone:'+d.dataset.pathZone:d.dataset.materialSection?'materials:'+d.dataset.materialSection:'panel:'+d.dataset.pathAccordion;
+ const states=new Map([...content.querySelectorAll(panels)].map(d=>[panelKey(d),d.open]));
  const assumptionsOpen=content.querySelector('details.quickAssumptions')?.open===true;
  content.innerHTML=quickUpgradeContent(recipeState.data,current,{page:parseRoute().route!=='home',catalog:verifiedState.entries});
- for(const d of content.querySelectorAll('details[data-material-section],details[data-path-accordion]')){
-  const key=d.dataset.materialSection?'materials:'+d.dataset.materialSection:'panel:'+d.dataset.pathAccordion;
+ for(const d of content.querySelectorAll(panels)){
+  const key=panelKey(d);
   if(states.has(key))d.open=states.get(key);
  }
  const note=content.querySelector('details.quickAssumptions');if(note)note.open=assumptionsOpen;
