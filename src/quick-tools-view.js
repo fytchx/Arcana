@@ -52,27 +52,28 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  const perItemBySlug=new Map(rendered.perItem.materials.map(m=>[m.slug,m.quantity]));
  const materialRow=m=>{
   const id='game:material:'+m.slug;
-  return '<div class="quickMaterial"><button type="button" class="quickMaterialWiki" data-route="wiki/reference" data-params="id='+esc(encodeURIComponent(id))+'" title="View '+esc(m.name)+' in ArcanaWiki">'+esc(m.name)+' <span aria-hidden="true">↗</span></button>'+
+  const location=m.biome||m.sourceMonster||'';
+  return '<div class="quickMaterial"><button type="button" class="quickMaterialWiki" data-route="wiki/reference" data-params="id='+esc(encodeURIComponent(id))+'" title="View '+esc(m.name)+' in ArcanaWiki"><span>'+esc(m.name)+' <span aria-hidden="true">↗</span></span>'+(location?'<small class="quickMaterialSource">'+esc(location)+'</small>':'')+'</button>'+
   '<strong>'+money(m.quantity)+(count>1?'<small class="quickPerItem">'+money(perItemBySlug.get(m.slug)||0n)+' each</small>':'')+'</strong></div>';
  };
- const embers=rendered.materials.filter(m=>m.slug==='abyssal-ember');
- const groups=sourceMaterialGroups(rendered.materials.filter(m=>m.slug!=='abyssal-ember'),snapshot.materials||[],options.catalog||[]);
- const monsters=groups.filter(g=>g.kind==='biome'||g.kind==='unknown');
- const other=groups.filter(g=>g.kind==='special').flatMap(g=>g.materials);
+ // The default view is one alphabetized monster-material checklist; source
+ // biome/monster metadata stays attached to each entry for farming context.
+ const groups=sourceMaterialGroups(rendered.materials,snapshot.materials||[],options.catalog||[]);
+ const alphabetical=(a,b)=>a.name.localeCompare(b.name,'en',{sensitivity:'base'})||a.slug.localeCompare(b.slug);
+ const monsters=groups.filter(g=>g.kind==='biome'||g.kind==='unknown')
+  .flatMap(g=>g.materials).sort(alphabetical);
+ const other=groups.filter(g=>g.kind==='special').flatMap(g=>g.materials).sort(alphabetical);
  const displayAttempts=rendered.attempts===undefined?money(quote.steps):new Intl.NumberFormat('en-US',{maximumFractionDigits:1}).format(rendered.attempts);
- const meta='<div class="quickResultMeta" role="status" aria-live="polite"><strong>'+count+' item'+(count===1?'':'s')+'</strong><span>·</span><span>'+displayAttempts+' '+(mode==='expected'?'expected attempts':mode==='pity'?'modeled maximum attempts':'upgrade steps')+'</span><span>·</span><span>'+rendered.materials.length+' material types</span></div>';
- const byBiome=monsters.map((g,i)=>{
-  const label=g.kind==='biome'?g.name:'Other monster drops';
-  return '<details class="quickBiomeGroup" '+(i===0?'open':'')+'><summary class="quickBiomeHead">'+(g.kind==='biome'?'<span class="quickBiomeOrder" aria-hidden="true">'+String(i+1).padStart(2,'0')+'</span>':'')+
-  '<span class="quickBiomeName">'+esc(label)+'</span><small>'+g.materials.length+' materials</small><span aria-hidden="true" class="quickBiomeChevron">⌄</span></summary>'+
-  '<div class="quickMaterialList">'+g.materials.map(materialRow).join('')+'</div></details>';
- }).join('');
- const monsterSection='<section class="quickFarmFirst" aria-label="Monster materials"><div class="quickSectionTitle"><h3>Monster materials</h3><small>Biome order</small></div>'+
- (byBiome||'<p class="quickEmpty">No monster drops needed for this range.</p>')+'</section>';
- const gold='<div class="quickGoldBlock"><span>'+(mode==='expected'?'Estimated Gold':mode==='pity'?'Modeled ceiling · Gold':'Minimum Gold')+'</span><strong>'+money(rendered.gold)+'</strong>'+(count>1?'<small>'+money(rendered.perItem.gold)+' per item</small>':'')+'</div>';
- const forge='<section class="quickForgeSection" aria-label="Gold and other materials"><div class="quickSectionTitle"><h3>Gold & forge materials</h3></div>'+
- '<div class="quickResourceHighlights">'+gold+embers.map(materialRow).join('')+'</div>'+
- (other.length?'<div class="quickMaterialList">'+other.map(materialRow).join(''):'')+'</section>';
+ const meta='<div class="quickResultMeta" role="status" aria-live="polite"><strong>'+count+' item'+(count===1?'':'s')+'</strong><span>·</span><span>'+displayAttempts+' '+(mode==='expected'?'expected attempts':mode==='pity'?'pity-limited attempts':'upgrade steps')+'</span><span>·</span><span>'+rendered.materials.length+' material types</span></div>';
+ const summary=(title,sub)=>'<summary class="quickSectionSummary"><strong>'+esc(title)+'</strong><small>'+esc(sub)+'</small><span aria-hidden="true">⌄</span></summary>';
+ const monsterSection='<details class="quickMaterialSection quickFarmFirst" data-material-section="monsters">'+
+  summary('Monster materials',monsters.length+' materials · A–Z')+
+  '<div class="quickSectionBody">'+(monsters.length?'<div class="quickMaterialList quickMaterialListSorted">'+monsters.map(materialRow).join('')+'</div>':'<p class="quickEmpty">No monster drops required.</p>')+'</div></details>';
+ const gold='<div class="quickGoldBlock"><span>'+(mode==='expected'?'Estimated Gold':mode==='pity'?'Pity ceiling · Gold':'Minimum Gold')+'</span><strong>'+money(rendered.gold)+'</strong>'+(count>1?'<small>'+money(rendered.perItem.gold)+' per item</small>':'')+'</div>';
+ const forge='<details class="quickMaterialSection quickForgeSection" data-material-section="special">'+
+  summary('Gold & rare materials',other.length+' other materials')+
+  '<div class="quickSectionBody"><div class="quickResourceHighlights">'+gold+'</div>'+
+  (other.length?'<div class="quickMaterialList quickMaterialListSorted">'+other.map(materialRow).join('')+'</div>':'')+'</div></details>';
  const attempts=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:1}).format(n);
  const labels={min:'Minimum',expected:'Expected',pity:'Pity ceiling*'};
  const cards=scenarios.available?'<section class="quickScenarioPicker" aria-label="Upgrade cost scenarios"><div class="quickSectionTitle"><h3>Include failed attempts</h3><small>Choose a budget</small></div>'+
