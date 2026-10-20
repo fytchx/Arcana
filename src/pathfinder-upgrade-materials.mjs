@@ -30,14 +30,14 @@ export function applyVerifiedUpgradeCosts(cd,materialDefinitions=[]){
    const row=ensureRow(cd.awaken.rows[String(rank)],i+1,'A'+rank);
    row.monster_materials=toMats(materialPairs);
    awakenSteps++;monsterEntries+=materialPairs.length;
-   const extras=REF.x[String(i+1)];
-   if(extras){
-    const known=new Set(extras.map(([idx])=>REF.s[idx]));
-    const previous=Array.isArray(row.extra_materials)?row.extra_materials:[];
-    const preserved=previous.filter(x=>!known.has(String(x?.slug||'')));
-    row.extra_materials=[...preserved,...toList(extras)];
-    if(Array.isArray(row.materials))row.materials=row.materials.filter(x=>!known.has(String(x?.slug||'')));
-   }
+   // Sparse 2026-10-17 source: only explicitly listed enhancement levels
+   // require these rare materials. Clear stale 2026-09-29 amounts from
+   // all other levels instead of accidentally preserving old per-level costs.
+   const extras=REF.x[String(i+1)]||[];
+   const sourceControlled=new Set(Object.values(REF.x).flat().map(([idx])=>REF.s[idx]));
+   const previous=Array.isArray(row.extra_materials)?row.extra_materials:[];
+   row.extra_materials=[...previous.filter(x=>!sourceControlled.has(String(x?.slug||''))),...toList(extras)];
+   if(Array.isArray(row.materials))row.materials=row.materials.filter(x=>!sourceControlled.has(String(x?.slug||'')));
   }
  }
  for(const [fromTier,updated] of Object.entries(REF.t)){
