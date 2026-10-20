@@ -56,10 +56,10 @@ export function quoteFailureScenarios(snapshot,base){
    if(cost.free)continue;
    if(cost.failureChance===null||cost.failureChance===undefined)
     return {available:false,reason:'Failure odds are not verified for '+stage.id+' +'+level+'.'};
-   const startingPity=firstPaid?Math.max(0,Math.trunc(Number(range.pityCount)||0)):0;
+   const startingPity=firstPaid&&cost.failureChance>0?Math.max(0,Math.trunc(Number(range.pityCount)||0)):0;
    const odds=pityStepModel(cost.failureChance,startingPity);
    if(!odds)return {available:false,reason:'Unsupported failure chance at '+stage.id+' +'+level+'.'};
-   firstPaid=false;
+   if(cost.failureChance>0)firstPaid=false;
    expectedGold+=approxCeil(cost.gold,odds.expectedFailures);
    ceilingGold+=cost.gold+netFailedCost(cost.gold)*BigInt(odds.maxFailures);
    expectedSteps+=odds.expectedAttempts;ceilingSteps+=odds.maxAttempts;
