@@ -35,7 +35,7 @@ test('pity progression matches observed 63% failed Infernal upgrade',()=>{
  assert.equal(pityStepModel(.785,1).maxAttempts,3);
  assert.equal(pityStepModel(0)?.maxAttempts,1);
  assert.equal(pityStepModel(.63,1)?.maxAttempts,1);
- assert.match(PITY_MODEL.note,/not independently verified/i);
+ assert.match(PITY_MODEL.note,/carry-over behavior is verified/i);
 });
 test('failure refund matches observed 135 -> 95, and expected and modeled ceiling preserve minimum',()=>{
  const q=quoteRange(snapshot,fromTo),r=quoteFailureScenarios(snapshot,q);
@@ -61,7 +61,7 @@ test('quantity multiplies each scenario independently without removing biome and
  for(const str of ['data-path-cost-mode="min"','data-path-cost-mode="expected"','data-path-cost-mode="pity"',
  'data-path-pity-count','Already failed this upgrade','Pity 0 / 2','Grub', 'Abyssal Ember',
  'Minimum','Expected','Pity maximum','10 items'])assert.ok(h.includes(str),str);
- assert.ok(h.indexOf('Monster materials')<h.indexOf('Gold & rare materials'));
+ assert.ok(h.indexOf('Monster materials')<h.indexOf('Gold &amp; rare materials'));
  assert.match(h,/data-material-section="monsters"/);assert.match(h,/data-material-section="special"/);
  assert.doesNotMatch(h,/<details[^>]*data-material-section="(?:monsters|special)"[^>]*open/);
  assert.match(h,/1,950/); // Estimated fragments = 195 * 10.
