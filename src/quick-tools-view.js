@@ -83,5 +83,5 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  '<p class="quickScenarioNote">Expected and ceiling costs include failed attempts with a 30% refund. *Pity ceiling assumes success is guaranteed after the modeled pity counter reaches 100%, and resets per successful upgrade. This is <strong>not yet a verified game maximum.</strong> Starting pity is applied to the first paid step of each selected item. Estimates are rounded up for planning.</p></section>':
  '<p class="quickScenarioNote">Failure/pity scenarios unavailable: '+esc(scenarios.reason||'Verified failure odds missing')+'. Minimum recipe costs remain available.</p>';
  return fields+quantity+cards+meta+monsterSection+forge+
- '<p class="quickSource">'+(mode==='min'?'Minimum: one successful attempt per upgrade, excluding failures.':mode==='expected'?'Estimated spend using the stated pity planning assumptions.':'Pity-model ceiling, not a guaranteed game maximum.')+' All selected items use the same upgrade range.</p>';
+ '<p class="quickSource">Recipe material and Gold totals. '+(mode==='min'?'Minimum: one successful attempt per upgrade, excluding failures.':mode==='expected'?'Estimated spend using the stated pity planning assumptions.':'Pity-model ceiling, not a guaranteed game maximum.')+' All selected items use the same upgrade range.</p>';
 }
