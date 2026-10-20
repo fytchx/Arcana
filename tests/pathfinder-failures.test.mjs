@@ -74,7 +74,7 @@ test('quantity multiplies each scenario independently without removing biome and
  assert.ok(h.indexOf('Monster materials')<h.indexOf('Gold &amp; rare materials'));
  assert.match(h,/data-material-section="monsters"/);assert.match(h,/data-material-section="special"/);
  assert.match(h,/Chance &amp; pity for every upgrade/);assert.match(h,/63% failure/);assert.match(h,/Pity 2 attempts/);
- assert.match(h,/<details class="quickOddsByStep">/);
+ assert.match(h,/<details class="quickOddsByStep" data-path-accordion="odds">/);
  assert.match(h,/<details[^>]*data-material-section="monsters"[^>]*open/);
  assert.doesNotMatch(h,/<details[^>]*data-material-section="special"[^>]*open/);
  assert.match(h,/10 items/);
