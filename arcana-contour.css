@@ -1004,3 +1004,28 @@ html[data-arcana-design-pattern="mana"]{--arcana-texture:repeating-radial-gradie
 html[data-arcana-design-pattern="rune-dust"]{--arcana-texture:radial-gradient(circle at 17% 25%,var(--arcana-texture-ink) calc(1px * var(--arcana-pattern-scale,1)),transparent calc(2px * var(--arcana-pattern-scale,1))),radial-gradient(circle at 75% 56%,var(--arcana-texture-secondary) calc(2px * var(--arcana-pattern-scale,1)),transparent calc(3px * var(--arcana-pattern-scale,1))),repeating-linear-gradient(117deg,transparent 0 calc(27px * var(--arcana-pattern-scale,1)),var(--arcana-texture-ink) calc(28px * var(--arcana-pattern-scale,1)),transparent calc(29px * var(--arcana-pattern-scale,1)),transparent calc(61px * var(--arcana-pattern-scale,1)))}
 .miniCanvas[data-mini-pattern="rune-dust"]{--mini-pattern:radial-gradient(circle at 17% 25%,var(--mini-accent) calc(1px * var(--mini-signature-scale,1)),transparent calc(2px * var(--mini-signature-scale,1))),radial-gradient(circle at 75% 56%,var(--mini-secondary) calc(2px * var(--mini-signature-scale,1)),transparent calc(3px * var(--mini-signature-scale,1))),repeating-linear-gradient(117deg,transparent 0 calc(27px * var(--mini-signature-scale,1)),var(--mini-accent) calc(28px * var(--mini-signature-scale,1)),transparent calc(29px * var(--mini-signature-scale,1)),transparent calc(61px * var(--mini-signature-scale,1)))}
 .themePatternThumb[data-preview-pattern="rune-dust"]{--thumb-pattern:radial-gradient(circle at 17% 25%,var(--thumb-ink) 1px,transparent 2px),radial-gradient(circle at 75% 56%,var(--thumb-alt) 2px,transparent 3px),repeating-linear-gradient(117deg,transparent 0 27px,var(--thumb-ink) 28px,transparent 29px,transparent 61px)}
+
+/* Pathfinder compact hub: breadcrumb, identity and modes belong to one section. */
+.pathfinderHubTop{display:grid;gap:5px;padding:11px 13px 12px;margin:0 0 10px;background:linear-gradient(125deg,color-mix(in srgb,var(--theme-highlight) 9%,var(--theme-secondary)),var(--theme-main));border:1px solid color-mix(in srgb,var(--theme-highlight) 27%,var(--line));border-radius:var(--arcana-card-radius,14px);min-width:0}
+.pathfinderHubTop .arcanaCrumbs{min-height:20px;gap:6px;font-size:11px;margin:0;color:var(--muted)}
+.pathfinderHubTop .arcanaCrumbs button{min-height:23px;padding:1px 2px;font-size:11px}
+.pathfinderHubTop .pathfinderHubHead{display:flex;align-items:center;gap:10px;padding:0;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+.pathfinderHubTop .pathfinderHubHead .pathfinderHubIcon{width:39px;height:39px;border-radius:10px}
+.pathfinderHubTop .pathfinderHubHead h1{font-size:clamp(20px,3vw,25px);margin:0;line-height:1.05}
+.pathfinderHubTop .pathfinderHubHead p{font-size:11px;line-height:1.2;margin:3px 0 0}
+.pathfinderHubTop .pathfinderHubTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;min-width:0;padding:4px;margin:6px 0 0;border-radius:10px;background:color-mix(in srgb,var(--theme-main) 53%,var(--theme-secondary))}
+.pathfinderHubTop .pathfinderHubTabs button{display:flex;flex-direction:row;gap:7px;min-width:0;min-height:43px;padding:7px 6px;font-size:12px}
+.pathfinderHubTop .pathfinderHubTabs button svg{width:18px;height:18px;flex:none}
+@media(max-width:700px){
+ .pathfinderHubTop{padding:9px 10px;margin:0 0 7px;gap:4px}
+ .pathfinderHubTop .pathfinderHubHead .pathfinderHubIcon{width:34px;height:34px}
+ .pathfinderHubTop .pathfinderHubHead h1{font-size:21px}
+ .pathfinderHubTop .pathfinderHubHead p{font-size:11px!important;line-height:1.2!important}
+ .pathfinderHubTop .pathfinderHubTabs{grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;margin:4px 0 0}
+ .pathfinderHubTop .pathfinderHubTabs button{min-height:50px;flex-direction:column;gap:3px;padding:5px 2px;font-size:10px;line-height:1.1;text-align:center}
+ .pathfinderHubTop .pathfinderHubTabs button svg{width:17px;height:17px}
+}
+@media(max-width:355px){
+ .pathfinderHubTop .pathfinderHubTabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .pathfinderHubTop .pathfinderHubTabs button{flex-direction:row;min-height:35px;font-size:11px}
+}
