@@ -39,16 +39,18 @@ for(let rank=1;rank<=30;rank++){
   if(!row){mismatches.push({where:'A'+rank+'+'+level,error:'missing row'});continue;}
   const expected=rules.a[rank][level];
   check('A'+rank+'+'+level,sortObj(row.monster_materials),sortObj(expected));checked+=Object.keys(expected).length;
-  const sourceExtras=sortList(rules.e[level]||[]);
-  const extras=sortList([...(row.extra_materials||[]),...(row.materials||[])].filter(x=>['abyssal-ember','eternal-sigil'].includes(x.slug)));
-  check('A'+rank+'+'+level+' extras',extras,sourceExtras);
+  if(Object.hasOwn(rules.e,String(level))){
+   const sourceExtras=sortList(rules.e[level]);
+   const extras=sortList([...(row.extra_materials||[]),...(row.materials||[])].filter(x=>['abyssal-ember','eternal-sigil'].includes(x.slug)));
+   check('A'+rank+'+'+level+' explicit extras',extras,sourceExtras);
+  }
  }
  const row=response.codex.awaken.transitions?.find(x=>Number(x.rank)===rank);
  const threshold=Object.keys(rules.x).map(Number).filter(n=>n<=rank).sort((a,b)=>b-a)[0];
  check('A'+rank+' transition',sortList([...(row?.materials||[]),...(row?.extra_materials||[])]),sortList(rules.x[threshold]));
 }
 const newest=String(response.sourceVersion||'').includes('2026-10-17-001');
-console.log('LIVE_PATHFINDER_AUDIT',JSON.stringify({source:response.sourceVersion,latestMaterialVersion:newest,monsterEntries:checked,expected:5222,materialsDefined:response.materials?.length,mismatches:mismatches.length,samples:mismatches.slice(0,16)}));
+console.log('LIVE_PATHFINDER_AUDIT',JSON.stringify({source:response.sourceVersion,latestMaterialVersion:newest,monsterEntries:checked,expected:5222,extraMaterialKeys:'Only 1/3/5/10 explicitly verifiable; other levels require in-game validation',materialsDefined:response.materials?.length,mismatches:mismatches.length,samples:mismatches.slice(0,16)}));
 assert.equal(newest,true,'Live API does not acknowledge Oct17');
 assert.equal(checked,5222,'Source row coverage changed');
 assert.equal(mismatches.length,0,'Live API differs from the spreadsheet');
