@@ -1,6 +1,7 @@
 /* Fast upgrade reference. Reuses Pathfinder's source-backed range engine.
  * No slot-specific prices or failure probabilities are invented. */
-import {allStages,quoteRange,normalizeRange} from './pathfinder-range.js';
+import {allStages,quoteRange,normalizeRange,normalizeCostMode} from './pathfinder-range.js';
+import {quoteFailureScenarios} from './pathfinder-failures.js';
 import {money} from './pathfinder-timeline.js';
 import {sourceMaterialGroups} from './pathfinder-material-groups.js';
 const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
@@ -28,6 +29,11 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  const range=initialQuickRange(snapshot,raw),stages=allStages(snapshot);
  if(!stages.length)return '<p class="quickError">Upgrade recipes are not available.</p>';
  const quote=quoteRange(snapshot,range,{stage:range.fromStage});
+ const scenarios=quoteFailureScenarios(snapshot,quote);
+ const mode=scenarios.available?normalizeCostMode(range.costMode):'min';
+ const selected=scenarios.available?scenarios[mode]:null;
+ const perSelected=scenarios.available?scenarios.perItem[mode]:quote.perItem;
+ const rendered=selected?{...quote,gold:selected.gold,materials:selected.materials,perItem:perSelected,attempts:selected.attempts}:quote;
  const from=stages.find(s=>s.id===range.fromStage),to=stages.find(s=>s.id===range.toStage);
  const stageOptions=selected=>stages.map(s=>opt(s.id,s.id+(s.name&&s.id.startsWith('T')?' · '+s.name:''),selected)).join('');
  const levelOptions=(stage,value)=>Array.from({length:Math.max(0,stage?.max||0)+1},(_,n)=>opt(String(n),'+'+n,String(value))).join('');
@@ -41,17 +47,18 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  '<input type="number" id="pathItemQuantity" data-path-quantity aria-label="Number of items" min="1" max="100" inputmode="numeric" step="1" value="'+count+'">'+
  '<button type="button" data-path-quantity-step="1" aria-label="Add one item"'+(count===100?' disabled':'')+'>+</button></div></div>';
  if(quote.error)return fields+quantity+'<div class="quickError" role="status">'+esc(quote.error)+(quote.missing?.length?' Missing: '+esc(quote.missing.slice(0,3).join(', ')):'')+'</div>';
- const perItemBySlug=new Map(quote.perItem.materials.map(m=>[m.slug,m.quantity]));
+ const perItemBySlug=new Map(rendered.perItem.materials.map(m=>[m.slug,m.quantity]));
  const materialRow=m=>{
   const id='game:material:'+m.slug;
   return '<div class="quickMaterial"><button type="button" class="quickMaterialWiki" data-route="wiki/reference" data-params="id='+esc(encodeURIComponent(id))+'" title="View '+esc(m.name)+' in ArcanaWiki">'+esc(m.name)+' <span aria-hidden="true">↗</span></button>'+
   '<strong>'+money(m.quantity)+(count>1?'<small class="quickPerItem">'+money(perItemBySlug.get(m.slug)||0n)+' each</small>':'')+'</strong></div>';
  };
- const embers=quote.materials.filter(m=>m.slug==='abyssal-ember');
- const groups=sourceMaterialGroups(quote.materials.filter(m=>m.slug!=='abyssal-ember'),snapshot.materials||[],options.catalog||[]);
+ const embers=rendered.materials.filter(m=>m.slug==='abyssal-ember');
+ const groups=sourceMaterialGroups(rendered.materials.filter(m=>m.slug!=='abyssal-ember'),snapshot.materials||[],options.catalog||[]);
  const monsters=groups.filter(g=>g.kind==='biome'||g.kind==='unknown');
  const other=groups.filter(g=>g.kind==='special').flatMap(g=>g.materials);
- const meta='<div class="quickResultMeta" role="status" aria-live="polite"><strong>'+count+' item'+(count===1?'':'s')+'</strong><span>·</span><span>'+money(quote.steps)+' upgrade steps</span><span>·</span><span>'+quote.materials.length+' material types</span></div>';
+ const displayAttempts=rendered.attempts===undefined?money(quote.steps):new Intl.NumberFormat('en-US',{maximumFractionDigits:1}).format(rendered.attempts);
+ const meta='<div class="quickResultMeta" role="status" aria-live="polite"><strong>'+count+' item'+(count===1?'':'s')+'</strong><span>·</span><span>'+displayAttempts+' '+(mode==='expected'?'expected attempts':mode==='pity'?'modeled maximum attempts':'upgrade steps')+'</span><span>·</span><span>'+rendered.materials.length+' material types</span></div>';
  const byBiome=monsters.map((g,i)=>{
   const label=g.kind==='biome'?g.name:'Other monster drops';
   return '<details class="quickBiomeGroup" '+(i===0?'open':'')+'><summary class="quickBiomeHead">'+(g.kind==='biome'?'<span class="quickBiomeOrder" aria-hidden="true">'+String(i+1).padStart(2,'0')+'</span>':'')+
@@ -60,10 +67,21 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  }).join('');
  const monsterSection='<section class="quickFarmFirst" aria-label="Monster materials"><div class="quickSectionTitle"><h3>Monster materials</h3><small>Biome order</small></div>'+
  (byBiome||'<p class="quickEmpty">No monster drops needed for this range.</p>')+'</section>';
- const gold='<div class="quickGoldBlock"><span>Gold</span><strong>'+money(quote.gold)+'</strong>'+(count>1?'<small>'+money(quote.perItem.gold)+' per item</small>':'')+'</div>';
+ const gold='<div class="quickGoldBlock"><span>'+(mode==='expected'?'Estimated Gold':mode==='pity'?'Modeled ceiling · Gold':'Minimum Gold')+'</span><strong>'+money(rendered.gold)+'</strong>'+(count>1?'<small>'+money(rendered.perItem.gold)+' per item</small>':'')+'</div>';
  const forge='<section class="quickForgeSection" aria-label="Gold and other materials"><div class="quickSectionTitle"><h3>Gold & forge materials</h3></div>'+
  '<div class="quickResourceHighlights">'+gold+embers.map(materialRow).join('')+'</div>'+
  (other.length?'<div class="quickMaterialList">'+other.map(materialRow).join(''):'')+'</section>';
- return fields+quantity+meta+monsterSection+forge+
- '<p class="quickSource">Recipe material and Gold totals. Base costs exclude failed attempts. All selected items use the same upgrade range.</p>';
+ const attempts=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:1}).format(n);
+ const labels={min:'Minimum',expected:'Expected',pity:'Pity ceiling*'};
+ const cards=scenarios.available?'<section class="quickScenarioPicker" aria-label="Upgrade cost scenarios"><div class="quickSectionTitle"><h3>Include failed attempts</h3><small>Choose a budget</small></div>'+
+ '<div class="quickScenarioGrid">'+['min','expected','pity'].map(key=>{
+  const stat=scenarios[key],active=mode===key;
+  return '<button type="button" class="quickScenarioCard'+(active?' active':'')+'" data-path-cost-mode="'+key+'" aria-pressed="'+active+'"><span>'+labels[key]+'</span>'+
+   '<strong>'+money(stat.gold)+' <small>Gold</small></strong><small>'+attempts(stat.attempts)+' attempts'+(key==='expected'?' · estimate':key==='pity'?' · model':'')+'</small></button>';
+ }).join('')+'</div>'+
+ '<label class="quickPityInput">Starting pity for first upgrade <span><input type="number" data-path-pity-progress min="0" max="100" step="0.01" inputmode="decimal" value="'+(range.pityProgress??0)+'" aria-label="Starting pity percentage">%</span></label>'+
+ '<p class="quickScenarioNote">Expected and ceiling costs include failed attempts with a 30% refund. *Pity ceiling assumes success is guaranteed after the modeled pity counter reaches 100%, and resets per successful upgrade. This is <strong>not yet a verified game maximum.</strong> Starting pity is applied to the first paid step of each selected item. Estimates are rounded up for planning.</p></section>':
+ '<p class="quickScenarioNote">Failure/pity scenarios unavailable: '+esc(scenarios.reason||'Verified failure odds missing')+'. Minimum recipe costs remain available.</p>';
+ return fields+quantity+cards+meta+monsterSection+forge+
+ '<p class="quickSource">'+(mode==='min'?'Minimum: one successful attempt per upgrade, excluding failures.':mode==='expected'?'Estimated spend using the stated pity planning assumptions.':'Pity-model ceiling, not a guaranteed game maximum.')+' All selected items use the same upgrade range.</p>';
 }
