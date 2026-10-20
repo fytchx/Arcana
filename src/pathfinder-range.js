@@ -4,6 +4,8 @@ import {timelineStages,timelineModel} from './pathfinder-timeline.js';
 export const RANGE_KEY='arcana-pathfinder-checkpoints-v1';
 const clamp=(v,max)=>Math.max(0,Math.min(max,Number.isFinite(Number(v))?Math.trunc(Number(v)):0));
 export const normalizeItemQuantity=value=>Math.max(1,Math.min(100,Number.isFinite(Number(value))?Math.trunc(Number(value)):1));
+export const normalizeCostMode=value=>['min','expected','pity'].includes(value)?value:'min';
+export const normalizePityProgress=value=>Math.max(0,Math.min(100,Number.isFinite(Number(value))?Number(value):0));
 export const allStages=snapshot=>[...timelineStages(snapshot,'normal'),...timelineStages(snapshot,'awakened')];
 export function normalizeRange(raw={},snapshot=null,quick={}){
  const input=raw&&typeof raw==='object'?raw:{};
@@ -14,7 +16,9 @@ export function normalizeRange(raw={},snapshot=null,quick={}){
  return {
   fromStage:from?.id||'',fromLevel:clamp(input.fromLevel,from?.max||0),
   toStage:to?.id||'',toLevel:clamp(input.toLevel??to?.max??0,to?.max||0),
-  ...(input.quantity===undefined?{}:{quantity:normalizeItemQuantity(input.quantity)})
+  ...(input.quantity===undefined?{}:{quantity:normalizeItemQuantity(input.quantity)}),
+  ...(input.costMode===undefined?{}:{costMode:normalizeCostMode(input.costMode)}),
+  ...(input.pityProgress===undefined?{}:{pityProgress:normalizePityProgress(input.pityProgress)})
  };
 }
 export function readRange(store=globalThis.localStorage){
@@ -24,7 +28,9 @@ export function readRange(store=globalThis.localStorage){
 export function saveRange(raw,store=globalThis.localStorage){
  const value={fromStage:String(raw.fromStage||''),fromLevel:Number(raw.fromLevel)||0,
   toStage:String(raw.toStage||''),toLevel:Number(raw.toLevel)||0,
-  ...(raw.quantity===undefined?{}:{quantity:normalizeItemQuantity(raw.quantity)})};
+  ...(raw.quantity===undefined?{}:{quantity:normalizeItemQuantity(raw.quantity)}),
+  ...(raw.costMode===undefined?{}:{costMode:normalizeCostMode(raw.costMode)}),
+  ...(raw.pityProgress===undefined?{}:{pityProgress:normalizePityProgress(raw.pityProgress)})};
  try{store?.setItem(RANGE_KEY,JSON.stringify(value))}catch{}
  return value;
 }

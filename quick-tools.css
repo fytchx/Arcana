@@ -81,3 +81,22 @@
 .quickCostsExtra{flex-wrap:wrap;gap:12px}.quickCostsExtra button{color:var(--theme-highlight)}
 @media(max-width:700px){.quickBiomeGroup .quickMaterialList{grid-template-columns:1fr}.quickMaterialWiki{font-size:12px}.quickQuantity{padding:10px}}
 @media(prefers-reduced-motion:reduce){.quickBiomeChevron{transition:none}}
+
+/* Pathfinder failure scenarios: compact, theme-aware, mobile-friendly. */
+.quickScenarioPicker{display:grid;gap:10px;min-width:0;padding:12px;border:1px solid color-mix(in srgb,var(--theme-highlight) 26%,var(--line));border-radius:var(--arcana-card-radius,var(--radius));background:color-mix(in srgb,var(--theme-main) 38%,var(--theme-secondary))}
+.quickScenarioGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.quickScenarioCard{min-width:0;display:grid;gap:5px;padding:12px 10px;text-align:left;color:var(--text);background:var(--theme-secondary);border:1px solid var(--line);border-radius:var(--arcana-button-radius,9px);cursor:pointer;transition:border-color .15s,background .15s}
+.quickScenarioCard:hover,.quickScenarioCard:focus-visible{border-color:var(--theme-highlight);outline-offset:2px}
+.quickScenarioCard.active{border-color:var(--theme-highlight);background:color-mix(in srgb,var(--theme-highlight) 13%,var(--theme-secondary));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-highlight) 35%,transparent)}
+.quickScenarioCard>span{font-weight:850;font-size:12px}
+.quickScenarioCard strong{font-size:clamp(12px,1.9vw,19px);font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.2}
+.quickScenarioCard strong small{font-size:10px;color:var(--muted);font-weight:500}
+.quickScenarioCard>small{font-size:10px;color:var(--muted);line-height:1.4}
+.quickPityInput{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;font-size:11px;color:var(--text);font-weight:750}
+.quickPityInput span{display:flex;align-items:center;gap:4px;color:var(--muted)}
+.quickPityInput input{width:76px;min-height:35px;border:1px solid var(--line);border-radius:var(--arcana-button-radius,8px);background:var(--theme-main);color:var(--text);padding:5px 8px;font:inherit;text-align:right;font-variant-numeric:tabular-nums}
+.quickScenarioNote{margin:0;font-size:10px;line-height:1.5;color:var(--muted)}
+.quickScenarioNote strong{color:var(--text)}
+@media(max-width:650px){.quickScenarioPicker{padding:9px}.quickScenarioGrid{gap:5px}.quickScenarioCard{padding:9px 7px;gap:4px}.quickScenarioCard>span{font-size:11px}.quickScenarioCard strong{font-size:clamp(11px,3.5vw,15px)}.quickScenarioCard strong small{display:block}.quickScenarioCard>small{font-size:9px}}
+@media(max-width:360px){.quickScenarioGrid{grid-template-columns:1fr}.quickScenarioCard{display:flex;align-items:center;justify-content:space-between;gap:8px}}
+@media(prefers-reduced-motion:reduce){.quickScenarioCard{transition:none}}

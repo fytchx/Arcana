@@ -80,8 +80,9 @@ export function stepCost(snapshot,stage,level){
  else for(const [slug,qty] of Object.entries(extras))add(slug,qty);
  const names=materialNames(snapshot);
  const materials=[...raw].map(([slug,quantity])=>({slug,quantity,name:names.get(slug)||slug.replaceAll('-',' ')})).sort((a,b)=>a.name.localeCompare(b.name));
+ const hasOdds=row.fail!==undefined||row.failure!==undefined||row.success!==undefined||row.free===true;
  const fail=Number(row.fail??row.failure??(row.success===undefined?0:1-Number(row.success)));
- const failureChance=Number.isFinite(fail)?Math.min(1,Math.max(0,fail)):null;
+ const failureChance=hasOdds&&Number.isFinite(fail)?Math.min(1,Math.max(0,fail)):null;
  return {stage:stage.id,level,label:level===0?'Tier / rank transition':'Enhancement +'+level,gold:safeAmount(row.gold),materials,failureChance,free:row.free===true};
 }
 export function chapterTotal(snapshot,stage){
