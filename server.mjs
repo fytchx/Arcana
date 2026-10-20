@@ -6,6 +6,7 @@ import { resolve, sep, extname } from 'node:path';
 import { createHash } from 'node:crypto';
 import { handleWikiRequest } from './src/wiki-server.mjs';
 import {handleJournalRequest} from './src/journal-server.mjs';
+import {seoPageByPath,renderSeoPage} from './src/seo-pages.mjs';
 import {handleTrafficRequest} from './src/traffic-server.mjs';
 import { safeAccountRequest } from './src/account-server.mjs';
 import {safeSiteAdminRequest} from './src/site-admin-server.mjs';
@@ -146,6 +147,14 @@ const server=http.createServer(async(req,res)=>{
   if(await handleWikiRequest(req,res,pathname))return;
   if(await handleTrafficRequest(req,res,parsedUrl))return;
   if(await safeSiteAdminRequest(req,res,parsedUrl))return;
+  if((req.method==='GET'||req.method==='HEAD')&&seoPageByPath(pathname)){
+   const page=renderSeoPage(seoPageByPath(pathname));
+   send(res,200,req.method==='HEAD'?null:page,{'content-type':'text/html; charset=utf-8','cache-control':'no-store'});
+   return;
+  }
+  if((req.method==='GET'||req.method==='HEAD')&&pathname.length>1&&pathname.endsWith('/')&&seoPageByPath(pathname.slice(0,-1))){
+   res.writeHead(308,{'location':pathname.slice(0,-1),'cache-control':'no-store'});res.end();return;
+  }
   if(await handleJournalRequest(req,res,parsedUrl))return;
   if(req.method!=='GET'&&req.method!=='HEAD'){send(res,405,'Method not allowed');return;}
   if(pathname==='/health'||pathname==='/__health') {const art=await localArtAudit;const ok=!REQUIRE_LOCAL_ART||art.ready;json(res,ok?200:503,{ok,release:REVISION,source:'tracked frontend files',artwork:{local:art.ready,groups:art.groups,version:art.version||null},dependencyEndpoints:Object.keys(BASES)});return;}
