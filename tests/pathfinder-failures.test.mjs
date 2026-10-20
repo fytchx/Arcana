@@ -63,6 +63,8 @@ test('quantity multiplies each scenario independently without removing biome and
  'Minimum','Expected','Pity maximum','10 items'])assert.ok(h.includes(str),str);
  assert.ok(h.indexOf('Monster materials')<h.indexOf('Gold &amp; rare materials'));
  assert.match(h,/data-material-section="monsters"/);assert.match(h,/data-material-section="special"/);
+ assert.match(h,/Chance & pity for every upgrade/);assert.match(h,/63% failure/);assert.match(h,/Pity 2 attempts/);
+ assert.match(h,/<details class="quickOddsByStep">/);
  assert.doesNotMatch(h,/<details[^>]*data-material-section="(?:monsters|special)"[^>]*open/);
  assert.match(h,/1,950/); // Estimated fragments = 195 * 10.
  const maxH=quickUpgradeContent(snapshot,{...fromTo,quantity:10,costMode:'pity'});
