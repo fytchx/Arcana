@@ -12,6 +12,7 @@ import { safeAccountBuildRequest } from './src/account-builds.mjs';
 import {safeFarmingListRequest} from './src/farming-lists-server.mjs';
 import { safeCommunityRequest } from './src/community-server.mjs';
 import { safeGuildHubRequest } from './src/guild-hub-server.mjs';
+import {oct17MaterialRules,applyOct17MaterialRules} from './src/pathfinder-oct17-materials.mjs';
 import { safeGeneralChatRequest } from './src/general-chat-server.mjs';
 import { betaFeedbackRequest } from './src/beta-feedback-server.mjs';
 import { fileURLToPath } from 'node:url';
@@ -115,6 +116,7 @@ async function sourceBackedRecipes(){
   sourceMonster:typeof (m.sourceMonster??m.monster_name)==='string'?(m.sourceMonster??m.monster_name):'',
   tier:typeof (m.tier??m.biome_tier)==='string'||typeof (m.tier??m.biome_tier)==='number'?String(m.tier??m.biome_tier):''}))};
  // Pathfinder costs are independent of the remote monster catalog.
+ previewRecipe=applyOct17MaterialRules(previewRecipe,await oct17MaterialRules());
  previewRecipeTime=Date.now();return previewRecipe;
 }
 
@@ -151,7 +153,7 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/api/pathfinder/recipes'){
    try{
     const recipe=await sourceBackedRecipes();
-    const headers={'cache-control':'public,max-age=900','vary':'Accept-Encoding'};
+    const headers={'cache-control':'public,max-age=900','vary':'Accept-Encoding','x-arcana-material-source':recipe.materialSourceVersion||'unknown'};
     if(String(req.headers['accept-encoding']||'').includes('gzip')){
      if(recipeZipRef!==recipe){recipeZip=gzipSync(Buffer.from(JSON.stringify(recipe)));recipeZipRef=recipe;}
      send(res,200,req.method==='HEAD'?null:recipeZip,{'content-type':'application/json; charset=utf-8','content-encoding':'gzip',...headers});
