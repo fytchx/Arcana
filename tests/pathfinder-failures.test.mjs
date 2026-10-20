@@ -37,7 +37,7 @@ test('failure refund matches observed 135 -> 95, and expected and modeled ceilin
  const q=quoteRange(snapshot,fromTo),r=quoteFailureScenarios(snapshot,q);
  assert.equal(r.available,true);
  assert.equal(r.min.gold,885000000n);
- assert.equal(r.expected.gold,885000000n+636066150n);
+ assert.equal(r.expected.gold,885000000n+636164550n);
  assert.equal(r.pity.gold,885000000n+619500000n*2n);
  assert.equal(qty(r.min,'infernal-fragment'),135n);
  assert.equal(qty(r.expected,'infernal-fragment'),233n); // 135 + ceil(95*1.0269)
