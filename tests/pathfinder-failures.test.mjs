@@ -27,23 +27,27 @@ test('pity progression matches observed 63% failed Infernal upgrade',()=>{
  const s=pityStepModel(.63);
  assert.ok(s);
  assert.ok(Math.abs(s.pityDelta-.555)<1e-12);
- assert.equal(s.maxAttempts,3);
- assert.ok(Math.abs(s.expectedAttempts-2.0269)<1e-10);
+ assert.equal(s.maxAttempts,2);
+ assert.equal(s.pityCap,2);
+ assert.ok(Math.abs(s.expectedAttempts-1.63)<1e-10);
+ assert.equal(pityStepModel(.785).pityCap,4);
+ assert.equal(pityStepModel(.785).maxAttempts,4);
+ assert.equal(pityStepModel(.785,1).maxAttempts,3);
  assert.equal(pityStepModel(0)?.maxAttempts,1);
  assert.equal(pityStepModel(.63,1)?.maxAttempts,1);
- assert.match(PITY_MODEL.note,/not independently verified/i);
+ assert.match(PITY_MODEL.note,/carry-over behavior is verified/i);
 });
 test('failure refund matches observed 135 -> 95, and expected and modeled ceiling preserve minimum',()=>{
  const q=quoteRange(snapshot,fromTo),r=quoteFailureScenarios(snapshot,q);
  assert.equal(r.available,true);
  assert.equal(r.min.gold,885000000n);
- assert.equal(r.expected.gold,885000000n+636164550n);
- assert.equal(r.pity.gold,885000000n+619500000n*2n);
+ assert.equal(r.expected.gold,885000000n+390285000n);
+ assert.equal(r.pity.gold,885000000n+619500000n);
  assert.equal(qty(r.min,'infernal-fragment'),135n);
- assert.equal(qty(r.expected,'infernal-fragment'),233n); // 135 + ceil(95*1.0269)
- assert.equal(qty(r.pity,'infernal-fragment'),325n);
- assert.equal(qty(r.pity,'grubs-eye'),24n); // 10 + 2 * round(7)
- assert.equal(r.pity.attempts,3);
+ assert.equal(qty(r.expected,'infernal-fragment'),195n); // 135 + ceil(95*.63)
+ assert.equal(qty(r.pity,'infernal-fragment'),230n);
+ assert.equal(qty(r.pity,'grubs-eye'),17n); // 10 + round(7)
+ assert.equal(r.pity.attempts,2);
 });
 test('quantity multiplies each scenario independently without removing biome and forge costs',()=>{
  const one=quoteFailureScenarios(snapshot,quoteRange(snapshot,fromTo));
@@ -55,20 +59,22 @@ test('quantity multiplies each scenario independently without removing biome and
  }
  const h=quickUpgradeContent(snapshot,{...fromTo,quantity:10,costMode:'expected'});
  for(const str of ['data-path-cost-mode="min"','data-path-cost-mode="expected"','data-path-cost-mode="pity"',
- 'data-path-pity-progress','Starting pity','not yet a verified game maximum','Grub', 'Abyssal Ember',
- 'Minimum','Expected','Pity ceiling','10 items'])assert.ok(h.includes(str),str);
- assert.ok(h.indexOf('Monster materials')<h.indexOf('Gold & forge materials'));
- assert.match(h,/2,330/); // Estimated fragments = 233 * 10.
+ 'data-path-pity-count','Already failed this upgrade','Pity 0 / 2','Grub', 'Abyssal Ember',
+ 'Minimum','Expected','Pity maximum','10 items'])assert.ok(h.includes(str),str);
+ assert.ok(h.indexOf('Monster materials')<h.indexOf('Gold &amp; rare materials'));
+ assert.match(h,/data-material-section="monsters"/);assert.match(h,/data-material-section="special"/);
+ assert.doesNotMatch(h,/<details[^>]*data-material-section="(?:monsters|special)"[^>]*open/);
+ assert.match(h,/1,950/); // Estimated fragments = 195 * 10.
  const maxH=quickUpgradeContent(snapshot,{...fromTo,quantity:10,costMode:'pity'});
- assert.match(maxH,/3,250/);
+ assert.match(maxH,/2,300/);
 });
 test('starting pity reduces modeled risk only for the first step and is preserved with quantity',()=>{
  const zero=quoteFailureScenarios(snapshot,quoteRange(snapshot,fromTo));
- const high=quoteFailureScenarios(snapshot,quoteRange(snapshot,{...fromTo,pityProgress:80}));
- assert.equal(high.pity.attempts,2);
+ const high=quoteFailureScenarios(snapshot,quoteRange(snapshot,{...fromTo,pityCount:1}));
+ assert.equal(high.pity.attempts,1);
  assert.ok(high.expected.gold<zero.expected.gold);
  const storeData=new Map(),storage={getItem:k=>storeData.get(k),setItem:(k,v)=>storeData.set(k,v)};
- const input={...fromTo,quantity:12,costMode:'pity',pityProgress:80};
+ const input={...fromTo,quantity:12,costMode:'pity',pityCount:1};
  assert.deepEqual(readRange((saveRange(input,storage),storage)),input);
  const old={...fromTo,quantity:12};
  assert.deepEqual(saveRange(old,storage),old);
@@ -85,7 +91,7 @@ test('no failure probabilities means no false pity guarantee and base costs rema
 test('native site wire-up preserves quantity handlers, starting pity, scenario and checklist',async()=>{
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
  const css=await readFile(new URL('../quick-tools.css',import.meta.url),'utf8');
- for(const needle of ['data-path-cost-mode','data-path-quantity-step','d.pathPityProgress','quoteFailureScenarios','selected.materials','selected.gold'])
+ for(const needle of ['data-path-cost-mode','data-path-quantity-step','d.pathPityCount','quoteFailureScenarios','selected.materials','selected.gold'])
   assert.ok(app.includes(needle),needle);
  for(const needle of ['.quickScenarioCard','var(--theme-main)','var(--theme-highlight)','@media(max-width:650px)'])
   assert.ok(css.includes(needle),needle);

@@ -46,7 +46,7 @@ import {readFarmPlan,saveFarmPlan,farmCompareView} from './farm-compare.js';
 import {timelineStages,timelineModel,stageStepLabel,readQuickView,saveQuickView} from './pathfinder-timeline.js';
 import {pathfinderView,pathfinderStepDetail,pathfinderRangeContent} from './pathfinder-timeline-view.js';
 import {quickUpgradePanel,quickUpgradeContent,initialQuickRange} from './quick-tools-view.js';
-import {readRange,saveRange,allStages,quoteRange,normalizeItemQuantity,normalizeCostMode,normalizePityProgress} from './pathfinder-range.js';
+import {readRange,saveRange,allStages,quoteRange,normalizeItemQuantity,normalizeCostMode,normalizePityProgress,normalizePityCount} from './pathfinder-range.js';
 import {quoteFailureScenarios} from './pathfinder-failures.js';
 import {sourceMaterialGroups} from './pathfinder-material-groups.js';
 import {saveFarmingList,wireFarmingLists} from './farming-lists-ui.js';
@@ -273,11 +273,11 @@ function pathfinderHub(legacyView='range'){
  const tabs=[['range','Upgrade Costs','calculator'],['timeline','Upgrade Map','layers'],['upgrade','Rarity Reference','calculator'],['compare','Compare Items','compare']];
  const selected=tabs.some(t=>t[0]===view)?view:'range';
  const nav='<nav class="arcanaCrumbs" aria-label="Pathfinder location"><button type="button" data-route="home">Home</button><span aria-hidden="true">›</span><span aria-current="page">Pathfinder</span></nav>';
- const header='<header class="pathfinderHubHead"><span class="pathfinderHubIcon">'+icon('feature-upgrade',36)+'</span><div><span class="eyebrow">GEAR PROGRESSION</span><h1>Pathfinder</h1><p>Every gear upgrade, in one place.</p></div></header>';
+ const header='<header class="pathfinderHubHead"><span class="pathfinderHubIcon">'+icon('feature-upgrade',25)+'</span><div><h1>Pathfinder</h1><p>Upgrade planning and gear progression</p></div></header>';
  const chooser='<nav class="pathfinderHubTabs" aria-label="Pathfinder tools">'+tabs.map(([id,title,glyph])=>'<button type="button" class="'+(id===selected?'active':'')+'" data-route="calculators/pathfinder" data-params="view='+id+'" aria-current="'+(id===selected?'page':'false')+'">'+icon(glyph,19)+'<span>'+title+'</span></button>').join('')+'</nav>';
  const wait='<div class="pathWaiting" role="status"><p>'+esc(recipeState.error||'Loading verified upgrade recipes…')+'</p><button type="button" data-action="path-refresh" class="btn secondary">Retry</button></div>';
  const inner=selected==='range'?quickUpgradePanel(recipeState.data,state.pathfinderRange,{page:true,error:recipeState.error,catalog:verifiedState.entries}):selected==='upgrade'?calcUpgrade(true):selected==='compare'?calcCompare(true):pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error,state.pathfinderRange,{includeRange:false,catalog:verifiedState.entries});
- return '<div class="studioPage pathfinderHub">'+nav+header+chooser+'<div class="pathfinderHubContent">'+inner+'</div></div>';
+ return '<div class="studioPage pathfinderHub"><section class="pathfinderHubTop">'+nav+header+chooser+'</section><div class="pathfinderHubContent">'+inner+'</div></div>';
 }
 function calcPathfinder(){return pathfinderHub()}
 function calcUpgrade(embedded=false){const id=parseRoute().query.get('item'),e=item(id);if(e)track(e.id);
@@ -866,6 +866,18 @@ async function savePathfinderChecklist(button){
  try{await saveFarmingList(list);toast('Farming checklist saved to your account.');go('account');}
  catch(error){toast(error.message);button.disabled=false;button.textContent='Save a farming checklist to my profile';}
 }
+function renderPathfinderCosts(current=state.pathfinderRange){
+ const content=node('pathRangeContent');
+ if(!content||!recipeState.data)return;
+ const expanded=[...content.querySelectorAll('details[data-material-section][open]')].map(d=>d.dataset.materialSection);
+ const assumptionsOpen=content.querySelector('details.quickAssumptions')?.open===true;
+ content.innerHTML=quickUpgradeContent(recipeState.data,current,{page:parseRoute().route!=='home',catalog:verifiedState.entries});
+ for(const id of expanded){
+  const d=[...content.querySelectorAll('details[data-material-section]')].find(x=>x.dataset.materialSection===id);
+  if(d)d.open=true;
+ }
+ const note=content.querySelector('details.quickAssumptions');if(note)note.open=assumptionsOpen;
+}
 function wirePathfinderQuick(){
  document.addEventListener('click',e=>{
   const button=e.target.closest('[data-path-cost-mode]');
@@ -873,7 +885,7 @@ function wirePathfinderQuick(){
   const mode=normalizeCostMode(button.dataset.pathCostMode);
   state.pathfinderRange=saveRange({...state.pathfinderRange,costMode:mode});
   const content=node('pathRangeContent');
-  if(content)content.innerHTML=quickUpgradeContent(recipeState.data,state.pathfinderRange,{page:parseRoute().route!=='home',catalog:verifiedState.entries});
+  renderPathfinderCosts();
  });
  document.addEventListener('click',e=>{
   const button=e.target.closest('[data-path-quantity-step]');
@@ -883,7 +895,7 @@ function wirePathfinderQuick(){
   const quantity=normalizeItemQuantity(normalizeItemQuantity(state.pathfinderRange.quantity)+offset);
   state.pathfinderRange=saveRange({...state.pathfinderRange,quantity});
   const content=node('pathRangeContent');
-  if(content)content.innerHTML=quickUpgradeContent(recipeState.data,state.pathfinderRange,{page:parseRoute().route!=='home',catalog:verifiedState.entries});
+  renderPathfinderCosts();
  });
  document.addEventListener('click',e=>{const button=e.target.closest('[data-pf-save-list]');if(!button)return;e.preventDefault();if(!button.disabled)void savePathfinderChecklist(button);});
  document.addEventListener('input',e=>{
@@ -896,7 +908,7 @@ function wirePathfinderQuick(){
  document.addEventListener('change',e=>{
   if(e.target.matches('[data-path-range]')){state.pathfinderQuick=saveQuickView(state.pathfinderQuick);centerPathRail('pathStepRail','data-path-step',state.pathfinderQuick.level,'smooth');return;}
   const d=e.target.dataset;
-  if(recipeState.data&&(d.pathFromStage!==undefined||d.pathFromLevel!==undefined||d.pathToStage!==undefined||d.pathToLevel!==undefined||d.pathQuantity!==undefined||d.pathPityProgress!==undefined)){
+  if(recipeState.data&&(d.pathFromStage!==undefined||d.pathFromLevel!==undefined||d.pathToStage!==undefined||d.pathToLevel!==undefined||d.pathQuantity!==undefined||d.pathPityProgress!==undefined||d.pathPityCount!==undefined)){
    const stages=allStages(recipeState.data);
    const current={...state.pathfinderRange};
    if(d.pathFromStage!==undefined){current.fromStage=e.target.value;current.fromLevel=Math.min(Number(current.fromLevel||0),stages.find(s=>s.id===current.fromStage)?.max||0);}
@@ -907,9 +919,10 @@ function wirePathfinderQuick(){
    else if(d.pathToLevel!==undefined)current.toLevel=Number(e.target.value);
    else if(d.pathQuantity!==undefined)current.quantity=normalizeItemQuantity(e.target.value);
    else if(d.pathPityProgress!==undefined)current.pityProgress=normalizePityProgress(e.target.value);
+   else if(d.pathPityCount!==undefined)current.pityCount=normalizePityCount(e.target.value);
    state.pathfinderRange=saveRange(current);
    const content=node('pathRangeContent');
-   if(content)content.innerHTML=quickUpgradeContent(recipeState.data,current,{page:parseRoute().route!=='home',catalog:verifiedState.entries});
+   renderPathfinderCosts(current);
    return;
   }
   if(e.target.matches('[data-path-slot]')){

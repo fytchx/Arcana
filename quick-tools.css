@@ -100,3 +100,50 @@
 @media(max-width:650px){.quickScenarioPicker{padding:9px}.quickScenarioGrid{gap:5px}.quickScenarioCard{padding:9px 7px;gap:4px}.quickScenarioCard>span{font-size:11px}.quickScenarioCard strong{font-size:clamp(11px,3.5vw,15px)}.quickScenarioCard strong small{display:block}.quickScenarioCard>small{font-size:9px}}
 @media(max-width:360px){.quickScenarioGrid{grid-template-columns:1fr}.quickScenarioCard{display:flex;align-items:center;justify-content:space-between;gap:8px}}
 @media(prefers-reduced-motion:reduce){.quickScenarioCard{transition:none}}
+
+/* Single condensed upgrade-range/quantity section, matching the compact hub. */
+.pathfinderHub .quickCostsFull{display:grid;gap:9px}
+.pathfinderHub .quickCostsFull #pathRangeContent{display:grid;gap:10px}
+.quickPlanControls{display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,220px);gap:9px 13px;align-items:stretch;padding:12px;background:color-mix(in srgb,var(--theme-highlight) 4%,var(--theme-secondary));border:1px solid color-mix(in srgb,var(--theme-highlight) 23%,var(--line));border-radius:var(--arcana-card-radius,14px);min-width:0}
+.quickPlanHeading{grid-column:1/-1;display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:0}
+.quickPlanHeading h2{margin:0;font-size:clamp(17px,2.8vw,21px);letter-spacing:-.025em}
+.quickPlanHeading p{margin:0;font-size:11px;color:var(--muted)}
+.quickPlanHeading .quickEyebrow{font-size:9px}
+.quickPlanControls .quickEndpoints{min-width:0}
+.quickPlanControls .quickEndpoints fieldset{padding:7px;gap:5px}
+.quickPlanControls .quickEndpoints legend{font-size:9px}
+.quickPlanControls .quickEndpoints label{gap:3px}
+.quickPlanControls .quickEndpoints select{min-height:37px;padding:6px;font-size:12px}
+.quickPlanControls .quickQuantity{margin:0;padding:8px;min-width:0;flex-direction:column;align-items:stretch;justify-content:center;gap:6px;background:color-mix(in srgb,var(--theme-main) 55%,var(--theme-secondary));border-color:var(--line)}
+.quickPlanControls .quickQuantityLabel label{font-size:12px}
+.quickPlanControls .quickQuantityLabel small{font-size:10px}
+.quickPlanControls .quickQuantityControls{width:100%;min-height:37px}
+.quickPlanControls .quickQuantityControls input{flex:1;min-width:40px}
+.quickCosts .quickScenarioPicker{gap:8px;padding:10px}
+.quickScenarioHeading{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.quickScenarioHeading h3{font-size:14px;margin:0}
+.quickPityBadge{display:inline-flex;align-items:center;border:1px solid color-mix(in srgb,var(--theme-highlight) 46%,var(--line));border-radius:20px;padding:4px 10px;background:color-mix(in srgb,var(--theme-highlight) 12%,var(--theme-main));color:var(--theme-highlight);font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
+.quickAssumptions{border-top:1px solid var(--line);padding-top:7px;color:var(--muted);font-size:11px}
+.quickAssumptions summary{cursor:pointer;display:list-item;padding:4px 0;font-weight:720;color:var(--theme-highlight)}
+.quickAssumptions p{line-height:1.5;margin:6px 0 1px}
+.quickCosts .quickMaterialSection{display:block;border:1px solid var(--line);border-radius:var(--arcana-card-radius,13px);background:color-mix(in srgb,var(--theme-main) 34%,var(--theme-secondary));overflow:hidden;padding:0;margin:0}
+.quickMaterialSection .quickSectionSummary{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;list-style:none}
+.quickMaterialSection .quickSectionSummary::-webkit-details-marker{display:none}
+.quickMaterialSection .quickSectionSummary strong{font-size:13px;font-weight:850;color:var(--text)}
+.quickMaterialSection .quickSectionSummary small{font-size:10px;color:var(--muted);margin-left:auto}
+.quickMaterialSection .quickSectionSummary>span{color:var(--theme-highlight);font-size:17px;transition:transform .15s}
+.quickMaterialSection[open] .quickSectionSummary{border-bottom:1px solid var(--line)}
+.quickMaterialSection[open] .quickSectionSummary>span{transform:rotate(180deg)}
+.quickMaterialSection .quickSectionBody{padding:10px 12px 12px;display:grid;gap:8px}
+.quickCosts .quickForgeSection{border-top:1px solid var(--line)}
+.quickMaterialListSorted{grid-template-columns:repeat(2,minmax(0,1fr))}
+.quickMaterialListSorted .quickMaterial{align-items:center;min-height:44px}
+.quickMaterialSource{display:block;margin:4px 0 0;font-size:10px;font-weight:450;color:var(--muted);line-height:1.3}
+.quickMaterialWiki>span{display:block}
+.quickMaterialWiki .quickMaterialSource{font-size:10px;color:var(--muted)}
+.quickMaterialSection .quickGoldBlock{margin:0}
+.quickMaterialSection .quickResourceHighlights{margin:0}
+@media(max-width:820px){.quickPlanControls{grid-template-columns:1fr;gap:7px}.quickPlanControls .quickQuantity{flex-direction:row;justify-content:space-between;align-items:center;padding:8px}.quickPlanControls .quickQuantityControls{width:auto;min-width:145px}}
+@media(max-width:700px){.quickPlanControls{padding:10px;gap:8px}.quickPlanHeading{gap:4px 9px}.quickPlanHeading p{flex-basis:100%}.quickPlanControls .quickEndpoints{grid-template-columns:minmax(0,1fr) 16px minmax(0,1fr);gap:4px}.quickPlanControls .quickEndpoints fieldset{padding:6px}.quickPlanControls .quickEndpoints select{min-height:37px;font-size:12px}.quickPlanControls .quickQuantityLabel small{display:none}.quickMaterialListSorted{grid-template-columns:1fr}.quickMaterialSection .quickSectionSummary{padding:11px}}
+@media(max-width:400px){.quickPlanControls .quickQuantityControls button{width:35px}.quickPlanControls .quickQuantityControls{min-width:130px}.quickScenarioGrid{gap:5px}.quickScenarioCard>small{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.quickMaterialSection .quickSectionSummary>span{transition:none}}
