@@ -4,11 +4,7 @@ import {lstat,readdir,readFile} from 'node:fs/promises';
 import {resolve,relative,sep,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-const GROUPS=Object.freeze({
- accounts:['accounts/users','accounts/sessions','accounts/discord','accounts/community','accounts/guild-hub','accounts/admin','accounts/general-chat','accounts/journal','accounts/traffic'],
- wiki:['articles','revisions','history'],
- feedback:['beta-feedback']
-});
+const SAFE_GROUPS=new Set(['accounts','users','sessions','discord','community','posts','guild-hub','admin','general-chat','journal','traffic','articles','revisions','history','beta-feedback','assets']);
 const JSON_LIMIT=20*1024*1024;
 const fresh=()=>({files:0,bytes:0,json:0,invalidJson:0,symlinks:0,oversizedJson:0,groups:{}});
 export async function auditDataTree(root){
@@ -24,7 +20,8 @@ export async function auditDataTree(root){
    if(!entry.isFile())continue;
    const rel=relative(rootPath,filename);
    if(rel.startsWith('..'+sep)||rel==='..')throw Error('Unsafe path outside audit root');
-   const group=rel.split(sep)[0]||'(root)';
+   const first=rel.split(sep)[0]||'(root)';
+   const group=SAFE_GROUPS.has(first)?first:'other';
    const counter=summary.groups[group]||(summary.groups[group]={files:0,bytes:0,invalidJson:0});
    summary.files++;counter.files++;
    summary.bytes+=entry.size;counter.bytes+=entry.size;
@@ -46,13 +43,16 @@ export function dataLocations(env=process.env){
  return {wiki,accounts,feedback,traffic};
 }
 export async function auditConfiguredData(env=process.env){
- const locations=dataLocations(env),unique=[...new Set(Object.values(locations))];
+ const locations=dataLocations(env),all=[...new Set(Object.values(locations))].sort((a,b)=>a.length-b.length);
+ // Auditing the /data parent also covers its nested accounts, traffic and feedback.
+ // Deduplicate nested paths so totals never count the same files twice.
+ const roots=all.filter(path=>!all.some(other=>other!==path&&path.startsWith(other+sep)));
  const audited=[];
- for(const path of unique){
+ for(const path of roots){
   let result;
   try{result=await auditDataTree(path);}
   catch(error){result={ok:false,files:0,bytes:0,json:0,invalidJson:0,symlinks:0,oversizedJson:0,groups:{},error:error?.code==='ENOENT'?'directory missing':'directory inaccessible'};}
-  audited.push({scope:Object.entries(locations).filter(([,p])=>p===path).map(([k])=>k),...result});
+  audited.push({scope:Object.entries(locations).filter(([,p])=>p===path||p.startsWith(path+sep)).map(([k])=>k),...result});
  }
  // A detached data root is not automatically wrong, but must be included in snapshots.
  return {ok:audited.every(x=>x.ok),roots:audited.length,scopes:audited.map(({scope,ok,files,bytes,json,invalidJson,symlinks,oversizedJson,error,groups})=>({scope,ok,files,bytes,json,invalidJson,symlinks,oversizedJson,error,groups}))};
