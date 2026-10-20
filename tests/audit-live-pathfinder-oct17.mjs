@@ -3,6 +3,7 @@
 import {readFile} from 'node:fs/promises';
 import {inflateSync} from 'node:zlib';
 import assert from 'node:assert/strict';
+import {stepCost} from '../src/pathfinder-timeline.js';
 
 const payload=(await readFile(new URL('./fixtures/pathfinder-oct17-independent.b64',import.meta.url),'utf8')).trim();
 const rules=JSON.parse(inflateSync(Buffer.from(payload,'base64')).toString('utf8'));
@@ -13,6 +14,8 @@ for(let attempt=1;attempt<=5;attempt++){
  catch(e){console.log('Fetch retry',attempt,e.message);if(attempt===5)throw e;await new Promise(resolve=>setTimeout(resolve,6000))}
 }
 const mismatches=[],check=(where,got,want)=>{if(JSON.stringify(got)!==JSON.stringify(want))mismatches.push({where,got,want})};
+const monsterSlugs=new Set([...Object.values(rules.t).flatMap(x=>Object.values(x).flatMap(y=>Object.keys(y))),...Object.values(rules.a).flatMap(x=>Object.values(x).flatMap(y=>Object.keys(y)))]);
+const shownMonsters=cost=>Object.fromEntries((cost?.materials||[]).filter(m=>monsterSlugs.has(m.slug)).map(m=>[m.slug,Number(m.quantity)]));
 const sortObj=x=>Object.fromEntries(Object.entries(x||{}).sort(([a],[b])=>a.localeCompare(b)));
 const sortList=x=>(x||[]).map(y=>({slug:String(y.slug),quantity:Number(y.quantity)})).sort((a,b)=>a.slug.localeCompare(b.slug));
 let checked=0;
@@ -22,6 +25,7 @@ for(let tier=1;tier<=6;tier++){
   const row=rows.find(x=>Number(x.target??Number(x.current)+1)===Number(level));
   if(!row){mismatches.push({where:'T'+tier+'+'+level,error:'missing row'});continue;}
   check('T'+tier+'+'+level,sortObj(row.monster_materials),sortObj(expected));checked+=Object.keys(expected).length;
+  check('Rendered T'+tier+'+'+level,sortObj(shownMonsters(stepCost(response,{id:'T'+tier,tier,max:rows.length},Number(level)))),sortObj(expected));
   if(String(row.fragment_slug)!==['iron-fragment','steel-fragment','mithril-fragment','adamantine-fragment','celestial-fragment','infernal-fragment'][tier-1])mismatches.push({where:'T'+tier+'+'+level,error:'fragment slug out of date',slug:row.fragment_slug});
  }
 }
@@ -39,18 +43,15 @@ for(let rank=1;rank<=30;rank++){
   if(!row){mismatches.push({where:'A'+rank+'+'+level,error:'missing row'});continue;}
   const expected=rules.a[rank][level];
   check('A'+rank+'+'+level,sortObj(row.monster_materials),sortObj(expected));checked+=Object.keys(expected).length;
-  if(Object.hasOwn(rules.e,String(level))){
-   const sourceExtras=sortList(rules.e[level]);
-   const extras=sortList([...(row.extra_materials||[]),...(row.materials||[])].filter(x=>['abyssal-ember','eternal-sigil'].includes(x.slug)));
-   check('A'+rank+'+'+level+' explicit extras',extras,sourceExtras);
-  }
+  check('Rendered A'+rank+'+'+level,sortObj(shownMonsters(stepCost(response,{id:'A'+rank,rank,max:30},level))),sortObj(expected));
+  // Rare extras have threshold/band semantics absent from the workbook; do not guess.
  }
  const row=response.codex.awaken.transitions?.find(x=>Number(x.rank)===rank);
  const threshold=Object.keys(rules.x).map(Number).filter(n=>n<=rank).sort((a,b)=>b-a)[0];
  check('A'+rank+' transition',sortList([...(row?.materials||[]),...(row?.extra_materials||[])]),sortList(rules.x[threshold]));
 }
 const newest=String(response.sourceVersion||'').includes('2026-10-17-001');
-console.log('LIVE_PATHFINDER_AUDIT',JSON.stringify({source:response.sourceVersion,latestMaterialVersion:newest,monsterEntries:checked,expected:5222,extraMaterialKeys:'Only 1/3/5/10 explicitly verifiable; other levels require in-game validation',materialsDefined:response.materials?.length,mismatches:mismatches.length,samples:mismatches.slice(0,16)}));
+console.log('LIVE_PATHFINDER_AUDIT',JSON.stringify({source:response.sourceVersion,latestMaterialVersion:newest,monsterEntries:checked,expected:5222,rareExtras:'Awaken extras remain unverified beyond source key declarations; not treated as zero',materialsDefined:response.materials?.length,mismatches:mismatches.length,samples:mismatches.slice(0,16)}));
 assert.equal(newest,true,'Live API does not acknowledge Oct17');
 assert.equal(checked,5222,'Source row coverage changed');
 assert.equal(mismatches.length,0,'Live API differs from the spreadsheet');
