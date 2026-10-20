@@ -43,8 +43,9 @@ test('home hierarchy retains equal Build Studio, Journal, Pathfinder, Tools and 
  const markup=homeScreen(),css=await read('arcana-connected-ux.css');
  assert.equal((markup.match(/class="launchHero"/g)||[]).length,1);
  assert.equal((markup.match(/class="journalHomeTeaser"/g)||[]).length,1);
- for(const key of ['pathfinder','tools','builds'])assert.match(markup,new RegExp('data-arg="'+key+'"'));
- assert.match(markup,/One connected knowledge base/);
+ for(const key of ['pathfinder','tools','social'])assert.match(markup,new RegExp('data-arg="'+key+'"'));
+ assert.match(markup,/Guides, Builds & Wiki/);
+ assert.doesNotMatch(markup,/data-arg="builds"/);
  assert.match(markup,/wiki\/guides/);
  assert.match(markup,/data-route="community"/);
  assert.match(css,/homeSpotlights \.launchHero/);
