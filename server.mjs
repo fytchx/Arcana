@@ -1,5 +1,6 @@
 import http from 'node:http';
 import {gunzipSync,gzipSync} from 'node:zlib';
+import {applyVerifiedUpgradeCosts} from './src/pathfinder-upgrade-materials.mjs';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve, sep, extname } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -107,7 +108,8 @@ async function sourceBackedRecipes(){
  const raw=gunzipSync(Buffer.from(source,'base64'),{maxOutputLength:1800000});
  const data=JSON.parse(raw.toString('utf8')),cd=data.codex;
  if(!cd?.tiers?.['6']?.rows||!cd.awaken?.rows?.['30']||!Array.isArray(data.materials))throw Error('Upgrade data incomplete');
- previewRecipe={source:'Arcana game-cost snapshot',sourceVersion:String(cd.source_version||''),verifiedDate:String(cd.verified_date||''),
+ const verifiedCosts=applyVerifiedUpgradeCosts(cd,data.materials);
+ previewRecipe={source:'Arcana game-cost snapshot',sourceVersion:String(cd.source_version||'')+' / upgrade materials '+verifiedCosts.sourceVersion,verifiedDate:String(cd.verified_date||''),
  codex:{tiers:Object.fromEntries(Object.entries(cd.tiers).map(([k,v])=>[k,{name:v.name,max_level:v.max_level,rows:v.rows}])),
  tier_upgrades:cd.tier_upgrades,awaken:{rows:Object.fromEntries(Object.entries(cd.awaken.rows).filter(([k])=>Number(k)>=1&&Number(k)<=30)),transitions:cd.awaken.transitions.filter(x=>Number(x.rank)<=30)}},
  materials:data.materials.map(m=>({slug:m.slug,name:m.name,type:m.type,monster_id:m.monster_id??null,
