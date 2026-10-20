@@ -4,6 +4,7 @@ import {allStages,quoteRange,normalizeRange} from './pathfinder-range.js';
 import {quoteFailureScenarios} from './pathfinder-failures.js';
 import {money} from './pathfinder-timeline.js';
 import {sourceMaterialGroups} from './pathfinder-material-groups.js';
+import {pathfinderZone,pathfinderZoneIcon} from './pathfinder-zones.js';
 const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 /** Human-readable gold without rounding large totals through Number. */
 export function shortGold(value){
@@ -68,18 +69,19 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  '<div class="quickPlanControls">'+planHead+fields+quantity+'</div></details>';
  if(quote.error)return plan+'<div class="quickError" role="status">'+esc(quote.error)+(quote.missing?.length?' Missing: '+esc(quote.missing.slice(0,3).join(', ')):'')+'</div>';
  const perItemBySlug=new Map(rendered.perItem.materials.map(m=>[m.slug,m.quantity]));
- const materialRow=m=>{
+ const materialRow=(m,insideZone=false)=>{
   const id='game:material:'+m.slug;
-  const location=m.biome||m.sourceMonster||'';
+  // Biome identity belongs in the colored zone header, not repeated in every row.
+  const location=m.sourceMonster||(!insideZone?m.biome:'');
   return '<div class="quickMaterial"><button type="button" class="quickMaterialWiki" data-route="wiki/reference" data-params="id='+esc(encodeURIComponent(id))+'" title="View '+esc(m.name)+' in ArcanaWiki"><span>'+esc(m.name)+' <span aria-hidden="true">↗</span></span>'+(location?'<small class="quickMaterialSource">'+esc(location)+'</small>':'')+'</button>'+
   '<strong>'+money(m.quantity)+(count>1?'<small class="quickPerItem">'+money(perItemBySlug.get(m.slug)||0n)+' each</small>':'')+'</strong></div>';
  };
- // The default view is one alphabetized monster-material checklist; source
- // biome/monster metadata stays attached to each entry for farming context.
+ // Group monsters by *verified biome* in the game progression order.
+ // Never guess a biome from an item's appearance or name.
  const groups=sourceMaterialGroups(rendered.materials,snapshot.materials||[],options.catalog||[]);
  const alphabetical=(a,b)=>a.name.localeCompare(b.name,'en',{sensitivity:'base'})||a.slug.localeCompare(b.slug);
- const monsters=groups.filter(g=>g.kind==='biome'||g.kind==='unknown')
-  .flatMap(g=>g.materials).sort(alphabetical);
+ const monsterGroups=groups.filter(g=>g.kind==='biome'||g.kind==='unknown');
+ const monsterCount=monsterGroups.reduce((n,g)=>n+g.materials.length,0);
  const other=groups.filter(g=>g.kind==='special').flatMap(g=>g.materials).sort(alphabetical);
  const attempts=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:1}).format(n);
  const displayAttempts=rendered.attempts===undefined?money(quote.steps):attempts(rendered.attempts);
@@ -87,9 +89,22 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
   '<small>Average with failed attempts'+(count>1?' · '+count+' items':'')+'</small></div>'+
   '<span>'+displayAttempts+' attempts</span></div>';
  const summary=(title,sub)=>'<summary class="quickSectionSummary"><strong>'+esc(title)+'</strong><small>'+esc(sub)+'</small><span aria-hidden="true">⌄</span></summary>';
+ const zoneGroupsMarkup=monsterGroups.map(group=>{
+  const zone=pathfinderZone(group.name);
+  const zoneKey=zone?.slug||group.id;
+  const style=zone?' style="--path-zone-color:'+zone.color+';--path-zone-x:'+zone.atlasX+'%;--path-zone-y:'+zone.atlasY+'%"':'';
+  const tier=zone?'Tier '+zone.tier+' · ':'';
+  const items=[...group.materials].sort(alphabetical);
+  return '<details class="quickZoneGroup'+(zone?'':' quickZoneUnknown')+'" data-path-zone="'+esc(zoneKey)+'"'+style+' open>'+
+   '<summary class="quickZoneHead"><span class="quickZoneArt">'+(zone?'<span class="quickZoneBackdrop" aria-hidden="true"></span>':'')+
+   '<span class="quickZoneGlyph">'+pathfinderZoneIcon(group.name)+'</span></span>'+
+   '<span class="quickZoneTitle"><strong>'+esc(group.name)+'</strong><small>'+tier+items.length+' material'+(items.length===1?'':'s')+'</small></span>'+
+   '<span class="quickZoneChevron" aria-hidden="true">⌄</span></summary>'+
+   '<div class="quickZoneContents"><div class="quickMaterialList quickMaterialListSorted">'+items.map(item=>materialRow(item,true)).join('')+'</div></div></details>';
+ }).join('');
  const monsterSection='<details class="quickMaterialSection quickFarmFirst" data-material-section="monsters" open>'+
-  summary('Monster materials',monsters.length+' types · A–Z')+
-  '<div class="quickSectionBody">'+(monsters.length?'<div class="quickMaterialList quickMaterialListSorted">'+monsters.map(materialRow).join('')+'</div>':'<p class="quickEmpty">No monster drops required.</p>')+'</div></details>';
+  summary('Monster materials',monsterCount+' types · '+monsterGroups.length+' zones')+
+  '<div class="quickSectionBody quickZoneList">'+(monsterCount?zoneGroupsMarkup:'<p class="quickEmpty">No monster drops required.</p>')+'</div></details>';
  // Exactly one headline gold figure. Rare materials appear beneath it only if expanded.
  const goldValue=shortGold(rendered.gold);
  const goldTip=esc(money(rendered.gold)+' Gold');
