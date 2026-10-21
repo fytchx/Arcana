@@ -4,6 +4,7 @@ import {readDesign} from './design-controls.js';
 import {themeReadability} from './theme-studio-audit.js';
 import {decorateLiveFrame} from './theme-live-frame.js';
 import {psychedelicSvg,syncPsychedelicSamples} from './psychedelic-patterns.js';
+import {artUrl,syncVisualSamples} from './visual-art.js';
 const PREVIEW_UI_KEY='arcana-theme-preview-layout-v2';
 const storedPreview=()=>{try{return JSON.parse(globalThis.localStorage?.getItem(PREVIEW_UI_KEY)||'{}')||{}}catch{return {}}};
 const initial=storedPreview();
@@ -55,6 +56,8 @@ export function syncDesignMiniPreview(){
  const psych=psychedelicSvg(v.pattern,v);
  if(psych)canvas.style.setProperty('--psychedelic-texture',psych);else canvas.style.removeProperty('--psychedelic-texture');
  syncPsychedelicSamples(globalThis.document,readDesign());
+ const art=artUrl(v.pattern,v);if(art)canvas.style.setProperty('--vision-mini-art',art);else canvas.style.removeProperty('--vision-mini-art');
+ syncVisualSamples(globalThis.document,readDesign());
  const palettePanel=globalThis.document.querySelector('.psyPalettePicker');
  if(palettePanel){const current=readDesign();palettePanel.dataset.psyActive=String(['groove-melt','orbit-jelly','doodle-rift','prism-puddle'].includes(current.pattern));palettePanel.dataset.psyMode=current.psyPaletteMode;}
  const section=canvas.closest('.designMiniPreview');
