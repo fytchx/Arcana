@@ -13,7 +13,13 @@ export const VISUAL_ART=Object.freeze([
  {id:'vision-signal-bloom',name:'Signal Bloom',family:'Hybrid Signal',note:'Fine flow topology, sparse technical marks, graceful hierarchy',colors:['#11152D','#CF6DE2','#54C6E6','#E0B8FF']},
  {id:'vision-vector-halo',name:'Vector Halo',family:'Hybrid Signal',note:'Orbital line sculpture punctuated by intentional nodes',colors:['#0F142D','#6F9FF3','#BC71E9','#B9EAF6']},
  {id:'vision-crownspace',name:'Crownspace',family:'Hero Composition',note:'Ornament around the edges; a beautiful quiet interior',colors:['#11142B','#E6A5C5','#7A6CE5','#D9CBFF']},
- {id:'vision-aether-frame',name:'Aether Frame',family:'Hero Composition',note:'Asymmetric illuminated corner currents for hero panels',colors:['#0E152D','#9A72EE','#58D9E1','#E6B7F3']}
+ {id:'vision-aether-frame',name:'Aether Frame',family:'Hero Composition',note:'Asymmetric illuminated corner currents for hero panels',colors:['#0E152D','#9A72EE','#58D9E1','#E6B7F3']},
+ {id:'vision-gilded-orbit',name:'Gilded Orbit',family:'Relic / Celestial',note:'Engraved orbital medallions with a quiet black-gold horizon',colors:['#100F16','#EDC378','#7A5A9E','#FFF0D0']},
+ {id:'vision-glacial-fold',name:'Glacial Fold',family:'Ribbon / Veil',note:'Sculpted blue-silver sheets, knife-sharp refractive edges',colors:['#0B1A2B','#77CBE7','#3C65AC','#E3F9FF']},
+ {id:'vision-nocturne-mesh',name:'Nocturne Mesh',family:'Graphic Monochrome',note:'Architectural optical lace with a carved central aperture',colors:['#0D0E16','#E9E9E8','#7A808D','#FFFFFF']},
+ {id:'vision-celestial-tapestry',name:'Celestial Tapestry',family:'Arcane Geometry',note:'Fine compass geometry and etched cosmic chart lines',colors:['#121027','#C5A6F2','#6D8DD7','#FBE5C0']},
+ {id:'vision-verdant-signal',name:'Verdant Signal',family:'Organic Signal',note:'Emerald signal branches grow through controlled concentric fields',colors:['#081A17','#59E0B3','#2F7B86','#D0FFE3']},
+ {id:'vision-solar-relic',name:'Solar Relic',family:'Elemental',note:'Ancient bronze solar arcs and a luminous suspended core',colors:['#1A0D10','#F3A660','#B94D71','#FFF2D0']}
 ]);
 export const VISUAL_ART_IDS=Object.freeze(VISUAL_ART.map(x=>x.id));
 const byId=new Map(VISUAL_ART.map(x=>[x.id,x]));
@@ -113,6 +119,66 @@ function geometry(id){
   s+=fields(-100,-100,28,300,1.9)+fields(1350,-90,24,285,.3);
   s+=fields(-120,800,25,320,.8)+fields(1370,760,24,310,2.8);
   for(let i=0;i<12;i++){s+=path('M '+(i*25)+' 0 Q '+(220+i*12)+' '+(92+i*3)+' '+(275+i*14)+' '+(210+i*8),'url(#spark)',1,.13);}
+
+ }else if(id==='vision-gilded-orbit'){
+  // Displaced orbital filigree, numerous concentric ellipses, and fine
+  // compass increments give this its own ornate metallic identity.
+  s+=ellipse(650,300,360,300,'url(#halo)',.16);
+  for(let i=0;i<34;i++){
+   const r=74+i*10;
+   const d=closed(a=>[780+r*1.4*Math.cos(a),310+r*.68*Math.sin(a)+Math.sin(a*6)*i*.3],116);
+   s+=path(d,i%5===0?'url(#spark)':'url(#ink)',i%7===0?2.1:1.0,.23+.54*(1-i/38));
+  }
+  for(let i=0;i<96;i++){let a=Math.PI*2*i/96,x=780+445*Math.cos(a),y=310+210*Math.sin(a);
+   s+=path('M '+rnd(x)+' '+rnd(y)+' l '+rnd(8*Math.cos(a))+' '+rnd(8*Math.sin(a)),'url(#spark)',i%8===0?2.6:1,.25+.48*(i%8===0?1:.3));}
+  s+=circle(780,310,7,'url(#spark)',.7);
+ }else if(id==='vision-glacial-fold'){
+  // Interleaved translucent planes have visible crystalline edges.
+  for(let i=0;i<16;i++){const off=i*37,a=-130+off;
+   s+=filled('M '+rnd(a)+' -90 C '+rnd(670+i*10)+' 110 '+rnd(300+i*12)+' 320 '+rnd(a+150)+' 740 L '+rnd(a-210)+' 740 C '+rnd(80+i*15)+' 300 '+rnd(360+i*12)+' 30 '+rnd(a)+' -90 Z',i%2?'url(#blue)':'url(#rose)',.14+i*.012);
+   s+=path('M '+rnd(a)+' -90 C '+rnd(670+i*10)+' 110 '+rnd(300+i*12)+' 320 '+rnd(a+150)+' 740',i%4?'url(#ink)':'url(#spark)',i%5===0?2.7:1.2,.18+i*.032);
+  }
+  for(let i=0;i<13;i++){let off=i*22;
+   s+=path('M '+rnd(1270-off)+' -25 Q '+rnd(800-off)+' '+rnd(220+off*.2)+' '+rnd(1120-off)+' 690','url(#spark)',1.05,.13+i*.025);}
+ }else if(id==='vision-nocturne-mesh'){
+  // Two dislocated line families bend around the central empty oval.
+  for(let i=0;i<64;i++){
+   const t=i/63,y=-90+i*13;
+   const d=L(x=>y+Math.sin(x/138+t*2.8)*44+(175*Math.exp(-Math.pow((x-620)/225,2)))*(t-.5),-40,1260,78);
+   s+=path(d,i%7===0?'url(#spark)':'url(#ink)',i%8===0?2.7:1.1,.21+.68*Math.sin(t*Math.PI));
+  }
+  for(let i=0;i<57;i++){let t=i/56,x=-140+i*27;
+   const d=L(y=>x+Math.sin(y/120+i*.11)*24-(140*Math.exp(-Math.pow((y-300)/130,2)))*(t-.5),-25,660,54);
+   s+=path(d,'url(#ink)',1,.11+.24*Math.sin(t*Math.PI));
+  }
+  s+=ellipse(630,310,210,100,'url(#halo)',.09);
+ }else if(id==='vision-celestial-tapestry'){
+  s+=fields(710,295,40,270,.3);
+  for(let i=0;i<8;i++){let a=i*Math.PI/4,x=710+385*Math.cos(a),y=295+220*Math.sin(a);
+   s+=path('M 710 295 L '+rnd(x)+' '+rnd(y),'url(#ink)',i%2===0?1.6:.9,.16);
+   s+=circle(x,y,i%2===0?3.2:1.5,'url(#spark)',.48);
+  }
+  for(let i=0;i<120;i++){let a=i*Math.PI/60,x=710+412*Math.cos(a),y=295+235*Math.sin(a),xx=x+Math.cos(a)*(i%10===0?14:5),yy=y+Math.sin(a)*(i%10===0?10:3);
+   s+=path('M '+rnd(x)+' '+rnd(y)+' L '+rnd(xx)+' '+rnd(yy),'url(#spark)',i%10===0?2:1,.38);}
+  s+=strip(null,14,{start:480,gap:9,amp:21,wave:225,amp2:7});
+ }else if(id==='vision-verdant-signal'){
+  s+=fields(870,390,39,280,2.1);
+  for(let i=0;i<35;i++){const t=i/34;
+   const d=L(x=>t*640+58*Math.sin(x/102+t*7)+65*Math.cos(x/186-t*4),-30,1260,70);
+   s+=path(d,i%9===0?'url(#spark)':'url(#ink)',i%8===0?2.3:1,.18+.43*Math.sin(t*Math.PI));
+  }
+  for(let i=0;i<19;i++){let x=80+i*60,y=270+130*Math.sin(i*.77);
+   s+=circle(x,y,i%5===0?3.9:1.4,'url(#spark)',.3);
+   s+=path('M '+rnd(x-11)+' '+rnd(y)+' l 22 0','url(#ink)',.9,.2);}
+ }else if(id==='vision-solar-relic'){
+  s+=ellipse(825,330,360,235,'url(#halo)',.23);
+  for(let i=0;i<47;i++){let rad=56+i*7.4;
+   const d=closed(a=>[825+rad*1.25*Math.cos(a),305+rad*.78*Math.sin(a)],130);
+   s+=path(d,i%6===0?'url(#spark)':'url(#ink)',i%8===0?2.5:1.05,.11+.6*(1-i/54));
+  }
+  for(let i=0;i<72;i++){let a=Math.PI*2*i/72,rx=412,ry=252,x=825+rx*Math.cos(a),y=305+ry*Math.sin(a);
+   s+=path('M '+rnd(x)+' '+rnd(y)+' l '+rnd(Math.cos(a)*(i%6===0?24:8))+' '+rnd(Math.sin(a)*(i%6===0?18:6)),'url(#spark)',i%6===0?1.8:1,.32);}
+  s+=circle(825,305,10,'url(#spark)',.8);
  }else if(id==='vision-aether-frame'){
   for(let i=0;i<49;i++){
    const a=i*8;
@@ -132,7 +198,11 @@ export function artUrl(id,values={}){
  const art=byId.get(id);if(!art)return null;
  const c=art.colors,base=hex(values.artBase)||c[0],primary=hex(values.artPrimary)||c[1],
   secondary=hex(values.artSecondary)||c[2],glow=hex(values.artGlow)||c[3];
- const key=[id,base,primary,secondary,glow].join('|');
+ const num=(v,lo,hi,def)=>Number.isFinite(Number(v))?Math.max(lo,Math.min(hi,Math.round(Number(v)))):def;
+ const strength=num(values.artStrength,15,100,100),detail=num(values.artDetail,25,100,100),
+  weight=num(values.artWeight,60,180,100),zoom=num(values.artZoom,75,155,100),
+  posX=num(values.artPositionX,0,100,50),posY=num(values.artPositionY,0,100,50);
+ const key=[id,base,primary,secondary,glow,strength,detail,weight,zoom,posX,posY].join('|');
  if(cache.has(key))return cache.get(key);
  const defs='<defs>'+
  '<linearGradient id="ink" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+primary+'"/><stop offset=".52" stop-color="'+secondary+'"/><stop offset="1" stop-color="'+primary+'"/></linearGradient>'+
@@ -141,7 +211,17 @@ export function artUrl(id,values={}){
  '<linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+secondary+'" stop-opacity=".6"/><stop offset="1" stop-color="'+glow+'" stop-opacity=".04"/></linearGradient>'+
  '<radialGradient id="halo"><stop stop-color="'+glow+'" stop-opacity=".22"/><stop offset="1" stop-color="'+glow+'" stop-opacity="0"/></radialGradient>'+
  '</defs>';
- const svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid slice"><rect width="'+W+'" height="'+H+'" fill="'+base+'"/>'+defs+geometry(id)+'</svg>';
+ let artGeom=geometry(id);
+ if(detail<100){
+  let index=0;artGeom=artGeom.replace(/<path\b[^>]*\/>/g,match=>{
+   if(!match.includes('fill="none"'))return match;
+   const n=index++;return n%100<detail?match:'';
+  });
+ }
+ if(weight!==100)artGeom=artGeom.replace(/stroke-width="([0-9.]+)"/g,(_,x)=>'stroke-width="'+rnd(Number(x)*weight/100)+'"');
+ const scale=zoom/100,shiftX=(posX-50)*8,shiftY=(posY-50)*5;
+ const transform='translate('+rnd(shiftX)+' '+rnd(shiftY)+') translate(600 310) scale('+scale+') translate(-600 -310)';
+ const svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid slice"><rect width="'+W+'" height="'+H+'" fill="'+base+'"/>'+defs+'<g opacity="'+rnd(strength/100)+'" transform="'+transform+'">'+artGeom+'</g></svg>';
  const result='url("data:image/svg+xml,'+encodeURIComponent(svg)+'")';
  if(cache.size>84)cache.clear();
  cache.set(key,result);return result;
