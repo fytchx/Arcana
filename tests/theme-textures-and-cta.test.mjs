@@ -8,9 +8,9 @@ import {designPanel,settingsView} from '../src/launch-navigation.js';
 
 const read=p=>readFile(new URL(p,import.meta.url),'utf8');
 test('texture library includes 84 unique visual finishes with matching live, preview and gallery drawings',async()=>{
- const css=(await read('../arcana-contour.css'))+(await read('../signature-themes.css'))+(await read('../psychedelic-themes.css')),form=designPanel({showPreview:false});
- assert.equal(THEME_PATTERNS.length,88);
- assert.equal(new Set(THEME_PATTERNS.map(p=>p.id)).size,88);
+ const css=(await read('../arcana-contour.css'))+(await read('../signature-themes.css'))+(await read('../psychedelic-themes.css'))+(await read('../atlas-atelier-textures.css')),form=designPanel({showPreview:false});
+ assert.equal(THEME_PATTERNS.length,136);
+ assert.equal(new Set(THEME_PATTERNS.map(p=>p.id)).size,136);
  for(const texture of THEME_PATTERNS){
   assert.equal(validateDesignField('pattern',texture.id),texture.id);
   assert.ok(css.includes('data-preview-pattern="'+texture.id+'"'),texture.id+' thumb missing');
@@ -18,7 +18,7 @@ test('texture library includes 84 unique visual finishes with matching live, pre
   if(!['plain','contours'].includes(texture.id))assert.ok(css.includes('data-mini-pattern="'+texture.id+'"'),texture.id+' mini missing');
   assert.ok(form.includes('data-theme-pattern="'+texture.id+'"'),texture.id+' picker missing');
  }
- assert.ok(form.includes('88 seamless texture finishes'));
+ assert.ok(form.includes('136 texture finishes'));
  assert.ok(form.includes('data-design-field="patternTarget"'));
  assert.ok(form.includes('Where to show textures'));
 });
