@@ -22,8 +22,8 @@ test('Atlas v2 preserves six real entry points while compressing the mobile firs
 test('Atelier contains 48 distinct recolorable patterns and existing themes still validate',async()=>{
  const names=THEME_PATTERNS.filter(x=>x.category==='Atelier');
  assert.equal(names.length,48);
- assert.equal(THEME_PATTERN_IDS.length,136);
- assert.equal(new Set(THEME_PATTERN_IDS).size,136);
+ assert.equal(THEME_PATTERN_IDS.length,148);
+ assert.equal(new Set(THEME_PATTERN_IDS).size,148);
  const css=await read('atlas-atelier-textures.css');
  for(const item of names){
   assert.match(item.id,/^atelier-[a-z0-9-]+$/);
@@ -35,7 +35,7 @@ test('Atelier contains 48 distinct recolorable patterns and existing themes stil
  assert.match(css,/var\(--theme-highlight/);
  assert.match(css,/var\(--arcana-premium-pattern-alpha/);
  const panel=designPanel({showPreview:false});
- assert.match(panel,/Browse all 136 texture finishes/);
+ assert.match(panel,/Browse all 148 texture finishes/);
  assert.equal((panel.match(/data-pattern-category="Atelier"/g)||[]).length,48);
 });
 test('Published editorial content replaces placeholders with safe DOM methods',async()=>{
