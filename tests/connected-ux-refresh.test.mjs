@@ -39,17 +39,18 @@ test('admin-only header and search discovery share public navigation without lea
  assert.match(traffic,/state\.loadedAt=Date\.now\(\);\}finally|state\.loadedAt=Date\.now\(\);\}/);
  assert.match(traffic,/Traffic service unavailable/);
 });
-test('home hierarchy retains equal Build Studio, Journal, Pathfinder, Tools and connected guides',async()=>{
- const markup=homeScreen(),css=await read('arcana-connected-ux.css');
- assert.equal((markup.match(/class="launchHero"/g)||[]).length,1);
- assert.equal((markup.match(/class="journalHomeTeaser"/g)||[]).length,1);
- for(const key of ['pathfinder','tools','social'])assert.match(markup,new RegExp('data-arg="'+key+'"'));
- assert.match(markup,/Guides, Builds & Wiki/);
- assert.doesNotMatch(markup,/data-arg="builds"/);
- assert.match(markup,/wiki\/guides/);
- assert.match(markup,/data-route="community"/);
- assert.match(css,/homeSpotlights \.launchHero/);
- assert.match(css,/\.launchQuickGrid \.launchQuickCard/);
+test('home atlas prioritizes Studio, six connected tools, and live Journal',async()=>{
+ const markup=homeScreen(),css=await read('home-atlas.css');
+ assert.equal((markup.match(/class="atlasHero"/g)||[]).length,1);
+ assert.equal((markup.match(/class="atlasTile"/g)||[]).length,6);
+ assert.equal((markup.match(/data-journal-latest/g)||[]).length,1);
+ for(const route of ['calculators/pathfinder','guilds','community','wiki/guides','wiki','labs/build'])assert.match(markup,new RegExp('data-route="'+route+'"'));
+ assert.match(markup,/data-arg="tools"/);
+ assert.match(css,/--atlas-icon-box/);
+ assert.match(css,/--atlas-icon/);
+ assert.match(css,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+ assert.ok(markup.indexOf('class="atlasHero"')<markup.indexOf('class="atlasTileGrid"'));
+ assert.ok(markup.indexOf('class="atlasTileGrid"')<markup.indexOf('class="atlasJournal"'));
 });
 test('community is linked to builds, guilds, guides and Journal without duplicate oversized cards',async()=>{
  const code=await read('src/community-ui.js'),css=await read('arcana-connected-ux.css');
