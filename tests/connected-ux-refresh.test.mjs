@@ -18,7 +18,7 @@ test('single consistent gallery includes every Classic, Signature and Psychedeli
  assert.doesNotMatch(panel,/designClassicCollection|signatureCollectionIntro|psychedelicPresetsIntro/);
  assert.match(panel,/data-theme-group="presets"/);
  assert.match(panel,/data-theme-change-hint/);
- assert.equal(THEME_PATTERNS.length,136);
+ assert.equal(THEME_PATTERNS.length,148);
  for(const id of ['presets','colors','textures','feature','components','type','vault'])assert.match(panel,new RegExp('data-theme-jump="'+id+'"'));
 });
 test('admin-only header and search discovery share public navigation without leaking admin controls',async()=>{
