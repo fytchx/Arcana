@@ -62,7 +62,7 @@ export const STUDIO_V2_PRESETS=Object.freeze(Object.fromEntries(ENTRIES.map(([id
  const artGlow=family==='Monochrome'?'#FFFFFF':text;
  const value={name,tagline:family,collection:'studio-v2',pattern:'vision-'+artName,
   main,card,iconBox,iconGlyph:action,action,secondaryAccent,text,mutedText,borderColor,navBar:card,
-  buttonText:main,artBase,artPrimary,artSecondary,artGlow,
+  buttonText:main,artBase,artPrimary,artSecondary,artGlow,panelPattern:'inherit',featurePattern:'inherit',panelArtBase:artBase,panelArtPrimary:artPrimary,panelArtSecondary:artSecondary,panelArtGlow:artGlow,featureArtBase:artBase,featureArtPrimary:artPrimary,featureArtSecondary:artSecondary,featureArtGlow:artGlow,headingFont:'serif',
   patternTarget:index%4===2?'background':'all',
   artStrength:family==='Monochrome'?82:90,artDetail:family==='Ribbon / Veil'?100:90,
   artWeight:family==='Monochrome'?105:100,artZoom:100,artPositionX:50,artPositionY:50,
