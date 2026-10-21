@@ -12,7 +12,7 @@ export function decorateLiveFrame(frame,values){
  for(const [k,v] of Object.entries({
  '--bg':values.main,'--panel':values.card,'--panel2':values.navBar,'--accent':values.action,'--text':values.text,'--line':values.borderColor,
  '--theme-highlight':values.action,'--accentTint':`color-mix(in srgb,${values.action} 13%,transparent)`,
- '--arcana-panel-opacity':String(values.panelOpacity/100),'--arcana-icon-color':values.action,'--arcana-atlas-panel':values.card,'--arcana-atlas-icon-box':values.iconBox,'--arcana-atlas-icon':values.iconGlyph,'--radius':values.roundness+'px',
+ '--arcana-panel-opacity':String(values.panelOpacity/100),'--arcana-panel-opacity-percent':values.panelOpacity+'%','--arcana-icon-color':values.action,'--arcana-atlas-panel':values.card,'--arcana-atlas-icon-box':values.iconBox,'--arcana-atlas-icon':values.iconGlyph,'--radius':values.roundness+'px',
  '--arcana-wave-opacity':String(values.intensity/100),'--arcana-pattern-alpha':Math.round(values.intensity*.16)+'%',
  '--arcana-premium-pattern-alpha':Math.round(values.intensity*.35)+'%','--arcana-glow-alpha':String(values.glow/100),
  '--arcana-signature-aura':String(values.aura/100),'--arcana-signature-sheen':String(values.sheen/100),'--arcana-signature-detail':String(values.detail/100),
