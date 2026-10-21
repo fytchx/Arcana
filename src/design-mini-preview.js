@@ -65,6 +65,7 @@ export function syncDesignMiniPreview(){
  for(const layer of ['background','panels','feature'])canvas.style.setProperty('--mini-art-'+layer,layerArtUrl(v,layer));
  canvas.dataset.artLayered=String(Boolean(layers.background||layers.panels||layers.feature));
  syncLayerArtSamples(globalThis.document,v);
+ const sample=globalThis.document?.querySelector('[data-studio-font-sample]');if(sample){sample.style.setProperty('--studio-sample-body',fontStack(v.fontFamily));sample.style.setProperty('--studio-sample-heading',fontStack(v.headingFont));}
  syncVisualSamples(globalThis.document,readDesign());
  for(const tile of globalThis.document.querySelectorAll('.studioPresetArtwork[data-studio-preset-art]')){
   const preset=STUDIO_V2_PRESETS[tile.dataset.studioPresetArt];if(!preset)continue;
