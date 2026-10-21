@@ -41,9 +41,9 @@ test('preview remains live across five pages, three devices, before-after, plus 
  assert.match(html,/data-mini-page="guilds"/);
 });
 test('64 textures are uniquely named, correctly validated and represented in site/mini/thumbnail CSS',async()=>{
- const css=(await read('../arcana-contour.css'))+(await read('../signature-themes.css'))+(await read('../psychedelic-themes.css'))+(await read('../atlas-atelier-textures.css'));
- assert.equal(THEME_PATTERNS.length,136);
- assert.equal(new Set(THEME_PATTERN_IDS).size,136);
+ const css=(await read('../arcana-contour.css'))+(await read('../signature-themes.css'))+(await read('../psychedelic-themes.css'))+(await read('../atlas-atelier-textures.css'))+(await read('../visual-art.css'));
+ assert.equal(THEME_PATTERNS.length,148);
+ assert.equal(new Set(THEME_PATTERN_IDS).size,148);
  const html=designPanel({showPreview:false});
  for(const p of THEME_PATTERNS){
   assert.equal(validateDesignField('pattern',p.id),p.id,p.id);
