@@ -57,7 +57,7 @@ test('legacy textures remain validated while Studio V2 displays only authored Vi
  assert.equal((html.match(/class="studioV2Preset"/g)||[]).length,0,'new presets include designPreset as first class');
  assert.equal((html.match(/class="designPreset studioV2Preset"/g)||[]).length,30);
  assert.equal(validateDesignField('pattern','<script>'),null);
- assert.equal(DEFAULT_DESIGN.pattern,'contours');
+ assert.equal(DEFAULT_DESIGN.pattern,'vision-violet-fault');
 });
 test('draft vault has four private snapshots and authenticated import controls',async()=>{
  const html=themeVaultMarkup(),source=await read('../src/theme-studio-vault.js');
