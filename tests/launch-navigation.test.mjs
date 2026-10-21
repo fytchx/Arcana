@@ -5,18 +5,15 @@ import {HOME_CARDS,HOME_MENUS,DIRECTORY,WIKI_TOPICS,homeScreen,homeSubmenu,direc
 import {ACCENT_PRESETS,selectedAccent,setAccent,themeStatus} from '../src/theme.js';
 
 const routes=new Set(['journal','journal-studio','journal-balance','home','directory','user','recent','settings','icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/category','wiki/items','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','calculators/damage','community','community/create','account','beta','lfg/raids','lfg/guilds','guilds','guilds/crest']);
-test('three destination cards open their appropriate sections',()=>{
+test('six Atlas tiles open real Arcana destinations',()=>{
  assert.deepEqual(HOME_CARDS.map(x=>x.title),['Pathfinder','Tools','Guilds & Community']);
  const html=homeScreen();
- assert.equal((html.match(/data-action="homemenu"/g)||[]).length,3);
- assert.match(html,/BUILD STUDIO|Build Studio/);
+ assert.equal((html.match(/class="atlasTile"/g)||[]).length,6);
+ assert.equal((html.match(/data-action="homemenu"/g)||[]).length,1);
  assert.match(html,/data-route="labs\/build"/);
- assert.match(html,/Guides, Builds & Wiki/);
- assert.doesNotMatch(html,/data-arg="builds"/);
- assert.match(html,/data-arg="social"/);
- assert.match(html,/data-route="wiki\/guides"/);
- assert.match(html,/data-route="wiki"/);
- assert.match(html,/data-route="directory"/);
+ assert.match(html,/data-route="calculators\/pathfinder"/);
+ assert.match(html,/data-action="homemenu" data-arg="tools"/);
+ for(const route of ['wiki/guides','wiki','community','guilds','directory'])assert.match(html,new RegExp('data-route="'+route+'"'));
  for(const card of HOME_CARDS){const popup=homeSubmenu(card.id);assert.ok(popup.includes(card.title.replaceAll('&','&amp;')));assert.match(popup,/launchNavRow/);}
 });
 test('all submenu and A-Z destinations are resolvable routes',()=>{
@@ -86,17 +83,19 @@ test('only administrators set appearance; users can keep reduced motion',async()
 });
 
 
-test('home puts Studio and live Journal on equal footing, with three secondary destinations',async()=>{
+test('Atlas home presents Studio above six destinations and a dynamic Journal',async()=>{
  const html=homeScreen();
- assert.match(html,/class="homeSpotlights"/);
- assert.match(html,/class="launchHero"/);
- assert.match(html,/class="journalHomeTeaser"/);
+ assert.match(html,/class="atlasUpdate"/);
+ assert.match(html,/class="atlasHero"/);
+ assert.match(html,/class="atlasTileGrid"/);
+ assert.match(html,/class="atlasJournal"/);
  assert.match(html,/idlearc-1-3-7-the-timing-couldnt-be-better/);
- assert.ok(html.indexOf('launchHero')<html.indexOf('journalHomeTeaser'));
- assert.ok(html.indexOf('journalHomeTeaser')<html.indexOf('launchQuickGrid'));
- assert.equal((html.match(/data-action="homemenu"/g)||[]).length,3);
- const stylesheet=await readFile(new URL('../journal-widgets.css',import.meta.url),'utf8');
- assert.match(stylesheet,/\.homeSpotlights/);
- assert.match(stylesheet,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
- assert.match(stylesheet,/\.launchQuickGrid/);
+ assert.ok(html.indexOf('atlasHero')<html.indexOf('atlasTileGrid'));
+ assert.ok(html.indexOf('atlasTileGrid')<html.indexOf('atlasJournal'));
+ assert.equal((html.match(/class="atlasTile"/g)||[]).length,6);
+ const stylesheet=await readFile(new URL('../home-atlas.css',import.meta.url),'utf8');
+ assert.match(stylesheet,/\.atlasHome/);
+ assert.match(stylesheet,/\.atlasTileGrid/);
+ assert.match(stylesheet,/@media\(max-width:520px\)/);
 });
+
