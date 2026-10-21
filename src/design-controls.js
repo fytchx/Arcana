@@ -147,8 +147,8 @@ export function applyDesign(root=globalThis.document?.documentElement){
  else{root.style.removeProperty('--arcana-atlas-panel');root.style.removeProperty('--arcana-atlas-icon-box');root.style.removeProperty('--arcana-atlas-icon');}
  applyPsychedelicTexture(root,values);
  applyVisualArt(root,values);
-  if(active)root.style.setProperty('--arcana-panel-opacity',String(values.panelOpacity/100));
-  else root.style.removeProperty('--arcana-panel-opacity');
+  if(active){root.style.setProperty('--arcana-panel-opacity',String(values.panelOpacity/100));root.style.setProperty('--arcana-panel-opacity-percent',values.panelOpacity+'%');}
+  else{root.style.removeProperty('--arcana-panel-opacity');root.style.removeProperty('--arcana-panel-opacity-percent');}
   root.style.setProperty('--arcana-wave-opacity',String(values.intensity/100));
  root.style.setProperty('--arcana-pattern-alpha',Math.round(values.intensity*.16)+'%');
  root.style.setProperty('--arcana-premium-pattern-alpha',Math.round(values.intensity*.35)+'%');
