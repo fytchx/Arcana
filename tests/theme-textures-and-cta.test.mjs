@@ -18,7 +18,9 @@ test('legacy texture renderer is still restorable but the new editor shows only 
   else assert.ok(css.includes('data-arcana-design-pattern="'+texture.id+'"'));
  }
  assert.doesNotMatch(form,/Where to show textures|Browse all 148 texture finishes|psyPalettePicker/);
- assert.match(form,/data-design-field="patternTarget"/);
+ assert.match(form,/data-design-field="panelPattern"/);
+ assert.match(form,/data-design-field="featurePattern"/);
+ assert.doesNotMatch(form,/data-design-field="patternTarget"/);
 });
 test('retired hero settings stay valid for saved drafts without appearing as dead controls',async()=>{
  const css=await read('../theme-studio-finishes.css'),mini=await read('../src/design-mini-preview.js'),form=designPanel({showPreview:false});
