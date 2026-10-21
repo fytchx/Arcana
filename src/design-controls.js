@@ -6,7 +6,7 @@ import {PSYCHEDELIC_DEFAULTS,applyPsychedelicTexture} from './psychedelic-patter
 // Admin-only local appearance experimentation. Never alters community theme data.
 export const DESIGN_KEY='arcana-admin-design-preview-v1';
 export const DEFAULT_DESIGN=Object.freeze({
-  main:'#0D1019',card:'#191E2B',action:'#A98BFF',text:'#F5F5FB',
+  main:'#0D1019',card:'#191E2B',iconBox:'#292439',iconGlyph:'#BBA4FF',action:'#A98BFF',text:'#F5F5FB',
   pattern:'contours',intensity:22,glow:18,edges:42,roundness:13,
   buttonRoundness:11,buttonFill:82,
  secondaryAccent:'#38BDF8',borderColor:'#66708B',mutedText:'#A8B2C4',navBar:'#191E2B',buttonText:'#0A0C14',
@@ -17,7 +17,7 @@ export const DEFAULT_DESIGN=Object.freeze({
  iconMode:'two-tone',fontSize:100,cardPadding:14,cardShadow:30,headerOpacity:95,patternScale:100,borderWidth:1,buttonHeight:45,accentBlend:25,aura:50,sheen:50,detail:63,...PSYCHEDELIC_DEFAULTS
 });
 const numbers={intensity:[0,100],glow:[0,100],edges:[0,100],roundness:[3,28],buttonRoundness:[3,30],buttonFill:[35,100],fontSize:[90,115],cardPadding:[8,22],cardShadow:[0,100],headerOpacity:[65,100],patternScale:[60,180],borderWidth:[0,3],buttonHeight:[40,58],accentBlend:[0,100],heroActionWidth:[65,100],heroActionHeight:[44,70],heroActionGlow:[0,100],heroActionBorder:[0,3],aura:[0,100],sheen:[0,100],detail:[0,100],psyStroke:[0,100]};
-const colors=new Set(['main','card','action','text','secondaryAccent','borderColor','mutedText','navBar','buttonText','psyBackground','psyPrimary','psySecondary','psyAccent','psyOutline']);
+const colors=new Set(['main','card','iconBox','iconGlyph','action','text','secondaryAccent','borderColor','mutedText','navBar','buttonText','psyBackground','psyPrimary','psySecondary','psyAccent','psyOutline']);
 // Accept pasted #A78BFA or A78BFA, never partial values or CSS strings.
 export function normalizeDesignHex(value){
  const raw=String(value||'').trim();
@@ -99,7 +99,7 @@ export function undoDesign(){
 export function applyDesignPreset(key){
  const preset=DESIGN_PRESETS[key];if(!preset)return false;
  const {name,tagline,collection,...values}=preset;
- const old=readDesign(),next={...old,...values};
+ const old=readDesign(),next={...old,...values,iconBox:values.card||old.iconBox,iconGlyph:values.action||old.iconGlyph};
  try{localStorage.setItem(DESIGN_KEY,JSON.stringify(next))}catch{return false}
  priorDesign=old;priorEditKey='preset';lastEditAt=0;applyDesign(globalThis.document?.documentElement);
  if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:design-change'));
@@ -130,6 +130,8 @@ export function applyDesign(root=globalThis.document?.documentElement){
   if(active){root.style.setProperty(css,values[k]);if(k==='main')root.style.setProperty('--bg',values[k]);if(k==='card')root.style.setProperty('--panel',values[k]);}
   else if(css.startsWith('--arcana-'))root.style.removeProperty(css);
  }
+ if(active){root.style.setProperty('--arcana-atlas-panel',values.card);root.style.setProperty('--arcana-atlas-icon-box',values.iconBox);root.style.setProperty('--arcana-atlas-icon',values.iconGlyph);}
+ else{root.style.removeProperty('--arcana-atlas-panel');root.style.removeProperty('--arcana-atlas-icon-box');root.style.removeProperty('--arcana-atlas-icon');}
  applyPsychedelicTexture(root,values);
   root.style.setProperty('--arcana-wave-opacity',String(values.intensity/100));
  root.style.setProperty('--arcana-pattern-alpha',Math.round(values.intensity*.16)+'%');
