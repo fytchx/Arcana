@@ -1,0 +1,188 @@
+
+/* Arcana Atelier: 48 deliberately distinct CSS material/ornament programs.
+ * All three colors inherit the current Theme Studio palette. No remote art, SVG
+ * web requests, scripting loops, canvas work, or independent user data. */
+html[data-arcana-design-pattern^="atelier-"]{
+ --atelier-ink:color-mix(in srgb,var(--theme-highlight,#a98bff) calc(var(--arcana-premium-pattern-alpha,8%) + 11%),transparent);
+ --atelier-alt:color-mix(in srgb,var(--arcana-secondary-accent,#38bdf8) calc(var(--arcana-premium-pattern-alpha,8%) + 8%),transparent);
+ --atelier-glow:color-mix(in srgb,var(--theme-highlight,#a98bff) calc(var(--arcana-premium-pattern-alpha,8%) + 4%),transparent);
+ --atelier-light:color-mix(in srgb,white calc(var(--arcana-premium-pattern-alpha,8%) * .5),transparent);
+ --arcana-texture-size:100% 100%;
+}
+.miniCanvas[data-mini-pattern^="atelier-"]{
+ --atelier-ink:color-mix(in srgb,var(--mini-accent,#a98bff) 23%,transparent);
+ --atelier-alt:color-mix(in srgb,var(--mini-secondary,#38bdf8) 18%,transparent);
+ --atelier-glow:color-mix(in srgb,var(--mini-accent,#a98bff) 12%,transparent);
+ --atelier-light:#ffffff0a;
+}
+.themePatternThumb[data-preview-pattern^="atelier-"]{
+ --atelier-ink:color-mix(in srgb,var(--thumb-ink,#a98bff) 67%,transparent);
+ --atelier-alt:color-mix(in srgb,var(--thumb-alt,#38bdf8) 50%,transparent);
+ --atelier-glow:color-mix(in srgb,var(--thumb-ink,#a98bff) 25%,transparent);
+ --atelier-light:#ffffff24;
+ background-color:var(--theme-secondary,#171b28)!important;
+ background-image:var(--atelier-program)!important;
+ background-size:cover!important;
+ background-position:center!important;
+}
+html[data-arcana-design-pattern^="atelier-"]{--arcana-texture:var(--atelier-program)}
+.miniCanvas[data-mini-pattern^="atelier-"]{--mini-pattern:var(--atelier-program)}
+.themePatternThumb[data-preview-pattern^="atelier-"]{--thumb-pattern:var(--atelier-program)}
+html[data-arcana-design-active="true"][data-arcana-design-pattern^="atelier-"]:not([data-arcana-pattern-target="background"]) .atlasTile{
+ background-color:var(--atlas-panel)!important;
+ background-image:var(--atelier-program)!important;
+ background-repeat:no-repeat!important;
+ background-size:cover!important;
+}
+html[data-arcana-design-active="true"][data-arcana-design-pattern^="atelier-"][data-arcana-pattern-target="background"] #content.homeFullscreen:has(.atlasHome){
+ background-image:var(--atelier-program)!important;
+ background-size:100% 100%!important;
+}
+.miniCanvas[data-mini-pattern^="atelier-"]:not([data-mini-pattern-target="background"]) .atlasMiniTile{
+ background-image:var(--atelier-program)!important;
+ background-size:cover!important;
+}
+
+/* Alloy · Satin steel */
+html[data-arcana-design-pattern="atelier-satin-steel"],.miniCanvas[data-mini-pattern="atelier-satin-steel"],.themePatternThumb[data-preview-pattern="atelier-satin-steel"]{--atelier-program:repeating-linear-gradient(93deg,transparent 0 4px,var(--atelier-ink) 5px 6px,transparent 7px 10px),linear-gradient(115deg,transparent 12%,var(--atelier-light) 45%,transparent 72%),radial-gradient(ellipse at 88% 19%,var(--atelier-alt),transparent 68%)}
+
+/* Alloy · Titanium grooves */
+html[data-arcana-design-pattern="atelier-titanium-groove"],.miniCanvas[data-mini-pattern="atelier-titanium-groove"],.themePatternThumb[data-preview-pattern="atelier-titanium-groove"]{--atelier-program:repeating-linear-gradient(89deg,transparent 0 2px,var(--atelier-ink) 3px 4px,transparent 5px 6px),repeating-linear-gradient(93deg,transparent 0 27px,var(--atelier-alt) 28px 30px,transparent 31px 56px),linear-gradient(164deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Alloy · Hammered pewter */
+html[data-arcana-design-pattern="atelier-pewter-hammered"],.miniCanvas[data-mini-pattern="atelier-pewter-hammered"],.themePatternThumb[data-preview-pattern="atelier-pewter-hammered"]{--atelier-program:radial-gradient(circle at 18% 25%,var(--atelier-ink) 0 5px,transparent 7px),radial-gradient(circle at 39% 47%,var(--atelier-alt) 0 4px,transparent 6px),radial-gradient(circle at 76% 78%,var(--atelier-ink) 0 7px,transparent 9px),radial-gradient(ellipse at 80% 26%,var(--atelier-glow),transparent 68%),linear-gradient(35deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Alloy · Anodized mesh */
+html[data-arcana-design-pattern="atelier-anodized-mesh"],.miniCanvas[data-mini-pattern="atelier-anodized-mesh"],.themePatternThumb[data-preview-pattern="atelier-anodized-mesh"]{--atelier-program:repeating-linear-gradient(44deg,transparent 0 7px,var(--atelier-ink) 8px 9px,transparent 10px 16px),repeating-linear-gradient(136deg,transparent 0 8px,var(--atelier-alt) 9px 10px,transparent 11px 18px),linear-gradient(130deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Alloy · Copper filament */
+html[data-arcana-design-pattern="atelier-copper-filament"],.miniCanvas[data-mini-pattern="atelier-copper-filament"],.themePatternThumb[data-preview-pattern="atelier-copper-filament"]{--atelier-program:repeating-linear-gradient(17deg,transparent 0 22px,var(--atelier-ink) 23px 25px,transparent 26px 46px),repeating-linear-gradient(94deg,transparent 0 4px,var(--atelier-alt) 5px 6px,transparent 7px 10px),radial-gradient(ellipse at 20% 90%,var(--atelier-glow),transparent 68%)}
+
+/* Alloy · Polished chrome */
+html[data-arcana-design-pattern="atelier-polished-chrome"],.miniCanvas[data-mini-pattern="atelier-polished-chrome"],.themePatternThumb[data-preview-pattern="atelier-polished-chrome"]{--atelier-program:linear-gradient(99deg,transparent 12%,var(--atelier-light) 45%,transparent 72%),linear-gradient(155deg,transparent 12%,var(--atelier-light) 45%,transparent 72%),radial-gradient(ellipse at 74% 25%,var(--atelier-alt),transparent 68%)}
+
+/* Fabric · Woven linen */
+html[data-arcana-design-pattern="atelier-woven-linen"],.miniCanvas[data-mini-pattern="atelier-woven-linen"],.themePatternThumb[data-preview-pattern="atelier-woven-linen"]{--atelier-program:repeating-linear-gradient(0deg,transparent 0 4px,var(--atelier-ink) 5px 6px,transparent 7px 10px),repeating-linear-gradient(90deg,transparent 0 5px,var(--atelier-alt) 6px 7px,transparent 8px 12px),linear-gradient(74deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Fabric · Velvet nap */
+html[data-arcana-design-pattern="atelier-velvet-nap"],.miniCanvas[data-mini-pattern="atelier-velvet-nap"],.themePatternThumb[data-preview-pattern="atelier-velvet-nap"]{--atelier-program:repeating-linear-gradient(104deg,transparent 0 2px,var(--atelier-ink) 3px 4px,transparent 5px 6px),radial-gradient(ellipse at 17% 77%,var(--atelier-alt),transparent 68%),linear-gradient(160deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Fabric · Folded silk */
+html[data-arcana-design-pattern="atelier-silk-fan"],.miniCanvas[data-mini-pattern="atelier-silk-fan"],.themePatternThumb[data-preview-pattern="atelier-silk-fan"]{--atelier-program:repeating-linear-gradient(134deg,transparent 0 18px,var(--atelier-ink) 19px 21px,transparent 22px 38px),linear-gradient(142deg,transparent 12%,var(--atelier-light) 45%,transparent 72%),radial-gradient(ellipse at 10% 18%,var(--atelier-glow),transparent 68%)}
+
+/* Fabric · Damask bloom */
+html[data-arcana-design-pattern="atelier-embroidered-damask"],.miniCanvas[data-mini-pattern="atelier-embroidered-damask"],.themePatternThumb[data-preview-pattern="atelier-embroidered-damask"]{--atelier-program:repeating-radial-gradient(ellipse at 15% 10%,transparent 0 22px,var(--atelier-alt) 24px,transparent 26px 52px),repeating-radial-gradient(ellipse at 75% 80%,transparent 0 29px,var(--atelier-ink) 31px,transparent 33px 66px),linear-gradient(70deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Fabric · Artist canvas */
+html[data-arcana-design-pattern="atelier-canvas-crosshatch"],.miniCanvas[data-mini-pattern="atelier-canvas-crosshatch"],.themePatternThumb[data-preview-pattern="atelier-canvas-crosshatch"]{--atelier-program:repeating-linear-gradient(47deg,transparent 0 3px,var(--atelier-ink) 4px 5px,transparent 6px 8px),repeating-linear-gradient(133deg,transparent 0 5px,var(--atelier-alt) 6px 7px,transparent 8px 12px),radial-gradient(ellipse at 53% 43%,var(--atelier-glow),transparent 68%)}
+
+/* Fabric · Cashmere drift */
+html[data-arcana-design-pattern="atelier-cashmere-drift"],.miniCanvas[data-mini-pattern="atelier-cashmere-drift"],.themePatternThumb[data-preview-pattern="atelier-cashmere-drift"]{--atelier-program:repeating-radial-gradient(ellipse at 32% 19%,transparent 0 34px,var(--atelier-ink) 36px,transparent 38px 76px),radial-gradient(ellipse at 82% 16%,var(--atelier-alt),transparent 68%),linear-gradient(125deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Stone · Slate strata */
+html[data-arcana-design-pattern="atelier-slate-strata"],.miniCanvas[data-mini-pattern="atelier-slate-strata"],.themePatternThumb[data-preview-pattern="atelier-slate-strata"]{--atelier-program:repeating-linear-gradient(174deg,transparent 0 31px,var(--atelier-ink) 32px 34px,transparent 35px 64px),repeating-linear-gradient(166deg,transparent 0 53px,var(--atelier-alt) 54px 55px,transparent 56px 108px),radial-gradient(ellipse at 23% 87%,var(--atelier-glow),transparent 68%)}
+
+/* Stone · Marble veins */
+html[data-arcana-design-pattern="atelier-marble-veins"],.miniCanvas[data-mini-pattern="atelier-marble-veins"],.themePatternThumb[data-preview-pattern="atelier-marble-veins"]{--atelier-program:repeating-linear-gradient(151deg,transparent 0 53px,var(--atelier-ink) 54px 56px,transparent 57px 108px),repeating-linear-gradient(157deg,transparent 0 94px,var(--atelier-alt) 95px 96px,transparent 97px 190px),linear-gradient(100deg,transparent 12%,var(--atelier-light) 45%,transparent 72%),radial-gradient(ellipse at 75% 11%,var(--atelier-glow),transparent 68%)}
+
+/* Stone · Geode fractures */
+html[data-arcana-design-pattern="atelier-geode-fractures"],.miniCanvas[data-mini-pattern="atelier-geode-fractures"],.themePatternThumb[data-preview-pattern="atelier-geode-fractures"]{--atelier-program:repeating-linear-gradient(45deg,transparent 0 39px,var(--atelier-ink) 40px 42px,transparent 43px 80px),repeating-linear-gradient(130deg,transparent 0 74px,var(--atelier-alt) 75px 77px,transparent 78px 150px),conic-gradient(from 50deg at 70% 75%,transparent 0 10%,var(--atelier-ink) 14%,transparent 17% 42%,var(--atelier-alt) 45%,transparent 49%)}
+
+/* Stone · Granite salt */
+html[data-arcana-design-pattern="atelier-granite-salt"],.miniCanvas[data-mini-pattern="atelier-granite-salt"],.themePatternThumb[data-preview-pattern="atelier-granite-salt"]{--atelier-program:radial-gradient(circle at 14% 20%,var(--atelier-ink) 0 2px,transparent 4px),radial-gradient(circle at 26% 66%,var(--atelier-alt) 0 1px,transparent 3px),radial-gradient(circle at 58% 42%,var(--atelier-ink) 0 3px,transparent 5px),radial-gradient(circle at 87% 81%,var(--atelier-alt) 0 1px,transparent 3px),linear-gradient(23deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Stone · Basalt columns */
+html[data-arcana-design-pattern="atelier-basalt-columns"],.miniCanvas[data-mini-pattern="atelier-basalt-columns"],.themePatternThumb[data-preview-pattern="atelier-basalt-columns"]{--atelier-program:repeating-linear-gradient(90deg,transparent 0 35px,var(--atelier-ink) 36px 38px,transparent 39px 72px),repeating-radial-gradient(ellipse at 50% 100%,transparent 0 56px,var(--atelier-alt) 58px,transparent 60px 120px),linear-gradient(151deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Stone · Onyx tributary */
+html[data-arcana-design-pattern="atelier-onyx-tributary"],.miniCanvas[data-mini-pattern="atelier-onyx-tributary"],.themePatternThumb[data-preview-pattern="atelier-onyx-tributary"]{--atelier-program:repeating-radial-gradient(ellipse at -15% 110%,transparent 0 43px,var(--atelier-alt) 45px,transparent 47px 94px),repeating-radial-gradient(ellipse at 105% -10%,transparent 0 65px,var(--atelier-ink) 67px,transparent 69px 138px),radial-gradient(ellipse at 61% 46%,var(--atelier-glow),transparent 68%)}
+
+/* Glass · Smoked glass */
+html[data-arcana-design-pattern="atelier-smoked-glass"],.miniCanvas[data-mini-pattern="atelier-smoked-glass"],.themePatternThumb[data-preview-pattern="atelier-smoked-glass"]{--atelier-program:linear-gradient(140deg,transparent 12%,var(--atelier-light) 45%,transparent 72%),radial-gradient(ellipse at 10% 17%,var(--atelier-alt),transparent 68%),radial-gradient(ellipse at 90% 83%,var(--atelier-glow),transparent 68%)}
+
+/* Glass · Frosted pane */
+html[data-arcana-design-pattern="atelier-frosted-pane"],.miniCanvas[data-mini-pattern="atelier-frosted-pane"],.themePatternThumb[data-preview-pattern="atelier-frosted-pane"]{--atelier-program:repeating-linear-gradient(88deg,transparent 0 8px,var(--atelier-ink) 9px 10px,transparent 11px 18px),linear-gradient(35deg,transparent 12%,var(--atelier-light) 45%,transparent 72%),radial-gradient(ellipse at 40% 42%,var(--atelier-glow),transparent 68%)}
+
+/* Glass · Prism edges */
+html[data-arcana-design-pattern="atelier-prism-edges"],.miniCanvas[data-mini-pattern="atelier-prism-edges"],.themePatternThumb[data-preview-pattern="atelier-prism-edges"]{--atelier-program:conic-gradient(from 31deg at 26% 21%,transparent 0 10%,var(--atelier-ink) 14%,transparent 17% 42%,var(--atelier-alt) 45%,transparent 49%),conic-gradient(from 160deg at 75% 85%,transparent 0 10%,var(--atelier-ink) 14%,transparent 17% 42%,var(--atelier-alt) 45%,transparent 49%),linear-gradient(103deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Glass · Opal interference */
+html[data-arcana-design-pattern="atelier-opal-interference"],.miniCanvas[data-mini-pattern="atelier-opal-interference"],.themePatternThumb[data-preview-pattern="atelier-opal-interference"]{--atelier-program:radial-gradient(ellipse at 18% 19%,var(--atelier-glow),transparent 68%),radial-gradient(ellipse at 80% 56%,var(--atelier-alt),transparent 68%),conic-gradient(from 122deg at 48% 51%,transparent 0 10%,var(--atelier-ink) 14%,transparent 17% 42%,var(--atelier-alt) 45%,transparent 49%)}
+
+/* Glass · Glacier sheen */
+html[data-arcana-design-pattern="atelier-glacier-sheen"],.miniCanvas[data-mini-pattern="atelier-glacier-sheen"],.themePatternThumb[data-preview-pattern="atelier-glacier-sheen"]{--atelier-program:repeating-linear-gradient(131deg,transparent 0 62px,var(--atelier-ink) 63px 65px,transparent 66px 126px),linear-gradient(78deg,transparent 12%,var(--atelier-light) 45%,transparent 72%),radial-gradient(ellipse at 0% 0%,var(--atelier-alt),transparent 68%)}
+
+/* Glass · Black mirror */
+html[data-arcana-design-pattern="atelier-black-mirror"],.miniCanvas[data-mini-pattern="atelier-black-mirror"],.themePatternThumb[data-preview-pattern="atelier-black-mirror"]{--atelier-program:linear-gradient(45deg,transparent 12%,var(--atelier-light) 45%,transparent 72%),repeating-linear-gradient(92deg,transparent 0 88px,var(--atelier-ink) 89px 90px,transparent 91px 178px),radial-gradient(ellipse at 89% 92%,var(--atelier-alt),transparent 68%)}
+
+/* Cosmos · Distant starfield */
+html[data-arcana-design-pattern="atelier-starfield"],.miniCanvas[data-mini-pattern="atelier-starfield"],.themePatternThumb[data-preview-pattern="atelier-starfield"]{--atelier-program:radial-gradient(circle at 13% 15%,var(--atelier-ink) 0 2px,transparent 4px),radial-gradient(circle at 72% 25%,var(--atelier-alt) 0 1px,transparent 3px),radial-gradient(circle at 38% 82%,var(--atelier-ink) 0 1px,transparent 3px),radial-gradient(circle at 90% 69%,var(--atelier-alt) 0 2px,transparent 4px),radial-gradient(ellipse at 80% 90%,var(--atelier-glow),transparent 68%)}
+
+/* Cosmos · Nebula vapor */
+html[data-arcana-design-pattern="atelier-nebula-vapor"],.miniCanvas[data-mini-pattern="atelier-nebula-vapor"],.themePatternThumb[data-preview-pattern="atelier-nebula-vapor"]{--atelier-program:radial-gradient(ellipse at 12% 85%,var(--atelier-glow),transparent 68%),radial-gradient(ellipse at 76% 12%,var(--atelier-alt),transparent 68%),radial-gradient(ellipse at 51% 43%,var(--atelier-glow),transparent 68%)}
+
+/* Cosmos · Orbital chart */
+html[data-arcana-design-pattern="atelier-orbital-chart"],.miniCanvas[data-mini-pattern="atelier-orbital-chart"],.themePatternThumb[data-preview-pattern="atelier-orbital-chart"]{--atelier-program:repeating-radial-gradient(ellipse at 49% 50%,transparent 0 37px,var(--atelier-alt) 39px,transparent 41px 82px),repeating-radial-gradient(ellipse at 49% 50%,transparent 0 68px,var(--atelier-ink) 70px,transparent 72px 144px),radial-gradient(circle at 59% 18%,var(--atelier-ink) 0 2px,transparent 4px)}
+
+/* Cosmos · Lunar halo */
+html[data-arcana-design-pattern="atelier-lunar-halo"],.miniCanvas[data-mini-pattern="atelier-lunar-halo"],.themePatternThumb[data-preview-pattern="atelier-lunar-halo"]{--atelier-program:repeating-radial-gradient(ellipse at 82% 18%,transparent 0 51px,var(--atelier-ink) 53px,transparent 55px 110px),radial-gradient(ellipse at 83% 15%,var(--atelier-alt),transparent 68%),radial-gradient(circle at 82% 18%,var(--atelier-alt) 0 3px,transparent 5px)}
+
+/* Cosmos · Stardust veil */
+html[data-arcana-design-pattern="atelier-stardust-veil"],.miniCanvas[data-mini-pattern="atelier-stardust-veil"],.themePatternThumb[data-preview-pattern="atelier-stardust-veil"]{--atelier-program:radial-gradient(circle at 16% 44%,var(--atelier-ink) 0 1px,transparent 3px),radial-gradient(circle at 47% 19%,var(--atelier-alt) 0 1px,transparent 3px),radial-gradient(circle at 79% 75%,var(--atelier-ink) 0 2px,transparent 4px),radial-gradient(ellipse at 39% 40%,var(--atelier-alt),transparent 68%),linear-gradient(170deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Cosmos · Gravity well */
+html[data-arcana-design-pattern="atelier-gravity-well"],.miniCanvas[data-mini-pattern="atelier-gravity-well"],.themePatternThumb[data-preview-pattern="atelier-gravity-well"]{--atelier-program:repeating-radial-gradient(ellipse at 52% 57%,transparent 0 14px,var(--atelier-alt) 16px,transparent 18px 36px),repeating-radial-gradient(ellipse at 52% 57%,transparent 0 35px,var(--atelier-ink) 37px,transparent 39px 78px),radial-gradient(ellipse at 52% 57%,var(--atelier-glow),transparent 68%)}
+
+/* Nature · Fern shadow */
+html[data-arcana-design-pattern="atelier-fern-shadow"],.miniCanvas[data-mini-pattern="atelier-fern-shadow"],.themePatternThumb[data-preview-pattern="atelier-fern-shadow"]{--atelier-program:repeating-linear-gradient(25deg,transparent 0 36px,var(--atelier-ink) 37px 39px,transparent 40px 74px),repeating-linear-gradient(155deg,transparent 0 48px,var(--atelier-alt) 49px 51px,transparent 52px 98px),radial-gradient(ellipse at 23% 84%,var(--atelier-glow),transparent 68%)}
+
+/* Nature · Moss patina */
+html[data-arcana-design-pattern="atelier-moss-patina"],.miniCanvas[data-mini-pattern="atelier-moss-patina"],.themePatternThumb[data-preview-pattern="atelier-moss-patina"]{--atelier-program:radial-gradient(circle at 21% 47%,var(--atelier-ink) 0 4px,transparent 6px),radial-gradient(circle at 51% 25%,var(--atelier-alt) 0 3px,transparent 5px),radial-gradient(circle at 87% 71%,var(--atelier-ink) 0 6px,transparent 8px),radial-gradient(ellipse at 56% 93%,var(--atelier-alt),transparent 68%)}
+
+/* Nature · Dark woodgrain */
+html[data-arcana-design-pattern="atelier-woodgrain"],.miniCanvas[data-mini-pattern="atelier-woodgrain"],.themePatternThumb[data-preview-pattern="atelier-woodgrain"]{--atelier-program:repeating-linear-gradient(175deg,transparent 0 16px,var(--atelier-ink) 17px 18px,transparent 19px 34px),repeating-radial-gradient(ellipse at 95% 49%,transparent 0 41px,var(--atelier-ink) 43px,transparent 45px 90px),linear-gradient(140deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Nature · Petal etching */
+html[data-arcana-design-pattern="atelier-petal-etching"],.miniCanvas[data-mini-pattern="atelier-petal-etching"],.themePatternThumb[data-preview-pattern="atelier-petal-etching"]{--atelier-program:repeating-radial-gradient(ellipse at 16% 24%,transparent 0 18px,var(--atelier-alt) 20px,transparent 22px 44px),repeating-radial-gradient(ellipse at 77% 72%,transparent 0 20px,var(--atelier-ink) 22px,transparent 24px 48px),conic-gradient(from 180deg at 49% 56%,transparent 0 10%,var(--atelier-ink) 14%,transparent 17% 42%,var(--atelier-alt) 45%,transparent 49%)}
+
+/* Nature · Coral relief */
+html[data-arcana-design-pattern="atelier-coral-reef"],.miniCanvas[data-mini-pattern="atelier-coral-reef"],.themePatternThumb[data-preview-pattern="atelier-coral-reef"]{--atelier-program:repeating-radial-gradient(ellipse at 1% 100%,transparent 0 26px,var(--atelier-alt) 28px,transparent 30px 60px),repeating-radial-gradient(ellipse at 100% 0%,transparent 0 35px,var(--atelier-ink) 37px,transparent 39px 78px),radial-gradient(ellipse at 60% 36%,var(--atelier-glow),transparent 68%)}
+
+/* Nature · Ivy tracery */
+html[data-arcana-design-pattern="atelier-ivy-tracery"],.miniCanvas[data-mini-pattern="atelier-ivy-tracery"],.themePatternThumb[data-preview-pattern="atelier-ivy-tracery"]{--atelier-program:repeating-linear-gradient(72deg,transparent 0 66px,var(--atelier-ink) 67px 68px,transparent 69px 134px),repeating-radial-gradient(ellipse at 10% 91%,transparent 0 45px,var(--atelier-alt) 47px,transparent 49px 98px),radial-gradient(circle at 61% 37%,var(--atelier-ink) 0 2px,transparent 4px)}
+
+/* Relic · Gilded parchment */
+html[data-arcana-design-pattern="atelier-gilded-parchment"],.miniCanvas[data-mini-pattern="atelier-gilded-parchment"],.themePatternThumb[data-preview-pattern="atelier-gilded-parchment"]{--atelier-program:linear-gradient(113deg,transparent 12%,var(--atelier-light) 45%,transparent 72%),repeating-linear-gradient(90deg,transparent 0 53px,var(--atelier-ink) 54px 56px,transparent 57px 108px),repeating-linear-gradient(0deg,transparent 0 81px,var(--atelier-alt) 82px 83px,transparent 84px 164px)}
+
+/* Relic · Rune circles */
+html[data-arcana-design-pattern="atelier-rune-circles"],.miniCanvas[data-mini-pattern="atelier-rune-circles"],.themePatternThumb[data-preview-pattern="atelier-rune-circles"]{--atelier-program:repeating-radial-gradient(ellipse at 50% 50%,transparent 0 25px,var(--atelier-alt) 27px,transparent 29px 58px),repeating-conic-gradient(from 15deg at 50% 50%,transparent 0 28deg,var(--atelier-alt) 29deg,transparent 30deg 60deg)}
+
+/* Relic · Cathedral vault */
+html[data-arcana-design-pattern="atelier-cathedral-vault"],.miniCanvas[data-mini-pattern="atelier-cathedral-vault"],.themePatternThumb[data-preview-pattern="atelier-cathedral-vault"]{--atelier-program:repeating-radial-gradient(ellipse at 50% 100%,transparent 0 46px,var(--atelier-alt) 48px,transparent 50px 100px),repeating-linear-gradient(90deg,transparent 0 68px,var(--atelier-ink) 69px 71px,transparent 72px 138px),linear-gradient(168deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Relic · Fine filigree */
+html[data-arcana-design-pattern="atelier-relic-filament"],.miniCanvas[data-mini-pattern="atelier-relic-filament"],.themePatternThumb[data-preview-pattern="atelier-relic-filament"]{--atelier-program:conic-gradient(from 90deg at 5% 15%,transparent 0 10%,var(--atelier-ink) 14%,transparent 17% 42%,var(--atelier-alt) 45%,transparent 49%),conic-gradient(from 270deg at 95% 85%,transparent 0 10%,var(--atelier-ink) 14%,transparent 17% 42%,var(--atelier-alt) 45%,transparent 49%),repeating-radial-gradient(ellipse at 50% 45%,transparent 0 61px,var(--atelier-ink) 63px,transparent 65px 130px)}
+
+/* Relic · Alchemist paper */
+html[data-arcana-design-pattern="atelier-alchemist-paper"],.miniCanvas[data-mini-pattern="atelier-alchemist-paper"],.themePatternThumb[data-preview-pattern="atelier-alchemist-paper"]{--atelier-program:radial-gradient(circle at 34% 44%,var(--atelier-ink) 0 4px,transparent 6px),repeating-linear-gradient(0deg,transparent 0 44px,var(--atelier-alt) 45px 46px,transparent 47px 90px),repeating-radial-gradient(ellipse at 68% 52%,transparent 0 82px,var(--atelier-alt) 84px,transparent 86px 172px)}
+
+/* Relic · Compass engraving */
+html[data-arcana-design-pattern="atelier-engraved-compass"],.miniCanvas[data-mini-pattern="atelier-engraved-compass"],.themePatternThumb[data-preview-pattern="atelier-engraved-compass"]{--atelier-program:repeating-radial-gradient(ellipse at 50% 50%,transparent 0 54px,var(--atelier-alt) 56px,transparent 58px 116px),repeating-linear-gradient(45deg,transparent 0 76px,var(--atelier-alt) 77px 78px,transparent 79px 154px),repeating-linear-gradient(135deg,transparent 0 76px,var(--atelier-ink) 77px 78px,transparent 79px 154px),radial-gradient(circle at 50% 50%,var(--atelier-ink) 0 3px,transparent 5px)}
+
+/* Tech · Micro circuitry */
+html[data-arcana-design-pattern="atelier-micro-circuit"],.miniCanvas[data-mini-pattern="atelier-micro-circuit"],.themePatternThumb[data-preview-pattern="atelier-micro-circuit"]{--atelier-program:repeating-linear-gradient(0deg,transparent 0 27px,var(--atelier-ink) 28px 29px,transparent 30px 56px),repeating-linear-gradient(90deg,transparent 0 36px,var(--atelier-alt) 37px 38px,transparent 39px 74px),radial-gradient(circle at 28% 37%,var(--atelier-ink) 0 3px,transparent 5px),radial-gradient(circle at 74% 69%,var(--atelier-alt) 0 3px,transparent 5px)}
+
+/* Tech · Carbon twill */
+html[data-arcana-design-pattern="atelier-carbon-twill"],.miniCanvas[data-mini-pattern="atelier-carbon-twill"],.themePatternThumb[data-preview-pattern="atelier-carbon-twill"]{--atelier-program:repeating-linear-gradient(45deg,transparent 0 5px,var(--atelier-ink) 6px 7px,transparent 8px 12px),repeating-linear-gradient(135deg,transparent 0 6px,var(--atelier-alt) 7px 8px,transparent 9px 14px),linear-gradient(120deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Tech · Holographic scan */
+html[data-arcana-design-pattern="atelier-holographic-scan"],.miniCanvas[data-mini-pattern="atelier-holographic-scan"],.themePatternThumb[data-preview-pattern="atelier-holographic-scan"]{--atelier-program:repeating-linear-gradient(0deg,transparent 0 4px,var(--atelier-ink) 5px 6px,transparent 7px 10px),conic-gradient(from 87deg at 73% 35%,transparent 0 10%,var(--atelier-ink) 14%,transparent 17% 42%,var(--atelier-alt) 45%,transparent 49%),radial-gradient(ellipse at 73% 35%,var(--atelier-alt),transparent 68%)}
+
+/* Tech · Data filigree */
+html[data-arcana-design-pattern="atelier-data-filigree"],.miniCanvas[data-mini-pattern="atelier-data-filigree"],.themePatternThumb[data-preview-pattern="atelier-data-filigree"]{--atelier-program:repeating-linear-gradient(90deg,transparent 0 62px,var(--atelier-ink) 63px 64px,transparent 65px 126px),repeating-linear-gradient(0deg,transparent 0 68px,var(--atelier-alt) 69px 70px,transparent 71px 138px),radial-gradient(circle at 50% 55%,var(--atelier-ink) 0 4px,transparent 6px),linear-gradient(115deg,transparent 12%,var(--atelier-light) 45%,transparent 72%)}
+
+/* Tech · Ion grid */
+html[data-arcana-design-pattern="atelier-ion-grid"],.miniCanvas[data-mini-pattern="atelier-ion-grid"],.themePatternThumb[data-preview-pattern="atelier-ion-grid"]{--atelier-program:repeating-linear-gradient(0deg,transparent 0 23px,var(--atelier-ink) 24px 25px,transparent 26px 48px),repeating-linear-gradient(90deg,transparent 0 25px,var(--atelier-alt) 26px 27px,transparent 28px 52px),radial-gradient(ellipse at 52% 50%,var(--atelier-glow),transparent 68%),radial-gradient(circle at 50% 50%,var(--atelier-alt) 0 3px,transparent 5px)}
+
+/* Tech · Quantum lines */
+html[data-arcana-design-pattern="atelier-quantum-lines"],.miniCanvas[data-mini-pattern="atelier-quantum-lines"],.themePatternThumb[data-preview-pattern="atelier-quantum-lines"]{--atelier-program:repeating-radial-gradient(ellipse at 27% 22%,transparent 0 30px,var(--atelier-alt) 32px,transparent 34px 68px),repeating-linear-gradient(140deg,transparent 0 22px,var(--atelier-alt) 23px 24px,transparent 25px 46px),radial-gradient(ellipse at 78% 71%,var(--atelier-glow),transparent 68%)}
