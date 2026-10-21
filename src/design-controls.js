@@ -4,10 +4,11 @@ import {SIGNATURE_PRESETS} from './signature-collection.js';
 import {PSYCHEDELIC_PRESETS} from './psychedelic-presets.js';
 import {PSYCHEDELIC_DEFAULTS,applyPsychedelicTexture} from './psychedelic-patterns.js';
 import {VISUAL_ART_IDS,visualArtById,applyVisualArt} from './visual-art.js';
+import {STUDIO_V2_PRESETS} from './studio-v2-presets.js';
 // Admin-only local appearance experimentation. Never alters community theme data.
 export const DESIGN_KEY='arcana-admin-design-preview-v1';
 export const DEFAULT_DESIGN=Object.freeze({
-  main:'#0D1019',card:'#191E2B',iconBox:'#292439',iconGlyph:'#BBA4FF',action:'#A98BFF',text:'#F5F5FB',artBase:'#100B2E',artPrimary:'#ED55B8',artSecondary:'#6552F5',artGlow:'#9AC7FF',
+  main:'#0D1019',card:'#191E2B',iconBox:'#292439',iconGlyph:'#BBA4FF',action:'#A98BFF',text:'#F5F5FB',artBase:'#100B2E',artPrimary:'#ED55B8',artSecondary:'#6552F5',artGlow:'#9AC7FF',artStrength:100,artDetail:100,artWeight:100,artZoom:100,artPositionX:50,artPositionY:50,panelOpacity:88,
   pattern:'contours',intensity:22,glow:18,edges:42,roundness:13,
   buttonRoundness:11,buttonFill:82,
  secondaryAccent:'#38BDF8',borderColor:'#66708B',mutedText:'#A8B2C4',navBar:'#191E2B',buttonText:'#0A0C14',
@@ -17,7 +18,7 @@ export const DEFAULT_DESIGN=Object.freeze({
  patternTarget:'all',
  iconMode:'two-tone',fontSize:100,cardPadding:14,cardShadow:30,headerOpacity:95,patternScale:100,borderWidth:1,buttonHeight:45,accentBlend:25,aura:50,sheen:50,detail:63,...PSYCHEDELIC_DEFAULTS
 });
-const numbers={intensity:[0,100],glow:[0,100],edges:[0,100],roundness:[3,28],buttonRoundness:[3,30],buttonFill:[35,100],fontSize:[90,115],cardPadding:[8,22],cardShadow:[0,100],headerOpacity:[65,100],patternScale:[60,180],borderWidth:[0,3],buttonHeight:[40,58],accentBlend:[0,100],heroActionWidth:[65,100],heroActionHeight:[44,70],heroActionGlow:[0,100],heroActionBorder:[0,3],aura:[0,100],sheen:[0,100],detail:[0,100],psyStroke:[0,100]};
+const numbers={artStrength:[15,100],artDetail:[25,100],artWeight:[60,180],artZoom:[75,155],artPositionX:[0,100],artPositionY:[0,100],panelOpacity:[60,100],intensity:[0,100],glow:[0,100],edges:[0,100],roundness:[3,28],buttonRoundness:[3,30],buttonFill:[35,100],fontSize:[90,115],cardPadding:[8,22],cardShadow:[0,100],headerOpacity:[65,100],patternScale:[60,180],borderWidth:[0,3],buttonHeight:[40,58],accentBlend:[0,100],heroActionWidth:[65,100],heroActionHeight:[44,70],heroActionGlow:[0,100],heroActionBorder:[0,3],aura:[0,100],sheen:[0,100],detail:[0,100],psyStroke:[0,100]};
 const colors=new Set(['main','card','iconBox','iconGlyph','action','text','secondaryAccent','borderColor','mutedText','navBar','buttonText','psyBackground','psyPrimary','psySecondary','psyAccent','psyOutline','artBase','artPrimary','artSecondary','artGlow']);
 // Accept pasted #A78BFA or A78BFA, never partial values or CSS strings.
 export function normalizeDesignHex(value){
@@ -45,7 +46,8 @@ export const DESIGN_PRESETS=Object.freeze({
  gilded:{name:'Gilded Night',main:'#111015',card:'#26202A',action:'#F5C866',secondaryAccent:'#D0A4ED',text:'#FFF9ED',borderColor:'#76634E',mutedText:'#C8BCAF',navBar:'#201C23',buttonText:'#1D1509',pattern:'honeycomb',intensity:16,heroActionStyle:'spotlight'},
  ink:{name:'Ink & Starlight',main:'#0B0B13',card:'#1C1C2A',action:'#F4F4F9',secondaryAccent:'#998DFF',text:'#F3F3F8',borderColor:'#545467',mutedText:'#B4B4C7',navBar:'#171722',buttonText:'#101018',pattern:'stars',intensity:18,buttonStyle:'outline',glow:8},
  ...SIGNATURE_PRESETS,
-  ...PSYCHEDELIC_PRESETS
+  ...PSYCHEDELIC_PRESETS,
+  ...STUDIO_V2_PRESETS
 });
 export const DESIGN_FIELDS=Object.keys(DEFAULT_DESIGN);
 export function validateDesignField(key,value){
@@ -145,6 +147,8 @@ export function applyDesign(root=globalThis.document?.documentElement){
  else{root.style.removeProperty('--arcana-atlas-panel');root.style.removeProperty('--arcana-atlas-icon-box');root.style.removeProperty('--arcana-atlas-icon');}
  applyPsychedelicTexture(root,values);
  applyVisualArt(root,values);
+  if(active)root.style.setProperty('--arcana-panel-opacity',String(values.panelOpacity/100));
+  else root.style.removeProperty('--arcana-panel-opacity');
   root.style.setProperty('--arcana-wave-opacity',String(values.intensity/100));
  root.style.setProperty('--arcana-pattern-alpha',Math.round(values.intensity*.16)+'%');
  root.style.setProperty('--arcana-premium-pattern-alpha',Math.round(values.intensity*.35)+'%');
