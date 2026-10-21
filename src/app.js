@@ -157,7 +157,7 @@ const isLocalThemePlayground=()=>isPreviewThemeHost()&&parseRoute().route==='the
 const tryOnTheme=()=>{try{return isPreviewThemeHost()&&sessionStorage.getItem('arcana-theme-tryon-preview-v1')==='1'}catch{return false}};
 const changeTryOn=enabled=>{try{if(enabled)sessionStorage.setItem('arcana-theme-tryon-preview-v1','1');else sessionStorage.removeItem('arcana-theme-tryon-preview-v1');return true}catch{return false}};
 const canEditThemeDraft=()=>isAppearanceAdmin()||isLocalThemePlayground();
-const themePlaygroundView=()=>'<div class="launchPage themePlayground"><span class="launchEyebrow">ARCANA PREVIEW · LOCAL ONLY</span><h1>Theme Playground</h1><p>Explore 12 editable vector artworks and 136 archived texture finishes, remix colors and lighting, and save up to twelve private designs. This browser-only preview cannot publish anything to the real site.</p><div class="themeTryOnActions"><button class="btn primary" type="button" data-action="theme-try-on">✦ Try this on Arcana</button><button class="btn secondary" type="button" data-action="theme-try-off">Stop site preview</button></div><div class="themeStudioWorkbench"><div class="themeStudioEditor">'+designPanel({showPreview:false})+'</div><aside class="themeStudioPreview" aria-label="Live theme preview">'+designMiniMarkup()+'</aside></div></div>'; 
+const themePlaygroundView=()=>'<div class="launchPage themePlayground"><span class="launchEyebrow">ARCANA PREVIEW · LOCAL ONLY</span><h1>Theme Playground</h1><p>Explore 18 original recolorable artworks and 30 curated complete looks, remix colors and lighting, and save up to twelve private designs. This browser-only preview cannot publish anything to the real site.</p><div class="themeTryOnActions"><button class="btn primary" type="button" data-action="theme-try-on">✦ Try this on Arcana</button><button class="btn secondary" type="button" data-action="theme-try-off">Stop site preview</button></div><div class="themeStudioWorkbench"><div class="themeStudioEditor">'+designPanel({showPreview:false})+'</div><aside class="themeStudioPreview" aria-label="Live theme preview">'+designMiniMarkup()+'</aside></div></div>'; 
 function crumbTrail(title){
  const route=parseRoute().route,section=route.split('/')[0];
  const parent={labs:['Build Studio','labs/build'],calculators:['Pathfinder','calculators/pathfinder'],lfg:['Guild & Raid Finder','lfg'],wiki:['ArcanaWiki','wiki']}[section];
@@ -580,6 +580,10 @@ function syncWorkshopInputs(){
  const psy=document.querySelector('.arcanaDesignLab .psyPalettePicker');if(psy){psy.dataset.psyActive=String(['groove-melt','orbit-jelly','doodle-rift','prism-puddle'].includes(design.pattern));psy.dataset.psyMode=design.psyPaletteMode;}
  for(const tile of document.querySelectorAll('.arcanaDesignLab [data-theme-pattern]'))tile.setAttribute('aria-pressed',String(tile.dataset.themePattern===design.pattern));
   const artPalette=document.querySelector('.visionArtPalette');if(artPalette)artPalette.dataset.visionActive=String(design.pattern.startsWith('vision-'));
+  for(const tile of document.querySelectorAll('.studioV2 .designPreset[data-collection="studio-v2"]')){
+   const p=DESIGN_PRESETS[tile.dataset.arg],selected=p&&p.pattern===design.pattern&&p.artPrimary===design.artPrimary&&p.main===design.main;
+   tile.classList.toggle('selected',!!selected);tile.setAttribute('aria-pressed',String(!!selected));
+  }
  for(const button of document.querySelectorAll('.arcanaDesignLab [data-hero-cta-style]'))button.setAttribute('aria-pressed',String(button.dataset.heroCtaStyle===design.heroActionStyle));
  for(const preset of document.querySelectorAll('.arcanaDesignLab .designPreset')){
   const matches=preset.dataset.presetSearch&&preset.dataset.arg;
@@ -596,7 +600,7 @@ function action(name,arg,btn){if(['accent','custom-accent','site-surface','icon-
   case 'undo-design':if(!canEditThemeDraft()){toast('Admin access required');break}if(undoDesign()){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Previous design restored')}else toast('No recent design change to undo');break;
   case 'theme-try-on':{if(isLocalThemePlayground()&&changeTryOn(true)){go('home');toast('Your private theme is now visible around Arcana. Browser only.');}break;}
    case 'theme-try-off':{if(isLocalThemePlayground()&&changeTryOn(false)){render();toast('Site preview disabled. Studio preview stays editable.');}break;}
-   case 'random-signature':{if(!canEditThemeDraft())break;const keys=Object.keys(DESIGN_PRESETS).filter(id=>DESIGN_PRESETS[id].collection==='signature');const design=readDesign();const other=keys.filter(id=>DESIGN_PRESETS[id].pattern!==design.pattern);const source=other.length?other:keys;const chosen=source[Math.floor(Math.random()*source.length)];if(chosen&&applyDesignPreset(chosen)){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Signature theme: '+DESIGN_PRESETS[chosen].name+' · Private draft');}break;}
+   case 'random-signature':{if(!canEditThemeDraft())break;const keys=Object.keys(DESIGN_PRESETS).filter(id=>DESIGN_PRESETS[id].collection==='studio-v2');const design=readDesign();const other=keys.filter(id=>DESIGN_PRESETS[id].pattern!==design.pattern);const source=other.length?other:keys;const chosen=source[Math.floor(Math.random()*source.length)];if(chosen&&applyDesignPreset(chosen)){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Studio look: '+DESIGN_PRESETS[chosen].name+' · Private draft');}break;}
    case 'design-preset':if(!canEditThemeDraft()){toast('Admin access required');break}if(applyDesignPreset(arg)){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Palette applied. Undo is available.')}else toast('Palette unavailable');break;
   case 'custom-accent':{const hex=node('arcanaCustomAccentHex')?.value.trim()||node('arcanaCustomAccentPicker')?.value;if(setCustomAccent(hex)){render();toast('Custom color saved')}else toast('Enter a valid six-digit hex color such as #A98BFF');break;}
  case 'site-surface':if(setSiteSurface(arg)){render();toast('Site appearance updated')}else toast('Unable to save site appearance');break;
@@ -979,7 +983,7 @@ function wireThemeStudioControls(){
    }
    return;
   }
-  const showAll=e.target.closest('[data-theme-preset-expand]');if(showAll){const wrap=showAll.closest('.themePresetCollection');const expanded=wrap.dataset.showAll!=='true';wrap.dataset.showAll=String(expanded);showAll.setAttribute('aria-expanded',String(expanded));showAll.textContent=expanded?'Show fewer presets ↑':'Show all 42 presets ↓';return;}
+  const showAll=e.target.closest('[data-theme-preset-expand]');if(showAll){const wrap=showAll.closest('.themePresetCollection');const expanded=wrap.dataset.showAll!=='true';wrap.dataset.showAll=String(expanded);showAll.setAttribute('aria-expanded',String(expanded));showAll.textContent=expanded?'Show fewer looks ↑':'Show all '+document.querySelectorAll('.studioV2Preset').length+' looks ↓';return;}
    const jump=e.target.closest('[data-theme-jump]');
   if(jump&&jump.closest('.arcanaDesignLab')){
    const pane=jump.closest('.themeStudioEditor');
