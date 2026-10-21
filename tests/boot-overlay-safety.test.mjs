@@ -7,7 +7,7 @@ const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
 const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
 const loader=html.match(/<script id="arcana-boot-control">([\s\S]*?)<\/script>/)?.[1];
 
-function harness({pausedFrames=false}={}){
+function harness({pausedFrames=false,hash='#/home',scrollRestoration='auto'}={}){
  const listeners=new Map();
  function emitter(){
   return {
@@ -24,14 +24,16 @@ function harness({pausedFrames=false}={}){
   remove(){this.removed=true;}
  };}
  const document=emitter(),window=emitter(),splash=element(),skip=element();
+ const history={scrollRestoration},location={hash},scrollPositions=[];
+ window.scrollTo=position=>scrollPositions.push(position);
  const underlay=Object.fromEntries(['app','arcanaDock','arcanaChatOverlay','layer'].map(id=>[id,element()]));
  document.getElementById=id=>id==='arcanaBoot'?splash:underlay[id]||null;
  document.querySelector=selector=>selector==='.skipMain'?skip:null;
  let clock=0;const timers=[];
  function setTimeout(callback,delay){timers.push({at:clock+delay,callback});}
  function advance(ms){clock+=ms;while(true){const idx=timers.findIndex(timer=>timer.at<=clock);if(idx<0)break;const [timer]=timers.splice(idx,1);timer.callback();}}
- vm.runInNewContext(loader,{document,window,Date:{now:()=>clock},requestAnimationFrame:fn=>{if(!pausedFrames)fn();},setTimeout});
- return {document,window,splash,underlay,skip,advance};
+ vm.runInNewContext(loader,{document,window,history,location,Date:{now:()=>clock},requestAnimationFrame:fn=>{if(!pausedFrames)fn();},setTimeout});
+ return {document,window,splash,underlay,skip,history,scrollPositions,advance};
 }
 
 test('boot remains touch-opaque through both readiness signals and the fade',()=>{
@@ -101,4 +103,28 @@ test('loader visuals respect accessibility and protect all page navigation',()=>
  assert.match(html,/pointer-events:auto/);
  assert.match(html,/setTimeout\(done,9000\)/);
  assert.match(app,/render\(\);document\.dispatchEvent\(new Event\('arcana:app-ready'\)\)/);
+});
+
+test('fresh Home launch clears a restored scroll position and restores browser history behavior',()=>{
+ const ui=harness({hash:'#/home',scrollRestoration:'auto'});
+ assert.equal(ui.history.scrollRestoration,'manual','suppress stale browser restoration while Home boots');
+ ui.window.emit('DOMContentLoaded');
+ ui.document.emit('arcana:app-ready');
+ ui.document.emit('arcana:theme-ready');
+ ui.advance(450);
+ assert.equal(ui.scrollPositions.length,1);
+ assert.equal(ui.scrollPositions[0].top,0);
+ assert.equal(ui.scrollPositions[0].left,0);
+ assert.equal(ui.history.scrollRestoration,'auto','normal history behavior resumes after boot');
+});
+
+test('launching directly into another route preserves browser scroll restoration',()=>{
+ const ui=harness({hash:'#/calculators/pathfinder',scrollRestoration:'auto'});
+ assert.equal(ui.history.scrollRestoration,'auto');
+ ui.window.emit('DOMContentLoaded');
+ ui.document.emit('arcana:app-ready');
+ ui.document.emit('arcana:theme-ready');
+ ui.advance(450);
+ assert.equal(ui.scrollPositions.length,0);
+ assert.equal(ui.history.scrollRestoration,'auto');
 });
