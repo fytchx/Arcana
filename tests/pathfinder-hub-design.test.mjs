@@ -12,7 +12,7 @@ test('admin style workshop is hidden from public settings',()=>{
  assert.doesNotMatch(guest,/arcanaAdminAppearance/);
  assert.match(admin,/arcanaDesignLab/);
  assert.doesNotMatch(settingsView({admin:true}),/arcanaDesignLab/);
- assert.match(admin,/data-design-field="pattern"/);
+ assert.match(admin,/data-theme-pattern="vision-violet-fault"/);
  assert.match(admin,/data-design-field="roundness"/);
  assert.match(admin,/data-design-field="action"/);
  for(const key of ['main','card','action','text','secondaryAccent','borderColor','mutedText','navBar','buttonText'])assert.match(admin,new RegExp('data-design-hex="'+key+'"'),key+' typed HEX input');
@@ -90,7 +90,7 @@ test('thirty-eight curated palettes can be applied and undone without a page ren
  const old=globalThis.localStorage,mem=new Map();
  try{
   globalThis.localStorage={getItem:k=>mem.get(k)||null,setItem:(k,v)=>mem.set(k,v),removeItem:k=>mem.delete(k)};
-  assert.equal(Object.keys(DESIGN_PRESETS).length,42);
+  assert.equal(Object.keys(DESIGN_PRESETS).length,71);
   assert.equal(applyDesignPreset('emerald'),true);
   assert.equal(readDesign().action,'#34E8A1');
   assert.equal(readDesign().main,'#071510');
@@ -101,9 +101,9 @@ test('thirty-eight curated palettes can be applied and undone without a page ren
 });
 test('extended customization is bounded and respects accessible native controls',()=>{
  const admin=designPanel(),guest=settingsView();
- for(const key of ['fontFamily','density','buttonStyle','fontSize','cardPadding','cardShadow','headerOpacity','patternScale','borderWidth','buttonHeight','accentBlend'])
+ for(const key of ['fontFamily','density','buttonStyle','fontSize','cardShadow','panelOpacity','borderWidth','roundness','artStrength','artDetail','artWeight','artZoom','artPositionX','artPositionY'])
   assert.match(admin,new RegExp('data-design-field="'+key+'"'),key);
- for(const preset of Object.keys(DESIGN_PRESETS))assert.match(admin,new RegExp('data-arg="'+preset+'"'),preset);
+ for(const [id,preset] of Object.entries(DESIGN_PRESETS)){if(preset.collection==='studio-v2')assert.match(admin,new RegExp('data-arg="'+id+'"'),id);else assert.doesNotMatch(admin,new RegExp('data-arg="'+id+'"'),id+' should not be visible');}
  assert.match(admin,/data-action="undo-design"/);
  assert.match(admin,/data-mini-toggle/);
  assert.doesNotMatch(guest,/data-action="design-preset"/);
@@ -131,7 +131,8 @@ test('eighteen patterns validate and the sample has no overlay behavior',async()
  for(const pattern of ['contours','rings','stars','grid','aurora','diagonal','hex','grain','crystal','nebula','weave','runes','circuit','topography','facets','scanlines','honeycomb','plain'])assert.equal(validateDesignField('pattern',pattern),pattern);
  assert.equal(validateDesignField('pattern','external-url'),null);
  const markup=designPanel();
- for(const value of ['grid','aurora','diagonal'])assert.match(markup,new RegExp('value="'+value+'"'));
+ for(const value of ['grid','aurora','diagonal'])assert.doesNotMatch(markup,new RegExp('value="'+value+'"'));
+ assert.match(markup,/data-theme-pattern="vision-glacial-fold"/);
  const css=await readFile(new URL('../arcana-contour.css',import.meta.url),'utf8');
  assert.match(css,/\.arcanaDesignLab \.designMiniPreview\{position:relative!important/);
  assert.match(css,/\.miniCanvas\[data-mini-pattern="aurora"\]/);
@@ -139,8 +140,8 @@ test('eighteen patterns validate and the sample has no overlay behavior',async()
 
 test('featured Build Studio has three independent action treatments and three height modes',()=>{
  const view=designPanel(),guest=settingsView();
- assert.match(view,/data-design-field="heroActionStyle"/);
- assert.match(view,/data-design-field="heroSize"/);
+ assert.doesNotMatch(view,/data-design-field="heroActionStyle"|data-design-field="heroSize"/);
+ assert.match(view,/data-design-field="panelOpacity"/);
  for(const mode of ['integrated','outline','spotlight'])assert.equal(validateDesignField('heroActionStyle',mode),mode);
  for(const size of ['compact','balanced','showcase'])assert.equal(validateDesignField('heroSize',size),size);
  assert.equal(validateDesignField('heroActionStyle','unsupported'),null);
