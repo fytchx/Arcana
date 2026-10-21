@@ -1,4 +1,5 @@
 import {readDesign,DEFAULT_DESIGN,DESIGN_PRESETS} from './design-controls.js';
+import {atlasHomeScreen} from './home-atlas.js';
 import {WIKI_CATEGORIES} from './wiki-taxonomy.js';
 import {designMiniMarkup} from './design-mini-preview.js';
 import {themeVaultMarkup} from './theme-studio-vault.js';
@@ -68,25 +69,7 @@ export const HOME_CARDS=Object.freeze([
 ]);
 const attrs=x=>'data-route="'+esc(x.route)+'"'+(x.params?' data-params="'+esc(new URLSearchParams(x.params).toString())+'"':'');
 const navrow=x=>'<button type="button" class="launchNavRow" '+attrs(x)+'><span class="launchNavIcon">'+icon(x.icon||'arrow',20)+'</span><span class="launchNavCopy"><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',17)+'</button>';
-export function homeScreen(){
- return '<div class="homeSpotlights" aria-label="Arcana highlights"><section class="launchHero" aria-label="Build Studio feature">'+
-  '<svg class="launchHeroArcaneSeal" viewBox="0 0 160 160" fill="none" aria-hidden="true" focusable="false"><circle cx="80" cy="80" r="66"/><circle cx="80" cy="80" r="53"/><circle cx="80" cy="80" r="35"/><path d="M80 5v26m0 98v26M5 80h26m98 0h26M25 25l19 19m72 72 19 19m0-110-19 19m-72 72-19 19M80 40l40 40-40 40-40-40zM80 54l26 26-26 26-26-26z"/><circle cx="80" cy="15" r="3"/><circle cx="145" cy="80" r="3"/><circle cx="80" cy="145" r="3"/><circle cx="15" cy="80" r="3"/></svg>'+
-  '<div class="launchHeroHeader"><span class="launchHeroArt" aria-hidden="true">'+icon('feature-build-studio',38)+'</span>'+
-  '<div class="launchHeroText"><span class="launchEyebrow">THE HEART OF ARCANA</span><h1>Build Studio</h1>'+
-  '<p>Test the gear, runes, pets and skills behind your next great setup.</p></div></div>'+
-  '<button type="button" class="launchHeroCTA" data-route="labs/build" aria-label="Enter Build Studio"><span class="launchHeroCTASigil" aria-hidden="true">'+icon('feature-rune-forge',22)+'</span><span class="launchHeroCTACopy"><strong>Enter Build Studio</strong><small>Forge your perfect setup</small></span>'+icon('arrow',20)+'</button>'+
-  '</section>'+
-  '<section class="journalHomeTeaser" aria-label="Latest from Arcana Journal"><div class="journalHomeTop"><span>ARCANA JOURNAL</span><a href="/journal">All stories →</a></div><a class="journalHomeArticle" href="/journal/idlearc-1-3-7-the-timing-couldnt-be-better" data-journal-latest><span class="journalHomeCategory">NEWS · OCT 18</span><strong>IdleArc 1.3.7: A Step Forward</strong><small>A welcome update arrives just as our class balance analysis goes live.</small><span class="journalHomeRead">Read the story →</span></a></section></div>'+
-  '<section class="launchQuick" aria-label="Explore Arcana"><div class="launchSectionTop"><h2>Explore Arcana</h2><button type="button" data-route="directory" class="launchSeeAll">See All '+icon('arrow',16)+'</button></div>'+
-  '<div class="launchQuickGrid">'+HOME_CARDS.map(x=>'<button type="button" class="launchQuickCard" data-action="homemenu" data-arg="'+esc(x.id)+'" aria-label="Open '+esc(x.title)+' menu"><span class="launchQuickEmblem" aria-hidden="true">'+icon(x.icon,90)+'</span><span class="launchQuickIcon">'+icon(x.icon,32)+'</span><span class="launchQuickCopy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></span><span class="launchQuickArrow">'+icon('arrow',17)+'</span></button>').join('')+'</div></section>'+
-  '<section class="launchFeatured arcanaKnowledgeBridge" aria-label="Learn, build and share"><div class="launchSectionTop"><h2>Guides, Builds & Wiki</h2></div>'+
-  '<p class="launchFeaturedIntro">Explore strategies, player builds and the game reference, all in one place.</p>'+
-  '<div class="launchFeaturedGrid">'+[
-   link('Player Guides','Find proven strategies and progression advice.','wiki/guides','book'),
-   link('Community Builds','See players’ builds, then try them in Build Studio.','community','users'),
-   link('ArcanaWiki','Look up the mechanics behind every decision.','wiki','book')
-  ].map(x=>'<button type="button" class="launchFeatureRow" '+attrs(x)+'><span class="launchFeatureIcon">'+icon(x.icon,20)+'</span><span><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',16)+'</button>').join('')+'</div></section>';
-}
+export function homeScreen(){return atlasHomeScreen(icon);}
 export function homeSubmenu(id){
  const menu=HOME_MENUS[id]; if(!menu)return '';
  return '<div class="launchMenu" role="group" aria-label="'+esc(menu.title)+' destinations"><div class="launchMenuIntro"><span class="launchEyebrow">EXPLORE ARCANA</span><h2>'+esc(menu.title)+'</h2><p>'+esc(menu.detail)+'</p></div><div class="launchMenuLinks">'+menu.links.map(navrow).join('')+'</div></div>';
@@ -176,11 +159,11 @@ export const designPanel=({showPreview=true}={})=>{
  return '<section class="slateSettingsBlock arcanaDesignLab"><span class="launchEyebrow">CREATOR WORKSPACE · LIVE DRAFT</span><h2>Theme Studio</h2><p>Edit colors, textures and components while your preview remains visible. Changes stay private until published.</p>'+
  '<nav class="themeStudioJumps" aria-label="Jump to designer section">'+[['presets','Presets'],['colors','Colors'],['textures','Textures'],['feature','Homepage'],['components','Buttons'],['type','Text'],['vault','Saved']].map(([id,name])=>'<button type="button" data-theme-jump="'+id+'">'+name+'</button>').join('')+'</nav>'+
  (showPreview?designMiniMarkup():'')+
- '<div class="themeEditorGuidance" role="status" data-theme-change-hint><strong>Start with a preset.</strong><span>Use Colors and Textures for most edits. The advanced sections are optional.</span></div>'+
+ '<div class="themeEditorGuidance" role="status" data-theme-change-hint><strong>Start with a preset.</strong><span>Panel, icon box and icon colors are independent. Preview Home to see them together.</span></div>'+
  '<section class="themePresetCollection" data-theme-group="presets" data-show-all="false" data-searching="false" aria-label="All Arcana presets"><div class="designPresetHeader"><h3>Choose a starting look</h3><p>All 42 presets in one library. Pick any look, then adjust its colors, materials, and details. Nothing is published automatically.</p></div><label class="designPresetSearch">Find a look<input type="search" data-design-preset-search placeholder="Search all 42 presets…" autocomplete="off"></label><div class="themeUnifiedPresetActions"><button type="button" data-action="random-signature">✦ Surprise me</button><span>One collection · every design editable</span></div><div class="designPresetGrid designUnifiedPresetGrid" id="themePresetsGrid">'+allPresets+'</div><button type="button" class="themeShowMorePresets" data-theme-preset-expand aria-expanded="false" aria-controls="themePresetsGrid">Show all 42 presets ↓</button><p class="designPresetEmpty" data-design-no-presets hidden>No presets match that search.</p></section>'+ 
 
  group('Colors &amp; accents',
- color('main','Background')+color('card','Panels')+color('action','Primary accent')+color('secondaryAccent','Second accent')+color('text','Text')+color('mutedText','Muted text')+color('borderColor','Border color')+color('navBar','Navigation bar')+color('buttonText','Button text'))+
+ color('main','Background')+color('card','Panel backgrounds')+color('iconBox','Icon box backgrounds')+color('iconGlyph','Home icons')+color('action','Primary accent')+color('secondaryAccent','Second accent')+color('text','Text')+color('mutedText','Muted text')+color('borderColor','Border color')+color('navBar','Navigation bar')+color('buttonText','Button text'))+
  group('Background &amp; lighting',
  select('pattern','Background pattern',THEME_PATTERNS.map(p=>[p.id,p.name]))+
  select('patternTarget','Where to show textures',[['all','Backgrounds + cards'],['cards','Cards only'],['background','Page backgrounds only']])+
