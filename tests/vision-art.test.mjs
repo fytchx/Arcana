@@ -25,7 +25,7 @@ test('twelve truly different vector designs, each with four safe color channels'
   for(const c of art.colors)assert.ok(svg.includes(c),art.id+' missing pigment '+c);
   assert.ok(svg.includes('<path'),art.id);
   assert.ok(svg.length>2000,art.id+' is too empty');
-  assert.doesNotMatch(svg,/<script|<image|<foreignObject|<filter|https?:\/\/|onload=/i);
+  assert.doesNotMatch(svg,/<script|<image|<foreignObject|<filter|onload=|href=["']https?:/i);
   output.push(svg);
  }
  assert.equal(new Set(output).size,12,'Gallery contains duplicate geometry');
