@@ -58,3 +58,17 @@ html[data-arcana-design-active="true"][data-arcana-design-pattern^="vision-"] #c
 }
 .miniCanvas[data-mini-pattern^="vision-"] .miniHome .atlasMiniTile:before{display:none!important}
 html[data-arcana-design-pattern^="vision-"] .themePatternThumb[data-preview-pattern^="vision-"]{background-color:#131328!important}
+
+/* Per-composition crop anchors keep each illustrated subject readable at narrow widths. */
+html[data-arcana-design-pattern="vision-violet-fault"],.miniCanvas[data-mini-pattern="vision-violet-fault"],.themePatternThumb[data-preview-pattern="vision-violet-fault"]{--vision-composition-position:center top}
+html[data-arcana-design-pattern="vision-pulse-terrain"],.miniCanvas[data-mini-pattern="vision-pulse-terrain"],.themePatternThumb[data-preview-pattern="vision-pulse-terrain"]{--vision-composition-position:center 45%}
+html[data-arcana-design-pattern="vision-ribbon-bloom"],.miniCanvas[data-mini-pattern="vision-ribbon-bloom"],.themePatternThumb[data-preview-pattern="vision-ribbon-bloom"]{--vision-composition-position:center 45%}
+html[data-arcana-design-pattern="vision-veil-current"],.miniCanvas[data-mini-pattern="vision-veil-current"],.themePatternThumb[data-preview-pattern="vision-veil-current"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-arcflow"],.miniCanvas[data-mini-pattern="vision-arcflow"],.themePatternThumb[data-preview-pattern="vision-arcflow"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-contour-drift"],.miniCanvas[data-mini-pattern="vision-contour-drift"],.themePatternThumb[data-preview-pattern="vision-contour-drift"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-monowave"],.miniCanvas[data-mini-pattern="vision-monowave"],.themePatternThumb[data-preview-pattern="vision-monowave"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-ink-lattice"],.miniCanvas[data-mini-pattern="vision-ink-lattice"],.themePatternThumb[data-preview-pattern="vision-ink-lattice"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-signal-bloom"],.miniCanvas[data-mini-pattern="vision-signal-bloom"],.themePatternThumb[data-preview-pattern="vision-signal-bloom"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-vector-halo"],.miniCanvas[data-mini-pattern="vision-vector-halo"],.themePatternThumb[data-preview-pattern="vision-vector-halo"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-crownspace"],.miniCanvas[data-mini-pattern="vision-crownspace"],.themePatternThumb[data-preview-pattern="vision-crownspace"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-aether-frame"],.miniCanvas[data-mini-pattern="vision-aether-frame"],.themePatternThumb[data-preview-pattern="vision-aether-frame"]{--vision-composition-position:right center}
