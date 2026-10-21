@@ -102,7 +102,7 @@ export function undoDesign(){
 export function applyDesignPreset(key){
  const preset=DESIGN_PRESETS[key];if(!preset)return false;
  const {name,tagline,collection,...values}=preset;
- const old=readDesign(),next={...old,...values,iconBox:values.card||old.iconBox,iconGlyph:values.action||old.iconGlyph};
+ const old=readDesign(),next={...old,...values,iconBox:values.iconBox||values.card||old.iconBox,iconGlyph:values.iconGlyph||values.action||old.iconGlyph};
  try{localStorage.setItem(DESIGN_KEY,JSON.stringify(next))}catch{return false}
  priorDesign=old;priorEditKey='preset';lastEditAt=0;applyDesign(globalThis.document?.documentElement);
  if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:design-change'));
