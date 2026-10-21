@@ -13,8 +13,8 @@ test('four authentic SVG pattern families and palettes are individually editable
  assert.equal(PSYCHEDELIC_IDS.length,4);
  assert.equal(new Set(PSYCHEDELIC_IDS).size,4);
  assert.equal(Object.keys(PSYCHEDELIC_PRESETS).length,4);
- assert.equal(Object.keys(DESIGN_PRESETS).length,42);
- assert.equal(THEME_PATTERNS.length,148);
+ assert.equal(Object.keys(DESIGN_PRESETS).length,72);
+ assert.equal(THEME_PATTERNS.length,154);
  for(const id of PSYCHEDELIC_IDS){
   assert.equal(THEME_PATTERNS.find(x=>x.id===id)?.category,'Psychedelic');
   const preset=Object.values(PSYCHEDELIC_PRESETS).find(x=>x.pattern===id);
@@ -49,15 +49,16 @@ test('360px periodic tile motifs deliberately render adjoining neighbors to hide
   'prism-puddle':['translate(-360 -360)','translate(360 360)']};
  for(const [id,marks] of Object.entries(cases)){const img=unpack(psychedelicSvg(id,PSYCHEDELIC_DEFAULTS));for(const mark of marks)assert.ok(img.includes(mark),id+' missing neighbor '+mark);}
 });
-test('editor shows pattern-specific color controls and current live frame instead of stale mockup',async()=>{
+test('retired psychedelic designs remain validated and restorable without cluttering Studio V2',async()=>{
  const editor=designPanel({showPreview:false}),preview=designMiniMarkup(),css=await read('../psychedelic-themes.css'),real=await read('../src/theme-live-frame.js');
- for(const key of ['psyPaletteMode','psyBackground','psyPrimary','psySecondary','psyAccent','psyOutline','psyStroke'])assert.ok(editor.includes('data-design-field="'+key+'"'),key);
- for(const id of PSYCHEDELIC_IDS){assert.ok(editor.includes('data-theme-pattern="'+id+'"'));assert.ok(css.includes('data-arcana-design-pattern="'+id+'"'));assert.ok(css.includes('data-mini-pattern="'+id+'"'));assert.ok(css.includes('data-preview-pattern="'+id+'"'));}
- assert.ok(editor.includes('themePresetCollection'));
- assert.equal((editor.match(/data-collection="psychedelic"/g)||[]).length,4);
- assert.ok(editor.includes('All 42 presets'));
+ for(const id of PSYCHEDELIC_IDS){
+  assert.equal(validateDesignField('pattern',id),id);
+  assert.ok(css.includes('data-arcana-design-pattern="'+id+'"'));
+  assert.ok(css.includes('data-mini-pattern="'+id+'"'));
+  assert.ok(!editor.includes('data-theme-pattern="'+id+'"'));
+ }
+ assert.equal((editor.match(/class="designPreset studioV2Preset"/g)||[]).length,30);
  assert.ok(preview.includes('data-mini-live-frame'));
- assert.ok(preview.includes('data-mini-page="guilds"'));
  assert.match(real,/doc\.querySelector\('#content'\)/);
  assert.match(real,/arcanaDesignActive='true'/);
  assert.doesNotMatch(real,/fetch\(|localStorage\.|sessionStorage\.|publisher|adminDesign='true'/);
