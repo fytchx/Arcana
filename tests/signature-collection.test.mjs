@@ -10,7 +10,7 @@ const read=path=>readFile(new URL(path,import.meta.url),'utf8');
 test('twenty individually styled signature designs extend eighteen classics without losing their editable knobs',()=>{
  const ids=Object.keys(SIGNATURE_PRESETS),patterns=new Set(THEME_PATTERNS.filter(p=>p.category==='Signature').map(p=>p.id));
  assert.equal(ids.length,20);
- assert.equal(Object.keys(DESIGN_PRESETS).length,42);
+ assert.equal(Object.keys(DESIGN_PRESETS).length,71);
  assert.equal(patterns.size,20);
  assert.equal(new Set(ids.map(id=>SIGNATURE_PRESETS[id].pattern)).size,20);
  for(const id of ids){
@@ -30,21 +30,19 @@ test('twenty individually styled signature designs extend eighteen classics with
  assert.equal(validateDesignField('sheen',-1),0);
  assert.equal(validateDesignField('detail','not a number'),null);
 });
-test('shared shaders draw in real Arcana, gallery, signature art and five-page mini preview',async()=>{
+test('signature shaders remain available to old saved designs but are not shown in Studio V2',async()=>{
  const css=await read('../signature-themes.css');
  const panel=designPanel({showPreview:false}),mini=await read('../src/design-mini-preview.js');
- for(const p of Object.values(SIGNATURE_PRESETS)){
+ for(const [id,p] of Object.entries(SIGNATURE_PRESETS)){
   for(const key of ['data-arcana-design-pattern','data-mini-pattern','data-preview-pattern','data-signature-art']){
    assert.ok(css.includes(key+'="'+p.pattern+'"'),p.pattern+' missing '+key);
   }
-  assert.ok(panel.includes('data-arg="'+Object.keys(DESIGN_PRESETS).find(k=>DESIGN_PRESETS[k]===p)+'"'),p.name+' missing from gallery');
+  assert.doesNotMatch(panel,new RegExp('data-arg="'+id+'"'),id+' should be archived');
  }
- for(const control of ['aura','sheen','detail'])assert.ok(panel.includes('data-design-field="'+control+'"'));
- assert.match(panel,/designUnifiedPresetGrid/);
- assert.equal((panel.match(/data-collection="signature"/g)||[]).length,20);
- assert.equal((panel.match(/data-collection="classic"/g)||[]).length,18);
- assert.match(panel,/Surprise me/);
- assert.match(panel,/All 42 presets/);
+ for(const control of ['aura','sheen','detail'])assert.doesNotMatch(panel,new RegExp('data-design-field="'+control+'"'));
+ for(const control of ['artStrength','artDetail','artWeight','artZoom'])assert.match(panel,new RegExp('data-design-field="'+control+'"'));
+ assert.equal((panel.match(/data-collection="studio-v2"/g)||[]).length,30);
+ assert.doesNotMatch(panel,/data-collection="signature"|All 42 presets/);
  assert.match(mini,/--mini-signature-scale/);
  assert.match(css,/--arcana-signature-sheen/);
  assert.match(css,/--arcana-signature-aura/);
