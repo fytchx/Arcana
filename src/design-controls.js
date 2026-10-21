@@ -9,7 +9,7 @@ import {STUDIO_V2_PRESETS} from './studio-v2-presets.js';
 export const DESIGN_KEY='arcana-admin-design-preview-v1';
 export const DEFAULT_DESIGN=Object.freeze({
   main:'#0D1019',card:'#191E2B',iconBox:'#292439',iconGlyph:'#BBA4FF',action:'#A98BFF',text:'#F5F5FB',artBase:'#100B2E',artPrimary:'#ED55B8',artSecondary:'#6552F5',artGlow:'#9AC7FF',artStrength:100,artDetail:100,artWeight:100,artZoom:100,artPositionX:50,artPositionY:50,panelOpacity:88,
-  pattern:'contours',intensity:22,glow:18,edges:42,roundness:13,
+  pattern:'vision-violet-fault',intensity:22,glow:18,edges:42,roundness:13,
   buttonRoundness:11,buttonFill:82,
  secondaryAccent:'#38BDF8',borderColor:'#66708B',mutedText:'#A8B2C4',navBar:'#191E2B',buttonText:'#0A0C14',
  fontFamily:'system',density:'comfortable',buttonStyle:'gradient',heroActionStyle:'integrated',heroSize:'balanced',
