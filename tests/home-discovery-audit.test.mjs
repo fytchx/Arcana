@@ -13,15 +13,14 @@ test('Home discovery gives each primary tile a distinct purpose',()=>{
  assert.match(homeSubmenu('social'),/Guilds &amp; Community/);
 });
 
-test('Guides, builds and Wiki each have a direct home destination',()=>{
+test('Guides, builds, Wiki, Guilds, Pathfinder and calculators have six distinct home tiles',()=>{
  const html=homeScreen();
- assert.equal((html.match(/class="launchFeatureRow"/g)||[]).length,3);
- assert.match(html,/Guides, Builds & Wiki/);
- for(const route of ['wiki/guides','community','wiki'])assert.ok(html.includes('data-route="'+route+'"'),'Missing direct route: '+route);
- assert.equal((html.match(/data-action="homemenu"/g)||[]).length,3);
- assert.ok(html.indexOf('class="launchHero"')<html.indexOf('journalHomeTeaser'));
+ assert.equal((html.match(/class="atlasTile"/g)||[]).length,6);
+ for(const route of ['wiki/guides','community','wiki','guilds','calculators/pathfinder'])assert.ok(html.includes('data-route="'+route+'"'),'Missing direct route: '+route);
+ assert.match(html,/data-action="homemenu" data-arg="tools"/);
+ assert.equal((html.match(/data-journal-latest/g)||[]).length,1);
+ assert.ok(html.indexOf('class="atlasHero"')<html.indexOf('class="atlasTileGrid"'));
 });
-
 test('Mobile guide shortcuts remain compact and motion-safe',async()=>{
  const css=await readFile(new URL('../arcana-connected-ux.css',import.meta.url),'utf8');
  const footer=css.split('/* Distinct home destinations: compact guide shortcuts instead of a second oversized hub. */')[1];
