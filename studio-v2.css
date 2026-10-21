@@ -92,3 +92,14 @@ html[data-arcana-design-active=true][data-arcana-design-pattern^=vision-]:is([da
  background-image:linear-gradient(color-mix(in srgb,var(--mini-panel) var(--mini-panel-opacity-percent,88%),transparent),color-mix(in srgb,var(--mini-panel) var(--mini-panel-opacity-percent,88%),transparent)),var(--vision-mini-art)!important;
 }
 @media(prefers-reduced-motion:reduce){.studioV2 .studioV2Preset{transition:none}}
+
+/* When art lives on the page rather than each tile, translucent panels
+   remain real surfaces and the opacity slider still has a visible effect. */
+html[data-arcana-design-active=true][data-arcana-design-pattern^=vision-][data-arcana-pattern-target=background] .atlasHome :is(.atlasHero,.atlasTile,.atlasFeatureLink){
+ background-image:none!important;
+ background-color:color-mix(in srgb,var(--atlas-panel) var(--arcana-panel-opacity-percent,88%),transparent)!important;
+}
+.miniCanvas[data-mini-pattern^=vision-][data-mini-pattern-target=background] .miniHome :is(.atlasMiniHero,.atlasMiniTile){
+ background-image:none!important;
+ background-color:color-mix(in srgb,var(--mini-panel) var(--mini-panel-opacity-percent,88%),transparent)!important;
+}
