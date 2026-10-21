@@ -25,7 +25,7 @@ import {adminTrafficView,loadAdminTraffic,wireAdminTraffic} from './admin-traffi
 import {adminConsoleView,loadAdminConsole,wireAdminConsole} from './admin-console.js';
 import {recordTrafficNavigation,initTrafficTracking} from './traffic-client.js';
 import {siteNotice} from './theme.js';
-import {setDesignPreview} from './design-controls.js';
+import {setDesignPreview,applyVisualPreset} from './design-controls.js';
 import {shareBuildToken,openBuildToken} from './build-links.js';
 import {saveNewAccountBuild} from './account-builds-ui.js';
 import {baseItem,equipmentId,asGear,newGear,gearIssues,allowedItem,RARITIES} from './build-studio-data.js';
@@ -157,7 +157,7 @@ const isLocalThemePlayground=()=>isPreviewThemeHost()&&parseRoute().route==='the
 const tryOnTheme=()=>{try{return isPreviewThemeHost()&&sessionStorage.getItem('arcana-theme-tryon-preview-v1')==='1'}catch{return false}};
 const changeTryOn=enabled=>{try{if(enabled)sessionStorage.setItem('arcana-theme-tryon-preview-v1','1');else sessionStorage.removeItem('arcana-theme-tryon-preview-v1');return true}catch{return false}};
 const canEditThemeDraft=()=>isAppearanceAdmin()||isLocalThemePlayground();
-const themePlaygroundView=()=>'<div class="launchPage themePlayground"><span class="launchEyebrow">ARCANA PREVIEW · LOCAL ONLY</span><h1>Theme Playground</h1><p>Explore all 42 presets and 136 textures, remix colors and lighting, and save up to twelve private designs. This browser-only preview cannot publish anything to the real site.</p><div class="themeTryOnActions"><button class="btn primary" type="button" data-action="theme-try-on">✦ Try this on Arcana</button><button class="btn secondary" type="button" data-action="theme-try-off">Stop site preview</button></div><div class="themeStudioWorkbench"><div class="themeStudioEditor">'+designPanel({showPreview:false})+'</div><aside class="themeStudioPreview" aria-label="Live theme preview">'+designMiniMarkup()+'</aside></div></div>'; 
+const themePlaygroundView=()=>'<div class="launchPage themePlayground"><span class="launchEyebrow">ARCANA PREVIEW · LOCAL ONLY</span><h1>Theme Playground</h1><p>Explore 12 editable vector artworks and 136 archived texture finishes, remix colors and lighting, and save up to twelve private designs. This browser-only preview cannot publish anything to the real site.</p><div class="themeTryOnActions"><button class="btn primary" type="button" data-action="theme-try-on">✦ Try this on Arcana</button><button class="btn secondary" type="button" data-action="theme-try-off">Stop site preview</button></div><div class="themeStudioWorkbench"><div class="themeStudioEditor">'+designPanel({showPreview:false})+'</div><aside class="themeStudioPreview" aria-label="Live theme preview">'+designMiniMarkup()+'</aside></div></div>'; 
 function crumbTrail(title){
  const route=parseRoute().route,section=route.split('/')[0];
  const parent={labs:['Build Studio','labs/build'],calculators:['Pathfinder','calculators/pathfinder'],lfg:['Guild & Raid Finder','lfg'],wiki:['ArcanaWiki','wiki']}[section];
@@ -579,6 +579,7 @@ function syncWorkshopInputs(){
  }
  const psy=document.querySelector('.arcanaDesignLab .psyPalettePicker');if(psy){psy.dataset.psyActive=String(['groove-melt','orbit-jelly','doodle-rift','prism-puddle'].includes(design.pattern));psy.dataset.psyMode=design.psyPaletteMode;}
  for(const tile of document.querySelectorAll('.arcanaDesignLab [data-theme-pattern]'))tile.setAttribute('aria-pressed',String(tile.dataset.themePattern===design.pattern));
+  const artPalette=document.querySelector('.visionArtPalette');if(artPalette)artPalette.dataset.visionActive=String(design.pattern.startsWith('vision-'));
  for(const button of document.querySelectorAll('.arcanaDesignLab [data-hero-cta-style]'))button.setAttribute('aria-pressed',String(button.dataset.heroCtaStyle===design.heroActionStyle));
  for(const preset of document.querySelectorAll('.arcanaDesignLab .designPreset')){
   const matches=preset.dataset.presetSearch&&preset.dataset.arg;
@@ -963,7 +964,7 @@ function wireThemeStudioControls(){
   const pattern=e.target.closest('[data-theme-pattern]');
   if(pattern&&pattern.closest('.arcanaDesignLab')){
    if(!canEditThemeDraft())return;
-   if(writeDesign('pattern',pattern.dataset.themePattern)){
+   if((pattern.dataset.themePattern.startsWith('vision-')?applyVisualPreset(pattern.dataset.themePattern):writeDesign('pattern',pattern.dataset.themePattern))){
     applyTheme(parseRoute().route);
     syncWorkshopInputs();
    }
@@ -995,7 +996,7 @@ function wireThemeStudioControls(){
    const category=filter.dataset.themePatternFilter;
    const section=filter.closest('.themePatternLibrary');
    for(const button of section.querySelectorAll('[data-theme-pattern-filter]'))button.setAttribute('aria-pressed',String(button===filter));
-   for(const tile of section.querySelectorAll('[data-pattern-category]'))tile.hidden=category==='Premium'?!['Psychedelic','Signature','Material','Atmosphere','Relic','Atelier'].includes(tile.dataset.patternCategory):category!=='All'&&tile.dataset.patternCategory!==category;
+   for(const tile of section.querySelectorAll('[data-pattern-category]'))tile.hidden=category==='Premium'?!['Psychedelic','Signature','Material','Atmosphere','Relic','Atelier','Vision'].includes(tile.dataset.patternCategory):category!=='All'&&tile.dataset.patternCategory!==category;
   }
  });
 }
