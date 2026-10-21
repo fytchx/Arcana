@@ -6,17 +6,20 @@ import {designPanel,settingsView} from '../src/launch-navigation.js';
 
 const read=path=>readFile(new URL(path,import.meta.url),'utf8');
 const patterns=['contours','rings','stars','grid','aurora','diagonal','hex','grain','crystal','nebula','weave','runes','circuit','topography','facets','scanlines','honeycomb','plain'];
-test('global appearance studio has 38 presets and classic pattern support',async()=>{
+test('global appearance studio shows 30 curated looks while old patterns remain compatible',async()=>{
  const html=designPanel(),css=await read('../arcana-contour.css');
- assert.equal(Object.keys(DESIGN_PRESETS).length,42);
+ assert.equal(Object.keys(DESIGN_PRESETS).length,71);
+ assert.equal((html.match(/data-collection="studio-v2"/g)||[]).length,30);
  for(const [id,p] of Object.entries(DESIGN_PRESETS)){
-  assert.match(html,new RegExp('data-arg="'+id+'"'));
+  if(p.collection==='studio-v2')assert.match(html,new RegExp('data-arg="'+id+'"'));
+  else assert.doesNotMatch(html,new RegExp('data-arg="'+id+'"'));
   assert.equal(validateDesignField('pattern',p.pattern),p.pattern,id+' uses a supported texture');
   for(const key of ['main','card','action','text'])assert.ok(/^#[0-9a-fA-F]{6}$/.test(p[key]),id+':'+key);
  }
  for(const mode of patterns){
   assert.equal(validateDesignField('pattern',mode),mode);
-  assert.ok(css.includes('data-arcana-design-pattern="'+mode+'"'),'Missing site texture '+mode);
+  assert.ok(css.includes('data-arcana-design-pattern="'+mode+'"'),'Missing legacy site texture '+mode);
+  assert.doesNotMatch(html,new RegExp('data-theme-pattern="'+mode+'"'));
   if(mode!=='plain'&&mode!=='contours')assert.ok(css.includes('data-mini-pattern="'+mode+'"'),'Missing mini texture '+mode);
  }
  assert.ok(html.includes('data-design-preset-search'));
