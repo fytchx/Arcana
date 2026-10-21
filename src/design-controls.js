@@ -5,21 +5,23 @@ import {PSYCHEDELIC_PRESETS} from './psychedelic-presets.js';
 import {PSYCHEDELIC_DEFAULTS,applyPsychedelicTexture} from './psychedelic-patterns.js';
 import {VISUAL_ART_IDS,visualArtById,applyVisualArt} from './visual-art.js';
 import {STUDIO_V2_PRESETS} from './studio-v2-presets.js';
+import {fontStack,validStudioFont} from './studio-fonts.js';
+import {paintArtLayers} from './studio-art-layers.js';
 // Admin-only local appearance experimentation. Never alters community theme data.
 export const DESIGN_KEY='arcana-admin-design-preview-v1';
 export const DEFAULT_DESIGN=Object.freeze({
-  main:'#0D1019',card:'#191E2B',iconBox:'#292439',iconGlyph:'#BBA4FF',action:'#A98BFF',text:'#F5F5FB',artBase:'#100B2E',artPrimary:'#ED55B8',artSecondary:'#6552F5',artGlow:'#9AC7FF',artStrength:100,artDetail:100,artWeight:100,artZoom:100,artPositionX:50,artPositionY:50,panelOpacity:88,
+  main:'#0D1019',card:'#191E2B',iconBox:'#292439',iconGlyph:'#BBA4FF',action:'#A98BFF',text:'#F5F5FB',artBase:'#100B2E',artPrimary:'#ED55B8',artSecondary:'#6552F5',artGlow:'#9AC7FF',artStrength:100,artDetail:100,artWeight:100,artZoom:100,artPositionX:50,artPositionY:50,panelOpacity:88,panelPattern:'inherit',featurePattern:'inherit',panelArtBase:'#100B2E',panelArtPrimary:'#ED55B8',panelArtSecondary:'#6552F5',panelArtGlow:'#9AC7FF',featureArtBase:'#100B2E',featureArtPrimary:'#ED55B8',featureArtSecondary:'#6552F5',featureArtGlow:'#9AC7FF',
   pattern:'vision-violet-fault',intensity:22,glow:18,edges:42,roundness:13,
   buttonRoundness:11,buttonFill:82,
  secondaryAccent:'#38BDF8',borderColor:'#66708B',mutedText:'#A8B2C4',navBar:'#191E2B',buttonText:'#0A0C14',
- fontFamily:'system',density:'comfortable',buttonStyle:'gradient',heroActionStyle:'integrated',heroSize:'balanced',
+ fontFamily:'system',headingFont:'serif',density:'comfortable',buttonStyle:'gradient',heroActionStyle:'integrated',heroSize:'balanced',
  heroActionWidth:100,heroActionAlign:'center',heroActionHeight:45,heroActionGlow:10,heroActionBorder:1,heroActionIcon:'show',heroActionSubtitle:'auto',
  heroCardStyle:'blended',heroCardEmblem:'subtle',
  patternTarget:'all',
  iconMode:'two-tone',fontSize:100,cardPadding:14,cardShadow:30,headerOpacity:95,patternScale:100,borderWidth:1,buttonHeight:45,accentBlend:25,aura:50,sheen:50,detail:63,...PSYCHEDELIC_DEFAULTS
 });
 const numbers={artStrength:[15,100],artDetail:[25,100],artWeight:[60,180],artZoom:[75,155],artPositionX:[0,100],artPositionY:[0,100],panelOpacity:[60,100],intensity:[0,100],glow:[0,100],edges:[0,100],roundness:[3,28],buttonRoundness:[3,30],buttonFill:[35,100],fontSize:[90,115],cardPadding:[8,22],cardShadow:[0,100],headerOpacity:[65,100],patternScale:[60,180],borderWidth:[0,3],buttonHeight:[40,58],accentBlend:[0,100],heroActionWidth:[65,100],heroActionHeight:[44,70],heroActionGlow:[0,100],heroActionBorder:[0,3],aura:[0,100],sheen:[0,100],detail:[0,100],psyStroke:[0,100]};
-const colors=new Set(['main','card','iconBox','iconGlyph','action','text','secondaryAccent','borderColor','mutedText','navBar','buttonText','psyBackground','psyPrimary','psySecondary','psyAccent','psyOutline','artBase','artPrimary','artSecondary','artGlow']);
+const colors=new Set(['main','card','iconBox','iconGlyph','action','text','secondaryAccent','borderColor','mutedText','navBar','buttonText','psyBackground','psyPrimary','psySecondary','psyAccent','psyOutline','artBase','artPrimary','artSecondary','artGlow','panelArtBase','panelArtPrimary','panelArtSecondary','panelArtGlow','featureArtBase','featureArtPrimary','featureArtSecondary','featureArtGlow']);
 // Accept pasted #A78BFA or A78BFA, never partial values or CSS strings.
 export function normalizeDesignHex(value){
  const raw=String(value||'').trim();
@@ -53,9 +55,10 @@ export const DESIGN_FIELDS=Object.keys(DEFAULT_DESIGN);
 export function validateDesignField(key,value){
  if(colors.has(key))return normalizeDesignHex(value);
  if(key==='pattern')return THEME_PATTERN_IDS.includes(value)?value:null;
+ if(key==='panelPattern'||key==='featurePattern')return value==='inherit'||value==='none'||VISUAL_ART_IDS.includes(value)?value:null;
  if(key==='psyPaletteMode')return ['custom','theme'].includes(value)?value:null;
  if(key==='iconMode')return ['two-tone','neutral','accent','muted'].includes(value)?value:null;
- if(key==='fontFamily')return ['system','rounded','serif','mono'].includes(value)?value:null;
+ if(key==='fontFamily'||key==='headingFont')return validStudioFont(value)?value:null;
  if(key==='density')return ['comfortable','compact','spacious'].includes(value)?value:null;
  if(key==='buttonStyle')return ['gradient','solid','outline'].includes(value)?value:null;
  if(key==='heroActionStyle')return HERO_CTA_STYLE_IDS.includes(value)?value:null;
@@ -118,6 +121,24 @@ export function applyVisualPreset(id){
  if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:design-change'));
  return true;
 }
+// Switching a single surface also loads that artwork's intended pigment palette.
+export function applyLayerVisualPreset(layer,id){
+ const prefix=layer==='panels'?'panelArt':layer==='feature'?'featureArt':null;
+ const patternKey=layer==='panels'?'panelPattern':layer==='feature'?'featurePattern':null;
+ if(!prefix||!patternKey)return false;
+ const safe=validateDesignField(patternKey,id);if(safe===null)return false;
+ const old=readDesign(),next={...old,[patternKey]:safe};
+ const art=visualArtById(id);
+ if(art){
+  next[prefix+'Base']=art.colors[0];next[prefix+'Primary']=art.colors[1];
+  next[prefix+'Secondary']=art.colors[2];next[prefix+'Glow']=art.colors[3];
+ }
+ try{localStorage.setItem(DESIGN_KEY,JSON.stringify(next))}catch{return false}
+ priorDesign=old;priorEditKey='layer-'+layer;lastEditAt=0;
+ applyDesign(globalThis.document?.documentElement);
+ if(typeof window!=='undefined')window.dispatchEvent(new Event('arcana:design-change'));
+ return true;
+}
 export function writeDesign(key,value){
  const safe=validateDesignField(key,value);if(safe===null)return false;
  const old=readDesign(),next={...old,[key]:safe};
@@ -147,6 +168,7 @@ export function applyDesign(root=globalThis.document?.documentElement){
  else{root.style.removeProperty('--arcana-atlas-panel');root.style.removeProperty('--arcana-atlas-icon-box');root.style.removeProperty('--arcana-atlas-icon');}
  applyPsychedelicTexture(root,values);
  applyVisualArt(root,values);
+ paintArtLayers(root,values);
   if(active){root.style.setProperty('--arcana-panel-opacity',String(values.panelOpacity/100));root.style.setProperty('--arcana-panel-opacity-percent',values.panelOpacity+'%');}
   else{root.style.removeProperty('--arcana-panel-opacity');root.style.removeProperty('--arcana-panel-opacity-percent');}
   root.style.setProperty('--arcana-wave-opacity',String(values.intensity/100));
@@ -166,9 +188,10 @@ export function applyDesign(root=globalThis.document?.documentElement){
  root.style.setProperty('--arcana-hero-cta-border',values.heroActionBorder+'px');
  const settings={fontSize:'--arcana-font-scale',cardPadding:'--arcana-card-padding',cardShadow:'--arcana-shadow-depth',headerOpacity:'--arcana-header-opacity',patternScale:'--arcana-pattern-scale',borderWidth:'--arcana-border-width',buttonHeight:'--arcana-button-height',accentBlend:'--arcana-accent-blend'};
  for(const [k,css] of Object.entries(settings)){if(active)root.style.setProperty(css,k==='headerOpacity'?values[k]+'%':['fontSize','patternScale','cardShadow'].includes(k)?String(values[k]/100):k==='accentBlend'?values[k]+'%':values[k]+'px');else root.style.removeProperty(css);}
- const families={system:'system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif',rounded:'ui-rounded,Trebuchet MS,system-ui,sans-serif',serif:'Georgia,Times New Roman,serif',mono:'ui-monospace,SFMono-Regular,Consolas,monospace'};
+ 
  if(active){
-  root.style.setProperty('--arcana-design-font-family',families[values.fontFamily]);
+  root.style.setProperty('--arcana-design-font-family',fontStack(values.fontFamily));
+  root.style.setProperty('--arcana-design-heading-font-family',fontStack(values.headingFont));
   root.style.setProperty('--theme-highlight',values.action);
   root.style.setProperty('--accent',values.action);
   root.dataset.arcanaDesignDensity=values.density;
@@ -177,6 +200,7 @@ export function applyDesign(root=globalThis.document?.documentElement){
   root.style.setProperty('--arcana-icon-color',values.action);
  }else{
   root.style.removeProperty('--arcana-design-font-family');
+  root.style.removeProperty('--arcana-design-heading-font-family');
   delete root.dataset.arcanaDesignDensity;
   delete root.dataset.arcanaDesignButtonStyle;
  }
