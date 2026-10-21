@@ -2,6 +2,8 @@
 // This never writes browser storage, invokes publishing endpoints or grants editor roles.
 import {psychedelicSvg} from './psychedelic-patterns.js';
 import {artUrl} from './visual-art.js';
+import {paintArtLayers} from './studio-art-layers.js';
+import {fontStack} from './studio-fonts.js';
 const colorMap={main:'--theme-main',card:'--theme-secondary',action:'--arcana-action-color',text:'--arcana-design-text',secondaryAccent:'--arcana-secondary-accent',borderColor:'--arcana-border-color',mutedText:'--arcana-muted-text',navBar:'--arcana-nav-panel',buttonText:'--arcana-button-text'};
 const fontMap={system:'system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif',rounded:'ui-rounded,Trebuchet MS,system-ui,sans-serif',serif:'Georgia,Times New Roman,serif',mono:'ui-monospace,SFMono-Regular,Consolas,monospace'};
 export function decorateLiveFrame(frame,values){
@@ -24,7 +26,7 @@ export function decorateLiveFrame(frame,values){
  '--arcana-shadow-depth':String(values.cardShadow/100),'--arcana-header-opacity':values.headerOpacity+'%',
  '--arcana-pattern-scale':String(values.patternScale/100),'--arcana-border-width':values.borderWidth+'px',
  '--arcana-button-height':values.buttonHeight+'px','--arcana-accent-blend':values.accentBlend+'%',
- '--arcana-design-font-family':fontMap[values.fontFamily]||fontMap.system
+ '--arcana-design-font-family':fontStack(values.fontFamily),'--arcana-design-heading-font-family':fontStack(values.headingFont)
  }))root.style.setProperty(k,v);
  const svg=psychedelicSvg(values.pattern,values);
  if(svg)root.style.setProperty('--psychedelic-texture',svg);
@@ -32,6 +34,7 @@ export function decorateLiveFrame(frame,values){
  const visual=artUrl(values.pattern,values);
  if(visual)root.style.setProperty('--arcana-visual-art',visual);
  else root.style.removeProperty('--arcana-visual-art');
+ paintArtLayers(root,values);
  for(const [k,v] of Object.entries({
  arcanaDesignPattern:values.pattern,arcanaPatternTarget:values.patternTarget,arcanaDesignDensity:values.density,
  arcanaDesignButtonStyle:values.buttonStyle,arcanaIconMode:values.iconMode,
