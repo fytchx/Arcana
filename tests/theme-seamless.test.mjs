@@ -4,8 +4,8 @@ import {readFile} from 'node:fs/promises';
 import {THEME_PATTERNS} from '../src/theme-patterns.js';
 const read=path=>readFile(new URL(path,import.meta.url),'utf8');
 test('all 84 texture styles carry explicit rendering behavior and remain editable',()=>{
- assert.equal(THEME_PATTERNS.length,148);
- assert.equal(new Set(THEME_PATTERNS.map(p=>p.id)).size,148);
+ assert.equal(THEME_PATTERNS.length,154);
+ assert.equal(new Set(THEME_PATTERNS.map(p=>p.id)).size,154);
  const groups=THEME_PATTERNS.reduce((out,p)=>{out[p.behavior]=(out[p.behavior]||0)+1;return out},{});
  assert.equal(groups.none,1);
  assert.ok(groups.material>=25);
