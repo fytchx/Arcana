@@ -49,7 +49,7 @@ const ENTRIES=[
  ['solar-ritual','Solar Ritual','solar-relic','ember',null,'Relics / Elements'],
  ['jade-circuit','Jade Circuit','verdant-signal','jade',null,'Relics / Elements'],
  ['frost-sanctum','Frost Sanctum','glacial-fold','frost',null,'Relics / Elements'],
- ['bloodmoon','Bloodmoon','solar-relic','crimson',null,'Relics / Elements'],
+ ['bloodmoon-rite','Bloodmoon','solar-relic','crimson',null,'Relics / Elements'],
  ['star-forge','Star Forge','celestial-tapestry','royal',null,'Relics / Elements']
 ];
 export const STUDIO_V2_FAMILIES=Object.freeze([...new Set(ENTRIES.map(r=>r[5]))]);
