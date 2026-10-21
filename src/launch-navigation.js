@@ -6,6 +6,7 @@ import {themeVaultMarkup} from './theme-studio-vault.js';
 import {THEME_PATTERNS} from './theme-patterns.js';
 import {PSYCHEDELIC_IDS} from './psychedelic-patterns.js';
 import {VISUAL_ART} from './visual-art.js';
+import {studioV2Panel} from './studio-v2.js';
 import {HERO_CTA_STYLES} from './hero-cta-styles.js';
 import {esc,icon} from './ui.js';
 import {ACCENT_PRESETS,SITE_SURFACES,ICON_MODES,selectedAccent,selectedSiteSurface,selectedIconColor,selectedIconMode,customAccent,ADMIN_URL} from './theme.js';
@@ -132,7 +133,9 @@ const PREF_KEY='arcana-launch-prefs';
 export function appPrefs(){try{const raw=JSON.parse(localStorage.getItem(PREF_KEY)||'{}');return {compact:false,reduceMotion:raw.reduceMotion===true}}catch{return {compact:false,reduceMotion:false}}}
 export function applyAppPrefs(){const prefs=appPrefs();document.documentElement.dataset.launchCompact=String(prefs.compact);document.documentElement.dataset.launchReduceMotion=String(prefs.reduceMotion)}
 export function changeAppPref(key,checked){if(key!=='reduceMotion')return;const p={...appPrefs(),[key]:checked===true};try{localStorage.setItem(PREF_KEY,JSON.stringify(p))}catch{}applyAppPrefs()}
-export const designPanel=({showPreview=true}={})=>{
+export const designPanel=({showPreview=true}={})=>studioV2Panel({showPreview});
+// Legacy studio renderer retained temporarily for draft compatibility and rollback.
+const legacyDesignPanel=({showPreview=true}={})=>{
  const d=readDesign();
  const color=(key,label)=>'<div class="designControl designColorControl"><span>'+label+'</span><input type="color" data-design-field="'+key+'" value="'+esc(d[key])+'" aria-label="'+label+' color picker"><input type="text" data-design-hex="'+key+'" value="'+esc(d[key])+'" inputmode="text" maxlength="7" spellcheck="false" autocorrect="off" autocapitalize="characters" aria-label="'+label+' HEX code" aria-describedby="designHexStatus-'+key+'" placeholder="#A78BFA"><small class="designHexStatus" id="designHexStatus-'+key+'" data-design-status="'+key+'" role="status">HEX code</small></div>';
  const unit=key=>['roundness','buttonRoundness','cardPadding','borderWidth','buttonHeight','heroActionHeight','heroActionBorder'].includes(key)?' px':'%';
