@@ -15,12 +15,14 @@ const fixture={
  ]])),transitions:Array.from({length:30},(_,i)=>({rank:i+1,gold:'300',materials:[{slug:'core',quantity:3}]}))}},
  materials:[{slug:'iron',name:'Iron'},{slug:'silver',name:'Silver'},{slug:'stone',name:'Stone'},{slug:'core',name:'Core'}]
 };
-test('homepage preserves Build Studio and presents only three destinations',()=>{
+test('homepage preserves Build Studio and routes six discovery destinations',()=>{
  const home=homeScreen();
- assert.ok(home.indexOf('class="launchHero"')<home.indexOf('class="launchQuick"'));
- assert.equal((home.match(/class="launchQuickCard"/g)||[]).length,3);
+ assert.ok(home.indexOf('class="atlasHero"')<home.indexOf('class="atlasTileGrid"'));
+ assert.equal((home.match(/class="atlasTile"/g)||[]).length,6);
  assert.doesNotMatch(home,/quickDashboard|quickActions|id="pathRangeContent"|data-route="calculators\/pet"|data-route="calculators\/damage"/);
- for(const id of ['pathfinder','tools','social'])assert.match(home,new RegExp('data-arg="'+id+'"'));
+ assert.match(home,/data-route="calculators\/pathfinder"/);
+ assert.match(home,/data-action="homemenu" data-arg="tools"/);
+ assert.match(home,/data-route="guilds"/);
 });
 test('first-use calculator defaults to A1 +0 → A2 +0 while preserving saved checkpoints',()=>{
  const full=structuredClone(fixture);for(const level of Object.values(full.codex.awaken.rows)){
