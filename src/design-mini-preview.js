@@ -47,7 +47,7 @@ export function syncDesignMiniPreview(){
  for(const [name,value] of Object.entries({
   '--mini-main':v.main,'--mini-panel':v.card,'--mini-icon-box':v.iconBox,'--mini-icon':v.iconGlyph,'--mini-accent':v.action,'--mini-text':v.text,'--mini-secondary':v.secondaryAccent,'--mini-border':v.borderColor,'--mini-muted':v.mutedText,'--mini-nav':v.navBar,'--mini-button-text':v.buttonText,
   '--mini-signature-scale':String(v.patternScale/100),'--mini-aura':String(v.aura/100),'--mini-sheen':String(v.sheen/100),'--mini-detail':String(v.detail/100),
-  '--mini-panel-opacity':String(v.panelOpacity/100),'--mini-alpha':String(v.intensity/100),'--mini-glow':Math.round(v.glow*.28)+'px',
+  '--mini-panel-opacity':String(v.panelOpacity/100),'--mini-panel-opacity-percent':v.panelOpacity+'%','--mini-alpha':String(v.intensity/100),'--mini-glow':Math.round(v.glow*.28)+'px',
   '--mini-edge':v.edges+'%','--mini-radius':v.roundness+'px','--mini-pattern-size':v.patternScale+'%','--mini-shadow-alpha':v.cardShadow/100,'--mini-font-scale':v.fontSize/100,'--mini-card-padding':v.cardPadding+'px','--mini-header-alpha':v.headerOpacity+'%','--mini-border-width':v.borderWidth+'px','--mini-button-height':v.buttonHeight+'px','--mini-blend':v.accentBlend+'%',
   '--mini-button-radius':v.buttonRoundness+'px','--mini-fill':v.buttonFill+'%',
   '--mini-cta-width':v.heroActionWidth+'%','--mini-cta-height':Math.max(28,Math.round(v.heroActionHeight*.65))+'px','--mini-cta-glow':String(v.heroActionGlow/100),'--mini-cta-border':v.heroActionBorder+'px'
