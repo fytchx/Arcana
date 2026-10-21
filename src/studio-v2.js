@@ -4,6 +4,7 @@
 import {readDesign} from './design-controls.js';
 import {STUDIO_V2_PRESETS,STUDIO_V2_PRESET_IDS,STUDIO_V2_FAMILIES} from './studio-v2-presets.js';
 import {VISUAL_ART} from './visual-art.js';
+import {STUDIO_FONT_OPTIONS} from './studio-fonts.js';
 import {designMiniMarkup} from './design-mini-preview.js';
 import {themeVaultMarkup} from './theme-studio-vault.js';
 import {esc,icon} from './ui.js';
@@ -18,6 +19,18 @@ export function studioV2Panel({showPreview=true}={}){
  const slider=(key,label,lo,hi,description='')=>'<label class="designControl studioSlider"><span>'+label+'</span><input type="range" min="'+lo+'" max="'+hi+'" step="1" value="'+d[key]+'" data-design-field="'+key+'" aria-label="'+label+'"><strong data-design-value="'+key+'">'+d[key]+(pixel.has(key)?' px':'%')+'</strong>'+(description?'<small>'+description+'</small>':'')+'</label>';
  const select=(key,label,opts,description='')=>'<label class="designControl studioSelect"><span>'+label+'</span><select data-design-field="'+key+'" aria-label="'+label+'">'+opts.map(([v,n])=>'<option value="'+v+'" '+(d[key]===v?'selected':'')+'>'+n+'</option>').join('')+'</select>'+(description?'<small>'+description+'</small>':'')+'</label>';
  const group=(id,title,description,content,opened=false)=>'<details class="designOptionSection studioV2Group" data-theme-group="'+id+'" '+(opened?'open':'')+'><summary><span>'+title+'</span></summary><p class="designOptionDescription">'+description+'</p><div class="designOptionControls">'+content+'</div></details>';
+ const layerOptions=[['inherit','Same as previous surface'],['none','No artwork'],...VISUAL_ART.map(a=>[a.id,a.name])];
+ const backgroundOptions=[...VISUAL_ART.map(a=>[a.id,a.name]),['plain','No artwork']];
+ const layerCard=(layer,title,description,patternKey,prefix,choices)=>{
+  const value=d[patternKey],inherited=value==='inherit',absent=value==='none'||value==='plain';
+  const linked=layer==='background'?false:inherited;
+  return '<div class="studioLayerCard" data-studio-layer="'+layer+'" data-layer-inherited="'+String(linked)+'" data-layer-absent="'+String(absent)+'">'+
+    '<div class="studioLayerHead"><span class="studioLayerPreview" data-art-layer-preview="'+layer+'" aria-hidden="true"></span><div><h4>'+title+'</h4><p>'+description+'</p></div></div>'+
+    '<div class="designOptionControls">'+select(patternKey,'Illustration',choices)+'</div>'+
+    '<p class="studioLayerHint" aria-live="polite"></p>'+
+    '<div class="studioLayerColors">'+color(prefix+'Base','Base')+color(prefix+'Primary','Primary')+
+     color(prefix+'Secondary','Secondary')+color(prefix+'Glow','Highlight')+'</div></div>';
+ };
  const keys=STUDIO_V2_PRESET_IDS;
  const cards=keys.map((id,index)=>{
   const p=STUDIO_V2_PRESETS[id];
@@ -43,18 +56,17 @@ export function studioV2Panel({showPreview=true}={}){
   '<section class="studioV2ArtworkSection" data-theme-group="textures"><header><h3>Artwork library</h3><p>'+VISUAL_ART.length+' individually composed vectors. Each begins with its intended colors. Nothing is flattened or locked to violet.</p></header>'+
   '<div class="visionArtGrid">'+artCards+'</div>'+
   '<div class="studioV2ArtControls">'+
-  group('art-palette','Artwork pigments','These four pigments recolor the actual vectors, not a filter over an image.',[
-   color('artBase','Background'),color('artPrimary','Primary lines'),color('artSecondary','Secondary forms'),color('artGlow','Highlight / light')
-  ].join(''),true)+
-  group('art-shape','Artwork composition','Every slider changes the selected illustration. Zoom and position adjust the paths inside the artwork.',[
-   slider('artStrength','Artwork strength',15,100,'Controls the transparency of illustrated shapes, not the background.'),
-   slider('artDetail','Line density',25,100,'Adds or removes secondary vector strokes.'),
-   slider('artWeight','Line thickness',60,180,'Changes the actual vector stroke width.'),
-   slider('artZoom','Artwork zoom',75,155,'Enlarge or shrink the illustrated subject.'),
-   slider('artPositionX','Move horizontally',0,100,'50 is centered.'),
-   slider('artPositionY','Move vertically',0,100,'50 is centered.'),
-   select('patternTarget','Artwork placement',[['all','Page + panels'],['cards','Panels only'],['background','Page only']])
-  ].join(''),true)+
+  layerCard('background','01 · Page canvas','The artwork behind the homepage and its surrounding space.','pattern','art',backgroundOptions)+
+  layerCard('panels','02 · Tool panels','Illustrations behind tool tiles, updates and editorial panels.','panelPattern','panelArt',layerOptions)+
+  layerCard('feature','03 · Build Studio feature','Give the featured Build Studio banner its own visual personality.','featurePattern','featureArt',layerOptions)+
+  group('art-shape','Shared geometry','Fine-tune the vector stroke detail and composition across all three artwork canvases.',[
+   slider('artStrength','Artwork strength',15,100),
+   slider('artDetail','Line density',25,100),
+   slider('artWeight','Line thickness',60,180),
+   slider('artZoom','Artwork zoom',75,155),
+   slider('artPositionX','Move horizontally',0,100),
+   slider('artPositionY','Move vertically',0,100)
+  ].join(''),false)+
   '</div></section>'+
   group('colors','Website colors','These change the actual Arcana UI independently of the artwork pigments.',[
    color('main','Page background'),color('card','Panel background'),color('iconBox','Icon boxes'),color('iconGlyph','Icons'),
@@ -70,7 +82,9 @@ export function studioV2Panel({showPreview=true}={}){
    select('buttonStyle','Button appearance',[['gradient','Gradient'],['solid','Solid'],['outline','Outlined']])
   ].join(''),false)+
   group('type','Type &amp; spacing','Simple typography and content density controls with a visible effect.',[
-   select('fontFamily','Interface font',[['system','System'],['rounded','Rounded'],['serif','Serif'],['mono','Monospace']]),
+   select('fontFamily','Body font',STUDIO_FONT_OPTIONS),
+   select('headingFont','Headings &amp; card titles',STUDIO_FONT_OPTIONS),
+   '<div class="studioFontsSample" data-studio-font-sample><strong>Build your legend.</strong><span>Every adventure starts somewhere. Choose the pairing that feels right for Arcana.</span></div>',
    slider('fontSize','Text size',90,115),
    select('density','Spacing',[['compact','Compact'],['comfortable','Comfortable'],['spacious','Spacious']])
   ].join(''),false)+
