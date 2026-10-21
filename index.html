@@ -21,6 +21,11 @@
 </style><script id="arcana-boot-control">
 (function(){
  var appReady=false,themeReady=false,closing=false,released=false,pointersDown=0,fadeStarted=0;
+ var launchHome=(location.hash||'#/home').split('?')[0]==='#/home';
+ var previousScrollRestoration=null;
+ // Mobile browsers can restore a stale mid-page position behind the splash.
+ // Hold restoration only for a Home launch, then return normal history behavior.
+ if(launchHome){try{if('scrollRestoration' in history){previousScrollRestoration=history.scrollRestoration;history.scrollRestoration='manual';}}catch{}}
  var shieldIds=['app','arcanaDock','arcanaChatOverlay','layer'];
  function setShield(inert){
   shieldIds.forEach(function(id){var el=document.getElementById(id);if(el){if(inert)el.setAttribute('inert','');else el.removeAttribute('inert');}});
@@ -42,6 +47,8 @@
   if(pointersDown>0&&Date.now()-fadeStarted<2500){setTimeout(release,80);return;}
   released=true;
   var splash=document.getElementById('arcanaBoot');if(splash)splash.remove();
+  if(launchHome)window.scrollTo({top:0,left:0,behavior:'instant'});
+  if(previousScrollRestoration!==null){try{history.scrollRestoration=previousScrollRestoration;}catch{}}
   setShield(false);
  }
  function done(){
