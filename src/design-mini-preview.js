@@ -6,6 +6,8 @@ import {decorateLiveFrame} from './theme-live-frame.js';
 import {psychedelicSvg,syncPsychedelicSamples} from './psychedelic-patterns.js';
 import {artUrl,syncVisualSamples} from './visual-art.js';
 import {STUDIO_V2_PRESETS} from './studio-v2-presets.js';
+import {layerArtUrl,resolveArtLayers,syncLayerArtSamples} from './studio-art-layers.js';
+import {fontStack} from './studio-fonts.js';
 const PREVIEW_UI_KEY='arcana-theme-preview-layout-v2';
 const storedPreview=()=>{try{return JSON.parse(globalThis.localStorage?.getItem(PREVIEW_UI_KEY)||'{}')||{}}catch{return {}}};
 const initial=storedPreview();
@@ -47,6 +49,7 @@ export function syncDesignMiniPreview(){
  for(const [name,value] of Object.entries({
   '--mini-main':v.main,'--mini-panel':v.card,'--mini-icon-box':v.iconBox,'--mini-icon':v.iconGlyph,'--mini-accent':v.action,'--mini-text':v.text,'--mini-secondary':v.secondaryAccent,'--mini-border':v.borderColor,'--mini-muted':v.mutedText,'--mini-nav':v.navBar,'--mini-button-text':v.buttonText,
   '--mini-signature-scale':String(v.patternScale/100),'--mini-aura':String(v.aura/100),'--mini-sheen':String(v.sheen/100),'--mini-detail':String(v.detail/100),
+  '--mini-font-family':fontStack(v.fontFamily),'--mini-heading-font-family':fontStack(v.headingFont),
   '--mini-panel-opacity':String(v.panelOpacity/100),'--mini-panel-opacity-percent':v.panelOpacity+'%','--mini-alpha':String(v.intensity/100),'--mini-glow':Math.round(v.glow*.28)+'px',
   '--mini-edge':v.edges+'%','--mini-radius':v.roundness+'px','--mini-pattern-size':v.patternScale+'%','--mini-shadow-alpha':v.cardShadow/100,'--mini-font-scale':v.fontSize/100,'--mini-card-padding':v.cardPadding+'px','--mini-header-alpha':v.headerOpacity+'%','--mini-border-width':v.borderWidth+'px','--mini-button-height':v.buttonHeight+'px','--mini-blend':v.accentBlend+'%',
   '--mini-button-radius':v.buttonRoundness+'px','--mini-fill':v.buttonFill+'%',
@@ -58,6 +61,10 @@ export function syncDesignMiniPreview(){
  if(psych)canvas.style.setProperty('--psychedelic-texture',psych);else canvas.style.removeProperty('--psychedelic-texture');
  syncPsychedelicSamples(globalThis.document,readDesign());
  const art=artUrl(v.pattern,v);if(art)canvas.style.setProperty('--vision-mini-art',art);else canvas.style.removeProperty('--vision-mini-art');
+ const layers=resolveArtLayers(v);
+ for(const layer of ['background','panels','feature'])canvas.style.setProperty('--mini-art-'+layer,layerArtUrl(v,layer));
+ canvas.dataset.artLayered=String(Boolean(layers.background||layers.panels||layers.feature));
+ syncLayerArtSamples(globalThis.document,v);
  syncVisualSamples(globalThis.document,readDesign());
  for(const tile of globalThis.document.querySelectorAll('.studioPresetArtwork[data-studio-preset-art]')){
   const preset=STUDIO_V2_PRESETS[tile.dataset.studioPresetArt];if(!preset)continue;
