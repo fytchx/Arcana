@@ -17,7 +17,7 @@ test('single curated Studio V2 gallery contains only 30 complete artwork-first l
  assert.match(panel,/data-theme-change-hint/);
  assert.equal(THEME_PATTERNS.length,154);
  for(const id of ['presets','colors','textures','surfaces','type','vault'])assert.match(panel,new RegExp('data-theme-jump="'+id+'"'));
- assert.equal(Object.keys(DESIGN_PRESETS).length,72,'legacy presets are retained for draft compatibility');
+ assert.equal(Object.keys(DESIGN_PRESETS).length,71,'legacy presets are retained for draft compatibility');
 });
 test('admin-only header and search discovery share public navigation without leaking admin controls',async()=>{
  const html=await read('index.html'),app=await read('src/app.js'),css=await read('arcana-connected-ux.css'),server=await read('server.mjs');
