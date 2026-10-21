@@ -14,7 +14,7 @@ export const NAV_DESTINATIONS=Object.freeze({
  runes:{label:'Rune Forge · Build Studio',detail:'Edit the rune grid in your build',route:'labs/runes',icon:'gem'},
  skills:{label:'Class Skills · Build Studio',detail:'Review class skill branches in your build',route:'labs/skills',icon:'git'},
  passives:{label:'Passive Tree · Build Studio',detail:'Explore your build’s passive tree',route:'labs/passives',icon:'layers'},
- petlab:{label:'Configure pet loadout',detail:'Plan your four equipped pets',route:'labs/pets',icon:'paw'},
+ petlab:{label:'Pet Loadout · Build Studio',detail:'Configure the four pet slots in your active build',route:'labs/build',params:{section:'pets'},icon:'paw'},
  compound:{label:'Calculate Pet Compound',detail:'Preview rarity and Drop Bonus',route:'calculators/pet',icon:'paw'},
  affixes:{label:'Calculate pet affix costs',detail:'Plan Pet Shards to a target level',route:'calculators/affixes',icon:'calculator'},
  guildtree:{label:'Plan guild skill points',detail:'Allocate, compare and share guild bonuses',route:'labs/guild-tree',icon:'shield'},
@@ -98,7 +98,7 @@ export function relatedDestinations(route){
  return (NAV_FLOWS[route]||[]).map(navDestination).filter(Boolean);
 }
 export function connectedNext(route){
- if(['home','labs','calculators','wiki','lfg','labs/build','labs/runes','labs/passives','labs/skills','calculators/pathfinder','calculators/upgrade','calculators/compare'].includes(route)||route.startsWith('wiki/')||route==='reference/detail')return '';
+ if(['home','labs','calculators','wiki','lfg','labs/build','labs/runes','labs/passives','labs/skills','labs/pets','calculators/pathfinder','calculators/upgrade','calculators/compare'].includes(route)||route.startsWith('wiki/')||route==='reference/detail')return '';
  const related=relatedDestinations(route);
  if(!related.length)return '';
  return '<section class="arcanaNext" aria-label="Recommended next steps"><div class="arcanaNextHead"><span class="eyebrow">CONNECTED ARCANA</span><h2>Where to next?</h2><p>Jump to a relevant guide, reference or tool. Your current work stays saved.</p></div>'+
