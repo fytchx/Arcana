@@ -13,7 +13,7 @@ test('four authentic SVG pattern families and palettes are individually editable
  assert.equal(PSYCHEDELIC_IDS.length,4);
  assert.equal(new Set(PSYCHEDELIC_IDS).size,4);
  assert.equal(Object.keys(PSYCHEDELIC_PRESETS).length,4);
- assert.equal(Object.keys(DESIGN_PRESETS).length,71);
+ assert.equal(Object.keys(DESIGN_PRESETS).length,72);
  assert.equal(THEME_PATTERNS.length,154);
  for(const id of PSYCHEDELIC_IDS){
   assert.equal(THEME_PATTERNS.find(x=>x.id===id)?.category,'Psychedelic');
