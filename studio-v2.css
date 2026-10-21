@@ -1,0 +1,94 @@
+/* Theme Studio V2: a single artistic workspace, not a graveyard of knobs.
+ * The mobile drawer and desktop sticky preview remain provided by admin.css. */
+.studioV2{--studio-line:color-mix(in srgb,var(--line,#627089) 72%,transparent);min-width:0}
+.studioV2Intro{padding:18px 18px 15px;margin:0 0 13px;border-radius:17px;background:linear-gradient(110deg,color-mix(in srgb,var(--theme-highlight,#a98bff) 10%,var(--theme-secondary,#171b28)),var(--theme-secondary,#171b28));border:1px solid var(--studio-line)}
+.studioV2Intro h2{font:650 clamp(23px,4vw,31px)/1.16 Georgia,'Times New Roman',serif;letter-spacing:-.025em;margin:7px 0 8px;color:var(--text,#f5f5fb)}
+.studioV2Intro p,.studioV2Looks>header p,.studioV2ArtworkSection>header p,.studioV2 .themeVaultSection>header p{margin:0;font-size:12px;line-height:1.6;color:var(--muted,#adb4cb)}
+.studioV2 .themeStudioJumps{position:sticky;top:3px;z-index:9;display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding:8px 1px;margin:0 0 14px;background:var(--theme-main,#0d1019);border-radius:12px}
+.studioV2 .themeStudioJumps button{flex:none;min-height:38px;border:1px solid var(--studio-line);border-radius:8px;padding:7px 11px;background:var(--theme-secondary,#191e2b);color:var(--text,#f5f5fb);font:700 11px system-ui}
+.studioV2 .themeStudioJumps button:focus-visible,.studioV2 button:focus-visible,.studioV2 input:focus-visible,.studioV2 select:focus-visible{outline:2px solid var(--theme-highlight,#a98bff);outline-offset:2px}
+.studioV2 .themeEditorGuidance{margin:8px 0 18px}
+.studioV2Looks,.studioV2ArtworkSection,.studioV2 .themeVaultSection{margin:0 0 20px;padding:clamp(12px,2vw,19px);border:1px solid var(--studio-line);background:var(--theme-secondary,#191e2b);border-radius:17px;min-width:0}
+.studioV2Looks>header,.studioV2ArtworkSection>header,.studioV2 .themeVaultSection>header{margin:0 0 14px}
+.studioV2Looks h3,.studioV2ArtworkSection h3,.studioV2 .themeVaultSection h3{font:650 clamp(20px,3vw,26px)/1.15 Georgia,serif;margin:0 0 8px;letter-spacing:-.015em;color:var(--text,#f5f5fb)}
+.studioV2 .designPresetSearch{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;color:var(--muted,#b4bdd0);font-size:11px}
+.studioV2 .designPresetSearch input{width:100%;height:43px;min-width:0;padding:9px 13px;border-radius:9px;border:1px solid var(--studio-line);background:var(--theme-main,#0d1019);color:var(--text,#fff);font-size:13px}
+.studioV2FamilyFilters{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin:0 0 13px;padding:2px 0}
+.studioV2FamilyFilters button{min-height:35px;flex:none;white-space:nowrap;border-radius:18px;border:1px solid var(--studio-line);background:var(--theme-main,#0d1019);color:var(--muted,#b4bdd0);font-weight:700;font-size:10px;padding:7px 11px}
+.studioV2FamilyFilters button[aria-pressed=true]{color:var(--theme-highlight,#a98bff);border-color:var(--theme-highlight,#a98bff);background:color-mix(in srgb,var(--theme-highlight,#a98bff) 12%,var(--theme-main,#0d1019))}
+.studioV2PresetGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;min-width:0}
+.studioV2 .studioV2Preset{min-width:0;display:flex!important;flex-direction:column;align-items:stretch;gap:0;padding:0;border:1px solid var(--studio-line);border-radius:12px;overflow:hidden;color:var(--text,#fff);background:color-mix(in srgb,var(--theme-main,#0d1019) 62%,var(--theme-secondary,#191e2b));text-align:left;transition:border-color .14s,transform .14s;box-shadow:none}
+.studioV2 .studioV2Preset[hidden]{display:none!important}
+.studioV2 .studioV2Preset:hover{border-color:var(--theme-highlight,#a98bff);transform:translateY(-1px)}
+.studioV2 .studioV2Preset[aria-pressed=true]{border-color:var(--theme-highlight,#a98bff);box-shadow:0 0 0 2px color-mix(in srgb,var(--theme-highlight,#a98bff) 18%,transparent)}
+.studioPresetArtwork{display:block;width:100%;aspect-ratio:1.63;background-color:#13182d;background-position:center;background-size:cover;flex:none;border-bottom:1px solid #ffffff13}
+.studioPresetLabel{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:10px;min-width:0}
+.studioPresetLabel strong{font:650 17px/1.17 Georgia,serif;letter-spacing:-.02em}
+.studioPresetLabel small{font:700 10px/1.3 system-ui,sans-serif;color:var(--muted,#adb4cb)}
+.studioSwatches{display:flex;gap:4px;align-items:center;margin-top:4px}
+.studioSwatches i{display:block;width:15px;height:7px;border-radius:8px;border:1px solid #fff3}
+.studioV2Looks[data-show-all=false]:not([data-searching=true]):not([data-studio-filtered=true]) .studioV2Preset[data-preset-extra=true]{display:none!important}
+.studioV2 .studioV2ShowAll{display:block;margin:12px auto 0;min-height:39px;max-width:100%;border:1px solid var(--studio-line);border-radius:9px;background:var(--theme-main,#0d1019);color:var(--text,#f9f9fa);padding:8px 13px;font:750 11px system-ui}
+.studioV2 .visionArtGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.studioV2 .studioV2Artwork{padding:0;border-radius:12px;overflow:hidden;text-align:left}
+.studioV2 .studioV2Artwork .visionArtThumb{aspect-ratio:1.65}
+.studioV2 .studioV2Artwork .visionArtDetails{padding:9px 11px;gap:4px}
+.studioV2 .studioV2Artwork .visionArtDetails em{font-size:10px;line-height:1.38;color:var(--muted,#b4bdd0)}
+.studioV2ArtControls{margin:17px 0 0}
+.studioV2 .studioV2Group{margin:0 0 12px;border:1px solid var(--studio-line);background:var(--theme-secondary,#191e2b);border-radius:13px;overflow:hidden}
+.studioV2 .studioV2Group>summary{padding:15px 17px;font-weight:750;font-size:14px;list-style-position:inside;cursor:pointer}
+.studioV2 .studioV2Group[open]>summary{border-bottom:1px solid var(--studio-line)}
+.studioV2 .studioV2Group .designOptionDescription{margin:12px 14px 14px;font-size:11px;color:var(--muted,#c0c9d6);line-height:1.48}
+.studioV2 .studioV2Group .designOptionControls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 14px 14px;min-width:0}
+.studioV2 .studioV2Group .designControl{min-width:0;margin:0;display:flex;flex-direction:column;gap:7px;align-items:stretch;justify-content:flex-start;border:1px solid var(--studio-line);border-radius:10px;padding:10px;background:color-mix(in srgb,var(--theme-main,#0d1019) 66%,var(--theme-secondary,#191e2b))}
+.studioV2 .studioV2Group .designControl>span:first-child{font-size:11px;font-weight:750;line-height:1.38}
+.studioV2 .studioV2Group .designControl input[type=range]{width:100%;accent-color:var(--theme-highlight,#a98bff)}
+.studioV2 .studioV2Group .designControl strong{font-size:12px;color:var(--theme-highlight,#a98bff);font-variant-numeric:tabular-nums}
+.studioV2 .studioV2Group .designControl small{font-size:10px;color:var(--muted,#b4bdd0);line-height:1.4}
+.studioV2 .studioV2Group select{max-width:100%;width:100%;min-height:40px;padding:7px 9px;border-radius:8px;color:var(--text,#fff);background:var(--theme-secondary,#191e2b);border:1px solid var(--studio-line)}
+.studioV2 .studioColorPair{display:flex;align-items:center;gap:7px;min-width:0;max-width:100%}
+.studioV2 .studioColorPair input[type=color]{width:35px;height:37px;flex:none;padding:1px}
+.studioV2 .studioColorPair input[data-design-hex]{width:0;flex:1;min-width:0;max-width:100%;height:37px;padding:6px;border:1px solid var(--studio-line);border-radius:7px;background:var(--theme-secondary,#191e2b);color:var(--text,#fff);font:700 11px system-ui}
+.studioV2 .studioV2Actions{display:flex;flex-wrap:wrap;gap:8px;padding:12px 0}
+.studioV2 .themeVaultSection{scroll-margin-top:80px}
+.studioV2 [data-theme-group]{scroll-margin-top:75px}
+@media(min-width:1000px){.studioV2PresetGrid{grid-template-columns:repeat(3,minmax(0,1fr))}.studioV2 .visionArtGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:560px){.studioV2Intro{padding:13px}.studioV2Looks,.studioV2ArtworkSection,.studioV2 .themeVaultSection{padding:11px}.studioV2PresetGrid,.studioV2 .visionArtGrid{gap:8px}.studioPresetLabel strong{font-size:15px}.studioV2 .studioV2Group .designOptionControls{gap:7px;padding:0 9px 10px}.studioV2 .studioV2Group .designControl{padding:8px}.studioV2 .studioV2Group .designControl input[data-design-hex]{font-size:10px}}
+/* Real homepage surface controls; no historical selectors for deleted components. */
+html[data-arcana-design-active=true] .atlasHome .atlasTile{
+ border-radius:var(--arcana-card-radius,13px)!important;
+ border-width:var(--arcana-border-width,1px)!important;
+ box-shadow:0 calc(2px * var(--arcana-shadow-depth,.3)) calc(23px * var(--arcana-shadow-depth,.3)) #0006!important;
+}
+html[data-arcana-design-active=true] .atlasHome :is(.atlasHero,.atlasFeatureLink){
+ border-radius:var(--arcana-card-radius,13px)!important;border-width:var(--arcana-border-width,1px)!important;
+}
+html[data-arcana-design-active=true] .atlasHome :is(.atlasHeroGo,.atlasSectionHead button,.atlasFooterLinks button){
+ border-radius:var(--arcana-button-radius,11px);
+}
+html[data-arcana-design-active=true] .atlasHome .atlasHeroGo{
+ background:color-mix(in srgb,var(--atlas-icon) var(--arcana-button-fill,82%),var(--atlas-icon-box))!important;
+ color:var(--theme-main)!important;
+}
+html[data-arcana-design-active=true][data-arcana-design-button-style=outline] .atlasHome .atlasHeroGo{background:transparent!important;color:var(--atlas-icon)!important}
+html[data-arcana-design-active=true][data-arcana-design-button-style=solid] .atlasHome .atlasHeroGo{background:var(--atlas-icon)!important}
+html[data-arcana-design-active=true] .atlasHome{font-family:var(--arcana-design-font-family,system-ui,sans-serif)}
+html[data-arcana-design-active=true] .atlasHome .atlasTileCopy strong{font-size:clamp(14px,calc(17px * var(--arcana-font-scale,1)),23px)}
+html[data-arcana-design-active=true] .atlasHome .atlasTileCopy small{font-size:clamp(9px,calc(11px * var(--arcana-font-scale,1)),14px)}
+html[data-arcana-design-active=true][data-arcana-design-density=compact] .atlasTileGrid{gap:6px}
+html[data-arcana-design-active=true][data-arcana-design-density=spacious] .atlasTileGrid{gap:15px}
+html[data-arcana-design-active=true][data-arcana-design-density=compact] .atlasHome{gap:10px}
+html[data-arcana-design-active=true][data-arcana-design-density=spacious] .atlasHome{gap:22px}
+html[data-arcana-design-active=true] .atlasTile{background-color:var(--atlas-panel)}
+/* Art is composited behind a tinted UI layer, the opacity genuinely changes with the slider. */
+html[data-arcana-design-active=true][data-arcana-design-pattern^=vision-]:is([data-arcana-pattern-target=all],[data-arcana-pattern-target=cards]) .atlasHome :is(.atlasHero,.atlasTile,.atlasFeatureLink){
+ background-image:linear-gradient(color-mix(in srgb,var(--atlas-panel) var(--arcana-panel-opacity-percent,88%),transparent),color-mix(in srgb,var(--atlas-panel) var(--arcana-panel-opacity-percent,88%),transparent)),var(--arcana-visual-art)!important;
+ background-size:cover!important;background-repeat:no-repeat!important;
+}
+.miniCanvas[data-mini-pattern^=vision-] .atlasMiniTile,.miniCanvas[data-mini-pattern^=vision-] .atlasMiniHero{
+ border-radius:var(--arcana-card-radius,11px);
+}
+.miniCanvas[data-mini-pattern^=vision-]:not([data-mini-pattern-target=background]) .miniHome :is(.atlasMiniHero,.atlasMiniTile){
+ background-image:linear-gradient(color-mix(in srgb,var(--mini-panel) var(--mini-panel-opacity-percent,88%),transparent),color-mix(in srgb,var(--mini-panel) var(--mini-panel-opacity-percent,88%),transparent)),var(--vision-mini-art)!important;
+}
+@media(prefers-reduced-motion:reduce){.studioV2 .studioV2Preset{transition:none}}
