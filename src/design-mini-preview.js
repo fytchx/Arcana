@@ -5,6 +5,7 @@ import {themeReadability} from './theme-studio-audit.js';
 import {decorateLiveFrame} from './theme-live-frame.js';
 import {psychedelicSvg,syncPsychedelicSamples} from './psychedelic-patterns.js';
 import {artUrl,syncVisualSamples} from './visual-art.js';
+import {STUDIO_V2_PRESETS} from './studio-v2-presets.js';
 const PREVIEW_UI_KEY='arcana-theme-preview-layout-v2';
 const storedPreview=()=>{try{return JSON.parse(globalThis.localStorage?.getItem(PREVIEW_UI_KEY)||'{}')||{}}catch{return {}}};
 const initial=storedPreview();
@@ -46,7 +47,7 @@ export function syncDesignMiniPreview(){
  for(const [name,value] of Object.entries({
   '--mini-main':v.main,'--mini-panel':v.card,'--mini-icon-box':v.iconBox,'--mini-icon':v.iconGlyph,'--mini-accent':v.action,'--mini-text':v.text,'--mini-secondary':v.secondaryAccent,'--mini-border':v.borderColor,'--mini-muted':v.mutedText,'--mini-nav':v.navBar,'--mini-button-text':v.buttonText,
   '--mini-signature-scale':String(v.patternScale/100),'--mini-aura':String(v.aura/100),'--mini-sheen':String(v.sheen/100),'--mini-detail':String(v.detail/100),
-  '--mini-alpha':String(v.intensity/100),'--mini-glow':Math.round(v.glow*.28)+'px',
+  '--mini-panel-opacity':String(v.panelOpacity/100),'--mini-alpha':String(v.intensity/100),'--mini-glow':Math.round(v.glow*.28)+'px',
   '--mini-edge':v.edges+'%','--mini-radius':v.roundness+'px','--mini-pattern-size':v.patternScale+'%','--mini-shadow-alpha':v.cardShadow/100,'--mini-font-scale':v.fontSize/100,'--mini-card-padding':v.cardPadding+'px','--mini-header-alpha':v.headerOpacity+'%','--mini-border-width':v.borderWidth+'px','--mini-button-height':v.buttonHeight+'px','--mini-blend':v.accentBlend+'%',
   '--mini-button-radius':v.buttonRoundness+'px','--mini-fill':v.buttonFill+'%',
   '--mini-cta-width':v.heroActionWidth+'%','--mini-cta-height':Math.max(28,Math.round(v.heroActionHeight*.65))+'px','--mini-cta-glow':String(v.heroActionGlow/100),'--mini-cta-border':v.heroActionBorder+'px'
@@ -58,6 +59,10 @@ export function syncDesignMiniPreview(){
  syncPsychedelicSamples(globalThis.document,readDesign());
  const art=artUrl(v.pattern,v);if(art)canvas.style.setProperty('--vision-mini-art',art);else canvas.style.removeProperty('--vision-mini-art');
  syncVisualSamples(globalThis.document,readDesign());
+ for(const tile of globalThis.document.querySelectorAll('.studioPresetArtwork[data-studio-preset-art]')){
+  const preset=STUDIO_V2_PRESETS[tile.dataset.studioPresetArt];if(!preset)continue;
+  if(!tile.style.backgroundImage)tile.style.backgroundImage=artUrl(preset.pattern,preset);
+ }
  const palettePanel=globalThis.document.querySelector('.psyPalettePicker');
  if(palettePanel){const current=readDesign();palettePanel.dataset.psyActive=String(['groove-melt','orbit-jelly','doodle-rift','prism-puddle'].includes(current.pattern));palettePanel.dataset.psyMode=current.psyPaletteMode;}
  const section=canvas.closest('.designMiniPreview');
