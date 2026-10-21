@@ -111,7 +111,7 @@ export function applyDesignPreset(key){
 // Select artwork and its artist-chosen starting colors as a single undoable edit.
 export function applyVisualPreset(id){
  const art=visualArtById(id);if(!art||!VISUAL_ART_IDS.includes(id))return false;
- const prior=readDesign(),next={...prior,pattern:id,artBase:art.colors[0],artPrimary:art.colors[1],artSecondary:art.colors[2],artGlow:art.colors[3]};
+ const prior=readDesign(),next={...prior,pattern:id,artBase:art.colors[0],artPrimary:art.colors[1],artSecondary:art.colors[2],artGlow:art.colors[3],artStrength:100,artDetail:100,artWeight:100,artZoom:100,artPositionX:50,artPositionY:50};
  try{localStorage.setItem(DESIGN_KEY,JSON.stringify(next))}catch{return false}
  priorDesign=prior;priorEditKey='visual';lastEditAt=0;
  applyDesign(globalThis.document?.documentElement);
