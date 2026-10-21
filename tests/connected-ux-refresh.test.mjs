@@ -6,20 +6,18 @@ import {THEME_PATTERNS} from '../src/theme-patterns.js';
 import {DESIGN_PRESETS} from '../src/design-controls.js';
 import {communityPage} from '../src/community-ui.js';
 const read=p=>readFile(new URL('../'+p,import.meta.url),'utf8');
-test('single consistent gallery includes every Classic, Signature and Psychedelic preset',()=>{
+test('single curated Studio V2 gallery contains only 30 complete artwork-first looks',()=>{
  const panel=designPanel({showPreview:false});
  const count=(panel.match(/data-action="design-preset"/g)||[]).length;
- assert.equal(count,Object.keys(DESIGN_PRESETS).length);
- assert.equal(count,42);
- assert.equal((panel.match(/data-collection="classic"/g)||[]).length,18);
- assert.equal((panel.match(/data-collection="signature"/g)||[]).length,20);
- assert.equal((panel.match(/data-collection="psychedelic"/g)||[]).length,4);
- assert.equal((panel.match(/class="designPresetGrid/g)||[]).length,1);
- assert.doesNotMatch(panel,/designClassicCollection|signatureCollectionIntro|psychedelicPresetsIntro/);
+ assert.equal(count,30);
+ assert.equal((panel.match(/data-collection="studio-v2"/g)||[]).length,30);
+ assert.equal((panel.match(/class="visionArtChoice studioV2Artwork"/g)||[]).length,18);
+ assert.doesNotMatch(panel,/data-collection="classic"|data-collection="signature"|data-collection="psychedelic"/);
  assert.match(panel,/data-theme-group="presets"/);
  assert.match(panel,/data-theme-change-hint/);
- assert.equal(THEME_PATTERNS.length,148);
- for(const id of ['presets','colors','textures','feature','components','type','vault'])assert.match(panel,new RegExp('data-theme-jump="'+id+'"'));
+ assert.equal(THEME_PATTERNS.length,154);
+ for(const id of ['presets','colors','textures','surfaces','type','vault'])assert.match(panel,new RegExp('data-theme-jump="'+id+'"'));
+ assert.equal(Object.keys(DESIGN_PRESETS).length,72,'legacy presets are retained for draft compatibility');
 });
 test('admin-only header and search discovery share public navigation without leaking admin controls',async()=>{
  const html=await read('index.html'),app=await read('src/app.js'),css=await read('arcana-connected-ux.css'),server=await read('server.mjs');
