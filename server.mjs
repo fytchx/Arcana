@@ -193,7 +193,7 @@ const server=http.createServer(async(req,res)=>{
   }
   const normalized=pathname==='/'?'/index.html':pathname;
   // Serve only public frontend assets. Never expose account/session files or local Wiki data.
-  const publicPage=new Set(['/index.html','/privacy.html','/beta-rules.html','/styles.css','/wiki-studio.css','/community.css','/guild-hub.css','/beta.css','/launch-navigation.css','/pathfinder-timeline.css','/quick-tools.css','/home-three.css','/arcana-contour.css','/theme-studio-finishes.css','/signature-themes.css','/theme-seamless.css','/psychedelic-themes.css','/desktop-home-refinement.css','/arcana-connected-ux.css','/home-atlas.css','/atlas-atelier-textures.css','/visual-art.css','/traffic.css','/admin.css','/journal.css','/journal-widgets.css','/journal-studio.js','/googledcf6cfe1a260efea.html']).has(normalized);
+  const publicPage=new Set(['/index.html','/privacy.html','/beta-rules.html','/styles.css','/wiki-studio.css','/community.css','/guild-hub.css','/beta.css','/launch-navigation.css','/pathfinder-timeline.css','/quick-tools.css','/home-three.css','/arcana-contour.css','/theme-studio-finishes.css','/signature-themes.css','/theme-seamless.css','/psychedelic-themes.css','/desktop-home-refinement.css','/arcana-connected-ux.css','/home-atlas.css','/atlas-atelier-textures.css','/visual-art.css','/studio-v2.css','/traffic.css','/admin.css','/journal.css','/journal-widgets.css','/journal-studio.js','/googledcf6cfe1a260efea.html']).has(normalized);
   const publicModule=/^\/src\/[a-z][a-z0-9-]*\.js$/.test(normalized);
   const publicAsset=/^\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.(?:webp|svg|png|jpg|jpeg|json)$/.test(normalized);
   if(!publicPage&&!publicModule&&!publicAsset){send(res,404,'Not found');return;}
