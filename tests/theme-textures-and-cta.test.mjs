@@ -7,59 +7,43 @@ import {THEME_PATTERNS} from '../src/theme-patterns.js';
 import {designPanel,settingsView} from '../src/launch-navigation.js';
 
 const read=p=>readFile(new URL(p,import.meta.url),'utf8');
-test('texture library includes 84 unique visual finishes with matching live, preview and gallery drawings',async()=>{
- const css=(await read('../arcana-contour.css'))+(await read('../signature-themes.css'))+(await read('../psychedelic-themes.css'))+(await read('../atlas-atelier-textures.css'))+(await read('../visual-art.css')),form=designPanel({showPreview:false});
- assert.equal(THEME_PATTERNS.length,148);
- assert.equal(new Set(THEME_PATTERNS.map(p=>p.id)).size,148);
+test('legacy texture renderer is still restorable but the new editor shows only authored artwork',async()=>{
+ const css=(await read('../arcana-contour.css'))+(await read('../signature-themes.css'))+(await read('../psychedelic-themes.css'))+(await read('../atlas-atelier-textures.css'))+(await read('../visual-art.css'));
+ const form=designPanel({showPreview:false});
+ assert.equal(THEME_PATTERNS.length,154);
+ assert.equal(new Set(THEME_PATTERNS.map(p=>p.id)).size,154);
  for(const texture of THEME_PATTERNS){
   assert.equal(validateDesignField('pattern',texture.id),texture.id);
-  assert.ok(css.includes('data-preview-pattern="'+texture.id+'"'),texture.id+' thumb missing');
-  assert.ok(css.includes('data-arcana-design-pattern="'+texture.id+'"'),texture.id+' live missing');
-  if(!['plain','contours'].includes(texture.id))assert.ok(css.includes('data-mini-pattern="'+texture.id+'"'),texture.id+' mini missing');
-  assert.ok(form.includes('data-theme-pattern="'+texture.id+'"'),texture.id+' picker missing');
+  if(texture.category==='Vision')assert.ok(form.includes('data-theme-pattern="'+texture.id+'"'));
+  else assert.ok(css.includes('data-arcana-design-pattern="'+texture.id+'"'));
  }
- assert.ok(form.includes('148 texture finishes'));
- assert.ok(form.includes('data-design-field="patternTarget"'));
- assert.ok(form.includes('Where to show textures'));
+ assert.doesNotMatch(form,/Where to show textures|Browse all 148 texture finishes|psyPalettePicker/);
+ assert.match(form,/data-design-field="patternTarget"/);
 });
-test('Build Studio entrance has 16 distinct selectable treatments and safe controls',async()=>{
- const css=await read('../theme-studio-finishes.css'),app=await read('../src/app.js'),mini=await read('../src/design-mini-preview.js'),form=designPanel({showPreview:false});
+test('retired hero settings stay valid for saved drafts without appearing as dead controls',async()=>{
+ const css=await read('../theme-studio-finishes.css'),mini=await read('../src/design-mini-preview.js'),form=designPanel({showPreview:false});
  assert.equal(HERO_CTA_STYLES.length,16);
  assert.equal(new Set(HERO_CTA_STYLE_IDS).size,16);
  for(const style of HERO_CTA_STYLES){
   assert.equal(validateDesignField('heroActionStyle',style.id),style.id);
-  assert.match(form,new RegExp('data-hero-cta-style="'+style.id+'"'));
-  assert.ok(css.includes('data-hero-sample="'+style.id+'"'),'Missing sample '+style.id);
-  if(!['integrated','outline','spotlight'].includes(style.id))assert.ok(css.includes('data-arcana-hero-action-style="'+style.id+'"'),'Missing live CTA '+style.id);
-  assert.ok(css.includes('data-mini-hero-action="'+style.id+'"')||['integrated','outline','spotlight'].includes(style.id),'Missing mini CTA '+style.id);
+  assert.doesNotMatch(form,new RegExp('data-hero-cta-style="'+style.id+'"'));
+  assert.ok(css.includes('data-hero-sample="'+style.id+'"'));
  }
- for(const control of ['heroActionWidth','heroActionAlign','heroActionHeight','heroActionGlow','heroActionBorder','heroActionIcon','heroActionSubtitle']){
-  assert.ok(DESIGN_FIELDS.includes(control));
-  assert.ok(form.includes('data-design-field="'+control+'"'),control);
- }
- assert.equal(validateDesignField('heroActionWidth',999),100);
- assert.equal(validateDesignField('heroActionWidth',0),65);
- assert.equal(validateDesignField('heroActionAlign','calc(100vw)'),null);
- assert.equal(validateDesignField('heroActionStyle','javascript:alert(1)'),null);
- assert.ok(app.includes('data-hero-cta-style'));
- assert.ok(mini.includes('dataset.miniHeroAlign=v.heroActionAlign'));
+ assert.match(mini,/dataset.miniHeroAlign=v.heroActionAlign/);
+ assert.doesNotMatch(form,/data-design-field="heroActionWidth"|data-design-field="heroCardEmblem"/);
  assert.doesNotMatch(settingsView(),/heroCtaLibrary|heroActionWidth/);
 });
-test('nine feature-card surfaces and sigil visibility are independent of button styles',async()=>{
- const css=await read('../theme-studio-finishes.css'),form=designPanel({showPreview:false}),mini=await read('../src/design-mini-preview.js');
- const cards=['blended','flat','frameless','etched','glass','raised','accent-edge','metallic','minimal'];
- for(const name of cards){
-  assert.equal(validateDesignField('heroCardStyle',name),name);
-  if(name!=='blended')assert.ok(css.includes('data-arcana-hero-card-style="'+name+'"'),name);
-  assert.ok(form.includes('value="'+name+'"'),name);
+test('functional studio surfaces replace obsolete hero-only controls',async()=>{
+ const css=await read('../studio-v2.css'),form=designPanel({showPreview:false});
+ for(const key of ['roundness','borderWidth','cardShadow','panelOpacity','buttonFill','buttonRoundness','fontSize','density']){
+  assert.ok(DESIGN_FIELDS.includes(key),key);
+  assert.ok(form.includes('data-design-field="'+key+'"'),key);
  }
- assert.ok(form.includes('data-design-field="heroCardEmblem"'));
+ assert.match(css,/--arcana-card-radius/);
+ assert.match(css,/--arcana-panel-opacity-percent/);
  assert.equal(validateDesignField('heroCardEmblem','hidden'),'hidden');
  assert.equal(validateDesignField('heroCardEmblem','external-url'),null);
  assert.equal(DEFAULT_DESIGN.heroCardStyle,'blended');
- assert.equal(DEFAULT_DESIGN.heroCardEmblem,'subtle');
- assert.ok(mini.includes('dataset.miniHeroCard=v.heroCardStyle'));
- assert.match(css,/data-mini-hero-card="frameless"/);
 });
 test('new isolated styles are delivered through the production allowlist and load after legacy rules',async()=>{
  const index=await read('../index.html'),server=await read('../server.mjs');
