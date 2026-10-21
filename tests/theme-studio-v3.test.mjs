@@ -16,7 +16,7 @@ test('Theme Studio places independent always-visible preview beside long control
  assert.match(page,/class="themeStudioEditor"/);
  assert.match(page,/class="themeStudioPreview"/);
  assert.equal((page.match(/data-mini-canvas/g)||[]).length,1);
- assert.equal((page.match(/data-design-field="pattern"/g)||[]).length,1);
+ assert.equal((page.match(/class="visionArtChoice studioV2Artwork"/g)||[]).length,18);
  assert.match(page,/Publish to everyone/);
  assert.match(page,/Restore published design/);
  assert.doesNotMatch(designPanel({showPreview:false}),/designMiniPreview/);
@@ -40,19 +40,22 @@ test('preview remains live across five pages, three devices, before-after, plus 
  assert.match(html,/REAL ARCANA/);
  assert.match(html,/data-mini-page="guilds"/);
 });
-test('64 textures are uniquely named, correctly validated and represented in site/mini/thumbnail CSS',async()=>{
+test('legacy textures remain validated while Studio V2 displays only authored Vision art',async()=>{
  const css=(await read('../arcana-contour.css'))+(await read('../signature-themes.css'))+(await read('../psychedelic-themes.css'))+(await read('../atlas-atelier-textures.css'))+(await read('../visual-art.css'));
- assert.equal(THEME_PATTERNS.length,148);
- assert.equal(new Set(THEME_PATTERN_IDS).size,148);
+ assert.equal(THEME_PATTERNS.length,154);
+ assert.equal(new Set(THEME_PATTERN_IDS).size,154);
  const html=designPanel({showPreview:false});
  for(const p of THEME_PATTERNS){
-  assert.equal(validateDesignField('pattern',p.id),p.id,p.id);
+  assert.equal(validateDesignField('pattern',p.id),p.id);
   assert.ok(p.name&&p.category);
-  assert.ok(css.includes('data-arcana-design-pattern="'+p.id+'"'),'Missing public texture '+p.id);
-  assert.ok(css.includes('data-preview-pattern="'+p.id+'"'),'Missing texture swatch '+p.id);
-  assert.match(html,new RegExp('data-theme-pattern="'+p.id+'"'));
-  if(!['contours','plain'].includes(p.id))assert.ok(css.includes('data-mini-pattern="'+p.id+'"'),'Missing mini texture '+p.id);
+  if(p.category==='Vision')assert.match(html,new RegExp('data-theme-pattern="'+p.id+'"'));
+  else{
+   assert.doesNotMatch(html,new RegExp('data-theme-pattern="'+p.id+'"'));
+   assert.ok(css.includes('data-arcana-design-pattern="'+p.id+'"'),'Lost archived texture '+p.id);
+  }
  }
+ assert.equal((html.match(/class="studioV2Preset"/g)||[]).length,0,'new presets include designPreset as first class');
+ assert.equal((html.match(/class="designPreset studioV2Preset"/g)||[]).length,30);
  assert.equal(validateDesignField('pattern','<script>'),null);
  assert.equal(DEFAULT_DESIGN.pattern,'contours');
 });
