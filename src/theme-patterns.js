@@ -1,5 +1,17 @@
 // Every texture is CSS-generated. No third-party image downloads or assets.
 export const THEME_PATTERNS=Object.freeze([
+ ['vision-violet-fault','Violet Fault','Vision'],
+ ['vision-pulse-terrain','Pulse Terrain','Vision'],
+ ['vision-ribbon-bloom','Ribbon Bloom','Vision'],
+ ['vision-veil-current','Veil Current','Vision'],
+ ['vision-arcflow','Arcflow','Vision'],
+ ['vision-contour-drift','Contour Drift','Vision'],
+ ['vision-monowave','Monowave','Vision'],
+ ['vision-ink-lattice','Ink Lattice','Vision'],
+ ['vision-signal-bloom','Signal Bloom','Vision'],
+ ['vision-vector-halo','Vector Halo','Vision'],
+ ['vision-crownspace','Crownspace','Vision'],
+ ['vision-aether-frame','Aether Frame','Vision'],
  ['contours','Arcane waves','Arcane'],['rings','Mystic rings','Arcane'],['stars','Starlight','Cosmic'],
  ['grid','Arcane grid','Geometric'],['aurora','Aurora glow','Cosmic'],['diagonal','Rune lines','Geometric'],
  ['hex','Hex lattice','Geometric'],['grain','Soft grain','Minimal'],['crystal','Frost crystals','Elemental'],
