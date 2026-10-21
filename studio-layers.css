@@ -18,14 +18,14 @@ html[data-arcana-design-active=true][data-arcana-art-layered=true] #content:not(
  background-repeat:no-repeat!important;
 }
 /* Panels deliberately exclude the Build Studio hero. */
-html[data-arcana-design-active=true][data-arcana-art-layered=true] .atlasHome :is(.atlasTile,.atlasFeatureLink,.atlasUpdate,.atlasJournalStory){
+html[data-arcana-design-active=true][data-arcana-art-layered=true] #content.homeFullscreen .atlasHome :is(.atlasTile,.atlasFeatureLink,.atlasUpdate,.atlasJournalStory){
  background-color:var(--atlas-panel)!important;
  background-image:linear-gradient(color-mix(in srgb,var(--atlas-panel) var(--arcana-panel-opacity-percent,88%),transparent),color-mix(in srgb,var(--atlas-panel) var(--arcana-panel-opacity-percent,88%),transparent)),var(--arcana-art-panels,none)!important;
  background-size:cover!important;
  background-position:center!important;
  background-repeat:no-repeat!important;
 }
-html[data-arcana-design-active=true][data-arcana-art-layered=true] .atlasHome .atlasHero{
+html[data-arcana-design-active=true][data-arcana-art-layered=true] #content.homeFullscreen .atlasHome .atlasHero{
  background-color:var(--atlas-panel)!important;
  background-image:linear-gradient(105deg,color-mix(in srgb,var(--atlas-panel) 88%,transparent),color-mix(in srgb,var(--atlas-panel) 78%,transparent)),var(--arcana-art-feature,none)!important;
  background-size:cover!important;
@@ -33,18 +33,18 @@ html[data-arcana-design-active=true][data-arcana-art-layered=true] .atlasHome .a
  background-repeat:no-repeat!important;
 }
 /* Miniature matches the full actual-site preview, including all three layers. */
-.miniCanvas[data-art-layered=true] .miniHome{
+.miniCanvas[data-art-layered=true][data-mini-pattern][data-mini-pattern-target] .miniHome{
  background-image:var(--mini-art-background,none)!important;
  background-size:cover!important;
  background-position:center top!important;
  background-repeat:no-repeat!important;
 }
-.miniCanvas[data-art-layered=true] .miniHome :is(.atlasMiniTile,.atlasMiniPatch){
+.miniCanvas[data-art-layered=true][data-mini-pattern][data-mini-pattern-target] .miniHome :is(.atlasMiniTile,.atlasMiniPatch){
  background-image:linear-gradient(color-mix(in srgb,var(--mini-panel) var(--mini-panel-opacity-percent,88%),transparent),color-mix(in srgb,var(--mini-panel) var(--mini-panel-opacity-percent,88%),transparent)),var(--mini-art-panels,none)!important;
  background-position:center!important;background-size:cover!important;
  background-repeat:no-repeat!important;
 }
-.miniCanvas[data-art-layered=true] .miniHome .atlasMiniHero{
+.miniCanvas[data-art-layered=true][data-mini-pattern][data-mini-pattern-target] .miniHome .atlasMiniHero{
  background-image:linear-gradient(color-mix(in srgb,var(--mini-panel) 84%,transparent),color-mix(in srgb,var(--mini-panel) 74%,transparent)),var(--mini-art-feature,none)!important;
  background-position:center!important;background-size:cover!important;
  background-repeat:no-repeat!important;
