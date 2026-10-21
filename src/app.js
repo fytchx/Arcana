@@ -157,7 +157,7 @@ const isLocalThemePlayground=()=>isPreviewThemeHost()&&parseRoute().route==='the
 const tryOnTheme=()=>{try{return isPreviewThemeHost()&&sessionStorage.getItem('arcana-theme-tryon-preview-v1')==='1'}catch{return false}};
 const changeTryOn=enabled=>{try{if(enabled)sessionStorage.setItem('arcana-theme-tryon-preview-v1','1');else sessionStorage.removeItem('arcana-theme-tryon-preview-v1');return true}catch{return false}};
 const canEditThemeDraft=()=>isAppearanceAdmin()||isLocalThemePlayground();
-const themePlaygroundView=()=>'<div class="launchPage themePlayground"><span class="launchEyebrow">ARCANA PREVIEW · LOCAL ONLY</span><h1>Theme Playground</h1><p>Explore all 42 presets and 88 textures, remix colors and lighting, and save up to twelve private designs. This browser-only preview cannot publish anything to the real site.</p><div class="themeTryOnActions"><button class="btn primary" type="button" data-action="theme-try-on">✦ Try this on Arcana</button><button class="btn secondary" type="button" data-action="theme-try-off">Stop site preview</button></div><div class="themeStudioWorkbench"><div class="themeStudioEditor">'+designPanel({showPreview:false})+'</div><aside class="themeStudioPreview" aria-label="Live theme preview">'+designMiniMarkup()+'</aside></div></div>'; 
+const themePlaygroundView=()=>'<div class="launchPage themePlayground"><span class="launchEyebrow">ARCANA PREVIEW · LOCAL ONLY</span><h1>Theme Playground</h1><p>Explore all 42 presets and 136 textures, remix colors and lighting, and save up to twelve private designs. This browser-only preview cannot publish anything to the real site.</p><div class="themeTryOnActions"><button class="btn primary" type="button" data-action="theme-try-on">✦ Try this on Arcana</button><button class="btn secondary" type="button" data-action="theme-try-off">Stop site preview</button></div><div class="themeStudioWorkbench"><div class="themeStudioEditor">'+designPanel({showPreview:false})+'</div><aside class="themeStudioPreview" aria-label="Live theme preview">'+designMiniMarkup()+'</aside></div></div>'; 
 function crumbTrail(title){
  const route=parseRoute().route,section=route.split('/')[0];
  const parent={labs:['Build Studio','labs/build'],calculators:['Pathfinder','calculators/pathfinder'],lfg:['Guild & Raid Finder','lfg'],wiki:['ArcanaWiki','wiki']}[section];
@@ -995,7 +995,7 @@ function wireThemeStudioControls(){
    const category=filter.dataset.themePatternFilter;
    const section=filter.closest('.themePatternLibrary');
    for(const button of section.querySelectorAll('[data-theme-pattern-filter]'))button.setAttribute('aria-pressed',String(button===filter));
-   for(const tile of section.querySelectorAll('[data-pattern-category]'))tile.hidden=category==='Premium'?!['Psychedelic','Signature','Material','Atmosphere','Relic'].includes(tile.dataset.patternCategory):category!=='All'&&tile.dataset.patternCategory!==category;
+   for(const tile of section.querySelectorAll('[data-pattern-category]'))tile.hidden=category==='Premium'?!['Psychedelic','Signature','Material','Atmosphere','Relic','Atelier'].includes(tile.dataset.patternCategory):category!=='All'&&tile.dataset.patternCategory!==category;
   }
  });
 }
