@@ -234,8 +234,8 @@ public final class ScreenCaptureService extends Service {
         if (has(value, "pet damage breakdown", "effective multiplier") && has(value,"equipment affixes","pet shards")) return new Classification("pet_damage_breakdown", .95);
         if (has(value, "character stats", "dodge chance", "block chance") || has(value,"effective drop multiplier","life on hit")) return new Classification("character_stats", .89);
         if (has(value, "rune bonuses")) return new Classification("rune_stat_breakdown", .86);
-        if (has(value, "bonuses", "increased strength", "material quantity", "extra kill chance")) return new Classification("pet_stat_breakdown", .78);
-        if (has(value, "bonuses", "passive tree", "attack damage", "defense")) return new Classification("passive_stat_breakdown", .74);
+        if (has(value, "bonuses") && has(value, "increased strength", "material quantity", "extra kill chance") && has(value, "retaliation", "rune drops")) return new Classification("pet_stat_breakdown", .78);
+        if (has(value, "bonuses") && has(value, "attack damage") && has(value, "defense")) return new Classification("passive_stat_breakdown", .74);
         if (has(value, "rune grid", "presets")) return new Classification("runes", .86);
         if (has(value, "passive tree", "skill tree", "attack damage", "strength") && has(value,"assign","refund")) return new Classification("passive_skill_tree", .84);
         if (has(value, "class skills")) return new Classification("class_skills", .82);
