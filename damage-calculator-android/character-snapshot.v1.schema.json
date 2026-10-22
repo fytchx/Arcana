@@ -1,0 +1,776 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arcanacompanion.xyz/schemas/character-snapshot-v1.json",
+  "title": "Arcana Character Snapshot",
+  "description": "Local export from the IdleArc live character scanner or damage-breakdown-only entry.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "captureMode",
+    "createdAt",
+    "scanner",
+    "character",
+    "damageBreakdowns"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "captureMode": {
+      "enum": [
+        "full_character",
+        "damage_only"
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "scanner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "appVersion",
+        "gameSnapshot",
+        "complete",
+        "missingScreens"
+      ],
+      "properties": {
+        "appVersion": {
+          "type": "string"
+        },
+        "gameSnapshot": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "missingScreens": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "character": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "class": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "level": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "monsterLevel": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "statsWindow": {
+          "$ref": "#/$defs/statMap"
+        },
+        "equipment": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/equipmentItem"
+          }
+        },
+        "runePresets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/runePreset"
+          }
+        },
+        "pets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pet"
+          }
+        },
+        "skillTrees": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "passive": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/skillNode"
+              }
+            },
+            "class": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/skillNode"
+              }
+            },
+            "className": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "passiveBreakdown": {
+              "$ref": "#/$defs/breakdownList"
+            },
+            "classBreakdown": {
+              "$ref": "#/$defs/breakdownList"
+            }
+          }
+        },
+        "statBreakdowns": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pets": {
+              "$ref": "#/$defs/breakdownList"
+            },
+            "runes": {
+              "$ref": "#/$defs/breakdownList"
+            },
+            "passiveSkillTree": {
+              "$ref": "#/$defs/breakdownList"
+            }
+          }
+        }
+      }
+    },
+    "damageBreakdowns": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attack": {
+          "$ref": "#/$defs/damageBreakdown"
+        },
+        "pet": {
+          "$ref": "#/$defs/damageBreakdown"
+        },
+        "retaliation": {
+          "$ref": "#/$defs/damageBreakdown"
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    }
+  },
+  "$defs": {
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rawText",
+        "value",
+        "unit",
+        "confidence",
+        "sourceScreen"
+      ],
+      "properties": {
+        "rawText": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "value": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "sourceScreen": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "statMap": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/measurement"
+      }
+    },
+    "bonus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tier": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "rawText": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "equipmentItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slot",
+        "name",
+        "affixes",
+        "gems"
+      ],
+      "properties": {
+        "slot": {
+          "type": "string"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rarity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "awakening": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "level": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "baseStats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bonus"
+          }
+        },
+        "affixes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bonus"
+          }
+        },
+        "dropBonus": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "gems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "position",
+              "stats"
+            ],
+            "properties": {
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "position": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "level": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "stats": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/bonus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "runePreset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preset",
+        "active",
+        "runes"
+      ],
+      "properties": {
+        "preset": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "runes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "row",
+              "column",
+              "name",
+              "level",
+              "bonuses"
+            ],
+            "properties": {
+              "row": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "column": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "grade": {
+                "type": [
+                  "string",
+                  "integer",
+                  "null"
+                ]
+              },
+              "awakening": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "level": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "bonuses": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/bonus"
+                }
+              }
+            }
+          }
+        },
+        "aggregateBonuses": {
+          "$ref": "#/$defs/breakdownList"
+        }
+      }
+    },
+    "pet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "equipped",
+        "bonuses"
+      ],
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "level": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "mastery": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "equipped": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "favorite": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "bonuses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bonus"
+          }
+        },
+        "affixes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bonus"
+          }
+        },
+        "stats": {
+          "$ref": "#/$defs/statMap"
+        }
+      }
+    },
+    "skillNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "rank"
+      ],
+      "properties": {
+        "nodeId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rank": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "maxRank": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "allocated": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "effect": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "value": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "breakdownList": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "unit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "detail": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "confidence": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "damageBreakdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "captureMethod",
+        "values"
+      ],
+      "properties": {
+        "captureMethod": {
+          "enum": [
+            "screen_ocr",
+            "manual"
+          ]
+        },
+        "values": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          }
+        },
+        "displayed": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "minimum": {
+              "type": [
+                "number",
+                "string",
+                "null"
+              ]
+            },
+            "maximum": {
+              "type": [
+                "number",
+                "string",
+                "null"
+              ]
+            },
+            "average": {
+              "type": [
+                "number",
+                "string",
+                "null"
+              ]
+            },
+            "effectiveMultiplier": {
+              "type": [
+                "number",
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "sourceScreen": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidenceText": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "screenType",
+        "capturedAt",
+        "confidence",
+        "recognizedText"
+      ],
+      "properties": {
+        "screenType": {
+          "type": "string"
+        },
+        "capturedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "recognizedText": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "captureMode": {
+            "const": "full_character"
+          }
+        },
+        "required": [
+          "captureMode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "character": {
+            "required": [
+              "statsWindow",
+              "equipment",
+              "runePresets",
+              "pets",
+              "skillTrees",
+              "statBreakdowns"
+            ]
+          },
+          "damageBreakdowns": {
+            "required": [
+              "attack",
+              "pet",
+              "retaliation"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "captureMode": {
+            "const": "damage_only"
+          }
+        },
+        "required": [
+          "captureMode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "damageBreakdowns": {
+            "minProperties": 1
+          }
+        },
+        "not": {
+          "required": [
+            "evidence"
+          ]
+        }
+      }
+    }
+  ]
+}
