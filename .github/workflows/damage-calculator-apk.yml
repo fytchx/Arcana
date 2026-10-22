@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/damage-calculator-apk-2026-10-22
+      - feature/live-character-scanner-2026-10-22
     paths:
       - damage-calculator-android/**
       - .github/workflows/damage-calculator-apk.yml
