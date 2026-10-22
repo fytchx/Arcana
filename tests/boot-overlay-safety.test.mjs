@@ -44,6 +44,8 @@ test('boot remains touch-opaque through both readiness signals and the fade',()=
  ui.document.emit('arcana:theme-ready');
  assert.equal(ui.splash.done,false,'theme alone cannot dismiss the splash');
  ui.document.emit('arcana:app-ready');
+ assert.equal(ui.splash.done,false,'loader stays visible long enough to show its motion');
+ ui.advance(850);
  assert.equal(ui.splash.done,true,'both readiness signals start the exit animation');
  ui.advance(449);
  assert.equal(ui.splash.removed,false);
@@ -63,6 +65,7 @@ test('a finger held during the fade cannot activate a hidden link',()=>{
  ui.document.emit('pointerdown');
  ui.document.emit('arcana:app-ready');
  ui.document.emit('arcana:theme-ready');
+ ui.advance(850);
  ui.advance(450);
  assert.equal(ui.splash.removed,false,'remain shielded while pointer is down');
  assert.equal(ui.document.emit('click').prevented,true);
@@ -76,10 +79,12 @@ test('stalled Android animation frames do not require the visitor to tap the scr
  ui.window.emit('DOMContentLoaded');
  ui.document.emit('arcana:app-ready');
  ui.document.emit('arcana:theme-ready');
- ui.advance(199);
+ ui.advance(849);
  assert.equal(ui.splash.done,false);
  ui.advance(1);
- assert.equal(ui.splash.done,true,'short timer fallback dismisses even when frames are suspended');
+ assert.equal(ui.splash.done,false);
+ ui.advance(200);
+ assert.equal(ui.splash.done,true,'timer fallback dismisses even when frames are suspended');
  ui.advance(450);
  assert.equal(ui.splash.removed,true);
 });
@@ -111,7 +116,7 @@ test('fresh Home launch clears a restored scroll position and restores browser h
  ui.window.emit('DOMContentLoaded');
  ui.document.emit('arcana:app-ready');
  ui.document.emit('arcana:theme-ready');
- ui.advance(450);
+ ui.advance(1300);
  assert.equal(ui.scrollPositions.length,1);
  assert.equal(ui.scrollPositions[0].top,0);
  assert.equal(ui.scrollPositions[0].left,0);
@@ -124,7 +129,7 @@ test('launching directly into another route preserves browser scroll restoration
  ui.window.emit('DOMContentLoaded');
  ui.document.emit('arcana:app-ready');
  ui.document.emit('arcana:theme-ready');
- ui.advance(450);
+ ui.advance(1300);
  assert.equal(ui.scrollPositions.length,0);
  assert.equal(ui.history.scrollRestoration,'auto');
 });

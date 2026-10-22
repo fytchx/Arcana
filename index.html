@@ -3,24 +3,26 @@
 #arcanaBoot.arcanaBootDone{opacity:0;pointer-events:auto}
 #arcanaBoot .arcanaBootInner{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;user-select:none;pointer-events:none}
 #arcanaBoot .arcanaBootEmblem{position:relative;display:grid;place-items:center;width:148px;height:148px;isolation:isolate}
-#arcanaBoot .arcanaBootEmblem:before{content:"";position:absolute;inset:16px;border-radius:50%;background:radial-gradient(circle,#8745f83b 0%,#3980f522 38%,transparent 72%);filter:blur(14px);animation:arcanaAura 3.2s ease-in-out infinite}
-#arcanaBoot .arcanaBootEmblem:after{content:"";position:absolute;inset:4px;border-radius:50%;border:1px solid #88c9fc18;box-shadow:0 0 25px #6247e51b,inset 0 0 22px #316efa13}
+#arcanaBoot .arcanaBootEmblem:before{content:"";position:absolute;inset:15px;border:1px solid #7464dc45;border-radius:50%;animation:arcanaAura 2.8s ease-in-out infinite}
+#arcanaBoot .arcanaBootEmblem:after{content:"";position:absolute;inset:4px;border-radius:50%;border:1px solid #88c9fc28}
 #arcanaBoot .arcanaBootOrbit{position:absolute;display:block;border-radius:50%;border-style:solid;border-color:transparent;will-change:transform}
-#arcanaBoot .arcanaBootOrbitOuter{inset:8px;border-width:2px;border-top-color:#59c7ff;border-right-color:#6085f955;border-bottom-color:#9470ff;animation:arcanaOrbit 3.5s linear infinite;filter:drop-shadow(0 0 7px #538dff88)}
-#arcanaBoot .arcanaBootOrbitInner{inset:23px;border-width:1px;border-top-color:#b2e8ffbb;border-left-color:#9064e8aa;border-bottom-color:#5543ac88;animation:arcanaOrbitReverse 4.8s linear infinite}
-#arcanaBoot .arcanaBootOrbitSpark{inset:8px;animation:arcanaOrbit 3.5s linear infinite}
-#arcanaBoot .arcanaBootOrbitSpark:before{content:"";position:absolute;top:-3px;left:50%;width:6px;height:6px;border-radius:50%;background:#d3f1ff;box-shadow:0 0 6px 2px #5ab9ff,0 0 18px 4px #675cff}
-#arcanaBoot .arcanaBootEmblem img{position:relative;z-index:1;width:65px;height:65px;object-fit:contain;filter:drop-shadow(0 0 12px #5789ff8c);animation:arcanaBreath 2.5s ease-in-out infinite}
-#arcanaBoot .arcanaBootTitle{font-size:clamp(24px,5vw,32px);letter-spacing:.27em;line-height:1.2;font-weight:600;padding-left:.27em}
-#arcanaBoot .arcanaBootHint{font:500 11px/1.5 system-ui,sans-serif;color:#acb9d5;letter-spacing:.16em;text-transform:uppercase}
+#arcanaBoot .arcanaBootOrbitOuter{inset:8px;border-width:2px;border-top-color:#59c7ff;border-right-color:#6085f955;border-bottom-color:#9470ff;animation:arcanaOrbit 2.8s linear infinite}
+#arcanaBoot .arcanaBootOrbitInner{inset:23px;border-width:1px;border-top-color:#b2e8ffbb;border-left-color:#9064e8aa;border-bottom-color:#5543ac88;animation:arcanaOrbitReverse 4.2s linear infinite}
+#arcanaBoot .arcanaBootOrbitSpark{inset:8px;animation:arcanaOrbit 2.8s linear infinite}
+#arcanaBoot .arcanaBootOrbitSpark:before{content:"";position:absolute;top:-4px;left:50%;width:8px;height:8px;border-radius:50%;background:#d3f1ff;border:1px solid #68bfff;box-shadow:0 0 0 3px #63bfff20}
+#arcanaBoot .arcanaBootEmblem img{position:relative;z-index:1;width:65px;height:65px;object-fit:contain;animation:arcanaBreath 2.2s ease-in-out infinite}
+#arcanaBoot .arcanaBootTitle{font-size:clamp(24px,5vw,32px);letter-spacing:.27em;line-height:1.2;font-weight:600;padding-left:.27em;animation:arcanaTitleRise .55s ease-out both}
+#arcanaBoot .arcanaBootHint{font:500 11px/1.5 system-ui,sans-serif;color:#acb9d5;letter-spacing:.16em;text-transform:uppercase;animation:arcanaHintPulse 1.8s ease-in-out infinite}
 @keyframes arcanaOrbit{to{transform:rotate(360deg)}}
 @keyframes arcanaOrbitReverse{to{transform:rotate(-360deg)}}
-@keyframes arcanaAura{50%{opacity:.6;transform:scale(1.14)}}
-@keyframes arcanaBreath{50%{transform:scale(1.065);filter:drop-shadow(0 0 18px #ab83ffcc)}}
+@keyframes arcanaAura{50%{transform:scale(1.12);border-color:#8977ff99}}
+@keyframes arcanaBreath{50%{transform:scale(1.09)}}
+@keyframes arcanaTitleRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes arcanaHintPulse{50%{opacity:.58}}
 @media(prefers-reduced-motion:reduce){#arcanaBoot *,#arcanaBoot *:before,#arcanaBoot *:after{animation:none!important}#arcanaBoot{transition:none}}
 </style><script id="arcana-boot-control">
 (function(){
- var appReady=false,themeReady=false,closing=false,released=false,pointersDown=0,fadeStarted=0;
+ var appReady=false,themeReady=false,closing=false,released=false,pointersDown=0,fadeStarted=0,bootStarted=Date.now();
  var launchHome=(location.hash||'#/home').split('?')[0]==='#/home';
  var previousScrollRestoration=null;
  // Mobile browsers can restore a stale mid-page position behind the splash.
@@ -58,7 +60,7 @@
   if(splash){splash.classList.add('arcanaBootDone');splash.setAttribute('aria-hidden','true');}
   setTimeout(release,450);
  }
- function check(){if(appReady&&themeReady){requestAnimationFrame(function(){requestAnimationFrame(done)});setTimeout(done,200);}}
+ function check(){if(appReady&&themeReady){var wait=Math.max(0,850-(Date.now()-bootStarted));setTimeout(function(){requestAnimationFrame(function(){requestAnimationFrame(done)});setTimeout(done,200);},wait);}}
  document.addEventListener('arcana:theme-ready',function(){themeReady=true;check();},{once:true});
  document.addEventListener('arcana:app-ready',function(){appReady=true;check();},{once:true});
  // A stalled module/connection shows the existing retry UI rather than trapping a visitor.
