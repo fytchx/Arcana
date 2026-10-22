@@ -1,6 +1,6 @@
 # Arcana Damage Calculator for Android
 
-An offline, standalone Android app with Attack, Pet, and Retaliation modes. It does not connect to or modify Arcana Build Studio. Values are stored locally in the app's WebView storage.
+An offline, standalone Android app with Attack, Pet, and Retaliation modes. It does not connect to or modify Arcana Build Studio. Values are stored locally in the app's WebView storage. You can export the entered damage breakdowns as a local JSON file for later use.
 
 ## Formula behavior
 
@@ -10,6 +10,10 @@ An offline, standalone Android app with Attack, Pet, and Retaliation modes. It d
 - Damage is rounded after each formula stage by default. The rounding setting can be changed or disabled to compare results.
 
 The local `/Data mine` audit and config-path index use snapshot `2026-10-06-002`. They provide configured coefficients and thresholds, not the server's executable damage code. The Retaliation implementation is cross-checked against the supplied breakdown: the 0.70 variance explains its lower bound, and block damage is not applied to every enemy attack. Attack and Pet layer ordering is represented as shown in the breakdown; their hidden server rounding and any unlisted conversions remain unverified. Character inputs start blank; the app only pre-fills game-wide Retaliation constants, not a sample character.
+
+## Character scanner direction
+
+The APK is being extended toward an optional live character scan that exports a local JSON data file. Full capture will include the Character Stats window; Attack, Pet, and Retaliation breakdowns; equipment with affixes and gems; rune presets; pets; Passive and Class Skill Trees; and pet/rune/passive stat breakdowns. A damage-only path can manually enter breakdown values and export without scanning the rest of the character. Arcana upload is a later, separate importer project.
 
 ## Build
 
