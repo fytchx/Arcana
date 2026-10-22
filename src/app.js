@@ -1,4 +1,5 @@
 import {entities,entityById,itemList,guideList,demoBuilds,demoGuideSections,searchCatalog} from './catalog.js';
+import {hydrateJournalPreview} from './journal-home.js';
 import {loadDraft,saveDraft,deepCopy,remember,loadRecent} from './session.js';
 import {navigate,parseRoute,navigateBack} from './routing.js';
 import {esc,icon,boxIcon,chip,button,cardEntity} from './ui.js';
@@ -15,15 +16,22 @@ import {lfgScreen,lfgDetail,lfgCard} from './lfg-views.js';
 import {verifiedGameSearchEntries,mergedSearch} from './verified-search.js';
 import {normalizeGuild,guildEntries,guildFilter,saveGuildOwner,readGuildOwner} from './guild-core.js';
 import {guildDirectory,guildDetail,guildForm,guildCard} from './guild-views.js';
+import {guildHubPage,loadGuildHub,wireGuildHub} from './guild-hub-ui.js';
 import {WIKI_ARTICLES,wikiArticleById,wikiArticleEntries,setPublishedWikiArticles} from './wiki-data.js';
 import {wikiStudioView,mountWikiStudio,wireWikiStudio} from './wiki-studio.js';
 import {communityPage,loadCommunityPage,wireCommunityUI} from './community-ui.js';
 import {betaView,wireBetaUI,loadBetaStatus} from './beta-center.js';
+import {adminTrafficView,loadAdminTraffic,wireAdminTraffic} from './admin-traffic-ui.js';
+import {adminConsoleView,loadAdminConsole,wireAdminConsole} from './admin-console.js';
+import {recordTrafficNavigation,initTrafficTracking} from './traffic-client.js';
+import {siteNotice} from './theme.js';
+import {setDesignPreview,applyVisualPreset,applyLayerVisualPreset} from './design-controls.js';
 import {shareBuildToken,openBuildToken} from './build-links.js';
 import {saveNewAccountBuild} from './account-builds-ui.js';
 import {baseItem,equipmentId,asGear,newGear,gearIssues,allowedItem,RARITIES} from './build-studio-data.js';
 import {gearPickerMarkup,gearEditorMarkup,gearInspectMarkup} from './build-studio-ui.js';
-import {wikiLandingView,wikiLibraryView,wikiGuidesView,wikiArticleView,wikiRecordView,wikiRecordRows} from './wiki-views.js';
+import {wikiLandingView,wikiLibraryView,wikiGuidesView,wikiArticleView,wikiRecordView,wikiRecordRows,wikiCategoryView} from './wiki-views.js';
+import {wikiCategory,wikiCategoryForArticle,LEGACY_WIKI_TOPIC_REDIRECTS} from './wiki-taxonomy.js';
 import {verifiedComparisonPanel,verifiedUpgradeReferencePanel} from './verified-item-views.js';
 import {readCompoundPlan,saveCompoundPlan,readAffixCostPlan,saveAffixCostPlan,PET_HATCH_BONUSES} from './pet-simple-math.js';
 import {simpleCompoundCalculatorView,simpleAffixCostView} from './pet-simple-views.js';
@@ -35,12 +43,38 @@ import {readGuildBaseline,saveGuildBaseline,clearGuildBaseline} from './guild-tr
 import {connectedNext,homeStart,navCards,NAV_DESTINATIONS} from './context-nav.js';
 import {resumableWorkspaces} from './workspace-hub.js';
 import {readFarmPlan,saveFarmPlan,farmCompareView} from './farm-compare.js';
-import {homeScreen,homeSubmenu,directoryView,wikiTopicsView,wikiTopicView,wikiAboutView,userCenterView,settingsView,iconGalleryView,refinedIconGalleryView,applyAppPrefs,changeAppPref} from './launch-navigation.js';
-import {refinedSvg} from './idlearc-refined-vectors.js';
-import {currentAccount,refreshAccount} from './community-ui.js';
+import {timelineStages,timelineModel,stageStepLabel,readQuickView,saveQuickView} from './pathfinder-timeline.js';
+import {pathfinderView,pathfinderStepDetail,pathfinderRangeContent} from './pathfinder-timeline-view.js';
+import {quickUpgradePanel,quickUpgradeContent,initialQuickRange} from './quick-tools-view.js';
+import {readRange,saveRange,allStages,quoteRange,normalizeItemQuantity,normalizeCostMode,normalizePityProgress,normalizePityCount} from './pathfinder-range.js';
+import {quoteFailureScenarios} from './pathfinder-failures.js';
+import {sourceMaterialGroups} from './pathfinder-material-groups.js';
+import {saveFarmingList,wireFarmingLists} from './farming-lists-ui.js';
+import {homeScreen,homeSubmenu,directoryView,wikiTopicsView,wikiTopicView,wikiAboutView,userCenterView,settingsView,iconGalleryView,designPanel,applyAppPrefs,changeAppPref} from './launch-navigation.js';
+import {currentAccount,refreshAccount,accountStatus} from './community-ui.js';
+import {searchAsYouType} from './search-as-you-type.js';
+import {writeDesign,resetDesign,normalizeDesignHex,applyDesignPreset,undoDesign,readDesign,DESIGN_PRESETS} from './design-controls.js';
+import {wireDesignMiniPreview,syncDesignMiniPreview,endDesignMiniSession,focusDesignMiniPreview,showDesignMiniPage,designMiniMarkup} from './design-mini-preview.js';
+import {wireThemeVault} from './theme-studio-vault.js';
+import {suggestedButtonText} from './theme-studio-audit.js';
+import {initGeneralChat} from './general-chat.js';
+import {setCustomAccent} from './theme.js';
 
 const $=s=>document.querySelector(s);const node=id=>document.getElementById(id);
-const state={treeData:null,treeStatus:'loading',treeClassId:null,treeBranchId:null,passiveTier:0,passivePage:0,classTierIndex:0,characterLevel:1,passiveAlloc:{},classAlloc:{},classAllocById:{},passiveFreeMode:false,layer:null,search:'',lastSearch:'',recent:loadRecent(),draft:loadDraft(),compareLeft:null,compareRight:null,compareTier:1,runeIndex:0,runeFamily:'Fury',runeSecondary:'critical_damage',runeShape:'small',runeSelected:null,runeHistory:[],petLevels:[0,0,0,0],petCalcMode:'seasonal',petAffixPlan:readPetAffixPlan(),compoundQuick:readCompoundPlan(),affixCostQuick:readAffixCostPlan(),slotTarget:null,gearEdit:null,returnTo:null,guildTreePlan:readGuildTree(),guildTreeTab:'vanguard',guildTreeLinkKey:'',guildUndo:[],guildRedo:[],guildBaseline:readGuildBaseline(),farmPlan:readFarmPlan()};
+const state={treeData:null,treeStatus:'loading',treeClassId:null,treeBranchId:null,passiveTier:0,passivePage:0,classTierIndex:0,characterLevel:1,passiveAlloc:{},classAlloc:{},classAllocById:{},passiveFreeMode:false,layer:null,search:'',lastSearch:'',recent:loadRecent(),draft:loadDraft(),compareLeft:null,compareRight:null,compareTier:1,runeIndex:0,runeFamily:'Fury',runeSecondary:'critical_damage',runeShape:'small',runeSelected:null,runeHistory:[],petLevels:[0,0,0,0],petCalcMode:'seasonal',petAffixPlan:readPetAffixPlan(),compoundQuick:readCompoundPlan(),affixCostQuick:readAffixCostPlan(),slotTarget:null,gearEdit:null,returnTo:null,guildTreePlan:readGuildTree(),guildTreeTab:'vanguard',guildTreeLinkKey:'',guildUndo:[],guildRedo:[],guildBaseline:readGuildBaseline(),farmPlan:readFarmPlan(),pathfinderQuick:readQuickView(),pathfinderRange:readRange()};
+const recipeState={data:null,loading:false,error:''};
+async function loadPathfinderRecipes(){
+ if(recipeState.loading||recipeState.data)return;recipeState.loading=true;
+ try{
+  const response=await fetch('/api/pathfinder/recipes',{signal:AbortSignal.timeout(15000)});
+  if(!response.ok)throw Error('Recipe service '+response.status);
+  const payload=await response.json();
+  if(timelineStages(payload,'normal').length!==6||timelineStages(payload,'awakened').length!==30)throw Error('Incomplete recipe set');
+  recipeState.data=payload;recipeState.error='';
+  if(!state.pathfinderRange.fromStage||!state.pathfinderRange.toStage)state.pathfinderRange=saveRange(initialQuickRange(payload,state.pathfinderRange));
+ }catch(error){recipeState.error='Verified upgrade recipes are temporarily unavailable';console.warn('Pathfinder source:',error.message);}
+ finally{recipeState.loading=false;if(parseRoute().route==='calculators/pathfinder')render();}
+}
 const verifiedState={entries:[],loading:false,loaded:false,error:''};
 const guildState={guilds:[],loaded:false,loading:false,error:'',updatedAt:0,query:''};
 const wikiState={category:'all',query:'',limit:36,returnPosition:null};
@@ -55,7 +89,7 @@ async function loadPublishedWikiArticles(){
   if(route==='wiki'||route==='wiki/guides'||route==='wiki/article')render();
  }catch(error){console.warn('Published Wiki unavailable:',error.message)}
 }
-async function loadVerifiedIndex(){if(verifiedState.loading||verifiedState.loaded)return;verifiedState.loading=true;try{const r=await fetch('/api/search/catalog',{signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error('Search index '+r.status);verifiedState.entries=verifiedGameSearchEntries(await r.json());verifiedState.loaded=true;verifiedState.error='';}catch(e){verifiedState.error='Game index temporarily unavailable';console.warn(e)}finally{verifiedState.loading=false;if(state.layer?.type==='search')refreshLiveSearch();if(parseRoute().route.startsWith('wiki')||parseRoute().route==='reference/detail')render()}}
+async function loadVerifiedIndex(){if(verifiedState.loading||verifiedState.loaded)return;verifiedState.loading=true;try{const r=await fetch('/api/search/catalog',{signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error('Search index '+r.status);verifiedState.entries=verifiedGameSearchEntries(await r.json());verifiedState.loaded=true;verifiedState.error='';}catch(e){verifiedState.error='Game index temporarily unavailable';console.warn(e)}finally{verifiedState.loading=false;if(state.layer?.type==='search')refreshLiveSearch();const route=parseRoute().route;if(route==='calculators/pathfinder'&&recipeState.data){const box=node('pathRangeContent');if(box)box.innerHTML=quickUpgradeContent(recipeState.data,state.pathfinderRange,{page:true,catalog:verifiedState.entries});refreshPathfinderStep();}if(route.startsWith('wiki')||route==='reference/detail')render()}}
 async function loadGuilds(force=false){if(guildState.loading||(!force&&guildState.updatedAt&&Date.now()-guildState.updatedAt<30000))return;guildState.loading=true;try{const r=await fetch(V11_GUILD_ENDPOINT,{signal:AbortSignal.timeout(9000),cache:'no-store'});if(!r.ok)throw Error('Guild directory '+r.status);const d=await r.json();guildState.guilds=(d.guilds||[]).map(normalizeGuild).filter(Boolean);guildState.loaded=true;guildState.error='';}catch(e){guildState.error='Guild listings temporarily unavailable';console.warn(e)}finally{guildState.updatedAt=Date.now();guildState.loading=false;if(parseRoute().route.startsWith('lfg/guild'))render();if(state.layer?.type==='search')refreshLiveSearch()}}
 const lfgState={listings:[],plans:[],loaded:false,loading:false,error:'',updatedAt:0,tab:'active',query:'',tier:'',characterClass:'',mightAmount:'',mightUnit:'M'};
 const allLfg=()=>[...lfgState.listings,...lfgState.plans];
@@ -63,7 +97,7 @@ const lfgDynamic=()=>lfgSearchEntries(allLfg());
 const lfgSearchable=()=>[...searchExtras(),...lfgDynamic()];
 const lfgById=id=>lfgDynamic().find(e=>e.id===id);
 async function loadPublicLfg(force=false){if(lfgState.loading||(!force&&lfgState.updatedAt&&Date.now()-lfgState.updatedAt<30000))return; lfgState.loading=true; lfgState.error='';try{const r=await fetch('/api/lfg/public',{cache:'no-store',signal:AbortSignal.timeout(9500)});if(!r.ok)throw Error('HTTP '+r.status);const payload=await r.json(),data=normalizePublicFeed(payload);lfgState.error=(payload.issues?.length?('Some '+payload.issues.join(', ')+' are currently unavailable'):'');lfgState.listings=data.listings;lfgState.plans=data.plans;lfgState.loaded=true;lfgState.updatedAt=Date.now();}catch(e){lfgState.error='Live listings temporarily unavailable';console.warn('LFG feed',e.message)}finally{lfgState.updatedAt=Date.now();lfgState.loading=false;const route=parseRoute().route;if(route.startsWith('lfg/raids')||route==='lfg/listing')render();if(state.layer?.type==='search')refreshLiveSearch();}}
-const LINKS=[['home','Home','home'],['calculators','Calculators','calculator'],['labs/build','Build Studio','shield'],['lfg','ArcanaLFG','users'],['wiki','ArcanaWiki','book'],['community','Community','users'],['beta','Beta & Feedback','message-square']];
+const LINKS=[['directory','Explore All','layers'],['wiki','ArcanaWiki','book'],['labs/build','Build Studio','shield'],['calculators/pathfinder','Pathfinder','layers'],['lfg','Guild & Raid Finder','users'],['community','Community','users'],['beta','Beta & Feedback','message-square']];
 const BUILD_SLOTS=LOADOUT_LAYOUT.map(x=>[x.key,x.label]);
 const item=value=>{
  const id=equipmentId(value);if(!id)return null;
@@ -98,7 +132,7 @@ function ensureDraft(){
  return state.draft;
 }
 function persistDraft(){if(state.draft){state.draft=normalizeBuild(state.draft);saveDraft(state.draft)}}
-const SEARCHABLE_TOOLS=['items','guides','upgrade','compare','build','runes','skills','passives','petlab','compound','affixes','guildtree','guilds','raids','farm'];
+const SEARCHABLE_TOOLS=['items','guides','upgrade','compare','build','runes','skills','passives','petlab','compound','affixes','guildtree','guilds','raids','farm','pathfinder'];
 const TOOL_SEARCH_ALIASES={
  items:'item codex art equipment weapons',guides:'wiki player guide article',
  upgrade:'item upgrade calculator forge materials',compare:'item comparison equipment stats',
@@ -106,7 +140,7 @@ const TOOL_SEARCH_ALIASES={
  skills:'class skill tree planner',passives:'passive skill tree planner',
  petlab:'pet lab pet loadout companion',compound:'pet compound calculator equalisation',
  affixes:'pet affix cost calculator shard',guildtree:'guild skill tree planner guild bonuses',
- guilds:'guild finder recruitment',raids:'lfg raid finder',farm:'monster level xp farm comparator fastest kills per second ml xp'
+ guilds:'guild finder recruitment',raids:'lfg raid finder',farm:'monster level xp farm comparator fastest kills per second ml xp',pathfinder:'Arcana Pathfinder fast scroll swipe item slot rarity awakened A1 A30 upgrade material gold costs quick reference'
 };
 const searchExtras=()=>[
  ...(savedBuild()?[{id:'my-build',kind:'build',title:state.draft.title||'My Build',subtitle:'Saved locally · Build Studio',keywords:'my build custom saved planner equipment runes skills',description:'Your locally saved build.'}]:[]),
@@ -116,14 +150,22 @@ const searchExtras=()=>[
  })
 ];
 function track(id){if(!id)return;state.recent=remember(id)}
+const isAppearanceAdmin=()=>Boolean(currentAccount()?.roles?.some(role=>['admin','creator'].includes(typeof role==='string'?role:role.id)));
+// The unlisted preview-domain Playground edits only local draft state. Server-side publish remains protected.
+const isPreviewThemeHost=()=>typeof location!=='undefined'&&['arcana-preview-app-preview.up.railway.app','127.0.0.1','localhost'].includes(location.hostname);
+const isLocalThemePlayground=()=>isPreviewThemeHost()&&parseRoute().route==='theme-playground';
+const tryOnTheme=()=>{try{return isPreviewThemeHost()&&sessionStorage.getItem('arcana-theme-tryon-preview-v1')==='1'}catch{return false}};
+const changeTryOn=enabled=>{try{if(enabled)sessionStorage.setItem('arcana-theme-tryon-preview-v1','1');else sessionStorage.removeItem('arcana-theme-tryon-preview-v1');return true}catch{return false}};
+const canEditThemeDraft=()=>isAppearanceAdmin()||isLocalThemePlayground();
+const themePlaygroundView=()=>'<div class="launchPage themePlayground"><span class="launchEyebrow">ARCANA PREVIEW · LOCAL ONLY</span><h1>Theme Playground</h1><p>Explore 18 original recolorable artworks and 30 curated complete looks, remix colors and lighting, and save up to twelve private designs. This browser-only preview cannot publish anything to the real site.</p><div class="themeTryOnActions"><button class="btn primary" type="button" data-action="theme-try-on">✦ Try this on Arcana</button><button class="btn secondary" type="button" data-action="theme-try-off">Stop site preview</button></div><div class="themeStudioWorkbench"><div class="themeStudioEditor">'+designPanel({showPreview:false})+'</div><aside class="themeStudioPreview" aria-label="Live theme preview">'+designMiniMarkup()+'</aside></div></div>'; 
 function crumbTrail(title){
  const route=parseRoute().route,section=route.split('/')[0];
- const parent={labs:['Build Studio','labs/build'],calculators:['Calculators','calculators'],lfg:['ArcanaLFG','lfg'],wiki:['ArcanaWiki','wiki']}[section];
+ const parent={labs:['Build Studio','labs/build'],calculators:['Pathfinder','calculators/pathfinder'],lfg:['Guild & Raid Finder','lfg'],wiki:['ArcanaWiki','wiki']}[section];
  if(!parent||route===parent[1])return '';
- return `<nav class="arcanaCrumbs" aria-label="Breadcrumbs"><button data-route="home">Home</button><span aria-hidden="true">›</span><button data-route="${parent[1]}">${parent[0]}</button><span aria-hidden="true">›</span><span aria-current="page">${esc(title)}</span></nav>`;
+ return `<nav class="arcanaCrumbs" aria-label="Breadcrumbs"><button type="button" data-route="home">Home</button><span aria-hidden="true">›</span><button type="button" data-route="${parent[1]}">${parent[0]}</button><span aria-hidden="true">›</span><span aria-current="page">${esc(title)}</span></nav>`;
 }
 function layout(title,kicker,inner,mark='gem'){
- return `${crumbTrail(title)}<div class="pageHead"><button class="backLink" data-route="home">${icon('back',17)} Home</button><div class="pageHeadline"><span class="pageIcon">${icon(mark,24)}</span><div><span class="eyebrow">${esc(kicker)}</span><h1>${esc(title)}</h1></div></div></div>${inner}`;
+ return `${crumbTrail(title)}<div class="pageHead"><div class="pageHeadline"><span class="pageIcon">${icon(mark,24)}</span><div><span class="eyebrow">${esc(kicker)}</span><h1>${esc(title)}</h1></div></div></div>${inner}`;
 }
 
 const homePanels={quick:false,actions:false};
@@ -140,7 +182,21 @@ const homeDisclosure=(key,kicker,title,description,content)=>
 const homeSecondary=(route,title,description,symbol)=>
  '<button type="button" class="arcanaHomeSecondary" data-route="'+esc(route)+'"><span class="arcanaHomeSecondaryIcon">'+icon(symbol,19)+'</span>'+
  '<span><strong>'+esc(title)+'</strong><small>'+esc(description)+'</small></span><span class="arcanaHomeSecondaryArrow">'+icon('arrow',17)+'</span></button>';
-function home(){return homeScreen()}
+function home(){return homeScreen();}
+function featuredView(){
+ const items=[
+  ['Arcana Journal','Independent IdleArc news, meta analysis and community perspectives.','journal','book'],
+  ['Class Balance: Top 250','See the ranked class data and the full Season 2 balance analysis.','journal-balance','shield'],
+  ['Build Studio','Create, save and compare fully connected equipment, runes and skills.','labs/build','flask'],
+  ['Player Guides','Community-written guides and IdleArc references.','wiki/guides','book'],
+  ['Community Builds','Discover player builds and share your own.','community','users'],
+  ['Pathfinder','Swipe through upgrade materials and currency costs.','calculators/pathfinder','layers'],
+  ['Featured Wiki','Browse verified articles and game systems.','wiki','book'],
+  ['Beta Feedback','Tell us what to improve before launch.','beta','spark']
+ ];
+ return '<div class="launchPage arcanaFeaturedPage"><span class="launchEyebrow">DISCOVER</span><h1>Featured</h1><p>Builds, guides, tools and updates worth a look. More community features will appear here as they are published.</p><div class="arcanaFeaturedRows">'+items.map(([name,detail,route,glyph])=>'<button class="launchFeatureRow" type="button" data-route="'+esc(route)+'"><span class="launchFeatureIcon">'+icon(glyph,22)+'</span><span><strong>'+esc(name)+'</strong><small>'+esc(detail)+'</small></span>'+icon('arrow',17)+'</button>').join('')+'</div></div>';
+}
+
 function recentView(){const recent=state.recent.map(id=>entityById.get(id)||verifiedState.entries.find(e=>e.id===id)||wikiArticleEntries().find(e=>e.id===id)).filter(Boolean).slice(0,15);const saved=resumableWorkspaces({draft:savedBuild(),guild:state.guildTreePlan,compound:state.compoundQuick,affix:state.affixCostQuick,farm:state.farmPlan,recent:state.recent.map(id=>id.startsWith('wiki:article:')?wikiArticleById(id.slice(13)):null).filter(Boolean)});return '<div class="launchPage"><span class="launchEyebrow">USER CENTER</span><h1>Recent Activity</h1><p>Your saved planning work and recently viewed references, available to continue on this device.</p>'+(saved||'<p class="mutedSmall">No saved planning activity yet. Start in Build Studio.</p>')+'<h2>Recently viewed</h2><div class="resultList">'+(recent.length?recent.map(cardEntity).join(''):'<p class="mutedSmall">Pages you open will appear here.</p>')+'</div></div>'}
 function siteSignature(){return `<footer class="footer arcanaSignature" aria-label="Arcana creator and community">
 <img class="arcanaSigLogo" src="/assets/arcana-logo.webp" alt="" loading="lazy"/>
@@ -152,7 +208,7 @@ function siteSignature(){return `<footer class="footer arcanaSignature" aria-lab
 <strong>Want to get involved?</strong><p>Development, testing, proofreading, research and other community roles all help make Arcana better. Reach out through Discord.</p></div></details>
 </footer>`;}
 function tile(x,route,desc,mark){return `<button class="toolTile" data-route="${route}"><span class="tileIcon">${icon(mark,23)}</span><strong>${esc(x)}</strong><p>${esc(desc)}</p><span class="tileMore">Open ${icon('arrow',15)}</span></button>`}
-function calculators(){return layout('Calculators','ARCANA',`<p class="lead">Costs and progression tools. Choose a calculation, then follow linked items or game mechanics without starting over.</p><div class="cardGrid">${tile('Upgrade Cost Calculator','calculators/upgrade','Equipment-to-calculator handoff, with a selected item.','calculator')}${tile('Pet Compound Calculator','calculators/pet','See what Compound Level does to every rarity-based Drop Bonus.','paw')}${tile('Pet Affix Cost','calculators/affixes','Calculate Pet Shards from current to target affix level.','sliders')}${tile('Compare Equipment','calculators/compare','Add two indexed items without losing context.','compare')}${tile('ML Farming Comparator','calculators/ml-farm','Use your kill times to find the fastest Monster Level XP farm.','sword')}</div><p class="notice">Compound results and target-level shard estimates come from the October 9 game rules; no speculative reroll probabilities.</p>`,'calculator')}
+function calculators(){return layout('Calculators','ARCANA',`<p class="lead">Gear upgrades and equipment comparisons are together in Pathfinder. Other calculators live here.</p><div class="cardGrid">${tile('Pathfinder','calculators/pathfinder','Upgrade map, totals and item comparison.','layers')}${tile('Damage Calculator · Work in Progress','calculators/damage','Damage and DPS comparison tool under development.','calculator')}${tile('Pet Compound','calculators/pet','Pet compound and Drop Bonus.','paw')}${tile('Pet Affix Costs','calculators/affixes','Pet Shard costs.','calculator')}${tile('ML Farming','calculators/ml-farm','Compare farming speed.','sword')}</div>`,'calculator')}
 function labs(){return layout('Arcana Labs','THEORYCRAFTING',`<p class="lead">Buildcraft lives here. Open a complete guide build, make it your own, and send gear or rune choices to their related tools.</p><div class="cardGrid">${tile('Build Studio','labs/build','One saved build containing gear, pets, runes and skills.','shield')}${tile('Rune Forge','labs/runes','Arrange runes on a grid that grows with Monster Level.','gem')}${tile('Class Skill Tree','labs/skills','Browse verified branches, tiers, and skill prerequisites.','git')}${tile('Passive Skill Tree','labs/passives','Swipe between complete passive tiers with on-node point controls.','layers')}${tile('Pet Compound Calculator','calculators/pet','Estimate your Drop Bonus at a chosen Compound Level.','calculator')}${tile('Guild Skill Tree','labs/guild-tree','Plan guild bonuses, allocate points, and share a build.','shield')}</div><div class="hintCard">${icon('book',20)} <span>Try the <button class="inlineLink" data-route="wiki/guide" data-params="id=warrior-retaliation-demo-guide">connected Warrior guide</button> to open a complete example inside Build Studio.</span></div>`,'flask')}
 function wiki(){return layout('ArcanaWiki','INSTANT REFERENCE',`<p class="lead">The reference layer of Arcana. Guides are useful actions, not dead-end walls of text.</p><div class="sectionLabel compact"><div><span class="eyebrow">FEATURED GUIDE</span><h2>From guide to Build Studio</h2></div></div><button class="guideFeature" data-route="wiki/guide" data-params="id=warrior-retaliation-demo-guide"><span>${icon('book',25)}</span><div><strong>Warrior Retaliation · Connected Guide</strong><p>Contains a complete demonstration build you can inspect and edit.</p></div>${icon('arrow',19)}</button><div class="sectionLabel"><div><span class="eyebrow">BROWSE</span><h2>Knowledge & items</h2></div></div><div class="cardGrid">${tile('Item Codex','wiki/items','Search equipped gear and jump into comparison or upgrade planning.','box')}${tile('Mechanics','wiki/mechanics','Verified mechanics and links to relevant calculators.','info')}${tile('Guides','wiki/guides','Example guides with linked builds and tools.','book')}</div>`,'book')}
 function wikiItems(){return layout('Item Codex','ARCANAWIKI',`<p class="lead">Items share IDs with comparison, Build Studio and the upgrade calculator.</p><div class="filterLine"><input id="itemFilter" placeholder="Filter items…" autocomplete="off" aria-label="Filter items"/><span>${icon('search',19)}</span></div><div class="resultList" id="itemResults">${itemList.map(cardEntity).join('')}</div><p class="notice">Names and categories shown here are reference samples, not a complete verified game database.</p>`,'box')}
@@ -198,13 +254,13 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
   (!inspecting?'<button type="button" data-action="resetbuild">'+icon('close',16)+' Start fresh</button>':'')+
   '<button type="button" data-route="beta">'+icon('info',16)+' Report a problem</button>'+
   '</div></details></div></section>';
- const nav='<nav class="studioTopNav" aria-label="Build Studio location"><button type="button" data-route="home">'+icon('back',16)+' Home</button><span>Build Studio</span></nav>';
+ const nav='<nav class="arcanaCrumbs" aria-label="Build Studio location"><button type="button" data-route="home">Home</button><span aria-hidden="true">›</span><span aria-current="page">Build Studio</span></nav>';
  return '<div class="studioPage">'+nav+profile+labsTabs('studio')+
  '<section class="studioPrimaryEquipment" aria-label="Equipment editor"><header class="studioEquipmentHeading"><h2>'+refinedSvg('feature-builds',26)+' Equipment</h2><span>'+LOADOUT_LAYOUT.filter(({key})=>Boolean(b.equipment?.[key])).length+' / '+LOADOUT_LAYOUT.length+' equipped</span></header>'+
- slots+'<p class="studioEquipmentHint">Select a slot to change equipment, rarity, awakening, or Drop Bonus.</p></section>'+
+ slots+'<p class="studioEquipmentHint">Select a slot to change equipment, rarity, awakening, or Drop Bonus.</p></section>'+ '<section class="pfPanel"><h2>Arcana Pathfinder</h2><p>Need to check an upgrade? Browse the cost of any rarity or awakening level without setting up your character or entering materials.</p><button class="btn primary" data-route="calculators/pathfinder">Browse upgrade costs '+icon('arrow',16)+'</button></section>'+
  '<details class="studioProgressDetails"><summary>'+refinedSvg('feature-rune-forge',22)+' Character & Rune Progression <span>ML '+(b.monsterLevel||1)+'</span></summary>'+
  '<div class="studioML"><div><span class="eyebrow">RUNE GRID</span><strong>Monster Level '+(b.monsterLevel||1)+'</strong><small> · '+monsterLevelGrid(b.monsterLevel||1).cols+'×'+monsterLevelGrid(b.monsterLevel||1).rows+' cells</small></div><div class="studioMLActions"><label class="studioMLInput">ML<input aria-label="Build Monster Level" data-monster-level type="number" min="1" max="100000" inputmode="numeric" value="'+(b.monsterLevel||1)+'" '+(inspecting?'disabled':'')+'></label><button class="btn secondary" data-route="labs/runes">Runes '+icon('arrow',14)+'</button></div></div></details>'+
- '<div class="studioSecondaryGrid"><section class="sectionCard"><div class="sectionCardTop"><h3>'+refinedSvg('feature-class-skills',24)+' Skills & Runes</h3></div>'+
+ '<div class="studioSecondaryGrid"><section class="sectionCard"><div class="sectionCardTop"><h3>'+icon('git',19)+' Skills & Runes</h3></div>'+
  '<div class="pillSet">'+(b.skills.map(v=>chip(v,'wide')).join('')||chip('No class skills chosen'))+'</div>'+
  '<div class="actionsGroup"><button class="btn secondary" data-route="labs/skills">Class Skills '+icon('arrow',14)+'</button><button class="btn secondary" data-route="labs/passives">Passive Tree '+icon('arrow',14)+'</button><button class="btn secondary" data-route="labs/runes">Rune Forge '+icon('arrow',14)+'</button></div></section>'+
  '<section class="sectionCard"><div class="sectionCardTop"><h3>'+icon('paw',19)+' Pet Bonuses</h3></div>'+petLoadoutView(b,inspecting)+'</section></div>'+
@@ -212,13 +268,26 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
  '<p class="studioBuildNotice"><strong>Game data:</strong> '+esc(b.notes||'Values remain under verification.')+'</p>'+
  '</div>';}
 
-function calcUpgrade(){const id=parseRoute().query.get('item'),e=item(id);if(e)track(e.id);
- return layout('Upgrade Cost Calculator','ARCANA CALCULATORS',`<div class="calcWorkspace"><span class="eyebrow">SELECTED EQUIPMENT</span><button class="selection" data-action="chooseupgrade"><span class="tinyIcon ${e?'tinyGameArt':''}">${e?gameArt(e,40):icon('shield',22)}</span><span><strong>${esc(e?.title||'Select an item')}</strong><small>${esc(e?.subtitle||'Use universal search or the item picker')}</small></span>${icon('arrow',16)}</button>${e?`<div class="actionsGroup">${button('View item in Wiki','wikiitem',e.id,'secondary','book')}${button('Compare','compare',e.id,'secondary','compare')}</div>`:''}<div class="calcWarning">${icon('info',20)} <p>Partial cost reference: this snapshot provides base tier changes only, not level-by-level or Awakened totals. No full expected cost is claimed.</p></div></div>${verifiedUpgradeReferencePanel(e?.title)}`,'calculator')}
-function calcCompare(){const qp=parseRoute().query;const left=item(qp.get('left')||state.compareLeft),right=item(qp.get('right')||state.compareRight);state.compareLeft=left?.id||null;state.compareRight=right?.id||null;
- return layout('Compare Items','ARCANA CALCULATORS',`<div class="compareGrid">${[['left',left],['right',right]].map(([side,e])=>`<button class="compareSlot" data-action="pickcompare" data-arg="${side}"><span class="detailMark compareArt">${e?gameArt(e,83):icon('plus',26)}</span><span class="eyebrow">${side==='left'?'ITEM A':'ITEM B'}</span><strong>${esc(e?.title||'Select item')}</strong><small>${esc(e?.subtitle||'Tap to choose equipment')}</small></button>`).join('')}</div>
+function pathfinderHub(legacyView='range'){
+ const view=parseRoute().query.get('view')||legacyView;
+ const tabs=[['range','Upgrade Costs','calculator'],['timeline','Upgrade Map','layers'],['upgrade','Rarity Reference','calculator'],['compare','Compare Items','compare']];
+ const selected=tabs.some(t=>t[0]===view)?view:'range';
+ const nav='<nav class="arcanaCrumbs" aria-label="Pathfinder location"><button type="button" data-route="home">Home</button><span aria-hidden="true">›</span><span aria-current="page">Pathfinder</span></nav>';
+ const header='<header class="pathfinderHubHead"><span class="pathfinderHubIcon">'+icon('feature-upgrade',25)+'</span><div><h1>Pathfinder</h1><p>Upgrade planning and gear progression</p></div></header>';
+ const chooser='<nav class="pathfinderHubTabs" aria-label="Pathfinder tools">'+tabs.map(([id,title,glyph])=>'<button type="button" class="'+(id===selected?'active':'')+'" data-route="calculators/pathfinder" data-params="view='+id+'" aria-current="'+(id===selected?'page':'false')+'">'+icon(glyph,19)+'<span>'+title+'</span></button>').join('')+'</nav>';
+ const wait='<div class="pathWaiting" role="status"><p>'+esc(recipeState.error||'Loading verified upgrade recipes…')+'</p><button type="button" data-action="path-refresh" class="btn secondary">Retry</button></div>';
+ const inner=selected==='range'?quickUpgradePanel(recipeState.data,state.pathfinderRange,{page:true,error:recipeState.error,catalog:verifiedState.entries}):selected==='upgrade'?calcUpgrade(true):selected==='compare'?calcCompare(true):pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error,state.pathfinderRange,{includeRange:false,catalog:verifiedState.entries});
+ return '<div class="studioPage pathfinderHub"><section class="pathfinderHubTop">'+nav+header+chooser+'</section><div class="pathfinderHubContent">'+inner+'</div></div>';
+}
+function calcPathfinder(){return pathfinderHub()}
+function calcUpgrade(embedded=false){const id=parseRoute().query.get('item'),e=item(id);if(e)track(e.id);
+ const inner=`<div class="calcWorkspace"><span class="eyebrow">SELECTED EQUIPMENT</span><button class="selection" data-action="chooseupgrade"><span class="tinyIcon ${e?'tinyGameArt':''}">${e?gameArt(e,40):icon('shield',22)}</span><span><strong>${esc(e?.title||'Select an item')}</strong><small>${esc(e?.subtitle||'Use universal search or the item picker')}</small></span>${icon('arrow',16)}</button>${e?`<div class="actionsGroup">${button('View item in Wiki','wikiitem',e.id,'secondary','book')}${button('Compare','compare',e.id,'secondary','compare')}</div>`:''}<div class="calcWarning">${icon('info',20)} <p>Partial cost reference: this snapshot provides base tier changes only, not level-by-level or Awakened totals. No full expected cost is claimed.</p></div></div>${verifiedUpgradeReferencePanel(e?.title)}`;return embedded?'<section class="pathfinderHubSubTool"><h2>Upgrade cost reference</h2>'+inner+'</section>':layout('Upgrade Cost Calculator','ARCANA CALCULATORS',inner,'calculator')}
+function calcCompare(embedded=false){const qp=parseRoute().query;const left=item(qp.get('left')||state.compareLeft),right=item(qp.get('right')||state.compareRight);state.compareLeft=left?.id||null;state.compareRight=right?.id||null;
+ const inner=`<div class="compareGrid">${[['left',left],['right',right]].map(([side,e])=>`<button class="compareSlot" data-action="pickcompare" data-arg="${side}"><span class="detailMark compareArt">${e?gameArt(e,83):icon('plus',26)}</span><span class="eyebrow">${side==='left'?'ITEM A':'ITEM B'}</span><strong>${esc(e?.title||'Select item')}</strong><small>${esc(e?.subtitle||'Tap to choose equipment')}</small></button>`).join('')}</div>
  ${verifiedComparisonPanel(left?.title,right?.title,state.compareTier)}
- <div class="actionsGroup">${left?button('Open Item A Wiki','wikiitem',left.id,'secondary','book'):''}${right?button('Open Item B Wiki','wikiitem',right.id,'secondary','book'):''}</div>`,'compare')}
+ <div class="actionsGroup">${left?button('Open Item A Wiki','wikiitem',left.id,'secondary','book'):''}${right?button('Open Item B Wiki','wikiitem',right.id,'secondary','book'):''}</div>`;return embedded?'<section class="pathfinderHubSubTool"><h2>Compare equipment</h2>'+inner+'</section>':layout('Compare Items','ARCANA CALCULATORS',inner,'compare')}
 
+function calcDamage(){return '<div class="studioPage"><nav class="arcanaCrumbs" aria-label="Page navigation"><button type="button" data-route="home">Home</button><span>›</span><button type="button" data-action="homemenu" data-arg="tools">Tools</button></nav><section class="sectionCard" style="margin-top:14px"><span class="eyebrow">WORK IN PROGRESS</span><h1>Damage Calculator</h1><p>Damage and DPS comparisons for equipment stats, pet upgrades, inscriptions and class skills.</p><p>Calculation mechanics are being integrated and checked against IdleArc combat data.</p><div class="actionsGroup"><button class="btn secondary" type="button" data-action="homemenu" data-arg="tools">Other tools</button><button class="btn secondary" type="button" data-route="labs/build">Build Studio</button></div></section></div>';}
 function calcPet(){return layout('Pet Compound Calculator','ARCANA CALCULATORS',simpleCompoundCalculatorView(state.compoundQuick),'calculator')}
 // Legacy /labs/pets URLs open Build Studio; pet loadout is no longer a separate feature.
 function petLab(){return buildStudio()}
@@ -240,7 +309,7 @@ const ASSASSIN_MOTIFS=[
   ['Mirror assault','assassin-06','Tier 3 · right']
 ];
 function skillArt(id){return `<img src="/assets/skills/${id}-precision.svg" alt="" class="arcanaSkillImage" loading="lazy">`}
-function skills(){return layout('Class Skill Tree','BUILD STUDIO',labsTabs('skills')+classBoard(state,state.treeData),'git')}
+function skills(){return '<div class="studioPage studioSubPage">'+crumbTrail('Class Skills')+labsTabs('skills')+classBoard(state,state.treeData)+'</div>'}
 function visiblePassiveState(){
  const route=parseRoute(),token=route.query.get('share');
  if(!token)return {...state,passiveReadOnly:false};
@@ -254,7 +323,7 @@ function passives(){
  if(token&&shared.token!==token)return layout('Shared Passive Tree','BUILD STUDIO','<p class="notice">Opening shared passive tree…</p>','layers');
  if(token&&!shared.build)return layout('Shared Passive Tree','BUILD STUDIO',`<p class="notice">${esc(shared.error||'Shared passive tree unavailable.')}</p><button class="btn secondary" data-route="labs/passives">Open my passive planner</button>`,'layers');
  const view=visiblePassiveState();
- return layout(token?'Shared Passive Skill Tree':'Passive Skill Tree','ARCANA LABS',labsTabs('passives')+passiveBoard(view,state.treeData),'layers');
+ return '<div class="studioPage studioSubPage">'+crumbTrail('Passive Skill Tree')+labsTabs('passives')+passiveBoard(view,state.treeData)+'</div>';
 }
 function storeTreePlan(){const plan={characterLevel:state.characterLevel,treeClassId:state.treeClassId,treeBranchId:state.treeBranchId,passiveAlloc:state.passiveAlloc,classAlloc:state.classAlloc,classAllocById:state.classAllocById,passiveFreeMode:state.passiveFreeMode};try{localStorage.setItem('arcana-v4-tree-plan',JSON.stringify(plan))}catch{}if(state.draft){Object.assign(state.draft,{characterLevel:state.characterLevel,passiveAlloc:structuredClone(state.passiveAlloc),classAllocById:structuredClone(state.classAllocById),passiveFreeMode:state.passiveFreeMode});persistDraft()}}
 function restoreTreePlan(){try{const p=JSON.parse(localStorage.getItem('arcana-v4-tree-plan')||'{}');state.characterLevel=Math.max(1,Math.floor(Number(p.characterLevel)||1));state.treeClassId=p.treeClassId||null;state.treeBranchId=p.treeBranchId||null;state.passiveAlloc=p.passiveAlloc&&typeof p.passiveAlloc==='object'?p.passiveAlloc:{};state.passiveFreeMode=typeof p.passiveFreeMode==='boolean'?p.passiveFreeMode:state.draft?.passiveFreeMode===true;state.classAlloc=p.classAlloc&&typeof p.classAlloc==='object'?p.classAlloc:{};state.classAllocById=p.classAllocById&&typeof p.classAllocById==='object'?p.classAllocById:{}}catch{}}
@@ -389,11 +458,17 @@ function updateGuildTree(plan,{recordHistory=true}={}){
  }
 }
 
-function routeView(){const {route,query}=parseRoute();switch(route){case 'home':return home();case 'directory':return directoryView();case 'user':return userCenterView(currentAccount());case 'recent':return recentView();case 'settings':return settingsView();case 'icons':return iconGalleryView();case 'refined-icons':return refinedIconGalleryView();case 'wiki/about':return wikiAboutView();case 'wiki/topics':return wikiTopicsView();case 'wiki/topic':return wikiTopicView(query.get('slug'))||notFound();case 'calculators':return calculators();case 'labs':return buildStudio();case 'wiki':return wikiLandingView({entries:verifiedState.entries,loaded:verifiedState.loaded,error:verifiedState.error,itemCount:verifiedState.entries.length});case 'lfg':return lfg();case 'beta':case 'beta/reports':return betaView(route);case 'account':case 'profile':case 'community':case 'community/post':case 'community/create':return communityPage(route,query);case 'wiki/items':return wikiLibraryView({entries:verifiedState.entries,category:'item',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/mechanics':return wikiLibraryView({entries:verifiedState.entries,category:'passive',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/guides':return wikiGuidesView();case 'wiki/studio':return wikiStudioView();case 'wiki/library':return wikiLibraryView({entries:verifiedState.entries,category:wikiState.category=query.get('kind')||'all',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/article':{const a=wikiArticleById(query.get('id'));if(a)track('wiki:article:'+a.id);return wikiArticleView(a);}case 'wiki/guide':return fullGuide(query.get('id'));case 'wiki/item':return wikiItem(query.get('item'));case 'wiki/mechanic':return wikiMechanic(query.get('id'));case 'labs/build':return buildStudio();case 'labs/runes':return runeForge();case 'labs/pets':return petLab();case 'labs/guild-tree':case 'lfg/guild-tree':return guildTree();case 'labs/skills':return skills();case 'labs/passives':return passives();case 'calculators/upgrade':return calcUpgrade();case 'calculators/compare':return calcCompare();case 'calculators/pet':return calcPet();case 'calculators/affixes':return calcAffixes();case 'calculators/ml-farm':return calcFarm();case 'lfg/raids':return lfg('raids');case 'lfg/guilds':return guildPage();case 'lfg/guild':return guildPage();case 'lfg/guild/new':return guildPage();case 'lfg/guild/edit':return guildPage();case 'lfg/listing':return lfg('listing');case 'reference/detail':case 'wiki/reference':{const id=query.get('id')||query.get('item');if(id)track(id);return wikiRecordView(verifiedState.entries.find(e=>e.id===id),verifiedState.entries,wikiState.category);} default:return notFound()}}
-function globalHomeBar(dest){return '<nav class="launchReturnHome" aria-label="Return to home"><button type="button" data-route="home">'+icon('back',17)+' Home</button><span>'+esc(dest.startsWith('labs/')?'Build Studio':dest.startsWith('wiki/')?'ArcanaWiki':'Arcana')+'</span></nav>'}
-function renderHeaderAvatar(){const button=node('accountBtn');if(!button)return;const profile=currentAccount();const uri=profile?.avatarDataUrl;button.innerHTML=typeof uri==='string'&&/^data:image\/(?:webp|png|jpeg);base64,/.test(uri)?'<img src="'+esc(uri)+'" alt="">':(profile?.displayName?'<strong>'+esc(profile.displayName.slice(0,1).toUpperCase())+'</strong>':icon('users',22));button.setAttribute('aria-label',profile?'Open user center for '+profile.displayName:'Open guest user center')}
-function render(){const __treeRails=Object.fromEntries(['.classRail','.branchRail','.passiveTierRail'].map(sel=>[sel,document.querySelector(sel)?.scrollLeft??null]));const __prevGuildRail=document.querySelector('.guildTreeTabs');const __prevGuildX=__prevGuildRail?.scrollLeft??null;const __prevWikiRail=document.querySelector('.wikiCategoryScroll');const __prevWikiX=__prevWikiRail?__prevWikiRail.scrollLeft:null;const dest=parseRoute().route;if(dest.startsWith('lfg/guild')&&!guildState.loading&&Date.now()-guildState.updatedAt>30000)queueMicrotask(()=>void loadGuilds());if(dest.startsWith('lfg')&&!lfgState.loading&&(Date.now()-lfgState.updatedAt>30000)){queueMicrotask(()=>void loadPublicLfg())};applyTheme(dest);node('content').innerHTML=(dest==='home'||dest==='labs/build'?'':globalHomeBar(dest))+routeView()+connectedNext(dest)+siteSignature();renderHeaderAvatar();if((dest==='labs/build'||dest==='labs/runes'||dest==='labs/passives')&&parseRoute().query.get('share')&&shared.token!==parseRoute().query.get('share'))queueMicrotask(()=>void resolveShared(parseRoute().query.get('share')));
- if(dest==='wiki/studio')queueMicrotask(()=>void mountWikiStudio());if(dest==='beta'||dest==='beta/reports')queueMicrotask(()=>void loadBetaStatus(render));if(['account','profile','community','community/post','community/create'].includes(dest))queueMicrotask(()=>void loadCommunityPage(dest,parseRoute().query,render));const __nextGuildRail=node('content').querySelector('.guildTreeTabs');
+function routeView(){const {route,query}=parseRoute();switch(route){case 'home':return home();case 'directory':return directoryView();case 'journal':return '<div class="launchPage"><h1>Arcana Journal</h1><p>IdleArc news, balance analysis, and community perspectives.</p><a class="btn primary" href="/journal">Open the Journal →</a></div>';case 'journal-balance':return '<div class="launchPage"><h1>Class Balance: The Top 250 Tells a Story</h1><a class="btn primary" href="/journal/class-balance-top-250-season-2">Read the full analysis →</a></div>';case 'journal-studio':return '<div class="launchPage"><h1>Journal Studio</h1><a class="btn primary" href="/journal/studio">Open editor →</a></div>';case 'user':return userCenterView(currentAccount());case 'recent':return recentView();case 'featured':return featuredView();case 'theme-playground':return isLocalThemePlayground()?themePlaygroundView():notFound();case 'admin':case 'admin/traffic':return adminConsoleView({admin:isAppearanceAdmin(),authEnabled:accountStatus().enabled,tab:parseRoute().query.get('tab')||'traffic'});case 'settings':return settingsView({admin:isAppearanceAdmin(),authEnabled:accountStatus().enabled,loggedIn:accountStatus().authenticated});case 'icons':return iconGalleryView();case 'wiki/about':return wikiAboutView();case 'wiki/topics':return wikiLandingView({entries:verifiedState.entries,loaded:verifiedState.loaded,error:verifiedState.error,itemCount:verifiedState.entries.length});case 'wiki/category':return wikiCategory(query.get('slug'))?wikiCategoryView(query.get('slug')):notFound();case 'wiki/topic':return wikiCategoryView(LEGACY_WIKI_TOPIC_REDIRECTS[query.get('slug')]||query.get('slug'));case 'calculators':return calculators();case 'calculators/damage':return calcDamage();case 'labs':return buildStudio();case 'wiki':return wikiLandingView({entries:verifiedState.entries,loaded:verifiedState.loaded,error:verifiedState.error,itemCount:verifiedState.entries.length});case 'lfg':return lfg();case 'guilds/crest':return guildHubPage('guilds',query,currentAccount());case 'guilds':case 'guilds/view':case 'guilds/register':case 'guilds/manage':case 'guilds/moderation':return guildHubPage(route,query,currentAccount());case 'beta':case 'beta/reports':return betaView(route);case 'account':case 'profile':case 'community':case 'community/post':case 'community/create':return communityPage(route,query);case 'wiki/items':return wikiLibraryView({entries:verifiedState.entries,category:'item',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/mechanics':return wikiLibraryView({entries:verifiedState.entries,category:'passive',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/guides':return wikiGuidesView();case 'wiki/studio':return wikiStudioView();case 'wiki/library':return wikiLibraryView({entries:verifiedState.entries,category:wikiState.category=query.get('kind')||'all',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/article':{const a=wikiArticleById(query.get('id'));if(a)track('wiki:article:'+a.id);return wikiArticleView(a);}case 'wiki/guide':return fullGuide(query.get('id'));case 'wiki/item':return wikiItem(query.get('item'));case 'wiki/mechanic':return wikiMechanic(query.get('id'));case 'labs/build':return buildStudio();case 'labs/runes':return runeForge();case 'labs/pets':return petLab();case 'labs/guild-tree':case 'lfg/guild-tree':return guildTree();case 'labs/skills':return skills();case 'labs/passives':return passives();case 'calculators/upgrade':return pathfinderHub('range');case 'calculators/pathfinder':return calcPathfinder();case 'calculators/compare':return pathfinderHub('compare');case 'calculators/pet':return calcPet();case 'calculators/affixes':return calcAffixes();case 'calculators/ml-farm':return calcFarm();case 'lfg/raids':return lfg('raids');case 'lfg/guilds':return guildPage();case 'lfg/guild':return guildPage();case 'lfg/guild/new':return guildPage();case 'lfg/guild/edit':return guildPage();case 'lfg/listing':return lfg('listing');case 'reference/detail':case 'wiki/reference':{const id=query.get('id')||query.get('item');if(id)track(id);return wikiRecordView(verifiedState.entries.find(e=>e.id===id),verifiedState.entries,wikiState.category);} default:return notFound()}}
+function simpleBackBar(dest){
+ const simple=new Set(['directory','featured','recent','settings','icons','user','account','beta','community','lfg','admin','admin/traffic']);
+ if(!simple.has(dest))return '';
+ return '<nav class="arcanaContextBack" aria-label="Page navigation"><button type="button" data-action="safe-back">'+icon('back',17)+' Back</button><span>'+esc(dest==='settings'?'Options':dest==='user'||dest==='account'?'Profile':dest==='lfg'?'Guild & Raid Finder':dest.charAt(0).toUpperCase()+dest.slice(1))+'</span></nav>';
+}
+function syncAdminPortal(){const button=node('adminPortalBtn');if(!button)return;const permitted=isAppearanceAdmin();button.hidden=!permitted;button.tabIndex=permitted?0:-1;button.setAttribute('aria-hidden',String(!permitted));}
+function renderHeaderAvatar(){syncAdminPortal();const button=node('accountBtn');if(!button)return;const profile=currentAccount();const uri=profile?.avatarDataUrl;button.innerHTML=typeof uri==='string'&&/^data:image\/(?:webp|png|jpeg);base64,/.test(uri)?'<img src="'+esc(uri)+'" alt="">':(profile?.displayName?'<strong>'+esc(profile.displayName.slice(0,1).toUpperCase())+'</strong>':icon('users',22));button.setAttribute('aria-label',profile?'Open user center for '+profile.displayName:'Open guest user center')}
+function siteNoticeMarkup(route){const n=siteNotice();return n.enabled&&!route.startsWith('admin')?'<aside class="siteNotice" role="status">'+esc(n.text)+'</aside>':'';}
+function render(){const __treeRails=Object.fromEntries(['.classRail','.branchRail','.passiveTierRail'].map(sel=>[sel,document.querySelector(sel)?.scrollLeft??null]));const __prevGuildRail=document.querySelector('.guildTreeTabs');const __prevGuildX=__prevGuildRail?.scrollLeft??null;const __prevWikiRail=document.querySelector('.wikiCategoryScroll');const __prevWikiX=__prevWikiRail?__prevWikiRail.scrollLeft:null;const dest=parseRoute().route;const adminDesign=(isAppearanceAdmin()&&['admin','admin/traffic'].includes(dest)&&parseRoute().query.get('tab')==='appearance')||isLocalThemePlayground();document.documentElement.dataset.arcanaAdminDesign=String(canEditThemeDraft());document.documentElement.dataset.arcanaThemeTryOn=String(tryOnTheme());setDesignPreview(adminDesign||tryOnTheme());if(!adminDesign)endDesignMiniSession();if(dest==='calculators/pathfinder'&&!recipeState.loading&&!recipeState.data&&!recipeState.error)queueMicrotask(()=>void loadPathfinderRecipes());if(dest.startsWith('lfg/guild')&&!guildState.loading&&Date.now()-guildState.updatedAt>30000)queueMicrotask(()=>void loadGuilds());if(dest.startsWith('lfg')&&!lfgState.loading&&(Date.now()-lfgState.updatedAt>30000)){queueMicrotask(()=>void loadPublicLfg())};applyTheme(dest);node('content').classList.toggle('homeFullscreen',dest==='home');node('content').innerHTML=simpleBackBar(dest)+siteNoticeMarkup(dest)+routeView()+(dest==='home'?'':connectedNext(dest)+siteSignature());if(dest==='home')queueMicrotask(()=>void hydrateJournalPreview());if(dest.startsWith('guilds'))queueMicrotask(()=>void loadGuildHub(dest==='guilds/crest'?'guilds':dest,parseRoute().query,render,currentAccount()));if(adminDesign)syncDesignMiniPreview();document.querySelectorAll('#arcanaDock [data-dock]').forEach(b=>{const active=b.dataset.dock===dest||(b.dataset.dock==='community'&&['account','profile','community/post','community/create'].includes(dest));b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});renderHeaderAvatar();if((dest==='labs/build'||dest==='labs/runes'||dest==='labs/passives')&&parseRoute().query.get('share')&&shared.token!==parseRoute().query.get('share'))queueMicrotask(()=>void resolveShared(parseRoute().query.get('share')));
+ if((dest==='admin'||dest==='admin/traffic')&&isAppearanceAdmin())queueMicrotask(()=>void loadAdminConsole(parseRoute().query.get('tab')||'traffic',render));if(dest==='wiki/studio')queueMicrotask(()=>void mountWikiStudio());if(dest==='beta'||dest==='beta/reports')queueMicrotask(()=>void loadBetaStatus(render));if(['account','profile','community','community/post','community/create'].includes(dest))queueMicrotask(()=>void loadCommunityPage(dest,parseRoute().query,render));const __nextGuildRail=node('content').querySelector('.guildTreeTabs');
 if(__nextGuildRail&&__prevGuildX!==null)__nextGuildRail.scrollLeft=__prevGuildX;
 for(const [selector,x] of Object.entries(__treeRails)){const rail=node('content').querySelector(selector);if(rail&&x!==null)rail.scrollLeft=x;}
 const __nextWikiRail=node('content').querySelector('.wikiCategoryScroll');if(__nextWikiRail){
@@ -404,19 +479,28 @@ const __nextWikiRail=node('content').querySelector('.wikiCategoryScroll');if(__n
     if(bounds.left<view.left+pad)__nextWikiRail.scrollLeft=Math.max(0,__nextWikiRail.scrollLeft-(view.left+pad-bounds.left));
     else if(bounds.right>view.right-pad)__nextWikiRail.scrollLeft+=bounds.right-(view.right-pad);
   }
- }const currentTab=node('content').querySelector('.labsTab.active');if(currentTab){const rail=currentTab.parentElement;rail.scrollLeft=Math.max(0,currentTab.offsetLeft-rail.offsetLeft-(rail.clientWidth-currentTab.clientWidth)/2)}document.title=(dest==='home'?'Arcana':(node('content').querySelector('h1')?.textContent||'Arcana'))+' | Arcana';}
+ }const currentTab=node('content').querySelector('.labsTab.active');if(currentTab){const rail=currentTab.parentElement;rail.scrollLeft=Math.max(0,currentTab.offsetLeft-rail.offsetLeft-(rail.clientWidth-currentTab.clientWidth)/2)}document.title='Arcana';recordTrafficNavigation(dest);}
 function showLayer(kicker,body,type='panel'){state.layer={type};node('layer').dataset.type=type;node('layerKicker').textContent=kicker;node('layerContent').innerHTML=body;node('layer').hidden=false;document.body.classList.add('noScroll')}
 function closeLayer(){node('layer').hidden=true;delete node('layer').dataset.type;state.layer=null;document.body.classList.remove('noScroll')}
 function showHomeMenu(id){const content=homeSubmenu(id);if(!content)return;showLayer('NAVIGATE',content,'home-menu');queueMicrotask(()=>node('layerContent')?.querySelector('.launchNavRow')?.focus({preventScroll:true}))}
 function overlayTitle(text,iconName='search'){return `<h2 class="sheetTitle">${icon(iconName,24)} ${esc(text)}</h2>`}
-function showSearch(q=state.lastSearch){state.search=q;const recent=state.recent.map(x=>entityById.get(x)||verifiedState.entries.find(e=>e.id===x)||guildEntries(guildState.guilds).find(e=>e.id===x)).filter(Boolean).slice(0,4);
- showLayer('UNIVERSAL SEARCH',`${overlayTitle('Find anything in Arcana')}<div class="bigSearch">${icon('search',23)}<input id="globalSearch" autocomplete="off" aria-label="Search entire Arcana" placeholder="Items, guides, skills, tools, raids…" value="${esc(q)}"><button class="iconButton small" data-action="clearsearch" aria-label="Clear search">${icon('close',17)}</button></div><div class="searchHint">Type to search every indexed public destination. No separate search boxes.</div><div id="searchResults" aria-live="polite">${q?resultMarkup(q):`<span class="eyebrow">RECENTLY VIEWED</span><div class="resultList">${recent.length?recent.map(cardEntity).join(''):'<p class="mutedSmall">Your viewed items and guides will appear here.</p>'}</div><span class="eyebrow">TRY SEARCHING</span><div class="pillSet"><button class="sampleChip" data-action="searchterm" data-arg="boots">boots</button><button class="sampleChip" data-action="searchterm" data-arg="retaliation">retaliation</button><button class="sampleChip" data-action="searchterm" data-arg="compound">compound</button><button class="sampleChip" data-action="searchterm" data-arg="raid">raid</button></div>`}</div>`,'search');}
-function resultMarkup(query){const hits=mergedSearch(query,[v11AllEntries()],{category:state.searchCategory||'all',limit:60});const tabs=[['all','All'],['wiki','Wiki'],['game','Game data'],['lfg','Raids'],['guild','Guilds'],['tools','Tools & guides']];return `<div class="searchCategoryRail">${tabs.map(([key,label])=>`<button data-action="searchcategory" data-arg="${key}" class="${(state.searchCategory||'all')===key?'active':''}">${label}</button>`).join('')}</div><div class="resultsMeta"><strong>${hits.length} ${hits.length===60?'top ':''}matching results</strong><small>${verifiedState.loaded?verifiedState.entries.length+' verified game records':'Game index loading'} · ${lfgState.loaded?'Live raids':'Raid feed loading'} · ${guildState.loaded?'Guild listings':'Guilds loading'}</small></div><div class="resultList">${hits.length?hits.map(cardEntity).join(''):`<div class="emptyMini">Nothing matched this search. Try fewer words or another category.</div>`}</div>`}
-function refreshLiveSearch(){const box=node('searchResults');if(box&&state.search)box.innerHTML=resultMarkup(state.search)}
+function searchFeatured(){return '<section class="arcanaSearchDiscover" aria-label="Featured destinations"><span class="eyebrow">EXPLORE ARCANA</span><h2>What would you like to explore?</h2><p>Start typing to search everything, or jump straight into something useful.</p><div class="arcanaSearchDiscoverGrid">'+[['Build Studio','labs/build','flask','Plan your character'],['Latest news','journal','clock','Read the Journal'],['Pathfinder','calculators/pathfinder','calculator','Upgrade costs'],['Tools','calculators','settings','Calculators & more'],['Guides & Wiki','wiki/guides','book','Game knowledge'],['Guild Hub','guilds','shield','Find your people']].map(([title,route,glyph,detail])=>'<button type="button" data-route="'+route+'"><span>'+icon(glyph,21)+'</span><strong>'+title+'</strong><small>'+detail+'</small></button>').join('')+'</div></section>';}
+function showSearch(q=''){
+ state.search=q;state.searchCategory='all';
+ showLayer('SEARCH',`<div class="arcanaSearchDock"><span class="arcanaSearchGlyph">${icon('search',23)}</span><input id="globalSearch" type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Search Arcana" placeholder="Search items, guides, tools…" value="${esc(q)}"><button class="arcanaSearchClose" type="button" data-close aria-label="Close search">${icon('close',22)}</button></div><div id="searchResults" class="arcanaTypeahead" aria-live="polite">${q?resultMarkup(q):searchFeatured()}</div>`,'search');
+ // Keep the keyboard closed until the player taps the search field.
+}
+function resultMarkup(query){
+ const {matches,guesses}=searchAsYouType(query,v11AllEntries(),{limit:9});
+ if(!matches.length&&!guesses.length)return '';
+ if(matches.length)return '<div class="arcanaSearchMatches" role="region" aria-label="Search results">'+matches.map(cardEntity).join('')+'</div>';
+ return '<div class="arcanaSearchMatches" role="region" aria-label="Possible corrections"><div class="arcanaSearchGuessLabel">DID YOU MEAN</div>'+guesses.map(x=>'<button class="arcanaSearchGuess" type="button" data-action="searchterm" data-arg="'+esc(x.title)+'">'+icon('search',18)+'<span>'+esc(x.title)+'</span>'+icon('arrow',16)+'</button>').join('')+'</div>';
+}
+function refreshLiveSearch(){const box=node('searchResults');if(box)box.innerHTML=state.search.trim()?resultMarkup(state.search):searchFeatured()}
 function showPreview(id,fromSearch=false){const e=searchExtras().find(x=>x.id===id)||entityById.get(id)||lfgById(id)||guildEntries(guildState.guilds).find(x=>x.id===id)||verifiedState.entries.find(x=>x.id===id)||wikiArticleEntries().find(x=>x.id===id);if(!e)return;track(id);const title=esc(e.title);const buttons=e.kind==='verified'?`${button('View in ArcanaWiki','route',e.route,'primary','book')}${e.gameKind==='class-skill'?button('Open Class Tree','route','labs/skills','secondary','git'):''}${e.gameKind==='passive'?button('Open Passive Tree','route','labs/passives','secondary','layers'):''}${e.gameKind==='runeword'||e.gameKind==='rune'?button('Open Rune Forge','route','labs/runes','secondary','gem'):''}${e.gameKind==='item'?button('Compare this item','compare',e.id,'secondary','compare')+button('See upgrade costs','upgrade',e.id,'secondary','calculator'):''}`:e.kind==='wikiarticle'?button('Read quick guide','route',e.route,'primary','book'):e.kind==='guildlisting'?button('View guild recruitment profile','route',e.route,'primary','shield'):e.kind==='lfglisting'?`${button('View raid in Arcana','route',e.route,'primary','users')}<a class="btn secondary" href="${lfgDeepLink(e.source)}" target="_blank" rel="noopener noreferrer">${icon('up',16)} Apply on live LFG</a>`:e.kind==='lfgguild'?button('View guild activity','route',e.route,'primary','shield'):e.kind==='item'?`${button('View item in Wiki','wikiitem',e.id,'primary','book')}${button('Compare this item','compare',e.id,'secondary','compare')}${button('See upgrade costs','upgrade',e.id,'secondary','calculator')}${button('Add to Build Studio','equip',e.id,'secondary','flask')}`:e.kind==='guide'?`${button('Read full guide','route','wiki/guide?id='+e.id,'primary','book')}${e.buildId?button('Inspect complete build','route','labs/build?build='+e.buildId,'secondary','flask'):''}`:e.kind==='mechanic'?`${button('View in Wiki','route','wiki/mechanic?id='+e.id,'primary','book')}${e.id==='pet-equalisation'?button('Open Pet Calculator','route','calculators/pet','secondary','calculator'):''}`:e.kind==='build'?button('Open my Build Studio','route','labs/build','primary','flask'):button('Open destination','route',e.route||'home','primary','arrow');
  state.layer={type:'preview',fromSearch};showLayer('QUICK PREVIEW',`${fromSearch?`<button class="backLink" data-action="backsearch">${icon('back',16)} Back to results</button>`:''}<div class="previewHero"><span class="detailMark">${icon(boxIcon(e.kind),32)}</span><div><span class="eyebrow">${esc(e.subtitle)}</span><h2>${title}</h2><p>${esc(e.description)}</p></div></div><div class="actionsGroup">${buttons}</div><p class="mutedSmall">Actions carry this entry's ID. You're never asked to find it twice.</p>`,'preview');state.layer={type:'preview',fromSearch};}
 function quick(){const rec=state.recent.map(id=>entityById.get(id)).filter(Boolean).slice(0,5);showLayer('QUICK ACCESS',`${overlayTitle('Jump back in','clock')}<span class="eyebrow">JUMP TO A DESTINATION</span><div class="arcanaShortcutGrid">${navCards(['items','guides','guildtree','raids'],{compact:true})}</div><span class="eyebrow">POPULAR TOOLS</span><div class="quickGrid">${[['Upgrade Costs','calculators/upgrade','calculator'],['Build Studio','labs/build','flask'],['Rune Forge','labs/runes','gem'],['Pet Compound','calculators/pet','paw'],['Guild Tree','labs/guild-tree','shield'],['ML Farm','calculators/ml-farm','sword']].map(([n,r,i])=>`<button data-route="${r}">${icon(i,22)}${esc(n)}${icon('arrow',14)}</button>`).join('')}</div><span class="eyebrow">RECENTLY VIEWED</span><div class="resultList">${rec.length?rec.map(cardEntity).join(''):'<div class="emptyMini">Viewed items, guides, and mechanics will appear here.</div>'}</div><p class="mutedSmall">Pinning and cross-device recent history will be added alongside optional accounts.</p>`,'quick')}
-function menu(){showLayer('ARCANA DIRECTORY',`${overlayTitle('Explore the ecosystem','menu')}<div class="menuList">${LINKS.map(([href,label,i])=>`<button data-route="${href}"><span class="tinyIcon">${icon(i,22)}</span><strong>${esc(label)}</strong>${icon('arrow',17)}</button>`).join('')}</div><div class="sectionCard"><h3>Useful destinations</h3><button class="textLink" data-route="wiki/guide" data-params="id=warrior-retaliation-demo-guide">Example guide with inspectable build ${icon('arrow',16)}</button><button class="textLink" data-route="calculators/pet">Pet Compound cap ${icon('arrow',16)}</button><button class="textLink" data-route="wiki/library" data-params="kind=item">Item Codex ${icon('arrow',16)}</button><button class="textLink" data-route="labs/guild-tree">Guild Skill Tree ${icon('arrow',16)}</button></div><div class="sectionCard adminEntry"><span class="eyebrow">ACCOUNT & ADMINISTRATION</span><h3>Arcana Control</h3><p class="mutedSmall">Only approved admins can edit themes. Player tools remain open to guests.</p><div class="themeReadout">${themeColorPreview()}</div><a class="btn secondary full" href="${ADMIN_URL}" target="_blank" rel="noopener noreferrer">${icon('sliders',17)} Open protected admin portal ${icon('up',16)}</a></div>`,'menu')}
+function menu(){showLayer('ARCANA DIRECTORY',`${overlayTitle('Explore the ecosystem','menu')}<div class="menuList"><button data-route="settings"><span class="tinyIcon">${icon('sliders',22)}</span><strong>Settings</strong>${icon('arrow',17)}</button>${LINKS.map(([href,label,i])=>`<button data-route="${href}"><span class="tinyIcon">${icon(i,22)}</span><strong>${esc(label)}</strong>${icon('arrow',17)}</button>`).join('')}</div>${isAppearanceAdmin()?`<div class="sectionCard adminEntry"><span class="eyebrow">ADMINISTRATION</span><h3>Arcana Theme Studio</h3><p class="mutedSmall">Creator and admin tools.</p><div class="themeReadout">${themeColorPreview()}</div><button type="button" class="btn secondary full" data-route="settings">${icon('settings',17)} Appearance controls ${icon('arrow',16)}</button></div>`:''}`,'menu')}
 function themeColorPreview(){const t=themeStatus();const {main,secondary,highlight}=t.palette;return `<span class="themeSwatch" style="background:${main}"></span><span class="themeSwatch" style="background:${secondary}"></span><span class="themeSwatch" style="background:${highlight}"></span><span class="themeReadoutText">${t.available?'Central theme active':'Default palette (offline)'}</span>`}
 function pickerOptions(kind,slot,query=''){
  if(kind==='gear')return gearPickerMarkup(slot,ensureDraft().className,query);
@@ -456,9 +540,11 @@ function saveGearEdit(){
 function chooseItem(id){const target=state.slotTarget;if(!target)return;
  if(target.kind==='gear'){openGearEditor(target.slot,id);return;}
  closeLayer();
- if(target.kind==='upgrade')navigate('calculators/upgrade',{item:id});if(target.kind==='compare'){if(target.slot==='left')state.compareLeft=id;else state.compareRight=id;navigate('calculators/compare',{left:state.compareLeft,right:state.compareRight});}
+ const inHub=parseRoute().route==='calculators/pathfinder';if(target.kind==='upgrade'){if(inHub)navigate('calculators/pathfinder',{view:'upgrade',item:id});else navigate('calculators/upgrade',{item:id})}if(target.kind==='compare'){if(target.slot==='left')state.compareLeft=id;else state.compareRight=id;if(inHub)navigate('calculators/pathfinder',{view:'compare',left:state.compareLeft,right:state.compareRight});else navigate('calculators/compare',{left:state.compareLeft,right:state.compareRight})}
 }
 function go(route,params={}){
+ if(route==='journal'||route==='journal-studio'||route==='journal-balance'){location.assign(route==='journal'?'/journal':route==='journal-studio'?'/journal/studio':'/journal/class-balance-top-250-season-2');return;}
+ if(route==='calculators/upgrade'||route==='calculators/compare'){const mode=route.endsWith('/upgrade')?'upgrade':'compare';params={...params,view:mode};route='calculators/pathfinder'}
  const current=parseRoute();
  if((route==='beta'||route==='beta/reports')&&current.route!=='beta'&&current.route!=='beta/reports'){try{sessionStorage.setItem('arcana-beta-last-route',location.hash||'#/home')}catch{}}
  if(current.route==='wiki/library'&&route==='wiki/reference'){
@@ -475,15 +561,56 @@ function go(route,params={}){
   window.scrollTo({top:0,behavior:'instant'});
  }
 }
-function action(name,arg,btn){switch(name){
+function syncWorkshopInputs(){
+ if(!canEditThemeDraft())return;
+ const design=readDesign();
+ const px=new Set(['roundness','buttonRoundness','cardPadding','borderWidth','buttonHeight','heroActionHeight','heroActionBorder']);
+ for(const e of document.querySelectorAll('.arcanaDesignLab [data-design-field]')){
+  const key=e.dataset.designField;if(!Object.hasOwn(design,key))continue;
+  e.value=String(design[key]);
+  const value=document.querySelector('[data-design-value="'+key+'"]');
+  if(value)value.textContent=design[key]+(px.has(key)?' px':'%');
+ }
+ for(const e of document.querySelectorAll('.arcanaDesignLab [data-design-hex]')){
+  e.value=design[e.dataset.designHex]||'';
+  e.removeAttribute('aria-invalid');
+  const label=document.querySelector('[data-design-status="'+e.dataset.designHex+'"]');
+  if(label)label.textContent='HEX code';
+ }
+ const psy=document.querySelector('.arcanaDesignLab .psyPalettePicker');if(psy){psy.dataset.psyActive=String(['groove-melt','orbit-jelly','doodle-rift','prism-puddle'].includes(design.pattern));psy.dataset.psyMode=design.psyPaletteMode;}
+ for(const tile of document.querySelectorAll('.arcanaDesignLab [data-theme-pattern]'))tile.setAttribute('aria-pressed',String(tile.dataset.themePattern===design.pattern));
+ for(const card of document.querySelectorAll('.studioLayerCard[data-studio-layer]')){const key=card.dataset.studioLayer==='panels'?'panelPattern':card.dataset.studioLayer==='feature'?'featurePattern':'pattern';card.dataset.layerInherited=String(design[key]==='inherit');card.dataset.layerAbsent=String(design[key]==='none'||design[key]==='plain');}
+  const artPalette=document.querySelector('.visionArtPalette');if(artPalette)artPalette.dataset.visionActive=String(design.pattern.startsWith('vision-'));
+  for(const tile of document.querySelectorAll('.studioV2 .designPreset[data-collection="studio-v2"]')){
+   const p=DESIGN_PRESETS[tile.dataset.arg],selected=p&&p.pattern===design.pattern&&p.artPrimary===design.artPrimary&&p.main===design.main;
+   tile.classList.toggle('selected',!!selected);tile.setAttribute('aria-pressed',String(!!selected));
+  }
+ for(const button of document.querySelectorAll('.arcanaDesignLab [data-hero-cta-style]'))button.setAttribute('aria-pressed',String(button.dataset.heroCtaStyle===design.heroActionStyle));
+ for(const preset of document.querySelectorAll('.arcanaDesignLab .designPreset')){
+  const matches=preset.dataset.presetSearch&&preset.dataset.arg;
+  if(matches){const selected=preset.dataset.arg===Object.keys(DESIGN_PRESETS).find(id=>DESIGN_PRESETS[id].main===design.main&&DESIGN_PRESETS[id].action===design.action&&DESIGN_PRESETS[id].pattern===design.pattern);preset.classList.toggle('selected',selected);preset.setAttribute('aria-pressed',String(selected));}
+ }
+ syncDesignMiniPreview();
+}
+function action(name,arg,btn){if(['accent','custom-accent','site-surface','icon-color','icon-mode'].includes(name)&&!isAppearanceAdmin()){toast('Only Arcana admins can edit appearance');return;}switch(name){
  case 'chooseportrait':node('studioPortraitUpload')?.click();break;
  case 'removeportrait':if(clearStudioPortrait()){render();toast('Class icon restored')}else toast('Could not remove the custom image');break;
  case 'accent':if(setAccent(arg)){render();toast('Theme updated')}else toast('Unable to save theme preference');break;
+  case 'reset-design':if(!canEditThemeDraft()){toast('Admin access required');break}if(resetDesign()){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Design reset. Undo is available.')}break;
+  case 'preview-design':{focusDesignMiniPreview();break;}
+  case 'undo-design':if(!canEditThemeDraft()){toast('Admin access required');break}if(undoDesign()){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Previous design restored')}else toast('No recent design change to undo');break;
+  case 'theme-try-on':{if(isLocalThemePlayground()&&changeTryOn(true)){go('home');toast('Your private theme is now visible around Arcana. Browser only.');}break;}
+   case 'theme-try-off':{if(isLocalThemePlayground()&&changeTryOn(false)){render();toast('Site preview disabled. Studio preview stays editable.');}break;}
+   case 'random-signature':{if(!canEditThemeDraft())break;const keys=Object.keys(DESIGN_PRESETS).filter(id=>DESIGN_PRESETS[id].collection==='studio-v2');const design=readDesign();const other=keys.filter(id=>DESIGN_PRESETS[id].pattern!==design.pattern);const source=other.length?other:keys;const chosen=source[Math.floor(Math.random()*source.length)];if(chosen&&applyDesignPreset(chosen)){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Studio look: '+DESIGN_PRESETS[chosen].name+' · Private draft');}break;}
+   case 'design-preset':if(!canEditThemeDraft()){toast('Admin access required');break}if(applyDesignPreset(arg)){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Palette applied. Undo is available.')}else toast('Palette unavailable');break;
+  case 'custom-accent':{const hex=node('arcanaCustomAccentHex')?.value.trim()||node('arcanaCustomAccentPicker')?.value;if(setCustomAccent(hex)){render();toast('Custom color saved')}else toast('Enter a valid six-digit hex color such as #A98BFF');break;}
  case 'site-surface':if(setSiteSurface(arg)){render();toast('Site appearance updated')}else toast('Unable to save site appearance');break;
  case 'icon-color':if(setIconColor(arg)){render();toast('Icon color updated')}else toast('Unable to save icon color');break;
  case 'icon-mode':if(setIconMode(arg)){render();toast('Icon appearance updated')}else toast('Unable to save icon appearance');break;
- case 'skipmain':node('content')?.focus({preventScroll:false});break;
-  case 'homemenu':showHomeMenu(arg);break;
+ case 'safe-back':if(history.state?.arcana)navigateBack();else go('home');break;
+  case 'wiki-back':if(history.state?.arcana&&history.length>1)navigateBack();else if(arg==='wiki/category'){const article=wikiArticleById(parseRoute().query.get('id'));const parent=article?wikiCategoryForArticle(article):null;go(parent?'wiki/category':'wiki',parent?{slug:parent.id}:{})}else go(['wiki','wiki/guides','wiki/library'].includes(arg)?arg:'wiki');break;
+  case 'skipmain':node('content')?.focus({preventScroll:false});break;
+  case 'homemenu':if(arg==='pathfinder')go('calculators/pathfinder');else showHomeMenu(arg);break;
  case 'wikishare':{
   if(!wikiArticleById(arg)){toast('Guide unavailable');break;}
   const url=location.origin+location.pathname+location.search+'#/wiki/article?id='+encodeURIComponent(arg);
@@ -502,6 +629,19 @@ function action(name,arg,btn){switch(name){
  case 'wikisection':{const slug=String(arg||'');if(!/^[a-z0-9-]{1,100}$/.test(slug))break;const target=document.getElementById('section-'+slug);if(target){target.scrollIntoView({behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});target.querySelector('h2')?.focus({preventScroll:true});}break;}
  case 'wikitop':window.scrollTo({top:0,behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});break;
  case 'guildtreetab':state.guildTreeTab=arg;render();node('content').querySelector('.guildTreeTabs button.active')?.focus({preventScroll:true});break;
+ case 'path-refresh':recipeState.error='';recipeState.data=null;void loadPathfinderRecipes();break;
+ case 'path-mode':{
+ if(!['normal','awakened'].includes(arg))break;
+ updatePathfinderQuick({mode:arg,stage:arg==='awakened'?'A1':'T1',level:1},true);break;
+}
+case 'path-stage':pathfinderStage(arg);break;
+case 'path-step':{
+ const model=recipeState.data&&timelineModel(recipeState.data,state.pathfinderQuick);
+ const value=Number(arg);if(model&&Number.isInteger(value)&&value>=0&&value<=model.active.max)updatePathfinderQuick({level:value});break;
+}
+case 'path-prev':movePathfinderStep(-1);break;
+case 'path-next':movePathfinderStep(1);break;
+
  case 'farmreset':state.farmPlan=saveFarmPlan({mode:state.farmPlan.mode,times:[null,null,null]});render();break;
  case 'guildbaseline':state.guildBaseline=saveGuildBaseline(state.guildTreePlan);state.guildTreeTab='comparison';render();toast('Guild comparison baseline saved.');break;
  case 'guildbaselineclear':if(window.confirm('Clear this locally saved comparison baseline?')){state.guildBaseline=clearGuildBaseline();render();toast('Comparison baseline cleared.')}break;
@@ -649,12 +789,254 @@ function wireStudioPortrait(){
   catch(err){toast(err?.message||'Could not save your picture');}
  });
 }
-function init(){document.addEventListener('click',e=>{
+function centerPathRail(railId,attribute,value,behavior='auto'){
+ const rail=node(railId),selected=rail?.querySelector('['+attribute+'="'+CSS.escape(String(value))+'"]');
+ if(!rail||!selected)return;
+ const distance=selected.offsetLeft-rail.offsetLeft-(rail.clientWidth-selected.clientWidth)/2;
+ rail.scrollTo({left:Math.max(0,distance),behavior});
+}
+function refreshPathfinderStep(align=false){
+ if(parseRoute().route!=='calculators/pathfinder'||!recipeState.data)return;
+ const model=timelineModel(recipeState.data,state.pathfinderQuick);
+ if(!model)return;
+ state.pathfinderQuick=model.view;
+ const previous=node('pathDetail');
+ if(previous)previous.outerHTML=pathfinderStepDetail(model,verifiedState.entries);
+ const input=node('pathStepRange');
+ if(input){
+  input.value=String(model.view.level);
+  input.setAttribute('aria-valuetext',stageStepLabel(model.active,model.view.level));
+  input.style.setProperty('--path-progress',String(model.active.max?Math.round(100*model.view.level/model.active.max):0)+'%');
+ }
+ const value=node('pathStepValue');
+ if(value)value.textContent=model.view.level===0?'Transition':'+'+model.view.level;
+ for(const button of document.querySelectorAll('#pathStepRail [data-path-step]')){
+  const active=Number(button.dataset.pathStep)===model.view.level;
+  button.classList.toggle('selected',active);
+  button.setAttribute('aria-pressed',String(active));
+ }
+ if(align)centerPathRail('pathStepRail','data-path-step',model.view.level,'smooth');
+}
+function updatePathfinderQuick(update,redraw=false){
+ state.pathfinderQuick=saveQuickView({...state.pathfinderQuick,...update});
+ if(!redraw){refreshPathfinderStep(true);return;}
+ const oldPage=node('content')?.querySelector('.pathPage');
+ if(oldPage&&recipeState.data){
+  const expanded=oldPage.querySelector('#pathRangePanel')?.open||false;
+  const holder=document.createElement('template');
+  holder.innerHTML=pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error,state.pathfinderRange,{includeRange:false,catalog:verifiedState.entries});
+  const next=holder.content.firstElementChild;
+  if(next){
+   const panel=next.querySelector('#pathRangePanel');
+   if(panel)panel.open=expanded;
+   oldPage.replaceWith(next);
+  }
+ }else render();
+ requestAnimationFrame(()=>{
+  centerPathRail('pathStageRail','data-path-stage',state.pathfinderQuick.stage);
+  centerPathRail('pathStepRail','data-path-step',state.pathfinderQuick.level);
+ });
+}
+function pathfinderStage(stage){
+ if(!recipeState.data)return;
+ const allowed=timelineStages(recipeState.data,state.pathfinderQuick.mode);
+ if(!allowed.some(s=>s.id===stage)||stage===state.pathfinderQuick.stage)return;
+ updatePathfinderQuick({stage,level:1},true);
+}
+function movePathfinderStep(direction){
+ if(!recipeState.data)return;
+ const model=timelineModel(recipeState.data,state.pathfinderQuick);
+ if(!model)return;
+ const level=model.view.level+direction;
+ if(level>=0&&level<=model.active.max){updatePathfinderQuick({level});return;}
+ const index=model.stages.findIndex(s=>s.id===model.active.id),next=model.stages[index+(direction>0?1:-1)];
+ if(next)updatePathfinderQuick({stage:next.id,level:direction>0?0:next.max},true);
+}
+async function savePathfinderChecklist(button){
+ if(!recipeState.data)return toast('Verified upgrade recipes are unavailable.');
+ if(!currentAccount()){toast('Sign in with Discord to save a checklist to your profile.');go('account');return;}
+ const quote=quoteRange(recipeState.data,state.pathfinderRange,state.pathfinderQuick);
+ if(!quote.complete||quote.error||!quote.materials.length)return toast('Select a valid complete upgrade route first.');
+ const scenarios=quoteFailureScenarios(recipeState.data,quote);
+ // Farming lists always reflect the same average estimate visible to players.
+ const selected=scenarios.available?scenarios.expected:quote;
+ const groups=sourceMaterialGroups(selected.materials,recipeState.data.materials,verifiedState.entries)
+  .map(group=>({name:group.name,tier:group.tier,items:group.materials.map(m=>({slug:m.slug,name:m.name,quantity:String(m.quantity)}))}));
+ const label=scenarios.available?'Estimated':'Base';
+ const list={title:label+' · Upgrade '+(quote.itemCount>1?quote.itemCount+' items · ':'')+quote.range.fromStage+' +'+quote.range.fromLevel+' → '+quote.range.toStage+' +'+quote.range.toLevel,
+  slot:state.pathfinderQuick.slot,from:quote.range.fromStage+' +'+quote.range.fromLevel,
+  to:quote.range.toStage+' +'+quote.range.toLevel,gold:String(selected.gold),
+  sourceVersion:String(recipeState.data.sourceVersion||recipeState.data.source||''),groups};
+ button.disabled=true;button.textContent='Saving to profile…';
+ try{await saveFarmingList(list);toast('Farming checklist saved to your account.');go('account');}
+ catch(error){toast(error.message);button.disabled=false;button.textContent='Save a farming checklist to my profile';}
+}
+function renderPathfinderCosts(current=state.pathfinderRange){
+ const content=node('pathRangeContent');
+ if(!content||!recipeState.data)return;
+ // Persist both OPEN and CLOSED states; a rerender must not re-expand things.
+ const panels='details[data-material-section],details[data-path-accordion],details[data-path-zone]';
+ const panelKey=d=>d.dataset.pathZone?'zone:'+d.dataset.pathZone:d.dataset.materialSection?'materials:'+d.dataset.materialSection:'panel:'+d.dataset.pathAccordion;
+ const states=new Map([...content.querySelectorAll(panels)].map(d=>[panelKey(d),d.open]));
+ const assumptionsOpen=content.querySelector('details.quickAssumptions')?.open===true;
+ content.innerHTML=quickUpgradeContent(recipeState.data,current,{page:parseRoute().route!=='home',catalog:verifiedState.entries});
+ for(const d of content.querySelectorAll(panels)){
+  const key=panelKey(d);
+  if(states.has(key))d.open=states.get(key);
+ }
+ const note=content.querySelector('details.quickAssumptions');if(note)note.open=assumptionsOpen;
+}
+function wirePathfinderQuick(){
+ document.addEventListener('click',e=>{
+  const button=e.target.closest('[data-path-quantity-step]');
+  if(!button||!recipeState.data)return;
+  const offset=Number(button.dataset.pathQuantityStep);
+  if(offset!==1&&offset!==-1)return;
+  const quantity=normalizeItemQuantity(normalizeItemQuantity(state.pathfinderRange.quantity)+offset);
+  state.pathfinderRange=saveRange({...state.pathfinderRange,quantity});
+  renderPathfinderCosts();
+ });
+ document.addEventListener('click',e=>{const button=e.target.closest('[data-pf-save-list]');if(!button)return;e.preventDefault();if(!button.disabled)void savePathfinderChecklist(button);});
+ document.addEventListener('input',e=>{
+  if(!e.target.matches('[data-path-range]'))return;
+  const value=Number(e.target.value);
+  if(!Number.isInteger(value))return;
+  state.pathfinderQuick={...state.pathfinderQuick,level:value};
+  refreshPathfinderStep(false);
+ });
+ document.addEventListener('change',e=>{
+  if(e.target.matches('[data-path-range]')){state.pathfinderQuick=saveQuickView(state.pathfinderQuick);centerPathRail('pathStepRail','data-path-step',state.pathfinderQuick.level,'smooth');return;}
+  const d=e.target.dataset;
+  if(recipeState.data&&(d.pathFromStage!==undefined||d.pathFromLevel!==undefined||d.pathToStage!==undefined||d.pathToLevel!==undefined||d.pathQuantity!==undefined||d.pathPityProgress!==undefined||d.pathPityCount!==undefined)){
+   const stages=allStages(recipeState.data);
+   const current={...state.pathfinderRange};
+   if(d.pathFromStage!==undefined){current.fromStage=e.target.value;current.fromLevel=Math.min(Number(current.fromLevel||0),stages.find(s=>s.id===current.fromStage)?.max||0);}
+   else if(d.pathToStage!==undefined){
+    current.toStage=e.target.value;
+    current.toLevel=Math.min(Number(current.toLevel||0),stages.find(s=>s.id===current.toStage)?.max||0);
+   }else if(d.pathFromLevel!==undefined)current.fromLevel=Number(e.target.value);
+   else if(d.pathToLevel!==undefined)current.toLevel=Number(e.target.value);
+   else if(d.pathQuantity!==undefined)current.quantity=normalizeItemQuantity(e.target.value);
+   else if(d.pathPityProgress!==undefined)current.pityProgress=normalizePityProgress(e.target.value);
+   else if(d.pathPityCount!==undefined)current.pityCount=normalizePityCount(e.target.value);
+   state.pathfinderRange=saveRange(current);
+   renderPathfinderCosts(current);
+   return;
+  }
+  if(e.target.matches('[data-path-slot]')){
+   updatePathfinderQuick({slot:e.target.value},true);
+  }
+  if(e.target.matches('[data-path-range-slot]'))state.pathfinderQuick=saveQuickView({...state.pathfinderQuick,slot:e.target.value});
+ });
+ // Scroll snapping also selects the nearest visible step or tier. No heavy
+ // rerender happens while a finger is actively dragging the map.
+ let scrollTimer=null;
+ document.addEventListener('scroll',e=>{
+  const rail=e.target;
+  if(rail?.id!=='pathStageRail'&&rail?.id!=='pathStepRail')return;
+  clearTimeout(scrollTimer);
+  scrollTimer=setTimeout(()=>{
+   if(!rail.isConnected||parseRoute().route!=='calculators/pathfinder')return;
+   const field=rail.id==='pathStageRail'?'pathStage':'pathStep';
+   const center=rail.getBoundingClientRect().left+rail.clientWidth/2;
+   const choices=[...rail.querySelectorAll('[data-'+(field==='pathStage'?'path-stage':'path-step')+']')];
+   const nearest=choices.sort((a,b)=>{
+    const midpoint=x=>x.getBoundingClientRect().left+x.getBoundingClientRect().width/2;
+    return Math.abs(midpoint(a)-center)-Math.abs(midpoint(b)-center);
+   })[0];
+   if(!nearest)return;
+   if(field==='pathStage')pathfinderStage(nearest.dataset.pathStage);
+   else {
+    const level=Number(nearest.dataset.pathStep);
+    if(level!==state.pathfinderQuick.level)updatePathfinderQuick({level});
+   }
+  },200);
+ },true);
+}
+
+function filterStudioV2Looks(){
+ const section=document.querySelector('.studioV2Looks');if(!section)return;
+ const term=section.querySelector('[data-design-preset-search]')?.value?.toLowerCase().trim()||'';
+ const family=section.dataset.studioFilter||'All';
+ section.dataset.searching=String(Boolean(term));
+ section.dataset.studioFiltered=String(family!=='All');
+ let count=0;
+ for(const tile of section.querySelectorAll('.studioV2Preset')){
+  const matchText=String(tile.dataset.presetSearch||'').includes(term);
+  const matchFamily=family==='All'||tile.dataset.studioFamily===family;
+  tile.hidden=!(matchText&&matchFamily);
+  if(!tile.hidden)count++;
+ }
+ const empty=section.querySelector('[data-design-no-presets]');if(empty)empty.hidden=count!==0;
+ const more=section.querySelector('[data-theme-preset-expand]');if(more)more.hidden=Boolean(term)||family!=='All';
+}
+function wireThemeStudioControls(){
+ document.addEventListener('click',e=>{
+  const familyBtn=e.target.closest('[data-studio-family-filter]');
+   if(familyBtn&&familyBtn.closest('.studioV2Looks')){
+    const section=familyBtn.closest('.studioV2Looks');
+    section.dataset.studioFilter=familyBtn.dataset.studioFamilyFilter;
+    for(const b of section.querySelectorAll('[data-studio-family-filter]'))b.setAttribute('aria-pressed',String(b===familyBtn));
+    filterStudioV2Looks();return;
+   }
+  const heroChoice=e.target.closest('[data-hero-cta-style]');
+  if(heroChoice&&heroChoice.closest('.arcanaDesignLab')){
+   if(!canEditThemeDraft())return;
+   if(writeDesign('heroActionStyle',heroChoice.dataset.heroCtaStyle)){
+    showDesignMiniPage('home');
+    applyTheme(parseRoute().route);
+    syncWorkshopInputs();
+   }
+   return;
+  }
+  const pattern=e.target.closest('[data-theme-pattern]');
+  if(pattern&&pattern.closest('.arcanaDesignLab')){
+   if(!canEditThemeDraft())return;
+   if((pattern.dataset.themePattern.startsWith('vision-')?applyVisualPreset(pattern.dataset.themePattern):writeDesign('pattern',pattern.dataset.themePattern))){
+    applyTheme(parseRoute().route);
+    syncWorkshopInputs();
+   }
+   return;
+  }
+  const contrastFix=e.target.closest('[data-mini-fix-contrast]');
+  if(contrastFix&&contrastFix.closest('.themeStudioPreview')&&canEditThemeDraft()){
+   if(writeDesign('buttonText',suggestedButtonText(readDesign()))){
+    applyTheme(parseRoute().route);
+    syncWorkshopInputs();
+    toast('Button text adjusted in your private draft. Nothing was published.');
+   }
+   return;
+  }
+  const showAll=e.target.closest('[data-theme-preset-expand]');if(showAll){const wrap=showAll.closest('.themePresetCollection');const expanded=wrap.dataset.showAll!=='true';wrap.dataset.showAll=String(expanded);showAll.setAttribute('aria-expanded',String(expanded));showAll.textContent=expanded?'Show fewer looks ↑':'Show all '+document.querySelectorAll('.studioV2Preset').length+' looks ↓';return;}
+   const jump=e.target.closest('[data-theme-jump]');
+  if(jump&&jump.closest('.arcanaDesignLab')){
+   const pane=jump.closest('.themeStudioEditor');
+   const id=jump.dataset.themeJump;
+   const target=id==='vault'?pane.querySelector('.themeVaultSection'):pane.querySelector('[data-theme-group="'+id+'"]');
+   if(target){
+    if(target.tagName==='DETAILS')target.open=true;
+    target.scrollIntoView({behavior:document.documentElement.dataset.launchReduceMotion==='true'?'auto':'smooth',block:'start'});
+   }
+   return;
+  }
+  const filter=e.target.closest('[data-theme-pattern-filter]');
+  if(filter&&filter.closest('.arcanaDesignLab')){
+   const category=filter.dataset.themePatternFilter;
+   const section=filter.closest('.themePatternLibrary');
+   for(const button of section.querySelectorAll('[data-theme-pattern-filter]'))button.setAttribute('aria-pressed',String(button===filter));
+   for(const tile of section.querySelectorAll('[data-pattern-category]'))tile.hidden=category==='Premium'?!['Psychedelic','Signature','Material','Atmosphere','Relic','Atelier','Vision'].includes(tile.dataset.patternCategory):category!=='All'&&tile.dataset.patternCategory!==category;
+  }
+ });
+}
+function init(){wireDesignMiniPreview();wireThemeStudioControls();wireThemeVault({toast,onLoad:()=>{applyTheme(parseRoute().route);syncWorkshopInputs();}});document.addEventListener('click',e=>{
  const summary=e.target.closest('details[data-home-panel] > summary');
  if(!summary)return;
  const group=summary.parentElement,key=group.dataset.homePanel;
  if(Object.prototype.hasOwnProperty.call(homePanels,key))homePanels[key]=!group.open;
-});wireBuildIdentity();wireStudioPortrait();wireWikiStudio();wireBetaUI({go,refresh:render,toast});wireCommunityUI({go,getBuild:savedBuild,applyBuild:input=>{state.draft=normalizeBuild(deepCopy(input));state.draft.id='local-draft';state.draft.version='LOCAL';persistDraft();},refresh:render,toast});if(state.draft)state.draft=normalizeBuild(state.draft);restoreTreePlan();initTheme();applyAppPrefs();node('brandHome').onclick=()=>go('home');node('accountBtn').onclick=()=>go('user');node('searchBtn').innerHTML=icon('search',24);node('searchBtn').onclick=()=>showSearch();void refreshAccount().then(()=>{renderHeaderAvatar();if(parseRoute().route==='user')render()});window.addEventListener('arcana:account-updated',renderHeaderAvatar);document.addEventListener('click',e=>{if(e.target.closest('[data-close]')){closeLayer();return}const preview=e.target.closest('[data-preview]');if(preview){state.lastSearch=state.search;showPreview(preview.dataset.preview,!!state.layer&&state.layer.type==='search');return}const routed=e.target.closest('[data-route]');if(routed){const pars=Object.fromEntries(new URLSearchParams(routed.dataset.params||''));go(routed.dataset.route,pars);return}const act=e.target.closest('[data-action]');if(act)action(act.dataset.action,act.dataset.arg||'',act);});document.addEventListener('input',e=>{if(e.target.id==='treeLevel'||e.target.id==='treeLevelRange')previewTreeLevel(e.target.value);if(e.target.hasAttribute('data-monster-slider')){const input=node('content').querySelector('[data-monster-level]');if(input)input.value=e.target.value;}if(e.target.id==='guildQuery'){guildState.query=e.target.value;const list=guildFilter(guildState.guilds,guildState.query),box=node('guildCards');if(box)box.innerHTML=list.map(guildCard).join('')||'<div class="lfgEmpty">No matching guilds right now.</div>';const counter=node('guildCount');if(counter)counter.textContent=String(list.length);}if(e.target.id==='lfgQuery'){lfgState.query=e.target.value;updateLiveResults();}if(e.target.id==='lfgMight'){lfgState.mightAmount=e.target.value;updateLiveResults();}if(e.target.id==='globalSearch'){state.search=e.target.value;state.lastSearch=state.search;node('searchResults').innerHTML=state.search?resultMarkup(state.search):'<div class="emptyMini">Start typing to search public Arcana content.</div>'}if(e.target.id==='gearPickerQuery'){const box=node('gearPickerItems');if(box)box.innerHTML=pickerOptions(state.slotTarget?.kind,state.slotTarget?.slot,e.target.value);}if(e.target.id==='wikiFilter'){wikiState.query=e.target.value;wikiState.limit=36;const result=wikiRecordRows(verifiedState.entries,parseRoute().query.get('kind')||'all',wikiState.query,wikiState.limit),list=node('wikiRecords'),counter=node('wikiFoundCount'),more=node('wikiMore'),showing=node('wikiShowing'),clear=node('content').querySelector('.wikiClearFilter');if(list)list.innerHTML=result.html;if(counter)counter.textContent=result.count+' '+(result.count===1?'reference':'references');if(showing)showing.textContent=result.count?'Showing '+Math.min(result.count,wikiState.limit)+' of '+result.count:'Season 2 reference library';if(clear)clear.hidden=!wikiState.query;if(more)more.hidden=!result.hasMore;}if(e.target.id==='itemFilter'){const q=e.target.value.toLowerCase();node('itemResults').innerHTML=itemList.filter(x=>(x.title+' '+x.keywords).toLowerCase().includes(q)).map(cardEntity).join('')||'<p class="emptyMini">No matching item.</p>'}if(e.target.dataset.petLevel!==undefined){const i=+e.target.dataset.petLevel,n=Math.max(0,Number(e.target.value)||0);state.petLevels[i]=n;const cap=Math.min(...state.petLevels)+10;const el=node('petEffective');if(el){el.textContent=cap;el.nextElementSibling.textContent='Minimum '+Math.min(...state.petLevels)+' + 10'}}});document.addEventListener('change',e=>{
+});wireBuildIdentity();wireStudioPortrait();wirePathfinderQuick();wireFarmingLists({refresh:render,toast});wireWikiStudio();wireBetaUI({go,refresh:render,toast});wireAdminTraffic({refresh:render});wireAdminConsole({refresh:render,toast});initTrafficTracking();wireGuildHub({go,refresh:render,toast,currentAccount});wireCommunityUI({go,getBuild:savedBuild,applyBuild:input=>{state.draft=normalizeBuild(deepCopy(input));state.draft.id='local-draft';state.draft.version='LOCAL';persistDraft();},refresh:render,toast});if(state.draft)state.draft=normalizeBuild(state.draft);restoreTreePlan();initTheme();applyAppPrefs();document.querySelectorAll('#arcanaDock [data-icon]').forEach(el=>{el.innerHTML=icon(el.dataset.icon,24)});initGeneralChat(currentAccount);document.addEventListener('input',e=>{if(e.target.matches('[data-design-preset-search]')&&e.target.closest('.studioV2')){filterStudioV2Looks();return;}if(e.target.matches('[data-design-preset-search]')){const term=e.target.value.toLowerCase().trim();for(const preset of document.querySelectorAll('.arcanaDesignLab .designPreset'))preset.hidden=!String(preset.dataset.presetSearch||'').includes(term);const classics=document.querySelector('.designClassicCollection');if(classics&&term)classics.open=[...classics.querySelectorAll('.designPreset')].some(e=>!e.hidden);const empty=document.querySelector('[data-design-no-presets]');if(empty)empty.hidden=[...document.querySelectorAll('.arcanaDesignLab .designPreset')].some(e=>!e.hidden);const block=document.querySelector('.themePresetCollection');if(block)block.dataset.searching=String(Boolean(term));return;}if(e.target.matches('[data-design-hex]')){if(!canEditThemeDraft())return;const key=e.target.dataset.designHex,hex=normalizeDesignHex(e.target.value),status=document.querySelector('[data-design-status="'+key+'"]');if(hex&&writeDesign(key,hex)){e.target.value=hex;e.target.removeAttribute('aria-invalid');const picker=document.querySelector('input[type="color"][data-design-field="'+key+'"]');if(picker)picker.value=hex;if(status)status.textContent='Applied ✓';}else if(status)status.textContent='Enter 6 HEX digits';return;}if(e.target.matches('[data-design-field]')){if(!canEditThemeDraft())return;const key=e.target.dataset.designField,value=e.target.value;
+   const changed=key==='panelPattern'||key==='featurePattern'?applyLayerVisualPreset(key==='panelPattern'?'panels':'feature',value):key==='pattern'&&value.startsWith('vision-')?applyVisualPreset(value):writeDesign(key,value);
+   if(changed){if(['panelPattern','featurePattern','pattern'].includes(key))syncWorkshopInputs();const note=document.querySelector('[data-theme-change-hint]');if(note){const descriptions={main:'Page background',card:'Cards and panels',action:'Primary links and actions',secondaryAccent:'Secondary highlights',pattern:'Surface material',patternScale:'Size of repeating details',patternTarget:'Which surfaces receive the texture',intensity:'Visibility of the material',glow:'Glow around accents',heroActionStyle:'Build Studio entrance button only',heroCardStyle:'Homepage Build Studio card only',roundness:'Corners on all cards',buttonStyle:'Shared button appearance',fontSize:'Global text scale'};const label=e.target.closest('label,.designControl')?.querySelector('span')?.textContent||key;note.innerHTML='<strong>'+esc(label)+' updated</strong><span>'+esc(descriptions[key]||'Check the current page preview to see the effect.')+'</span>';}if(e.target.closest('[data-theme-group="feature"]'))showDesignMiniPage('home');const out=document.querySelector('[data-design-value="'+key+'"]');if(out)out.textContent=value+(e.target.type==='range'?(['roundness','buttonRoundness','cardPadding','borderWidth','buttonHeight','heroActionHeight','heroActionBorder'].includes(key)?' px':'%'):'');if(e.target.type==='color'){const textInput=document.querySelector('[data-design-hex="'+key+'"]');if(textInput){textInput.value=value.toUpperCase();textInput.removeAttribute('aria-invalid');}const status=document.querySelector('[data-design-status="'+key+'"]');if(status)status.textContent='Applied ✓';}}}if(e.target.id==='arcanaCustomAccentPicker'){const field=node('arcanaCustomAccentHex');if(field)field.value=e.target.value.toUpperCase()}});node('brandHome').onclick=()=>go('home');node('accountBtn').onclick=()=>go('user');node('adminPortalBtn').innerHTML=icon('shield',23);syncAdminPortal();void refreshAccount().then(()=>{document.documentElement.dataset.arcanaAdminDesign=String(canEditThemeDraft());if(!isAppearanceAdmin()){setAccent('site');setIconColor('follow-site');setIconMode('two-tone');}renderHeaderAvatar();if(['user','settings','admin','admin/traffic','account'].includes(parseRoute().route))render();else applyTheme(parseRoute().route);});window.addEventListener('arcana:account-updated',renderHeaderAvatar);window.addEventListener('arcana:site-config-change',()=>{if(!document.hidden)render()});document.addEventListener('click',e=>{if(e.target.closest('[data-close]')){closeLayer();return}const preview=e.target.closest('[data-preview]');if(preview){state.lastSearch=state.search;showPreview(preview.dataset.preview,!!state.layer&&state.layer.type==='search');return}const routed=e.target.closest('[data-route]');if(routed){const pars=Object.fromEntries(new URLSearchParams(routed.dataset.params||''));go(routed.dataset.route,pars);return}const act=e.target.closest('[data-action]');if(act)action(act.dataset.action,act.dataset.arg||'',act);});document.addEventListener('input',e=>{if(e.target.id==='treeLevel'||e.target.id==='treeLevelRange')previewTreeLevel(e.target.value);if(e.target.hasAttribute('data-monster-slider')){const input=node('content').querySelector('[data-monster-level]');if(input)input.value=e.target.value;}if(e.target.id==='guildQuery'){guildState.query=e.target.value;const list=guildFilter(guildState.guilds,guildState.query),box=node('guildCards');if(box)box.innerHTML=list.map(guildCard).join('')||'<div class="lfgEmpty">No matching guilds right now.</div>';const counter=node('guildCount');if(counter)counter.textContent=String(list.length);}if(e.target.id==='lfgQuery'){lfgState.query=e.target.value;updateLiveResults();}if(e.target.id==='lfgMight'){lfgState.mightAmount=e.target.value;updateLiveResults();}if(e.target.id==='globalSearch'){state.search=e.target.value;state.lastSearch=state.search;const box=node('searchResults');if(box)box.innerHTML=state.search.trim()?resultMarkup(state.search):searchFeatured();}if(e.target.id==='gearPickerQuery'){const box=node('gearPickerItems');if(box)box.innerHTML=pickerOptions(state.slotTarget?.kind,state.slotTarget?.slot,e.target.value);}if(e.target.id==='wikiFilter'){wikiState.query=e.target.value;wikiState.limit=36;const result=wikiRecordRows(verifiedState.entries,parseRoute().query.get('kind')||'all',wikiState.query,wikiState.limit),list=node('wikiRecords'),counter=node('wikiFoundCount'),more=node('wikiMore'),showing=node('wikiShowing'),clear=node('content').querySelector('.wikiClearFilter');if(list)list.innerHTML=result.html;if(counter)counter.textContent=result.count+' '+(result.count===1?'reference':'references');if(showing)showing.textContent=result.count?'Showing '+Math.min(result.count,wikiState.limit)+' of '+result.count:'Season 2 reference library';if(clear)clear.hidden=!wikiState.query;if(more)more.hidden=!result.hasMore;}if(e.target.id==='itemFilter'){const q=e.target.value.toLowerCase();node('itemResults').innerHTML=itemList.filter(x=>(x.title+' '+x.keywords).toLowerCase().includes(q)).map(cardEntity).join('')||'<p class="emptyMini">No matching item.</p>'}if(e.target.dataset.petLevel!==undefined){const i=+e.target.dataset.petLevel,n=Math.max(0,Number(e.target.value)||0);state.petLevels[i]=n;const cap=Math.min(...state.petLevels)+10;const el=node('petEffective');if(el){el.textContent=cap;el.nextElementSibling.textContent='Minimum '+Math.min(...state.petLevels)+' + 10'}}});document.addEventListener('change',e=>{
+ if(e.target.matches('[data-design-hex]')){if(!isAppearanceAdmin())return;const key=e.target.dataset.designHex,hex=normalizeDesignHex(e.target.value),status=document.querySelector('[data-design-status="'+key+'"]');if(!hex){e.target.setAttribute('aria-invalid','true');if(status)status.textContent='Use 6 HEX digits, e.g. #A78BFA';}else{e.target.value=hex;e.target.removeAttribute('aria-invalid');if(status)status.textContent='Applied ✓';}return;}
  if(e.target.hasAttribute('data-app-pref')){changeAppPref(e.target.dataset.appPref,e.target.checked);return;}
  if(e.target.matches('[data-passive-free-mode]')){state.passiveFreeMode=e.target.checked===true;storeTreePlan();render();return;}
  const field=e.target.dataset.gearField;
@@ -715,12 +1097,11 @@ const petKeys=['petCompound','petAffix','petAffixLevel','petUnlocked','petHatch'
  if(key!=='petEquipped'&&key!=='petDrop'&&e.target.value&&!(key==='petCompound'&&Number(e.target.value)===0))p.equipped=true;
  if(key==='petDrop'&&e.target.value.trim()!=='')p.equipped=true;
  persistDraft();render();
- }});document.addEventListener('submit',e=>{if(e.target.id==='guildForm'){e.preventDefault();void guildSave(e.target)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLayer();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();showSearch()}});window.addEventListener('arcana:assets-loaded',()=>{if(!state.layer)render();else if(state.layer.type==='search'){node('searchResults').innerHTML=state.search?resultMarkup(state.search):node('searchResults').innerHTML}});window.addEventListener('arcana:navigate',handleRoute);window.addEventListener('popstate',handleRoute);window.addEventListener('hashchange',handleRoute);if(!location.hash)history.replaceState(null,'','#/home');render();}
+ }});document.addEventListener('submit',e=>{if(e.target.id==='guildForm'){e.preventDefault();void guildSave(e.target)}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.layer)closeLayer();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();showSearch()}});window.addEventListener('arcana:assets-loaded',()=>{if(parseRoute().route==='calculators/pathfinder')return;if(!state.layer)render();else if(state.layer.type==='search'){node('searchResults').innerHTML=state.search?resultMarkup(state.search):searchFeatured()}});window.addEventListener('arcana:navigate',handleRoute);window.addEventListener('popstate',handleRoute);window.addEventListener('hashchange',handleRoute);if(!location.hash)history.replaceState(null,'','#/home');render();document.dispatchEvent(new Event('arcana:app-ready'));}
 init();
 void initGameAssets();
 void loadTrees();
-void loadPublicLfg();
-void loadGuilds();
+// Fetch raids and guild lists only when visiting those sections.
 void loadVerifiedIndex();
 void loadPublishedWikiArticles();
 window.addEventListener('arcana:wiki-published',()=>void loadPublishedWikiArticles());

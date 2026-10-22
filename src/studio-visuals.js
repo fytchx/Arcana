@@ -1,17 +1,16 @@
-/* IdleArc Refined: custom authored vector illustrations from approved style board.
- * Empty slots show meaningful polished equipment silhouettes. In-game item
- * sprites remain in verified Codex and item picker, never pasted into UI icons. */
-import {refinedSvg} from './idlearc-refined-vectors.js';
+/* Build Studio profile icons are part of the same Arcana Minimal library as every
+ * other site asset; one shared vector language and independent icon colors. */
+import {arcanaIcon} from './arcana-icons.js';
 export function classEmblem(cls){
  const known=['warrior','archer','mage','rogue','druid'];
  const name=String(cls||'').toLowerCase();
  const id=known.includes(name)?name:'warrior';
- return '<span class="arcanaSilhouette" data-kind="'+id+'">'+refinedSvg('class-'+id,52)+'</span>';
+ return '<span class="arcanaSilhouette" data-kind="'+id+'">'+arcanaIcon('class-'+id,44)+'</span>';
 }
 export function slotSilhouette(slot){
  const known=['torch','head','neck','weapon','chest','offhand','ring','ring2','belt','charm','charm2','hands','feet'];
  const id=known.includes(slot)?slot:'chest';
- return '<span class="arcanaSilhouette" data-kind="equipment">'+refinedSvg('equipment-'+id,54)+'</span>';
+ return '<span class="arcanaSilhouette" data-kind="equipment">'+arcanaIcon('equipment-'+id,32)+'</span>';
 }
 export const STUDIO_PORTRAIT_KEY='arcana-studio-portrait-local-v1';
 export function readStudioPortrait(){

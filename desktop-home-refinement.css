@@ -1,0 +1,66 @@
+/* Arcana desktop homepage. Keep the mobile hierarchy unchanged.
+   Desktop gets a true composed page, not a few tiny cards floating on wallpaper. */
+@media (min-width:760px){
+ #content.homeFullscreen{
+  box-sizing:border-box;width:min(calc(100% - 44px),1180px)!important;max-width:1180px!important;
+  min-height:0!important;height:auto!important;margin:24px auto 60px!important;
+  padding:clamp(26px,3.5vw,46px)!important;gap:clamp(22px,3vw,33px)!important;
+  overflow:visible!important;border-radius:24px;
+  border:1px solid color-mix(in srgb,var(--theme-highlight,#9f90dd) 19%,transparent)!important;
+  background-color:var(--theme-main,#0d1019)!important;
+  background-image:linear-gradient(180deg,
+    color-mix(in srgb,var(--theme-main,#0d1019) 77%,transparent),
+    color-mix(in srgb,var(--theme-main,#0d1019) 88%,transparent)),
+    var(--arcana-texture,none)!important;
+  background-repeat:no-repeat,repeat!important;
+  background-size:cover,var(--arcana-texture-size,360px)!important;
+  box-shadow:0 24px 80px #0007,inset 0 1px 0 #ffffff12;
+ }
+ #content.homeFullscreen .homeSpotlights{gap:clamp(16px,2vw,24px)!important}
+ #content.homeFullscreen .homeSpotlights .launchHero,
+ #content.homeFullscreen .homeSpotlights .journalHomeTeaser{
+   min-height:clamp(278px,27vw,338px)!important;
+   padding:clamp(23px,2.6vw,32px)!important;
+   border-radius:19px!important;
+ }
+ #content.homeFullscreen .homeSpotlights .launchHero h1{font-size:clamp(31px,3.4vw,41px)!important}
+ #content.homeFullscreen .homeSpotlights .launchHero p{font-size:clamp(14px,1.35vw,17px)!important;max-width:37ch!important;line-height:1.5!important}
+ #content.homeFullscreen .homeSpotlights .launchHero .launchEyebrow{font-size:12px!important}
+ #content.homeFullscreen .homeSpotlights .launchHeroCTA{min-height:61px!important;padding:13px 17px!important}
+ #content.homeFullscreen .homeSpotlights .launchHeroCTACopy strong{font-size:17px!important}
+ #content.homeFullscreen .homeSpotlights .launchHeroCTACopy small{font-size:13px!important}
+ #content.homeFullscreen .homeSpotlights .journalHomeTop span{font-size:12px!important}
+ #content.homeFullscreen .homeSpotlights .journalHomeArticle strong{font-size:clamp(26px,2.7vw,34px)!important}
+ #content.homeFullscreen .homeSpotlights .journalHomeArticle small{font-size:15px!important;line-height:1.5!important}
+ #content.homeFullscreen .homeSpotlights .journalHomeRead{font-size:14px!important}
+ #content.homeFullscreen .launchSectionTop{margin:0 0 15px!important}
+ #content.homeFullscreen .launchSectionTop h2{font-size:clamp(23px,2.3vw,30px)!important}
+ #content.homeFullscreen .launchSeeAll{font-size:14px!important}
+ #content.homeFullscreen .launchQuickGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:clamp(14px,1.7vw,23px)!important}
+ #content.homeFullscreen .launchQuickCard{
+  min-height:clamp(194px,18vw,235px)!important;
+  padding:clamp(21px,2vw,28px)!important;
+  border-radius:18px!important;
+  gap:16px!important;
+ }
+ #content.homeFullscreen .launchQuickIcon{width:49px!important;height:49px!important}
+ #content.homeFullscreen .launchQuickCopy{gap:8px!important}
+ #content.homeFullscreen .launchQuickCopy strong{font-size:clamp(21px,1.9vw,26px)!important}
+ #content.homeFullscreen .launchQuickCopy small{font-size:clamp(13px,1.2vw,16px)!important;line-height:1.5!important}
+ #content.homeFullscreen >.launchFeatured{
+  display:block!important;min-width:0;margin:0!important;padding:5px 0 0!important;
+ }
+ #content.homeFullscreen .launchFeaturedIntro{font-size:15px!important;line-height:1.5;margin:0 0 17px!important}
+ #content.homeFullscreen .launchFeaturedGrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px!important}
+ #content.homeFullscreen .launchFeatureRow{min-height:113px!important;padding:17px!important;align-items:center!important}
+ #content.homeFullscreen .launchFeatureRow strong{font-size:16px!important}
+ #content.homeFullscreen .launchFeatureRow small{font-size:12px!important;line-height:1.45!important}
+}
+/* Respect tablet widths instead of squeezing three enormous cards into them. */
+@media(min-width:760px) and (max-width:990px){
+ #content.homeFullscreen{width:calc(100% - 24px)!important;padding:24px!important;margin-top:13px!important}
+ #content.homeFullscreen .launchQuickCard{min-height:189px!important}
+ #content.homeFullscreen .homeSpotlights .launchHero,
+ #content.homeFullscreen .homeSpotlights .journalHomeTeaser{min-height:275px!important}
+}
+@media(max-width:759px){#content.homeFullscreen >.launchFeatured{display:none!important}}

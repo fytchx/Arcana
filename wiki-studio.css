@@ -54,3 +54,44 @@
 .fandomImportRow details p{padding-left:8px;border-left:1px solid var(--line,#33384a)}
 .wikiImportedInlineLink{text-decoration:underline;text-underline-offset:3px;color:var(--theme-highlight,var(--accent,#aa91ff))}
 @media(max-width:600px){.fandomStats{grid-template-columns:repeat(2,minmax(0,1fr))}.fandomImportRow{grid-template-columns:24px minmax(0,1fr)}.fandomImportRow>.btn{grid-column:2;justify-self:start}.fandomImportBar .btn{flex:1}}
+
+
+/* Wiki V1 canonical hierarchy and compact mobile navigation. */
+.wikiLocation{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:4px 0 14px;font-size:12px}
+.wikiLocationBack{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:34px;flex:none;padding:5px 10px;background:var(--theme-secondary,var(--panel));border:1px solid var(--line);border-radius:9px;color:var(--text);font-weight:750}
+.wikiCrumbTrail{display:flex;align-items:center;gap:5px;flex-wrap:wrap;min-width:0}
+.wikiCrumbPart{display:inline-flex;align-items:center;gap:5px;min-height:27px;min-width:0}
+.wikiCrumbPart button{border:0;background:transparent;color:var(--theme-highlight,var(--accent));font:700 12px/1.3 system-ui;padding:4px 1px}
+.wikiCrumbPart strong{font-size:12px;line-height:1.4;color:var(--text);font-weight:750;overflow-wrap:anywhere}
+.wikiChevron{color:var(--muted)}
+.wikiCategoryPage{min-width:0;margin:0 auto;max-width:1000px}
+.wikiCategoryHeading{display:flex;align-items:center;gap:13px;padding:14px;margin-bottom:14px;border:1px solid var(--line);border-radius:14px;background:var(--theme-secondary,var(--panel))}
+.wikiCategoryHeading>span{display:grid;place-items:center;flex:none;color:var(--theme-highlight);border:1px solid var(--line);background:var(--theme-main);height:52px;width:52px;border-radius:12px}
+.wikiCategoryHeading h1{font-size:clamp(22px,4.5vw,30px);margin:0 0 3px}
+.wikiCategoryHeading p{font-size:12px;line-height:1.5;color:var(--muted);margin:0}
+.wikiCategoryArticleList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.wikiPortalV1{max-width:1000px;margin:0 auto}
+.wikiPortalV1 .wikiHero{margin-bottom:15px}
+.wikiPortalV1 .wikiHero h1{font-size:clamp(27px,6vw,42px)}
+.wikiPortalV1 .wikiSearchLaunch{margin:0 0 16px}
+.wikiCategorySection{margin:16px 0 20px}
+.wikiCategorySection .wikiFeaturedHead{margin:0 0 10px}
+.wikiV1Categories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.wikiV1Category{min-height:100px}
+.wikiCompactCopy{font-size:12px;line-height:1.6;color:var(--muted);margin:4px 0 12px}
+.wikiCodexLaunch{display:flex;align-items:center;gap:13px;width:100%;padding:13px;text-align:left;border:1px solid color-mix(in srgb,var(--theme-highlight) 48%,var(--line));border-radius:14px;background:var(--theme-secondary,var(--panel));color:var(--text)}
+.wikiCodexLaunch>svg:first-child{color:var(--theme-highlight)}
+.wikiCodexLaunch>span{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+.wikiCodexLaunch strong{font-size:15px}
+.wikiCodexLaunch small{font-size:12px;color:var(--muted)}
+.wikiCodexLaunch>svg:last-child{color:var(--theme-highlight)}
+.wikiLibrary>.wikiLocation,.wikiGuidesPage>.wikiLocation,.wikiArticle>.wikiLocation,.wikiReferencePage>.wikiLocation{margin-top:0}
+@media(max-width:600px){
+ .wikiCategoryArticleList{grid-template-columns:minmax(0,1fr)}
+ .wikiCategoryHeading{padding:11px}
+ .wikiV1Categories{gap:8px}
+ .wikiV1Category{min-height:86px;padding:10px!important}
+ .wikiCrumbTrail{gap:3px}
+ .wikiCrumbPart{gap:3px}
+ .wikiCrumbPart button,.wikiCrumbPart strong{font-size:11px}
+}

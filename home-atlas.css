@@ -1,0 +1,175 @@
+/* Atlas homepage. Isolated selectors intentionally bypass legacy hero/card home rules.
+   All paints come from validated Theme Playground fields with themed fallbacks. */
+.atlasHome{--atlas-panel:var(--arcana-atlas-panel,var(--theme-secondary,var(--panel)));--atlas-icon-box:var(--arcana-atlas-icon-box,color-mix(in srgb,var(--atlas-panel) 78%,var(--theme-highlight,var(--accent)) 22%));--atlas-icon:var(--arcana-atlas-icon,var(--theme-highlight,var(--accent)));--atlas-outline:var(--theme-border,var(--line));--atlas-copy:var(--theme-text,var(--text));--atlas-sub:var(--theme-muted,var(--soft));width:100%;min-width:0;display:flex;flex-direction:column;gap:clamp(20px,3vw,29px);color:var(--atlas-copy)}
+.atlasHome button,.atlasHome a{font:inherit;-webkit-tap-highlight-color:transparent}
+.atlasHome :is(button,a):focus-visible{outline:2px solid var(--atlas-icon);outline-offset:3px}
+.atlasUpdate{display:flex;align-items:center;gap:12px;min-height:55px;padding:10px clamp(13px,2vw,18px);border:1px solid var(--atlas-outline);border-radius:14px;background:var(--atlas-panel);transition:border-color .16s,color .16s}
+.atlasUpdate:hover{border-color:var(--atlas-icon)}
+.atlasUpdateTag{color:var(--atlas-icon);font-size:10px;font-weight:850;white-space:nowrap;letter-spacing:.13em}
+.atlasUpdateTitle{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:650;font-size:clamp(12px,2.5vw,16px)}
+.atlasUpdateDate{display:flex;align-items:center;gap:6px;flex:none;font-size:11px;color:var(--atlas-sub)}
+.atlasHero{position:relative;display:flex;align-items:center;gap:clamp(11px,2.5vw,22px);min-height:clamp(138px,18vw,172px);padding:clamp(19px,3.5vw,29px);border:1px solid color-mix(in srgb,var(--atlas-icon) 36%,var(--atlas-outline));border-radius:21px;background:linear-gradient(110deg,color-mix(in srgb,var(--atlas-panel) 88%,var(--atlas-icon) 12%),var(--atlas-panel) 75%);overflow:hidden;isolation:isolate;box-shadow:inset 0 1px color-mix(in srgb,var(--atlas-copy) 8%,transparent)}
+.atlasHero:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--atlas-icon);opacity:.95}
+.atlasHeroEmblem{position:absolute;right:-35px;top:-60px;width:250px;opacity:.06;pointer-events:none;filter:grayscale(1);z-index:-1}
+.atlasHeroIcon,.atlasTileIcon{display:grid;place-items:center;flex:none;background:var(--atlas-icon-box);color:var(--atlas-icon);border:1px solid color-mix(in srgb,var(--atlas-icon) 23%,var(--atlas-outline))}
+.atlasHeroIcon{width:clamp(61px,9vw,81px);height:clamp(61px,9vw,81px);border-radius:19px}
+.atlasHeroText{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.atlasEyebrow{font-size:10px;line-height:1.3;font-weight:800;letter-spacing:.14em;color:var(--atlas-icon)}
+.atlasHeroText strong{font-family:Georgia,'Times New Roman',serif;letter-spacing:-.03em;line-height:1.06;font-weight:650;font-size:clamp(23px,4.5vw,37px)}
+.atlasHeroText small{font-size:clamp(11px,2.7vw,14px);line-height:1.4;color:var(--atlas-sub)}
+.atlasHeroGo{display:grid;place-items:center;flex:none;width:44px;height:44px;border:1px solid color-mix(in srgb,var(--atlas-icon) 25%,var(--atlas-outline));border-radius:13px;background:var(--atlas-icon-box);color:var(--atlas-icon);transition:transform .16s,border-color .16s}
+.atlasHeroGo:hover{transform:translateX(2px);border-color:var(--atlas-icon)}
+.atlasTools,.atlasJournal{min-width:0}
+.atlasSectionHead{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 15px}
+.atlasSectionHead h2{margin:0;font-size:clamp(11px,2.1vw,13px);font-weight:850;letter-spacing:.21em;color:var(--atlas-sub)}
+.atlasSectionHead :is(a,button){display:inline-flex;align-items:center;gap:5px;padding:4px 0;border:0;background:none;color:var(--atlas-icon);font-size:12px;font-weight:750;white-space:nowrap}
+.atlasTileGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,2.4vw,16px)}
+.atlasTile{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(12px,2.5vw,17px);position:relative;min-width:0;min-height:clamp(156px,22vw,193px);padding:clamp(15px,2.7vw,21px);text-align:left;border:1px solid var(--atlas-outline);border-radius:18px;background:var(--atlas-panel);color:var(--atlas-copy);transition:transform .16s,border-color .16s,box-shadow .16s}
+.atlasTile:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--atlas-icon) 55%,var(--atlas-outline));box-shadow:0 8px 25px #0002}
+.atlasTileIcon{width:54px;height:54px;border-radius:16px}
+.atlasTileCopy{display:flex;flex-direction:column;gap:7px;min-width:0;padding-right:10px}
+.atlasTileCopy strong{font:650 clamp(18px,3vw,24px)/1.17 Georgia,'Times New Roman',serif;letter-spacing:-.022em}
+.atlasTileCopy small{color:var(--atlas-sub);font-size:clamp(11px,2vw,13px);line-height:1.42}
+.atlasTileArrow{position:absolute;right:16px;top:18px;color:var(--atlas-icon);opacity:.68}
+.atlasJournalStory{display:flex;flex-direction:column;gap:7px;position:relative;padding:18px 2px 19px;border-block:1px solid var(--atlas-outline)}
+.atlasJournalStory .journalHomeCategory{color:var(--atlas-icon);font-size:10px;font-weight:800;letter-spacing:.08em}
+.atlasJournalStory strong{font:650 clamp(19px,3vw,26px)/1.23 Georgia,'Times New Roman',serif}
+.atlasJournalStory small{max-width:66ch;font-size:12px;color:var(--atlas-sub);line-height:1.55}
+.atlasJournalRead{display:inline-flex;align-items:center;gap:6px;color:var(--atlas-icon);font-size:11px;font-weight:750;margin-top:4px}
+.atlasFooterLinks{display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px}
+.atlasFooterLinks button{display:inline-flex;align-items:center;gap:7px;background:none;border:0;padding:6px 0;color:var(--atlas-sub);font-size:11px;font-weight:600}
+.atlasFooterLinks button:hover{color:var(--atlas-icon)}
+/* Retain the actual site shell and dock; remove the old full-screen grid restrictions. */
+#content.homeFullscreen:has(.atlasHome){display:block!important;height:auto!important;min-height:0!important;gap:0!important;overflow:visible!important}
+#content.homeFullscreen:has(.atlasHome) .atlasHome{margin:0 auto}
+@media(min-width:760px){
+ #content.homeFullscreen:has(.atlasHome){max-width:1120px!important}
+ .atlasHome{gap:30px}
+ .atlasTileGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .atlasTile{min-height:200px}
+}
+@media(max-width:520px){
+ #content.homeFullscreen:has(.atlasHome){padding:17px 14px 98px!important}
+ .atlasHome{gap:24px}
+ .atlasUpdate{gap:7px;min-height:52px}
+ .atlasUpdateTag{font-size:9px}
+ .atlasUpdateDate{font-size:0}
+ .atlasUpdateDate svg{width:16px;height:16px}
+ .atlasHero{gap:11px;min-height:135px;padding:17px 15px;border-radius:17px}
+ .atlasHeroIcon{width:58px;height:58px;border-radius:15px}
+ .atlasHeroIcon svg{width:31px;height:31px}
+ .atlasHeroGo{width:34px;height:38px;background:transparent;border-color:transparent}
+ .atlasEyebrow{font-size:9px}
+ .atlasTile{min-height:160px;border-radius:16px;padding:14px;gap:11px}
+ .atlasTileIcon{width:48px;height:48px;border-radius:13px}
+ .atlasTileIcon svg{width:26px;height:26px}
+ .atlasTileCopy strong{font-size:18px}
+ .atlasTileCopy small{font-size:11px}
+}
+@media(max-width:340px){.atlasHeroIcon{width:46px;height:46px}.atlasHeroText strong{font-size:21px}.atlasTile{min-height:148px;padding:12px}.atlasTileIcon{width:43px;height:43px}.atlasTileCopy strong{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.atlasHome *{transition:none!important}}
+/* Miniature matches the new real-home hierarchy; same three independent colors. */
+.miniCanvas{--mini-icon-box:var(--mini-panel);--mini-icon:var(--mini-accent)}
+.miniHome .atlasMiniPatch{display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;margin:0 0 7px;padding:7px 8px;background:var(--mini-panel);border:1px solid var(--mini-border);border-radius:6px;font-size:8px}
+.miniHome .atlasMiniPatch b{color:var(--mini-icon);letter-spacing:.08em;font-size:7px}
+.miniHome .atlasMiniPatch span{overflow:hidden;text-overflow:ellipsis}
+.miniHome .atlasMiniHero{display:flex;align-items:center;gap:9px;background:var(--mini-panel);border:1px solid var(--mini-border);border-radius:9px;padding:10px;margin-bottom:9px}
+.miniHome .atlasMiniHeroIcon,.miniHome .atlasMiniTile i{display:grid;place-items:center;flex:none;background:var(--mini-icon-box);color:var(--mini-icon);border:1px solid var(--mini-border)}
+.miniHome .atlasMiniHeroIcon{width:35px;height:35px;border-radius:8px}
+.miniHome .atlasMiniHero strong{display:block;font:700 14px/1.2 Georgia,serif}
+.miniHome .atlasMiniHero small{display:block;font-size:8px;color:var(--mini-muted)}
+.miniHome .atlasMiniLabel{font-size:8px;letter-spacing:.17em;color:var(--mini-muted);margin:9px 0 6px;font-weight:800}
+.miniHome .atlasMiniGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.miniHome .atlasMiniTile{background:var(--mini-panel);border:1px solid var(--mini-border);border-radius:7px;padding:7px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.miniHome .atlasMiniTile i{width:23px;height:23px;border-radius:6px;font-style:normal}
+.miniHome .atlasMiniTile b{font:700 10px/1.15 Georgia,serif}
+.miniHome .atlasMiniTile small{font-size:7px;color:var(--mini-muted)}
+.miniHome .atlasMiniStory{background:var(--mini-panel);border-top:1px solid var(--mini-border);padding:8px;font:700 9px Georgia,serif}
+/* Local-only indication that palette controls now drive independent elements. */
+.arcanaDesignLab .designOptionDescription{line-height:1.45}
+
+/* Atlas v2: a compact, editorial first screen with no wasted vertical pixels.
+   Size the six destinations for a real mobile viewport, not a giant mockup. */
+#content.homeFullscreen:has(.atlasHome){padding-top:13px!important}
+.atlasHome{gap:clamp(13px,2.3vw,24px)}
+.atlasUpdate{min-height:45px;border-radius:12px;box-shadow:none}
+.atlasHero{min-height:106px;padding:15px 21px;border-radius:16px;gap:16px;box-shadow:inset 0 1px color-mix(in srgb,var(--atlas-copy) 14%,transparent)}
+.atlasHero:before{width:2px}
+.atlasHeroEmblem{opacity:.035;right:-50px;top:-85px}
+.atlasHeroIcon{width:60px;height:60px;border-radius:15px}
+.atlasHeroIcon svg{width:30px;height:30px}
+.atlasHeroText strong{font-size:clamp(23px,3vw,32px)}
+.atlasHeroText{gap:3px}
+.atlasHeroGo{width:42px;height:42px}
+.atlasSectionHead{margin-bottom:10px}
+.atlasSectionHead h2{font-size:12px}
+.atlasTileGrid{gap:11px}
+.atlasTile{min-height:149px;padding:17px;gap:11px;border-radius:14px;box-shadow:inset 0 1px color-mix(in srgb,var(--atlas-copy) 4%,transparent)}
+.atlasTileIcon{width:46px;height:46px;border-radius:12px}
+.atlasTileIcon svg{width:25px;height:25px}
+.atlasTileCopy{gap:5px}
+.atlasTileCopy strong{font-size:clamp(18px,2.5vw,22px)}
+.atlasTileArrow{opacity:.4;right:14px;top:16px}
+.atlasJournal{margin-top:4px}
+.atlasJournalMore{display:grid;gap:0}
+.atlasJournalExtra{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 3px;border-bottom:1px solid var(--atlas-outline);color:var(--atlas-copy)}
+.atlasJournalExtra span{display:flex;flex-direction:column;gap:6px;min-width:0}
+.atlasJournalExtra em{color:var(--atlas-icon);font:800 10px/1.3 system-ui,sans-serif;letter-spacing:.07em;font-style:normal;text-transform:uppercase}
+.atlasJournalExtra strong{font:650 clamp(16px,2.5vw,21px)/1.25 Georgia,serif}
+.atlasJournalExtra small{font-size:11px;line-height:1.45;color:var(--atlas-sub)}
+.atlasJournalExtra svg{flex:none;margin-top:13px;color:var(--atlas-icon)}
+.atlasFeatureLinks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:19px}
+.atlasFeatureLink{display:flex;flex-direction:column;gap:5px;border:1px solid var(--atlas-outline);border-radius:13px;background:var(--atlas-panel);padding:15px;min-width:0}
+.atlasFeatureLink span{display:flex;align-items:center;gap:7px;color:var(--atlas-icon);font:800 10px/1.3 system-ui,sans-serif;letter-spacing:.07em;text-transform:uppercase}
+.atlasFeatureLink strong{font:650 clamp(16px,2.2vw,20px)/1.25 Georgia,serif}
+.atlasFeatureLink small{color:var(--atlas-sub);font-size:11px;line-height:1.45}
+.atlasFeatureLink:hover,.atlasJournalExtra:hover{border-color:var(--atlas-icon)}
+@media(min-width:760px){
+ #content.homeFullscreen:has(.atlasHome){padding-top:25px!important}
+ .atlasHome{gap:24px}
+ .atlasHero{min-height:116px;padding:20px 27px}
+ .atlasTile{min-height:176px}
+ .atlasTileGrid{gap:14px}
+}
+@media(max-width:759px){
+ #content.homeFullscreen:has(.atlasHome){padding:12px 15px 91px!important}
+ .atlasHome{gap:12px}
+ .atlasUpdate{min-height:40px;padding:7px 11px;gap:8px;border-radius:10px}
+ .atlasUpdateTag{font-size:8px;letter-spacing:.09em}
+ .atlasUpdateTitle{font-size:11px}
+ .atlasUpdateDate{font-size:0}
+ .atlasUpdateDate svg{width:15px;height:15px}
+ .atlasHero{min-height:79px;padding:11px 13px;gap:11px;border-radius:13px;
+   background:linear-gradient(112deg,color-mix(in srgb,var(--atlas-panel) 84%,var(--atlas-icon) 16%),var(--atlas-panel) 76%)}
+ .atlasHeroIcon{width:49px;height:49px;border-radius:11px}
+ .atlasHeroIcon svg{width:27px;height:27px}
+ .atlasHeroText strong{font-size:clamp(20px,5.3vw,25px)}
+ .atlasHeroText small{font-size:10px;white-space:normal}
+ .atlasEyebrow{font-size:8px;letter-spacing:.1em}
+ .atlasHeroGo{width:29px;height:35px;border:0;background:transparent}
+ .atlasHeroGo svg{width:20px;height:20px}
+ .atlasSectionHead{margin-bottom:7px}
+ .atlasSectionHead h2{font-size:10px;letter-spacing:.18em}
+ .atlasSectionHead :is(a,button){font-size:10px}
+ .atlasTileGrid{gap:8px}
+ .atlasTile{min-height:clamp(96px,14.9dvh,111px);padding:11px 12px;gap:6px;border-radius:12px}
+ .atlasTileIcon{width:35px;height:35px;border-radius:9px}
+ .atlasTileIcon svg{width:21px;height:21px}
+ .atlasTileCopy{gap:4px;padding-right:0}
+ .atlasTileCopy strong{font-size:clamp(15px,4.35vw,18px);line-height:1.15}
+ .atlasTileCopy small{font-size:10px;line-height:1.22}
+ .atlasTileArrow{right:10px;top:12px;opacity:.35}
+ .atlasTileArrow svg{width:14px;height:14px}
+ .atlasJournal{margin-top:12px}
+ .atlasJournalStory{padding-block:12px}
+ .atlasFeatureLinks{gap:8px}
+ .atlasFeatureLink{padding:11px}
+ .atlasFooterLinks{padding-bottom:12px}
+}
+/* Short phones get smaller gaps, not unreadable type or impossible tap targets. */
+@media(max-width:759px) and (max-height:680px){
+ .atlasHome{gap:9px}
+ .atlasTile{min-height:94px;padding:9px 10px}
+ .atlasHero{min-height:74px;padding-block:9px}
+ #content.homeFullscreen:has(.atlasHome){padding-top:9px!important}
+}

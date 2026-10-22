@@ -84,7 +84,7 @@ test('full class tree renders all six verified nodes and three tiers without pag
  assert.ok(markup.includes('data-node="48"'));
  assert.ok(markup.includes('classTierCards'));
  assert.ok(markup.includes('5 points required')||markup.includes('5 more points'));
- assert.ok(markup.includes('Official skill reference'));
+ assert.equal(markup.includes('treeProvenance'),false,'Technical provenance is hidden from player UI');
 });
 test('every class can render a full branch independently of legacy passive API',()=>{
  for(const cls of tree.classes){

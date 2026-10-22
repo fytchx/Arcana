@@ -1,11 +1,20 @@
 import http from 'node:http';
+import {gunzipSync,gzipSync} from 'node:zlib';
+import {applyVerifiedUpgradeCosts} from './src/pathfinder-upgrade-materials.mjs';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve, sep, extname } from 'node:path';
 import { createHash } from 'node:crypto';
 import { handleWikiRequest } from './src/wiki-server.mjs';
+import {handleJournalRequest} from './src/journal-server.mjs';
+import {seoPageByPath,renderSeoPage} from './src/seo-pages.mjs';
+import {handleTrafficRequest} from './src/traffic-server.mjs';
 import { safeAccountRequest } from './src/account-server.mjs';
+import {safeSiteAdminRequest} from './src/site-admin-server.mjs';
 import { safeAccountBuildRequest } from './src/account-builds.mjs';
+import {safeFarmingListRequest} from './src/farming-lists-server.mjs';
 import { safeCommunityRequest } from './src/community-server.mjs';
+import { safeGuildHubRequest } from './src/guild-hub-server.mjs';
+import { safeGeneralChatRequest } from './src/general-chat-server.mjs';
 import { betaFeedbackRequest } from './src/beta-feedback-server.mjs';
 import { fileURLToPath } from 'node:url';
 
@@ -89,6 +98,29 @@ async function verifiedCatalog(){
  console.log('ARCANA_CATALOG_COUNTS',JSON.stringify({original:payload.entries.length,additional:extras.length,currencies:extras.filter(e=>e.kind==='currency').length,pets:extras.filter(e=>e.kind==='pet').length}));
  return catalogCache;
 }
+let previewRecipe=null,previewRecipeTime=0;
+let recipeZip=null,recipeZipRef=null;
+async function sourceBackedRecipes(){
+ if(previewRecipe&&Date.now()-previewRecipeTime<3600000)return previewRecipe;
+ const response=await get(BASES.legacyArt+'/assets/data.b64',12000);
+ if(!response.ok)throw Error('Verified reference HTTP '+response.status);
+ const source=(await response.text()).trim();
+ if(source.length<20000||source.length>300000||!/^[A-Za-z0-9+/=]+$/.test(source))throw Error('Invalid reference encoding');
+ const raw=gunzipSync(Buffer.from(source,'base64'),{maxOutputLength:1800000});
+ const data=JSON.parse(raw.toString('utf8')),cd=data.codex;
+ if(!cd?.tiers?.['6']?.rows||!cd.awaken?.rows?.['30']||!Array.isArray(data.materials))throw Error('Upgrade data incomplete');
+ const verifiedCosts=applyVerifiedUpgradeCosts(cd,data.materials);
+ previewRecipe={source:'Arcana game-cost snapshot',sourceVersion:String(cd.source_version||'')+' / upgrade materials '+verifiedCosts.sourceVersion,verifiedDate:String(cd.verified_date||''),
+ codex:{tiers:Object.fromEntries(Object.entries(cd.tiers).map(([k,v])=>[k,{name:v.name,max_level:v.max_level,rows:v.rows}])),
+ tier_upgrades:cd.tier_upgrades,awaken:{rows:Object.fromEntries(Object.entries(cd.awaken.rows).filter(([k])=>Number(k)>=1&&Number(k)<=30)),transitions:cd.awaken.transitions.filter(x=>Number(x.rank)<=30)}},
+ materials:data.materials.map(m=>({slug:m.slug,name:m.name,type:m.type,monster_id:m.monster_id??null,
+  sourceBiome:typeof (m.sourceBiome??m.biome_name??m.biome)==='string'?(m.sourceBiome??m.biome_name??m.biome):'',
+  sourceMonster:typeof (m.sourceMonster??m.monster_name)==='string'?(m.sourceMonster??m.monster_name):'',
+  tier:typeof (m.tier??m.biome_tier)==='string'||typeof (m.tier??m.biome_tier)==='number'?String(m.tier??m.biome_tier):''}))};
+ // Pathfinder costs are independent of the remote monster catalog.
+ previewRecipeTime=Date.now();return previewRecipe;
+}
+
 const server=http.createServer(async(req,res)=>{
  try {
   const parsedUrl=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
@@ -104,14 +136,42 @@ const server=http.createServer(async(req,res)=>{
   if(isPublicDomain&&host==='arcana-stable-app-staging.up.railway.app'&&pathname==='/api/account/login'){
    res.writeHead(302,{'location':primary+'/#/account','cache-control':'no-store'});res.end();return;
   }
-  if(pathname.startsWith('/api/account/builds')&&await safeAccountBuildRequest(req,res,parsedUrl))return;
+  if(pathname==='/__ui-debug'&&req.method==='GET'){send(res,200,"<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Arcana UI Check</title><style>\nbody{background:#0d1019;color:#f3efff;font:14px/1.5 system-ui;margin:0 auto;padding:18px;max-width:620px}h1{font-size:21px}\np{color:#c7c4d5}pre{padding:13px;overflow-wrap:anywhere;white-space:pre-wrap;border:1px solid #52456d;border-radius:12px;background:#1c1a2d;font:12px/1.55 monospace}button{color:#100c17;background:#b79aff;border:0;padding:12px 16px;border-radius:10px;font-weight:750;font-size:14px}iframe{display:block;margin-top:14px;width:100%;height:650px;border:1px solid #52456d;border-radius:12px;background:#0d1019}\n</style></head><body><h1>Arcana Browser Check</h1><p>Your server is healthy. This checks whether the actual app can load in this browser. Nothing is changed or saved.</p><pre id=\"report\" aria-live=\"polite\">Starting browser test…</pre><button id=\"copy\">Copy results</button> <button id=\"open\" type=\"button\">Open full Arcana</button><iframe id=\"sample\" src=\"/?arcana-diagnostic=1#/home\" title=\"Arcana test screen\"></iframe><script>\nconst report=document.getElementById('report'),sample=document.getElementById('sample');const out=[];let started=false;function print(m){out.push(m);report.textContent=out.join('\\n')}\nasync function resource(path){try{const r=await fetch(path,{cache:'no-store',signal:AbortSignal.timeout(8000)});print(path+' -> '+r.status)}catch(e){print(path+' -> '+String(e))}}\nasync function check(){if(started)return;started=true;print('Browser: '+navigator.userAgent.replace(/\\([^)]*\\)/g,'(device)').slice(0,125));await Promise.all(['/health','/src/app.js','/src/theme.js','/src/launch-navigation.js','/src/general-chat.js','/arcana-contour.css'].map(resource));\nawait new Promise(r=>setTimeout(r,1400));let doc;try{doc=sample.contentDocument}catch(e){print('Cannot inspect app frame: '+e);return;}if(!doc){print('App document unavailable');return;}\nconst main=doc.getElementById('content'),hero=doc.querySelector('.launchHero'),dock=doc.getElementById('arcanaDock');print('Page status: '+doc.readyState);print('Hero present: '+!!hero);if(hero){const rect=hero.getBoundingClientRect(),style=doc.defaultView.getComputedStyle(hero);print('Hero visible: '+(rect.width>100&&rect.height>100&&style.display!=='none'&&style.visibility!=='hidden')+' ('+Math.round(rect.width)+'x'+Math.round(rect.height)+')');}print('Dock present: '+!!dock+', buttons: '+(dock?.querySelectorAll('button').length||0));print('Text: '+(main?.innerText||'').trim().slice(0,220));print('Load recovery: '+(doc.querySelector('#arcanaLoadRecovery')?.innerText||'none').slice(0,240));\nif(!hero){print('Rechecking app module import…');const id='arcana-check-'+Date.now();await new Promise(resolve=>{const handler=e=>{if(e.data?.id!==id)return;window.removeEventListener('message',handler);print('Import result: '+String(e.data.message).slice(0,1500));resolve()};window.addEventListener('message',handler);const script=doc.createElement('script');script.type='module';script.textContent='import(\"/src/app.js?arcana-ui-check='+Date.now()+'\").then(()=>parent.postMessage({id:'+JSON.stringify(id)+',message:\"module imported successfully\"},\"*\")).catch(e=>parent.postMessage({id:'+JSON.stringify(id)+',message:String(e.stack||e.message||e)},\"*\"))';doc.body.append(script);setTimeout(()=>{window.removeEventListener('message',handler);resolve()},7000)})}\nelse{const tab=doc.querySelector('#arcanaDock [data-route=\"featured\"]');tab?.click();await new Promise(r=>setTimeout(r,500));print('Featured button works: '+!!doc.querySelector('.arcanaFeaturedPage'));doc.querySelector('#arcanaDock [data-route=\"home\"]')?.click();}\nprint('Browser check complete.')}\nsample.addEventListener('load',check);setTimeout(check,11000);document.getElementById('open').addEventListener('click',()=>location.assign('/?arcana-direct='+Date.now()+'#/home'));document.getElementById('copy').addEventListener('click',()=>navigator.clipboard.writeText(report.textContent).then(()=>document.getElementById('copy').textContent='Copied').catch(()=>window.prompt('Copy results',report.textContent)));\n</script></body></html>",{'content-type':'text/html; charset=utf-8','cache-control':'no-store'});return;}
+   if(pathname.startsWith('/api/account/builds')&&await safeAccountBuildRequest(req,res,parsedUrl))return;
+   if(pathname.startsWith('/api/account/farming-lists')&&await safeFarmingListRequest(req,res,parsedUrl))return;
   if((pathname.startsWith('/api/account/')||pathname.startsWith('/api/profiles/')||pathname.startsWith('/api/admin/roles/'))&&await safeAccountRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/community/')&&await safeCommunityRequest(req,res,parsedUrl))return;
+  if(pathname.startsWith('/api/guild-hub')&&await safeGuildHubRequest(req,res,parsedUrl))return;
+   if(pathname.startsWith('/api/chat/')&&await safeGeneralChatRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/beta/')&&await betaFeedbackRequest(req,res,parsedUrl))return;
   if(await handleWikiRequest(req,res,pathname))return;
+  if(await handleTrafficRequest(req,res,parsedUrl))return;
+  if(await safeSiteAdminRequest(req,res,parsedUrl))return;
+  if((req.method==='GET'||req.method==='HEAD')&&seoPageByPath(pathname)){
+   const indexable=host==='arcanacompanion.xyz';
+   const page=renderSeoPage(seoPageByPath(pathname),{indexable});
+   send(res,200,req.method==='HEAD'?null:page,{'content-type':'text/html; charset=utf-8','cache-control':'no-store',...(indexable?{}:{'x-robots-tag':'noindex, nofollow'})});
+   return;
+  }
+  if((req.method==='GET'||req.method==='HEAD')&&pathname.length>1&&pathname.endsWith('/')&&seoPageByPath(pathname.slice(0,-1))){
+   res.writeHead(308,{'location':pathname.slice(0,-1),'cache-control':'no-store'});res.end();return;
+  }
+  if(await handleJournalRequest(req,res,parsedUrl))return;
   if(req.method!=='GET'&&req.method!=='HEAD'){send(res,405,'Method not allowed');return;}
   if(pathname==='/health'||pathname==='/__health') {const art=await localArtAudit;const ok=!REQUIRE_LOCAL_ART||art.ready;json(res,ok?200:503,{ok,release:REVISION,source:'tracked frontend files',artwork:{local:art.ready,groups:art.groups,version:art.version||null},dependencyEndpoints:Object.keys(BASES)});return;}
   if(pathname==='/api/lfg/public'){await lfgFeed(res);return;}
+  if(pathname==='/api/pathfinder/recipes'){
+   try{
+    const recipe=await sourceBackedRecipes();
+    const headers={'cache-control':'public,max-age=900','vary':'Accept-Encoding'};
+    if(String(req.headers['accept-encoding']||'').includes('gzip')){
+     if(recipeZipRef!==recipe){recipeZip=gzipSync(Buffer.from(JSON.stringify(recipe)));recipeZipRef=recipe;}
+     send(res,200,req.method==='HEAD'?null:recipeZip,{'content-type':'application/json; charset=utf-8','content-encoding':'gzip',...headers});
+    }else json(res,200,recipe,headers);
+   }
+   catch(error){console.warn('PATHFINDER_SOURCE_UNAVAILABLE',String(error));json(res,503,{error:'Verified upgrade data unavailable. Costs hidden to avoid guesses.'},{'cache-control':'no-store'});}
+   return;
+  }
   if(pathname==='/api/search/catalog'){try{json(res,200,await verifiedCatalog(),{'cache-control':'no-store'});}catch(e){json(res,502,{error:'Verified catalog unavailable'});}return;}
   if(pathname==='/api/guilds'){await pipe(res,BASES.catalog+pathname,{mime:'application/json; charset=utf-8',limit:500000});return;}
   if(pathname==='/game-assets/map'||pathname==='/game-assets/atlas'||pathname==='/game-assets/skill-tree'){
@@ -133,7 +193,7 @@ const server=http.createServer(async(req,res)=>{
   }
   const normalized=pathname==='/'?'/index.html':pathname;
   // Serve only public frontend assets. Never expose account/session files or local Wiki data.
-  const publicPage=new Set(['/index.html','/privacy.html','/beta-rules.html','/styles.css','/wiki-studio.css','/community.css','/beta.css','/launch-navigation.css']).has(normalized);
+  const publicPage=new Set(['/index.html','/privacy.html','/beta-rules.html','/styles.css','/wiki-studio.css','/community.css','/guild-hub.css','/beta.css','/launch-navigation.css','/pathfinder-timeline.css','/quick-tools.css','/home-three.css','/arcana-contour.css','/theme-studio-finishes.css','/signature-themes.css','/theme-seamless.css','/psychedelic-themes.css','/desktop-home-refinement.css','/arcana-connected-ux.css','/home-atlas.css','/atlas-atelier-textures.css','/visual-art.css','/studio-v2.css','/studio-layers.css','/traffic.css','/admin.css','/journal.css','/journal-widgets.css','/journal-studio.js','/googledcf6cfe1a260efea.html']).has(normalized);
   const publicModule=/^\/src\/[a-z][a-z0-9-]*\.js$/.test(normalized);
   const publicAsset=/^\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.(?:webp|svg|png|jpg|jpeg|json)$/.test(normalized);
   if(!publicPage&&!publicModule&&!publicAsset){send(res,404,'Not found');return;}
@@ -143,7 +203,11 @@ const server=http.createServer(async(req,res)=>{
    const info=await stat(filename);
    if(!info.isFile()){send(res,404,'Not found');return;}
    const bytes=await readFile(filename);
-   send(res,200,req.method==='HEAD'?null:bytes,{'content-type':TYPES[extname(filename)]||'application/octet-stream','cache-control':/\.(?:html|js|css)$/.test(filename)?'no-store':'public,max-age=300'});
+   const cacheControl=/\.html$/.test(filename)?'no-store':/\.(?:js|css)$/.test(filename)?'no-cache, must-revalidate':'public,max-age=300';
+   const etag='"'+createHash('sha256').update(bytes).digest('hex').slice(0,22)+'"';
+   const headers={'content-type':TYPES[extname(filename)]||'application/octet-stream','cache-control':cacheControl,'etag':etag};
+   if(cacheControl!=='no-store'&&req.headers['if-none-match']===etag){send(res,304,null,headers);return;}
+   send(res,200,req.method==='HEAD'?null:bytes,headers);
   }catch{send(res,404,'Not found');}
  }catch(error){console.error('Arcana server error:',error);json(res,500,{error:'Internal error'});}
 });

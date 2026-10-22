@@ -6,9 +6,10 @@ export const NAV_DESTINATIONS=Object.freeze({
  guides:{label:'Read player guides',detail:'Practical Season 2 walkthroughs',route:'wiki/guides',icon:'book'},
  reference:{label:'Explore game references',detail:'Browse all verified entries',route:'wiki/library',params:{kind:'all'},icon:'search'},
  search:{label:'Search Arcana',detail:'Find items, tools and guides',action:'search',icon:'search'},
- upgrade:{label:'Calculate upgrade costs',detail:'Open the equipment calculator',route:'calculators/upgrade',icon:'calculator'},
+ upgrade:{label:'Calculate upgrade costs',detail:'Open the equipment calculator',route:'calculators/pathfinder',params:{view:'range'},icon:'calculator'},
+ pathfinder:{label:'Arcana Pathfinder',detail:'Browse every upgrade recipe without setting up a character',route:'calculators/pathfinder',icon:'layers'},
  farm:{label:'Compare ML farming speed',detail:'Compare your actual ML XP per second',route:'calculators/ml-farm',icon:'sword'},
- compare:{label:'Compare equipment',detail:'Review two equipment bases',route:'calculators/compare',icon:'compare'},
+ compare:{label:'Compare equipment',detail:'Review two equipment bases',route:'calculators/pathfinder',params:{view:'compare'},icon:'compare'},
  build:{label:'Open Build Studio',detail:'Plan gear, pets, skills and runes',route:'labs/build',icon:'flask'},
  runes:{label:'Rune Forge · Build Studio',detail:'Edit the rune grid in your build',route:'labs/runes',icon:'gem'},
  skills:{label:'Class Skills · Build Studio',detail:'Review class skill branches in your build',route:'labs/skills',icon:'git'},
@@ -17,7 +18,7 @@ export const NAV_DESTINATIONS=Object.freeze({
  compound:{label:'Calculate Pet Compound',detail:'Preview rarity and Drop Bonus',route:'calculators/pet',icon:'paw'},
  affixes:{label:'Calculate pet affix costs',detail:'Plan Pet Shards to a target level',route:'calculators/affixes',icon:'calculator'},
  guildtree:{label:'Plan guild skill points',detail:'Allocate, compare and share guild bonuses',route:'labs/guild-tree',icon:'shield'},
- guilds:{label:'Find a guild',detail:'Browse active recruitment listings',route:'lfg/guilds',icon:'users'},
+ guilds:{label:'Guild Hub',detail:'Browse registered guilds and community pages',route:'guilds',icon:'users'},
  raids:{label:'Find a raid',detail:'Browse live raid groups',route:'lfg/raids',icon:'users'},
  compoundGuide:{label:'Understand Pet Compound',detail:'Read the Wiki explanation',route:'wiki/article',params:{id:'pet-compound'},icon:'book'},
  runeGuide:{label:'Understand the Rune Grid',detail:'See Monster Level unlocks',route:'wiki/article',params:{id:'rune-grid'},icon:'book'},
@@ -40,14 +41,15 @@ export const NAV_DESTINATIONS=Object.freeze({
 });
 
 export const NAV_FLOWS=Object.freeze({
- calculators:['upgrade','compound','affixes','compare','farm'],
+ calculators:['upgrade','pathfinder','compound','affixes','compare','farm'],
  labs:['build','runes','skills','guildtree'],
  'calculators/ml-farm':['monsterGuide','biomeRecords','skillRecords'],
+ 'calculators/pathfinder':['build','materials','farm','upgrade'],
  'calculators/upgrade':['items','compare','forgeGuide','build'],
  'calculators/compare':['items','upgrade','rarityGuide','build'],
  'calculators/pet':['compoundGuide','petlab','petBonuses'],
  'calculators/affixes':['petAffixes','petlab','affixGuide'],
- 'labs/build':['guides','items','gemGuide','runes'],
+ 'labs/build':['pathfinder','guides','items','gemGuide','runes'],
  'labs/runes':['runeGuide','runewords','build'],
  'labs/skills':['skillRecords','passives','build'],
  'labs/passives':['seasonGuide','skills','build'],
@@ -96,7 +98,7 @@ export function relatedDestinations(route){
  return (NAV_FLOWS[route]||[]).map(navDestination).filter(Boolean);
 }
 export function connectedNext(route){
- if(['home','labs','calculators','wiki','lfg'].includes(route)||route.startsWith('wiki/')||route==='reference/detail')return '';
+ if(['home','labs','calculators','wiki','lfg','labs/build','labs/runes','labs/passives','labs/skills','calculators/pathfinder','calculators/upgrade','calculators/compare'].includes(route)||route.startsWith('wiki/')||route==='reference/detail')return '';
  const related=relatedDestinations(route);
  if(!related.length)return '';
  return '<section class="arcanaNext" aria-label="Recommended next steps"><div class="arcanaNextHead"><span class="eyebrow">CONNECTED ARCANA</span><h2>Where to next?</h2><p>Jump to a relevant guide, reference or tool. Your current work stays saved.</p></div>'+

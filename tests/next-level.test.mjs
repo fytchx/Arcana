@@ -40,6 +40,19 @@ test('Source-verified equipment and affix records link to appropriate explanatio
  assert.match(wikiRecordView(affix,[],'pet-affix'),/Pet Affix upgrade guide/);
 });
 
+test('Frenzy defeats do not count toward Monster Level XP farming estimates',()=>{
+ const article=wikiArticleById('monster-level');
+ const section=article.sections.find(x=>x.title==='Frenzy and Monster Level XP');
+ assert.ok(section,'Frenzy should have a distinct ML XP explanation in the guide');
+ assert.match(section.body,/Frenzy kills do not award Monster Level XP/);
+ const farm=farmCompareView({mode:'later',times:[1,1,1]});
+ assert.match(farm,/Frenzy kills do not grant Monster Level XP/);
+ assert.match(farm,/Exclude Frenzy kills/);
+ assert.match(farm,/seconds \/ XP kill/);
+ const same=compareFarm({mode:'earlier',times:[1,1,1]});
+ assert.equal(same.rows[0].rate,1,'Comparison uses only eligible measured kills, with no Frenzy multiplier');
+});
+
 test('ML farming comparator correctly weights post-Murky XP and measured kill times',()=>{
  assert.deepEqual(FARM_TIERS.map(t=>t.factor),[.9,1,1.1]);
  const result=compareFarm({mode:'later',times:[.8,1,1.2]});

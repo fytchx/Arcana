@@ -1,0 +1,74 @@
+/* Arcana Visual Art I: real vector-composed illustrations with separate pigment channels.
+   Artist-selected per-piece palettes generate SVG data URIs, never flattened filters.
+   All rules below are scoped to a deliberately selected Vision design. */
+.visionArtCollection{margin:4px 0 24px;padding:16px;background:color-mix(in srgb,var(--theme-secondary,#191e2b) 92%,#ffffff 8%);border:1px solid var(--line,#475066);border-radius:16px}
+.visionArtCollection>header{margin-bottom:17px}
+.visionArtCollection .launchEyebrow{font-size:10px;letter-spacing:.16em;color:var(--theme-highlight,#a98bff);font-weight:850}
+.visionArtCollection h3{margin:7px 0 5px;font:650 clamp(22px,4.5vw,28px)/1.15 Georgia,serif;color:var(--text,#f5f5fb)}
+.visionArtCollection header p{margin:0;font-size:12px;line-height:1.55;color:var(--muted,#b4bdd0)}
+.visionArtGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.visionArtChoice{padding:0;min-width:0;display:flex;flex-direction:column;text-align:left;background:color-mix(in srgb,var(--theme-main,#0b0f1c) 65%,var(--theme-secondary,#191e2b));border:1px solid color-mix(in srgb,var(--theme-border,#475066) 75%,transparent);border-radius:12px;overflow:hidden;color:var(--text,#f5f5fb);transition:border-color .2s,transform .2s,box-shadow .2s}
+.visionArtChoice:hover{border-color:var(--theme-highlight,#a98bff);transform:translateY(-2px)}
+.visionArtChoice[aria-pressed="true"]{border-color:var(--theme-highlight,#a98bff);box-shadow:inset 0 0 0 1px var(--theme-highlight,#a98bff),0 0 0 2px color-mix(in srgb,var(--theme-highlight,#a98bff) 20%,transparent)}
+.visionArtChoice:focus-visible{outline:2px solid var(--theme-highlight,#a98bff);outline-offset:2px}
+.visionArtThumb{display:block;flex:none;aspect-ratio:1.65;background:#12152d center /cover no-repeat;width:100%;border-bottom:1px solid #ffffff1c}
+.visionArtDetails{display:flex;flex-direction:column;gap:4px;min-width:0;padding:11px 12px 12px}
+.visionArtDetails strong{font:650 clamp(16px,3vw,19px)/1.15 Georgia,serif}
+.visionArtDetails small{color:var(--theme-highlight,#a98bff);font-size:10px;font-weight:760;letter-spacing:.04em}
+.visionArtDetails em{font-size:10px;line-height:1.45;color:var(--muted,#b4bdd0);font-style:normal}
+.visionArtPalette{margin-top:16px;padding:14px;background:color-mix(in srgb,var(--theme-main,#0b0f1c) 78%,transparent);border:1px solid color-mix(in srgb,var(--theme-highlight,#a98bff) 35%,var(--line,#51516a));border-radius:12px}
+.visionArtPalette[data-vision-active="false"]{display:none}
+.visionArtPalette h4{font-size:16px;margin:0 0 5px;font-weight:800}
+.visionArtPalette>p{margin:0 0 12px;font-size:11px;line-height:1.45;color:var(--muted,#b4bdd0)}
+.visionArtPaletteGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.visionArtPaletteGrid .designControl{min-width:0;margin:0}
+.visionArtPaletteGrid .designColorControl{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.visionArtPaletteGrid .designColorControl>span{flex:1 1 100%;font-size:11px}
+.visionArtPaletteGrid .designColorControl input[type=color]{width:38px;height:36px;flex:none}
+.visionArtPaletteGrid .designColorControl input[data-design-hex]{width:95px;max-width:calc(100% - 47px);flex:1 1 66px;min-width:0;font-size:11px}
+.visionArtPaletteGrid .designHexStatus{font-size:9px}
+@media(min-width:950px){.visionArtGrid{grid-template-columns:repeat(3,minmax(0,1fr))}.visionArtThumb{aspect-ratio:1.7}}
+@media(max-width:430px){.visionArtCollection{padding:11px}.visionArtGrid{gap:8px}.visionArtDetails{padding:8px}.visionArtDetails em{font-size:9px}.visionArtThumb{aspect-ratio:1.43}.visionArtPaletteGrid{gap:7px}}
+@media(prefers-reduced-motion:reduce){.visionArtChoice{transition:none}}
+/* The design picture lives behind readable content. The CSS overlays are
+   strictly UI contrast helpers; the SVG strokes themselves are recolored. */
+html[data-arcana-design-active="true"][data-arcana-design-pattern^="vision-"] #content.homeFullscreen:has(.atlasHome){
+ background-image:var(--arcana-visual-art)!important;
+ background-size:cover!important;background-repeat:no-repeat!important;background-position:center top!important;
+ background-attachment:local!important;
+}
+html[data-arcana-design-active="true"][data-arcana-design-pattern^="vision-"]:is([data-arcana-pattern-target="all"],[data-arcana-pattern-target="cards"]) .atlasHome :is(.atlasHero,.atlasTile,.atlasFeatureLink){
+ background-image:linear-gradient(0deg,color-mix(in srgb,var(--atlas-panel) 84%,transparent),color-mix(in srgb,var(--atlas-panel) 75%,transparent)),var(--arcana-visual-art)!important;
+ background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important;
+}
+html[data-arcana-design-active="true"][data-arcana-design-pattern^="vision-"][data-arcana-pattern-target="cards"] #content.homeFullscreen:has(.atlasHome){
+ background-image:none!important;
+}
+html[data-arcana-design-active="true"][data-arcana-design-pattern^="vision-"][data-arcana-pattern-target="background"] .atlasHome :is(.atlasHero,.atlasTile,.atlasFeatureLink){
+ background-image:none!important;
+}
+html[data-arcana-design-active="true"][data-arcana-design-pattern^="vision-"] #content:not(.homeFullscreen){
+ background-image:linear-gradient(180deg,color-mix(in srgb,var(--theme-main,#0b0f1c) 91%,transparent),color-mix(in srgb,var(--theme-main,#0b0f1c) 97%,transparent)),var(--arcana-visual-art)!important;
+ background-repeat:no-repeat!important;background-size:cover!important;background-position:center top!important;
+}
+.miniCanvas[data-mini-pattern^="vision-"][data-mini-pattern-target="background"]{background-image:var(--vision-mini-art)!important;background-size:cover!important;background-position:center!important}
+.miniCanvas[data-mini-pattern^="vision-"]:not([data-mini-pattern-target="background"]) .miniHome .atlasMiniTile,
+.miniCanvas[data-mini-pattern^="vision-"]:not([data-mini-pattern-target="background"]) .miniHome .atlasMiniHero{
+ background-image:linear-gradient(color-mix(in srgb,var(--mini-panel) 78%,transparent),color-mix(in srgb,var(--mini-panel) 78%,transparent)),var(--vision-mini-art)!important;background-size:cover!important;background-position:center!important
+}
+.miniCanvas[data-mini-pattern^="vision-"] .miniHome .atlasMiniTile:before{display:none!important}
+html[data-arcana-design-pattern^="vision-"] .themePatternThumb[data-preview-pattern^="vision-"]{background-color:#131328!important}
+
+/* Per-composition crop anchors keep each illustrated subject readable at narrow widths. */
+html[data-arcana-design-pattern="vision-violet-fault"],.miniCanvas[data-mini-pattern="vision-violet-fault"],.themePatternThumb[data-preview-pattern="vision-violet-fault"]{--vision-composition-position:center top}
+html[data-arcana-design-pattern="vision-pulse-terrain"],.miniCanvas[data-mini-pattern="vision-pulse-terrain"],.themePatternThumb[data-preview-pattern="vision-pulse-terrain"]{--vision-composition-position:center 45%}
+html[data-arcana-design-pattern="vision-ribbon-bloom"],.miniCanvas[data-mini-pattern="vision-ribbon-bloom"],.themePatternThumb[data-preview-pattern="vision-ribbon-bloom"]{--vision-composition-position:center 45%}
+html[data-arcana-design-pattern="vision-veil-current"],.miniCanvas[data-mini-pattern="vision-veil-current"],.themePatternThumb[data-preview-pattern="vision-veil-current"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-arcflow"],.miniCanvas[data-mini-pattern="vision-arcflow"],.themePatternThumb[data-preview-pattern="vision-arcflow"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-contour-drift"],.miniCanvas[data-mini-pattern="vision-contour-drift"],.themePatternThumb[data-preview-pattern="vision-contour-drift"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-monowave"],.miniCanvas[data-mini-pattern="vision-monowave"],.themePatternThumb[data-preview-pattern="vision-monowave"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-ink-lattice"],.miniCanvas[data-mini-pattern="vision-ink-lattice"],.themePatternThumb[data-preview-pattern="vision-ink-lattice"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-signal-bloom"],.miniCanvas[data-mini-pattern="vision-signal-bloom"],.themePatternThumb[data-preview-pattern="vision-signal-bloom"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-vector-halo"],.miniCanvas[data-mini-pattern="vision-vector-halo"],.themePatternThumb[data-preview-pattern="vision-vector-halo"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-crownspace"],.miniCanvas[data-mini-pattern="vision-crownspace"],.themePatternThumb[data-preview-pattern="vision-crownspace"]{--vision-composition-position:center center}
+html[data-arcana-design-pattern="vision-aether-frame"],.miniCanvas[data-mini-pattern="vision-aether-frame"],.themePatternThumb[data-preview-pattern="vision-aether-frame"]{--vision-composition-position:right center}

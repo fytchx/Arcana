@@ -100,23 +100,8 @@ with sync_playwright() as p:
         assert page.locator('.arcanaIconCatalogItem').count()==144,"Entire SVG gallery did not render"
         assert page.evaluate("document.documentElement.scrollWidth<=innerWidth+3"),"Icon gallery overflows mobile"
         print("Icon library:",page.locator('.arcanaIconCatalogItem').count(),"SVG assets")
-
-        page.goto(URL+"#/refined-icons",wait_until="domcontentloaded",timeout=30000)
-        page.locator('.refinedGalleryTile').first.wait_for(timeout=16000)
-        assert page.locator('.refinedGalleryTile').count()==62,"Complete custom vector icon pack missing"
-        assert page.locator('.refinedGallerySection').count()==5,"Refined asset families missing"
-        assert page.locator('.refinedGalleryTile .arcanaRefinedIcon').count()==62,"Inline SVG vectors did not mount"
-        assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'),"Refined gallery overflowed mobile"
-        svg_response=page.request.get(URL.rstrip('/')+"/assets/icons/idlearc-refined/equipment/equipment-head.svg")
-        assert svg_response.status==200 and 'svg' in svg_response.headers.get('content-type',''),"Standalone illustrated asset did not serve"
-        page.screenshot(path=str(out/"arcana-refined-svg-gallery.png"),full_page=True)
-        print("IdleArc Refined gallery: 62 individually served SVG artworks",flush=True)
-
         page.goto(URL+"#/home",wait_until="domcontentloaded",timeout=30000)
         page.locator('.launchQuickCard').first.wait_for(timeout=16000)
-        assert page.locator('.launchQuickCard .arcanaRefinedIcon').count()==6,'Home does not use the approved custom icon family'
-        assert page.locator('.launchHeroArt .arcanaRefinedIcon').count()==1,'Mystical hero missing custom icon'
-
         textured=page.evaluate("""() => {
           const hero=document.querySelector('.launchHero'),
                 card=document.querySelector('.launchQuickCard'),
@@ -149,11 +134,6 @@ with sync_playwright() as p:
         page.evaluate("window.scrollTo(0,0)")
         assert page.locator(".studioPrimaryEquipment .loadoutSlot").count()==13,"Live loadout lost gear slots"
         assert page.locator(".studioPrimaryEquipment .arcanaSilhouette").count()==13,"Live equipment silhouettes not applied"
-        assert page.locator(".studioPrimaryEquipment .arcanaRefinedIcon").count()==13,"Rendered illustrated Refined equipment art absent"
-        assert page.locator(".studioProfileVisual .arcanaRefinedIcon").count()==1,"Custom class art missing from build profile"
-        assert page.locator(".studioPage .labsTab .arcanaRefinedIcon").count()==4,"Class Skills, Rune Forge, Passive and Studio tabs must share art family"
-        page.screenshot(path=str(out/"arcana-refined-build-studio.png"),full_page=True)
-
         assert page.locator(".studioProfileVisual .arcanaSilhouette").count()==1,"Class profile emblem missing"
         assert page.locator(".pageHead").count()==0,"Old oversized heading still present"
         assert page.locator(".launchReturnHome").count()==0,"Duplicate home bar returned"

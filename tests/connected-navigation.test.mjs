@@ -6,7 +6,7 @@ import {WIKI_ARTICLES,WIKI_CONNECTIONS,WIKI_CATEGORY_LIST,wikiArticleById} from 
 import {wikiArticleView,wikiRecordView,wikiLibraryView,wikiLandingView} from '../src/wiki-views.js';
 
 const app=()=>readFile(new URL('../src/app.js',import.meta.url),'utf8');
-const allRoutes=new Set(['home','labs','calculators','wiki','lfg','labs/build','labs/runes','labs/skills','labs/passives','labs/pets','labs/guild-tree','calculators/pet','calculators/affixes','calculators/upgrade','calculators/compare','calculators/ml-farm','lfg/raids','lfg/guilds','wiki/guides','wiki/article','wiki/library']);
+const allRoutes=new Set(['home','labs','calculators','wiki','lfg','labs/build','labs/runes','labs/skills','labs/passives','labs/pets','labs/guild-tree','calculators/pet','calculators/affixes','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/ml-farm','lfg/raids','lfg/guilds','guilds','wiki/guides','wiki/article','wiki/library']);
 
 test('Every recommended next step has an actual registered destination',()=>{
  for(const [page,keys] of Object.entries(NAV_FLOWS)){
@@ -58,7 +58,8 @@ test('Context cards emit navigable controls with escaped labels and query params
 test('Tool journeys and home quick actions are rendered with real controls',()=>{
  const panel=connectedNext('labs/guild-tree');
  assert.match(panel,/Recommended next steps/);
- assert.match(panel,/Find a guild/);
+ assert.match(panel,/Guild Hub/);
+ assert.match(panel,/data-route="guilds"/);
  assert.match(panel,/Read player guides|Season 2 essentials/);
  assert.equal(connectedNext('wiki/article'),'');
  assert.equal(connectedNext('home'),'');
@@ -95,8 +96,8 @@ test('Codex records connect to the correct calculators for different mechanics',
 
 test('Wiki collection and home include obvious connected destinations',()=>{
  const html=wikiLandingView({loaded:true,itemCount:200});
- assert.match(html,/wikiPortalShortcuts/);
- assert.match(html,/Plan guild skill points/);
+ assert.match(html,/wikiV1Categories/);
+ assert.match(html,/Item Codex/);
  const library=wikiLibraryView({category:'item',entries:[],loaded:true});
  assert.match(library,/wikiCollectionNext/);
  assert.match(library,/Compare equipment/);
@@ -104,13 +105,16 @@ test('Wiki collection and home include obvious connected destinations',()=>{
 
 test('Application keeps connected destinations and exposes a universal home path',async()=>{
  const code=await app();
- assert.match(code,/globalHomeBar\(dest\)/);
- assert.match(code,/homeScreen\(\)/);
+ assert.doesNotMatch(code,/globalHomeBar\(dest\)/);
+  assert.match(code,/node\('content'\)\.innerHTML=simpleBackBar\(dest\)\+siteNoticeMarkup\(dest\)\+routeView\(\)/);
+ assert.ok(code.includes('function home(){return homeScreen();}'));
  assert.match(code,/case 'directory':return directoryView\(\)/);
- assert.match(code,/case 'wiki\/topic':return wikiTopicView/);
- assert.match(code,/case 'homemenu':showHomeMenu\(arg\)/);
+ assert.match(code,/case 'wiki\/category':return wikiCategory/);
+ assert.match(code,/case 'homemenu':if\(arg==='pathfinder'\)go\('calculators\/pathfinder'\)/);
  assert.match(code,/case 'labs':return buildStudio\(\)/);
- assert.match(code,/node\('searchBtn'\)\.onclick/);
+ assert.match(code,/syncAdminPortal\(\)/);
+  assert.match(code,/function searchFeatured\(/);
+  assert.match(code,/case 'search':showSearch/);
  assert.match(code,/data-route="home"/);
  assert.match(code,/SEARCHABLE_TOOLS/);
  assert.match(code,/searchExtras\(\)\.find\(x=>x\.id===id\)/);

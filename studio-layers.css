@@ -1,0 +1,84 @@
+/* Font families are licensed open-source families served by Google Fonts.
+ * Local fallbacks work when fonts are blocked or a user is offline. */
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;600;700&family=Fraunces:wght@400;600;700&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&family=Manrope:wght@400;600;700&family=Merriweather:wght@400;700&family=Outfit:wght@400;600;700&family=Playfair+Display:wght@400;600;700&family=Rubik:wght@400;600;700&family=Sora:wght@400;600;700&family=Space+Grotesk:wght@400;600;700&display=swap');
+/* Page art, panels, and Build Studio feature are three real independent images.
+ * Later selectors deliberately trump earlier legacy all-or-nothing behavior. */
+html[data-arcana-design-active=true][data-arcana-art-layered=true] #content.homeFullscreen:has(.atlasHome){
+ background-color:var(--theme-main,#0d1019)!important;
+ background-image:var(--arcana-art-background,none)!important;
+ background-size:cover!important;
+ background-position:center top!important;
+ background-repeat:no-repeat!important;
+}
+html[data-arcana-design-active=true][data-arcana-art-layered=true] #content:not(.homeFullscreen){
+ background-color:var(--theme-main,#0d1019)!important;
+ background-image:linear-gradient(color-mix(in srgb,var(--theme-main,#0d1019) 92%,transparent),color-mix(in srgb,var(--theme-main,#0d1019) 92%,transparent)),var(--arcana-art-background,none)!important;
+ background-size:cover!important;
+ background-position:center top!important;
+ background-repeat:no-repeat!important;
+}
+/* Panels deliberately exclude the Build Studio hero. */
+html[data-arcana-design-active=true][data-arcana-art-layered=true] #content.homeFullscreen .atlasHome :is(.atlasTile,.atlasFeatureLink,.atlasUpdate,.atlasJournalStory){
+ background-color:var(--atlas-panel)!important;
+ background-image:linear-gradient(color-mix(in srgb,var(--atlas-panel) var(--arcana-panel-opacity-percent,88%),transparent),color-mix(in srgb,var(--atlas-panel) var(--arcana-panel-opacity-percent,88%),transparent)),var(--arcana-art-panels,none)!important;
+ background-size:cover!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+}
+html[data-arcana-design-active=true][data-arcana-art-layered=true] #content.homeFullscreen .atlasHome .atlasHero{
+ background-color:var(--atlas-panel)!important;
+ background-image:linear-gradient(105deg,color-mix(in srgb,var(--atlas-panel) 88%,transparent),color-mix(in srgb,var(--atlas-panel) 78%,transparent)),var(--arcana-art-feature,none)!important;
+ background-size:cover!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+}
+/* Miniature matches the full actual-site preview, including all three layers. */
+.miniCanvas[data-art-layered=true][data-mini-pattern][data-mini-pattern-target] .miniHome{
+ background-image:var(--mini-art-background,none)!important;
+ background-size:cover!important;
+ background-position:center top!important;
+ background-repeat:no-repeat!important;
+}
+.miniCanvas[data-art-layered=true][data-mini-pattern][data-mini-pattern-target] .miniHome :is(.atlasMiniTile,.atlasMiniPatch){
+ background-image:linear-gradient(color-mix(in srgb,var(--mini-panel) var(--mini-panel-opacity-percent,88%),transparent),color-mix(in srgb,var(--mini-panel) var(--mini-panel-opacity-percent,88%),transparent)),var(--mini-art-panels,none)!important;
+ background-position:center!important;background-size:cover!important;
+ background-repeat:no-repeat!important;
+}
+.miniCanvas[data-art-layered=true][data-mini-pattern][data-mini-pattern-target] .miniHome .atlasMiniHero{
+ background-image:linear-gradient(color-mix(in srgb,var(--mini-panel) 84%,transparent),color-mix(in srgb,var(--mini-panel) 74%,transparent)),var(--mini-art-feature,none)!important;
+ background-position:center!important;background-size:cover!important;
+ background-repeat:no-repeat!important;
+}
+/* Typography: body + heading families are independent and previewed everywhere. */
+html[data-arcana-design-active=true] #content{font-family:var(--arcana-design-font-family,system-ui,sans-serif)!important}
+html[data-arcana-design-active=true] #content :is(h1,h2,h3,h4,h5,.atlasHeroText strong,.atlasTileCopy strong,.atlasJournalStory strong,.atlasJournalExtra strong,.atlasFeatureLink strong,.atlasSectionHead h2){
+ font-family:var(--arcana-design-heading-font-family,Georgia,serif)!important;
+}
+.miniCanvas .miniHome,.miniCanvas .miniPage{font-family:var(--mini-font-family,system-ui,sans-serif)!important}
+.miniCanvas :is(.atlasMiniHero strong,.atlasMiniTile b,.miniHero b,.miniTile b){font-family:var(--mini-heading-font-family,Georgia,serif)!important}
+.studioLayerCard{margin:12px 0;padding:14px;border:1px solid var(--studio-line,#60667a);border-radius:13px;background:color-mix(in srgb,var(--theme-main,#0d1019) 62%,var(--theme-secondary,#191e2b));}
+.studioLayerHead{display:flex;align-items:flex-start;gap:12px;margin-bottom:13px}
+.studioLayerPreview{flex:none;display:block;width:98px;aspect-ratio:1.6;max-width:36%;border-radius:9px;border:1px solid #ffffff2b;background-color:var(--theme-main,#0d1019);background-position:center;background-size:cover;background-repeat:no-repeat}
+.studioLayerPreview[data-empty=true]{background:linear-gradient(135deg,#1c2231,#131621);position:relative}
+.studioLayerPreview[data-empty=true]:after{content:"NO ART";display:block;color:#9aa2b8;font:700 9px system-ui;text-align:center;padding-top:22%}
+.studioLayerHead h4{margin:0 0 6px;font:650 clamp(17px,3.4vw,21px)/1.15 Georgia,serif}
+.studioLayerHead p{margin:0;font-size:11px;line-height:1.5;color:var(--muted,#b4bdd0)}
+.studioLayerCard .designOptionControls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.studioLayerCard .designOptionControls .studioSelect{grid-column:1/-1}
+.studioLayerColors{margin-top:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.studioLayerCard[data-layer-inherited=true] .studioLayerColors{display:none}
+.studioLayerCard[data-layer-inherited=true] .studioLayerHint:after{content:" Inherits artwork and colors from the preceding surface.";color:var(--theme-highlight,#a98bff)}
+.studioLayerCard[data-layer-absent=true] .studioLayerColors{display:none}
+.studioLayerCard[data-layer-absent=true] .studioLayerHint:after{content:" No illustration is applied here.";color:var(--muted,#b4bdd0)}
+.studioLayerHint{font-size:11px;color:var(--muted,#b4bdd0);line-height:1.4}
+.studioLayerCard .designControl{min-width:0;display:flex;flex-direction:column;gap:6px;font-size:11px}
+.studioLayerCard .designControl>span:first-child{font-weight:750}
+.studioLayerCard .designControl select{width:100%;min-height:42px;background:var(--theme-secondary,#191e2b);color:var(--text,#f5f5fb);border:1px solid var(--studio-line);border-radius:9px;padding:8px}
+.studioLayerCard .studioColorPair{display:flex;min-width:0;gap:6px}
+.studioLayerCard .studioColorPair input[type=color]{width:36px;height:37px;flex:none}
+.studioLayerCard .studioColorPair input[data-design-hex]{width:0;min-width:0;flex:1;height:37px;font-size:10px;background:var(--theme-secondary,#191e2b);border:1px solid var(--studio-line);color:var(--text,#f5f5fb);padding:5px;border-radius:7px}
+.studioFontsSample{display:grid;gap:9px;grid-column:1/-1;border:1px solid var(--studio-line);border-radius:12px;padding:16px;margin-top:6px;background:var(--theme-main,#0d1019);color:var(--text,#fff)}
+.studioFontsSample strong{font-family:var(--studio-sample-heading,Georgia,serif);font-size:clamp(22px,4.5vw,30px);font-weight:650;line-height:1.2}
+.studioFontsSample span{font-family:var(--studio-sample-body,system-ui,sans-serif);font-size:12px;line-height:1.5;color:var(--muted,#b4bdd0)}
+@media(max-width:480px){.studioLayerCard{padding:10px}.studioLayerPreview{width:75px}.studioLayerHead{gap:9px}.studioLayerColors{gap:6px}}
+@media(prefers-reduced-motion:reduce){.studioLayerCard,.studioLayerPreview{transition:none}}

@@ -4,21 +4,21 @@ import {readFile} from 'node:fs/promises';
 import {HOME_CARDS,HOME_MENUS,DIRECTORY,WIKI_TOPICS,homeScreen,homeSubmenu,directoryView,wikiTopicView,userCenterView,settingsView} from '../src/launch-navigation.js';
 import {ACCENT_PRESETS,selectedAccent,setAccent,themeStatus} from '../src/theme.js';
 
-const routes=new Set(['home','directory','user','recent','settings','icons','refined-icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','community','community/create','account','beta','lfg/raids','lfg/guilds']);
-test('six home cards open real submenu groups',()=>{
- assert.deepEqual(HOME_CARDS.map(x=>x.title),['Wiki','Tools','Guides','Builds','Codex','Guild & Raid Finder']);
+const routes=new Set(['journal','journal-studio','journal-balance','home','directory','user','recent','settings','icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/category','wiki/items','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','calculators/damage','community','community/create','account','beta','lfg/raids','lfg/guilds','guilds','guilds/crest']);
+test('six Atlas tiles open real Arcana destinations',()=>{
+ assert.deepEqual(HOME_CARDS.map(x=>x.title),['Pathfinder','Tools','Guilds & Community']);
  const html=homeScreen();
- assert.equal((html.match(/data-action="homemenu"/g)||[]).length,6);
- assert.match(html,/BUILD STUDIO|Build Studio/);
+ assert.equal((html.match(/class="atlasTile"/g)||[]).length,6);
+ assert.equal((html.match(/data-action="homemenu"/g)||[]).length,1);
  assert.match(html,/data-route="labs\/build"/);
- assert.match(html,/Useful &amp; Featured/);
- assert.match(html,/data-route="directory"/);
- assert.equal((html.match(/data-refined-icon="feature-/g)||[]).length,11);
+ assert.match(html,/data-route="calculators\/pathfinder"/);
+ assert.match(html,/data-action="homemenu" data-arg="tools"/);
+ for(const route of ['wiki/guides','wiki','community','guilds','directory'])assert.match(html,new RegExp('data-route="'+route+'"'));
  for(const card of HOME_CARDS){const popup=homeSubmenu(card.id);assert.ok(popup.includes(card.title.replaceAll('&','&amp;')));assert.match(popup,/launchNavRow/);}
 });
 test('all submenu and A-Z destinations are resolvable routes',()=>{
  for(const [id,group] of Object.entries(HOME_MENUS)){
-  assert.ok(group.title&&group.links.length>=4,id);
+  assert.ok(group.title&&group.links.length>=(id==='pathfinder'?1:4),id);
   for(const destination of group.links)assert.ok(routes.has(destination.route),id+' -> '+destination.route);
  }
  assert.ok(DIRECTORY.length>20);
@@ -29,8 +29,8 @@ test('all submenu and A-Z destinations are resolvable routes',()=>{
 test('topic shells are navigable, safely escaped and do not invent article content',()=>{
  for(const topic of WIKI_TOPICS){
   const html=wikiTopicView(topic.slug);
-  assert.match(html,/Navigation is ready/);
-  assert.ok(html.includes(topic.title));
+  assert.match(html,/View published articles/);
+  assert.ok(html.includes(topic.title.replaceAll('&','&amp;')));
   assert.match(html,/data-route/);
  }
  assert.equal(wikiTopicView('no-such-topic'),null);
@@ -43,10 +43,13 @@ test('topic shells are navigable, safely escaped and do not invent article conte
 test('global home control is registered and the old bottom nav is absent',async()=>{
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
- assert.match(html,/id="searchBtn"/);
+ assert.match(html,/id="adminPortalBtn"/);
+  assert.match(html,/data-dock="search"/);
+  assert.doesNotMatch(html,/id="searchBtn"/);
  assert.match(html,/id="accountBtn"/);
  assert.doesNotMatch(html,/id="bottomNav"/);
- assert.match(app,/launchReturnHome/);
+ assert.doesNotMatch(app,/function globalHomeBar/);
+  assert.match(html,/id="arcanaDock"/);
  assert.match(app,/data-route="home"/);
  assert.match(app,/showHomeMenu/);
  assert.match(settingsView(),/data-app-pref="reduceMotion"/);
@@ -64,32 +67,35 @@ test('every homepage stylesheet is publicly served by the Arcana server',async()
  }
 });
 
-test('Slate keeps every original accent and saves personal selection safely',async()=>{
+test('only administrators set appearance; users can keep reduced motion',async()=>{
  assert.equal(ACCENT_PRESETS.length,10);
  assert.deepEqual(ACCENT_PRESETS.map(x=>x.name),[
   'Neon Green','Arcane Violet','Cyan Blue','Magenta Pink','Amber Gold',
   'Crimson Red','Ice Teal','Electric Lime','Royal Indigo','White Silver']);
- const previous=globalThis.localStorage;
- const saved=new Map();
- try{
-  globalThis.localStorage={getItem:key=>saved.get(key)??null,setItem:(key,value)=>saved.set(key,value)};
-  assert.equal(selectedAccent(),'arcane-violet');
-  assert.match(settingsView(),/slateAccentGrid/);
-  assert.equal((settingsView().match(/class="slateAccentChoice/g)||[]).length,10);
-  assert.equal(setAccent('cyan-blue'),true);
-  assert.equal(selectedAccent(),'cyan-blue');
-  assert.equal(themeStatus().palette.highlight,'#13C5F4');
-  assert.equal(themeStatus().palette.main,'#0D1019');
-  assert.match(settingsView(),/data-arg="cyan-blue" aria-pressed="true"/);
-  assert.equal(setAccent('not-a-theme'),false);
-  assert.equal(selectedAccent(),'cyan-blue');
-  assert.equal(setAccent('site'),true);
-  assert.equal(selectedAccent(),'site');
- }finally{
-  if(previous===undefined)delete globalThis.localStorage;
-  else globalThis.localStorage=previous;
- }
+ const publicSettings=settingsView(),adminSettings=settingsView({admin:true});
+ assert.doesNotMatch(publicSettings,/slateAccentGrid|arcanaDesignLab|Design Workshop · Locked/);
+ assert.doesNotMatch(adminSettings,/data-action="accent"|data-design-field=/);
+ assert.match(publicSettings,/Reduce motion/);
+ assert.match(publicSettings,/managed centrally by Arcana administrators/);
  const css=await readFile(new URL('../launch-navigation.css',import.meta.url),'utf8');
  assert.match(css,/ARCANA SLATE/);
  assert.match(css,/grid-template-columns:minmax\(0,1fr\)/);
 });
+
+
+test('Atlas home presents Studio above six destinations and a dynamic Journal',async()=>{
+ const html=homeScreen();
+ assert.match(html,/class="atlasUpdate"/);
+ assert.match(html,/class="atlasHero"/);
+ assert.match(html,/class="atlasTileGrid"/);
+ assert.match(html,/class="atlasJournal"/);
+ assert.match(html,/idlearc-1-3-7-the-timing-couldnt-be-better/);
+ assert.ok(html.indexOf('atlasHero')<html.indexOf('atlasTileGrid'));
+ assert.ok(html.indexOf('atlasTileGrid')<html.indexOf('atlasJournal'));
+ assert.equal((html.match(/class="atlasTile"/g)||[]).length,6);
+ const stylesheet=await readFile(new URL('../home-atlas.css',import.meta.url),'utf8');
+ assert.match(stylesheet,/\.atlasHome/);
+ assert.match(stylesheet,/\.atlasTileGrid/);
+ assert.match(stylesheet,/@media\(max-width:520px\)/);
+});
+

@@ -1,0 +1,255 @@
+/* Arcana Quick Tools: three-second tasks before deep work. Scoped to preview branch. */
+.quickDashboard{width:100%;display:grid;gap:12px;position:relative;z-index:1}
+.quickAccessLabel{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.quickAccessLabel h2{margin:0;font-size:clamp(17px,3vw,21px);letter-spacing:-.03em}
+.quickAccessLabel small{font-size:11px;color:var(--muted)}
+.quickActions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.quickAction{position:relative;min-height:66px;display:flex;align-items:center;text-align:left;gap:11px;border-radius:12px;padding:12px;border:1px solid color-mix(in srgb,var(--theme-highlight) 29%,var(--line));background:color-mix(in srgb,var(--theme-secondary) 90%,var(--theme-main));color:var(--text);transition:border .14s,transform .14s}
+.quickAction:hover,.quickAction:focus-visible{border-color:var(--theme-highlight);transform:translateY(-1px)}
+.quickActionIcon{width:35px;height:35px;border-radius:10px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--theme-highlight) 17%,var(--theme-secondary));color:var(--theme-highlight)}
+.quickActionText{min-width:0;display:grid;gap:2px}.quickActionText strong{font-size:13px;line-height:1.3}.quickActionText small{font-size:11px;color:var(--muted);line-height:1.35}
+.quickCosts{background:color-mix(in srgb,var(--theme-secondary) 95%,var(--theme-main));border:1px solid color-mix(in srgb,var(--theme-highlight) 27%,var(--line));border-radius:14px;padding:16px 17px;display:grid;gap:11px;color:var(--text)}
+.quickCostsHead{display:flex;gap:10px;justify-content:space-between;align-items:center}.quickCostsHead h2,.quickCostsFull h2{font-size:21px;letter-spacing:-.035em;line-height:1.2;margin:3px 0}.quickCostsHead p,.quickCostsFull>p{color:var(--muted);font-size:12px;margin:3px 0}
+.quickEyebrow{font-size:10px;letter-spacing:.11em;font-weight:800;color:var(--theme-highlight);text-transform:uppercase}
+.quickHint{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:5px 9px;white-space:nowrap}
+.quickEndpoints{display:grid;grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr);gap:8px;align-items:center}
+.quickEndpoints fieldset{padding:10px 11px 11px;margin:0;border:1px solid color-mix(in srgb,var(--theme-highlight) 20%,var(--line));border-radius:11px;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:8px;background:color-mix(in srgb,var(--theme-main) 55%,transparent)}
+.quickEndpoints legend{font-size:10px;font-weight:850;color:var(--theme-highlight);padding:0 5px;letter-spacing:.08em}
+.quickEndpoints label{display:grid;gap:5px;min-width:0}.quickEndpoints label span{font-size:10px;color:var(--muted)}
+.quickEndpoints select{width:100%;max-width:100%;min-height:40px;background:var(--theme-main);color:var(--text);border:1px solid color-mix(in srgb,var(--theme-highlight) 26%,var(--line));padding:7px;border-radius:8px;font-size:13px;font-weight:760}
+.quickEndpoints select:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:1px}
+.quickArrow{font-size:25px;line-height:1;text-align:center;color:var(--theme-highlight);align-self:center;margin-top:8px}
+.quickTotals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.quickTotals>div{padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:color-mix(in srgb,var(--theme-main) 58%,transparent);display:grid;gap:2px;min-width:0}
+.quickTotals small{font-size:10px;color:var(--muted)}.quickTotals strong{font-size:clamp(15px,2.4vw,21px);letter-spacing:-.025em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.quickMaterialList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 9px}
+.quickMaterial{padding:7px 9px;border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:7px;background:color-mix(in srgb,var(--theme-main) 35%,transparent);display:flex;justify-content:space-between;align-items:center;gap:12px;min-width:0;font-size:11px}
+.quickMaterial strong{font-weight:800;font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}.quickMaterial span{overflow-wrap:anywhere}
+.quickMaterialDetails{border-top:1px solid var(--line);padding-top:7px}
+.quickMaterialDetails:not([open]){margin-top:-2px}.quickMaterialDetails summary{cursor:pointer;font-weight:700;font-size:11px;color:var(--theme-highlight);padding:4px 0}
+.quickMaterialDetails .quickMaterialList{margin-top:7px}.quickMaterialDetails .quickMaterialList:empty{display:none}
+.quickCostsHome .quickMaterialDetails:not([open]){padding-top:0;border:0}.quickCostsFull .quickMaterialList{gap:8px}
+.quickCostsHome .quickMaterialList+.quickMoreLabel{font-size:10px;color:var(--muted)}
+.quickCostsExtra{display:flex;justify-content:flex-end}.quickCostsExtra button{border:0;background:transparent;color:var(--theme-highlight);font-weight:800;font-size:11px;padding:4px 1px;cursor:pointer}
+.quickSource,.quickEmpty{font-size:10px;line-height:1.55;color:var(--muted);margin:0}.quickWaiting{padding:16px 4px;color:var(--muted);font-size:12px}.quickSpinner{display:inline-block;width:12px;height:12px;border:2px solid var(--line);border-top-color:var(--theme-highlight);border-radius:50%;animation:quickspin .8s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes quickspin{to{transform:rotate(360deg)}}.quickError{border:1px solid #bc7388;color:#ffd6df;background:#381b2b;padding:10px;border-radius:8px;font-size:12px}
+.pathfinderHub .quickCosts{margin-top:0}.pathfinderHubContent>.quickCosts{border:0;background:transparent;padding:0}.pathfinderHubTabs{overflow:auto;scrollbar-width:thin}
+.damageLab{max-width:1100px;margin:auto;display:grid;gap:15px}.damageLabHead h1{margin:3px 0;font-size:29px}.damageLabHead p{margin:0;color:var(--muted);font-size:13px}
+.damageModelWarning{padding:13px 15px;line-height:1.6;font-size:12px;color:#dfd3ec;background:color-mix(in srgb,var(--theme-highlight) 9%,var(--theme-secondary));border:1px solid color-mix(in srgb,var(--theme-highlight) 30%,var(--line));border-radius:10px}
+.damageModelWarning strong{display:block;color:var(--text);margin-bottom:3px}
+.damagePanel{padding:17px;border:1px solid var(--line);background:var(--theme-secondary);border-radius:12px}.damagePanel h2{margin:0 0 8px;font-size:18px}.damagePanel p{color:var(--muted);margin:0 0 12px;font-size:12px}
+.damageFieldGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.damageField,.damageScenarioSelect{display:grid;gap:5px;min-width:0;font-size:12px;font-weight:750}.damageField span,.damageScenarioSelect span{color:var(--muted);font-size:11px}
+.damageField input,.damageField select,.damageScenarioSelect select{min-height:42px;width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--theme-main);color:var(--text);font-size:14px}
+.damageField small{font-size:10px;line-height:1.5;color:var(--muted);font-weight:400}
+.damageBaseline{margin-top:14px;padding:12px 14px;border-radius:9px;background:color-mix(in srgb,var(--theme-highlight) 10%,var(--theme-secondary));font-size:13px}.damageBaseline strong{font-size:18px}
+.damageCompareGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.damageOption{padding:13px;border-radius:10px;border:1px solid var(--line);display:grid;gap:10px}
+.damageOption h3{font-size:16px;margin:0}.damageOutcome{display:grid;gap:4px;padding-top:10px;border-top:1px solid var(--line)}.damageOutcome>span{font-size:11px;color:var(--muted)}
+.damageOutcome strong{font-size:31px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.damageOutcome strong.damagePositive{color:var(--theme-highlight)}.damageOutcome small{color:var(--muted);font-size:11px;line-height:1.4}
+.damageVerdict{font-size:13px;font-weight:800;border-radius:9px;background:color-mix(in srgb,var(--theme-highlight) 12%,var(--theme-main));padding:13px;margin-top:12px}.damageVerdict span{display:block;font-weight:400;color:var(--muted);font-size:11px;margin-top:3px}
+.damageFooter{font-size:12px;line-height:1.6;color:var(--muted)}.damageFooter strong{color:var(--text)}
+.damageFooter button{margin-left:8px;background:transparent;border:0;color:var(--theme-highlight);font-weight:800;cursor:pointer}
+@media(max-width:700px){.quickActions{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.quickAction{padding:10px 7px;flex-direction:column;justify-content:center;gap:4px;min-height:92px;text-align:center}.quickActionIcon{width:30px;height:30px}.quickActionText strong{font-size:11px}.quickActionText small{font-size:10px}.quickCosts{padding:13px}.quickHint{display:none}.quickEndpoints fieldset{grid-template-columns:1fr;padding:8px 9px;gap:8px}.quickEndpoints select{font-size:13px}.quickTotals strong{font-size:15px}.quickMaterialList{grid-template-columns:1fr}.damageFieldGrid,.damageCompareGrid{grid-template-columns:1fr}.damagePanel{padding:13px}}
+@media(min-width:850px){.quickActions{gap:12px}.quickCostsHome .quickEndpoints fieldset{max-width:none}.quickCostsHome .quickMaterialList{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.quickSpinner{animation:none}.quickAction{transition:none}}
+
+/* Native Pathfinder calculator: uses site palette and Design Workshop tokens. */
+.quickQuantity{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 13px;border:1px solid color-mix(in srgb,var(--theme-highlight) 24%,var(--line));border-radius:var(--arcana-card-radius,var(--radius));background:color-mix(in srgb,var(--theme-highlight) 5%,var(--theme-secondary))}
+.quickQuantityLabel{display:grid;gap:3px}.quickQuantityLabel label{font-size:13px;font-weight:800;color:var(--text)}.quickQuantityLabel small{font-size:11px;color:var(--muted)}
+.quickQuantityControls{display:flex;align-items:stretch;overflow:hidden;border:1px solid var(--line);border-radius:var(--arcana-button-radius,9px);height:38px;background:var(--theme-main)}
+.quickQuantityControls button{width:39px;border:0;background:color-mix(in srgb,var(--theme-highlight) 10%,var(--theme-secondary));color:var(--theme-highlight);font-weight:900;font-size:18px;cursor:pointer}
+.quickQuantityControls button:disabled{opacity:.35;cursor:default}.quickQuantityControls button:focus-visible,.quickMaterialWiki:focus-visible,.quickBiomeHead:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:-2px}
+.quickQuantityControls input{width:60px;text-align:center;background:var(--theme-main);color:var(--text);border:0;border-inline:1px solid var(--line);font:inherit;font-size:15px;font-weight:800;appearance:textfield}
+.quickQuantityControls input::-webkit-inner-spin-button,.quickQuantityControls input::-webkit-outer-spin-button{appearance:none;margin:0}
+.quickResultMeta{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:4px 1px;font-size:11px;color:var(--muted)}.quickResultMeta strong{color:var(--text);font-size:12px}
+.quickFarmFirst,.quickForgeSection{display:grid;gap:10px;min-width:0}
+.quickSectionTitle{display:flex;justify-content:space-between;align-items:baseline;gap:9px;flex-wrap:wrap}.quickSectionTitle h3{font-size:15px;letter-spacing:-.025em;margin:4px 0 0}.quickSectionTitle small{font-size:10px;color:var(--muted)}
+.quickBiomeGroup{border:1px solid var(--line);border-radius:var(--arcana-card-radius,var(--radius));background:color-mix(in srgb,var(--theme-main) 40%,var(--theme-secondary));overflow:hidden}
+.quickBiomeHead{display:flex;gap:10px;align-items:center;padding:11px 12px;list-style:none;cursor:pointer}.quickBiomeHead::-webkit-details-marker{display:none}
+.quickBiomeGroup[open] .quickBiomeHead{border-bottom:1px solid var(--line)}.quickBiomeName{font-weight:800;font-size:12px;color:var(--text);flex:1;min-width:0}
+.quickBiomeHead small{color:var(--muted);font-size:10px;white-space:nowrap}.quickBiomeChevron{font-size:20px;color:var(--theme-highlight);transition:transform .15s}
+.quickBiomeGroup[open] .quickBiomeChevron{transform:rotate(180deg)}
+.quickBiomeOrder{display:inline-grid;place-items:center;border-radius:7px;padding:6px;min-width:27px;background:color-mix(in srgb,var(--theme-highlight) 15%,var(--theme-secondary));color:var(--theme-highlight);font-size:10px;font-variant-numeric:tabular-nums;font-weight:900}
+.quickBiomeGroup .quickMaterialList{padding:9px;gap:7px}.quickBiomeGroup .quickMaterial{background:color-mix(in srgb,var(--theme-main) 64%,var(--theme-secondary))}
+.quickMaterialWiki{border:0;background:transparent;color:var(--text);text-align:left;font:inherit;font-size:11px;cursor:pointer;padding:2px 0;min-width:0;overflow-wrap:anywhere}.quickMaterialWiki:hover{color:var(--theme-highlight)}.quickMaterialWiki span{font-size:10px;color:var(--theme-highlight)}
+.quickMaterial strong .quickPerItem{display:block;font-weight:500;color:var(--muted);font-size:10px;margin-top:3px;white-space:nowrap}
+.quickForgeSection{border-top:1px solid var(--line);padding-top:12px;margin-top:2px}
+.quickResourceHighlights{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:8px}
+.quickGoldBlock{display:grid;gap:4px;padding:12px 13px;border:1px solid color-mix(in srgb,var(--theme-highlight) 25%,var(--line));border-radius:var(--arcana-card-radius,var(--radius));background:color-mix(in srgb,var(--theme-highlight) 8%,var(--theme-main))}
+.quickGoldBlock span,.quickGoldBlock small{font-size:10px;color:var(--muted)}.quickGoldBlock strong{font-size:clamp(16px,2.5vw,22px);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.quickResourceHighlights .quickMaterial{padding:11px 12px}
+.quickCostsExtra{flex-wrap:wrap;gap:12px}.quickCostsExtra button{color:var(--theme-highlight)}
+@media(max-width:700px){.quickBiomeGroup .quickMaterialList{grid-template-columns:1fr}.quickMaterialWiki{font-size:12px}.quickQuantity{padding:10px}}
+@media(prefers-reduced-motion:reduce){.quickBiomeChevron{transition:none}}
+
+/* Pathfinder failure scenarios: compact, theme-aware, mobile-friendly. */
+.quickScenarioPicker{display:grid;gap:10px;min-width:0;padding:12px;border:1px solid color-mix(in srgb,var(--theme-highlight) 26%,var(--line));border-radius:var(--arcana-card-radius,var(--radius));background:color-mix(in srgb,var(--theme-main) 38%,var(--theme-secondary))}
+.quickScenarioGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.quickScenarioCard{min-width:0;display:grid;gap:5px;padding:12px 10px;text-align:left;color:var(--text);background:var(--theme-secondary);border:1px solid var(--line);border-radius:var(--arcana-button-radius,9px);cursor:pointer;transition:border-color .15s,background .15s}
+.quickScenarioCard:hover,.quickScenarioCard:focus-visible{border-color:var(--theme-highlight);outline-offset:2px}
+.quickScenarioCard.active{border-color:var(--theme-highlight);background:color-mix(in srgb,var(--theme-highlight) 13%,var(--theme-secondary));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-highlight) 35%,transparent)}
+.quickScenarioCard>span{font-weight:850;font-size:12px}
+.quickScenarioCard strong{font-size:clamp(12px,1.9vw,19px);font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.2}
+.quickScenarioCard strong small{font-size:10px;color:var(--muted);font-weight:500}
+.quickScenarioCard>small{font-size:10px;color:var(--muted);line-height:1.4}
+.quickPityInput{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;font-size:11px;color:var(--text);font-weight:750}
+.quickPityInput span{display:flex;align-items:center;gap:4px;color:var(--muted)}
+.quickPityInput input{width:76px;min-height:35px;border:1px solid var(--line);border-radius:var(--arcana-button-radius,8px);background:var(--theme-main);color:var(--text);padding:5px 8px;font:inherit;text-align:right;font-variant-numeric:tabular-nums}
+.quickScenarioNote{margin:0;font-size:10px;line-height:1.5;color:var(--muted)}
+.quickScenarioNote strong{color:var(--text)}
+@media(max-width:650px){.quickScenarioPicker{padding:9px}.quickScenarioGrid{gap:5px}.quickScenarioCard{padding:9px 7px;gap:4px}.quickScenarioCard>span{font-size:11px}.quickScenarioCard strong{font-size:clamp(11px,3.5vw,15px)}.quickScenarioCard strong small{display:block}.quickScenarioCard>small{font-size:9px}}
+@media(max-width:360px){.quickScenarioGrid{grid-template-columns:1fr}.quickScenarioCard{display:flex;align-items:center;justify-content:space-between;gap:8px}}
+@media(prefers-reduced-motion:reduce){.quickScenarioCard{transition:none}}
+
+/* Single condensed upgrade-range/quantity section, matching the compact hub. */
+.pathfinderHub .quickCostsFull{display:grid;gap:9px}
+.pathfinderHub .quickCostsFull #pathRangeContent{display:grid;gap:10px}
+.quickPlanControls{display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,220px);gap:9px 13px;align-items:stretch;padding:12px;background:color-mix(in srgb,var(--theme-highlight) 4%,var(--theme-secondary));border:1px solid color-mix(in srgb,var(--theme-highlight) 23%,var(--line));border-radius:var(--arcana-card-radius,14px);min-width:0}
+.quickPlanHeading{grid-column:1/-1;display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:0}
+.quickPlanHeading h2{margin:0;font-size:clamp(17px,2.8vw,21px);letter-spacing:-.025em}
+.quickPlanHeading p{margin:0;font-size:11px;color:var(--muted)}
+.quickPlanHeading .quickEyebrow{font-size:9px}
+.quickPlanControls .quickEndpoints{min-width:0}
+.quickPlanControls .quickEndpoints fieldset{padding:7px;gap:5px}
+.quickPlanControls .quickEndpoints legend{font-size:9px}
+.quickPlanControls .quickEndpoints label{gap:3px}
+.quickPlanControls .quickEndpoints select{min-height:37px;padding:6px;font-size:12px}
+.quickPlanControls .quickQuantity{margin:0;padding:8px;min-width:0;flex-direction:column;align-items:stretch;justify-content:center;gap:6px;background:color-mix(in srgb,var(--theme-main) 55%,var(--theme-secondary));border-color:var(--line)}
+.quickPlanControls .quickQuantityLabel label{font-size:12px}
+.quickPlanControls .quickQuantityLabel small{font-size:10px}
+.quickPlanControls .quickQuantityControls{width:100%;min-height:37px}
+.quickPlanControls .quickQuantityControls input{flex:1;min-width:40px}
+.quickCosts .quickScenarioPicker{gap:8px;padding:10px}
+.quickScenarioHeading{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.quickScenarioHeading h3{font-size:14px;margin:0}
+.quickPityBadge{display:inline-flex;align-items:center;border:1px solid color-mix(in srgb,var(--theme-highlight) 46%,var(--line));border-radius:20px;padding:4px 10px;background:color-mix(in srgb,var(--theme-highlight) 12%,var(--theme-main));color:var(--theme-highlight);font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
+.quickAssumptions{border-top:1px solid var(--line);padding-top:7px;color:var(--muted);font-size:11px}
+.quickAssumptions summary{cursor:pointer;display:list-item;padding:4px 0;font-weight:720;color:var(--theme-highlight)}
+.quickAssumptions p{line-height:1.5;margin:6px 0 1px}
+.quickCosts .quickMaterialSection{display:block;border:1px solid var(--line);border-radius:var(--arcana-card-radius,13px);background:color-mix(in srgb,var(--theme-main) 34%,var(--theme-secondary));overflow:hidden;padding:0;margin:0}
+.quickMaterialSection .quickSectionSummary{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;list-style:none}
+.quickMaterialSection .quickSectionSummary::-webkit-details-marker{display:none}
+.quickMaterialSection .quickSectionSummary strong{font-size:13px;font-weight:850;color:var(--text)}
+.quickMaterialSection .quickSectionSummary small{font-size:10px;color:var(--muted);margin-left:auto}
+.quickMaterialSection .quickSectionSummary>span{color:var(--theme-highlight);font-size:17px;transition:transform .15s}
+.quickMaterialSection[open] .quickSectionSummary{border-bottom:1px solid var(--line)}
+.quickMaterialSection[open] .quickSectionSummary>span{transform:rotate(180deg)}
+.quickMaterialSection .quickSectionBody{padding:10px 12px 12px;display:grid;gap:8px}
+.quickCosts .quickForgeSection{border-top:1px solid var(--line)}
+.quickMaterialListSorted{grid-template-columns:repeat(2,minmax(0,1fr))}
+.quickMaterialListSorted .quickMaterial{align-items:center;min-height:44px}
+.quickMaterialSource{display:block;margin:4px 0 0;font-size:10px;font-weight:450;color:var(--muted);line-height:1.3}
+.quickMaterialWiki>span{display:block}
+.quickMaterialWiki .quickMaterialSource{font-size:10px;color:var(--muted)}
+.quickMaterialSection .quickGoldBlock{margin:0}
+.quickMaterialSection .quickResourceHighlights{margin:0}
+@media(max-width:820px){.quickPlanControls{grid-template-columns:1fr;gap:7px}.quickPlanControls .quickQuantity{flex-direction:row;justify-content:space-between;align-items:center;padding:8px}.quickPlanControls .quickQuantityControls{width:auto;min-width:145px}}
+@media(max-width:700px){.quickPlanControls{padding:10px;gap:8px}.quickPlanHeading{gap:4px 9px}.quickPlanHeading p{flex-basis:100%}.quickPlanControls .quickEndpoints{grid-template-columns:minmax(0,1fr) 16px minmax(0,1fr);gap:4px}.quickPlanControls .quickEndpoints fieldset{padding:6px}.quickPlanControls .quickEndpoints select{min-height:37px;font-size:12px}.quickPlanControls .quickQuantityLabel small{display:none}.quickMaterialListSorted{grid-template-columns:1fr}.quickMaterialSection .quickSectionSummary{padding:11px}}
+@media(max-width:400px){.quickPlanControls .quickQuantityControls button{width:35px}.quickPlanControls .quickQuantityControls{min-width:130px}.quickScenarioGrid{gap:5px}.quickScenarioCard>small{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.quickMaterialSection .quickSectionSummary>span{transition:none}}
+
+/* Optional per-upgrade failure odds: collapsed until the player needs them. */
+.quickOddsByStep{border:1px solid color-mix(in srgb,var(--theme-highlight) 22%,var(--line));background:color-mix(in srgb,var(--theme-main) 40%,var(--theme-secondary));border-radius:var(--arcana-card-radius,11px);overflow:hidden}
+.quickOddsByStep>summary{display:flex;align-items:center;gap:9px;cursor:pointer;list-style:none;padding:11px 13px}
+.quickOddsByStep>summary::-webkit-details-marker{display:none}
+.quickOddsByStep>summary strong{font-size:12px;color:var(--text)}
+.quickOddsByStep>summary small{font-size:10px;color:var(--muted);margin-left:auto}
+.quickOddsByStep>summary>span{font-size:17px;color:var(--theme-highlight)}
+.quickOddsByStep[open]>summary{border-bottom:1px solid var(--line)}
+.quickOddsByStep[open]>summary>span{transform:rotate(180deg)}
+.quickOddsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:10px}
+.quickOddsRow{display:grid;gap:2px;min-width:0;border:1px solid var(--line);background:color-mix(in srgb,var(--theme-secondary) 75%,var(--theme-main));border-radius:8px;padding:9px 10px}
+.quickOddsRow>strong{font-size:12px;color:var(--text)}
+.quickOddsRow>span{font-size:11px;color:var(--muted)}
+.quickOddsRow>small{font-size:10px;color:var(--theme-highlight)}
+@media(max-width:650px){.quickOddsGrid{grid-template-columns:1fr}.quickOddsByStep>summary{padding:10px}.quickOddsByStep>summary small{font-size:9px}}
+
+/* Focused Pathfinder: route, one automatic average, farm list; extras on demand. */
+.pathfinderHub .quickCostsFull{gap:7px;padding:0}
+.pathfinderHub .quickCostsFull #pathRangeContent{display:grid;gap:8px}
+.quickPlanAccordion,.quickAdvanced{min-width:0;border:1px solid color-mix(in srgb,var(--theme-highlight) 25%,var(--line));border-radius:var(--arcana-card-radius,12px);background:color-mix(in srgb,var(--theme-main) 34%,var(--theme-secondary));overflow:hidden}
+.quickSummaryLine{display:flex;gap:9px;align-items:center;min-width:0;padding:11px 13px;list-style:none;cursor:pointer}
+.quickSummaryLine::-webkit-details-marker{display:none}
+.quickSummaryLine>strong{font-size:13px;color:var(--text);font-weight:850}
+.quickSummaryLine>span{font-size:12px;color:var(--text);margin-left:auto;min-width:0;overflow-wrap:anywhere}
+.quickSummaryLine>small{font-size:11px;color:var(--muted);margin-left:auto}
+.quickSummaryLine>b{font-size:17px;color:var(--theme-highlight);font-weight:400;flex:none}
+.quickPlanAccordion[open]>.quickSummaryLine,.quickAdvanced[open]>.quickSummaryLine{border-bottom:1px solid var(--line)}
+.quickPlanAccordion[open]>.quickSummaryLine>b,.quickAdvanced[open]>.quickSummaryLine>b{transform:rotate(180deg)}
+.quickPlanAccordion .quickPlanControls{border:0;border-radius:0;background:transparent;box-shadow:none;padding:11px;gap:9px}
+.quickPlanAccordion .quickPlanHeading{display:none}
+.quickAverageIntro{display:flex;justify-content:space-between;align-items:center;gap:10px;min-width:0;padding:10px 13px;border:1px solid color-mix(in srgb,var(--theme-highlight) 32%,var(--line));border-radius:var(--arcana-card-radius,12px);background:color-mix(in srgb,var(--theme-highlight) 10%,var(--theme-main))}
+.quickAverageIntro>div{display:grid;gap:3px;min-width:0}
+.quickAverageIntro strong{font-size:clamp(15px,2.2vw,18px);color:var(--text)}
+.quickAverageIntro small{font-size:11px;color:var(--muted)}
+.quickAverageIntro>span{font-size:11px;white-space:nowrap;text-align:right;color:var(--theme-highlight);font-weight:800}
+.quickCosts .quickMaterialSection.quickFarmFirst{border-color:color-mix(in srgb,var(--theme-highlight) 30%,var(--line))}
+.quickMaterialSection.quickFarmFirst>.quickSectionSummary{background:color-mix(in srgb,var(--theme-highlight) 7%,var(--theme-main))}
+.quickMaterialSection .quickGoldSummary{color:var(--theme-highlight);font-weight:850;font-variant-numeric:tabular-nums;white-space:normal;text-align:right}
+.quickMaterialSection .quickSectionSummary{gap:8px;min-height:43px}
+.quickMaterialSection .quickSectionSummary>small{font-size:11px}
+.quickAdvancedBody{display:grid;gap:12px;padding:11px 13px}
+.quickBudgetRows{display:grid;gap:0;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.quickBudgetRow{display:grid;grid-template-columns:minmax(115px,1fr) auto minmax(70px,auto);align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--theme-main) 35%,var(--theme-secondary))}
+.quickBudgetRow:last-child{border-bottom:0}
+.quickBudgetRow>div{display:grid;gap:2px;min-width:0}
+.quickBudgetRow>div>strong{font-size:12px;color:var(--text)}
+.quickBudgetRow>div>small{font-size:10px;color:var(--muted)}
+.quickBudgetRow>span{font-size:11px;color:var(--muted);white-space:nowrap}
+.quickBudgetRow>strong{font-size:13px;color:var(--text);text-align:right;white-space:nowrap}
+.quickAdvancedBody .quickPityInput{padding:4px 0}
+.quickAdvancedBody .quickAssumptions{margin-top:0}
+.quickAdvancedBody>p{font-size:11px;line-height:1.6;color:var(--muted);margin:0}
+.quickMaterialSection .quickMaterialWiki{display:grid;gap:2px}
+@media(max-width:700px){
+ .quickSummaryLine{padding:10px}
+ .quickSummaryLine>strong{font-size:12px}
+ .quickSummaryLine>span,.quickSummaryLine>small{font-size:10px}
+ .quickPlanAccordion .quickPlanControls{padding:9px}
+ .quickAverageIntro{padding:10px}
+ .quickAverageIntro strong{font-size:15px}
+ .quickAverageIntro>span{font-size:10px;white-space:normal}
+ .quickBudgetRow{grid-template-columns:minmax(88px,1fr) auto;gap:4px 9px;padding:9px}
+ .quickBudgetRow>span{grid-column:1;font-size:10px}
+ .quickBudgetRow>strong{grid-column:2;grid-row:1/3;font-size:12px}
+ .quickMaterialSection .quickGoldSummary{max-width:55%}
+}
+@media(max-width:370px){.quickSummaryLine{flex-wrap:wrap}.quickSummaryLine>span{order:3;flex-basis:100%;margin:0}.quickAverageIntro{align-items:flex-start;flex-direction:column;gap:3px}.quickAverageIntro>span{text-align:left}}
+
+/* Biome-specific farm cards, using the official IdleArc biome sprite atlas.
+ * Symbols mirror the game biome picker; colors never recolor actual artwork.
+ * Material recipe and source assignments remain data-backed, not inferred. */
+.quickZoneList{display:grid;gap:10px}
+.quickZoneGroup{--path-zone-color:var(--theme-highlight);min-width:0;overflow:hidden;border:1px solid color-mix(in srgb,var(--path-zone-color) 47%,var(--line));border-left:3px solid var(--path-zone-color);border-radius:var(--arcana-card-radius,11px);background:color-mix(in srgb,var(--path-zone-color) 8%,var(--theme-main))}
+.quickZoneHead{display:flex;align-items:center;gap:11px;min-height:59px;padding:9px 11px;list-style:none;cursor:pointer;background:linear-gradient(105deg,color-mix(in srgb,var(--path-zone-color) 18%,var(--theme-secondary)),color-mix(in srgb,var(--path-zone-color) 5%,var(--theme-main)));color:var(--text)}
+.quickZoneHead::-webkit-details-marker{display:none}
+.quickZoneHead:focus-visible{outline:2px solid var(--path-zone-color);outline-offset:-3px}
+.quickZoneArt{position:relative;display:grid;place-items:center;flex:none;isolation:isolate;overflow:hidden;width:45px;height:45px;border-radius:10px;border:1px solid color-mix(in srgb,var(--path-zone-color) 75%,white 25%);background:color-mix(in srgb,var(--path-zone-color) 45%,#151922);box-shadow:inset 0 0 9px #0005}
+.quickZoneBackdrop{position:absolute;inset:0;z-index:0;background-image:url('/assets/official-art/biomes.webp');background-repeat:no-repeat;background-size:800% 300%;background-position:var(--path-zone-x,0%) var(--path-zone-y,0%);opacity:.95}
+.quickZoneArt::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(#07101a11,#07101aaa);pointer-events:none}
+.quickZoneGlyph{display:grid;place-items:center;position:relative;z-index:2;width:32px;height:32px;color:white;filter:drop-shadow(0 1px 3px #000b)}
+.quickZoneGlyph svg{display:block;width:27px;height:27px;overflow:visible}
+.quickZoneTitle{display:grid;gap:4px;min-width:0;flex:1}
+.quickZoneTitle strong{font-size:clamp(13px,2.3vw,15px);line-height:1.15;color:color-mix(in srgb,var(--path-zone-color) 64%,white 36%);font-weight:850}
+.quickZoneTitle small{font-size:10px;line-height:1.1;color:color-mix(in srgb,var(--path-zone-color) 52%,white 48%);font-weight:750}
+.quickZoneChevron{color:var(--path-zone-color);font-size:20px;line-height:1;margin-left:auto;transition:transform .15s}
+.quickZoneGroup[open]>.quickZoneHead{border-bottom:1px solid color-mix(in srgb,var(--path-zone-color) 29%,var(--line))}
+.quickZoneGroup[open]>.quickZoneHead .quickZoneChevron{transform:rotate(180deg)}
+.quickZoneContents{padding:10px}
+.quickZoneContents .quickMaterialListSorted{margin:0;gap:7px}
+.quickZoneContents .quickMaterial{min-width:0;min-height:48px;padding:9px 10px;border:1px solid color-mix(in srgb,var(--path-zone-color) 30%,var(--line));border-radius:var(--arcana-card-radius,8px);background:color-mix(in srgb,var(--path-zone-color) 6%,var(--theme-secondary))}
+.quickZoneContents .quickMaterialWiki{color:var(--text);min-width:0;font-weight:750}
+.quickZoneContents .quickMaterial strong{font-variant-numeric:tabular-nums;white-space:nowrap}
+.quickZoneContents .quickMaterialSource{color:var(--muted);font-weight:450}
+.quickZoneUnknown{--path-zone-color:var(--muted)}
+.quickZoneUnknown .quickZoneArt{background:var(--theme-secondary)}
+@media(max-width:700px){
+ .quickZoneList{gap:8px}
+ .quickZoneHead{gap:9px;min-height:54px;padding:8px}
+ .quickZoneArt{width:41px;height:41px;border-radius:9px}
+ .quickZoneGlyph svg{width:25px;height:25px}
+ .quickZoneContents{padding:8px}
+ .quickZoneContents .quickMaterial{padding:9px;min-height:44px}
+ .quickZoneTitle strong{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){.quickZoneChevron{transition:none}}

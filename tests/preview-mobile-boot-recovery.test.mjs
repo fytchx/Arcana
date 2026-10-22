@@ -7,7 +7,7 @@ test('mobile preview always provides a recovery from a stalled module graph',asy
  assert.match(html,/wrap\.id='arcanaLoadRecovery'/);
  assert.match(html,/Retry preview/);
  assert.match(html,/setTimeout\(display,8000\)/);
- assert.match(html,/idlearc-refined-vectors-20261014-v1/);
+ assert.match(html,/\/src\/app\.js\?v=[a-z0-9-]+/);
  assert.match(html,/location\.origin\+location\.pathname/);
  assert.doesNotMatch(html,/localStorage\.clear\(\)|sessionStorage\.clear\(\)/);
  assert.match(html,/saved build has not been reset/);

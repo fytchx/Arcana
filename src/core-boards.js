@@ -3,7 +3,6 @@ import {esc,icon} from './ui.js';
 import {gameArt,hasGameSprite,codexOfficialArt} from './assets.js';
 import {asGear,gearLabel,baseItem,equipmentId} from './build-studio-data.js';
 import {slotSilhouette} from './studio-visuals.js';
-import {refinedSvg} from './idlearc-refined-vectors.js';
 import {motifArt,passiveTitle,safeGameAsset,classTheme} from './tree-art.js';
 const btn=(label,route)=>`<button class="boardJump" data-route="${route}">${label}</button>`;
 const ico=(name)=>icon(name,19);
@@ -24,7 +23,7 @@ const safeName=name=>String(name||'').replace(/[^A-Za-z0-9 _\-]/g,'').slice(0,70
 function realClassIcon(cls){const v=safeGameAsset(cls?.icon||cls?.icon_url||cls?.image||'');if(v)return `<img src="${esc(v)}" alt="" class="realClassIcon" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden class="classGlyph emblemFallback">${motifArt(cls?.name,{role:'class',size:30})}</span>`;return `<span class="classGlyph">${motifArt(cls?.name,{role:'class',size:30})}</span>`}
 export function boardSwitch(active='equipment'){
  const entries=[['equipment','Equipment','labs/build'],['passive','Passive Tree','labs/passives'],['class','Class Skills','labs/skills']];
- return `<nav class="coreSwitch" aria-label="Build Studio boards">${entries.map(([id,n,r])=>`<button data-route="${r}" class="${active===id?'active':''}" aria-current="${active===id?'page':'false'}">${refinedSvg(id==='equipment'?'feature-builds':id==='passive'?'feature-passive-tree':'feature-class-skills',28)} ${esc(n)}</button>`).join('')}</nav>`;
+ return `<nav class="coreSwitch" aria-label="Build Studio boards">${entries.map(([id,n,r])=>`<button data-route="${r}" class="${active===id?'active':''}" aria-current="${active===id?'page':'false'}">${esc(n)}</button>`).join('')}</nav>`;
 }
 export function buildLoadout(equipment,itemLookup,inspecting){
  const count=LOADOUT_LAYOUT.filter(({key})=>Boolean(equipment?.[key])).length;
@@ -65,7 +64,7 @@ function nodeButton(node,state,tree){
 }
 export function passiveBoard(state,tree){
  const tiers=tree?.passive?.tiers||[],rows=tree?.passive?.rows||[];
- if(!tiers.length||!rows.length)return `${boardSwitch('passive')}<div class="emptyCard"><h3>Verified passives are unavailable</h3><p>Source-backed nodes are required before you can allocate points.</p><button class="btn secondary" data-action="reloadtree">Reload passives</button></div>`;
+ if(!tiers.length||!rows.length)return `<div class="emptyCard"><h3>Verified passives are unavailable</h3><p>Source-backed nodes are required before you can allocate points.</p><button class="btn secondary" data-action="reloadtree">Reload passives</button></div>`;
  const ti=Math.min(Math.max(0,state.passiveTier||0),tiers.length-1),tier=tiers[ti];
  const group=rows.filter(r=>rowWithin(r.index,tier)).sort((a,b)=>a.index-b.index);
  const previous=ti?passiveTierSpend(tree,state.passiveAlloc,ti-1):0,required=tier.required,locked=ti>0&&previous<required;
@@ -73,7 +72,7 @@ export function passiveBoard(state,tree){
  const maxProgress=Math.min(100,Math.round(100*(required?previous/required:1)));
  const investedCount=Object.values(state.passiveAlloc||{}).filter(x=>x>0).length;
  const free=!!state.passiveFreeMode,readOnly=state.passiveReadOnly===true,issues=passiveViolations(tree,state.passiveAlloc,state.characterLevel);
- return `${boardSwitch('passive')}${dataNotice('ready')}${controls(state,'passive')}
+ return `${controls(state,'passive')}
  <section class="passiveAllocationMode" aria-label="Passive point allocation rules"><div class="passiveModeText"><strong>${free?'Free Allocation':'Strict Allocation'}</strong><p>${free?'Preview any configuration. Row, tier, milestone and level restrictions are ignored, but node rank caps still apply.':'Follows the in-game row progression, tier spending, milestone and character-level rules.'}</p></div><label class="passiveModeSwitch" for="passiveFreeMode"><span>Free Allocation</span><input type="checkbox" id="passiveFreeMode" data-passive-free-mode role="switch" aria-label="Free Allocation mode" aria-checked="${free}" ${free?'checked':''} ${readOnly?'disabled':''}><span class="passiveSwitchTrack" aria-hidden="true"></span></label></section>
  ${!free&&issues.length?`<div class="passiveRuleWarning" role="status"><strong>${issues.length} rule issue${issues.length===1?'':'s'} in saved plan</strong><p>Older sandbox or shared allocations are preserved. Correct the highlighted issues or switch to Free Allocation. ${esc(issues[0].reason)}</p></div>`:''}
  ${readOnly?`<div class="passiveSharedBanner"><strong>Shared passive tree · view only</strong><small>Tier selection is available. Skill points and allocation mode cannot be changed in this shared copy.</small></div>`:''}
@@ -120,13 +119,12 @@ function classNode(s,cls,state,branch){
 }
 export function classBoard(state,tree){
  const classes=tree?.classes||[];
- if(!classes.length)return `${boardSwitch('class')}<div class="emptyCard"><h3>Class data not loaded</h3><p>Retry the verified class data. No substitute skills are generated.</p><button class="btn secondary" data-action="reloadtree">Retry</button></div>`;
+ if(!classes.length)return `<div class="emptyCard"><h3>Class data not loaded</h3><p>Retry the verified class data. No substitute skills are generated.</p><button class="btn secondary" data-action="reloadtree">Retry</button></div>`;
  const cls=getClass(tree,state.treeClassId),branch=getBranch(cls,state.treeBranchId),groups=skillTierGroups(branch);
  const used=allocatedTotal(state.classAlloc),budget=classPointBudget(state.characterLevel);
  const allBranchSpent=cls.branches.map(b=>({name:b.name,used:b.skills.reduce((t,s)=>t+Math.max(0,Number(state.classAlloc[s.id]||0)),0)}));
  const spentInBranch=allBranchSpent.find(b=>b.name===branch.name)?.used||0;
- return `${boardSwitch('class')}<div class="treeProvenance">All 90 class skills across five classes are from the verified October 9, 2026 IdleArc Season 2 configuration. Passive tree verification is a separate task. <a href="https://idlearc.com/classes" target="_blank" rel="noopener noreferrer">Official skill reference</a>.</div>
- ${controls(state,'class')}
+ return `${controls(state,'class')}
  <section class="coreTreePanel classPanel classTreeOverview classTone-${classTheme(cls.name)}" aria-label="${esc(cls.name)} class skill planner">
   <div class="treeRail classRail" role="tablist" aria-label="Character class">
    ${classes.map(x=>`<button type="button" role="tab" aria-selected="${cls.id===x.id}" class="${cls.id===x.id?'selected':''}" data-action="classselect" data-arg="${esc(x.id)}">${realClassIcon(x)}<span>${esc(x.name)}</span></button>`).join('')}
