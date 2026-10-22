@@ -763,26 +763,26 @@
       "then": {
         "properties": {
           "damageBreakdowns": {
-            "minProperties": 1
+            "minProperties": 1,
+            "anyOf": [
+              {
+                "required": [
+                  "attack"
+                ]
+              },
+              {
+                "required": [
+                  "pet"
+                ]
+              },
+              {
+                "required": [
+                  "retaliation"
+                ]
+              }
+            ]
           }
-        },
-        "anyOf": [
-          {
-            "required": [
-              "attack"
-            ]
-          },
-          {
-            "required": [
-              "pet"
-            ]
-          },
-          {
-            "required": [
-              "retaliation"
-            ]
-          }
-        ]
+        }
       }
     }
   ]
