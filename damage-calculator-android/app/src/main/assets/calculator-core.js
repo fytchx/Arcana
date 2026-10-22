@@ -70,19 +70,29 @@
 
   function retaliation(input, rounding = 'nearest') {
     const basePoolPercent = sum(input.basePoolPercentages || []);
-    const globalRatio = Math.max(0, Number(input.globalRatio) || 0);
+    const globalRatio = Math.max(0, input.globalRatio == null ? 0.6 : (Number(input.globalRatio) || 0));
+    const varianceMin = Math.max(0, Math.min(1, input.varianceMin == null ? 0.7 : (Number(input.varianceMin) || 0)));
+    const blockBonusPercent = input.blockBonusPercent == null ? 50 : (Number(input.blockBonusPercent) || 0);
+    const blockFactor = 1 + Math.max(-99.999, blockBonusPercent) / 100;
     const run = defense => {
       const base = round((Number(defense) || 0) * globalRatio * (basePoolPercent / 100), rounding);
       return { base, ...applyLayers(base, input.multiplicativePercentages || [], rounding) };
     };
     const low = run(input.defenseMin);
     const high = run(input.defenseMax);
+    const normalMin = round(low.value * varianceMin, rounding);
+    const normalMax = high.value;
     return {
-      ...range(low.value, high.value),
+      ...range(normalMin, normalMax),
       baseMin: low.base,
       baseMax: high.base,
       basePoolPercent,
       globalRatio,
+      varianceMin,
+      blockBonusPercent,
+      blockFactor,
+      blockedMin: round(normalMin * blockFactor, rounding),
+      blockedMax: round(normalMax * blockFactor, rounding),
       layeredProduct: low.product
     };
   }

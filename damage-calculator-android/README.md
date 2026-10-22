@@ -6,10 +6,10 @@ An offline, standalone Android app with Attack, Pet, and Retaliation modes. It d
 
 - **Attack:** apply the combined additive percentage to the weapon range, add flat bonuses, then apply each separate multiplicative layer in order.
 - **Pet:** add pet base damage, level scaling, and flat bonuses, then apply each separate multiplicative layer in order.
-- **Retaliation:** multiply Defense by the global ratio and the sum of reflecting/Deflection/Bulwark percentages, then apply separate damage layers and per-enemy-attack modifiers.
+- **Retaliation:** multiply Defense by the configured 0.6 ratio and the sum of reflecting, Deflection, and Bulwark base percentages, then apply separate damage layers and combat stance. The configured 0.70 variance floor creates the displayed low-to-high range. Block bonus is conditional and is shown separately from the normal-hit range.
 - Damage is rounded after each formula stage by default. The rounding setting can be changed or disabled to compare results.
 
-The source screens show these formula groups but do not establish every rounding detail for every game action. The app exposes rounding choices and lets users enter the displayed formula values directly instead of inventing class stat conversions. Formula inputs start blank; no sample character is loaded.
+The local `/Data mine` audit and config-path index use snapshot `2026-10-06-002`. They provide configured coefficients and thresholds, not the server's executable damage code. The Retaliation implementation is cross-checked against the supplied breakdown: the 0.70 variance explains its lower bound, and block damage is not applied to every enemy attack. Attack and Pet layer ordering is represented as shown in the breakdown; their hidden server rounding and any unlisted conversions remain unverified. Character inputs start blank; the app only pre-fills game-wide Retaliation constants, not a sample character.
 
 ## Build
 

@@ -50,8 +50,8 @@
       title: 'Retaliation damage per enemy attack',
       sections: [
         {name:'Base pool',fields:[['reflecting','Reflecting bonuses · gear','percent','%'],['deflection','Deflection · class skill','percent','%'],['bulwark','Bulwark stance','percent','%'],['defenseMin','Defense · minimum','number','damage'],['defenseMax','Defense · maximum','number','damage'],['globalRatio','Global ratio','factor','×']]},
-        {name:'Multiplicative layers · each stacks separately',fields:[['strength','Strength','percent','%'],['petStrength','Pet increased Strength','percent','%'],['petRetaliation','Pet Retaliation bonus','percent','%'],['talisman','Talisman inscription','percent','%'],['runes','Runes','percent','%'],['guild','Guild skill tree','percent','%'],['echo','Echo Blessings','percent','%'],['sets','Gear sets','percent','%'],['gems','Gems','percent','%'],['timeBoost','Time boost','percent','%']]},
-        {name:'Per enemy attack',fields:[['blocked','Blocked attacks · extra damage','percent','%'],['combatStance','Combat stance','percent','%']]}
+        {name:'Multiplicative layers · each stacks separately',fields:[['strength','Strength','percent','%'],['petStrength','Pet increased Strength','percent','%'],['petRetaliation','Pet Retaliation bonus','percent','%'],['talisman','Talisman inscription','percent','%'],['runes','Runes','percent','%'],['guild','Guild skill tree','percent','%'],['echo','Echo Blessings','percent','%'],['sets','Gear sets','percent','%'],['gems','Gems','percent','%'],['timeBoost','Time boost','percent','%'],['combatStance','Combat stance','percent','%']]},
+        {name:'Damage range and conditional block',fields:[['varianceMin','Minimum damage roll','factor','factor'],['blocked','Extra damage when blocked','percent','%']]}
       ]
     }
   };
@@ -61,13 +61,14 @@
   const state=JSON.parse(localStorage.getItem('arcana-damage-values')||'{}');
   const $=(s,r=document)=>r.querySelector(s);
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const n=k=>{const x=Number(state[mode]?.[k]);return Number.isFinite(x)?x:0};
+  const gameDefaults={retaliation:{globalRatio:0.6,varianceMin:0.7,blocked:50}};
+  const n=k=>{const raw=state[mode]?.[k];if(raw===undefined||String(raw).trim()==='')return gameDefaults[mode]?.[k]??0;const x=Number(raw);return Number.isFinite(x)?x:0};
   const setVal=(k,v)=>{state[mode]=state[mode]||{};state[mode][k]=v;localStorage.setItem('arcana-damage-values',JSON.stringify(state))};
   function round(v){return window.ArcanaDamageCore.round(v,rounding)}
   function fmt(v){if(!Number.isFinite(v))return '—';const a=Math.abs(v);if(a>=1e12)return (v/1e12).toFixed(2)+'T';if(a>=1e9)return (v/1e9).toFixed(2)+'B';if(a>=1e6)return (v/1e6).toFixed(2)+'M';if(a>=1e3)return (v/1e3).toFixed(2)+'K';return v.toLocaleString(undefined,{maximumFractionDigits:2})}
   function pct(k){return Math.max(-99.999,n(k))}
   function factor(k){return 1+pct(k)/100}
-  function rows(fields){return fields.map(([key,label,type,unit])=>`<div class="field"><label for="${mode}-${key}">${esc(label)}${type==='percent'?`<small class="derived" data-derived="${key}">Bonus → factor</small>`:type==='factor'?`<small class="derived" data-derived="${key}">Multiplier</small>`:''}</label><div class="control"><input id="${mode}-${key}" inputmode="decimal" type="number" step="any" data-key="${key}" placeholder="0" value="${state[mode]?.[key]??''}" aria-label="${esc(label)}"><span class="unit">${unit==='damage'?'':unit==='factor'?'×':unit}</span></div></div>`).join('')}
+  function rows(fields){return fields.map(([key,label,type,unit])=>`<div class="field"><label for="${mode}-${key}">${esc(label)}${type==='percent'?`<small class="derived" data-derived="${key}">Bonus → factor</small>`:type==='factor'?`<small class="derived" data-derived="${key}">Multiplier</small>`:''}</label><div class="control"><input id="${mode}-${key}" inputmode="decimal" type="number" step="any" data-key="${key}" placeholder="0" value="${state[mode]?.[key]??gameDefaults[mode]?.[key]??''}" aria-label="${esc(label)}"><span class="unit">${unit==='damage'?'':unit==='factor'?'×':unit}</span></div></div>`).join('')}
   function render(){
     document.querySelectorAll('.mode').forEach(b=>{const active=b.dataset.mode===mode;b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active))});
     const cfg=specs[mode];
@@ -88,9 +89,10 @@
     return{lo:out.min,hi:out.max,base:`${fmt(out.baseMin)} – ${fmt(out.baseMax)}`,add:'—',layers:`×${fmt(out.layeredProduct)}`,average:out.average};
   }
   function calcRetaliation(){
-    const cfg=specs.retaliation.sections,layers=[...layerFields(cfg[1]),...layerFields(cfg[2])];
-    const out=window.ArcanaDamageCore.retaliation({defenseMin:n('defenseMin'),defenseMax:n('defenseMax'),globalRatio:n('globalRatio'),basePoolPercentages:[n('reflecting'),n('deflection'),n('bulwark')],multiplicativePercentages:layers.map(([key])=>pct(key))},rounding);
-    return{lo:out.min,hi:out.max,base:`${fmt(out.baseMin)} – ${fmt(out.baseMax)}`,add:`${fmt(out.basePoolPercent)}% × ${fmt(out.globalRatio)}`,layers:`×${fmt(out.layeredProduct)}`,average:out.average};
+    const cfg=specs.retaliation.sections,layers=layerFields(cfg[1]);
+    const out=window.ArcanaDamageCore.retaliation({defenseMin:n('defenseMin'),defenseMax:n('defenseMax'),globalRatio:n('globalRatio'),varianceMin:n('varianceMin'),blockBonusPercent:pct('blocked'),basePoolPercentages:[n('reflecting'),n('deflection'),n('bulwark')],multiplicativePercentages:layers.map(([key])=>pct(key))},rounding);
+    const showBlocked=state.retaliation?.blocked!==undefined&&String(state.retaliation.blocked).trim()!=='';
+    return{lo:out.min,hi:out.max,base:`${fmt(out.baseMin)} – ${fmt(out.baseMax)}`,add:`${fmt(out.basePoolPercent)}% × ${fmt(out.globalRatio)}`,layers:`×${fmt(out.layeredProduct)} · variance ${fmt(out.varianceMin)}–1.00`,blocked:showBlocked?`${fmt(out.blockedMin)} – ${fmt(out.blockedMax)} (×${fmt(out.blockFactor)})`:null,average:out.average};
   }
   function calculate(){
     if(!$('#damageRange'))return;
@@ -98,7 +100,7 @@
     const allKeys=specs[mode].sections.flatMap(s=>s.fields.map(f=>f[0]));const has=allKeys.some(k=>String(state[mode]?.[k]??'').trim()!=='');
     $('#damageRange').textContent=has?`${fmt(out.lo)} – ${fmt(out.hi)}`:'Enter values to calculate';
     $('#damageAverage').textContent=has?`Average ${fmt(out.average)} · range updates with every input`:'The total recalculates as you edit.';
-    $('#breakdown').innerHTML=has?`<span class="mini">Base <b>${out.base}</b></span>${out.add!=='—'?`<span class="mini">Base pool <b>${out.add}</b></span>`:''}<span class="mini">Layered product <b>${out.layers}</b></span>`:'';
+    $('#breakdown').innerHTML=has?`<span class="mini">Base <b>${out.base}</b></span>${out.add!=='—'?`<span class="mini">Base pool <b>${out.add}</b></span>`:''}<span class="mini">Layered product <b>${out.layers}</b></span>${out.blocked?`<span class="mini">If blocked <b>${out.blocked}</b></span>`:''}`:'';
     document.querySelectorAll('[data-derived]').forEach(el=>{const key=el.dataset.derived;const field=specs[mode].sections.flatMap(s=>s.fields).find(f=>f[0]===key);const value=state[mode]?.[key];if(value===undefined||String(value).trim()===''){el.textContent=field?.[2]==='factor'?'Multiplier':'Bonus → factor';return}if(field?.[2]==='factor'){el.textContent=`Multiplier ×${fmt(Math.max(0,n(key)))}`;return}const p=pct(key);el.textContent=`+${fmt(p)}% → ×${fmt(1+p/100)}`});
   }
   function toast(text){const t=$('#toast');t.textContent=text;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)}

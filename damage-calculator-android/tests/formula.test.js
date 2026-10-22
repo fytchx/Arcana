@@ -29,8 +29,20 @@ test('retaliation base pool uses defense, global ratio, and the sum of reflectio
     defenseMin:41020000, defenseMax:41020000, globalRatio:0.60,
     basePoolPercentages:[129.3,40,15], multiplicativePercentages:[]
   }, 'none');
-  assert.ok(Math.abs(result.min - 45359916) < 1000);
+  assert.ok(Math.abs(result.baseMin - 45359916) < 1000);
   assert.ok(Math.abs(result.basePoolPercent - 184.3) < 1e-8);
+});
+
+test('retaliation applies the datamined 0.70 variance floor, stance to all hits, and block bonus only conditionally', () => {
+  const result = core.retaliation({
+    defenseMin:41020000, defenseMax:41020000, globalRatio:0.60, varianceMin:0.70, blockBonusPercent:75,
+    basePoolPercentages:[129.3,40,15],
+    multiplicativePercentages:[1351,351,447,92,349.8,77.8,12,34,12.9,71,25]
+  }, 'none');
+  assert.ok(Math.abs(result.max - 904.4e9) / 904.4e9 < 0.002);
+  assert.ok(Math.abs(result.min / result.max - 0.70) < 1e-10);
+  assert.equal(result.blockFactor, 1.75);
+  assert.ok(Math.abs(result.blockedMax / result.max - 1.75) < 1e-10);
 });
 
 test('damage rounding can be turned off or selected per damage stage', () => {
