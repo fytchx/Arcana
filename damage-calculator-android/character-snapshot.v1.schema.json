@@ -633,7 +633,8 @@
               "string",
               "null"
             ]
-          }
+          },
+          "minProperties": 1
         },
         "displayed": {
           "type": "object",
@@ -765,11 +766,23 @@
             "minProperties": 1
           }
         },
-        "not": {
-          "required": [
-            "evidence"
-          ]
-        }
+        "anyOf": [
+          {
+            "required": [
+              "attack"
+            ]
+          },
+          {
+            "required": [
+              "pet"
+            ]
+          },
+          {
+            "required": [
+              "retaliation"
+            ]
+          }
+        ]
       }
     }
   ]
