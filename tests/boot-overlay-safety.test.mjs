@@ -116,7 +116,8 @@ test('fresh Home launch clears a restored scroll position and restores browser h
  ui.window.emit('DOMContentLoaded');
  ui.document.emit('arcana:app-ready');
  ui.document.emit('arcana:theme-ready');
- ui.advance(1300);
+ ui.advance(850);
+ ui.advance(450);
  assert.equal(ui.scrollPositions.length,1);
  assert.equal(ui.scrollPositions[0].top,0);
  assert.equal(ui.scrollPositions[0].left,0);
