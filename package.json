@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "check": "node --check src/traffic-server.mjs && node --check src/admin-traffic-ui.js && node --check src/traffic-client.js && node --check src/site-admin-server.mjs && node --check src/admin-console.js && node --check src/theme.js && node --check src/design-controls.js && node --check src/app.js && node --check src/community-ui.js && node --check src/account-server.mjs && node --check server.mjs && node --check src/general-chat-server.mjs && node --check src/community-server.mjs && node --check src/guild-hub-server.mjs && node --check src/guild-hub-ui.js && node --check src/guild-badge.js && node --check src/wiki-server.mjs && node --check src/beta-feedback-server.mjs && node --check src/beta-center.js && node --test tests/*.test.mjs",
+    "check": "node --check src/traffic-server.mjs && node --check src/admin-traffic-ui.js && node --check src/traffic-client.js && node --check src/site-admin-server.mjs && node --check src/admin-console.js && node --check src/theme.js && node --check src/design-controls.js && node --check src/app.js && node --check src/community-ui.js && node --check src/account-server.mjs && node --check server.mjs && node --check src/seo-pages.mjs && node --check scripts/audit-data-volume.mjs && node --check src/general-chat-server.mjs && node --check src/community-server.mjs && node --check src/guild-hub-server.mjs && node --check src/guild-hub-ui.js && node --check src/guild-badge.js && node --check src/wiki-server.mjs && node --check src/beta-feedback-server.mjs && node --check src/beta-center.js && node --test tests/*.test.mjs",
     "test:mobile": "python tests/mobile_smoke.py",
     "build": "npm run check",
-    "test:guild": "node --test tests/guild-tree.test.mjs"
+    "test:guild": "node --test tests/guild-tree.test.mjs",
+    "data:audit": "node scripts/audit-data-volume.mjs"
   }
 }
