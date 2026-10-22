@@ -128,7 +128,11 @@ public final class ScreenCaptureService extends Service {
         Image image = null;
         try {
             image = reader.acquireLatestImage();
-            if (image == null || recognizing.get() || System.currentTimeMillis() - lastSampleAt < SAMPLE_INTERVAL_MS) return;
+            if (image == null) return;
+            if (recognizing.get() || System.currentTimeMillis() - lastSampleAt < SAMPLE_INTERVAL_MS) {
+                image.close();
+                return;
+            }
             lastSampleAt = System.currentTimeMillis();
             if (!recognizing.compareAndSet(false, true)) return;
             Bitmap bitmap = copyBitmap(image);
