@@ -89,8 +89,9 @@ test('layered surface variables and typography feed site, embedded iframe, and m
 });
 test('every curated look resets both additional surfaces and carries intentional font pairing',()=>{
  for(const [id,preset] of Object.entries(DESIGN_PRESETS).filter(([,p])=>p.collection==='studio-v2')){
-  assert.equal(preset.panelPattern,'inherit',id);
-  assert.equal(preset.featurePattern,'inherit',id);
+  assert.equal(validateDesignField('panelPattern',preset.panelPattern),preset.panelPattern,id+' panel art');
+  assert.equal(validateDesignField('featurePattern',preset.featurePattern),preset.featurePattern,id+' feature art');
+  assert.notEqual(preset.panelPattern,preset.featurePattern,id+' independent art layers');
   assert.ok(fontStack(preset.headingFont),id);
   assert.ok(fontStack(preset.fontFamily),id);
  }

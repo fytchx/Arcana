@@ -36,7 +36,7 @@ test('Atelier contains 48 distinct recolorable patterns and existing themes stil
  assert.match(css,/var\(--arcana-premium-pattern-alpha/);
  const panel=designPanel({showPreview:false});
  assert.doesNotMatch(panel,/data-pattern-category="Atelier"|Browse all 148 texture finishes/);
- assert.equal((panel.match(/class="designPreset studioV2Preset"/g)||[]).length,30);
+ assert.equal((panel.match(/class="designPreset studioV2Preset"/g)||[]).length,100);
 });
 test('Published editorial content replaces placeholders with safe DOM methods',async()=>{
  const code=await read('src/journal-home.js');

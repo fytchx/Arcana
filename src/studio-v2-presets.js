@@ -16,7 +16,27 @@ const PALETTES={
  blush:['#180F22','#31203E','#F6B2D8','#AC83F3','#FDF2FC','#CDBAD9','#756189'],
  noir:['#08090E','#161920','#FFFFFF','#9499AA','#F6F5F2','#B0B3C0','#555A68'],
  royal:['#0C1021','#202543','#D7B6FF','#7A84F6','#F9F5FF','#BEC4E5','#66639A'],
- moss:['#0D1512','#1B2B23','#A3C77C','#E5C68A','#ECF4E9','#B6C4AD','#526953']
+ moss:['#0D1512','#1B2B23','#A3C77C','#E5C68A','#ECF4E9','#B6C4AD','#526953'],
+
+ antique:['#11100E','#28231B','#D8B873','#B98258','#F4ECDD','#BDB29C','#625343'],
+ copperNoir:['#130F0D','#292019','#D6A66C','#BE795C','#F4E9D8','#BBAA98','#655140'],
+ oxblood:['#160A10','#2D151D','#E88066','#D9B36B','#FFF0E9','#CCAAA0','#704454'],
+ amethyst:['#110D1E','#241A36','#B89CFA','#E4A3D2','#F6F0FF','#BDB1D2','#65537F'],
+ tidal:['#06171B','#102B32','#55D8CE','#A2B8F0','#E8FFFC','#A8CECE','#416E73'],
+ deepsea:['#07101D','#142334','#69BDF0','#55D7C0','#EFF7FF','#AABFD2','#465E78'],
+ stormglass:['#0D1320','#1D2938','#92BAFF','#64E3DB','#EFF7FC','#B1BEC9','#526477'],
+ wildwood:['#0C1711','#1C2A1F','#B1CE7B','#E1B876','#F1F6E8','#B8C5A7','#52634F'],
+ sagefire:['#15130E','#2B2419','#D9B277','#8DAF83','#F7ECDD','#BFB09B','#685340'],
+ cerulean:['#081422','#162B43','#66BDF7','#B6E3FF','#EFF8FF','#ACBCD0','#496988'],
+ lavender:['#131022','#242039','#C1A6F7','#D989C1','#F7F1FF','#BCB3D1','#665A7E'],
+ rosewood:['#190F18','#2D1C2D','#E6A1B6','#B68AD8','#FFF1F3','#CFB7C3','#76556D'],
+ copper:['#170F0B','#302018','#E79A59','#D46F50','#FFF0E2','#C8AC97','#72523F'],
+ starlit:['#0A1020','#1C2340','#E8C58B','#9AB5FF','#FFF7E9','#B8BED4','#555B83'],
+ magma:['#190A0B','#32191B','#F28455','#E6C06E','#FFF1E8','#C6A89A','#7A3D3A'],
+ arctic:['#0A151D','#1B2B37','#B7D6E8','#7DC3D6','#F3FAFF','#B7C7D1','#536D7B'],
+ deepviolet:['#100B20','#211631','#C8A4FF','#F49BCB','#F8F2FF','#BFB0D2','#625078'],
+ verdigris:['#0E1715','#1C2B27','#8CC8B0','#D6B77A','#F0F8F3','#B7C9C0','#526D62'],
+ dusk:['#150E1A','#2B1B2E','#D99FC9','#E6B979','#FFF1F7','#C9B1C4','#70566C'],
 };
 // Exact artwork names from the authored vector collection, not imaginary assets.
 const ENTRIES=[
@@ -52,25 +72,139 @@ const ENTRIES=[
  ['bloodmoon-rite','Bloodmoon','solar-relic','crimson',null,'Relics / Elements'],
  ['star-forge','Star Forge','celestial-tapestry','royal',null,'Relics / Elements']
 ];
-export const STUDIO_V2_FAMILIES=Object.freeze([...new Set(ENTRIES.map(r=>r[5]))]);
-export const STUDIO_V2_PRESETS=Object.freeze(Object.fromEntries(ENTRIES.map(([id,name,artName,palette,,family],index)=>{
+
+const ART_KEYS={vf:'violet-fault',pt:'pulse-terrain',rb:'ribbon-bloom',vc:'veil-current',af:'arcflow',cd:'contour-drift',mw:'monowave',il:'ink-lattice',sb:'signal-bloom',vh:'vector-halo',cs:'crownspace',ae:'aether-frame',go:'gilded-orbit',gf:'glacial-fold',nm:'nocturne-mesh',ct:'celestial-tapestry',vs:'verdant-signal',sr:'solar-relic'};
+const MORE_ENTRIES=[
+ // Arcana Core · libraries, sanctums and old-world magic
+ ['astral-loom','Astral Loom','vf','amethyst','il','ct','Arcana Core'],
+ ['arcanist-atlas','Arcanist Atlas','ct','starlit','cd','cs','Arcana Core'],
+ ['violet-archive','Violet Archive','cs','deepviolet','nm','vf','Arcana Core'],
+ ['rune-cathedral','Rune Cathedral','sr','antique','cd','go','Arcana Core'],
+ ['moonlit-grimoire','Moonlit Grimoire','vc','lavender','il','cs','Arcana Core'],
+ ['sigil-of-ages','Sigil of Ages','go','copperNoir','nm','sr','Arcana Core'],
+ ['eldritch-cartouche','Eldritch Cartouche','cd','arcana','il','go','Arcana Core'],
+ ['sorcerers-observatory','Sorcerer’s Observatory','vh','royal','ct','cs','Arcana Core'],
+ ['sanctum-of-echoes','Sanctum of Echoes','af','orchid','vc','nm','Arcana Core'],
+ ['the-velvet-codex','The Velvet Codex','ae','velvet','rb','cs','Arcana Core'],
+ ['glyphkeeper','Glyphkeeper','il','amethyst','cd','sr','Arcana Core'],
+ ['starlit-reliquary','Starlit Reliquary','ct','starlit','go','nm','Arcana Core'],
+ ['oracle-window','Oracle Window','vh','lavender','vc','ct','Arcana Core'],
+ ['arcana-after-dark','Arcana After Dark','nm','onyx','vf','go','Arcana Core'],
+ // Neon / Signal · controlled energy, luminous circuits and kinetic color
+ ['ion-cathedral','Ion Cathedral','pt','cobalt','il','vh','Neon / Signal'],
+ ['neon-tessera','Neon Tessera','vh','cerulean','pt','sb','Neon / Signal'],
+ ['quantum-orchid','Quantum Orchid','sb','rose','vf','vh','Neon / Signal'],
+ ['blue-hour-circuit','Blue Hour Circuit','il','deepsea','pt','cs','Neon / Signal'],
+ ['signal-nocturne','Signal Nocturne','nm','stormglass','il','vh','Neon / Signal'],
+ ['electric-bloom','Electric Bloom','rb','rosewood','sb','pt','Neon / Signal'],
+ ['chromatic-vault','Chromatic Vault','cs','royal','vh','il','Neon / Signal'],
+ ['solar-flux','Solar Flux','sr','magma','pt','sb','Neon / Signal'],
+ ['jade-afterimage','Jade Afterimage','vs','verdigris','il','vh','Neon / Signal'],
+ ['pulse-parallax','Pulse Parallax','pt','frost','vh','cd','Neon / Signal'],
+ ['ultraviolet-engine','Ultraviolet Engine','vf','deepviolet','il','pt','Neon / Signal'],
+ ['glasswave','Glasswave','af','tidal','vc','vh','Neon / Signal'],
+ ['prismatic-terminal','Prismatic Terminal','ct','cerulean','sb','cs','Neon / Signal'],
+ ['infrared-ritual','Infrared Ritual','sb','oxblood','sr','pt','Neon / Signal'],
+ // Monochrome · graphite, silver, paper and precision linework
+ ['carbon-ceremony','Carbon Ceremony','il','graphite','nm','mw','Monochrome'],
+ ['silver-index','Silver Index','mw','silver','cd','il','Monochrome'],
+ ['ash-and-ivory','Ash & Ivory','cd','noir','il','nm','Monochrome'],
+ ['blackglass','Blackglass','vh','graphite','nm','cs','Monochrome'],
+ ['platinum-etch','Platinum Etch','go','silver','il','cd','Monochrome'],
+ ['the-quiet-machine','The Quiet Machine','nm','graphite','mw','il','Monochrome'],
+ ['inkstone','Inkstone','cs','noir','cd','mw','Monochrome'],
+ ['moonsteel','Moonsteel','gf','arctic','nm','il','Monochrome'],
+ ['pearl-nocturne','Pearl Nocturne','ae','silver','vc','mw','Monochrome'],
+ ['whiteout-atlas','Whiteout Atlas','ct','graphite','il','gf','Monochrome'],
+ ['obsidian-script','Obsidian Script','sr','noir','il','go','Monochrome'],
+ ['smoke-and-mirror','Smoke & Mirror','vc','graphite','nm','ae','Monochrome'],
+ ['velvet-carbon','Velvet Carbon','ae','noir','rb','mw','Monochrome'],
+ ['titanium-veil','Titanium Veil','gf','silver','vc','il','Monochrome'],
+ // Ribbon / Veil · silk, glass, lunar water and soft gradients
+ ['lunar-ballet','Lunar Ballet','rb','blush','vc','ae','Ribbon / Veil'],
+ ['petals-in-shadow','Petals in Shadow','ae','rosewood','rb','nm','Ribbon / Veil'],
+ ['opal-current','Opal Current','vc','arctic','gf','rb','Ribbon / Veil'],
+ ['amethyst-drapery','Amethyst Drapery','rb','amethyst','ae','vf','Ribbon / Veil'],
+ ['moonwater-garden','Moonwater Garden','vc','tidal','vs','rb','Ribbon / Veil'],
+ ['silk-and-starlight','Silk & Starlight','ct','lavender','rb','ae','Ribbon / Veil'],
+ ['dreaming-in-rose','Dreaming in Rose','ae','rose','rb','vc','Ribbon / Veil'],
+ ['sapphire-mirage','Sapphire Mirage','vh','cerulean','vc','gf','Ribbon / Veil'],
+ ['dusk-lanterns','Dusk Lanterns','sr','dusk','rb','go','Ribbon / Veil'],
+ ['clouded-mirror','Clouded Mirror','gf','silver','vc','vh','Ribbon / Veil'],
+ ['velvet-tide','Velvet Tide','af','velvet','ae','vc','Ribbon / Veil'],
+ ['the-last-petal','The Last Petal','rb','rosewood','nm','ae','Ribbon / Veil'],
+ ['blue-moon-atelier','Blue Moon Atelier','cs','frost','vc','ct','Ribbon / Veil'],
+ ['wisteria-nocturne','Wisteria Nocturne','vf','deepviolet','rb','nm','Ribbon / Veil'],
+ // Relics / Elements · hammered metal, emberlight, mineral and living stone
+ ['brassbound','Brassbound','go','antique','sr','cd','Relics / Elements'],
+ ['ember-vigil','Ember Vigil','sr','magma','go','pt','Relics / Elements'],
+ ['the-verdant-relic','The Verdant Relic','vs','wildwood','go','vc','Relics / Elements'],
+ ['copper-sanctuary','Copper Sanctuary','go','copper','sr','cd','Relics / Elements'],
+ ['storm-forged','Storm Forged','pt','stormglass','go','vh','Relics / Elements'],
+ ['frost-and-flint','Frost & Flint','gf','arctic','sr','cd','Relics / Elements'],
+ ['jade-altar','Jade Altar','vs','verdigris','go','sr','Relics / Elements'],
+ ['blood-iron','Blood Iron','sr','oxblood','go','nm','Relics / Elements'],
+ ['sunken-treasure','Sunken Treasure','vc','deepsea','go','gf','Relics / Elements'],
+ ['old-world-amber','Old World Amber','go','antique','sr','cd','Relics / Elements'],
+ ['mountain-temple','Mountain Temple','cd','sagefire','go','vs','Relics / Elements'],
+ ['the-molten-library','The Molten Library','sr','copperNoir','il','go','Relics / Elements'],
+ ['sea-glass-altar','Sea Glass Altar','gf','tidal','go','vc','Relics / Elements'],
+ ['relic-of-the-first-flame','Relic of the First Flame','ct','ember','sr','go','Relics / Elements']
+];
+
+
+const FAMILY_STYLE={
+ 'Arcana Core':{fontFamily:'dm-sans',headingFont:'cinzel',density:'comfortable',buttonStyle:'gradient',heroCardStyle:'etched',heroActionStyle:'brushed',heroSize:'showcase',heroActionAlign:'end'},
+ 'Neon / Signal':{fontFamily:'space-grotesk',headingFont:'sora',density:'compact',buttonStyle:'solid',heroCardStyle:'glass',heroActionStyle:'neon-line',heroSize:'balanced',heroActionAlign:'end'},
+ 'Monochrome':{fontFamily:'inter',headingFont:'barlow',density:'compact',buttonStyle:'outline',heroCardStyle:'minimal',heroActionStyle:'underlined',heroSize:'balanced',heroActionAlign:'end'},
+ 'Ribbon / Veil':{fontFamily:'manrope',headingFont:'fraunces',density:'spacious',buttonStyle:'gradient',heroCardStyle:'glass',heroActionStyle:'ribbon',heroSize:'showcase',heroActionAlign:'center'},
+ 'Relics / Elements':{fontFamily:'outfit',headingFont:'cinzel',density:'comfortable',buttonStyle:'solid',heroCardStyle:'metallic',heroActionStyle:'etched',heroSize:'showcase',heroActionAlign:'end'}
+};
+const LAYER_SCHEME={
+ 'Arcana Core':['contour-drift','gilded-orbit'],
+ 'Neon / Signal':['ink-lattice','signal-bloom'],
+ 'Monochrome':['ink-lattice','nocturne-mesh'],
+ 'Ribbon / Veil':['veil-current','ribbon-bloom'],
+ 'Relics / Elements':['solar-relic','gilded-orbit']
+};
+const allEntries=[
+ ...ENTRIES.map(([id,name,art,palette,,family])=>[id,name,art,palette,...LAYER_SCHEME[family],family]),
+ ...MORE_ENTRIES
+];
+export const STUDIO_V2_FAMILIES=Object.freeze([...new Set(allEntries.map(r=>r[6]))]);
+export const STUDIO_V2_PRESETS=Object.freeze(Object.fromEntries(allEntries.map(([id,name,artName,palette,panelArtName,featureArtName,family],index)=>{
  const [main,card,action,secondaryAccent,text,mutedText,borderColor]=PALETTES[palette];
- const dark=main.slice(1).match(/../g).map(x=>parseInt(x,16));
- const slight= n=>Math.min(255,n+17).toString(16).padStart(2,'0').toUpperCase();
- const iconBox='#'+dark.map(slight).join('');
- const artBase=main,artPrimary=action,artSecondary=secondaryAccent;
- const artGlow=family==='Monochrome'?'#FFFFFF':text;
- const value={name,tagline:family,collection:'studio-v2',pattern:'vision-'+artName,
-  main,card,iconBox,iconGlyph:action,action,secondaryAccent,text,mutedText,borderColor,navBar:card,
-  buttonText:main,artBase,artPrimary,artSecondary,artGlow,panelPattern:'inherit',featurePattern:'inherit',panelArtBase:artBase,panelArtPrimary:artPrimary,panelArtSecondary:artSecondary,panelArtGlow:artGlow,featureArtBase:artBase,featureArtPrimary:artPrimary,featureArtSecondary:artSecondary,featureArtGlow:artGlow,
-  fontFamily:family==='Monochrome'?'inter':family==='Neon / Signal'?'space-grotesk':family==='Ribbon / Veil'?'manrope':family==='Relics / Elements'?'outfit':'dm-sans',
-  headingFont:family==='Arcana Core'?'cinzel':family==='Neon / Signal'?'sora':family==='Monochrome'?'barlow':family==='Ribbon / Veil'?'fraunces':'playfair',
-  patternTarget:index%4===2?'background':'all',
-  artStrength:family==='Monochrome'?82:90,artDetail:family==='Ribbon / Veil'?100:90,
-  artWeight:family==='Monochrome'?105:100,artZoom:100,artPositionX:50,artPositionY:50,
-  roundness:family==='Monochrome'?9:13,cardShadow:24,fontSize:100,
-  borderWidth:1,buttonRoundness:11,buttonFill:82,headerOpacity:95,
-  panelOpacity:88,density:'comfortable',buttonStyle:family==='Monochrome'?'outline':'gradient'};
+ const brighten=n=>Math.min(255,n+17).toString(16).padStart(2,'0').toUpperCase();
+ const iconBox='#'+main.slice(1).match(/../g).map(x=>brighten(parseInt(x,16))).join('');
+ const style=FAMILY_STYLE[family];
+ const artBase=main,artPrimary=action,artSecondary=secondaryAccent,artGlow=text;
+ const artId=name=>ART_KEYS[name]||name;
+ const panelPattern='vision-'+artId(panelArtName),featurePattern='vision-'+artId(featureArtName);
+ const value={
+  name,tagline:family,collection:'studio-v2',pattern:'vision-'+artId(artName),
+  main,card,iconBox,iconGlyph:action,action,secondaryAccent,text,mutedText,borderColor,navBar:card,buttonText:main,
+  artBase,artPrimary,artSecondary,artGlow,artStrength:family==='Monochrome'?82:90,
+  artDetail:family==='Ribbon / Veil'?100:90,artWeight:family==='Monochrome'?105:100,artZoom:100,artPositionX:50,artPositionY:50,
+  panelPattern,featurePattern,panelArtBase:card,panelArtPrimary:secondaryAccent,panelArtSecondary:action,panelArtGlow:text,
+  featureArtBase:card,featureArtPrimary:action,featureArtSecondary:secondaryAccent,featureArtGlow:text,
+  fontFamily:style.fontFamily,headingFont:style.headingFont,density:style.density,buttonStyle:style.buttonStyle,
+  heroCardStyle:style.heroCardStyle,heroActionStyle:style.heroActionStyle,heroSize:style.heroSize,heroActionAlign:style.heroActionAlign,
+  patternTarget:index%7===3?'background':index%5===2?'cards':'all',
+  intensity:family==='Monochrome'?14:family==='Neon / Signal'?34:24,
+  glow:family==='Neon / Signal'?26:family==='Monochrome'?8:18,edges:family==='Monochrome'?65:42,
+  roundness:family==='Monochrome'?9:family==='Ribbon / Veil'?19:13,buttonRoundness:family==='Monochrome'?7:family==='Ribbon / Veil'?18:11,
+  buttonFill:family==='Monochrome'?62:family==='Neon / Signal'?96:82,iconMode:family==='Monochrome'?'neutral':'two-tone',
+  fontSize:family==='Monochrome'?96:100,cardPadding:family==='Monochrome'?12:family==='Ribbon / Veil'?17:14,
+  cardShadow:family==='Monochrome'?14:family==='Neon / Signal'?36:26,headerOpacity:family==='Monochrome'?98:94,
+  patternScale:family==='Neon / Signal'?112:family==='Ribbon / Veil'?118:100,borderWidth:family==='Monochrome'?1:2,
+  buttonHeight:family==='Monochrome'?42:46,accentBlend:family==='Neon / Signal'?48:28,
+  aura:family==='Neon / Signal'?70:family==='Monochrome'?12:42,sheen:family==='Relics / Elements'?70:family==='Monochrome'?16:45,
+  detail:family==='Neon / Signal'?74:58,psyPaletteMode:'custom',psyBackground:card,psyPrimary:action,
+  psySecondary:secondaryAccent,psyAccent:action,psyOutline:main,psyStroke:family==='Monochrome'?38:56,
+  heroActionWidth:100,heroActionHeight:48,heroActionGlow:family==='Neon / Signal'?32:family==='Relics / Elements'?18:12,
+  heroActionBorder:family==='Monochrome'?1:2,heroActionIcon:'show',heroActionSubtitle:'auto',
+  heroCardEmblem:family==='Monochrome'?'hidden':'subtle'
+ };
  return [id,Object.freeze(value)];
 })));
 export const STUDIO_V2_PRESET_IDS=Object.freeze(Object.keys(STUDIO_V2_PRESETS));
