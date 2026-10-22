@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101416">
+  <title>Arcana Damage Calculator</title>
+  <style>
+    :root{color-scheme:dark;--bg:#101416;--panel:#191f21;--panel2:#202729;--line:#303a3c;--text:#edf3f0;--muted:#9aa8a3;--mint:#76dfc1;--gold:#e8c879;--danger:#ea8d83}
+    *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:radial-gradient(ellipse at 50% -25%,#244238 0,transparent 48%),var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;padding-bottom:env(safe-area-inset-bottom)}button,input,select{font:inherit}button{cursor:pointer}.app{max-width:760px;margin:auto;padding:0 16px 36px}.top{padding:calc(env(safe-area-inset-top) + 13px) 0 15px;border-bottom:1px solid #283233;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:9px;font-weight:850;letter-spacing:.15em;font-size:13px}.logo{width:29px;height:29px;border-radius:9px;background:linear-gradient(145deg,#9cebd2,#378b73);display:grid;place-items:center;color:#10231d;letter-spacing:0;font-size:17px}.offline{border:1px solid #397363;background:#16251f;color:#9be6ce;border-radius:99px;padding:5px 9px;font-size:10px;font-weight:650}.eyebrow{font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#8a9994}.intro{padding:23px 0 16px}.intro h1{font-size:25px;letter-spacing:-.035em;margin:3px 0 6px}.intro p{font-size:13px;color:#a5b1ad;margin:0;max-width:610px}.notice{font-size:11px;color:#c4d2cb;border:1px solid #344b43;background:#18251f;padding:11px 12px;border-radius:10px;margin:0 0 15px}.notice strong{color:#e5d18c}.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.mode{min-height:43px;border-radius:9px;border:1px solid #3a4646;background:#1b2324;color:#adb9b4;font-size:13px;font-weight:700}.mode.active{background:#25463c;border-color:#62ba9d;color:#b8f4de;box-shadow:inset 0 0 0 1px #62ba9d30}.result{border:1px solid #587a68;background:linear-gradient(130deg,#203a30,#192824 66%,#1d2927);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 9px 26px #0002}.resulttop{display:flex;justify-content:space-between;align-items:center;gap:10px}.resulttop .eyebrow{color:#a9c9b9}.roundtag{font-size:10px;color:#c2d5ca;background:#1e3029;border:1px solid #466455;border-radius:99px;padding:4px 7px}.range{font-size:26px;line-height:1.2;font-weight:800;letter-spacing:-.04em;color:#f5fbf7;margin:7px 0 4px;overflow-wrap:anywhere}.average{font-size:12px;color:#b8c7bf}.breakdown{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.mini{border:1px solid #3d584a;background:#1d3029;border-radius:7px;padding:6px 8px;font-size:10px;color:#c2d2c9}.mini b{color:#f1d58b;margin-left:3px}.actions{display:flex;justify-content:flex-end;margin:0 0 13px}.textbtn{background:none;border:0;color:#8fdcc3;font-size:12px;padding:3px 0}.group{background:linear-gradient(180deg,#1a2123,#171d1f);border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden}.group summary{list-style:none;cursor:pointer;padding:13px 14px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:13px}.group summary::-webkit-details-marker{display:none}.group summary .right{color:#83908d;font-size:11px;font-weight:500}.group[open] summary{border-bottom:1px solid #2b3536}.fields{padding:5px 14px 12px}.field{display:grid;grid-template-columns:minmax(0,1fr) 125px;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #2a3334}.field:last-child{border-bottom:0}.field label{font-size:12px;color:#c9d2ce}.field label small{display:block;color:#80908a;font-size:10px;margin-top:2px}.control{display:flex;align-items:center;gap:6px}.control input{width:100%;min-width:0;text-align:right;padding:9px 9px;border:1px solid #3a4546;border-radius:8px;background:#111718;color:#f2f6f4;font-variant-numeric:tabular-nums;outline:none}.control input:focus{border-color:#6bc6a8;box-shadow:0 0 0 2px #6bc6a820}.unit{font-size:10px;color:#9aa8a3;min-width:16px}.rowtwo{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rowtwo .field{grid-template-columns:1fr}.rowtwo .control{max-width:190px}.empty{font-size:11px;color:#95a49e;padding:10px 0}.help{font-size:10px;color:#76847f;line-height:1.45;margin:13px 2px}.rounding{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px}.rounding label{font-size:12px;color:#c6d0cb}.rounding select{background:#111718;border:1px solid #3a4546;border-radius:8px;color:#e9efec;padding:8px 10px}.footer{border-top:1px solid #2a3434;margin-top:20px;padding:14px 2px;color:#77847f;font-size:10px}.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translate(-50%,12px);padding:9px 13px;background:#d3f4e9;color:#10231d;border-radius:9px;font-size:12px;font-weight:700;opacity:0;transition:.18s;pointer-events:none;box-shadow:0 8px 24px #0006}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(min-width:620px){.app{padding-left:24px;padding-right:24px}.intro h1{font-size:30px}.field{grid-template-columns:minmax(0,1fr) 165px}.range{font-size:32px}.rowtwo{gap:16px}}
+    .field label .derived{color:#77c9ac}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="top"><div class="brand"><span class="logo">A</span> ARCANA</div><span class="offline">OFFLINE CALCULATOR</span></header>
+  <section class="intro"><div class="eyebrow">Damage lab · standalone</div><h1>Damage Calculator</h1><p>Enter your current formula values, then change any layer to see the damage update. Your entries stay on this device.</p></section>
+  <div class="notice"><strong>Manual calculator for now.</strong> Arcana is prepared for API access. Until it’s available, enter your stats here to estimate Attack, Pet, or Retaliation damage.</div>
+  <nav class="modes" role="tablist" aria-label="Damage type"><button class="mode active" data-mode="attack" role="tab" aria-selected="true">Attack</button><button class="mode" data-mode="pet" role="tab" aria-selected="false">Pet</button><button class="mode" data-mode="retaliation" role="tab" aria-selected="false">Retaliation</button></nav>
+  <main id="calculator"></main>
+  <div class="actions"><button class="textbtn" id="reset">Reset this calculator</button></div>
+  <details class="group"><summary><span>Damage rounding</span><span class="right" id="roundSummary">Nearest whole number　⌄</span></summary><div class="rounding"><label for="rounding">Round damage after each formula stage</label><select id="rounding"><option value="nearest">Nearest whole number</option><option value="floor">Round down</option><option value="ceil">Round up</option><option value="none">Keep full precision</option></select></div></details>
+  <p class="help">Formula values and coefficients remain user-editable. Rounding can affect how closely a manual result matches the game; switch it if your entered stats still differ.</p>
+  <footer class="footer">Standalone Arcana tool · no game account or API connection · all values stay on this device</footer>
+</div><div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="calculator-core.js"></script>
+<script>
+(() => {
+  'use strict';
+  const specs = {
+    attack: {
+      title: 'Attack damage',
+      sections: [
+        {name:'Base damage',fields:[['weaponMin','Weapon damage · minimum','number','damage'],['weaponMax','Weapon damage · maximum','number','damage']]},
+        {name:'Flat bonuses',fields:[['skillFlat','Skill tree flat','number','damage'],['guildFlat','Guild flat','number','damage']]},
+        {name:'Additive bonuses · summed together',fields:[['classSkills','Class skills','percent','%'],['itemStrength','Strength from items · damage bonus','percent','%'],['itemIntelligence','Intelligence from items · damage bonus','percent','%'],['talismanAttack','Talisman attack power','percent','%']]},
+        {name:'Multiplicative layers · each stacks separately',fields:[['talismanInscription','Talisman inscription','percent','%'],['skillTree','Skill tree','percent','%'],['otherStrength','Strength · tree, pets, runes, gems','percent','%'],['petStrength','Pet increased Strength','percent','%'],['otherIntelligence','Intelligence · tree, pets, runes, gems','percent','%'],['guild','Guild','percent','%'],['echo','Echo Blessings','percent','%'],['sets','Gear sets','percent','%'],['gems','Gems','percent','%'],['timeBoost','Time boost','percent','%']]}
+      ]
+    },
+    pet: {
+      title: 'Pet damage',
+      sections: [
+        {name:'Base damage',fields:[['baseMin','Pet base damage · minimum','number','damage'],['baseMax','Pet base damage · maximum','number','damage'],['levelMin','Level scaling · minimum','number','damage'],['levelMax','Level scaling · maximum','number','damage']]},
+        {name:'Flat bonuses · added to each pet’s base',fields:[['runeFlat','Runes','number','damage'],['guildFlat','Guild bonus','number','damage'],['skillFlat','Skill tree','number','damage'],['classFlat','Class skills','number','damage'],['convertedAttack','Converted attack damage','number','damage']]},
+        {name:'Multiplicative layers · each stacks separately',fields:[['equipmentAffixes','Equipment affixes','percent','%'],['dexterity','Dexterity','percent','%'],['intelligence','Intelligence','percent','%'],['companionDrop','Companion / Drop bonus','percent','%'],['petShards','Pet Shards','percent','%'],['classSkills','Class skills','percent','%'],['skillTree','Skill tree','percent','%'],['runes','Runes','percent','%'],['guild','Guild bonus','percent','%'],['echo','Echo Blessings','percent','%'],['sets','Gear sets','percent','%'],['gems','Gems','percent','%'],['timeBoost','Time boost','percent','%'],['petMastery','Pet Mastery · post-100','percent','%'],['combatStance','Combat stance','percent','%']]}
+      ]
+    },
+    retaliation: {
+      title: 'Retaliation damage per enemy attack',
+      sections: [
+        {name:'Base pool',fields:[['reflecting','Reflecting bonuses · gear','percent','%'],['deflection','Deflection · class skill','percent','%'],['bulwark','Bulwark stance','percent','%'],['defenseMin','Defense · minimum','number','damage'],['defenseMax','Defense · maximum','number','damage'],['globalRatio','Global ratio','factor','×']]},
+        {name:'Multiplicative layers · each stacks separately',fields:[['strength','Strength','percent','%'],['petStrength','Pet increased Strength','percent','%'],['petRetaliation','Pet Retaliation bonus','percent','%'],['talisman','Talisman inscription','percent','%'],['runes','Runes','percent','%'],['guild','Guild skill tree','percent','%'],['echo','Echo Blessings','percent','%'],['sets','Gear sets','percent','%'],['gems','Gems','percent','%'],['timeBoost','Time boost','percent','%']]},
+        {name:'Per enemy attack',fields:[['blocked','Blocked attacks · extra damage','percent','%'],['combatStance','Combat stance','percent','%']]}
+      ]
+    }
+  };
+  const modeNames={attack:'Attack',pet:'Pet',retaliation:'Retaliation'};
+  let mode=localStorage.getItem('arcana-damage-mode')||'attack';
+  let rounding=localStorage.getItem('arcana-damage-rounding')||'nearest';
+  const state=JSON.parse(localStorage.getItem('arcana-damage-values')||'{}');
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const n=k=>{const x=Number(state[mode]?.[k]);return Number.isFinite(x)?x:0};
+  const setVal=(k,v)=>{state[mode]=state[mode]||{};state[mode][k]=v;localStorage.setItem('arcana-damage-values',JSON.stringify(state))};
+  function round(v){return window.ArcanaDamageCore.round(v,rounding)}
+  function fmt(v){if(!Number.isFinite(v))return '—';const a=Math.abs(v);if(a>=1e12)return (v/1e12).toFixed(2)+'T';if(a>=1e9)return (v/1e9).toFixed(2)+'B';if(a>=1e6)return (v/1e6).toFixed(2)+'M';if(a>=1e3)return (v/1e3).toFixed(2)+'K';return v.toLocaleString(undefined,{maximumFractionDigits:2})}
+  function pct(k){return Math.max(-99.999,n(k))}
+  function factor(k){return 1+pct(k)/100}
+  function rows(fields){return fields.map(([key,label,type,unit])=>`<div class="field"><label for="${mode}-${key}">${esc(label)}${type==='percent'?`<small class="derived" data-derived="${key}">Bonus → factor</small>`:type==='factor'?`<small class="derived" data-derived="${key}">Multiplier</small>`:''}</label><div class="control"><input id="${mode}-${key}" inputmode="decimal" type="number" step="any" data-key="${key}" placeholder="0" value="${state[mode]?.[key]??''}" aria-label="${esc(label)}"><span class="unit">${unit==='damage'?'':unit==='factor'?'×':unit}</span></div></div>`).join('')}
+  function render(){
+    document.querySelectorAll('.mode').forEach(b=>{const active=b.dataset.mode===mode;b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active))});
+    const cfg=specs[mode];
+    $('#calculator').innerHTML=`<section class="result" aria-live="polite"><div class="resulttop"><span class="eyebrow">${cfg.title}</span><span class="roundtag">${rounding==='none'?'Full precision':rounding==='floor'?'Rounded down':rounding==='ceil'?'Rounded up':'Rounded each stage'}</span></div><div class="range" id="damageRange">Enter values to calculate</div><div class="average" id="damageAverage">The total recalculates as you edit.</div><div class="breakdown" id="breakdown"></div></section>${cfg.sections.map((s,i)=>`<details class="group" ${i===0?'open':''}><summary><span>${esc(s.name)}</span><span class="right">${s.fields.length} values　⌄</span></summary><div class="fields">${rows(s.fields)}</div></details>`).join('')}`;
+    document.querySelectorAll('#calculator input').forEach(el=>el.addEventListener('input',()=>{setVal(el.dataset.key,el.value);calculate()}));
+    calculate();
+  }
+  function layerFields(section){return section.fields.filter(x=>x[2]==='percent')}
+  function pctSum(fields){return fields.reduce((s,[key])=>s+pct(key),0)}
+  function calcAttack(){
+    const cfg=specs.attack.sections, additive=layerFields(cfg[2]), layers=layerFields(cfg[3]);
+    const out=window.ArcanaDamageCore.attack({weaponMin:n('weaponMin'),weaponMax:n('weaponMax'),flatBonuses:[n('skillFlat'),n('guildFlat')],additivePercentages:additive.map(([key])=>pct(key)),multiplicativePercentages:layers.map(([key])=>pct(key))},rounding);
+    return{lo:out.min,hi:out.max,base:`${fmt(out.baseMin)} – ${fmt(out.baseMax)}`,add:`×${fmt(out.additiveFactor)}`,layers:`×${fmt(out.layeredProduct)}`,average:out.average};
+  }
+  function calcPet(){
+    const cfg=specs.pet.sections,flat=cfg[1].fields.map(x=>x[0]).reduce((s,k)=>s+n(k),0),layers=layerFields(cfg[2]);
+    const out=window.ArcanaDamageCore.pet({baseMin:n('baseMin'),baseMax:n('baseMax'),levelMin:n('levelMin'),levelMax:n('levelMax'),flatBonuses:[flat],multiplicativePercentages:layers.map(([key])=>pct(key))},rounding);
+    return{lo:out.min,hi:out.max,base:`${fmt(out.baseMin)} – ${fmt(out.baseMax)}`,add:'—',layers:`×${fmt(out.layeredProduct)}`,average:out.average};
+  }
+  function calcRetaliation(){
+    const cfg=specs.retaliation.sections,layers=[...layerFields(cfg[1]),...layerFields(cfg[2])];
+    const out=window.ArcanaDamageCore.retaliation({defenseMin:n('defenseMin'),defenseMax:n('defenseMax'),globalRatio:n('globalRatio'),basePoolPercentages:[n('reflecting'),n('deflection'),n('bulwark')],multiplicativePercentages:layers.map(([key])=>pct(key))},rounding);
+    return{lo:out.min,hi:out.max,base:`${fmt(out.baseMin)} – ${fmt(out.baseMax)}`,add:`${fmt(out.basePoolPercent)}% × ${fmt(out.globalRatio)}`,layers:`×${fmt(out.layeredProduct)}`,average:out.average};
+  }
+  function calculate(){
+    if(!$('#damageRange'))return;
+    const out=mode==='attack'?calcAttack():mode==='pet'?calcPet():calcRetaliation();
+    const allKeys=specs[mode].sections.flatMap(s=>s.fields.map(f=>f[0]));const has=allKeys.some(k=>String(state[mode]?.[k]??'').trim()!=='');
+    $('#damageRange').textContent=has?`${fmt(out.lo)} – ${fmt(out.hi)}`:'Enter values to calculate';
+    $('#damageAverage').textContent=has?`Average ${fmt(out.average)} · range updates with every input`:'The total recalculates as you edit.';
+    $('#breakdown').innerHTML=has?`<span class="mini">Base <b>${out.base}</b></span>${out.add!=='—'?`<span class="mini">Base pool <b>${out.add}</b></span>`:''}<span class="mini">Layered product <b>${out.layers}</b></span>`:'';
+    document.querySelectorAll('[data-derived]').forEach(el=>{const key=el.dataset.derived;const field=specs[mode].sections.flatMap(s=>s.fields).find(f=>f[0]===key);const value=state[mode]?.[key];if(value===undefined||String(value).trim()===''){el.textContent=field?.[2]==='factor'?'Multiplier':'Bonus → factor';return}if(field?.[2]==='factor'){el.textContent=`Multiplier ×${fmt(Math.max(0,n(key)))}`;return}const p=pct(key);el.textContent=`+${fmt(p)}% → ×${fmt(1+p/100)}`});
+  }
+  function toast(text){const t=$('#toast');t.textContent=text;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)}
+  document.querySelectorAll('.mode').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;localStorage.setItem('arcana-damage-mode',mode);render()}));
+  $('#rounding').value=rounding;$('#roundSummary').textContent=({nearest:'Nearest whole number　⌄',floor:'Round down　⌄',ceil:'Round up　⌄',none:'Full precision　⌄'})[rounding];
+  $('#rounding').addEventListener('change',e=>{rounding=e.target.value;localStorage.setItem('arcana-damage-rounding',rounding);$('#roundSummary').textContent=({nearest:'Nearest whole number　⌄',floor:'Round down　⌄',ceil:'Round up　⌄',none:'Full precision　⌄'})[rounding];render()});
+  $('#reset').addEventListener('click',()=>{delete state[mode];localStorage.setItem('arcana-damage-values',JSON.stringify(state));render();toast(`${modeNames[mode]} inputs reset`)});
+  render();
+})();
+</script>
+</body>
+</html>

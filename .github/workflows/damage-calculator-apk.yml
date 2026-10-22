@@ -1,0 +1,53 @@
+name: Build standalone damage calculator APK
+
+on:
+  push:
+    branches:
+      - feature/damage-calculator-apk-2026-10-22
+    paths:
+      - damage-calculator-android/**
+      - .github/workflows/damage-calculator-apk.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Test damage formulas
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test damage-calculator-android/tests/formula.test.js
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Build debug APK
+        working-directory: damage-calculator-android
+        run: gradle :app:assembleDebug --no-daemon
+
+      - name: Publish APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Arcana-Damage-Calculator-debug
+          path: damage-calculator-android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
