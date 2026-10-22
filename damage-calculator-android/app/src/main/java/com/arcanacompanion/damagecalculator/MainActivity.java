@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.media.projection.MediaProjectionManager;
 import android.content.Intent;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 public final class MainActivity extends Activity {
     private static final int CREATE_JSON_FILE = 701;
     private static final int REQUEST_SCREEN_CAPTURE = 702;
+    private static final int REQUEST_NOTIFICATIONS = 703;
     private WebView webView;
     private String pendingJson;
 
@@ -59,8 +61,11 @@ public final class MainActivity extends Activity {
         @JavascriptInterface
         public void startScreenCapture() {
             runOnUiThread(() -> {
-                MediaProjectionManager manager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-                startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_SCREEN_CAPTURE);
+                if (android.os.Build.VERSION.SDK_INT >= 33 && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, REQUEST_NOTIFICATIONS);
+                } else {
+                    requestCapturePermission();
+                }
             });
         }
 
@@ -92,6 +97,17 @@ public final class MainActivity extends Activity {
             getSharedPreferences(ScreenCaptureService.PREFS, MODE_PRIVATE).edit()
                     .putString(ScreenCaptureService.KEY_RECORDS, "[]").remove("lastError").apply();
         }
+    }
+
+    private void requestCapturePermission() {
+        MediaProjectionManager manager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_SCREEN_CAPTURE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_NOTIFICATIONS) requestCapturePermission();
     }
 
     @Override

@@ -115,7 +115,7 @@ public final class ScreenCaptureService extends Service {
         sourceWidth = metrics.widthPixels;
         sourceHeight = metrics.heightPixels;
         densityDpi = metrics.densityDpi;
-        float ratio = Math.min(1f, 1000f / Math.max(sourceWidth, sourceHeight));
+        float ratio = Math.min(1f, 1600f / Math.max(sourceWidth, sourceHeight));
         width = Math.max(480, Math.round(sourceWidth * ratio));
         height = Math.max(480, Math.round(sourceHeight * ratio));
         imageReader = ImageReader.newInstance(width, height, android.graphics.PixelFormat.RGBA_8888, 2);
