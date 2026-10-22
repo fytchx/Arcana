@@ -55,7 +55,7 @@ test('legacy textures remain validated while Studio V2 displays only authored Vi
   }
  }
  assert.equal((html.match(/class="studioV2Preset"/g)||[]).length,0,'new presets include designPreset as first class');
- assert.equal((html.match(/class="designPreset studioV2Preset"/g)||[]).length,30);
+ assert.equal((html.match(/class="designPreset studioV2Preset"/g)||[]).length,100);
  assert.equal(validateDesignField('pattern','<script>'),null);
  assert.equal(DEFAULT_DESIGN.pattern,'vision-violet-fault');
 });

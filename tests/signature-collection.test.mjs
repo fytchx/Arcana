@@ -10,7 +10,7 @@ const read=path=>readFile(new URL(path,import.meta.url),'utf8');
 test('twenty individually styled signature designs extend eighteen classics without losing their editable knobs',()=>{
  const ids=Object.keys(SIGNATURE_PRESETS),patterns=new Set(THEME_PATTERNS.filter(p=>p.category==='Signature').map(p=>p.id));
  assert.equal(ids.length,20);
- assert.equal(Object.keys(DESIGN_PRESETS).length,72);
+ assert.equal(Object.keys(DESIGN_PRESETS).length,142);
  assert.equal(patterns.size,20);
  assert.equal(new Set(ids.map(id=>SIGNATURE_PRESETS[id].pattern)).size,20);
  for(const id of ids){
@@ -41,7 +41,7 @@ test('signature shaders remain available to old saved designs but are not shown 
  }
  for(const control of ['aura','sheen','detail'])assert.doesNotMatch(panel,new RegExp('data-design-field="'+control+'"'));
  for(const control of ['artStrength','artDetail','artWeight','artZoom'])assert.match(panel,new RegExp('data-design-field="'+control+'"'));
- assert.equal((panel.match(/data-collection="studio-v2"/g)||[]).length,30);
+ assert.equal((panel.match(/data-collection="studio-v2"/g)||[]).length,100);
  assert.doesNotMatch(panel,/data-collection="signature"|All 42 presets/);
  assert.match(mini,/--mini-signature-scale/);
  assert.match(css,/--arcana-signature-sheen/);

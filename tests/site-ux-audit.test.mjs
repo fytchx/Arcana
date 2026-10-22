@@ -6,10 +6,10 @@ import {designPanel,settingsView} from '../src/launch-navigation.js';
 
 const read=path=>readFile(new URL(path,import.meta.url),'utf8');
 const patterns=['contours','rings','stars','grid','aurora','diagonal','hex','grain','crystal','nebula','weave','runes','circuit','topography','facets','scanlines','honeycomb','plain'];
-test('global appearance studio shows 30 curated looks while old patterns remain compatible',async()=>{
+test('global appearance studio shows 100 curated looks while old patterns remain compatible',async()=>{
  const html=designPanel(),css=await read('../arcana-contour.css');
- assert.equal(Object.keys(DESIGN_PRESETS).length,72);
- assert.equal((html.match(/data-collection="studio-v2"/g)||[]).length,30);
+ assert.equal(Object.keys(DESIGN_PRESETS).length,142);
+ assert.equal((html.match(/data-collection="studio-v2"/g)||[]).length,100);
  for(const [id,p] of Object.entries(DESIGN_PRESETS)){
   if(p.collection==='studio-v2')assert.match(html,new RegExp('data-arg="'+id+'"'));
   else assert.doesNotMatch(html,new RegExp('data-arg="'+id+'"'));
