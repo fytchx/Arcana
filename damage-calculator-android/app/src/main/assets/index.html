@@ -19,7 +19,7 @@
   <div class="notice"><strong>Manual calculator for now.</strong> Arcana is prepared for API access. Until it’s available, enter your stats here to estimate Attack, Pet, or Retaliation damage.</div>
   <nav class="modes" role="tablist" aria-label="Damage type"><button class="mode active" data-mode="attack" role="tab" aria-selected="true">Attack</button><button class="mode" data-mode="pet" role="tab" aria-selected="false">Pet</button><button class="mode" data-mode="retaliation" role="tab" aria-selected="false">Retaliation</button></nav>
   <main id="calculator"></main>
-  <div class="actions"><button class="textbtn" id="reset">Reset this calculator</button></div>
+  <div class="actions"><button class="textbtn" id="exportDamage">Export damage-only file</button><button class="textbtn" id="reset">Reset this calculator</button></div>
   <details class="group"><summary><span>Damage rounding</span><span class="right" id="roundSummary">Nearest whole number　⌄</span></summary><div class="rounding"><label for="rounding">Round damage after each formula stage</label><select id="rounding"><option value="nearest">Nearest whole number</option><option value="floor">Round down</option><option value="ceil">Round up</option><option value="none">Keep full precision</option></select></div></details>
   <p class="help">Formula values and coefficients remain user-editable. Rounding can affect how closely a manual result matches the game; switch it if your entered stats still differ.</p>
   <footer class="footer">Standalone Arcana tool · no game account or API connection · all values stay on this device</footer>
@@ -104,7 +104,33 @@
     document.querySelectorAll('[data-derived]').forEach(el=>{const key=el.dataset.derived;const field=specs[mode].sections.flatMap(s=>s.fields).find(f=>f[0]===key);const value=state[mode]?.[key];if(value===undefined||String(value).trim()===''){el.textContent=field?.[2]==='factor'?'Multiplier':'Bonus → factor';return}if(field?.[2]==='factor'){el.textContent=`Multiplier ×${fmt(Math.max(0,n(key)))}`;return}const p=pct(key);el.textContent=`+${fmt(p)}% → ×${fmt(1+p/100)}`});
   }
   function toast(text){const t=$('#toast');t.textContent=text;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)}
+  function exportDamageOnly(){
+    const selected={};
+    const previousMode=mode;
+    for(const name of ['attack','pet','retaliation']){
+      const entered=state[name]||{};
+      if(!Object.values(entered).some(v=>String(v??'').trim()!==''))continue;
+      mode=name;
+      const inputs={...gameDefaults[name],...entered};
+      const values={};
+      for(const [key,value] of Object.entries(inputs)){
+        if(String(value??'').trim()==='')continue;
+        const number=Number(value);
+        values[key]=Number.isFinite(number)?number:String(value);
+      }
+      const out=name==='attack'?calcAttack():name==='pet'?calcPet():calcRetaliation();
+      selected[name]={captureMethod:'manual',values,displayed:{minimum:out.lo,maximum:out.hi,average:out.average},sourceScreen:'Manual entry',evidenceText:'Values entered by the player in the Arcana Damage Calculator.'};
+    }
+    mode=previousMode;
+    if(!Object.keys(selected).length){toast('Enter at least one damage breakdown first');return}
+    const payload={schemaVersion:'1.0.0',captureMode:'damage_only',createdAt:new Date().toISOString(),scanner:{appVersion:'0.1.0',gameSnapshot:null,complete:false,missingScreens:['Full Character Stats window','Equipment, gems, and affixes','Rune presets','Pets','Passive and Class Skill Trees']},character:{},damageBreakdowns:selected};
+    const json=JSON.stringify(payload,null,2);
+    if(window.ArcanaBridge&&typeof window.ArcanaBridge.saveTextFile==='function')window.ArcanaBridge.saveTextFile('arcana-damage-only.json',json);
+    else{const url=URL.createObjectURL(new Blob([json],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='arcana-damage-only.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+    toast('Damage-only file ready to save');
+  }
   document.querySelectorAll('.mode').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;localStorage.setItem('arcana-damage-mode',mode);render()}));
+  $('#exportDamage').addEventListener('click',exportDamageOnly);
   $('#rounding').value=rounding;$('#roundSummary').textContent=({nearest:'Nearest whole number　⌄',floor:'Round down　⌄',ceil:'Round up　⌄',none:'Full precision　⌄'})[rounding];
   $('#rounding').addEventListener('change',e=>{rounding=e.target.value;localStorage.setItem('arcana-damage-rounding',rounding);$('#roundSummary').textContent=({nearest:'Nearest whole number　⌄',floor:'Round down　⌄',ceil:'Round up　⌄',none:'Full precision　⌄'})[rounding];render()});
   $('#reset').addEventListener('click',()=>{delete state[mode];localStorage.setItem('arcana-damage-values',JSON.stringify(state));render();toast(`${modeNames[mode]} inputs reset`)});
