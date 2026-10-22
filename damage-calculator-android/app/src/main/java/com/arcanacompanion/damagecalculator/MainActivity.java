@@ -1,7 +1,9 @@
 package com.arcanacompanion.damagecalculator;
 
 import android.app.Activity;
+import android.media.projection.MediaProjectionManager;
 import android.content.Intent;
+import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 
 public final class MainActivity extends Activity {
     private static final int CREATE_JSON_FILE = 701;
+    private static final int REQUEST_SCREEN_CAPTURE = 702;
     private WebView webView;
     private String pendingJson;
 
@@ -52,11 +55,62 @@ public final class MainActivity extends Activity {
                 startActivityForResult(intent, CREATE_JSON_FILE);
             });
         }
+
+        @JavascriptInterface
+        public void startScreenCapture() {
+            runOnUiThread(() -> {
+                MediaProjectionManager manager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+                startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_SCREEN_CAPTURE);
+            });
+        }
+
+        @JavascriptInterface
+        public void stopScreenCapture() {
+            runOnUiThread(() -> {
+                Intent intent = new Intent(MainActivity.this, ScreenCaptureService.class).setAction(ScreenCaptureService.ACTION_STOP);
+                startService(intent);
+            });
+        }
+
+        @JavascriptInterface
+        public String getScreenScanState() {
+            return getSharedPreferences(ScreenCaptureService.PREFS, MODE_PRIVATE).getString(ScreenCaptureService.KEY_RECORDS, "[]");
+        }
+
+        @JavascriptInterface
+        public boolean isScreenCaptureActive() {
+            return getSharedPreferences(ScreenCaptureService.PREFS, MODE_PRIVATE).getBoolean(ScreenCaptureService.KEY_ACTIVE, false);
+        }
+
+        @JavascriptInterface
+        public String getScreenCaptureError() {
+            return getSharedPreferences(ScreenCaptureService.PREFS, MODE_PRIVATE).getString("lastError", "");
+        }
+
+        @JavascriptInterface
+        public void clearScreenScan() {
+            getSharedPreferences(ScreenCaptureService.PREFS, MODE_PRIVATE).edit()
+                    .putString(ScreenCaptureService.KEY_RECORDS, "[]").remove("lastError").apply();
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_SCREEN_CAPTURE) {
+            if (resultCode != RESULT_OK || data == null) {
+                if (webView != null) webView.evaluateJavascript("window.arcanaCapturePermissionDenied && window.arcanaCapturePermissionDenied()", null);
+                return;
+            }
+            Intent service = new Intent(this, ScreenCaptureService.class)
+                    .setAction(ScreenCaptureService.ACTION_START)
+                    .putExtra("resultCode", resultCode)
+                    .putExtra("resultData", data);
+            if (android.os.Build.VERSION.SDK_INT >= 26) startForegroundService(service);
+            else startService(service);
+            if (webView != null) webView.evaluateJavascript("window.arcanaCaptureStarted && window.arcanaCaptureStarted()", null);
+            return;
+        }
         if (requestCode != CREATE_JSON_FILE) return;
         if (resultCode != RESULT_OK || data == null || data.getData() == null || pendingJson == null) {
             pendingJson = null;

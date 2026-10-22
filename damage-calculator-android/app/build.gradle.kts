@@ -14,3 +14,9 @@ android {
         versionName = "1.0.0"
     }
 }
+
+dependencies {
+    // Bundled model keeps OCR available offline on first launch.
+    implementation("com.google.mlkit:text-recognition:16.0.1")
+    implementation("androidx.core:core:1.15.0")
+}
