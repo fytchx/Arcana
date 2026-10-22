@@ -26,7 +26,7 @@ test('archived IdleArc Refined illustrations remain preserved for later review',
 });
 test('all genuine equipment slots and class default avatars render approved custom art',()=>{
  for(const slot of ['torch','head','neck','weapon','chest','offhand','ring','ring2','belt','hands','feet'])
-  assert.match(slotSilhouette(slot),new RegExp('data-refined-icon="equipment-'+slot+'"'));
+  assert.match(slotSilhouette(slot),new RegExp('data-arcana-icon="equipment-'+slot+'"'));
  for(const cls of ['warrior','archer','mage','rogue','druid'])
   assert.match(classEmblem(cls),new RegExp('data-arcana-icon="class-'+cls+'"'));
 });
