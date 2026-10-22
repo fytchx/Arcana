@@ -236,6 +236,48 @@ with sync_playwright() as playwright:
     page.locator('.launchHeroCTA').click()
     page.wait_for_selector('.studioProfile',timeout=8000)
     assert page.locator('#arcanaDock button').count()==5, 'Navigation disappeared in Build Studio'
+    # Import Manager is an owner-only, browser-local XML conversion workflow.
+    page.evaluate("location.hash='#/wiki/studio'")
+    page.wait_for_timeout(300)
+    assert page.locator('[data-ws-action="import-manager"]').count()==1, 'Fandom Import Manager shortcut missing'
+    page.locator('[data-ws-action="import-manager"]').dispatch_event('click')
+    page.wait_for_timeout(150)
+    assert page.locator('#fandomXmlInput').count()==1, 'XML upload control did not open'
+    sample_xml=('<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.11/">'
+      '<siteinfo><sitename>IdleArc Wiki</sitename><base>https://idlearc.fandom.com/wiki/IdleArc_Wiki</base></siteinfo>'
+      '<page><title>Test Pet Guide</title><ns>0</ns><revision><timestamp>2026-10-01T00:00:00Z</timestamp>'
+      '<text>Every player can use this guide to plan the right combination of pets and bonuses.\n\n'
+      '== How it works ==\nThis is a test of the imported guide data and the source attribution link.\n'
+      '[[File:Pet Screenshot.png|thumb]]</text></revision></page></mediawiki>')
+    page.locator('#fandomXmlInput').set_input_files({'name':'test-export.xml','mimeType':'text/xml','buffer':sample_xml.encode()})
+    page.wait_for_timeout(250)
+    assert page.locator('.fandomImportRow').count()==1, 'XML did not convert into a review row'
+    assert 'Test Pet Guide' in page.locator('.fandomImportRow').inner_text()
+    assert 'image reference' in page.locator('.fandomImportRow').inner_text().lower()
+    assert page.locator('[data-fandom-action="save"]').count()==1, 'Private-draft save control missing'
+    page.screenshot(path=str(OUT/'fandom_import_mobile.png'),full_page=True)
+    # The beta must have an actual feedback form and account-free entry.
+    page.evaluate("location.hash='#/beta'")
+    page.wait_for_selector('[data-beta-form="feedback"]',timeout=10000)
+    assert page.locator('.betaFeature').count()>=4, 'Beta availability information missing'
+    assert 'not enabled' in page.locator('.betaCapabilities').inner_text(), 'Unconfigured account sign-in must not appear operational'
+    page.locator('[name="title"]').fill('Codex issue on Android')
+    page.locator('[name="details"]').fill('Changing categories moves the scroll unexpectedly; expected the selected category to stay visible.')
+    page.locator('[data-beta-form="feedback"] button[type="submit"]').click()
+    page.wait_for_timeout(350)
+    assert 'Feedback received.' in page.locator('.betaCenter').inner_text(), 'Beta submission did not confirm: '+repr(page.locator('.betaCenter').inner_text()[-900:])+' JS errors '+repr(errors)
+    assert page.locator('[data-beta-form="feedback"]').count()==1
+    page.evaluate("location.hash='#/labs/build'")
+    page.wait_for_selector('.studioProfile')
+    assert page.locator('.studioTitleInput').input_value()=='My Build'
+    assert '0 / 11 equipped' in page.locator('.studioEquipmentHeading').inner_text(), 'New user must start with empty build, not invented demo gear'
+    assert page.locator('[data-action="sharebuild"]').count()==1, 'Guest build sharing is not available'
+    assert page.locator('.loadoutSlot').count()==11, 'Only the eleven verified game equipment slots must be shown'
+    assert page.locator('.loadoutSlot .arcanaSilhouette').count()==11, 'Equipment art must use understated silhouettes'
+    assert page.locator('.studioProfileVisual .arcanaSilhouette').count()==1, 'Class identity emblem should be visible'
+    assert page.locator('.studioProfile').bounding_box()['y']<page.locator('.studioPrimaryEquipment').bounding_box()['y'], 'Equipment should follow the compact profile'
+    assert page.locator('.pageHead').count()==0, 'Build Studio must not show the old giant page heading'
+    assert page.locator('.launchReturnHome').count()==0, 'Build Studio must not duplicate home navigation'
 
     page.evaluate("location.hash='#/settings'")
     page.wait_for_selector('.arcanaSettings',timeout=8000)

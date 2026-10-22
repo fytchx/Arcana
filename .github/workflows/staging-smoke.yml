@@ -1,7 +1,7 @@
-name: Arcana candidate live release gate
+name: Arcana Live Release Checks
 on:
   push:
-    branches: [arcana-wiki-studio-integrated-2026-10-12]
+    branches: [main]
     paths:
       - 'src/**'
       - 'server.mjs'
@@ -9,6 +9,7 @@ on:
       - '*.css'
       - 'tests/*staging_smoke.py'
       - 'tests/beta_live_smoke.py'
+      - 'tests/production_domain_gate.py'
       - '.github/workflows/staging-smoke.yml'
   workflow_dispatch:
 permissions:
@@ -33,6 +34,8 @@ jobs:
         run: python tests/live_staging_smoke.py
       - name: Verify real calculators, planners, sharing and reference values
         run: python tests/tools_staging_smoke.py
+      - name: Verify the ONE production hostname, real account APIs and Discord redirect
+        run: python tests/production_domain_gate.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

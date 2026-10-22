@@ -26,7 +26,7 @@ export function boardSwitch(active='equipment'){
  return `<nav class="coreSwitch" aria-label="Build Studio boards">${entries.map(([id,n,r])=>`<button data-route="${r}" class="${active===id?'active':''}" aria-current="${active===id?'page':'false'}">${esc(n)}</button>`).join('')}</nav>`;
 }
 export function buildLoadout(equipment,itemLookup,inspecting){
- const count=Object.values(equipment||{}).filter(Boolean).length;
+ const count=LOADOUT_LAYOUT.filter(({key})=>Boolean(equipment?.[key])).length;
  const twoHanded=!!baseItem(equipment?.weapon)?.twoHanded;
  return `<section class="loadoutFrame" aria-label="Equipment manager"><div class="loadoutHead"><span>CHARACTER LOADOUT</span><span>${count} EQUIPPED</span></div><div class="loadoutStage">${LOADOUT_LAYOUT.map(slot=>{
   const raw=equipment?.[slot.key],item=itemLookup(raw),configuration=asGear(raw),base=baseItem(raw);

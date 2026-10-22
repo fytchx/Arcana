@@ -24,10 +24,9 @@ test('archived IdleArc Refined illustrations remain preserved for later review',
   }
  }
 });
-test('preview defaults back to the recolorable Arcana Minimal class and gear icons',()=>{
- assert.equal(ICON_IDS.length,144);
- for(const slot of ['torch','head','neck','weapon','chest','offhand','ring','ring2','belt','charm','hands','feet','charm2'])
-  assert.match(slotSilhouette(slot),new RegExp('data-arcana-icon="equipment-'+slot+'"'));
+test('all genuine equipment slots and class default avatars render approved custom art',()=>{
+ for(const slot of ['torch','head','neck','weapon','chest','offhand','ring','ring2','belt','hands','feet'])
+  assert.match(slotSilhouette(slot),new RegExp('data-refined-icon="equipment-'+slot+'"'));
  for(const cls of ['warrior','archer','mage','rogue','druid'])
   assert.match(classEmblem(cls),new RegExp('data-arcana-icon="class-'+cls+'"'));
 });
