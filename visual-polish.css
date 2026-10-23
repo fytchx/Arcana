@@ -1,0 +1,70 @@
+/* Arcana visual polish pass · 2026-10-23
+   Shared finishing layer for the app shell and recurring page patterns.
+   All color stays tied to the active theme so custom palettes continue to work. */
+:root {
+  --arcana-polish-line: color-mix(in srgb, var(--theme-border, var(--line, #34394d)) 82%, var(--theme-highlight, var(--accent, #bba4ff)) 18%);
+  --arcana-polish-raised: color-mix(in srgb, var(--theme-secondary, var(--panel, #171b28)) 86%, var(--theme-highlight, var(--accent, #bba4ff)) 14%);
+  --arcana-polish-focus: var(--theme-highlight, var(--accent, #bba4ff));
+  --arcana-polish-copy: var(--theme-muted, var(--muted, #aeb4c5));
+}
+
+/* Give every route the same calm reading measure and page rhythm. */
+#content { scroll-margin-top: 76px; }
+#content > * { min-width: 0; }
+#content :where(h1, h2, h3, h4) { text-wrap: pretty; }
+#content :where(p, li) { text-wrap: pretty; }
+#content :where(.pageHead, .pageHeader, .pageTitle, .studioPageHead) { margin-bottom: 24px; }
+#content :where(.pageHeadline h1, .pageHead h1, .launchPage h1) { line-height: 1.12; }
+#content :where(.lead, .pageLead, .pageHead > p) { max-width: 66ch; line-height: 1.68; color: var(--arcana-polish-copy); }
+
+/* Shared surfaces: clearer edges, quieter gradients, consistent depth. */
+#content :where(.sectionCard, .calcWorkspace, .coreTreePanel, .loadoutFrame, .articleHeader, .detailCard, .studioHero, .filterLine, .notice, .hintCard, .treeProvenance) {
+  border-color: var(--arcana-polish-line);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 3%, transparent), 0 8px 24px color-mix(in srgb, black 12%, transparent);
+}
+#content :where(.sectionCard, .calcWorkspace, .coreTreePanel, .loadoutFrame, .articleHeader, .detailCard, .studioHero) {
+  border-radius: 15px;
+}
+#content :where(.sectionCard, .calcWorkspace, .coreTreePanel) { background-color: var(--theme-card, var(--theme-secondary, var(--panel, #171b28))); }
+#content :where(.toolTile, .resultRow, .gearSlot, .loadoutSlot, .passiveNode, .classSkillNode, .launchNavRow, .launchSetting, .launchQuickCard, .launchFeatureRow) {
+  border-color: color-mix(in srgb, var(--theme-border, var(--line, #34394d)) 88%, var(--theme-highlight, var(--accent, #bba4ff)) 12%);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 2.5%, transparent);
+  transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+#content :where(.toolTile:hover, .resultRow:hover, .gearSlot:hover, .loadoutSlot:hover, .launchNavRow:hover, .launchQuickCard:hover, .launchFeatureRow:hover) {
+  border-color: var(--arcana-polish-focus);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 4%, transparent), 0 7px 18px color-mix(in srgb, black 18%, transparent);
+}
+
+/* Buttons and fields share a deliberate shape and readable interaction state. */
+#content :where(button, input, select, textarea, [role="button"]) { accent-color: var(--arcana-polish-focus); }
+#content :where(button:not(.unstyled), .btn, .chip, input, select, textarea) { border-radius: 10px; }
+#content :where(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  border-color: var(--arcana-polish-line);
+  background-color: color-mix(in srgb, var(--theme-main, var(--bg, #0b0e16)) 72%, var(--theme-secondary, var(--panel, #171b28)) 28%);
+  color: var(--theme-text, var(--text, #f5f5fb));
+}
+#content :where(input, select, textarea)::placeholder { color: color-mix(in srgb, var(--arcana-polish-copy) 76%, transparent); }
+#content :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--arcana-polish-focus);
+  outline-offset: 3px;
+}
+#content :where(button:disabled, input:disabled, select:disabled) { filter: saturate(.65); }
+
+/* Long-form pages and dense data views feel more editorial and less boxed-in. */
+#content :where(.articleSection, .wikiArticleBody, .journalArticleBody, .guideBody) { max-width: 76ch; }
+#content :where(.articleSection p, .wikiArticleBody p, .journalArticleBody p, .guideBody p) { line-height: 1.78; }
+#content :where(table) { border-collapse: separate; border-spacing: 0; overflow: hidden; border: 1px solid var(--arcana-polish-line); border-radius: 12px; }
+#content :where(th) { color: var(--theme-accent-text, var(--theme-highlight, var(--accent, #bba4ff))); }
+#content :where(th, td) { border-color: var(--arcana-polish-line); }
+#content :where(hr) { border: 0; border-top: 1px solid var(--arcana-polish-line); }
+
+/* Preserve touch targets and avoid motion for people who request less motion. */
+@media (max-width: 700px) {
+  #content { scroll-margin-top: 64px; }
+  #content :where(button, a.btn, input, select, summary) { min-height: 40px; }
+  #content :where(textarea) { min-height: 96px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #content *, #content *::before, #content *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
