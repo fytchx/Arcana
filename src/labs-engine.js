@@ -4,7 +4,6 @@
  * until per-pet rarity / base bonus values are available.
  */
 import {VERIFIED_GAME_DATA} from './verified-game-data.js';
-import {RUNE_WORDS} from './rune-words.js';
 import {normalizedPetBonusTargets} from './pet-simple-math.js';
 const DATA=VERIFIED_GAME_DATA;
 // Grid growth milestones read from the in-game Rune Grid expansion table (monster level, not character level).
@@ -63,38 +62,6 @@ export function putRune(placed,candidate,monsterLevel=300){const issue=runeIssue
 export function removeRune(placed,id){return placed.filter(r=>r.id!==id)};
 export function nextRuneId(placed){let i=1;while(placed.some(r=>r.id===`rune-${i}`))i++;return `rune-${i}`;}
 
-function runeFamiliesMatch(word,runes){const need=[...word.types].sort(),have=runes.map(r=>String(r.family||'').toLowerCase()).sort();return need.length===have.length&&need.every((v,i)=>v===have[i]);}
-function runeSetsTouch(a,b){return ((a.x+a.w===b.x||b.x+b.w===a.x)&&a.y<b.y+b.h&&a.y+a.h>b.y)||((a.y+a.h===b.y||b.y+b.h===a.y)&&a.x<b.x+b.w&&a.x+a.w>b.x);}
-function runeSetConnected(runes){if(runes.length<2)return false;const seen=new Set([runes[0].id]),stack=[runes[0]];while(stack.length){const current=stack.pop();for(const other of runes)if(!seen.has(other.id)&&runeSetsTouch(current,other)){seen.add(other.id);stack.push(other);}}return seen.size===runes.length;}
-export function findRuneWordMatches(placed=[],locks=[]){
- const occupied=new Set((locks||[]).flatMap(lock=>Array.isArray(lock?.runeIds)?lock.runeIds:[])),available=(placed||[]).filter(r=>!occupied.has(r.id)),matches=[];
- for(const word of RUNE_WORDS){
-  const requirements=[...word.types.reduce((counts,type)=>counts.set(type,(counts.get(type)||0)+1),new Map())];
-  const groups=[];
-  const choose=(groupIndex,selected)=>{
-   if(groupIndex===requirements.length){if(runeFamiliesMatch(word,selected)&&runeSetConnected(selected)){const runeIds=selected.map(r=>r.id).sort();matches.push({wordKey:word.key,name:word.name,runeIds,key:word.key+'|'+runeIds.join(',')});}return;}
-   const [family,count]=requirements[groupIndex],pool=available.filter(r=>String(r.family||'').toLowerCase()===family);
-   if(pool.length<count)return;
-   const pick=(start,part)=>{
-    if(part.length===count){choose(groupIndex+1,[...selected,...part]);return;}
-    for(let i=start;i<=pool.length-(count-part.length);i++)pick(i+1,[...part,pool[i]]);
-   };
-   pick(0,[]);
-  };
-  choose(0,[]);
- }
- return matches;
-}
-export function normalizeRuneLocks(rawLocks,placed=[]){
- const used=new Set(),valid=[];
- for(const raw of Array.isArray(rawLocks)?rawLocks:[]){
-  const word=RUNE_WORDS.find(item=>item.key===raw?.wordKey),ids=Array.isArray(raw?.runeIds)?[...new Set(raw.runeIds.filter(id=>typeof id==='string'))]:[];
-  const selected=ids.map(id=>(placed||[]).find(r=>r.id===id)).filter(Boolean);
-  if(!word||ids.length!==word.types.length||selected.length!==ids.length||ids.some(id=>used.has(id))||!runeFamiliesMatch(word,selected)||!runeSetConnected(selected))continue;
-  valid.push({wordKey:word.key,runeIds:ids});ids.forEach(id=>used.add(id));
- }
- return valid;
-}
 export function normalizeBuild(build){
  const b=structuredClone(build||{});b.equipment=b.equipment||{};
  if(!Array.isArray(b.runes))b.runes=[];
@@ -107,7 +74,7 @@ export function normalizeBuild(build){
  b.pets=b.petSetup.filter(p=>p.equipped).map(p=>p.name||statName(p.hatchBonus)||'Equipped pet');
  b.petBonusTargets=normalizedPetBonusTargets(b);
  b.petMode=b.petMode==='permanent'?'permanent':'seasonal';b.schemaVersion=9;
- b.usedRunewords=Array.isArray(b.usedRunewords)?[...new Set(b.usedRunewords.filter(x=>typeof x==='string').map(x=>x.slice(0,48)))]:[];b.runeLocks=normalizeRuneLocks(b.runeLocks,b.runeBoard);
+ b.usedRunewords=Array.isArray(b.usedRunewords)?[...new Set(b.usedRunewords.filter(x=>typeof x==='string').map(x=>x.slice(0,48)))]:[];delete b.runeLocks;
  b.passiveAlloc=b.passiveAlloc&&typeof b.passiveAlloc==='object'?b.passiveAlloc:{};
  b.passiveFreeMode=b.passiveFreeMode===true;
  b.classAllocById=b.classAllocById&&typeof b.classAllocById==='object'?b.classAllocById:{};
