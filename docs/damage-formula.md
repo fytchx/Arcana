@@ -40,3 +40,21 @@ comparing a complete Attack/Pet fixture, including an actual unmodified pet base
 Test-only screenshot values are confined to tests. The retaliation fixture checks
 consistency at displayed precision, not exact server equality. Synthetic fixtures
 verify stage grouping and arithmetic independently of that approximation.
+
+## Usability and visual pass
+
+The UI now splits values into editable amount and magnitude controls (Value/K/M/B/T/Q),
+with percentage or direct-multiplier selection for bonus rows. Original saved values
+retain their numerical meaning and precision. Typing or pasting `100m` remains valid;
+the unit picker makes this accessible with an Android decimal keyboard. A full-value
+hint shows what the selected amount means. The formula engine itself is unchanged.
+
+A compact mobile result strip stays visible while scrolling. Detailed results are
+at the end of the form on mobile and in a sticky side panel on desktop. Missing
+required values link to their inputs. Each mode supports an optional local baseline;
+comparison is average formula damage, not DPS. Clearing a mode also clears its baseline.
+
+Screenshot import keeps its review step and now presents amount/unit controls.
+Existing and uncertain values are unchecked by default. Pasted breakdown text uses
+the same review flow. All panels inherit the active Arcana theme. Exact in-game
+integer rounding remains an open validation item.
