@@ -224,8 +224,9 @@ with sync_playwright() as playwright:
 
 
     page.locator('#arcanaDock [data-dock="search"]').click()
-    page.wait_for_selector('.arcanaSearchDiscoverGrid',timeout=8000)
-    assert page.locator('.arcanaSearchDiscoverGrid button').count()==6
+    page.wait_for_selector('#globalSearch',timeout=8000)
+    assert page.locator('#globalSearch').evaluate('e=>document.activeElement===e'), 'Search must open ready to type'
+    assert page.locator('.arcanaSearchDiscoverGrid').count()==0, 'Search should not contain the retired explorer menu'
     page.locator('#globalSearch').fill('Pathfinder')
     assert page.locator('.arcanaSearchDiscover').count()==0, 'Featured suggestions must disappear when typing'
     assert page.locator('#searchResults').count()==1
