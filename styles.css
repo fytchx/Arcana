@@ -1218,3 +1218,34 @@ body,#app.shell{max-width:100%;min-width:0}
 .classSkillNode.locked .classSkillImage{filter:saturate(.62);opacity:.78}
 @media(max-width:700px){.classTreeOverview .classSkillImage{width:58px;height:58px;border-radius:13px}.classTreeOverview .classSkillImage .gameArt{width:52px;height:52px;border-radius:9px}}
 
+
+/* Compact rune dressing room */
+.runeStudioGrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.72fr);gap:12px;align-items:start}
+.runeWorkbenchColumn{display:grid;gap:10px;min-width:0}.runeStudioGrid .runeWorkspace{min-width:0}.runeActionBar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0}
+.runeActionBar>label{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.8rem;font-weight:700}
+.runeActionBar input{width:92px;min-height:38px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font:inherit}
+.runeNewButton{white-space:nowrap;min-height:40px}.runePlacementHint{margin:4px 0 10px;color:var(--muted);font-size:.82rem}
+.runePlacementHint strong{color:var(--text)}.runeGridCell.readyToPlace{cursor:pointer}
+.runeComposer{margin:0 0 12px;padding:14px;border:1px solid var(--line);border-radius:15px;background:linear-gradient(145deg,var(--panel2),var(--panel))}
+.runeComposerFields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:10px}
+.runeComposerFields label{display:grid;gap:5px;color:var(--soft);font-size:.75rem;font-weight:700}
+.runeComposerFields select{width:100%;min-width:0;min-height:40px;padding:8px 9px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:inherit}
+.runeComposerFields small{font-size:.68rem;color:var(--muted);font-weight:500}
+.runeComposerActions{display:flex;gap:8px;margin-top:12px}.runeComposerActions .btn{min-height:38px}
+.runeWordsPanel{border:1px solid var(--line);border-radius:15px;background:var(--panel);overflow:hidden}
+.runeWordsPanel>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;cursor:pointer}
+.runeWordsPanel>summary::-webkit-details-marker{display:none}.runeWordsPanel>summary span{display:grid;gap:3px}
+.runeWordsPanel>summary strong{font-size:.98rem}.runeWordsPanel>summary small,.runeWordsPanel>summary b{color:var(--muted);font-size:.76rem}
+.runeWordsPanel>summary b{padding:5px 8px;border-radius:99px;background:var(--panel2);color:var(--accent)}
+.runeWordsList{max-height:58vh;overflow:auto;border-top:1px solid var(--line)}
+.runeWordRow{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;border-bottom:1px solid color-mix(in srgb,var(--line) 65%,transparent);cursor:pointer}
+.runeWordRow.checked{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.runeWordRow input{width:18px;height:18px;accent-color:var(--accent);margin:2px 0 0}
+.runeWordCopy{display:grid;gap:5px;min-width:0}.runeWordCopy>strong{font-size:.84rem}
+.runeWordCopy>small{color:var(--muted);font-size:.72rem;line-height:1.35}
+.runeWordTypes{display:flex;flex-wrap:wrap;gap:4px}
+.runeFamilyChip{padding:2px 6px;border:1px solid currentColor;border-radius:6px;font-size:.63rem;font-weight:700;text-transform:capitalize}
+.runeSelectedStrip{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-top:1px solid var(--line);color:var(--soft);font-size:.78rem}
+.runeWordsNote{margin:0;padding:10px 12px;color:var(--muted);font-size:.72rem}
+@media(max-width:760px){.runeStudioGrid{grid-template-columns:minmax(0,1fr)}.runeComposerFields{grid-template-columns:1fr 1fr}.runeComposerFields label:last-child{grid-column:1/-1}.runeWordsList{max-height:52vh}}
+@media(max-width:420px){.runeComposerFields{grid-template-columns:1fr}.runeComposerFields label:last-child{grid-column:auto}.runeComposerActions{flex-direction:column}.runeComposerActions .btn{width:100%}}
