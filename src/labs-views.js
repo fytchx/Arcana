@@ -24,6 +24,7 @@ export function runeGridView(build,selection,readonly=false,pending=null,compose
   <div class="runeMlSliderMeta"><span>GRID SIZE</span><strong>${cols}×${rows} <small>· ${cols*rows} cells</small></strong><span>ML ${ml}</span></div>
   <input aria-label="Monster Level slider" data-monster-slider type="range" min="1" max="300" step="1" value="${Math.min(300,ml)}" ${readonly?'disabled':''}>
  </div>
+
  ${pending?`<p class="runePlacementHint"><strong>${esc(family)} rune ready.</strong> Tap open cells to place more. <button type="button" data-action="runeplacementstop">Done</button></p>`:''}
  ${composer}
  <div class="runeBoard" id="arcanaRuneBoard" data-grid-cols="${cols}" data-grid-rows="${rows}" style="--grid-cols:${cols};--grid-rows:${rows};aspect-ratio:${cols}/${rows}" role="group" aria-label="${cols} by ${rows} rune grid">${backdrop}${blocks}</div>

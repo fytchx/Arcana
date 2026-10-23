@@ -165,7 +165,7 @@ with sync_playwright() as playwright:
     assert page.locator('.atlasJournalMore .atlasJournalExtra').count()==1
     assert page.locator('.atlasFeatureLink').count()==2, 'Featured guide and Community links must render'
     assert page.locator('.atlasConvergenceFeature').count()==1, 'Convergence guide must be featured on Home'
-    assert page.locator('[data-journal-latest]').get_attribute('href')=='/journal/idlearc-1-3-7-the-timing-couldnt-be-better'
+    assert page.locator('[data-journal-latest]').get_attribute('href')=='/#/journal/article?slug=idlearc-1-3-7-the-timing-couldnt-be-better'
     assert 'IdleArc 1.3.7' in page.locator('[data-journal-latest]').inner_text()
     assert page.locator('.atlasTile[data-route="calculators/pathfinder"]').count()==1
     assert page.locator('.atlasTile[data-action="homemenu"][data-arg="tools"]').count()==1
@@ -224,11 +224,14 @@ with sync_playwright() as playwright:
 
 
     page.locator('#arcanaDock [data-dock="search"]').click()
-    page.wait_for_selector('.arcanaSearchDiscoverGrid',timeout=8000)
-    assert page.locator('.arcanaSearchDiscoverGrid button').count()==6
+    page.wait_for_selector('#globalSearch',timeout=8000)
+    assert page.locator('#globalSearch').evaluate('e=>document.activeElement===e'), 'Search must open ready to type'
+    assert page.locator('.arcanaSearchDiscoverGrid').count()==0, 'Search should not contain the retired explorer menu'
     page.locator('#globalSearch').fill('Pathfinder')
     assert page.locator('.arcanaSearchDiscover').count()==0, 'Featured suggestions must disappear when typing'
     assert page.locator('#searchResults').count()==1
+    page.locator('#globalSearch').fill('')
+    assert page.locator('.arcanaSearchHint').count()==1, 'Clearing search should restore the search hint'
     page.locator('#layer [data-close]').first.click()
 
     # The Home hero CTA is already asserted to target labs/build above. Exercise
@@ -333,9 +336,11 @@ with sync_playwright() as playwright:
     page.wait_for_selector('.atlasHero',timeout=8000)
     assert page.locator('html').get_attribute('data-arcana-design-active')=='true', 'Try-on must apply the homepage theme'
     assert page.locator('html').get_attribute('data-arcana-admin-design')=='false', 'Try-on must not elevate admin privileges'
-    assert page.evaluate("getComputedStyle(document.querySelector('#content.homeFullscreen')).backgroundImage.includes('gradient')"), 'Try-on must style the actual homepage'
-    real=page.evaluate("""() => {const css=getComputedStyle(document.querySelector('#content.homeFullscreen'));return {repeat:css.backgroundRepeat,size:css.backgroundSize}}""")
-    assert set(real['repeat'].split(', '))=={'no-repeat'} and set(real['size'].split(', '))=={'100% 100%'}, 'Real homepage still has a tiling seam: '+str(real)
+    # Curated looks now render independent SVG artwork layers, replacing legacy gradients.
+    real=page.evaluate("""() => {const css=getComputedStyle(document.querySelector('#content.homeFullscreen'));return {image:css.backgroundImage,repeat:css.backgroundRepeat,size:css.backgroundSize}}""")
+    assert page.locator('html').get_attribute('data-arcana-art-layered')=='true', 'Curated artwork layers were not applied'
+    assert 'data:image/svg+xml' in real['image'], 'Try-on must paint the selected artwork on the actual homepage'
+    assert set(real['repeat'].split(', '))=={'no-repeat'} and set(real['size'].split(', '))=={'cover'}, 'Real homepage artwork should cover its surface without tiling'
     page.evaluate("location.hash='#/theme-playground'")
     page.wait_for_selector('.themePlayground',timeout=8000)
     page.locator('[data-action="theme-try-off"]').click()

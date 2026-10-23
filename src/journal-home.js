@@ -12,7 +12,7 @@ export async function hydrateJournalPreview(){
    lastFetch=Date.now();
   }
   const current=cache[0];if(!current||!document.contains(link))return;
-  link.href=current.url;
+  link.href='/#/journal/article?slug='+encodeURIComponent(current.slug);
   const title=link.querySelector('strong'),category=link.querySelector('.journalHomeCategory'),subtitle=link.querySelector('small');
   if(title)title.textContent=current.teaserTitle||current.title;
   if(subtitle)subtitle.textContent=current.subtitle;
@@ -28,7 +28,7 @@ export async function hydrateJournalPreview(){
     if(!story||typeof story.title!=='string'||typeof story.url!=='string')continue;
     let url;try{url=new URL(story.url,location.origin)}catch{continue}
     if(url.origin!==location.origin||!url.pathname.startsWith('/journal/'))continue;
-    const row=document.createElement('a');row.className='atlasJournalExtra';row.href=url.pathname;
+    const row=document.createElement('a');row.className='atlasJournalExtra';row.href='/#/journal/article?slug='+encodeURIComponent(story.slug);
     const copy=document.createElement('span');
     const label=document.createElement('em');label.textContent=String(story.category||'Journal');
     const name=document.createElement('strong');name.textContent=story.teaserTitle||story.title;
