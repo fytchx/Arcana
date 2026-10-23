@@ -23,6 +23,9 @@ test('Journal index is server rendered, indexable and provides real article link
  assert.match(r.text,/Building a Proper Damage Calculator/);
  assert.match(r.text,/name="robots" content="index,follow"/);
  assert.match(r.text,/rel="canonical" href="https:\/\/arcanacompanion.xyz\/journal"/);
+ assert.match(r.text,/href="\/#\/calculators\/pathfinder"/);
+ assert.match(r.text,/href="\/#\/labs\/build"/);
+ assert.match(r.text,/href="\/#\/wiki"/);
 });
 test('Story has verified class chart and social metadata, without unsupported balance claims',async()=>{
  const r=await request('/journal/class-balance-top-250-season-2');
