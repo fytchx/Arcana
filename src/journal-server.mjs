@@ -23,7 +23,7 @@ function combined(raw){
  return [...posts.values()].sort((a,b)=>Date.parse(b.publishedAt||b.updatedAt||0)-Date.parse(a.publishedAt||a.updatedAt||0));
 }
 async function list(publicOnly=true){const posts=combined(await state());return publicOnly?posts.filter(x=>x.published):posts;}
-const summary=post=>({slug:post.slug,title:post.title,teaserTitle:post.teaserTitle||post.title,subtitle:post.subtitle,author:post.author,category:post.category,publishedAt:post.publishedAt,updatedAt:post.updatedAt,featured:!!post.featured,coverUrl:post.coverUrl||'',url:'/journal/'+post.slug});
+const summary=post=>({slug:post.slug,title:post.title,teaserTitle:post.teaserTitle||post.title,subtitle:post.subtitle,author:post.author,category:post.category,publishedAt:post.publishedAt,updatedAt:post.updatedAt,featured:!!post.featured,coverUrl:post.coverUrl||'',url:'/#/journal/article?slug='+encodeURIComponent(post.slug)});
 const bandRows=[
  ['1–50',26,7,13,2,2],['51–100',21,13,11,4,1],['101–150',19,15,6,5,5],['151–200',20,14,13,3,0],['201–250',18,16,7,4,5]
 ];
@@ -101,6 +101,8 @@ export async function handleJournalRequest(req,res,url){
  }
  if(pathname==='/api/journal'){
   if(req.method!=='GET')return fail(res,405,'Method not allowed.');
+  const slug=url.searchParams.get('slug');
+  if(slug){const article=(await list()).find(post=>post.slug===slug);if(!article)return fail(res,404,'Story not found.');sendJSON(res,200,article);return true;}
   sendJSON(res,200,{articles:(await list()).map(summary)});return true;
  }
  if(pathname==='/api/journal/admin'){

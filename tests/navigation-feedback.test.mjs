@@ -4,15 +4,18 @@ import {readFile,stat} from 'node:fs/promises';
 
 const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
 
-test('Arcana can be installed with a proper launcher icon from both app and Journal pages',async()=>{
+test('Journal routes use Arcana’s app shell and its shared launcher icon',async()=>{
  const html=await read('index.html');
- const journal=await read('src/journal-server.mjs');
  const server=await read('server.mjs');
+ const routing=await read('src/routing.js');
+ const app=await read('src/app.js');
  const manifest=JSON.parse(await read('manifest.webmanifest'));
  assert.match(html,/rel="apple-touch-icon"/);
  assert.match(html,/rel="manifest" href="\/manifest\.webmanifest"/);
- assert.match(journal,/rel="apple-touch-icon"/);
- assert.match(journal,/rel="manifest" href="\/manifest\.webmanifest"/);
+ assert.match(server,/readFile\(resolve\(ROOT,'index\.html'\)\)/);
+ assert.match(routing,/location\.pathname/);
+ assert.match(app,/journalIndexView/);
+ assert.match(app,/journalArticleView/);
  assert.match(server,/\.webmanifest':'application\/manifest\+json/);
  assert.match(server,/publicPage=new Set\(\['\/index\.html','\/manifest\.webmanifest'/);
  assert.equal(manifest.display,'standalone');
