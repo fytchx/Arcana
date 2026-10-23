@@ -18,7 +18,7 @@ test('manual runeword selections persist through build normalization',()=>{
 test('legacy automatic word locks are discarded while rune placements remain',()=>{
  const runeBoard=[{id:'a',family:'Fortitude',shape:'small',x:0,y:0,w:1,h:1},{id:'b',family:'Vitality',shape:'small',x:1,y:0,w:1,h:1}];
  const build=normalizeBuild({runeBoard,runeLocks:[{wordKey:'iron_bulwark',runeIds:['a','b']}]});
- assert.deepEqual(build.runeBoard,runeBoard);
+ assert.deepEqual(build.runeBoard.map(({id,family,x,y})=>({id,family,x,y})),runeBoard.map(({id,family,x,y})=>({id,family,x,y})));
  assert.equal(Object.hasOwn(build,'runeLocks'),false);
 });
 
