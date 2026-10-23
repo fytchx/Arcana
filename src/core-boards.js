@@ -32,9 +32,9 @@ export function buildLoadout(equipment,itemLookup,inspecting){
   const raw=equipment?.[slot.key],item=itemLookup(raw),configuration=asGear(raw),base=baseItem(raw);
   const locked=slot.key==='offhand'&&twoHanded&&!raw;
   const displayName=item?.title||base?.name||'',tier=configuration?.rarity?gearLabel(configuration):'';
-  // A restrained, uniform silhouette keeps empty and equipped states legible.
-  // Real item art stays in the picker/editor where it provides useful detail.
-  const art=slotSilhouette(slot.key);
+  // Prefer the official art pack, then the mapped legacy sprite; keep empty slots distinct.
+  const official=item?codexOfficialArt(item,54):'';
+  const art=item?(official.includes('data-art-status="unmatched"')||official.includes('data-art-status="loading"')?(hasGameSprite(item)?gameArt(item,54):slotSilhouette(slot.key)):official):slotSilhouette(slot.key);
   return `<button type="button" class="loadoutSlot ${item?'':'empty'} ${locked?'gearLocked':''}" data-pos="${slot.group}" data-action="${inspecting?'inspectgear':'pickgear'}" data-arg="${slot.key}" data-item="${esc(equipmentId(raw)||'')}" aria-label="${esc(slot.label)}: ${esc(displayName|| (locked?'blocked by two-handed weapon':'empty'))}${tier?' · '+esc(tier):''}"><span class="loadoutSprite">${art}</span><span class="loadoutMeta"><small>${esc(slot.label)}</small><strong>${esc(displayName|| (locked?'Blocked':'Empty'))}</strong>${tier?`<em class="gearTierMark">${esc(tier)}</em>`:''}</span>${item?'<i class="loadoutEquipped" aria-hidden="true"></i>':''}</button>`;
  }).join('')}</div><p class="boardCaveat">Tap an equipment slot to choose its base item, rarity, awakening and Drop Bonus. Saved builds retain their individual gear configurations.</p></section>`;
 }

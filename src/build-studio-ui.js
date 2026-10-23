@@ -1,8 +1,8 @@
 import {esc,icon} from './ui.js';
-import {gameArt,hasGameSprite} from './assets.js';
+import {gameArt,hasGameSprite,codexOfficialArt} from './assets.js';
 import {RARITIES,GEAR_ITEMS,DROP_BONUSES,GEAR_SOURCE,baseItem,allowedGearForSlot,asGear,gearLabel,bonusRange,bonusUnit} from './build-studio-data.js';
 
-const art=(g,entry)=>{const visual={id:g.id,kind:'item',title:g.name,tier:entry?.awaken?'A'+entry.awaken:entry?.rarity?'T'+entry.rarity:undefined};return gameArt(hasGameSprite(visual)?visual:{...visual,tier:undefined},72);};
+const art=(g,entry)=>{const visual={id:g.id,kind:'item',gameKind:'item',title:g.name,tier:entry?.awaken?'A'+entry.awaken:entry?.rarity?'T'+entry.rarity:undefined};const official=codexOfficialArt(visual,72);if(!official.includes('data-art-status="unmatched"')&&!official.includes('data-art-status="loading"'))return official;return gameArt(hasGameSprite(visual)?visual:{...visual,tier:undefined},72);};
 const niceStat=s=>String(s||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
 export function gearPickerMarkup(slot,className,query=''){
  const q=String(query||'').trim().toLowerCase();
@@ -30,7 +30,7 @@ export function gearEditorMarkup(slot,raw,className='Warrior'){
    `<strong>${rarity===1?'Normal rarity':'No Drop Bonus selected'}</strong><small>${rarity===1?'Normal items do not receive a standard Drop Bonus. Exceptional boosted drops still require separate verification.':'Choose a bonus to display its verified value range.'}</small>`}
   </section>
   <p class="gearSourceNote">Source: ${esc(GEAR_SOURCE)}. Base-item slot, class and two-handed restrictions are enforced. The snapshot does not document bonus-type restrictions by equipment slot, so these cannot yet be verified. Tiers 7–9 are boosted bonus tiers.</p>
-  <div class="gearEditButtons"><button type="button" class="btn primary" data-action="gearsave">${icon('check',18)} Save item</button><button type="button" class="btn secondary" data-action="gearclear">Unequip</button><button type="button" class="btn secondary" data-close="layer">Cancel</button></div>
+  <div class="gearEditButtons"><button type="button" class="btn primary" data-action="gearsave">${icon('check',18)} Save item</button><button type="button" class="btn secondary" data-action="gearclear">Unequip</button><button type="button" class="btn secondary" data-action="gearcancel">Cancel</button></div>
  </section>`;
 }
 export function gearInspectMarkup(slot,raw){
