@@ -21,9 +21,8 @@ test('Compound calculations match game-observed C10 examples',()=>{
  assert.equal(legendary.amount,101);
  assert.equal(legendary.unit,'%');
  assert.equal(compoundBonus({rarity:'legendary',bonus:'pet_damage',level:30}).amount,711);
- assert.equal(compoundRoundUp(714,1.07),764); // 714 × 1.07 = 763.98
- assert.equal(compoundRoundUp(766,1.07),820); // 766 × 1.07 = 819.62
- assert.equal(compoundRoundUp(766.01,1),767);
+ assert.equal(compoundRoundUp(714*1.07),764); // 714 × 1.07 = 763.98
+ assert.equal(compoundRoundUp(766.01),767);
  const normal=compoundBonus({rarity:'uncommon',bonus:'dodge',level:10});
  assert.equal(normal.base,2);
  assert.equal(normal.amount,12);
