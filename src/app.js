@@ -1,3 +1,1217 @@
-YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éíç}ûñ:-jZ.¶›­–)Þ³V–×÷'B¶VçF—F–W2ÆVçF—G”'”–BÆ—FVÔÆ—7BÆwV–FTÆ—7BÆFVÖô'V–ÆG2ÆFVÖôwV–FU6V7F–öç2Ç6V&6„6FÆöwÒg&öÒrâö6FÆöræ§2s°¦–×÷'B¶‡–G&FT¦÷W&æÅ&Wf–WwÒg&öÒrâö¦÷W&æÂÖ†öÖRæ§2s°¦–×÷'B¶¦÷W&æÄ–æFW…f–WrÆ¦÷W&æÄ'F–6ÆUf–WwÒg&öÒrâö¦÷W&æÂ×f–Ww2æ§2s°¦–×÷'B¶ÆöDG&gBÇ6fTG&gBÆFVW6÷’Ç&VÖVÖ&W"ÆÆöE&V6VçGÒg&öÒrâ÷6W76–öâæ§2s°¦–×÷'B·&VDÆö6Ä'V–ÆE&W6WG2Ç6fTÆö6Ä'V–ÆE&W6WBÆÆö6Ä'V–ÆE&W6WD'”–BÇ&VÖ÷fTÆö6Ä'V–ÆE&W6WGÒg&öÒrâöÆö6ÂÖ'V–ÆB×&W6WG2æ§2s°¦–×÷'B¶æf–vFRÇ'6U&÷WFRÆæf–vFT&6·Òg&öÒrâ÷&÷WF–æræ§2s°¦–×÷'B¶W62Æ–6öâÆ&÷„–6öâÆ6†—Æ'WGFöâÆ6&DVçF—G—Òg&öÒrâ÷V’æ§2s°¦–×÷'B´DÔ”åõU$ÂÆ–æ—EF†VÖRÆÇ•F†VÖRÇF†VÖU7FGW2Ç&Vg&W6…F†VÖRÇ6WD66VçBÇ6WE6—FU7W&f6RÇ6WD–6öä6öÆ÷"Ç6WD–6öäÖöFWÒg&öÒrâ÷F†VÖRæ§2s°¦–×÷'B¶vÖT'BÆ–æ—DvÖT76WG2ÆÆöE7FGW2Æ6æöæ–6Ä'E&VfW&Væ6RÆ6öFW„öff–6–Ä'GÒg&öÒrâö76WG2æ§2s°¦–×÷'BµE$TUôDDõU$ÂÆæ÷&ÖÆ—¦UG&VRÆvWD6Æ72ÆvWD'&æ6‚Ç76—fTÆÆ÷vVBÆ6Æ74ÆÆ÷vVBÆÆÆö6FVEF÷FÂÇ76—fUö–çD'VFvWBÆ6Æ75ö–çD'VFvWBÇ76—fUF–W%7VæBÇ76—fUfÇVWÒg&öÒrâ÷G&VRÖVæv–æRæ§2s°¦–×÷'B´ÄôDõUEôÄ”õUBÆ&ö&E7v—F6‚Æ'V–ÆDÆöF÷WBÇ76—fT&ö&BÆ6Æ74&ö&BÆ7F—fU76—fTæöFRÆ7F—fT6Æ756¶–ÆÂÇ76—fUvT6÷VçBÇ6¶–ÆÅF–W$w&÷W7Òg&öÒrâö6÷&RÖ&ö&G2æ§2s°¦–×÷'B¶6Æ74VÖ&ÆVÒÇ&VE7GVF–õ÷'G&—BÇ6WE7GVF–õ÷'G&—BÆ6ÆV%7GVF–õ÷'G&—GÒg&öÒrâ÷7GVF–ò×f—7VÇ2æ§2s°¦–×÷'B·76—fUF—FÆWÒg&öÒrâ÷G&VRÖ'Bæ§2s°¦–×÷'B¶æ÷&ÖÆ—¦T'V–ÆBÇWE'VæRÇ&VÖ÷fU'VæRÆæW‡E'VæT–BÇWE7VÖÖ'’Å%TäUõ4„U2Å%TäUôdÔ”Ä”U2Å%TäUôdÔ”Å•ôDUD”Å2Å%TäUõ4T4ôäD$”U2ÅUEôdd•…ôDTe2Ç7FDæÖRÇ'VæT—77VRÆÖöç7FW$ÆWfVÄw&–BÆ7F—fU'VæT&ö&GÒg&öÒrâöÆ'2ÖVæv–æRæ§2s°¦–×÷'B¶Æ'5F'2Ç'VæTw&–Ef–WrÇ'VæT÷F–öç5T’Ç'VæUv÷&G5f–WrÇWDÆöF÷WEf–WrÇWD6ö×÷VæD6Æ7VÆF÷%f–WrÆ'V–ÆD÷fW'f–WucwÒg&öÒrâöÆ'2×f–Ww2æ§2s°¦–×÷'B¶æ÷&ÖÆ—¦UV&Æ–4fVVBÆÆfu6V&6„VçG&–W2Ç&æµ6V&6‚ÆÆftf–ÇFW"ÆwV–ÆD7F—f—G’ÆÆftFVWÆ–æ·Òg&öÒrâöÆfrÖ6÷&Ræ§2s°¦–×÷'B¶Æfu67&VVâÆÆftFWF–ÂÆÆft6&GÒg&öÒrâöÆfr×f–Ww2æ§2s°¦–×÷'B·fW&–f–VDvÖU6V&6„VçG&–W2ÆÖW&vVE6V&6‡Òg&öÒrâ÷fW&–f–VB×6V&6‚æ§2s°¦–×÷'B¶æ÷&ÖÆ—¦TwV–ÆBÆwV–ÆDVçG&–W2ÆwV–ÆDf–ÇFW"Ç6fTwV–ÆD÷væW"Ç&VDwV–ÆD÷væW'Òg&öÒrâöwV–ÆBÖ6÷&Ræ§2s°¦–×÷'B¶wV–ÆDF—&V7F÷'’ÆwV–ÆDFWF–ÂÆwV–ÆDf÷&ÒÆwV–ÆD6&GÒg&öÒrâöwV–ÆB×f–Ww2æ§2s°¦–×÷'B¶wV–ÆD‡V%vRÆÆöDwV–ÆD‡V"Çv—&TwV–ÆD‡V'Òg&öÒrâöwV–ÆBÖ‡V"×V’æ§2s°¦–×÷'Bµt”´•ô%D”4ÄU2Çv–¶”'F–6ÆT'”–BÇv–¶”'F–6ÆTVçG&–W2Ç6WEV&Æ—6†VEv–¶”'F–6ÆW7Òg&öÒrâ÷v–¶’ÖFFæ§2s°¦–×÷'B·v–¶•7GVF–õf–WrÆÖ÷VçEv–¶•7GVF–òÇv—&Uv–¶•7GVF–÷Òg&öÒrâ÷v–¶’×7GVF–òæ§2s°¦–×÷'B¶6öÖ×Væ—G•vRÆÆöD6öÖ×Væ—G•vRÇv—&T6öÖ×Væ—G•T—Òg&öÒrâö6öÖ×Væ—G’×V’æ§2s°¦–×÷'B¶&WFf–WrÇv—&T&WFT’ÆÆöD&WF7FGW7Òg&öÒrâö&WFÖ6VçFW"æ§2s°¦–×÷'B¶FÖ–åG&ff–5f–WrÆÆöDFÖ–åG&ff–2Çv—&TFÖ–åG&ff–7Òg&öÒrâöFÖ–â×G&ff–2×V’æ§2s°¦–×÷'B¶FÖ–ä6öç6öÆUf–WrÆÆöDFÖ–ä6öç6öÆRÇv—&TFÖ–ä6öç6öÆWÒg&öÒrâöFÖ–âÖ6öç6öÆRæ§2s°¦–×÷'B·&V6÷&EG&ff–4æf–vF–öâÆ–æ—EG&ff–5G&6¶–æwÒg&öÒrâ÷G&ff–2Ö6Æ–VçBæ§2s°¦–×÷'B·6—FTæ÷F–6WÒg&öÒrâ÷F†VÖRæ§2s°¦–×÷'B·6WDFW6–vå&Wf–WrÆÇ•f—7VÅ&W6WBÆÇ”Æ–W%f—7VÅ&W6WGÒg&öÒrâöFW6–vâÖ6öçG&öÇ2æ§2s°¦–×÷'B·6†&T'V–ÆEFö¶VâÆ÷Vä'V–ÆEFö¶VçÒg&öÒrâö'V–ÆBÖÆ–æ·2æ§2s°¦–×÷'B·6fTæWt66÷VçD'V–ÆGÒg&öÒrâö66÷VçBÖ'V–ÆG2×V’æ§2s°¦–×÷'B¶&6T—FVÒÆWV—ÖVçD–BÆ4vV"ÆæWtvV"ÆvV$—77VW2ÆÆÆ÷vVD—FVÒÅ$$•D”U7Òg&öÒrâö'V–ÆB×7GVF–òÖFFæ§2s°¦–×÷'B¶vV%–6¶W$Ö&·WÆvV$VF—F÷$Ö&·WÆvV$–ç7V7DÖ&·WÒg&öÒrâö'V–ÆB×7GVF–ò×V’æ§2s°¦–×÷'B·v–¶”ÆæF–æuf–WrÇv–¶”Æ–'&'•f–WrÇv–¶”wV–FW5f–WrÇv–¶”'F–6ÆUf–WrÇv–¶•&V6÷&Ef–WrÇv–¶•&V6÷&E&÷w2Çv–¶”6FVv÷'•f–WwÒg&öÒrâ÷v–¶’×f–Ww2æ§2s°¦–×÷'B·v–¶”6FVv÷'’Çv–¶”6FVv÷'”f÷$'F–6ÆRÄÄTt5•õt”´•õDõ”5õ$TD•$T5E7Òg&öÒrâ÷v–¶’×F†öæö×’æ§2s°¦–×÷'B·fW&–f–VD6ö×&—6öåæVÂÇfW&–f–VEWw&FU&VfW&Væ6UæVÇÒg&öÒrâ÷fW&–f–VBÖ—FVÒ×f–Ww2æ§2s°¦–×÷'B·&VD6ö×÷VæEÆâÇ6fT6ö×÷VæEÆâÇ&VDff—„6÷7EÆâÇ6fTff—„6÷7EÆâÅUEô„D4…ô$ôåU4U7Òg&öÒrâ÷WB×6–×ÆRÖÖF‚æ§2s°¦–×÷'B·6–×ÆT6ö×÷VæD6Æ7VÆF÷%f–WrÇ6–×ÆTff—„6÷7Ef–WwÒg&öÒrâ÷WB×6–×ÆR×f–Ww2æ§2s°¦–×÷'B¶æ÷&ÖÆ—¦UWDff—…ÆâÇ&VEWDff—…ÆâÇ6fUWDff—…ÆâÇ&ö¦V7EWDff—‡Òg&öÒrâ÷fW&–f–VB×WBÖff—†W2æ§2s°¦–×÷'B·WDff—…ÆææW%f–WwÒg&öÒrâ÷fW&–f–VB×WBÖff—‚×f–Ww2æ§2s°¦–×÷'B¶g&W6„wV–ÆEG&VRÇ&VDwV–ÆEG&VRÇ6fTwV–ÆEG&VRÆwV–ÆEG&VTg&öÔÆ–æ²ÆwV–ÆEG&VUv—F„ÆWfVÂÆwV–ÆEG&VTÆ–æµ&×2ÆÆÆö6FTwV–ÆEö–çBÇ&VÖ÷fTwV–ÆEö–çBÆÖ„wV–ÆEö–çG7Òg&öÒrâöwV–ÆB×G&VRÖVæv–æRæ§2s°¦–×÷'B¶wV–ÆEG&VUf–WwÒg&öÒrâöwV–ÆB×G&VR×f–Ww2æ§2s°¦–×÷'B·&VDwV–ÆD&6VÆ–æRÇ6fTwV–ÆD&6VÆ–æRÆ6ÆV$wV–ÆD&6VÆ–æWÒg&öÒrâöwV–ÆB×G&VRÖ6ö×&Ræ§2s°¦–×÷'B¶6öææV7FVDæW‡BÆ†öÖU7F'BÆæd6&G2ÄäeôDU5D”äD”ôå7Òg&öÒrâö6öçFW‡BÖæbæ§2s°¦–×÷'B·&W7VÖ&ÆUv÷&·76W7Òg&öÒrâ÷v÷&·76RÖ‡V"æ§2s°¦–×÷'B·&VDf&ÕÆâÇ6fTf&ÕÆâÆf&Ô6ö×&Uf–WwÒg&öÒrâöf&ÒÖ6ö×&Ræ§2s°¦–×÷'B·F–ÖVÆ–æU7FvW2ÇF–ÖVÆ–æTÖöFVÂÇ7FvU7FWÆ&VÂÇ&VEV–6µf–WrÇ6fUV–6µf–WwÒg&öÒrâ÷F†f–æFW"×F–ÖVÆ–æRæ§2s°¦–×÷'B·F†f–æFW%f–WrÇF†f–æFW%7FWFWF–ÂÇF†f–æFW%&ævT6öçFVçGÒg&öÒrâ÷F†f–æFW"×F–ÖVÆ–æR×f–Wræ§2s°¦–×÷'B·V–6µWw&FUæVÂÇV–6µWw&FT6öçFVçBÆ–æ—F–ÅV–6µ&ævWÒg&öÒrâ÷V–6²×FööÇ2×f–Wræ§2s°¦–×÷'B·&VE&ævRÇ6fU&ævRÆÆÅ7FvW2ÇV÷FU&ævRÆæ÷&ÖÆ—¦T—FVÕVçF—G’Ææ÷&ÖÆ—¦T6÷7DÖöFRÆæ÷&ÖÆ—¦U—G•&öw&W72Ææ÷&ÖÆ—¦U—G”6÷VçGÒg&öÒrâ÷F†f–æFW"×&ævRæ§2s°¦–×÷'B·V÷FTf–ÇW&U66Væ&–÷7Òg&öÒrâ÷F†f–æFW"Öf–ÇW&W2æ§2s°¦–×÷'B·6÷W&6TÖFW&–Äw&÷W7Òg&öÒrâ÷F†f–æFW"ÖÖFW&–ÂÖw&÷W2æ§2s°¦–×÷'B·6fTf&Ö–ætÆ—7BÇv—&Tf&Ö–ætÆ—7G7Òg&öÒrâöf&Ö–ærÖÆ—7G2×V’æ§2s°¦–×÷'B¶†öÖU67&VVâÆ†öÖU7V&ÖVçRÆF—&V7F÷'•f–WrÇv–¶•F÷–75f–WrÇv–¶•F÷–5f–WrÇv–¶”&÷WEf–WrÇW6W$6VçFW%f–WrÇ6WGF–æw5f–WrÆ–6öävÆÆW'•f–WrÆFW6–våæVÂÆÇ”&Vg2Æ6†ævT&VgÒg&öÒrâöÆVæ6‚Öæf–vF–öâæ§2s°¦–×÷'B¶7W'&VçD66÷VçBÇ&Vg&W6„66÷VçBÆ66÷VçE7FGW7Òg&öÒrâö6öÖ×Væ—G’×V’æ§2s°¦–×÷'B·6V&6„5–÷UG—WÒg&öÒrâ÷6V&6‚Ö2×–÷R×G—Ræ§2s°¦–×÷'B·w&—FTFW6–vâÇ&W6WDFW6–vâÆæ÷&ÖÆ—¦TFW6–vä†W‚ÆÇ”FW6–vå&W6WBÇVæFôFW6–vâÇ&VDFW6–vâÄDU4”tåõ$U4UE7Òg&öÒrâöFW6–vâÖ6öçG&öÇ2æ§2s°¦–×÷'B·v—&TFW6–väÖ–æ•&Wf–WrÇ7–æ4FW6–väÖ–æ•&Wf–WrÆVæDFW6–väÖ–æ•6W76–öâÆfö7W4FW6–väÖ–æ•&Wf–WrÇ6†÷tFW6–väÖ–æ•vRÆFW6–väÖ–æ”Ö&·WÒg&öÒrâöFW6–vâÖÖ–æ’×&Wf–Wræ§2s°¦–×÷'B·v—&UF†VÖUfVÇGÒg&öÒrâ÷F†VÖR×7GVF–ò×fVÇBæ§2s°¦–×÷'B·7VvvW7FVD'WGFöåFW‡GÒg&öÒrâ÷F†VÖR×7GVF–òÖVF—Bæ§2s°¦–×÷'B¶–æ—DvVæW&Ä6†GÒg&öÒrâövVæW&ÂÖ6†Bæ§2s°¦–×÷'B·6WD7W7FöÔ66VçGÒg&öÒrâ÷F†VÖRæ§2s° ¦6öç7BC×3ÓæFö7VÖVçBçVW'•6VÆV7F÷"‡2“¶6öç7BæöFSÖ–CÓæFö7VÖVçBævWDVÆVÖVçD'”–B†–B“°¦6öç7B7FFS×·G&VTFF¦çVÆÂÇG&VU7FGW3¢vÆöF–ærrÇG&VT6Æ74–C¦çVÆÂÇG&VT'&æ6„–C¦çVÆÂÇ76—fUF–W#£Ç76—fUvS£Æ6Æ75F–W$–æFWƒ£Æ6†&7FW$ÆWfVÃ£Ç76—fTÆÆö3§·ÒÆ6Æ74ÆÆö3§·ÒÆ6Æ74ÆÆö4'”–C§·ÒÇ76—fTg&VTÖöFS¦fÇ6RÆÆ–W#¦çVÆÂÇ6V&6ƒ¢rrÆÆ7E6V&6ƒ¢rrÇ&V6VçC¦ÆöE&V6VçB‚’ÆG&gC¦ÆöDG&gB‚’Æ6ö×&TÆVgC¦çVÆÂÆ6ö×&U&–v‡C¦çVÆÂÆ6ö×&UF–W#£Ç'VæT–æFWƒ£Ç'VæTfÖ–Ç“¢tgW'’rÇ'VæU6V6öæF'“¢v7&—F–6ÅöFÖvRrÇ'VæU6†S¢w6ÖÆÂrÇ'VæU6VÆV7FVC¦çVÆÂÇ'VæT6ö×÷6W$÷Vã¦fÇ6RÇ'VæUVæF–æs¦çVÆÂÇ'VæUö–çFW$G&s¦çVÆÂÇ'VæU7W&W746Æ–6³¦çVÆÂÇ'VæUv÷&G4÷Vã¦fÇ6RÇ'VæT†—7F÷'“¥µÒÇWDÆWfVÇ3¥³ÃÃÃÒÇWD6Æ4ÖöFS¢w6V6öæÂrÇWDff—…Æã§&VEWDff—…Æâ‚’Æ6ö×÷VæEV–6³§&VD6ö×÷VæEÆâ‚’Æff—„6÷7EV–6³§&VDff—„6÷7EÆâ‚’Ç6Æ÷EF&vWC¦çVÆÂÆvV$VF—C¦çVÆÂÇ&WGW&åFó¦çVÆÂÆwV–ÆEG&VUÆã§&VDwV–ÆEG&VR‚’ÆwV–ÆEG&VUF#¢wfæwV&BrÆwV–ÆEG&VTÆ–æ´¶W“¢rrÆwV–ÆEVæFó¥µÒÆwV–ÆE&VFó¥µÒÆwV–ÆD&6VÆ–æS§&VDwV–ÆD&6VÆ–æR‚’Æf&ÕÆã§&VDf&ÕÆâ‚’ÇF†f–æFW%V–6³§&VEV–6µf–Wr‚’ÇF†f–æFW%&ævS§&VE&ævR‚—Ó°¦6öç7B&V6—U7FFS×¶FF¦çVÆÂÆÆöF–æs¦fÇ6RÆW'&÷#¢rwÓ°¦7–æ2gVæ7F–öâÆöEF†f–æFW%&V6—W2‚—°¢–b‡&V6—U7FFRæÆöF–æwÇÇ&V6—U7FFRæFF—&WGW&ã·&V6—U7FFRæÆöF–æs×G'VS°¢G'—°¢6öç7B&W7öç6SÖv—BfWF6‚‚rö’÷F†f–æFW"÷&V6—W2rÇ·6–væÃ¤&÷'E6–væÂçF–ÖV÷WBƒS—Ò“°¢–b‚&W7öç6Ræö²—F‡&÷rW'&÷"‚u&V6—R6W'f–6Rr·&W7öç6Rç7FGW2“°¢6öç7B–ÆöCÖv—B&W7öç6Ræ§6öâ‚“°¢–b‡F–ÖVÆ–æU7FvW2‡–ÆöBÂvæ÷&ÖÂr’æÆVæwF‚ÓÓgÇÇF–ÖVÆ–æU7FvW2‡–ÆöBÂvv¶VæVBr’æÆVæwF‚ÓÓ3—F‡&÷rW'&÷"‚t–æ6ö×ÆWFR&V6—R6WBr“°¢&V6—U7FFRæFF×–ÆöC·&V6—U7FFRæW'&÷#Òrs°¢–b‚7FFRçF†f–æFW%&ævRæg&öÕ7FvWÇÂ7FFRçF†f–æFW%&ævRçFõ7FvR—7FFRçF†f–æFW%&ævS×6fU&ævR†–æ—F–ÅV–6µ&ævR‡–ÆöBÇ7FFRçF†f–æFW%&ævR’“°¢Ö6F6‚†W'&÷"—·&V6—U7FFRæW'&÷#ÒufW&–f–VBWw&FR&V6—W2&RFV×÷&&–Ç’Væf–Æ&ÆRs¶6öç6öÆRçv&â‚uF†f–æFW"6÷W&6S¢rÆW'&÷"æÖW76vR“·Ð¢f–æÆÇ—·&V6—U7FFRæÆöF–æsÖfÇ6S¶–b‡'6U&÷WFR‚’ç&÷WFSÓÓÒv6Æ7VÆF÷'2÷F†f–æFW"r—&VæFW"‚“·Ð§Ð¦6öç7BfW&–f–VE7FFS×¶VçG&–W3¥µÒÆÆöF–æs¦fÇ6RÆÆöFVC¦fÇ6RÆW'&÷#¢rwÓ°¦6öç7BwV–ÆE7FFS×¶wV–ÆG3¥µÒÆÆöFVC¦fÇ6RÆÆöF–æs¦fÇ6RÆW'&÷#¢rrÇWFFVDC£ÇVW'“¢rwÓ°¦6öç7Bv–¶•7FFS×¶6FVv÷'“¢vÆÂrÇVW'“¢rrÆÆ–Ö—C£3bÇ&WGW&å÷6—F–öã¦çVÆÇÓ°¦6öç7B¦÷W&æÅ7FFS×¶'F–6ÆW3¥µÒÆ'•6ÇVs¦æWrÖ‚’ÆÆöFVC¦fÇ6RÆÆöF–æs¦fÇ6RÆW'&÷#¢rrÆÆöF–æu6ÇVs¢rwÓ°¦6öç7BcôuT”ÄEôTäEô”åCÒv‡GG3¢òö&6æÖwV–ÆBÖF—&V7F÷'’Ö&WF×&öGV7F–öâçWç&–Çv’æö’öwV–ÆG2s°¦6öç7BcÆÄVçG&–W3Ò‚“Óå²ââæVçF—F–W2Âââçv–¶”'F–6ÆTVçG&–W2‚’Âââç6V&6„W‡G&2‚’ÂââæÆftG–æÖ–2‚’ÂââæwV–ÆDVçG&–W2†wV–ÆE7FFRæwV–ÆG2’ÂââçfW&–f–VE7FFRæVçG&–W5Ó°¦7–æ2gVæ7F–öâÆöEV&Æ—6†VEv–¶”'F–6ÆW2‚—°¢G'—°¢6öç7B&W3Öv—BfWF6‚‚rö’÷v–¶’ö'F–6ÆW2rÇ¶66†S¢væò×7F÷&RrÇ6–væÃ¤&÷'E6–væÂçF–ÖV÷WBƒ—Ò“°¢–b‚&W2æö²—F‡&÷rW'&÷"‚uv–¶’'F–6ÆR–æFW‚…EEr·&W2ç7FGW2“°¢6WEV&Æ—6†VEv–¶”'F–6ÆW2†v—B&W2æ§6öâ‚’“°¢6öç7B&÷WFS×'6U&÷WFR‚’ç&÷WFS°¢–b‡&÷WFSÓÓÒwv–¶’wÇÇ&÷WFSÓÓÒwv–¶’öwV–FW2wÇÇ&÷WFSÓÓÒwv–¶’ö'F–6ÆRr—&VæFW"‚“°¢Ö6F6‚†W'&÷"—¶6öç6öÆRçv&â‚uV&Æ—6†VBv–¶’Væf–Æ&ÆS¢rÆW'&÷"æÖW76vR—Ð§Ð¦7–æ2gVæ7F–öâÆöD¦÷W&æÄ–æFW‚‚—°¢–b†¦÷W&æÅ7FFRæÆöF–æwÇÆ¦÷W&æÅ7FFRæÆöFVB—&WGW&ã¶¦÷W&æÅ7FFRæÆöF–æs×G'VS¶¦÷W&æÅ7FFRæW'&÷#Òrs°¢G'—¶6öç7B&W7öç6SÖv—BfWF6‚‚rö’ö¦÷W&æÂrÇ¶66†S¢væò×7F÷&RrÇ6–væÃ¤&÷'E6–væÂçF–ÖV÷WBƒ—Ò“¶–b‚&W7öç6Ræö²—F‡&÷rW'&÷"‚t¦÷W&æÂ–æFW‚…EEr·&W7öç6Rç7FGW2“¶6öç7B–ÆöCÖv—B&W7öç6Ræ§6öâ‚“¶¦÷W&æÅ7FFRæ'F–6ÆW3Ô'&’æ—4'&’‡–ÆöBæ'F–6ÆW2“÷–ÆöBæ'F–6ÆW3¥µÓ¶¦÷W&æÅ7FFRæÆöFVC×G'VS·Ð¢6F6‚†W'&÷"—¶¦÷W&æÅ7FFRæW'&÷#ÒuÆV6RG'’v–â–âÖöÖVçBâs¶6öç6öÆRçv&â‚t¦÷W&æÂVæf–Æ&ÆS¢rÆW'&÷"æÖW76vR—Ð¢f–æÆÇ—¶¦÷W&æÅ7FFRæÆöF–æsÖfÇ6S¶–b…²v¦÷W&æÂrÂv¦÷W&æÂö'F–6ÆRrÂv¦÷W&æÂÖ&Ææ6RuÒæ–æ6ÇVFW2‡'6U&÷WFR‚’ç&÷WFR’—&VæFW"‚—Ð§Ð¦7–æ2gVæ7F–öâÆöD¦÷W&æÄ'F–6ÆR‡6ÇVr—°¢–b‚6ÇVwÇÆ¦÷W&æÅ7FFRæ'•6ÇVræ†2‡6ÇVr—ÇÆ¦÷W&æÅ7FFRæÆöF–æu6ÇVsÓÓ×6ÇVr—&WGW&ã¶¦÷W&æÅ7FFRæÆöF–æu6ÇVs×6ÇVs°¢G'—¶6öç7B&W7öç6SÖv—BfWF6‚‚rö’ö¦÷W&æÃ÷6ÇVsÒr¶Væ6öFUU$”6ö×öæVçB‡6ÇVr’Ç¶66†S¢væò×7F÷&RrÇ6–væÃ¤&÷'E6–væÂçF–ÖV÷WBƒ—Ò“¶–b‚&W7öç6Ræö²—F‡&÷rW'&÷"‡&W7öç6Rç7FGW3ÓÓÓCCòu7F÷'’æ÷Bf÷VæBâs¢t¦÷W&æÂ7F÷'’…EEr·&W7öç6Rç7FGW2“¶¦÷W&æÅ7FFRæ'•6ÇVrç6WB‡6ÇVrÆv—B&W7öç6Ræ§6öâ‚’“·Ð¢6F6‚†W'&÷"—¶¦÷W&æÅ7FFRæW'&÷#ÖW'&÷"æÖW76vSÓÓÒu7F÷'’æ÷Bf÷VæBâsöW'&÷"æÖW76vS¢uÆV6RG'’v–â–âÖöÖVçBâs¶6öç6öÆRçv&â‚t¦÷W&æÂ7F÷'’Væf–Æ&ÆS¢rÆW'&÷"æÖW76vR—Ð¢f–æÆÇ—¶¦÷W&æÅ7FFRæÆöF–æu6ÇVsÒrs¶–b‡'6U&÷WFR‚’ç&÷WFSÓÓÒv¦÷W&æÂö'F–6ÆRrbg'6U&÷WFR‚’çVW'’ævWB‚w6ÇVrr“ÓÓ×6ÇVr—&VæFW"‚—Ð§Ð¦7–æ2gVæ7F–öâÆöEfW&–f–VD–æFW‚‚—¶–b‡fW&–f–VE7FFRæÆöF–æwÇÇfW&–f–VE7FFRæÆöFVB—&WGW&ã·fW&–f–VE7FFRæÆöF–æs×G'VS·G'—¶6öç7B#Öv—BfWF6‚‚rö’÷6V&6‚ö6FÆörrÇ·6–væÃ¤&÷'E6–væÂçF–ÖV÷WBƒ—Ò“¶–b‚"æö²—F‡&÷rW'&÷"‚u6V&6‚–æFW‚r·"ç7FGW2“·fW&–f–VE7FFRæVçG&–W3×fW&–f–VDvÖU6V&6„VçG&–W2†v—B"æ§6öâ‚’“·fW&–f–VE7FFRæÆöFVC×G'VS·fW&–f–VE7FFRæW'&÷#Òrs·Ö6F6‚†R—·fW&–f–VE7FFRæW'&÷#ÒtvÖR–æFW‚FV×÷&&–Ç’Væf–Æ&ÆRs¶6öç6öÆRçv&â†R—Öf–æÆÇ—·fW&–f–VE7FFRæÆöF–æsÖfÇ6S¶–b‡7FFRæÆ–W#òçG—SÓÓÒw6V&6‚r—&Vg&W6„Æ—fU6V&6‚‚“¶6öç7B&÷WFS×'6U&÷WFR‚’ç&÷WFS¶–b‡&÷WFSÓÓÒv6Æ7VÆF÷'2÷F†f–æFW"rbg&V6—U7FFRæFF—¶6öç7B&÷ƒÖæöFR‚wF…&ævT6öçFVçBr“¶–b†&÷‚–&÷‚æ–ææW$…DÔÃ×V–6µWw&FT6öçFVçB‡&V6—U7FFRæFFÇ7FFRçF†f–æFW%&ævRÇ·vS§G'VRÆ6FÆös§fW&–f–VE7FFRæVçG&–W7Ò“·&Vg&W6…F†f–æFW%7FW‚“·Ö–b‡&÷WFRç7F'G5v—F‚‚wv–¶’r—ÇÇ&÷WFSÓÓÒw&VfW&Væ6RöFWF–Âr—&VæFW"‚—×Ð¦7–æ2gVæ7F–öâÆöDwV–ÆG2†f÷&6SÖfÇ6R—¶–b†wV–ÆE7FFRæÆöF–æwÇÂ‚f÷&6RbfwV–ÆE7FFRçWFFVDBbdFFRææ÷r‚’ÖwV–ÆE7FFRçWFFVDCÃ3’—&WGW&ã¶wV–ÆE7FFRæÆöF–æs×G'VS·G'—¶6öç7B#Öv—BfWF6‚…côuT”ÄEôTäEô”åBÇ·6–væÃ¤&÷'E6–væÂçF–ÖV÷WBƒ“’Æ66†S¢væò×7F÷&RwÒ“¶–b‚"æö²—F‡&÷rW'&÷"‚twV–ÆBF—&V7F÷'’r·"ç7FGW2“¶6öç7BCÖv—B"æ§6öâ‚“¶wV–ÆE7FFRæwV–ÆG3Ò†BæwV–ÆG7ÇÅµÒ’æÖ†æ÷&ÖÆ—¦TwV–ÆB’æf–ÇFW"„&ööÆVâ“¶wV–ÆE7FFRæÆöFVC×G'VS¶wV–ÆE7FFRæW'&÷#Òrs·Ö6F6‚†R—¶wV–ÆE7FFRæW'&÷#ÒtwV–ÆBÆ—7F–æw2FV×÷&&–Ç’Væf–Æ&ÆRs¶6öç6öÆRçv&â†R—Öf–æÆÇ—¶wV–ÆE7FFRçWFFVDCÔFFRææ÷r‚“¶wV–ÆE7FFRæÆöF–æsÖfÇ6S¶–b‡'6U&÷WFR‚’ç&÷WFRç7F'G5v—F‚‚vÆfröwV–ÆBr’—&VæFW"‚“¶–b‡7FFRæÆ–W#òçG—SÓÓÒw6V&6‚r—&Vg&W6„Æ—fU6V&6‚‚—×Ð¦6öç7BÆfu7FFS×¶Æ—7F–æw3¥µÒÇÆç3¥µÒÆÆöFVC¦fÇ6RÆÆöF–æs¦fÇ6RÆW'&÷#¢rrÇWFFVDC£ÇF#¢v7F—fRrÇVW'“¢rrÇF–W#¢rrÆ6†&7FW$6Æ73¢rrÆÖ–v‡DÖ÷VçC¢rrÆÖ–v‡EVæ—C¢tÒwÓ°¦6öç7BÆÄÆfsÒ‚“Óå²ââæÆfu7FFRæÆ—7F–æw2ÂââæÆfu7FFRçÆç5Ó°¦6öç7BÆftG–æÖ–3Ò‚“ÓæÆfu6V&6„VçG&–W2†ÆÄÆfr‚’“°¦6öç7BÆfu6V&6†&ÆSÒ‚“Óå²ââç6V&6„W‡G&2‚’ÂââæÆftG–æÖ–2‚•Ó°¦6öç7BÆft'”–CÖ–CÓæÆftG–æÖ–2‚’æf–æB†SÓæRæ–CÓÓÖ–B“°¦7–æ2gVæ7F–öâÆöEV&Æ–4Æfr†f÷&6SÖfÇ6R—¶–b†Æfu7FFRæÆöF–æwÇÂ‚f÷&6RbfÆfu7FFRçWFFVDBbdFFRææ÷r‚’ÖÆfu7FFRçWFFVDCÃ3’—&WGW&ã²Æfu7FFRæÆöF–æs×G'VS²Æfu7FFRæW'&÷#Òrs·G'—¶6öç7B#Öv—BfWF6‚‚rö’öÆfr÷V&Æ–2rÇ¶66†S¢væò×7F÷&RrÇ6–væÃ¤&÷'E6–væÂçF–ÖV÷WBƒ“S—Ò“¶–b‚"æö²—F‡&÷rW'&÷"‚t…EEr·"ç7FGW2“¶6öç7B–ÆöCÖv—B"æ§6öâ‚’ÆFFÖæ÷&ÖÆ—¦UV&Æ–4fVVB‡–ÆöB“¶Æfu7FFRæW'&÷#Ò‡–ÆöBæ—77VW3òæÆVæwFƒò‚u6öÖRr·–ÆöBæ—77VW2æ¦ö–â‚rÂr’²r&R7W'&VçFÇ’Væf–Æ&ÆRr“¢rr“¶Æfu7FFRæÆ—7F–æw3ÖFFæÆ—7F–æw3¶Æfu7FFRçÆç3ÖFFçÆç3¶Æfu7FFRæÆöFVC×G'VS¶Æfu7FFRçWFFVDCÔFFRææ÷r‚“·Ö6F6‚†R—¶Æfu7FFRæW'&÷#ÒtÆ—fRÆ—7F–æw2FV×÷&&–Ç’Væf–Æ&ÆRs¶6öç6öÆRçv&â‚tÄdrfVVBrÆRæÖW76vR—Öf–æÆÇ—¶Æfu7FFRçWFFVDCÔFFRææ÷r‚“¶Æfu7FFRæÆöF–æsÖfÇ6S¶6öç7B&÷WFS×'6U&÷WFR‚’ç&÷WFS¶–b‡&÷WFRç7F'G5v—F‚‚vÆfr÷&–G2r—ÇÇ&÷WFSÓÓÒvÆfröÆ—7F–ærr—&VæFW"‚“¶–b‡7FFRæÆ–W#òçG—SÓÓÒw6V&6‚r—&Vg&W6„Æ—fU6V&6‚‚“·×Ð¦6öç7BÄ”äµ3Õµ²vF—&V7F÷'’rÂtW‡Æ÷&RÆÂrÂvÆ–W'2uÒÅ²wv–¶’rÂt&6æv–¶’rÂv&öö²uÒÅ²vÆ'2ö'V–ÆBrÂt'V–ÆB7GVF–òrÂw6†–VÆBuÒÅ²v6Æ7VÆF÷'2÷F†f–æFW"rÂuF†f–æFW"rÂvÆ–W'2uÒÅ²vÆfrrÂtwV–ÆBb&–Bf–æFW"rÂwW6W'2uÒÅ²v6öÖ×Væ—G’rÂt6öÖ×Væ—G’rÂwW6W'2uÒÅ²v&WFrÂt&WFbfVVF&6²rÂvÖW76vR×7V&RuÕÓ°¦6öç7B%T”ÄEõ4ÄõE3ÔÄôDõUEôÄ”õUBæÖ‡ƒÓå·‚æ¶W’Ç‚æÆ&VÅÒ“°¦6öç7B—FVÓ×fÇVSÓç°¢6öç7B–CÖWV—ÖVçD–B‡fÇVR“¶–b‚–B—&WGW&âçVÆÃ°¢6öç7BÆö6ÃÖVçF—G”'”–BævWB†–B“¶–b†Æö6Â—&WGW&âÆö6Ã°¢6öç7BfW&–f–VC×fW&–f–VE7FFRæVçG&–W2æf–æB†SÓæRæ–CÓÓÖ–BbfRævÖT¶–æCÓÓÒv—FVÒr“°¢–b‡fW&–f–VB—°¢6öç7B¶–æCÕ7G&–ær‡fW&–f–VBç6Æ÷GÇÂrr’çFôÆ÷vW$66R‚“°¢6öç7B6Æ÷C×¶Ö–åö†æC¢wvVöârÆöfeö†æC¢vöff†æBrÆ†VC¢v†VBrÆ6†W7C¢v6†W7BrÆ†æG3¢v†æG2rÆfVWC¢vfVWBrÆ&VÇC¢v&VÇBrÇ&–æs¢w&–ærrÆ×VÆWC¢væV6²rÆæV6¶Æ6S¢væV6²rÇF÷&6ƒ¢wF÷&6‚wÕ¶¶–æE×ÇÆçVÆÃ°¢&WGW&â²ââçfW&–f–VBÆ¶–æC¢v—FVÒrÇ6Æ÷BÇ7V'F—FÆS¢tWV—ÖVçB+rr²‡fW&–f–VBæFW67&—F–öçÇÂrr’ÇfW&–f–VC§G'VWÓ°¢Ð¢6öç7BvV#Ö&6T—FVÒ†–B“°¢6öç7B6Æ÷CÖvV#÷¶Ö–åö†æC¢wvVöârÆöfeö†æC¢vöff†æBrÆ×VÆWC¢væV6²rÇ&–æs¢w&–ærwÕ¶vV"ç6Æ÷E×ÇÆvV"ç6Æ÷C¦çVÆÃ°¢&WGW&âvV#÷¶–C¦vV"æ–BÆ¶–æC¢v—FVÒrÇF—FÆS¦vV"ææÖRÇ7V'F—FÆS¢ufW&–f–VB6V6öâ"&6RWV—ÖVçBrÇ6Æ÷BÇfW&–f–VC§G'VWÓ¦çVÆÃ°§Ó¶6öç7B'V–ÆEFV×ÆFSÖ–CÓæFVÖô'V–ÆG5¶–EÓ°¦6öç7B6fVD'V–ÆCÒ‚“Óç7FFRæG&gBbg7FFRæG&gBæWV—ÖVçCöæ÷&ÖÆ—¦T'V–ÆB‡7FFRæG&gB“¦çVÆÃ°¦6öç7B6†&VC×·Fö¶Vã¢rrÆ'V–ÆC¦çVÆÂÆW'&÷#¢rwÓ°¦7–æ2gVæ7F–öâ&W6öÇfU6†&VB‡Fö¶Vâ—°¢–b‡6†&VBçFö¶VãÓÓ×Fö¶Vâ—&WGW&ã°¢6†&VBçFö¶Vã×Fö¶Vã·6†&VBæ'V–ÆCÖçVÆÃ·6†&VBæW'&÷#Òrs°¢G'—·6†&VBæ'V–ÆCÖv—B÷Vä'V–ÆEFö¶Vâ‡Fö¶Vâ“·Ö6F6‚†W'"—·6†&VBæW'&÷#Õ7G&–ær†W'"æÖW76vWÇÆW'"“·Ð¢–b‡'6U&÷WFR‚’çVW'’ævWB‚w6†&Rr“ÓÓ×Fö¶Vâbe²vÆ'2ö'V–ÆBrÂvÆ'2÷'VæW2rÂvÆ'2÷76—fW2uÒæ–æ6ÇVFW2‡'6U&÷WFR‚’ç&÷WFR’—&VæFW"‚“°§Ð¦6öç7BæWuW'6öæÄ'V–ÆCÒ‚“Óææ÷&ÖÆ—¦T'V–ÆB‡¶–C¢vÆö6ÂÖG&gBrÇF—FÆS¢t×’'V–ÆBrÆ6Æ74æÖS¢uv'&–÷"rÆ÷væW#¢u–÷RrÇfW'6–öã¢tÄô4ÂrÇ7VÖÖ'“¢t7&VFR'V–ÆBv—F‚–÷W"÷vâWV—ÖVçBÂ'VæRÆ–÷WBÂ6¶–ÆÇ2æBWG2ârÆæ÷FW3¢u–÷W"6†ævW27F’öâF†—2FWf–6RVçF–Â–÷R6†&R–÷W"'V–ÆBârÆWV—ÖVçC§·vVöã¦çVÆÂÆöff†æC¦çVÆÂÆ†VC¦çVÆÂÆ6†W7C¦çVÆÂÆ†æG3¦çVÆÂÆfVWC¦çVÆÂÆ&VÇC¦çVÆÂÇ&–æs¦çVÆÂÆæV6³¦çVÆÇÒÇ6¶–ÆÇ3¥µÒÇ'VæW3¥µÒÇWG3¥µÒÇ'VæT&ö&C¥µÒÆÖöç7FW$ÆWfVÃ£Ç76—fTÆÆö3§·ÒÆ6Æ74ÆÆö4'”–C§·×Ò“°¦gVæ7F–öâVç7W&TG&gB‚—°¢–b‚7FFRæG&gB—°¢7FFRæG&gCÖæWuW'6öæÄ'V–ÆB‚“°¢7FFRæG&gBæ6†&7FW$ÆWfVÃ×7FFRæ6†&7FW$ÆWfVÃ°¢7FFRæG&gBç76—fTÆÆö3×7G'V7GW&VD6ÆöæR‡7FFRç76—fTÆÆö2“°¢7FFRæG&gBç76—fTg&VTÖöFS×7FFRç76—fTg&VTÖöFSÓÓ×G'VS°¢7FFRæG&gBæ6Æ74ÆÆö4'”–C×7G'V7GW&VD6ÆöæR‡7FFRæ6Æ74ÆÆö4'”–B“°¢ÖVÇ6R7FFRæG&gCÖæ÷&ÖÆ—¦T'V–ÆB‡7FFRæG&gB“°¢&WGW&â7FFRæG&gC°§Ð¦gVæ7F–öâW'6—7DG&gB‚—¶–b‡7FFRæG&gB—·7FFRæG&gCÖæ÷&ÖÆ—¦T'V–ÆB‡7FFRæG&gB“·6fTG&gB‡7FFRæG&gB—×Ð¦6öç7B4T$4„$ÄUõDôôÅ3Õ²v—FV×2rÂvwV–FW2rÂwWw&FRrÂv6ö×&RrÂv'V–ÆBrÂw'VæW2rÂw6¶–ÆÇ2rÂw76—fW2rÂwWFÆ"rÂv6ö×÷VæBrÂvff—†W2rÂvwV–ÆGG&VRrÂvwV–ÆG2rÂw&–G2rÂvf&ÒrÂwF†f–æFW"uÓ°¦6öç7BDôôÅõ4T$4…ôÄ”4U3×°¢—FV×3¢v—FVÒ6öFW‚'BWV—ÖVçBvVöç2rÆwV–FW3¢wv–¶’Æ–W"wV–FR'F–6ÆRrÀ¢Ww&FS¢v—FVÒWw&FR6Æ7VÆF÷"f÷&vRÖFW&–Ç2rÆ6ö×&S¢v—FVÒ6ö×&—6öâWV—ÖVçB7FG2rÀ¢'V–ÆC¢v'V–ÆB7GVF–ò6†&7FW"ÆöF÷WBÆææW"rÇ'VæW3¢w'VæRf÷&vRw&–BÆ6VÖVçBrÀ¢6¶–ÆÇ3¢v6Æ726¶–ÆÂG&VRÆææW"rÇ76—fW3¢w76—fR6¶–ÆÂG&VRÆææW"rÀ¢WFÆ#¢wWBÆ"WBÆöF÷WB6ö×æ–öârÆ6ö×÷VæC¢wWB6ö×÷VæB6Æ7VÆF÷"WVÆ—6F–öârÀ¢ff—†W3¢wWBff—‚6÷7B6Æ7VÆF÷"6†&BrÆwV–ÆGG&VS¢vwV–ÆB6¶–ÆÂG&VRÆææW"wV–ÆB&öçW6W2rÀ¢wV–ÆG3¢vwV–ÆBf–æFW"&V7'V—FÖVçBrÇ&–G3¢vÆfr&–Bf–æFW"rÆf&Ó¢vÖöç7FW"ÆWfVÂ‡f&Ò6ö×&F÷"f7FW7B¶–ÆÇ2W"6V6öæBÖÂ‡rÇF†f–æFW#¢t&6æF†f–æFW"f7B67&öÆÂ7v—R—FVÒ6Æ÷B&&—G’v¶VæVB3Ww&FRÖFW&–ÂvöÆB6÷7G2V–6²&VfW&Væ6Rp§Ó°¦6öç7B6V&6„W‡G&3Ò‚“Óå°¢âââ‡6fVD'V–ÆB‚“õ·¶–C¢v×’Ö'V–ÆBrÆ¶–æC¢v'V–ÆBrÇF—FÆS§7FFRæG&gBçF—FÆWÇÂt×’'V–ÆBrÇ7V'F—FÆS¢u6fVBÆö6ÆÇ’+r'V–ÆB7GVF–òrÆ¶W—v÷&G3¢v×’'V–ÆB7W7FöÒ6fVBÆææW"WV—ÖVçB'VæW26¶–ÆÇ2rÆFW67&—F–öã¢u–÷W"Æö6ÆÇ’6fVB'V–ÆBâwÕÓ¥µÒ’À¢ââå4T$4„$ÄUõDôôÅ2æÖ†¶W“Óç°¢6öç7BFW7F–æF–öãÔäeôDU5D”äD”ôå5¶¶W•Ó°¢&WGW&â¶–C¢v&6æ×FööÃ¢r¶¶W’Æ¶–æC¢wFööÂrÇF—FÆS¦FW7F–æF–öâæÆ&VÂÇ7V'F—FÆS¢t&6æ+rr¶FW7F–æF–öâæFWF–ÂÆ¶W—v÷&G3¦¶W’²rr²…DôôÅõ4T$4…ôÄ”4U5¶¶W•×ÇÂrr’²rr¶FW7F–æF–öâæÆ&VÂ²rr¶FW7F–æF–öâæFWF–ÂÆFW67&—F–öã¦FW7F–æF–öâæFWF–ÂÇ&÷WFS¦FW7F–æF–öâç&÷WFR²†FW7F–æF–öâç&×3òsòr¶æWrU$Å6V&6…&×2†FW7F–æF–öâç&×2“¢rr—Ó°¢Ò¥Ó°¦gVæ7F–öâG&6²†–B—¶–b‚–B—&WGW&ã·7FFRç&V6VçC×&VÖVÖ&W"†–B—Ð¦6öç7B—4V&æ6TFÖ–ãÒ‚“Óä&ööÆVâ†7W'&VçD66÷VçB‚“òç&öÆW3òç6öÖR‡&öÆSÓå²vFÖ–ârÂv7&VF÷"uÒæ–æ6ÇVFW2‡G—Vöb&öÆSÓÓÒw7G&–ærs÷&öÆS§&öÆRæ–B’’“°¢òòF†RVæÆ—7FVB&Wf–WrÖFöÖ–âÆ–w&÷VæBVF—G2öæÇ’Æö6ÂG&gB7FFRâ6W'fW"×6–FRV&Æ—6‚&VÖ–ç2&÷FV7FVBà¦6öç7B—5&Wf–WuF†VÖT†÷7CÒ‚“ÓçG—VöbÆö6F–öâÓÒwVæFVf–æVBrbe²v&6æ×&Wf–WrÖ×&Wf–WrçWç&–Çv’ærÂs#rãããrÂvÆö6Æ†÷7BuÒæ–æ6ÇVFW2†Æö6F–öâæ†÷7FæÖR“°¦6öç7B—4Æö6ÅF†VÖUÆ–w&÷VæCÒ‚“Óæ—5&Wf–WuF†VÖT†÷7B‚’bg'6U&÷WFR‚’ç&÷WFSÓÓÒwF†VÖR×Æ–w&÷VæBs°¦6öç7BG'”öåF†VÖSÒ‚“Óç·G'—·&WGW&â—5&Wf–WuF†VÖT†÷7B‚’bg6W76–öå7F÷&vRævWD—FVÒ‚v&6æ×F†VÖR×G'–öâ×&Wf–Wr×cr“ÓÓÒswÖ6F6‡·&WGW&âfÇ6W×Ó°¦6öç7B6†ævUG'”öãÖVæ&ÆVCÓç·G'—¶–b†Væ&ÆVB—6W76–öå7F÷&vRç6WD—FVÒ‚v&6æ×F†VÖR×G'–öâ×&Wf–Wr×crÂsr“¶VÇ6R6W76–öå7F÷&vRç&VÖ÷fT—FVÒ‚v&6æ×F†VÖR×G'–öâ×&Wf–Wr×cr“·&WGW&âG'VWÖ6F6‡·&WGW&âfÇ6W×Ó°¦6öç7B6äVF—EF†VÖTG&gCÒ‚“Óæ—4V&æ6TFÖ–â‚—ÇÆ—4Æö6ÅF†VÖUÆ–w&÷VæB‚“°¦6öç7BF†VÖUÆ–w&÷VæEf–WsÒ‚“ÓâsÆF—b6Æ73Ò&ÆVæ6…vRF†VÖUÆ–w&÷VæB#ãÇ7â6Æ73Ò&ÆVæ6„W–V'&÷r#ä$4ä$Ud”Ur+rÄô4ÂôäÅ“Â÷7ããÆƒåF†VÖRÆ–w&÷VæCÂöƒãÇäW‡Æ÷&R‚÷&–v–æÂ&V6öÆ÷&&ÆR'Gv÷&·2æB37W&FVB6ö×ÆWFRÆöö·2Â&VÖ—‚6öÆ÷'2æBÆ–v‡F–ærÂæB6fRWFòGvVÇfR&—fFRFW6–vç2âF†—2'&÷w6W"ÖöæÇ’&Wf–Wr6ææ÷BV&Æ—6‚ç—F†–ærFòF†R&VÂ6—FRãÂ÷ãÆF—b6Æ73Ò'F†VÖUG'”öä7F–öç2#ãÆ'WGFöâ6Æ73Ò&'Fâ&–Ö'’"G—SÒ&'WGFöâ"FFÖ7F–öãÒ'F†VÖR×G'’Ööâ#î)ÊbG'’F†—2öâ&6æÂö'WGFöããÆ'WGFöâ6Æ73Ò&'Fâ6V6öæF'’"G—SÒ&'WGFöâ"FFÖ7F–öãÒ'F†VÖR×G'’Ööfb#å7F÷6—FR&Wf–WsÂö'WGFöããÂöF—cãÆF—b6Æ73Ò'F†VÖU7GVF–õv÷&¶&Væ6‚#ãÆF—b6Æ73Ò'F†VÖU7GVF–ôVF—F÷"#âr¶FW6–våæVÂ‡·6†÷u&Wf–Ws¦fÇ6WÒ’²sÂöF—cãÆ6–FR6Æ73Ò'F†VÖU7GVF–õ&Wf–Wr"&–ÖÆ&VÃÒ$Æ—fRF†VÖR&Wf–Wr#âr¶FW6–väÖ–æ”Ö&·W‚’²sÂö6–FSãÂöF—cãÂöF—câs² ¦gVæ7F–öâ7'VÖ%G&–Â‡F—FÆR—°¢6öç7B&÷WFS×'6U&÷WFR‚’ç&÷WFRÇ6V7F–öã×&÷WFRç7Æ—B‚ròr•³Ó°¢6öç7B&VçC×¶Æ'3¥²t'V–ÆB7GVF–òrÂvÆ'2ö'V–ÆBuÒÆ6Æ7VÆF÷'3¥²uF†f–æFW"rÂv6Æ7VÆF÷'2÷F†f–æFW"uÒÆÆfs¥²twV–ÆBb&–Bf–æFW"rÂvÆfruÒÇv–¶“¥²t&6æv–¶’rÂwv–¶’u×Õ·6V7F–öåÓ°¢–b‚&VçGÇÇ&÷WFSÓÓ×&VçE³Ò—&WGW&ârs°¢&WGW&âÆæb6Æ73Ò&&6æ7'VÖ'2"&–ÖÆ&VÃÒ$'&VF7'VÖ'2#ãÆ'WGFöâG—SÒ&'WGFöâ"FF×&÷WFSÒ&†öÖR#ä†öÖSÂö'WGFöããÇ7â&–Ö†–FFVãÒ'G'VR#î(£Â÷7ããÆ'WGFöâG—SÒ&'WGFöâ"FF×&÷WFSÒ"G·&VçE³×Ò#âG·&VçE³×ÓÂö'WGFöããÇ7â&–Ö†–FFVãÒ'G'VR#î(£Â÷7ããÇ7â&–Ö7W'&VçCÒ'vR#âG¶W62‡F—FÆR—ÓÂ÷7ããÂöæcæ°§Ð¦gVæ7F–öâÆ–÷WB‡F—FÆRÆ¶–6¶W"Æ–ææW"ÆÖ&³ÒvvVÒr—°¢&WGW&âG¶7'VÖ%G&–Â‡F—FÆR—ÓÆF—b6Æ73Ò'vT†VB#ãÆF—b6Æ73Ò'vT†VFÆ–æR#ãÇ7â6Æ73Ò'vT–6öâ#âG¶–6öâ†Ö&²Ã#B—ÓÂ÷7ããÆF—cãÇ7â6Æ73Ò&W–V'&÷r#âG¶W62†¶–6¶W"—ÓÂ÷7ããÆƒâG¶W62‡F—FÆR—ÓÂöƒãÂöF—cãÂöF—cãÂöF—câG¶–ææW'Ö°§Ð ¦6öç7B†öÖUæVÇ3×·V–6³¦fÇ6RÆ7F–öç3¦fÇ6WÓ°¦6öç7B†öÖTvFWv“Ò‡&÷WFRÇF—FÆRÆFW67&—F–öâÆFWF–ÂÇ7–Ö&öÂ“Óà¢sÆ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&&6æ†öÖTvFWv’"FF×&÷WFSÒ"r¶W62‡&÷WFR’²r"&–ÖÆ&VÃÒ$÷Vâr¶W62‡F—FÆR’²r#âr°¢sÇ7â6Æ73Ò&&6æ†öÖTvFWv•F÷#ãÇ7â6Æ73Ò&&6æ†öÖTvFWv”–6öâ#âr¶–6öâ‡7–Ö&öÂÃ#2’²sÂ÷7ããÇ7â6Æ73Ò&&6æ†öÖTvFWv”'&÷r#âr¶–6öâ‚v'&÷rrÃr’²sÂ÷7ããÂ÷7ãâr°¢sÇ7â6Æ73Ò&&6æ†öÖTvFWv”6÷’#ãÇ7G&öæsâr¶W62‡F—FÆR’²sÂ÷7G&öæsãÇ6ÖÆÃâr¶W62†FW67&—F–öâ’²sÂ÷6ÖÆÃãÂ÷7ãâr°¢sÇ7â6Æ73Ò&&6æ†öÖTvFWv”fö÷B#âr¶W62†FWF–Â’²sÂ÷7ããÂö'WGFöãâs°¦6öç7B†öÖTF—66Æ÷7W&SÒ†¶W’Æ¶–6¶W"ÇF—FÆRÆFW67&—F–öâÆ6öçFVçB“Óà¢sÆFWF–Ç26Æ73Ò&&6æ†öÖTF—66Æ÷7W&R"FFÖ†öÖR×æVÃÒ"r¶W62†¶W’’²r"r²††öÖUæVÇ5¶¶W•Óòr÷Vâs¢rr’²sâr°¢sÇ7VÖÖ'’6Æ73Ò&&6æ†öÖTF—66Æ÷7W&UG&–vvW"#ãÇ7â6Æ73Ò&&6æ†öÖTF—66Æ÷7W&UF—FÆR#ãÇ7â6Æ73Ò&W–V'&÷r#âr¶W62†¶–6¶W"’²sÂ÷7ããÇ7G&öæsâr¶W62‡F—FÆR’²sÂ÷7G&öæsãÇ6ÖÆÃâr¶W62†FW67&—F–öâ’²sÂ÷6ÖÆÃãÂ÷7ãâr°¢sÇ7â6Æ73Ò&&6æ†öÖTF—66Æ÷7W&UFövvÆR"&–Ö†–FFVãÒ'G'VR#âr¶–6öâ‚wÇW2rÃ‚’²sÂ÷7ããÂ÷7VÖÖ'“âr°¢sÆF—b6Æ73Ò&&6æ†öÖTF—66Æ÷7W&T&öG’#âr¶6öçFVçB²sÂöF—cãÂöFWF–Ç3âs°¦6öç7B†öÖU6V6öæF'“Ò‡&÷WFRÇF—FÆRÆFW67&—F–öâÇ7–Ö&öÂ“Óà¢sÆ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&&6æ†öÖU6V6öæF'’"FF×&÷WFSÒ"r¶W62‡&÷WFR’²r#ãÇ7â6Æ73Ò&&6æ†öÖU6V6öæF'”–6öâ#âr¶–6öâ‡7–Ö&öÂÃ’’²sÂ÷7ãâr°¢sÇ7ããÇ7G&öæsâr¶W62‡F—FÆR’²sÂ÷7G&öæsãÇ6ÖÆÃâr¶W62†FW67&—F–öâ’²sÂ÷6ÖÆÃãÂ÷7ããÇ7â6Æ73Ò&&6æ†öÖU6V6öæF'”'&÷r#âr¶–6öâ‚v'&÷rrÃr’²sÂ÷7ããÂö'WGFöãâs°¦gVæ7F–öâ†öÖR‚—·&WGW&â†öÖU67&VVâ‚“·Ð¦gVæ7F–öâfVGW&VEf–Wr‚—°¢6öç7B—FV×3Õ°¢²t6öçfW&vVæ6S¢6ö×ÆWFR6V6öâ"wV–FRrÂtÖ7FW"F†RF–W"Æö÷ÂVÆ—FRVæ6÷VçFW'2ÂÖöç7FW"6VG2æBÆÂ3rÆGF–6RæöFW2ârÂwv–¶’ö'F–6ÆRrÂv&öö²rÂv–CÖ6öçfW&vVæ6RÖ6ö×ÆWFRÖwV–FRuÒÀ¢²t&6æ¦÷W&æÂrÂt–æFWVæFVçB–FÆT&2æWw2ÂÖWFæÇ—6—2æB6öÖ×Væ—G’W'7V7F—fW2ârÂv¦÷W&æÂrÂv&öö²uÒÀ¢²t6Æ72&Ææ6S¢F÷#SrÂu6VRF†R&æ¶VB6Æ72FFæBF†RgVÆÂ6V6öâ"&Ææ6RæÇ—6—2ârÂv¦÷W&æÂÖ&Ææ6RrÂw6†–VÆBuÒÀ¢²t'V–ÆB7GVF–òrÂt7&VFRÂ6fRæB6ö×&RgVÆÇ’6öææV7FVBWV—ÖVçBÂ'VæW2æB6¶–ÆÇ2ârÂvÆ'2ö'V–ÆBrÂvfÆ6²uÒÀ¢²uÆ–W"wV–FW2rÂt6öÖ×Væ—G’×w&—GFVâwV–FW2æB–FÆT&2&VfW&Væ6W2ârÂwv–¶’öwV–FW2rÂv&öö²uÒÀ¢²t6öÖ×Væ—G’'V–ÆG2rÂtF—66÷fW"Æ–W"'V–ÆG2æB6†&R–÷W"÷vâârÂv6öÖ×Væ—G’rÂwW6W'2uÒÀ¢²uF†f–æFW"rÂu7v—RF‡&÷Vv‚Ww&FRÖFW&–Ç2æB7W'&Væ7’6÷7G2ârÂv6Æ7VÆF÷'2÷F†f–æFW"rÂvÆ–W'2uÒÀ¢²tfVGW&VBv–¶’rÂt'&÷w6RfW&–f–VB'F–6ÆW2æBvÖR7—7FV×2ârÂwv–¶’rÂv&öö²uÒÀ¢²t&WFfVVF&6²rÂuFVÆÂW2v†BFò–×&÷fR&Vf÷&RÆVæ6‚ârÂv&WFrÂw7&²uÐ¢Ó°¢&WGW&âsÆF—b6Æ73Ò&ÆVæ6…vR&6æfVGW&VEvR#ãÇ7â6Æ73Ò&ÆVæ6„W–V'&÷r#äD•44õdU#Â÷7ããÆƒäfVGW&VCÂöƒãÇä'V–ÆG2ÂwV–FW2ÂFööÇ2æBWFFW2v÷'F‚Æöö²âÖ÷&R6öÖ×Væ—G’fVGW&W2v–ÆÂV"†W&R2F†W’&RV&Æ—6†VBãÂ÷ãÆF—b6Æ73Ò&&6æfVGW&VE&÷w2#âr¶—FV×2æÖ‚…¶æÖRÆFWF–ÂÇ&÷WFRÆvÇ—‚Ç&×5Ò“ÓâsÆ'WGFöâ6Æ73Ò&ÆVæ6„fVGW&U&÷r"G—SÒ&'WGFöâ"FF×&÷WFSÒ"r¶W62‡&÷WFR’²r"r²‡&×3òrFF×&×3Ò"r¶W62‡&×2’²r"s¢rr’²sãÇ7â6Æ73Ò&ÆVæ6„fVGW&T–6öâ#âr¶–6öâ†vÇ—‚Ã#"’²sÂ÷7ããÇ7ããÇ7G&öæsâr¶W62†æÖR’²sÂ÷7G&öæsãÇ6ÖÆÃâr¶W62†FWF–Â’²sÂ÷6ÖÆÃãÂ÷7ãâr¶–6öâ‚v'&÷rrÃr’²sÂö'WGFöãâr’æ¦ö–â‚rr’²sÂöF—cãÂöF—câs°§Ð ¦gVæ7F–öâ&V6VçEf–Wr‚—¶6öç7B&V6VçC×7FFRç&V6VçBæÖ†–CÓæVçF—G”'”–BævWB†–B—ÇÇfW&–f–VE7FFRæVçG&–W2æf–æB†SÓæRæ–CÓÓÖ–B—ÇÇv–¶”'F–6ÆTVçG&–W2‚’æf–æB†SÓæRæ–CÓÓÖ–B’’æf–ÇFW"„&ööÆVâ’ç6Æ–6RƒÃR“¶6öç7B6fVC×&W7VÖ&ÆUv÷&·76W2‡¶G&gC§6fVD'V–ÆB‚’ÆwV–ÆC§7FFRæwV–ÆEG&VUÆâÆ6ö×÷VæC§7FFRæ6ö×÷VæEV–6²Æff—ƒ§7FFRæff—„6÷7EV–6²Æf&Ó§7FFRæf&ÕÆâÇ&V6VçC§7FFRç&V6VçBæÖ†–CÓæ–Bç7F'G5v—F‚‚wv–¶“¦'F–6ÆS¢r“÷v–¶”'F–6ÆT'”–B†–Bç6Æ–6Rƒ2’“¦çVÆÂ’æf–ÇFW"„&ööÆVâ—Ò“·&WGW&âsÆF—b6Æ73Ò&ÆVæ6…vR#ãÇ7â6Æ73Ò&ÆVæ6„W–V'&÷r#åU4U"4TåDU#Â÷7ããÆƒå&V6VçB7F—f—G“ÂöƒãÇå–÷W"6fVBÆææ–ærv÷&²æB&V6VçFÇ’f–WvVB&VfW&Væ6W2Âf–Æ&ÆRFò6öçF–çVRöâF†—2FWf–6RãÂ÷âr²‡6fVGÇÂsÇ6Æ73Ò&×WFVE6ÖÆÂ#äæò6fVBÆææ–ær7F—f—G’–WBâ7F'B–â'V–ÆB7GVF–òãÂ÷âr’²sÆƒ#å&V6VçFÇ’f–WvVCÂöƒ#ãÆF—b6Æ73Ò'&W7VÇDÆ—7B#âr²‡&V6VçBæÆVæwFƒ÷&V6VçBæÖ†6&DVçF—G’’æ¦ö–â‚rr“¢sÇ6Æ73Ò&×WFVE6ÖÆÂ#åvW2–÷R÷Vâv–ÆÂV"†W&RãÂ÷âr’²sÂöF—cãÂöF—câwÐ¦gVæ7F–öâ6—FU6–væGW&R‚—·&WGW&âÆfö÷FW"6Æ73Ò&fö÷FW"&6æ6–væGW&R"&–ÖÆ&VÃÒ$&6æ7&VF÷"æB6öÖ×Væ—G’#à£Æ–Ör6Æ73Ò&&6æ6–tÆövò"7&3Ò"ö76WG2ö&6æÖÆövòçvV'"ÇCÒ""ÆöF–æsÒ&Æ§’"óà£ÆF—b6Æ73Ò&&6æ6–uFW‡B#ãÇ7G&öæsäÖFR'’ÆVÓå¦æSÂöVÓãÂ÷7G&öæsãÇ6ÖÆÃäwV–ÆBÆVFW"öbE‚f×²õd²+rf÷"F†R–FÆT&26öÖ×Væ—G“Â÷6ÖÆÃãÂöF—cà£ÆFWF–Ç26Æ73Ò&&6æ6–t–æfò#ãÇ7VÖÖ'’&–ÖÆ&VÃÒ$ÆV&â&÷WB&6ææBv—2Fò6öçG&–'WFR"F—FÆSÒ$6öÖ×Væ—G’–æf÷&ÖF–öâ#ãÇ7â&–Ö†–FFVãÒ'G'VR#î)9ƒÂ÷7ããÂ÷7VÖÖ'“à£ÆF—b6Æ73Ò&&6æ6–uæVÂ#ãÇ7G&öæsä'V–ÇBf÷"F†R–FÆT&26öÖ×Væ—G“Â÷7G&öæsãÇä¶VWWv—F‚&6æÂFÆ²&÷WBF†RÂ&W÷'B'Vw2Â6†&R7VvvW7F–öç2æB†VÇ6†RgWGW&RWFFW2ãÂ÷à£Æ6Æ73Ò&&6æF—66÷&B"‡&VcÒ&‡GG3¢òöF—66÷&BævrõE„6öÖ×Væ—G’"F&vWCÒ%ö&Ææ²"&VÃÒ&æö÷VæW"æ÷&VfW'&W"#ä¦ö–â÷W"F—66÷&B(isÂöà£Ç7G&öæsä6öçG&–'WFRFò&6æv–¶“Â÷7G&öæsãÇå6†&RwV–FW2÷"fW&–f–VBvÖR–æf÷&ÖF–öâÂ6†V6²ÖV6†æ–72æB67W&7’Âf—‚w&ÖÖ"÷"–×&÷fRF†R6Æ&—G’öbW†—7F–ærvW2ãÂ÷à£Ç7G&öæsåvçBFòvWB–çföÇfVCóÂ÷7G&öæsãÇäFWfVÆ÷ÖVçBÂFW7F–ærÂ&öög&VF–ærÂ&W6V&6‚æB÷F†W"6öÖ×Væ—G’&öÆW2ÆÂ†VÇÖ¶R&6æ&WGFW"â&V6‚÷WBF‡&÷Vv‚F—66÷&BãÂ÷ãÂöF—cãÂöFWF–Ç3à£Âöfö÷FW#æ·Ð¦gVæ7F–öâF–ÆR‡‚Ç&÷WFRÆFW62ÆÖ&²—·&WGW&âÆ'WGFöâ6Æ73Ò'FööÅF–ÆR"FF×&÷WFSÒ"G·&÷WFWÒ#ãÇ7â6Æ73Ò'F–ÆT–6öâ#âG¶–6öâ†Ö&²Ã#2—ÓÂ÷7ããÇ7G&öæsâG¶W62‡‚—ÓÂ÷7G&öæsãÇâG¶W62†FW62—ÓÂ÷ãÇ7â6Æ73Ò'F–ÆTÖ÷&R#ä÷VâG¶–6öâ‚v'&÷rrÃR—ÓÂ÷7ããÂö'WGFöãæÐ¦gVæ7F–öâ6Æ7VÆF÷'2‚—·&WGW&âÆ–÷WB‚t6Æ7VÆF÷'2rÂt$4ärÆÇ6Æ73Ò&ÆVB#ävV"Ww&FW2æBWV—ÖVçB6ö×&—6öç2&RFövWF†W"–âF†f–æFW"â÷F†W"6Æ7VÆF÷'2Æ—fR†W&RãÂ÷ãÆF—b6Æ73Ò&6&Dw&–B#âG·F–ÆR‚uF†f–æFW"rÂv6Æ7VÆF÷'2÷F†f–æFW"rÂuWw&FRÖÂF÷FÇ2æB—FVÒ6ö×&—6öâârÂvÆ–W'2r—ÒG·F–ÆR‚tFÖvR6Æ7VÆF÷"+r–âFWfVÆ÷ÖVçBrÂv6Æ7VÆF÷'2öFÖvRrÂu7FæFÆöæRGF6²ÂWBÂæB&WFÆ–F–öâf÷&×VÆ6æF&÷‚ârÂv6Æ7VÆF÷"r—ÒG·F–ÆR‚uWB6ö×÷VæBrÂv6Æ7VÆF÷'2÷WBrÂuWB6ö×÷VæBæBG&÷&öçW2ârÂwrr—ÒG·F–ÆR‚uWBff—‚6÷7G2rÂv6Æ7VÆF÷'2öff—†W2rÂuWB6†&B6÷7G2ârÂv6Æ7VÆF÷"r—ÒG·F–ÆR‚tÔÂf&Ö–ærrÂv6Æ7VÆF÷'2öÖÂÖf&ÒrÂt6ö×&Rf&Ö–ær7VVBârÂw7v÷&Br—ÓÂöF—cæÂv6Æ7VÆF÷"r—Ð¦gVæ7F–öâÆ'2‚—·&WGW&âÆ–÷WB‚t&6æÆ'2rÂuD„Tõ%”5$eD”ärrÆÇ6Æ73Ò&ÆVB#ä'V–ÆF7&gBÆ—fW2†W&Râ÷Vâ6ö×ÆWFRwV–FR'V–ÆBÂÖ¶R—B–÷W"÷vâÂæB6VæBvV"÷"'VæR6†ö–6W2FòF†V—"&VÆFVBFööÇ2ãÂ÷ãÆF—b6Æ73Ò&6&Dw&–B#âG·F–ÆR‚t'V–ÆB7GVF–òrÂvÆ'2ö'V–ÆBrÂtöæR6fVB'V–ÆB6öçF–æ–ærvV"ÂWG2Â'VæW2æB6¶–ÆÇ2ârÂw6†–VÆBr—ÒG·F–ÆR‚u'VæRf÷&vRrÂvÆ'2÷'VæW2rÂt'&ævR'VæW2öâw&–BF†Bw&÷w2v—F‚Ööç7FW"ÆWfVÂârÂvvVÒr—ÒG·F–ÆR‚t6Æ726¶–ÆÂG&VRrÂvÆ'2÷6¶–ÆÇ2rÂt'&÷w6RfW&–f–VB'&æ6†W2ÂF–W'2ÂæB6¶–ÆÂ&W&WV—6—FW2ârÂvv—Br—ÒG·F–ÆR‚u76—fR6¶–ÆÂG&VRrÂvÆ'2÷76—fW2rÂu7v—R&WGvVVâ6ö×ÆWFR76—fRF–W'2v—F‚öâÖæöFRö–çB6öçG&öÇ2ârÂvÆ–W'2r—ÒG·F–ÆR‚uWB6ö×÷VæB6Æ7VÆF÷"rÂv6Æ7VÆF÷'2÷WBrÂtW7F–ÖFR–÷W"G&÷&öçW2B6†÷6Vâ6ö×÷VæBÆWfVÂârÂv6Æ7VÆF÷"r—ÒG·F–ÆR‚twV–ÆB6¶–ÆÂG&VRrÂvÆ'2öwV–ÆB×G&VRrÂuÆâwV–ÆB&öçW6W2ÂÆÆö6FRö–çG2ÂæB6†&R'V–ÆBârÂw6†–VÆBr—ÓÂöF—cãÆF—b6Æ73Ò&†–çD6&B#âG¶–6öâ‚v&öö²rÃ#—ÒÇ7ãåG'’F†RÆ'WGFöâ6Æ73Ò&–æÆ–æTÆ–æ²"FF×&÷WFSÒ'v–¶’öwV–FR"FF×&×3Ò&–C×v'&–÷"×&WFÆ–F–öâÖFVÖòÖwV–FR#æ6öææV7FVBv'&–÷"wV–FSÂö'WGFöãâFò÷Vâ6ö×ÆWFRW†×ÆR–ç6–FR'V–ÆB7GVF–òãÂ÷7ããÂöF—cæÂvfÆ6²r—Ð¦gVæ7F–öâv–¶’‚—·&WGW&âÆ–÷WB‚t&6æv–¶’rÂt”å5DåB$TdU$Tä4RrÆÇ6Æ73Ò&ÆVB#åF†R&VfW&Væ6RÆ–W"öb&6æâwV–FW2&RW6VgVÂ7F–öç2Âæ÷BFVBÖVæBvÆÇ2öbFW‡BãÂ÷ãÆF—b6Æ73Ò'6V7F–öäÆ&VÂ6ö×7B#ãÆF—cãÇ7â6Æ73Ò&W–V'&÷r#ädTEU$TBuT”DSÂ÷7ããÆƒ#äg&öÒwV–FRFò'V–ÆB7GVF–óÂöƒ#ãÂöF—cãÂöF—cãÆ'WGFöâ6Æ73Ò&wV–FTfVGW&R"FF×&÷WFSÒ'v–¶’öwV–FR"FF×&×3Ò&–C×v'&–÷"×&WFÆ–F–öâÖFVÖòÖwV–FR#ãÇ7ãâG¶–6öâ‚v&öö²rÃ#R—ÓÂ÷7ããÆF—cãÇ7G&öæsåv'&–÷"&WFÆ–F–öâ+r6öææV7FVBwV–FSÂ÷7G&öæsãÇä6öçF–ç26ö×ÆWFRFVÖöç7G&F–öâ'V–ÆB–÷R6â–ç7V7BæBVF—BãÂ÷ãÂöF—câG¶–6öâ‚v'&÷rrÃ’—ÓÂö'WGFöããÆF—b6Æ73Ò'6V7F–öäÆ&VÂ#ãÆF—cãÇ7â6Æ73Ò&W–V'&÷r#ä%$õu4SÂ÷7ããÆƒ#ä¶æ÷vÆVFvRb—FV×3Âöƒ#ãÂöF—cãÂöF—cãÆF—b6Æ73Ò&6&Dw&–B#âG·F–ÆR‚t—FVÒ6öFW‚rÂwv–¶’ö—FV×2rÂu6V&6‚WV—VBvV"æB§V×–çFò6ö×&—6öâ÷"Ww&FRÆææ–ærârÂv&÷‚r—ÒG·F–ÆR‚tÖV6†æ–72rÂwv–¶’öÖV6†æ–72rÂufW&–f–VBÖV6†æ–72æBÆ–æ·2Fò&VÆWfçB6Æ7VÆF÷'2ârÂv–æfòr—ÒG·F–ÆR‚twV–FW2rÂwv–¶’öwV–FW2rÂtW†×ÆRwV–FW2v—F‚Æ–æ¶VB'V–ÆG2æBFööÇ2ârÂv&öö²r—ÓÂöF—cæÂv&öö²r—Ð¦gVæ7F–öâv–¶”—FV×2‚—·&WGW&âÆ–÷WB‚t—FVÒ6öFW‚rÂt$4ät”´’rÆÇ6Æ73Ò&ÆVB#ä—FV×26†&R”G2v—F‚6ö×&—6öâÂ'V–ÆB7GVF–òæBF†RWw&FR6Æ7VÆF÷"ãÂ÷ãÆF—b6Æ73Ò&f–ÇFW$Æ–æR#ãÆ–çWB–CÒ&—FVÔf–ÇFW""Æ6V†öÆFW#Ò$f–ÇFW"—FV×>(
-b"WFö6ö×ÆWFSÒ&öfb"&–ÖÆ&VÃÒ$f–ÇFW"—FV×2"óãÇ7ãâG¶–6öâ‚w6V&6‚rÃ’—ÓÂ÷7ããÂöF—cãÆF—b6Æ73Ò'&W7VÇDÆ—7B"–CÒ&—FVÕ&W7VÇG2#âG¶—FVÔÆ—7BæÖ†6&DVçF—G’’æ¦ö–â‚rr—ÓÂöF—cãÇ6Æ73Ò&æ÷F–6R#äæÖW2æB6FVv÷&–W26†÷vâ†W&R&R&VfW&Væ6R6×ÆW2Âæ÷B6ö×ÆWFRfW&–f–VBvÖRFF&6RãÂ÷æÂv&÷‚r—Ð¦gVæ7F–öâv–¶”ÖV6†æ–72‚—·&WGW&âÆ–÷WB‚tÖV6†æ–72rÂt$4ät”´’rÆÆF—b6Æ73Ò'&W7VÇDÆ—7B#âG¶VçF—F–W2æf–ÇFW"†SÓæRæ¶–æCÓÓÒvÖV6†æ–2r’æÖ†6&DVçF—G’’æ¦ö–â‚rr—ÓÂöF—cæÂv&öö²r—Ð¦gVæ7F–öâv–¶”wV–FW2‚—·&WGW&âÆ–÷WB‚twV–FW2rÂt$4ät”´’rÆÆF—b6Æ73Ò'&W7VÇDÆ—7B#âG¶wV–FTÆ—7BæÖ†6&DVçF—G’’æ¦ö–â‚rr—ÓÂöF—cæÂv&öö²r—Ð¦gVæ7F–öâgVÆÄwV–FR†–B—¶6öç7BsÖVçF—G”'”–BævWB†–B“¶–b‚wÇÆræ¶–æBÓÒvwV–FRr—&WGW&âæ÷Df÷VæB‚“·G&6²†–B“°¢6öç7B—4'V–ÆCÒræ'V–ÆD–C¶6öç7BF×ÃÖ—4'V–ÆCö'V–ÆEFV×ÆFR†ræ'V–ÆD–B“¦çVÆÃ°¢6öç7B–ææW#Ö—4'V–ÆCöÇ6V7F–öâ6Æ73Ò&'F–6ÆT†VFW"#ãÇ7â6Æ73Ò&W–V'&÷r#ä”åDU$5D•dRÄ”U"uT”DR+rDTÔôå5E$D”ôãÂ÷7ããÆƒ#âG¶W62†rçF—FÆR—ÓÂöƒ#ãÇâG¶W62†ræFW6=÷ß¿-¢G§²ÚîÆ­yÖvRÇ¶–æ6ÇVFU&ævS¦fÇ6RÆ6FÆös§fW&–f–VE7FFRæVçG&–W7Ò“°¢6öç7BæW‡CÖ†öÆFW"æ6öçFVçBæf—'7DVÆVÖVçD6†–ÆC°¢–b†æW‡B—°¢6öç7BæVÃÖæW‡BçVW'•6VÆV7F÷"‚r7F…&ævUæVÂr“°¢–b‡æVÂ—æVÂæ÷VãÖW‡æFVC°¢öÆEvRç&WÆ6Uv—F‚†æW‡B“°¢Ð¢ÖVÇ6R&VæFW"‚“°¢&WVW7Dæ–ÖF–öäg&ÖR‚‚“Óç°¢6VçFW%F…&–Â‚wF…7FvU&–ÂrÂvFF×F‚×7FvRrÇ7FFRçF†f–æFW%V–6²ç7FvR“°¢6VçFW%F…&–Â‚wF…7FW&–ÂrÂvFF×F‚×7FWrÇ7FFRçF†f–æFW%V–6²æÆWfVÂ“°¢Ò“°§Ð¦gVæ7F–öâF†f–æFW%7FvR‡7FvR—°¢–b‚&V6—U7FFRæFF—&WGW&ã°¢6öç7BÆÆ÷vVC×F–ÖVÆ–æU7FvW2‡&V6—U7FFRæFFÇ7FFRçF†f–æFW%V–6²æÖöFR“°¢–b‚ÆÆ÷vVBç6öÖR‡3Óç2æ–CÓÓ×7FvR—ÇÇ7FvSÓÓ×7FFRçF†f–æFW%V–6²ç7FvR—&WGW&ã°¢WFFUF†f–æFW%V–6²‡·7FvRÆÆWfVÃ£ÒÇG'VR“°§Ð¦gVæ7F–öâÖ÷fUF†f–æFW%7FW†F—&V7F–öâ—°¢–b‚&V6—U7FFRæFF—&WGW&ã°¢6öç7BÖöFVÃ×F–ÖVÆ–æTÖöFVÂ‡&V6—U7FFRæFFÇ7FFRçF†f–æFW%V–6²“°¢–b‚ÖöFVÂ—&WGW&ã°¢6öç7BÆWfVÃÖÖöFVÂçf–WræÆWfVÂ¶F—&V7F–öã°¢–b†ÆWfVÃãÓbfÆWfVÃÃÖÖöFVÂæ7F—fRæÖ‚—·WFFUF†f–æFW%V–6²‡¶ÆWfVÇÒ“·&WGW&ã·Ð¢6öç7B–æFWƒÖÖöFVÂç7FvW2æf–æD–æFW‚‡3Óç2æ–CÓÓÖÖöFVÂæ7F—fRæ–B’ÆæW‡CÖÖöFVÂç7FvW5¶–æFW‚²†F—&V7F–öããó¢Ó•Ó°¢–b†æW‡B—WFFUF†f–æFW%V–6²‡·7FvS¦æW‡Bæ–BÆÆWfVÃ¦F—&V7F–öããó¦æW‡BæÖ‡ÒÇG'VR“°§Ð¦7–æ2gVæ7F–öâ6fUF†f–æFW$6†V6¶Æ—7B†'WGFöâ—°¢–b‚&V6—U7FFRæFF—&WGW&âFö7B‚ufW&–f–VBWw&FR&V6—W2&RVæf–Æ&ÆRâr“°¢–b‚7W'&VçD66÷VçB‚’—·Fö7B‚u6–vâ–âv—F‚F—66÷&BFò6fR6†V6¶Æ—7BFò–÷W"&öf–ÆRâr“¶vò‚v66÷VçBr“·&WGW&ã·Ð¢6öç7BV÷FS×V÷FU&ævR‡&V6—U7FFRæFFÇ7FFRçF†f–æFW%&ævRÇ7FFRçF†f–æFW%V–6²“°¢–b‚V÷FRæ6ö×ÆWFWÇÇV÷FRæW'&÷'ÇÂV÷FRæÖFW&–Ç2æÆVæwF‚—&WGW&âFö7B‚u6VÆV7BfÆ–B6ö×ÆWFRWw&FR&÷WFRf—'7Bâr“°¢6öç7B66Væ&–÷3×V÷FTf–ÇW&U66Væ&–÷2‡&V6—U7FFRæFFÇV÷FR“°¢òòf&Ö–ærÆ—7G2Çv—2&VfÆV7BF†R6ÖRfW&vRW7F–ÖFRf—6–&ÆRFòÆ–W'2à¢6öç7B6VÆV7FVC×66Væ&–÷2æf–Æ&ÆS÷66Væ&–÷2æW‡V7FVC§V÷FS°¢6öç7Bw&÷W3×6÷W&6TÖFW&–Äw&÷W2‡6VÆV7FVBæÖFW&–Ç2Ç&V6—U7FFRæFFæÖFW&–Ç2ÇfW&–f–VE7FFRæVçG&–W2¢æÖ†w&÷WÓâ‡¶æÖS¦w&÷WææÖRÇF–W#¦w&÷WçF–W"Æ—FV×3¦w&÷WæÖFW&–Ç2æÖ†ÓÓâ‡·6ÇVs¦Òç6ÇVrÆæÖS¦ÒææÖRÇVçF—G“¥7G&–ær†ÒçVçF—G’—Ò’—Ò’“°¢6öç7BÆ&VÃ×66Væ&–÷2æf–Æ&ÆSòtW7F–ÖFVBs¢t&6Rs°¢6öç7BÆ—7C×·F—FÆS¦Æ&VÂ²r+rWw&FRr²‡V÷FRæ—FVÔ6÷VçCã÷V÷FRæ—FVÔ6÷VçB²r—FV×2+rs¢rr’·V÷FRç&ævRæg&öÕ7FvR²r²r·V÷FRç&ævRæg&öÔÆWfVÂ²r(i"r·V÷FRç&ævRçFõ7FvR²r²r·V÷FRç&ævRçFôÆWfVÂÀ¢6Æ÷C§7FFRçF†f–æFW%V–6²ç6Æ÷BÆg&öÓ§V÷FRç&ævRæg&öÕ7FvR²r²r·V÷FRç&ævRæg&öÔÆWfVÂÀ¢Fó§V÷FRç&ævRçFõ7FvR²r²r·V÷FRç&ævRçFôÆWfVÂÆvöÆC¥7G&–ær‡6VÆV7FVBævöÆB’À¢6÷W&6UfW'6–öã¥7G&–ær‡&V6—U7FFRæFFç6÷W&6UfW'6–öçÇÇ&V6—U7FFRæFFç6÷W&6WÇÂrr’Æw&÷W7Ó°¢'WGFöâæF—6&ÆVC×G'VS¶'WGFöâçFW‡D6öçFVçCÒu6f–ærFò&öf–Æ^(
-bs°¢G'—¶v—B6fTf&Ö–ætÆ—7B†Æ—7B“·Fö7B‚tf&Ö–ær6†V6¶Æ—7B6fVBFò–÷W"66÷VçBâr“¶vò‚v66÷VçBr“·Ð¢6F6‚†W'&÷"—·Fö7B†W'&÷"æÖW76vR“¶'WGFöâæF—6&ÆVCÖfÇ6S¶'WGFöâçFW‡D6öçFVçCÒu6fRf&Ö–ær6†V6¶Æ—7BFò×’&öf–ÆRs·Ð§Ð¦gVæ7F–öâ&VæFW%F†f–æFW$6÷7G2†7W'&VçC×7FFRçF†f–æFW%&ævR—°¢6öç7B6öçFVçCÖæöFR‚wF…&ævT6öçFVçBr“°¢–b‚6öçFVçGÇÂ&V6—U7FFRæFF—&WGW&ã°¢òòW'6—7B&÷F‚õTâæB4Äõ4TB7FFW3²&W&VæFW"×W7Bæ÷B&RÖW‡æBF†–æw2à¢6öç7BæVÇ3ÒvFWF–Ç5¶FFÖÖFW&–Â×6V7F–öåÒÆFWF–Ç5¶FF×F‚Ö66÷&F–öåÒÆFWF–Ç5¶FF×F‚×¦öæUÒs°¢6öç7BæVÄ¶W“ÖCÓæBæFF6WBçF…¦öæSòw¦öæS¢r¶BæFF6WBçF…¦öæS¦BæFF6WBæÖFW&–Å6V7F–öãòvÖFW&–Ç3¢r¶BæFF6WBæÖFW&–Å6V7F–öã¢wæVÃ¢r¶BæFF6WBçF„66÷&F–öã°¢6öç7B7FFW3ÖæWrÖ…²ââæ6öçFVçBçVW'•6VÆV7F÷$ÆÂ‡æVÇ2•ÒæÖ†CÓå·æVÄ¶W’†B’ÆBæ÷VåÒ’“°¢6öç7B77V×F–öç4÷VãÖ6öçFVçBçVW'•6VÆV7F÷"‚vFWF–Ç2çV–6´77V×F–öç2r“òæ÷VãÓÓ×G'VS°¢6öçFVçBæ–ææW$…DÔÃ×V–6µWw&FT6öçFVçB‡&V6—U7FFRæFFÆ7W'&VçBÇ·vS§'6U&÷WFR‚’ç&÷WFRÓÒv†öÖRrÆ6FÆös§fW&–f–VE7FFRæVçG&–W7Ò“°¢f÷"†6öç7BBöb6öçFVçBçVW'•6VÆV7F÷$ÆÂ‡æVÇ2’—°¢6öç7B¶W“×æVÄ¶W’†B“°¢–b‡7FFW2æ†2†¶W’’–Bæ÷Vã×7FFW2ævWB†¶W’“°¢Ð¢6öç7Bæ÷FSÖ6öçFVçBçVW'•6VÆV7F÷"‚vFWF–Ç2çV–6´77V×F–öç2r“¶–b†æ÷FR–æ÷FRæ÷VãÖ77V×F–öç4÷Vã°§Ð¦gVæ7F–öâv—&UF†f–æFW%V–6²‚—°¢Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÆSÓç°¢6öç7B'WGFöãÖRçF&vWBæ6Æ÷6W7B‚u¶FF×F‚×VçF—G’×7FWÒr“°¢–b‚'WGFöçÇÂ&V6—U7FFRæFF—&WGW&ã°¢6öç7Böfg6WCÔçVÖ&W"†'WGFöâæFF6WBçF…VçF—G•7FW“°¢–b†öfg6WBÓÓbföfg6WBÓÒÓ—&WGW&ã°¢6öç7BVçF—G“Öæ÷&ÖÆ—¦T—FVÕVçF—G’†æ÷&ÖÆ—¦T—FVÕVçF—G’‡7FFRçF†f–æFW%&ævRçVçF—G’’¶öfg6WB“°¢7FFRçF†f–æFW%&ævS×6fU&ævR‡²ââç7FFRçF†f–æFW%&ævRÇVçF—G—Ò“°¢&VæFW%F†f–æFW$6÷7G2‚“°¢Ò“°¢Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÆSÓç¶6öç7B'WGFöãÖRçF&vWBæ6Æ÷6W7B‚u¶FF×b×6fRÖÆ—7EÒr“¶–b‚'WGFöâ—&WGW&ã¶Rç&WfVçDFVfVÇB‚“¶–b‚'WGFöâæF—6&ÆVB—fö–B6fUF†f–æFW$6†V6¶Æ—7B†'WGFöâ“·Ò“°¢Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v–çWBrÆSÓç°¢–b‚RçF&vWBæÖF6†W2‚u¶FF×F‚×&ævUÒr’—&WGW&ã°¢6öç7BfÇVSÔçVÖ&W"†RçF&vWBçfÇVR“°¢–b‚çVÖ&W"æ—4–çFVvW"‡fÇVR’—&WGW&ã°¢7FFRçF†f–æFW%V–6³×²ââç7FFRçF†f–æFW%V–6²ÆÆWfVÃ§fÇVWÓ°¢&Vg&W6…F†f–æFW%7FW†fÇ6R“°¢Ò“°¢Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v6†ævRrÆSÓç°¢–b†RçF&vWBæÖF6†W2‚u¶FF×F‚×&ævUÒr’—·7FFRçF†f–æFW%V–6³×6fUV–6µf–Wr‡7FFRçF†f–æFW%V–6²“¶6VçFW%F…&–Â‚wF…7FW&–ÂrÂvFF×F‚×7FWrÇ7FFRçF†f–æFW%V–6²æÆWfVÂÂw6Öö÷F‚r“·&WGW&ã·Ð¢6öç7BCÖRçF&vWBæFF6WC°¢–b‡&V6—U7FFRæFFbb†BçF„g&öÕ7FvRÓ×VæFVf–æVGÇÆBçF„g&öÔÆWfVÂÓ×VæFVf–æVGÇÆBçF…Fõ7FvRÓ×VæFVf–æVGÇÆBçF…FôÆWfVÂÓ×VæFVf–æVGÇÆBçF…VçF—G’Ó×VæFVf–æVGÇÆBçF…—G•&öw&W72Ó×VæFVf–æVGÇÆBçF…—G”6÷VçBÓ×VæFVf–æVB’—°¢6öç7B7FvW3ÖÆÅ7FvW2‡&V6—U7FFRæFF“°¢6öç7B7W'&VçC×²ââç7FFRçF†f–æFW%&ævWÓ°¢–b†BçF„g&öÕ7FvRÓ×VæFVf–æVB—¶7W'&VçBæg&öÕ7FvSÖRçF&vWBçfÇVS¶7W'&VçBæg&öÔÆWfVÃÔÖF‚æÖ–â„çVÖ&W"†7W'&VçBæg&öÔÆWfVÇÇÃ’Ç7FvW2æf–æB‡3Óç2æ–CÓÓÖ7W'&VçBæg&öÕ7FvR“òæÖ‡ÇÃ“·Ð¢VÇ6R–b†BçF…Fõ7FvRÓ×VæFVf–æVB—°¢7W'&VçBçFõ7FvSÖRçF&vWBçfÇVS°¢7W'&VçBçFôÆWfVÃÔÖF‚æÖ–â„çVÖ&W"†7W'&VçBçFôÆWfVÇÇÃ’Ç7FvW2æf–æB‡3Óç2æ–CÓÓÖ7W'&VçBçFõ7FvR“òæÖ‡ÇÃ“°¢ÖVÇ6R–b†BçF„g&öÔÆWfVÂÓ×VæFVf–æVB–7W'&VçBæg&öÔÆWfVÃÔçVÖ&W"†RçF&vWBçfÇVR“°¢VÇ6R–b†BçF…FôÆWfVÂÓ×VæFVf–æVB–7W'&VçBçFôÆWfVÃÔçVÖ&W"†RçF&vWBçfÇVR“°¢VÇ6R–b†BçF…VçF—G’Ó×VæFVf–æVB–7W'&VçBçVçF—G“Öæ÷&ÖÆ—¦T—FVÕVçF—G’†RçF&vWBçfÇVR“°¢VÇ6R–b†BçF…—G•&öw&W72Ó×VæFVf–æVB–7W'&VçBç—G•&öw&W73Öæ÷&ÖÆ—¦U—G•&öw&W72†RçF&vWBçfÇVR“°¢VÇ6R–b†BçF…—G”6÷VçBÓ×VæFVf–æVB–7W'&VçBç—G”6÷VçCÖæ÷&ÖÆ—¦U—G”6÷VçB†RçF&vWBçfÇVR“°¢7FFRçF†f–æFW%&ævS×6fU&ævR†7W'&VçB“°¢&VæFW%F†f–æFW$6÷7G2†7W'&VçB“°¢&WGW&ã°¢Ð¢–b†RçF&vWBæÖF6†W2‚u¶FF×F‚×6Æ÷EÒr’—°¢WFFUF†f–æFW%V–6²‡·6Æ÷C¦RçF&vWBçfÇVWÒÇG'VR“°¢Ð¢–b†RçF&vWBæÖF6†W2‚u¶FF×F‚×&ævR×6Æ÷EÒr’—7FFRçF†f–æFW%V–6³×6fUV–6µf–Wr‡²ââç7FFRçF†f–æFW%V–6²Ç6Æ÷C¦RçF&vWBçfÇVWÒ“°¢Ò“°¢òò67&öÆÂ6æ–ærÇ6ò6VÆV7G2F†RæV&W7Bf—6–&ÆR7FW÷"F–W"âæò†Vg¢òò&W&VæFW"†Vç2v†–ÆRf–ævW"—27F—fVÇ’G&vv–ærF†RÖà¢ÆWB67&öÆÅF–ÖW#ÖçVÆÃ°¢Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚w67&öÆÂrÆSÓç°¢6öç7B&–ÃÖRçF&vWC°¢–b‡&–Ãòæ–BÓÒwF…7FvU&–Ârbg&–Ãòæ–BÓÒwF…7FW&–Âr—&WGW&ã°¢6ÆV%F–ÖV÷WB‡67&öÆÅF–ÖW"“°¢67&öÆÅF–ÖW#×6WEF–ÖV÷WB‚‚“Óç°¢–b‚&–Âæ—46öææV7FVGÇÇ'6U&÷WFR‚’ç&÷WFRÓÒv6Æ7VÆF÷'2÷F†f–æFW"r—&WGW&ã°¢6öç7Bf–VÆC×&–Âæ–CÓÓÒwF…7FvU&–ÂsòwF…7FvRs¢wF…7FWs°¢6öç7B6VçFW#×&–ÂævWD&÷VæF–æt6Æ–VçE&V7B‚’æÆVgB·&–Âæ6Æ–VçEv–GF‚ó#°¢6öç7B6†ö–6W3Õ²ââç&–ÂçVW'•6VÆV7F÷$ÆÂ‚u¶FFÒr²†f–VÆCÓÓÒwF…7FvRsòwF‚×7FvRs¢wF‚×7FWr’²uÒr•Ó°¢6öç7BæV&W7CÖ6†ö–6W2ç6÷'B‚†Æ"“Óç°¢6öç7BÖ–Gö–çC×ƒÓç‚ævWD&÷VæF–æt6Æ–VçE&V7B‚’æÆVgB·‚ævWD&÷VæF–æt6Æ–VçE&V7B‚’çv–GF‚ó#°¢&WGW&âÖF‚æ'2†Ö–Gö–çB†’Ö6VçFW"’ÔÖF‚æ'2†Ö–Gö–çB†"’Ö6VçFW"“°¢Ò•³Ó°¢–b‚æV&W7B—&WGW&ã°¢–b†f–VÆCÓÓÒwF…7FvRr—F†f–æFW%7FvR†æV&W7BæFF6WBçF…7FvR“°¢VÇ6R°¢6öç7BÆWfVÃÔçVÖ&W"†æV&W7BæFF6WBçF…7FW“°¢–b†ÆWfVÂÓ×7FFRçF†f–æFW%V–6²æÆWfVÂ—WFFUF†f–æFW%V–6²‡¶ÆWfVÇÒ“°¢Ð¢ÒÃ#“°¢ÒÇG'VR“°§Ð ¦gVæ7F–öâf–ÇFW%7GVF–õc$Æöö·2‚—°¢6öç7B6V7F–öãÖFö7VÖVçBçVW'•6VÆV7F÷"‚rç7GVF–õc$Æöö·2r“¶–b‚6V7F–öâ—&WGW&ã°¢6öç7BFW&Ó×6V7F–öâçVW'•6VÆV7F÷"‚u¶FFÖFW6–vâ×&W6WB×6V&6…Òr“òçfÇVSòçFôÆ÷vW$66R‚’çG&–Ò‚—ÇÂrs°¢6öç7BfÖ–Ç“×6V7F–öâæFF6WBç7GVF–ôf–ÇFW'ÇÂtÆÂs°¢6V7F–öâæFF6WBç6V&6†–æsÕ7G&–ær„&ööÆVâ‡FW&Ò’“°¢6V7F–öâæFF6WBç7GVF–ôf–ÇFW&VCÕ7G&–ær†fÖ–Ç’ÓÒtÆÂr“°¢ÆWB6÷VçCÓ°¢f÷"†6öç7BF–ÆRöb6V7F–öâçVW'•6VÆV7F÷$ÆÂ‚rç7GVF–õc%&W6WBr’—°¢6öç7BÖF6…FW‡CÕ7G&–ær‡F–ÆRæFF6WBç&W6WE6V&6‡ÇÂrr’æ–æ6ÇVFW2‡FW&Ò“°¢6öç7BÖF6„fÖ–Ç“ÖfÖ–Ç“ÓÓÒtÆÂwÇÇF–ÆRæFF6WBç7GVF–ôfÖ–Ç“ÓÓÖfÖ–Ç“°¢F–ÆRæ†–FFVãÒ†ÖF6…FW‡BbfÖF6„fÖ–Ç’“°¢–b‚F–ÆRæ†–FFVâ–6÷VçB²³°¢Ð¢6öç7BV×G“×6V7F–öâçVW'•6VÆV7F÷"‚u¶FFÖFW6–vâÖæò×&W6WG5Òr“¶–b†V×G’–V×G’æ†–FFVãÖ6÷VçBÓÓ°¢6öç7BÖ÷&S×6V7F–öâçVW'•6VÆV7F÷"‚u¶FF×F†VÖR×&W6WBÖW‡æEÒr“¶–b†Ö÷&R–Ö÷&Ræ†–FFVãÔ&ööÆVâ‡FW&Ò—ÇÆfÖ–Ç’ÓÒtÆÂs°§Ð¦gVæ7F–öâv—&UF†VÖU7GVF–ô6öçG&öÇ2‚—°¢Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÆSÓç°¢6öç7BfÖ–Ç”'FãÖRçF&vWBæ6Æ÷6W7B‚u¶FF×7GVF–òÖfÖ–Ç’Öf–ÇFW%Òr“°¢–b†fÖ–Ç”'FâbffÖ–Ç”'Fâæ6Æ÷6W7B‚rç7GVF–õc$Æöö·2r’—°¢6öç7B6V7F–öãÖfÖ–Ç”'Fâæ6Æ÷6W7B‚rç7GVF–õc$Æöö·2r“°¢6V7F–öâæFF6WBç7GVF–ôf–ÇFW#ÖfÖ–Ç”'FâæFF6WBç7GVF–ôfÖ–Ç”f–ÇFW#°¢f÷"†6öç7B"öb6V7F–öâçVW'•6VÆV7F÷$ÆÂ‚u¶FF×7GVF–òÖfÖ–Ç’Öf–ÇFW%Òr’–"ç6WDGG&–'WFR‚v&–×&W76VBrÅ7G&–ær†#ÓÓÖfÖ–Ç”'Fâ’“°¢f–ÇFW%7GVF–õc$Æöö·2‚“·&WGW&ã°¢Ð¢6öç7B†W&ô6†ö–6SÖRçF&vWBæ6Æ÷6W7B‚u¶FFÖ†W&òÖ7F×7G–ÆUÒr“°¢–b††W&ô6†ö–6Rbf†W&ô6†ö–6Ræ6Æ÷6W7B‚ræ&6æFW6–väÆ"r’—°¢–b‚6äVF—EF†VÖTG&gB‚’—&WGW&ã°¢–b‡w&—FTFW6–vâ‚v†W&ô7F–öå7G–ÆRrÆ†W&ô6†ö–6RæFF6WBæ†W&ô7F7G–ÆR’—°¢6†÷tFW6–väÖ–æ•vR‚v†öÖRr“°¢Ç•F†VÖR‡'6U&÷WFR‚’ç&÷WFR“°¢7–æ5v÷&·6†÷–çWG2‚“°¢Ð¢&WGW&ã°¢Ð¢6öç7BGFW&ãÖRçF&vWBæ6Æ÷6W7B‚u¶FF×F†VÖR×GFW&åÒr“°¢–b‡GFW&âbgGFW&âæ6Æ÷6W7B‚ræ&6æFW6–väÆ"r’—°¢–b‚6äVF—EF†VÖTG&gB‚’—&WGW&ã°¢–b‚‡GFW&âæFF6WBçF†VÖUGFW&âç7F'G5v—F‚‚wf—6–öâÒr“öÇ•f—7VÅ&W6WB‡GFW&âæFF6WBçF†VÖUGFW&â“§w&—FTFW6–vâ‚wGFW&ârÇGFW&âæFF6WBçF†VÖUGFW&â’’—°¢Ç•F†VÖR‡'6U&÷WFR‚’ç&÷WFR“°¢7–æ5v÷&·6†÷–çWG2‚“°¢Ð¢&WGW&ã°¢Ð¢6öç7B6öçG&7Df—ƒÖRçF&vWBæ6Æ÷6W7B‚u¶FFÖÖ–æ’Öf—‚Ö6öçG&7EÒr“°¢–b†6öçG&7Df—‚bf6öçG&7Df—‚æ6Æ÷6W7B‚rçF†VÖU7GVF–õ&Wf–Wrr’bf6äVF—EF†VÖTG&gB‚’—°¢–b‡w&—FTFW6–vâ‚v'WGFöåFW‡BrÇ7VvvW7FVD'WGFöåFW‡B‡&VDFW6–vâ‚’’’—°¢Ç•F†VÖR‡'6U&÷WFR‚’ç&÷WFR“°¢7–æ5v÷&·6†÷–çWG2‚“°¢Fö7B‚t'WGFöâFW‡BF§W7FVB–â–÷W"&—fFRG&gBâæ÷F†–ærv2V&Æ—6†VBâr“°¢Ð¢&WGW&ã°¢Ð¢6öç7B6†÷tÆÃÖRçF&vWBæ6Æ÷6W7B‚u¶FF×F†VÖR×&W6WBÖW‡æEÒr“¶–b‡6†÷tÆÂ—¶6öç7Bw&×6†÷tÆÂæ6Æ÷6W7B‚rçF†VÖU&W6WD6öÆÆV7F–öâr“¶6öç7BW‡æFVC×w&æFF6WBç6†÷tÆÂÓÒwG'VRs·w&æFF6WBç6†÷tÆÃÕ7G&–ær†W‡æFVB“·6†÷tÆÂç6WDGG&–'WFR‚v&–ÖW‡æFVBrÅ7G&–ær†W‡æFVB’“·6†÷tÆÂçFW‡D6öçFVçCÖW‡æFVCòu6†÷rfWvW"Æöö·2(is¢u6†÷rÆÂr¶Fö7VÖVçBçVW'•6VÆV7F÷$ÆÂ‚rç7GVF–õc%&W6WBr’æÆVæwF‚²rÆöö·2(i2s·&WGW&ã·Ð¢6öç7B§V×ÖRçF&vWBæ6Æ÷6W7B‚u¶FF×F†VÖRÖ§V×Òr“°¢–b†§V×bf§V×æ6Æ÷6W7B‚ræ&6æFW6–väÆ"r’—°¢6öç7BæSÖ§V×æ6Æ÷6W7B‚rçF†VÖU7GVF–ôVF—F÷"r“°¢6öç7B–CÖ§V×æFF6WBçF†VÖT§V×°¢6öç7BF&vWCÖ–CÓÓÒwfVÇBs÷æRçVW'•6VÆV7F÷"‚rçF†VÖUfVÇE6V7F–öâr“§æRçVW'•6VÆV7F÷"‚u¶FF×F†VÖRÖw&÷WÒ"r¶–B²r%Òr“°¢–b‡F&vWB—°¢–b‡F&vWBçFtæÖSÓÓÒtDUD”Å2r—F&vWBæ÷Vã×G'VS°¢F&vWBç67&öÆÄ–çFõf–Wr‡¶&V†f–÷#¦Fö7VÖVçBæFö7VÖVçDVÆVÖVçBæFF6WBæÆVæ6…&VGV6TÖ÷F–öãÓÓÒwG'VRsòvWFòs¢w6Öö÷F‚rÆ&Æö6³¢w7F'BwÒ“°¢Ð¢&WGW&ã°¢Ð¢6öç7Bf–ÇFW#ÖRçF&vWBæ6Æ÷6W7B‚u¶FF×F†VÖR×GFW&âÖf–ÇFW%Òr“°¢–b†f–ÇFW"bff–ÇFW"æ6Æ÷6W7B‚ræ&6æFW6–väÆ"r’—°¢6öç7B6FVv÷'“Öf–ÇFW"æFF6WBçF†VÖUGFW&äf–ÇFW#°¢6öç7B6V7F–öãÖf–ÇFW"æ6Æ÷6W7B‚rçF†VÖUGFW&äÆ–'&'’r“°¢f÷"†6öç7B'WGFöâöb6V7F–öâçVW'•6VÆV7F÷$ÆÂ‚u¶FF×F†VÖR×GFW&âÖf–ÇFW%Òr’–'WGFöâç6WDGG&–'WFR‚v&–×&W76VBrÅ7G&–ær†'WGFöãÓÓÖf–ÇFW"’“°¢f÷"†6öç7BF–ÆRöb6V7F–öâçVW'•6VÆV7F÷$ÆÂ‚u¶FF×GFW&âÖ6FVv÷'•Òr’—F–ÆRæ†–FFVãÖ6FVv÷'“ÓÓÒu&VÖ—VÒsò²u7–6†VFVÆ–2rÂu6–væGW&RrÂtÖFW&–ÂrÂtFÖ÷7†W&RrÂu&VÆ–2rÂtFVÆ–W"rÂuf—6–öâuÒæ–æ6ÇVFW2‡F–ÆRæFF6WBçGFW&ä6FVv÷'’“¦6FVv÷'’ÓÒtÆÂrbgF–ÆRæFF6WBçGFW&ä6FVv÷'’ÓÖ6FVv÷'“°¢Ð¢Ò“°§Ð¦gVæ7F–öâ–æ—B‚—·v—&TFW6–väÖ–æ•&Wf–Wr‚“·v—&UF†VÖU7GVF–ô6öçG&öÇ2‚“·v—&UF†VÖUfVÇB‡·Fö7BÆöäÆöC¢‚“Óç¶Ç•F†VÖR‡'6U&÷WFR‚’ç&÷WFR“·7–æ5v÷&·6†÷–çWG2‚“·×Ò“¶Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÆSÓç°¢6öç7B7VÖÖ'“ÖRçF&vWBæ6Æ÷6W7B‚vFWF–Ç5¶FFÖ†öÖR×æVÅÒâ7VÖÖ'’r“°¢–b‚7VÖÖ'’—&WGW&ã°¢6öç7Bw&÷W×7VÖÖ'’ç&VçDVÆVÖVçBÆ¶W“Öw&÷WæFF6WBæ†öÖUæVÃ°¢–b„ö&¦V7Bç&÷F÷G—Ræ†4÷vå&÷W'G’æ6ÆÂ††öÖUæVÇ2Æ¶W’’–†öÖUæVÇ5¶¶W•ÓÒw&÷Wæ÷Vã°§Ò“·v—&T'V–ÆD–FVçF—G’‚“¶Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚wFövvÆRrÆSÓç¶–b†RçF&vWBæÖF6†W3òâ‚rç'VæUv÷&G5æVÂr’—7FFRç'VæUv÷&G4÷VãÖRçF&vWBæ÷Vã·ÒÇG'VR“·v—&U'VæTG&r‚“·v—&U7GVF–õ÷'G&—B‚“·v—&UF†f–æFW%V–6²‚“·v—&Tf&Ö–ætÆ—7G2‡·&Vg&W6ƒ§&VæFW"ÇFö7GÒ“·v—&Uv–¶•7GVF–ò‚“·v—&T&WFT’‡¶vòÇ&Vg&W6ƒ§&VæFW"ÇFö7GÒ“·v—&TFÖ–åG&ff–2‡·&Vg&W6ƒ§&VæFW'Ò“·v—&TFÖ–ä6öç6öÆR‡·&Vg&W6ƒ§&VæFW"ÇFö7GÒ“¶–æ—EG&ff–5G&6¶–ær‚“·v—&TwV–ÆD‡V"‡¶vòÇ&Vg&W6ƒ§&VæFW"ÇFö7BÆ7W'&VçD66÷VçGÒ“·v—&T6öÖ×Væ—G•T’‡¶vòÆvWD'V–ÆC§6fVD'V–ÆBÆÇ”'V–ÆC¦–çWCÓç·7FFRæG&gCÖæ÷&ÖÆ—¦T'V–ÆB†FVW6÷’†–çWB’“·7FFRæG&gBæ–CÒvÆö6ÂÖG&gBs·7FFRæG&gBçfW'6–öãÒtÄô4Âs·W'6—7DG&gB‚“·ÒÇ&Vg&W6ƒ§&VæFW"ÇFö7GÒ“¶–b‡7FFRæG&gB—7FFRæG&gCÖæ÷&ÖÆ—¦T'V–ÆB‡7FFRæG&gB“·&W7F÷&UG&VUÆâ‚“¶–æ—EF†VÖR‚“¶Ç”&Vg2‚“¶Fö7VÖVçBçVW'•6VÆV7F÷$ÆÂ‚r6&6æFö6²¶FFÖ–6öåÒr’æf÷$V6‚†VÃÓç¶VÂæ–ææW$…DÔÃÖ–6öâ†VÂæFF6WBæ–6öâÃ#B—Ò“¶–æ—DvVæW&Ä6†B†7W'&VçD66÷VçB“¶Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v–çWBrÆSÓç¶–b†RçF&vWBæÖF6†W2‚u¶FFÖFW6–vâ×&W6WB×6V&6…Òr’bfRçF&vWBæ6Æ÷6W7B‚rç7GVF–õc"r’—¶f–ÇFW%7GVF–õc$Æöö·2‚“·&WGW&ã·Ö–b†RçF&vWBæÖF6†W2‚u¶FFÖFW6–vâ×&W6WB×6V&6…Òr’—¶6öç7BFW&ÓÖRçF&vWBçfÇVRçFôÆ÷vW$66R‚’çG&–Ò‚“¶f÷"†6öç7B&W6WBöbFö7VÖVçBçVW'•6VÆV7F÷$ÆÂ‚ræ&6æFW6–väÆ"æFW6–vå&W6WBr’—&W6WBæ†–FFVãÒ7G&–ær‡&W6WBæFF6WBç&W6WE6V&6‡ÇÂrr’æ–æ6ÇVFW2‡FW&Ò“¶6öç7B6Æ76–73ÖFö7VÖVçBçVW'•6VÆV7F÷"‚ræFW6–vä6Æ76–46öÆÆV7F–öâr“¶–b†6Æ76–72bgFW&Ò–6Æ76–72æ÷VãÕ²ââæ6Æ76–72çVW'•6VÆV7F÷$ÆÂ‚ræFW6–vå&W6WBr•Òç6öÖR†SÓâRæ†–FFVâ“¶6öç7BV×G“ÖFö7VÖVçBçVW'•6VÆV7F÷"‚u¶FFÖFW6–vâÖæò×&W6WG5Òr“¶–b†V×G’–V×G’æ†–FFVãÕ²ââæFö7VÖVçBçVW'•6VÆV7F÷$ÆÂ‚ræ&6æFW6–väÆ"æFW6–vå&W6WBr•Òç6öÖR†SÓâRæ†–FFVâ“¶6öç7B&Æö6³ÖFö7VÖVçBçVW'•6VÆV7F÷"‚rçF†VÖU&W6WD6öÆÆV7F–öâr“¶–b†&Æö6²–&Æö6²æFF6WBç6V&6†–æsÕ7G&–ær„&ööÆVâ‡FW&Ò’“·&WGW&ã·Ö–b†RçF&vWBæÖF6†W2‚u¶FFÖFW6–vâÖ†W…Òr’—¶–b‚6äVF—EF†VÖTG&gB‚’—&WGW&ã¶6öç7B¶W“ÖRçF&vWBæFF6WBæFW6–vä†W‚Æ†WƒÖæ÷&ÖÆ—¦TFW6–vä†W‚†RçF&vWBçfÇVR’Ç7FGW3ÖFö7VÖVçBçVW'•6VÆV7F÷"‚u¶FFÖFW6–vâ×7FGW3Ò"r¶¶W’²r%Òr“¶–b††W‚bgw&—FTFW6–vâ†¶W’Æ†W‚’—¶RçF&vWBçfÇVSÖ†Wƒ¶RçF&vWBç&VÖ÷fTGG&–'WFR‚v&–Ö–çfÆ–Br“¶6öç7B–6¶W#ÖFö7VÖVçBçVW'•6VÆV7F÷"‚v–çWE·G—SÒ&6öÆ÷"%Õ¶FFÖFW6–vâÖf–VÆCÒ"r¶¶W’²r%Òr“¶–b‡–6¶W"—–6¶W"çfÇVSÖ†Wƒ¶–b‡7FGW2—7FGW2çFW‡D6öçFVçCÒtÆ–VB)É2s·ÖVÇ6R–b‡7FGW2—7FGW2çFW‡D6öçFVçCÒtVçFW"b„U‚F–v—G2s·&WGW&ã·Ö–b†RçF&vWBæÖF6†W2‚u¶FFÖFW6–vâÖf–VÆEÒr’—¶–b‚6äVF—EF†VÖTG&gB‚’—&WGW&ã¶6öç7B¶W“ÖRçF&vWBæFF6WBæFW6–väf–VÆBÇfÇVSÖRçF&vWBçfÇVS°¢6öç7B6†ævVCÖ¶W“ÓÓÒwæVÅGFW&âwÇÆ¶W“ÓÓÒvfVGW&UGFW&âsöÇ”Æ–W%f—7VÅ&W6WB†¶W“ÓÓÒwæVÅGFW&âsòwæVÇ2s¢vfVGW&RrÇfÇVR“¦¶W“ÓÓÒwGFW&ârbgfÇVRç7F'G5v—F‚‚wf—6–öâÒr“öÇ•f—7VÅ&W6WB‡fÇVR“§w&—FTFW6–vâ†¶W’ÇfÇVR“°¢–b†6†ævVB—¶–b…²wæVÅGFW&ârÂvfVGW&UGFW&ârÂwGFW&âuÒæ–æ6ÇVFW2†¶W’’—7–æ5v÷&·6†÷–çWG2‚“¶6öç7Bæ÷FSÖFö7VÖVçBçVW'•6VÆV7F÷"‚u¶FF×F†VÖRÖ6†ævRÖ†–çEÒr“¶–b†æ÷FR—¶6öç7BFW67&—F–öç3×¶Ö–ã¢uvR&6¶w&÷VæBrÆ6&C¢t6&G2æBæVÇ2rÆ7F–öã¢u&–Ö'’Æ–æ·2æB7F–öç2rÇ6V6öæF'”66VçC¢u6V6öæF'’†–v†Æ–v‡G2rÇGFW&ã¢u7W&f6RÖFW&–ÂrÇGFW&å66ÆS¢u6—¦Röb&WVF–ærFWF–Ç2rÇGFW&åF&vWC¢uv†–6‚7W&f6W2&V6V—fRF†RFW‡GW&RrÆ–çFVç6—G“¢uf—6–&–Æ—G’öbF†RÖFW&–ÂrÆvÆ÷s¢tvÆ÷r&÷VæB66VçG2rÆ†W&ô7F–öå7G–ÆS¢t'V–ÆB7GVF–òVçG&æ6R'WGFöâöæÇ’rÆ†W&ô6&E7G–ÆS¢t†öÖWvR'V–ÆB7GVF–ò6&BöæÇ’rÇ&÷VæFæW73¢t6÷&æW'2öâÆÂ6&G2rÆ'WGFöå7G–ÆS¢u6†&VB'WGFöâV&æ6RrÆföçE6—¦S¢tvÆö&ÂFW‡B66ÆRwÓ¶6öç7BÆ&VÃÖRçF&vWBæ6Æ÷6W7B‚vÆ&VÂÂæFW6–vä6öçG&öÂr“òçVW'•6VÆV7F÷"‚w7âr“òçFW‡D6öçFVçGÇÆ¶W“¶æ÷FRæ–ææW$…DÔÃÒsÇ7G&öæsâr¶W62†Æ&VÂ’²rWFFVCÂ÷7G&öæsãÇ7ãâr¶W62†FW67&—F–öç5¶¶W•×ÇÂt6†V6²F†R7W'&VçBvR&Wf–WrFò6VRF†RVffV7Bâr’²sÂ÷7ãâs·Ö–b†RçF&vWBæ6Æ÷6W7B‚u¶FF×F†VÖRÖw&÷WÒ&fVGW&R%Òr’—6†÷tFW6–väÖ–æ•vR‚v†öÖRr“¶6öç7B÷WCÖFö7VÖVçBçVW'•6VÆV7F÷"‚u¶FFÖFW6–vâ×fÇVSÒ"r¶¶W’²r%Òr“¶–b†÷WB–÷WBçFW‡D6öçFVçC×fÇVR²†RçF&vWBçG—SÓÓÒw&ævRsò…²w&÷VæFæW72rÂv'WGFöå&÷VæFæW72rÂv6&EFF–ærrÂv&÷&FW%v–GF‚rÂv'WGFöä†V–v‡BrÂv†W&ô7F–öä†V–v‡BrÂv†W&ô7F–öä&÷&FW"uÒæ–æ6ÇVFW2†¶W’“òr‚s¢rRr“¢rr“¶–b†RçF&vWBçG—SÓÓÒv6öÆ÷"r—¶6öç7BFW‡D–çWCÖFö7VÖVçBçVW'•6VÆV7F÷"‚u¶FFÖFW6–vâÖ†WƒÒ"r¶¶W’²r%Òr“¶–b‡FW‡D–çWB—·FW‡D–çWBçfÇVS×fÇVRçFõWW$66R‚“·FW‡D–çWBç&VÖ÷fTGG&–'WFR‚v&–Ö–çfÆ–Br“·Ö6öç7B7FGW3ÖFö7VÖVçBçVW'•6VÆV7F÷"‚u¶FFÖFW6–vâ×7FGW3Ò"r¶¶W’²r%Òr“¶–b‡7FGW2—7FGW2çFW‡D6öçFVçCÒtÆ–VB)É2s·××Ö–b†RçF&vWBæ–CÓÓÒv&6æ7W7FöÔ66VçE–6¶W"r—¶6öç7Bf–VÆCÖæöFR‚v&6æ7W7FöÔ66VçD†W‚r“¶–b†f–VÆB–f–VÆBçfÇVSÖRçF&vWBçfÇVRçFõWW$66R‚—×Ò“¶æöFR‚v'&æD†öÖRr’æöæ6Æ–6³Ò‚“Óævò‚v†öÖRr“¶æöFR‚v66÷VçD'Fâr’æöæ6Æ–6³Ò‚“Óævò‚wW6W"r“¶æöFR‚vFÖ–å÷'FÄ'Fâr’æ–ææW$…DÔÃÖ–6öâ‚w6†–VÆBrÃ#2“·7–æ4FÖ–å÷'FÂ‚“·fö–B&Vg&W6„66÷VçB‚’çF†Vâ‚‚“Óç¶Fö7VÖVçBæFö7VÖVçDVÆVÖVçBæFF6WBæ&6æFÖ–äFW6–vãÕ7G&–ær†6äVF—EF†VÖTG&gB‚’“¶–b‚—4V&æ6TFÖ–â‚’—·6WD66VçB‚w6—FRr“·6WD–6öä6öÆ÷"‚vföÆÆ÷r×6—FRr“·6WD–6öäÖöFR‚wGvò×FöæRr“·×&VæFW$†VFW$fF"‚“¶–b…²wW6W"rÂw6WGF–æw2rÂvFÖ–ârÂvFÖ–â÷G&ff–2rÂv66÷VçBuÒæ–æ6ÇVFW2‡'6U&÷WFR‚’ç&÷WFR’—&VæFW"‚“¶VÇ6RÇ•F†VÖR‡'6U&÷WFR‚’ç&÷WFR“·Ò“·v–æF÷ræFDWfVçDÆ—7FVæW"‚v&6æ¦66÷VçB×WFFVBrÇ&VæFW$†VFW$fF"“·v–æF÷ræFDWfVçDÆ—7FVæW"‚v&6æ§6—FRÖ6öæf–rÖ6†ævRrÂ‚“Óç¶–b‚Fö7VÖVçBæ†–FFVâ—&VæFW"‚—Ò“¶Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÆSÓç¶–b†RçF&vWBæ6Æ÷6W7B‚u¶FFÖ6Æ÷6UÒr’—¶6Æ÷6TÆ–W"‚“·&WGW&çÖ6öç7B&Wf–WsÖRçF&vWBæ6Æ÷6W7B‚u¶FF×&Wf–WuÒr“¶–b‡&Wf–Wr—·7FFRæÆ7E6V&6ƒ×7FFRç6V&6ƒ·6†÷u&Wf–Wr‡&Wf–WræFF6WBç&Wf–WrÂ7FFRæÆ–W"bg7FFRæÆ–W"çG—SÓÓÒw6V&6‚r“·&WGW&çÖ–b‡7FFRç'VæT6ö×÷6W$÷VâbbRçF&vWBæ6Æ÷6W7B‚rç'VæT6ö×÷6W"r’bbRçF&vWBæ6Æ÷6W7B‚u¶FFÖ7F–öãÒ&æWw'VæR%Òr’—·7FFRç'VæUVæF–æs×¶fÖ–Ç“§7FFRç'VæTfÖ–Ç’Ç6†S§7FFRç'VæU6†RÇ6V6öæF'“§7FFRç'VæU6V6öæF'—Ó·7FFRç'VæT6ö×÷6W$÷VãÖfÇ6S¶–b‚RçF&vWBæ6Æ÷6W7B‚u¶FFÖ7F–öåÒr’bbRçF&vWBæ6Æ÷6W7B‚u¶FF×&÷WFUÒr’—6WEF–ÖV÷WB‡&VæFW"Ã“·Ö6öç7B&÷WFVCÖRçF&vWBæ6Æ÷6W7B‚u¶FF×&÷WFUÒr“¶–b‡&÷WFVB—¶6öç7B'3Ôö&¦V7Bæg&öÔVçG&–W2†æWrU$Å6V&6…&×2‡&÷WFVBæFF6WBç&×7ÇÂrr’“¶vò‡&÷WFVBæFF6WBç&÷WFRÇ'2“·&WGW&çÖ6öç7B7CÖRçF&vWBæ6Æ÷6W7B‚u¶FFÖ7F–öåÒr“¶–b†7CòæFF6WBæ7F–öãÓÓÒw'VæW6VÆV7Brbg7FFRç'VæU7W&W746Æ–6³ÓÓÖ7BæFF6WBæ&r—·7FFRç'VæU7W&W746Æ–6³ÖçVÆÃ·&WGW&ã·Ö–b†7B–7F–öâ†7BæFF6WBæ7F–öâÆ7BæFF6WBæ&wÇÂrrÆ7B“·Ò“¶Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v–çWBrÆSÓç¶–b†RçF&vWBæ–CÓÓÒwG&VTÆWfVÂwÇÆRçF&vWBæ–CÓÓÒwG&VTÆWfVÅ&ævRr—&Wf–WuG&VTÆWfVÂ†RçF&vWBçfÇVR“¶–b†RçF&vWBæ†4GG&–'WFR‚vFFÖÖöç7FW"×6Æ–FW"r’—¶6öç7B–çWCÖæöFR‚v6öçFVçBr’çVW'•6VÆV7F÷"‚u¶FFÖÖöç7FW"ÖÆWfVÅÒr“¶–b†–çWB––çWBçfÇVSÖRçF&vWBçfÇVS·Ö–b†RçF&vWBæ–CÓÓÒvwV–ÆEVW'’r—¶wV–ÆE7FFRçVW'“ÖRçF&vWBçfÇVS¶6öç7BÆ—7CÖwV–ÆDf–ÇFW"†wV–ÆE7FFRæwV–ÆG2ÆwV–ÆE7FFRçVW'’’Æ&÷ƒÖæöFR‚vwV–ÆD6&G2r“¶–b†&÷‚–&÷‚æ–ææW$…DÔÃÖÆ—7BæÖ†wV–ÆD6&B’æ¦ö–â‚rr—ÇÂsÆF—b6Æ73Ò&ÆftV×G’#äæòÖF6†–ærwV–ÆG2&–v‡Bæ÷rãÂöF—câs¶6öç7B6÷VçFW#ÖæöFR‚vwV–ÆD6÷VçBr“¶–b†6÷VçFW"–6÷VçFW"çFW‡D6öçFVçCÕ7G&–ær†Æ—7BæÆVæwF‚“·Ö–b†RçF&vWBæ–CÓÓÒvÆfuVW'’r—¶Æfu7FFRçVW'“ÖRçF&vWBçfÇVS·WFFTÆ—fU&W7VÇG2‚“·Ö–b†RçF&vWBæ–CÓÓÒvÆftÖ–v‡Br—¶Æfu7FFRæÖ–v‡DÖ÷VçCÖRçF&vWBçfÇVS·WFFTÆ—fU&W7VÇG2‚“·Ö–b†RçF&vWBæ–CÓÓÒvvÆö&Å6V&6‚r—·7FFRç6V&6ƒÖRçF&vWBçfÇVS·7FFRæÆ7E6V&6ƒ×7FFRç6V&6ƒ¶6öç7B&÷ƒÖæöFR‚w6V&6…&W7VÇG2r“¶–b†&÷‚–&÷‚æ–ææW$…DÔÃ×7FFRç6V&6‚çG&–Ò‚“÷&W7VÇDÖ&·W‡7FFRç6V&6‚“§6V&6„fVGW&VB‚“·Ö–b†RçF&vWBæ–CÓÓÒvvV%–6¶W%VW'’r—¶6öç7B&÷ƒÖæöFR‚vvV%–6¶W$—FV×2r“¶–b†&÷‚–&÷‚æ–ææW$…DÔÃ×–6¶W$÷F–öç2‡7FFRç6Æ÷EF&vWCòæ¶–æBÇ7FFRç6Æ÷EF&vWCòç6Æ÷BÆRçF&vWBçfÇVR“·Ö–b†RçF&vWBæ–CÓÓÒwv–¶”f–ÇFW"r—·v–¶•7FFRçVW'“ÖRçF&vWBçfÇVS·v–¶•7FFRæÆ–Ö—CÓ3c¶6öç7B&W7VÇC×v–¶•&V6÷&E&÷w2‡fW&–f–VE7FFRæVçG&–W2Ç'6U&÷WFR‚’çVW'’ævWB‚v¶–æBr—ÇÂvÆÂrÇv–¶•7FFRçVW'’Çv–¶•7FFRæÆ–Ö—B’ÆÆ—7CÖæöFR‚wv–¶•&V6÷&G2r’Æ6÷VçFW#ÖæöFR‚wv–¶”f÷VæD6÷VçBr’ÆÖ÷&SÖæöFR‚wv–¶”Ö÷&Rr’Ç6†÷v–æsÖæöFR‚wv–¶•6†÷v–ærr’Æ6ÆV#ÖæöFR‚v6öçFVçBr’çVW'•6VÆV7F÷"‚rçv–¶”6ÆV$f–ÇFW"r“¶–b†Æ—7B–Æ—7Bæ–ææW$…DÔÃ×&W7VÇBæ‡FÖÃ¶–b†6÷VçFW"–6÷VçFW"çFW‡D6öçFVçC×&W7VÇBæ6÷VçB²rr²‡&W7VÇBæ6÷VçCÓÓÓòw&VfW&Væ6Rs¢w&VfW&Væ6W2r“¶–b‡6†÷v–ær—6†÷v–ærçFW‡D6öçFVçC×&W7VÇBæ6÷VçCòu6†÷v–ærr´ÖF‚æÖ–â‡&W7VÇBæ6÷VçBÇv–¶•7FFRæÆ–Ö—B’²röbr·&W7VÇBæ6÷VçC¢u6V6öâ"&VfW&Væ6RÆ–'&'’s¶–b†6ÆV"–6ÆV"æ†–FFVãÒv–¶•7FFRçVW'“¶–b†Ö÷&R–Ö÷&Ræ†–FFVãÒ&W7VÇBæ†4Ö÷&S·Ö–b†RçF&vWBæ–CÓÓÒv—FVÔf–ÇFW"r—¶6öç7BÖRçF&vWBçfÇVRçFôÆ÷vW$66R‚“¶æöFR‚v—FVÕ&W7VÇG2r’æ–ææW$…DÔÃÖ—FVÔÆ—7Bæf–ÇFW"‡ƒÓâ‡‚çF—FÆR²rr·‚æ¶W—v÷&G2’çFôÆ÷vW$66R‚’æ–æ6ÇVFW2‡’’æÖ†6&DVçF—G’’æ¦ö–â‚rr—ÇÂsÇ6Æ73Ò&V×G”Ö–æ’#äæòÖF6†–ær—FVÒãÂ÷âwÖ–b†RçF&vWBæFF6WBçWDÆWfVÂÓ×VæFVf–æVB—¶6öç7B“Ò¶RçF&vWBæFF6WBçWDÆWfVÂÆãÔÖF‚æÖ‚ƒÄçVÖ&W"†RçF&vWBçfÇVR—ÇÃ“·7FFRçWDÆWfVÇ5¶•ÓÖã¶6öç7B6ÔÖF‚æÖ–â‚ââç7FFRçWDÆWfVÇ2’³¶6öç7BVÃÖæöFR‚wWDVffV7F—fRr“¶–b†VÂ—¶VÂçFW‡D6öçFVçCÖ6¶VÂææW‡DVÆVÖVçE6–&Æ–ærçFW‡D6öçFVçCÒtÖ–æ–×VÒr´ÖF‚æÖ–â‚ââç7FFRçWDÆWfVÇ2’²r²w××Ò“¶Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v6†ævRrÆSÓç°¢–b†RçF&vWBæÖF6†W2‚u¶FF×7GVF–ò×&W6WEÒr’—°¢6öç7B–CÖRçF&vWBçfÇVS¶–b‚–B—·7FFRæ7F—fU&W6WD–CÖçVÆÃ·&VæFW"‚“·&WGW&ã·Ð¢6öç7B&W6WCÖÆö6Ä'V–ÆE&W6WD'”–B†–B“¶–b‚&W6WB—·7FFRæ7F—fU&W6WD–CÖçVÆÃ·&VæFW"‚“·Fö7B‚uF†B6fVB&W6WB—2Væf–Æ&ÆRr“·&WGW&ã·Ð¢–b‚6öæf—&Ò‚tÆöB(	Âr·&W6WBçF—FÆR²~(	ÓòF†—2&WÆ6W2F†R7W'&VçBÆö6ÂG&gBâr’—·&VæFW"‚“·&WGW&ã·Ð¢7FFRæG&gCÖæ÷&ÖÆ—¦T'V–ÆB†FVW6÷’‡&W6WBæ'V–ÆB’“·7FFRæG&gBæ–CÒvÆö6ÂÖG&gBs·7FFRæG&gBæ÷væW#Òu–÷Rs·7FFRæG&gBçfW'6–öãÒtÄô4Âs°¢7FFRæ6†&7FW$ÆWfVÃÔçVÖ&W"‡7FFRæG&gBæ6†&7FW$ÆWfVÂ—ÇÃ·7FFRç76—fTÆÆö3×7G'V7GW&VD6ÆöæR‡7FFRæG&gBç76—fTÆÆö7ÇÇ·Ò“·7FFRç76—fTg&VTÖöFS×7FFRæG&gBç76—fTg&VTÖöFSÓÓ×G'VS·7FFRæ6Æ74ÆÆö4'”–C×7G'V7GW&VD6ÆöæR‡7FFRæG&gBæ6Æ74ÆÆö4'”–GÇÇ·Ò“·7FFRæ6Æ74ÆÆö3×7G'V7GW&VD6ÆöæR‡7FFRæ6Æ74ÆÆö4'”–B“°¢6fTG&gB‡7FFRæG&gB“·7FFRæ7F—fU&W6WD–C×&W6WBæ–C·7FFRç6Æ÷EF&vWCÖçVÆÃ·7FFRævV$VF—CÖçVÆÃ·7FFRç'VæU6VÆV7FVCÖçVÆÃ·7FFRç'VæT†—7F÷'“ÕµÓ·&VæFW"‚“·Fö7B‚tÆöFVBr·&W6WBçF—FÆR“·&WGW&ã°¢Ð¢–b†RçF&vWBæÖF6†W2‚u¶FFÖFW6–vâÖ†W…Òr’—¶–b‚—4V&æ6TFÖ–â‚’—&WGW&ã¶6öç7B¶W“ÖRçF&vWBæFF6WBæFW6–vä†W‚Æ†WƒÖæ÷&ÖÆ—¦TFW6–vä†W‚†RçF&vWBçfÇVR’Ç7FGW3ÖFö7VÖVçBçVW'•6VÆV7F÷"‚u¶FFÖFW6–vâ×7FGW3Ò"r¶¶W’²r%Òr“¶–b‚†W‚—¶RçF&vWBç6WDGG&–'WFR‚v&–Ö–çfÆ–BrÂwG'VRr“¶–b‡7FGW2—7FGW2çFW‡D6öçFVçCÒuW6Rb„U‚F–v—G2ÂRærâ4s„$ds·ÖVÇ6W¶RçF&vWBçfÇVSÖ†Wƒ¶RçF&vWBç&VÖ÷fTGG&–'WFR‚v&–Ö–çfÆ–Br“¶–b‡7FGW2—7FGW2çFW‡D6öçFVçCÒtÆ–VB)É2s·×&WGW&ã·Ð¢–b†RçF&vWBæ†4GG&–'WFR‚vFFÖ×&Vbr’—¶6†ævT&Vb†RçF&vWBæFF6WBæ&VbÆRçF&vWBæ6†V6¶VB“·&WGW&ã·Ð¢–b†RçF&vWBæÖF6†W2‚u¶FF×76—fRÖg&VRÖÖöFUÒr’—·7FFRç76—fTg&VTÖöFSÖRçF&vWBæ6†V6¶VCÓÓ×G'VS·7F÷&UG&VUÆâ‚“·&VæFW"‚“·&WGW&ã·Ð¢6öç7Bf–VÆCÖRçF&vWBæFF6WBævV$f–VÆC°¢–b†f–VÆBbg7FFRævV$VF—B—°¢6öç7Bs×7FFRævV$VF—C°¢–b†f–VÆCÓÓÒw&&—G’r—¶rç&&—G“ÔçVÖ&W"†RçF&vWBçfÇVR“¶ræv¶VãÓ¶ræ&öçW5F–W#ÔÖF‚æÖ‚ƒ"Ærç&&—G’“¶ræ&öçW4–CÖçVÆÃ¶rç&öÆÃÖçVÆÃ·Ð¢–b†f–VÆCÓÓÒvv¶Vâr–ræv¶VãÔçVÖ&W"†RçF&vWBçfÇVR“°¢–b†f–VÆCÓÓÒv&öçW5F–W"r—¶ræ&öçW5F–W#ÔçVÖ&W"†RçF&vWBçfÇVR“¶ræ&öçW4–CÖçVÆÃ¶rç&öÆÃÖçVÆÃ·Ð¢–b†f–VÆCÓÓÒv&öçW4–Br—¶ræ&öçW4–CÖRçF&vWBçfÇVWÇÆçVÆÃ¶rç&öÆÃÖçVÆÃ·Ð¢–b†f–VÆCÓÓÒw&öÆÂr–rç&öÆÃÖRçF&vWBçfÇVSÓÓÒrsöçVÆÃ¤çVÖ&W"†RçF&vWBçfÇVR“°¢–b†f–VÆBÓÒw&öÆÂr—·6†÷tvV$VF—F÷"‚“¶–b‡'6U&÷WFR‚’ç&÷WFSÓÓÒvÆ'2ö'V–ÆBr—VWVTÖ–7&÷F6²‚‚“ÓæFö7VÖVçBçVW'•6VÆV7F÷"‚u¶FFÖvV"Öf–VÆCÒ"r¶f–VÆB²r%Òr“òæfö7W2‡·&WfVçE67&öÆÃ§G'VWÒ’“·Ð¢&WGW&ã°¢Ð¢–b†RçF&vWBæ†4GG&–'WFR‚vFFÖf&ÒÖÖöFRr’—·7FFRæf&ÕÆã×6fTf&ÕÆâ‡²ââç7FFRæf&ÕÆâÆÖöFS¦RçF&vWBçfÇVWÒ“·&VæFW"‚“·&WGW&ã·Ð¢–b†RçF&vWBæ†4GG&–'WFR‚vFFÖf&Ò×F–ÖRr’—¶6öç7B–æFWƒÔçVÖ&W"†RçF&vWBæFF6WBæf&ÕF–ÖR“¶–b„çVÖ&W"æ—4–çFVvW"†–æFW‚’bf–æFWƒãÓbf–æFWƒÃ2—¶6öç7BF–ÖW3Õ²ââç7FFRæf&ÕÆâçF–ÖW5Ó·F–ÖW5¶–æFW…ÓÖRçF&vWBçfÇVS·7FFRæf&ÕÆã×6fTf&ÕÆâ‡²ââç7FFRæf&ÕÆâÇF–ÖW7Ò“·&VæFW"‚“·×&WGW&ã·Ð¢–b†RçF&vWBæ–CÓÓÒvwV–ÆEG&VTÆWfVÂr—·WFFTwV–ÆEG&VR†wV–ÆEG&VUv—F„ÆWfVÂ‡7FFRæwV–ÆEG&VUÆâÆRçF&vWBçfÇVR’“·&WGW&ã·Ð¢–b†RçF&vWBæ–CÓÓÒvwV–ÆEG&VT&ö÷7Br—·WFFTwV–ÆEG&VR‡²ââç7FFRæwV–ÆEG&VUÆâÆ&ö÷7C¤çVÖ&W"†RçF&vWBçfÇVR—Ò“·&WGW&ã·Ð ¢–b†RçF&vWBæFF6WBçWD&öçW5F&vWBÓ×VæFVf–æVB—°¢–b‡'6U&÷WFR‚’çVW'’ævWB‚v'V–ÆBr’—&WGW&ã°¢6öç7B“ÔçVÖ&W"†RçF&vWBæFF6WBçWD&öçW5F&vWB’ÇcÖRçF&vWBçfÇVS°¢–b‚çVÖ&W"æ—4–çFVvW"†’—ÇÆ“ÃÇÆ“ã7ÇÇbbbUEô„D4…ô$ôåU4U2æ–æ6ÇVFW2‡b’—&WGW&ã°¢6öç7B#ÖVç7W&TG&gB‚“¶"çWD&öçW5F&vWG5¶•Ó×c·W'6—7DG&gB‚“°¢6öç7B6÷VçFW#ÖæöFR‚v6öçFVçBr’çVW'•6VÆV7F÷"‚rçWD'V–ÆD†VB6ÖÆÂr“°¢–b†6÷VçFW"–6÷VçFW"çFW‡D6öçFVçCÖ"çWD&öçW5F&vWG2æf–ÇFW"„&ööÆVâ’æÆVæwF‚²róB6VÆV7FVBs°¢&WGW&ã°¢Ð¢–b†RçF&vWBæ–CÓÓÒwWD6ö×÷VæE&&—G’r—°¢7FFRæ6ö×÷VæEV–6³×6fT6ö×÷VæEÆâ‡²ââç7FFRæ6ö×÷VæEV–6²Ç&&—G“¦RçF&vWBçfÇVWÒ“·&VæFW"‚“·&WGW&ã°¢Ð¢–b†RçF&vWBæ–CÓÓÒwWD6ö×÷VæD&öçW2r—°¢7FFRæ6ö×÷VæEV–6³×6fT6ö×÷VæEÆâ‡²ââç7FFRæ6ö×÷VæEV–6²Æ&öçW3¦RçF&vWBçfÇVWÒ“·&VæFW"‚“·&WGW&ã°¢Ð¢–b†RçF&vWBæ–CÓÓÒwWD6ö×÷VæDÆWfVÂr—°¢7FFRæ6ö×÷VæEV–6³×6fT6ö×÷VæEÆâ‡²ââç7FFRæ6ö×÷VæEV–6²ÆÆWfVÃ¦RçF&vWBçfÇVWÒ“·&VæFW"‚“·&WGW&ã°¢Ð¢–b†RçF&vWBæ–CÓÓÒwWDff—…G—Rr—°¢7FFRæff—„6÷7EV–6³×6fTff—„6÷7EÆâ‡¶ff—ƒ¦RçF&vWBçfÇVRÆ7W'&VçDÆWfVÃ£ÇF&vWDÆWfVÃ¦RçF&vWBçfÇVSÓÓÒvÆÅ÷6¶–ÆÇ2só#£Ò“·&VæFW"‚“·&WGW&ã°¢Ð¢–b†RçF&vWBæ–CÓÓÒwWDff—„7W'&VçBr—°¢7FFRæff—„6÷7EV–6³×6fTff—„6÷7EÆâ‡²ââç7FFRæff—„6÷7EV–6²Æ7W'&VçDÆWfVÃ¦RçF&vWBçfÇVWÒ“·&VæFW"‚“·&WGW&ã°¢Ð¢–b†RçF&vWBæ–CÓÓÒwWDff—…F&vWBr—°¢7FFRæff—„6÷7EV–6³×6fTff—„6÷7EÆâ‡²ââç7FFRæff—„6÷7EV–6²ÇF&vWDÆWfVÃ¦RçF&vWBçfÇVWÒ“·&VæFW"‚“·&WGW&ã°¢Ð¢–b†RçF&vWBæ–CÓÓÒvÆfuF–W"r—¶Æfu7FFRçF–W#ÖRçF&vWBçfÇVS·WFFTÆ—fU&W7VÇG2‚“·&WGW&ã·Ö–b†RçF&vWBæ–CÓÓÒvÆft6Æ72r—¶Æfu7FFRæ6†&7FW$6Æ73ÖRçF&vWBçfÇVS·WFFTÆ—fU&W7VÇG2‚“·&WGW&ã·Ö–b†RçF&vWBæ–CÓÓÒvÆfuVæ—Br—¶Æfu7FFRæÖ–v‡EVæ—CÖRçF&vWBçfÇVS·WFFTÆ—fU&W7VÇG2‚“·&WGW&ã·Ö–b†RçF&vWBæ†4GG&–'WFR‚vFFÖ6Æ2Ö6ö×÷VæBr’—¶6öç7B–GƒÔçVÖ&W"†RçF&vWBæFF6WBæ6Æ46ö×÷VæB“¶–b†–GƒãÓbf–GƒÃB—·7FFRçWDÆWfVÇ5¶–G…ÓÔÖF‚æÖ‚ƒÄÖF‚æÖ–âƒ““’ÄÖF‚æfÆö÷"„çVÖ&W"†RçF&vWBçfÇVR—ÇÃ’’“·&VæFW"‚“·×&WGW&ã·Ö–b†RçF&vWBæÖF6†W2‚u¶FFÖÖöç7FW"ÖÆWfVÅÒÅ¶FFÖÖöç7FW"×6Æ–FW%Òr’—¶–b‡'6U&÷WFR‚’çVW'’ævWB‚v'V–ÆBr’—&WGW&ã¶6öç7B#ÖVç7W&TG&gB‚’Ç&sÔçVÖ&W"†RçF&vWBçfÇVR“¶–b‚çVÖ&W"æ—4f–æ—FR‡&r—ÇÇ&sÃ—·Fö7B‚tÖöç7FW"ÆWfVÂ×W7B&RBÆV7Br“·&VæFW"‚“·&WGW&ã·Ö"æÖöç7FW$ÆWfVÃÔÖF‚æÖ–âƒÄÖF‚æfÆö÷"‡&r’“¶6öç7B†–FFVãÖ7F—fU'VæT&ö&B†"ç'VæT&ö&BÆ"æÖöç7FW$ÆWfVÂ’æ–æ7F—fRæÆVæwFƒ·7FFRç'VæU6VÆV7FVCÖçVÆÃ·W'6—7DG&gB‚“·&VæFW"‚“¶–b††–FFVâ—Fö7B†G¶†–FFVçÒ6fVB'VæR‡2’–æ7F—fRBF†—2Ööç7FW"ÆWfVÆ“·&WGW&ã·Ö–b†RçF&vWBæ–CÓÓÒwG&VTÆWfVÂwÇÆRçF&vWBæ–CÓÓÒwG&VTÆWfVÅ&ævRr–6öÖÖ—EG&VTÆWfVÂ†RçF&vWBçfÇVR“¶–b†RçF&vWBæ†4GG&–'WFR‚vFF×'VæRÖfÖ–Ç’r’—¶–b…%TäUôdÔ”Ä”U2æ–æ6ÇVFW2†RçF&vWBçfÇVR’—·7FFRç'VæTfÖ–Ç“ÖRçF&vWBçfÇVS·7FFRç'VæU6V6öæF'“Õ%TäUôdÔ”Å•ôDUD”Å5·7FFRç'VæTfÖ–Ç•Òç7VvvW7FVE6V6öæF'“·&VæFW"‚“·×&WGW&ã·Ö–b†RçF&vWBæ†4GG&–'WFR‚vFF×'VæR×6†Rr’—¶–b†RçF&vWBçfÇVR–â%TäUõ4„U2—·7FFRç'VæU6†SÖRçF&vWBçfÇVS·&VæFW"‚“·×&WGW&ã·Ö–b†RçF&vWBæ†4GG&–'WFR‚vFF×'VæR×6V6öæF'’r’—¶6öç7BfÃÖRçF&vWBçfÇVS¶–b…%TäUõ4T4ôäD$”U2æ–æ6ÇVFW2‡fÂ’—·7FFRç'VæU6V6öæF'“×fÃ·&VæFW"‚“·×&WGW&ã·Ö–b†RçF&vWBæ†4GG&–'WFR‚vFF×'VæWv÷&B×FövvÆRr’—¶–b‡'6U&÷WFR‚’çVW'’ævWB‚v'V–ÆBr—ÇÇ'6U&÷WFR‚’çVW'’ævWB‚w6†&Rr’—&WGW&ã¶6öç7B#ÖVç7W&TG&gB‚’Æ¶W“ÖRçF&vWBæFF6WBç'VæWv÷&EFövvÆS¶"çW6VE'VæWv÷&G3Ô'&’æ—4'&’†"çW6VE'VæWv÷&G2“ö"çW6VE'VæWv÷&G3¥µÓ¶"çW6VE'VæWv÷&G3ÖRçF&vWBæ6†V6¶VCõ²ââææWr6WB…²ââæ"çW6VE'VæWv÷&G2Æ¶W•Ò•Ó¦"çW6VE'VæWv÷&G2æf–ÇFW"‡ƒÓç‚ÓÖ¶W’“·W'6—7DG&gB‚“¶6öç7BæVÃÖRçF&vWBæ6Æ÷6W7B‚rç'VæUv÷&G5æVÂr’Æ6÷VçC×æVÃòçVW'•6VÆV7F÷"‚u¶FF×'VæWv÷&BÖ6÷VçEÒr“¶–b†6÷VçB–6÷VçBçFW‡D6öçFVçCÖG¶"çW6VE'VæWv÷&G2æÆVæwF‡ÒòGµ%TäUõtõ$E2æÆVæwF‡Ö¶RçF&vWBæ6Æ÷6W7B‚rç'VæUv÷&E&÷rr“òæ6Æ74Æ—7BçFövvÆR‚v6†V6¶VBrÆRçF&vWBæ6†V6¶VB“·&WGW&ã·Ð¦6öç7BWD¶W—3Õ²wWD6ö×÷VæBrÂwWDff—‚rÂwWDff—„ÆWfVÂrÂwWEVæÆö6¶VBrÂwWD†F6‚rÂwWDæÖRrÂwWDWV—VBrÂwWDG&÷uÓ¶–b‡WD¶W—2ç6öÖR†³ÓæRçF&vWBæFF6WE¶µÒÓ×VæFVf–æVB’—°¢–b‡'6U&÷WFR‚’çVW'’ævWB‚v'V–ÆBr’—&WGW&ã°¢6öç7B¶W“×WD¶W—2æf–æB†³ÓæRçF&vWBæFF6WE¶µÒÓ×VæFVf–æVB’Ç&sÖRçF&vWBæFF6WE¶¶W•Ó¶6öç7B¶–G‚Æff—„–G…Ó×&rç7Æ—B‚s¢r’æÖ„çVÖ&W"’Æ#ÖVç7W&TG&gB‚’ÇÖ"çWE6WGW¶–G…Ó¶–b‚—&WGW&ã°¢–b†¶W“ÓÓÒwWD6ö×÷VæBr—æ6ö×÷VæCÔÖF‚æÖ–âƒ““’ÄÖF‚æÖ‚ƒÄÖF‚æfÆö÷"„çVÖ&W"†RçF&vWBçfÇVR—ÇÃ’’“°¢VÇ6R–b†¶W“ÓÓÒwWDff—‚r—¶6öç7BFVcÕUEôdd•…ôDTe2æf–æB‡cÓçbææÖSÓÓÖRçF&vWBçfÇVR“·æff—†W5¶ff—„–G…Ó×·6ÇVs¦FVcòææÖWÇÂrrÆÆWfVÃ¦FVcó£Ó·Ð¢VÇ6R–b†¶W“ÓÓÒwWDff—„ÆWfVÂr—¶6öç7Bfc×æff—†W5¶ff—„–G…ÒÆFVcÕUEôdd•…ôDTe2æf–æB‡cÓçbææÖSÓÓÖfcòç6ÇVr“¶–b†FVb–fbæÆWfVÃÔÖF‚æÖ‚ƒÄÖF‚æÖ–â„çVÖ&W"æ—4f–æ—FR†FVbæÖ…öÆWfVÂ“öFVbæÖ…öÆWfVÃ£““’ÄÖF‚æfÆö÷"„çVÖ&W"†RçF&vWBçfÇVR—ÇÃ’’“·Ð¢VÇ6R–b†¶W“ÓÓÒwWEVæÆö6¶VBr—·çVæÆö6¶VDff—…6Æ÷G3ÔÖF‚æÖ‚ƒ"ÄÖF‚æÖ–âƒBÄÖF‚æfÆö÷"„çVÖ&W"†RçF&vWBçfÇVR—ÇÃ"’’“·Ð¢VÇ6R–b†¶W“ÓÓÒwWD†F6‚r—æ†F6„&öçW3ÖRçF&vWBçfÇVS°¢VÇ6R–b†¶W“ÓÓÒwWDæÖRr—ææÖSÖRçF&vWBçfÇVRç6Æ–6RƒÃ““°¢VÇ6R–b†¶W“ÓÓÒwWDG&÷r—¶6öç7BfÃÖRçF&vWBçfÇVRçG&–Ò‚“·æG&÷&öçW3×fÃÓÓÒrsöçVÆÃ¢„çVÖ&W"æ—4f–æ—FR„çVÖ&W"‡fÂ’’bdçVÖ&W"‡fÂ“ãÓôÖF‚æÖ–âƒÄçVÖ&W"‡fÂ’“¦çVÆÂ“·Ð¢VÇ6R–b†¶W“ÓÓÒwWDWV—VBr—æWV—VCÖRçF&vWBæ6†V6¶VC°¢–b†¶W’ÓÒwWDWV—VBrbf¶W’ÓÒwWDG&÷rbfRçF&vWBçfÇVRbb†¶W“ÓÓÒwWD6ö×÷VæBrbdçVÖ&W"†RçF&vWBçfÇVR“ÓÓÓ’—æWV—VC×G'VS°¢–b†¶W“ÓÓÒwWDG&÷rbfRçF&vWBçfÇVRçG&–Ò‚’ÓÒrr—æWV—VC×G'VS°¢W'6—7DG&gB‚“·&VæFW"‚“°¢×Ò“¶Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚w7V&Ö—BrÆSÓç¶–b†RçF&vWBæ–CÓÓÒvwV–ÆDf÷&Òr—¶Rç&WfVçDFVfVÇB‚“·fö–BwV–ÆE6fR†RçF&vWB—×Ò“¶Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v¶W–F÷vârÆSÓç¶–b†Ræ¶W“ÓÓÒtW66Rrbg7FFRæÆ–W"–6Æ÷6TÆ–W"‚“¶–b‚†Ræ7G&Ä¶W—ÇÆRæÖWF¶W’’bfRæ¶W’çFôÆ÷vW$66R‚“ÓÓÒv²r—¶Rç&WfVçDFVfVÇB‚“·6†÷u6V&6‚‚—×Ò“·v–æF÷ræFDWfVçDÆ—7FVæW"‚v&6æ¦76WG2ÖÆöFVBrÂ‚“Óç¶–b‡'6U&÷WFR‚’ç&÷WFSÓÓÒv6Æ7VÆF÷'2÷F†f–æFW"r—&WGW&ã¶–b‚7FFRæÆ–W"—&VæFW"‚“¶VÇ6R–b‡7FFRæÆ–W"çG—SÓÓÒw6V&6‚r—¶æöFR‚w6V&6…&W7VÇG2r’æ–ææW$…DÔÃ×7FFRç6V&6ƒ÷&W7VÇDÖ&·W‡7FFRç6V&6‚“§6V&6„fVGW&VB‚—×Ò“·v–æF÷ræFDWfVçDÆ—7FVæW"‚v&6æ¦æf–vFRrÆ†æFÆU&÷WFR“·v–æF÷ræFDWfVçDÆ—7FVæW"‚w÷7FFRrÆ†æFÆU&÷WFR“·v–æF÷ræFDWfVçDÆ—7FVæW"‚v†6†6†ævRrÆ†æFÆU&÷WFR“¶–b‚Æö6F–öâæ†6‚–†—7F÷'’ç&WÆ6U7FFR†çVÆÂÂrrÂr2ö†öÖRr“·&VæFW"‚“¶Fö7VÖVçBæF—7F6„WfVçB†æWrWfVçB‚v&6æ¦×&VG’r’“·Ð¦–æ—B‚“°§fö–B–æ—DvÖT76WG2‚“°§fö–BÆöEG&VW2‚“°¢òòfWF6‚&–G2æBwV–ÆBÆ—7G2öæÇ’v†Vâf—6—F–ærF†÷6R6V7F–öç2à§fö–BÆöEfW&–f–VD–æFW‚‚“°§fö–BÆöEV&Æ—6†VEv–¶”'F–6ÆW2‚“°§v–æF÷ræFDWfVçDÆ—7FVæW"‚v&6æ§v–¶’×V&Æ—6†VBrÂ‚“Óçfö–BÆöEV&Æ—6†VEv–¶”'F–6ÆW2‚’“°
+import {entities,entityById,itemList,guideList,demoBuilds,demoGuideSections,searchCatalog} from './catalog.js';
+import {hydrateJournalPreview} from './journal-home.js';
+import {journalIndexView,journalArticleView} from './journal-views.js';
+import {loadDraft,saveDraft,deepCopy,remember,loadRecent} from './session.js';
+import {readLocalBuildPresets,saveLocalBuildPreset,localBuildPresetById,removeLocalBuildPreset} from './local-build-presets.js';
+import {navigate,parseRoute,navigateBack} from './routing.js';
+import {esc,icon,boxIcon,chip,button,cardEntity} from './ui.js';
+import {ADMIN_URL,initTheme,applyTheme,themeStatus,refreshTheme,setAccent,setSiteSurface,setIconColor,setIconMode} from './theme.js';
+import {gameArt,initGameAssets,loadStatus,canonicalArtReference,codexOfficialArt} from './assets.js';
+import {TREE_DATA_URL,normalizeTree,getClass,getBranch,passiveAllowed,classAllowed,allocatedTotal,passivePointBudget,classPointBudget,passiveTierSpend,passiveValue} from './tree-engine.js';
+import {LOADOUT_LAYOUT,boardSwitch,buildLoadout,passiveBoard,classBoard,activePassiveNode,activeClassSkill,passivePageCount,skillTierGroups} from './core-boards.js';
+import {classEmblem,readStudioPortrait,setStudioPortrait,clearStudioPortrait} from './studio-visuals.js';
+import {passiveTitle} from './tree-art.js';
+import {normalizeBuild,putRune,removeRune,nextRuneId,petSummary,RUNE_SHAPES,RUNE_FAMILIES,RUNE_FAMILY_DETAILS,RUNE_SECONDARIES,PET_AFFIX_DEFS,statName,runeIssue,monsterLevelGrid,activeRuneBoard} from './labs-engine.js';
+import {labsTabs,runeGridView,runeOptionsUI,runeWordsView,petLoadoutView,petCompoundCalculatorView,buildOverviewV7} from './labs-views.js';
+import {normalizePublicFeed,lfgSearchEntries,rankSearch,lfgFilter,guildActivity,lfgDeepLink} from './lfg-core.js';
+import {lfgScreen,lfgDetail,lfgCard} from './lfg-views.js';
+import {verifiedGameSearchEntries,mergedSearch} from './verified-search.js';
+import {normalizeGuild,guildEntries,guildFilter,saveGuildOwner,readGuildOwner} from './guild-core.js';
+import {guildDirectory,guildDetail,guildForm,guildCard} from './guild-views.js';
+import {guildHubPage,loadGuildHub,wireGuildHub} from './guild-hub-ui.js';
+import {WIKI_ARTICLES,wikiArticleById,wikiArticleEntries,setPublishedWikiArticles} from './wiki-data.js';
+import {wikiStudioView,mountWikiStudio,wireWikiStudio} from './wiki-studio.js';
+import {communityPage,loadCommunityPage,wireCommunityUI} from './community-ui.js';
+import {betaView,wireBetaUI,loadBetaStatus} from './beta-center.js';
+import {adminTrafficView,loadAdminTraffic,wireAdminTraffic} from './admin-traffic-ui.js';
+import {adminConsoleView,loadAdminConsole,wireAdminConsole} from './admin-console.js';
+import {recordTrafficNavigation,initTrafficTracking} from './traffic-client.js';
+import {siteNotice} from './theme.js';
+import {setDesignPreview,applyVisualPreset,applyLayerVisualPreset} from './design-controls.js';
+import {shareBuildToken,openBuildToken} from './build-links.js';
+import {saveNewAccountBuild} from './account-builds-ui.js';
+import {baseItem,equipmentId,asGear,newGear,gearIssues,allowedItem,RARITIES} from './build-studio-data.js';
+import {gearPickerMarkup,gearEditorMarkup,gearInspectMarkup} from './build-studio-ui.js';
+import {wikiLandingView,wikiLibraryView,wikiGuidesView,wikiArticleView,wikiRecordView,wikiRecordRows,wikiCategoryView} from './wiki-views.js';
+import {wikiCategory,wikiCategoryForArticle,LEGACY_WIKI_TOPIC_REDIRECTS} from './wiki-taxonomy.js';
+import {verifiedComparisonPanel,verifiedUpgradeReferencePanel} from './verified-item-views.js';
+import {readCompoundPlan,saveCompoundPlan,readAffixCostPlan,saveAffixCostPlan,PET_HATCH_BONUSES} from './pet-simple-math.js';
+import {simpleCompoundCalculatorView,simpleAffixCostView} from './pet-simple-views.js';
+import {normalizePetAffixPlan,readPetAffixPlan,savePetAffixPlan,projectPetAffix} from './verified-pet-affixes.js';
+import {petAffixPlannerView} from './verified-pet-affix-views.js';
+import {freshGuildTree,readGuildTree,saveGuildTree,guildTreeFromLink,guildTreeWithLevel,guildTreeLinkParams,allocateGuildPoint,removeGuildPoint,maxGuildPoints} from './guild-tree-engine.js';
+import {guildTreeView} from './guild-tree-views.js';
+import {readGuildBaseline,saveGuildBaseline,clearGuildBaseline} from './guild-tree-compare.js';
+import {connectedNext,homeStart,navCards,NAV_DESTINATIONS} from './context-nav.js';
+import {resumableWorkspaces} from './workspace-hub.js';
+import {readFarmPlan,saveFarmPlan,farmCompareView} from './farm-compare.js';
+import {timelineStages,timelineModel,stageStepLabel,readQuickView,saveQuickView} from './pathfinder-timeline.js';
+import {pathfinderView,pathfinderStepDetail,pathfinderRangeContent} from './pathfinder-timeline-view.js';
+import {quickUpgradePanel,quickUpgradeContent,initialQuickRange} from './quick-tools-view.js';
+import {readRange,saveRange,allStages,quoteRange,normalizeItemQuantity,normalizeCostMode,normalizePityProgress,normalizePityCount} from './pathfinder-range.js';
+import {quoteFailureScenarios} from './pathfinder-failures.js';
+import {sourceMaterialGroups} from './pathfinder-material-groups.js';
+import {saveFarmingList,wireFarmingLists} from './farming-lists-ui.js';
+import {homeScreen,homeSubmenu,directoryView,wikiTopicsView,wikiTopicView,wikiAboutView,userCenterView,settingsView,iconGalleryView,designPanel,applyAppPrefs,changeAppPref} from './launch-navigation.js';
+import {currentAccount,refreshAccount,accountStatus} from './community-ui.js';
+import {searchAsYouType} from './search-as-you-type.js';
+import {writeDesign,resetDesign,normalizeDesignHex,applyDesignPreset,undoDesign,readDesign,DESIGN_PRESETS} from './design-controls.js';
+import {wireDesignMiniPreview,syncDesignMiniPreview,endDesignMiniSession,focusDesignMiniPreview,showDesignMiniPage,designMiniMarkup} from './design-mini-preview.js';
+import {wireThemeVault} from './theme-studio-vault.js';
+import {suggestedButtonText} from './theme-studio-audit.js';
+import {initGeneralChat} from './general-chat.js';
+import {setCustomAccent} from './theme.js';
+
+const $=s=>document.querySelector(s);const node=id=>document.getElementById(id);
+const state={treeData:null,treeStatus:'loading',treeClassId:null,treeBranchId:null,passiveTier:0,passivePage:0,classTierIndex:0,characterLevel:1,passiveAlloc:{},classAlloc:{},classAllocById:{},passiveFreeMode:false,layer:null,search:'',lastSearch:'',recent:loadRecent(),draft:loadDraft(),compareLeft:null,compareRight:null,compareTier:1,runeIndex:0,runeFamily:'Fury',runeSecondary:'critical_damage',runeShape:'small',runeSelected:null,runeComposerOpen:false,runePending:null,runePointerDrag:null,runeSuppressClick:null,runeWordsOpen:false,runeHistory:[],petLevels:[0,0,0,0],petCalcMode:'seasonal',petAffixPlan:readPetAffixPlan(),compoundQuick:readCompoundPlan(),affixCostQuick:readAffixCostPlan(),slotTarget:null,gearEdit:null,returnTo:null,guildTreePlan:readGuildTree(),guildTreeTab:'vanguard',guildTreeLinkKey:'',guildUndo:[],guildRedo:[],guildBaseline:readGuildBaseline(),farmPlan:readFarmPlan(),pathfinderQuick:readQuickView(),pathfinderRange:readRange()};
+const recipeState={data:null,loading:false,error:''};
+async function loadPathfinderRecipes(){
+ if(recipeState.loading||recipeState.data)return;recipeState.loading=true;
+ try{
+  const response=await fetch('/api/pathfinder/recipes',{signal:AbortSignal.timeout(15000)});
+  if(!response.ok)throw Error('Recipe service '+response.status);
+  const payload=await response.json();
+  if(timelineStages(payload,'normal').length!==6||timelineStages(payload,'awakened').length!==30)throw Error('Incomplete recipe set');
+  recipeState.data=payload;recipeState.error='';
+  if(!state.pathfinderRange.fromStage||!state.pathfinderRange.toStage)state.pathfinderRange=saveRange(initialQuickRange(payload,state.pathfinderRange));
+ }catch(error){recipeState.error='Verified upgrade recipes are temporarily unavailable';console.warn('Pathfinder source:',error.message);}
+ finally{recipeState.loading=false;if(parseRoute().route==='calculators/pathfinder')render();}
+}
+const verifiedState={entries:[],loading:false,loaded:false,error:''};
+const guildState={guilds:[],loaded:false,loading:false,error:'',updatedAt:0,query:''};
+const wikiState={category:'all',query:'',limit:36,returnPosition:null};
+const journalState={articles:[],bySlug:new Map(),loaded:false,loading:false,error:'',loadingSlug:''};
+const V11_GUILD_ENDPOINT='https://arcana-guild-directory-beta-production.up.railway.app/api/guilds';
+const v11AllEntries=()=>[...entities,...wikiArticleEntries(),...searchExtras(),...lfgDynamic(),...guildEntries(guildState.guilds),...verifiedState.entries];
+async function loadPublishedWikiArticles(){
+ try{
+  const res=await fetch('/api/wiki/articles',{cache:'no-store',signal:AbortSignal.timeout(10000)});
+  if(!res.ok)throw Error('Wiki article index HTTP '+res.status);
+  setPublishedWikiArticles(await res.json());
+  const route=parseRoute().route;
+  if(route==='wiki'||route==='wiki/guides'||route==='wiki/article')render();
+ }catch(error){console.warn('Published Wiki unavailable:',error.message)}
+}
+async function loadJournalIndex(){
+ if(journalState.loading||journalState.loaded)return;journalState.loading=true;journalState.error='';
+ try{const response=await fetch('/api/journal',{cache:'no-store',signal:AbortSignal.timeout(10000)});if(!response.ok)throw Error('Journal index HTTP '+response.status);const payload=await response.json();journalState.articles=Array.isArray(payload.articles)?payload.articles:[];journalState.loaded=true;}
+ catch(error){journalState.error='Please try again in a moment.';console.warn('Journal unavailable:',error.message)}
+ finally{journalState.loading=false;if(['journal','journal/article','journal-balance'].includes(parseRoute().route))render()}
+}
+async function loadJournalArticle(slug){
+ if(!slug||journalState.bySlug.has(slug)||journalState.loadingSlug===slug)return;journalState.loadingSlug=slug;
+ try{const response=await fetch('/api/journal?slug='+encodeURIComponent(slug),{cache:'no-store',signal:AbortSignal.timeout(10000)});if(!response.ok)throw Error(response.status===404?'Story not found.':'Journal story HTTP '+response.status);journalState.bySlug.set(slug,await response.json());}
+ catch(error){journalState.error=error.message==='Story not found.'?error.message:'Please try again in a moment.';console.warn('Journal story unavailable:',error.message)}
+ finally{journalState.loadingSlug='';if(parseRoute().route==='journal/article'&&parseRoute().query.get('slug')===slug)render()}
+}
+async function loadVerifiedIndex(){if(verifiedState.loading||verifiedState.loaded)return;verifiedState.loading=true;try{const r=await fetch('/api/search/catalog',{signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error('Search index '+r.status);verifiedState.entries=verifiedGameSearchEntries(await r.json());verifiedState.loaded=true;verifiedState.error='';}catch(e){verifiedState.error='Game index temporarily unavailable';console.warn(e)}finally{verifiedState.loading=false;if(state.layer?.type==='search')refreshLiveSearch();const route=parseRoute().route;if(route==='calculators/pathfinder'&&recipeState.data){const box=node('pathRangeContent');if(box)box.innerHTML=quickUpgradeContent(recipeState.data,state.pathfinderRange,{page:true,catalog:verifiedState.entries});refreshPathfinderStep();}if(route.startsWith('wiki')||route==='reference/detail')render()}}
+async function loadGuilds(force=false){if(guildState.loading||(!force&&guildState.updatedAt&&Date.now()-guildState.updatedAt<30000))return;guildState.loading=true;try{const r=await fetch(V11_GUILD_ENDPOINT,{signal:AbortSignal.timeout(9000),cache:'no-store'});if(!r.ok)throw Error('Guild directory '+r.status);const d=await r.json();guildState.guilds=(d.guilds||[]).map(normalizeGuild).filter(Boolean);guildState.loaded=true;guildState.error='';}catch(e){guildState.error='Guild listings temporarily unavailable';console.warn(e)}finally{guildState.updatedAt=Date.now();guildState.loading=false;if(parseRoute().route.startsWith('lfg/guild'))render();if(state.layer?.type==='search')refreshLiveSearch()}}
+const lfgState={listings:[],plans:[],loaded:false,loading:false,error:'',updatedAt:0,tab:'active',query:'',tier:'',characterClass:'',mightAmount:'',mightUnit:'M'};
+const allLfg=()=>[...lfgState.listings,...lfgState.plans];
+const lfgDynamic=()=>lfgSearchEntries(allLfg());
+const lfgSearchable=()=>[...searchExtras(),...lfgDynamic()];
+const lfgById=id=>lfgDynamic().find(e=>e.id===id);
+async function loadPublicLfg(force=false){if(lfgState.loading||(!force&&lfgState.updatedAt&&Date.now()-lfgState.updatedAt<30000))return; lfgState.loading=true; lfgState.error='';try{const r=await fetch('/api/lfg/public',{cache:'no-store',signal:AbortSignal.timeout(9500)});if(!r.ok)throw Error('HTTP '+r.status);const payload=await r.json(),data=normalizePublicFeed(payload);lfgState.error=(payload.issues?.length?('Some '+payload.issues.join(', ')+' are currently unavailable'):'');lfgState.listings=data.listings;lfgState.plans=data.plans;lfgState.loaded=true;lfgState.updatedAt=Date.now();}catch(e){lfgState.error='Live listings temporarily unavailable';console.warn('LFG feed',e.message)}finally{lfgState.updatedAt=Date.now();lfgState.loading=false;const route=parseRoute().route;if(route.startsWith('lfg/raids')||route==='lfg/listing')render();if(state.layer?.type==='search')refreshLiveSearch();}}
+const LINKS=[['directory','Explore All','layers'],['wiki','ArcanaWiki','book'],['labs/build','Build Studio','shield'],['calculators/pathfinder','Pathfinder','layers'],['lfg','Guild & Raid Finder','users'],['community','Community','users'],['beta','Beta & Feedback','message-square']];
+const BUILD_SLOTS=LOADOUT_LAYOUT.map(x=>[x.key,x.label]);
+const item=value=>{
+ const id=equipmentId(value);if(!id)return null;
+ const local=entityById.get(id);if(local)return local;
+ const verified=verifiedState.entries.find(e=>e.id===id&&e.gameKind==='item');
+ if(verified){
+  const kind=String(verified.slot||'').toLowerCase();
+  const slot={main_hand:'weapon',off_hand:'offhand',head:'head',chest:'chest',hands:'hands',feet:'feet',belt:'belt',ring:'ring',amulet:'neck',necklace:'neck',torch:'torch'}[kind]||null;
+  return {...verified,kind:'item',slot,subtitle:'Equipment Â· '+(verified.description||''),verified:true};
+ }
+ const gear=baseItem(id);
+ const slot=gear?{main_hand:'weapon',off_hand:'offhand',amulet:'neck',ring:'ring'}[gear.slot]||gear.slot:null;
+ return gear?{id:gear.id,kind:'item',title:gear.name,subtitle:'Verified Season 2 base equipment',slot,verified:true}:null;
+};const buildTemplate=id=>demoBuilds[id];
+const savedBuild=()=>state.draft&&state.draft.equipment?normalizeBuild(state.draft):null;
+const shared={token:'',build:null,error:''};
+async function resolveShared(token){
+ if(shared.token===token)return;
+ shared.token=token;shared.build=null;shared.error='';
+ try{shared.build=await openBuildToken(token);}catch(err){shared.error=String(err.message||err);}
+ if(parseRoute().query.get('share')===token&&['labs/build','labs/runes','labs/passives'].includes(parseRoute().route))render();
+}
+const newPersonalBuild=()=>normalizeBuild({id:'local-draft',title:'My Build',className:'Warrior',owner:'You',version:'LOCAL',summary:'Create a build with your own equipment, rune layout, skills and pets.',notes:'Your changes stay on this device until you share your build.',equipment:{weapon:null,offhand:null,head:null,chest:null,hands:null,feet:null,belt:null,ring:null,neck:null},skills:[],runes:[],pets:[],runeBoard:[],monsterLevel:1,passiveAlloc:{},classAllocById:{}});
+function ensureDraft(){
+ if(!state.draft){
+  state.draft=newPersonalBuild();
+  state.draft.characterLevel=state.characterLevel;
+  state.draft.passiveAlloc=structuredClone(state.passiveAlloc);
+  state.draft.passiveFreeMode=state.passiveFreeMode===true;
+  state.draft.classAllocById=structuredClone(state.classAllocById);
+ }else state.draft=normalizeBuild(state.draft);
+ return state.draft;
+}
+function persistDraft(){if(state.draft){state.draft=normalizeBuild(state.draft);saveDraft(state.draft)}}
+const SEARCHABLE_TOOLS=['items','guides','upgrade','compare','build','runes','skills','passives','petlab','compound','affixes','guildtree','guilds','raids','farm','pathfinder'];
+const TOOL_SEARCH_ALIASES={
+ items:'item codex art equipment weapons',guides:'wiki player guide article',
+ upgrade:'item upgrade calculator forge materials',compare:'item comparison equipment stats',
+ build:'build studio character loadout planner',runes:'rune forge grid placement',
+ skills:'class skill tree planner',passives:'passive skill tree planner',
+ petlab:'pet lab pet loadout companion',compound:'pet compound calculator equalisation',
+ affixes:'pet affix cost calculator shard',guildtree:'guild skill tree planner guild bonuses',
+ guilds:'guild finder recruitment',raids:'lfg raid finder',farm:'monster level xp farm comparator fastest kills per second ml xp',pathfinder:'Arcana Pathfinder fast scroll swipe item slot rarity awakened A1 A30 upgrade material gold costs quick reference'
+};
+const searchExtras=()=>[
+ ...(savedBuild()?[{id:'my-build',kind:'build',title:state.draft.title||'My Build',subtitle:'Saved locally Â· Build Studio',keywords:'my build custom saved planner equipment runes skills',description:'Your locally saved build.'}]:[]),
+ ...SEARCHABLE_TOOLS.map(key=>{
+  const destination=NAV_DESTINATIONS[key];
+  return {id:'arcana-tool:'+key,kind:'tool',title:destination.label,subtitle:'Arcana Â· '+destination.detail,keywords:key+' '+(TOOL_SEARCH_ALIASES[key]||'')+' '+destination.label+' '+destination.detail,description:destination.detail,route:destination.route+(destination.params?'?'+new URLSearchParams(destination.params):'')};
+ })
+];
+function track(id){if(!id)return;state.recent=remember(id)}
+const isAppearanceAdmin=()=>Boolean(currentAccount()?.roles?.some(role=>['admin','creator'].includes(typeof role==='string'?role:role.id)));
+// The unlisted preview-domain Playground edits only local draft state. Server-side publish remains protected.
+const isPreviewThemeHost=()=>typeof location!=='undefined'&&['arcana-preview-app-preview.up.railway.app','127.0.0.1','localhost'].includes(location.hostname);
+const isLocalThemePlayground=()=>isPreviewThemeHost()&&parseRoute().route==='theme-playground';
+const tryOnTheme=()=>{try{return isPreviewThemeHost()&&sessionStorage.getItem('arcana-theme-tryon-preview-v1')==='1'}catch{return false}};
+const changeTryOn=enabled=>{try{if(enabled)sessionStorage.setItem('arcana-theme-tryon-preview-v1','1');else sessionStorage.removeItem('arcana-theme-tryon-preview-v1');return true}catch{return false}};
+const canEditThemeDraft=()=>isAppearanceAdmin()||isLocalThemePlayground();
+const themePlaygroundView=()=>'<div class="launchPage themePlayground"><span class="launchEyebrow">ARCANA PREVIEW Â· LOCAL ONLY</span><h1>Theme Playground</h1><p>Explore 18 original recolorable artworks and 30 curated complete looks, remix colors and lighting, and save up to twelve private designs. This browser-only preview cannot publish anything to the real site.</p><div class="themeTryOnActions"><button class="btn primary" type="button" data-action="theme-try-on">âœ¦ Try this on Arcana</button><button class="btn secondary" type="button" data-action="theme-try-off">Stop site preview</button></div><div class="themeStudioWorkbench"><div class="themeStudioEditor">'+designPanel({showPreview:false})+'</div><aside class="themeStudioPreview" aria-label="Live theme preview">'+designMiniMarkup()+'</aside></div></div>'; 
+function crumbTrail(title){
+ const route=parseRoute().route,section=route.split('/')[0];
+ const parent={labs:['Build Studio','labs/build'],calculators:['Pathfinder','calculators/pathfinder'],lfg:['Guild & Raid Finder','lfg'],wiki:['ArcanaWiki','wiki']}[section];
+ if(!parent||route===parent[1])return '';
+ return `<nav class="arcanaCrumbs" aria-label="Breadcrumbs"><button type="button" data-route="home">Home</button><span aria-hidden="true">â€º</span><button type="button" data-route="${parent[1]}">${parent[0]}</button><span aria-hidden="true">â€º</span><span aria-current="page">${esc(title)}</span></nav>`;
+}
+function layout(title,kicker,inner,mark='gem'){
+ return `${crumbTrail(title)}<div class="pageHead"><div class="pageHeadline"><span class="pageIcon">${icon(mark,24)}</span><div><span class="eyebrow">${esc(kicker)}</span><h1>${esc(title)}</h1></div></div></div>${inner}`;
+}
+
+const homePanels={quick:false,actions:false};
+const homeGateway=(route,title,description,detail,symbol)=>
+ '<button type="button" class="arcanaHomeGateway" data-route="'+esc(route)+'" aria-label="Open '+esc(title)+'">'+
+ '<span class="arcanaHomeGatewayTop"><span class="arcanaHomeGatewayIcon">'+icon(symbol,23)+'</span><span class="arcanaHomeGatewayArrow">'+icon('arrow',17)+'</span></span>'+
+ '<span class="arcanaHomeGatewayCopy"><strong>'+esc(title)+'</strong><small>'+esc(description)+'</small></span>'+
+ '<span class="arcanaHomeGatewayFoot">'+esc(detail)+'</span></button>';
+const homeDisclosure=(key,kicker,title,description,content)=>
+ '<details class="arcanaHomeDisclosure" data-home-panel="'+esc(key)+'"'+(homePanels[key]?' open':'')+'>'+
+ '<summary class="arcanaHomeDisclosureTrigger"><span class="arcanaHomeDisclosureTitle"><span class="eyebrow">'+esc(kicker)+'</span><strong>'+esc(title)+'</strong><small>'+esc(description)+'</small></span>'+
+ '<span class="arcanaHomeDisclosureToggle" aria-hidden="true">'+icon('plus',18)+'</span></summary>'+
+ '<div class="arcanaHomeDisclosureBody">'+content+'</div></details>';
+const homeSecondary=(route,title,description,symbol)=>
+ '<button type="button" class="arcanaHomeSecondary" data-route="'+esc(route)+'"><span class="arcanaHomeSecondaryIcon">'+icon(symbol,19)+'</span>'+
+ '<span><strong>'+esc(title)+'</strong><small>'+esc(description)+'</small></span><span class="arcanaHomeSecondaryArrow">'+icon('arrow',17)+'</span></button>';
+function home(){return homeScreen();}
+function featuredView(){
+ const items=[
+  ['Convergence: Complete Season 2 Guide','Master the tier loop, elite encounters, monster seats and all 37 Lattice nodes.','wiki/article','book','id=convergence-complete-guide'],
+  ['Arcana Journal','Independent IdleArc news, meta analysis and community perspectives.','journal','book'],
+  ['Class Balance: Top 250','See the ranked class data and the full Season 2 balance analysis.','journal-balance','shield'],
+  ['Build Studio','Create, save and compare fully connected equipment, runes and skills.','labs/build','flask'],
+  ['Player Guides','Community-written guides and IdleArc references.','wiki/guides','book'],
+  ['Community Builds','Discover player builds and share your own.','community','users'],
+  ['Pathfinder','Swipe through upgrade materials and currency costs.','calculators/pathfinder','layers'],
+  ['Featured Wiki','Browse verified articles and game systems.','wiki','book'],
+  ['Beta Feedback','Tell us what to improve before launch.','beta','spark']
+ ];
+ return '<div class="launchPage arcanaFeaturedPage"><span class="launchEyebrow">DISCOVER</span><h1>Featured</h1><p>Builds, guides, tools and updates worth a look. More community features will appear here as they are published.</p><div class="arcanaFeaturedRows">'+items.map(([name,detail,route,glyph,params])=>'<button class="launchFeatureRow" type="button" data-route="'+esc(route)+'"'+(params?' data-params="'+esc(params)+'"':'')+'><span class="launchFeatureIcon">'+icon(glyph,22)+'</span><span><strong>'+esc(name)+'</strong><small>'+esc(detail)+'</small></span>'+icon('arrow',17)+'</button>').join('')+'</div></div>';
+}
+
+function recentView(){const recent=state.recent.map(id=>entityById.get(id)||verifiedState.entries.find(e=>e.id===id)||wikiArticleEntries().find(e=>e.id===id)).filter(Boolean).slice(0,15);const saved=resumableWorkspaces({draft:savedBuild(),guild:state.guildTreePlan,compound:state.compoundQuick,affix:state.affixCostQuick,farm:state.farmPlan,recent:state.recent.map(id=>id.startsWith('wiki:article:')?wikiArticleById(id.slice(13)):null).filter(Boolean)});return '<div class="launchPage"><span class="launchEyebrow">USER CENTER</span><h1>Recent Activity</h1><p>Your saved planning work and recently viewed references, available to continue on this device.</p>'+(saved||'<p class="mutedSmall">No saved planning activity yet. Start in Build Studio.</p>')+'<h2>Recently viewed</h2><div class="resultList">'+(recent.length?recent.map(cardEntity).join(''):'<p class="mutedSmall">Pages you open will appear here.</p>')+'</div></div>'}
+function siteSignature(){return `<footer class="footer arcanaSignature" aria-label="Arcana creator and community">
+<img class="arcanaSigLogo" src="/assets/arcana-logo.webp" alt="" loading="lazy"/>
+<div class="arcanaSigText"><strong>Made by <em>Zane</em></strong><small>Guild leader of PDX &amp; OVK Â· For the IdleArc community</small></div>
+<details class="arcanaSigInfo"><summary aria-label="Learn about Arcana and ways to contribute" title="Community information"><span aria-hidden="true">â“˜</span></summary>
+<div class="arcanaSigPanel"><strong>Built for the IdleArc community</strong><p>Keep up with Arcana, talk about the app, report bugs, share suggestions and help shape future updates.</p>
+<a class="arcanaDiscord" href="https://discord.gg/PDXCommunity" target="_blank" rel="noopener noreferrer">Join our Discord â†—</a>
+<strong>Contribute to ArcanaWiki</strong><p>Share guides or verified game information, check mechanics and accuracy, fix grammar or improve the clarity of existing pages.</p>
+<strong>Want to get involved?</strong><p>Development, testing, proofreading, research and other community roles all help make Arcana better. Reach out through Discord.</p></div></details>
+</footer>`;}
+function tile(x,route,desc,mark){return `<button class="toolTile" data-route="${route}"><span class="tileIcon">${icon(mark,23)}</span><strong>${esc(x)}</strong><p>${esc(desc)}</p><span class="tileMore">Open ${icon('arrow',15)}</span></button>`}
+function calculators(){return layout('Calculators','ARCANA',`<p class="lead">Gear upgrades and equipment comparisons are together in Pathfinder. Other calculators live here.</p><div class="cardGrid">${tile('Pathfinder','calculators/pathfinder','Upgrade map, totals and item comparison.','layers')}${tile('Damage Calculator Â· In Development','calculators/damage','Standalone Attack, Pet, and Retaliation formula sandbox.','calculator')}${tile('Pet Compound','calculators/pet','Pet compound and Drop Bonus.','paw')}${tile('Pet Affix Costs','calculators/affixes','Pet Shard costs.','calculator')}${tile('ML Farming','calculators/ml-farm','Compare farming speed.','sword')}</div>`,'calculator')}
+function labs(){return layout('Arcana Labs','THEORYCRAFTING',`<p class="lead">Buildcraft lives here. Open a complete guide build, make it your own, and send gear or rune choices to their related tools.</p><div class="cardGrid">${tile('Build Studio','labs/build','One saved build containing gear, pets, runes and skills.','shield')}${tile('Rune Forge','labs/runes','Arrange runes on a grid that grows with Monster Level.','gem')}${tile('Class Skill Tree','labs/skills','Browse verified branches, tiers, and skill prerequisites.','git')}${tile('Passive Skill Tree','labs/passives','Swipe between complete passive tiers with on-node point controls.','layers')}${tile('Pet Compound Calculator','calculators/pet','Estimate your Drop Bonus at a chosen Compound Level.','calculator')}${tile('Guild Skill Tree','labs/guild-tree','Plan guild bonuses, allocate points, and share a build.','shield')}</div><div class="hintCard">${icon('book',20)} <span>Try the <button class="inlineLink" data-route="wiki/guide" data-params="id=warrior-retaliation-demo-guide">connected Warrior guide</button> to open a complete example inside Build Studio.</span></div>`,'flask')}
+function wiki(){return layout('ArcanaWiki','INSTANT REFERENCE',`<p class="lead">The reference layer of Arcana. Guides are useful actions, not dead-end walls of text.</p><div class="sectionLabel compact"><div><span class="eyebrow">FEATURED GUIDE</span><h2>From guide to Build Studio</h2></div></div><button class="guideFeature" data-route="wiki/guide" data-params="id=warrior-retaliation-demo-guide"><span>${icon('book',25)}</span><div><strong>Warrior Retaliation Â· Connected Guide</strong><p>Contains a complete demonstration build you can inspect and edit.</p></div>${icon('arrow',19)}</button><div class="sectionLabel"><div><span class="eyebrow">BROWSE</span><h2>Knowledge & items</h2></div></div><div class="cardGrid">${tile('Item Codex','wiki/items','Search equipped gear and jump into comparison or upgrade planning.','box')}${tile('Mechanics','wiki/mechanics','Verified mechanics and links to relevant calculators.','info')}${tile('Guides','wiki/guides','Example guides with linked builds and tools.','book')}</div>`,'book')}
+function wikiItems(){return layout('Item Codex','ARCANAWIKI',`<p class="lead">Items share IDs with comparison, Build Studio and the upgrade calculator.</p><div class="filterLine"><input id="itemFilter" placeholder="Filter itemsâ€¦" autocomplete="off" aria-label="Filter items"/><span>${icon('search',19)}</span></div><div class="resultList" id="itemResults">${itemList.map(cardEntity).join('')}</div><p class="notice">Names and categories shown here are reference samples, not a complete verified game database.</p>`,'box')}
+function wikiMechanics(){return layout('Mechanics','ARCANAWIKI',`<div class="resultList">${entities.filter(e=>e.kind==='mechanic').map(cardEntity).join('')}</div>`,'book')}
+function wikiGuides(){return layout('Guides','ARCANAWIKI',`<div class="resultList">${guideList.map(cardEntity).join('')}</div>`,'book')}
+function fullGuide(id){const g=entityById.get(id);if(!g||g.kind!=='guide')return notFound();track(id);
+ const isBuild=!!g.buildId;const tmpl=isBuild?buildTemplate(g.buildId):null;
+ const inner=isBuild?`<section class="articleHeader"><span class="eyebrow">INTERACTIVE PLAYER GUIDE Â· DEMONSTRATION</span><h2>${esc(g.title)}</h2><p>${esc(g.description)}</p>${chip('Example only Â· not a verified build')}</section>${demoGuideSections.map(s=>`<section class="articleSection"><h3>${esc(s.heading)}</h3><p>${esc(s.body)}</p></section>`).join('')}
+ <section class="embeddedBuild"><div class="embeddedTop"><span class="glyph">${icon('shield',23)}</span><div><span class="eyebrow">EMBEDDED BUILD</span><h3>${esc(tmpl.title)}</h3><p>${esc(tmpl.className)} Â· ${Object.values(tmpl.equipment).filter(Boolean).length} equipped slots Â· ${tmpl.runes.length} runes Â· ${tmpl.pets.length} pets</p></div></div><div class="buildMini">${Object.entries(tmpl.equipment).filter(([k,v])=>v).slice(0,5).map(([k,v])=>`<div><span>${esc(k)}</span>${gameArt(item(v),32)}<strong>${esc(item(v)?.title||v)}</strong></div>`).join('')}</div><button class="btn primary full" data-route="labs/build" data-params="build=${esc(tmpl.id)}">${icon('flask',19)} Inspect full build in Build Studio ${icon('arrow',17)}</button><small>Gear, skills, runes, pets, and notes transfer together.</small></section>`:
+ `<section class="articleHeader"><span class="eyebrow">SEASON 2 PROGRESSION</span><h2>${esc(g.title)}</h2><p>${esc(g.description)}</p></section><div class="articleSection"><h3>Compare Monster Level XP per second</h3><p>From Murky Depths onward, the weakest monster in a biome awards 10% less Monster Level XP and the strongest 10% more than the normal value. Test kill times as well as rewards, rather than assuming every monster awards identical XP. Character EXP Gain affects character progression, not Monster Level XP.</p></div><div class="hintCard">${icon('book',20)} <button class="inlineLink" data-route="wiki/article" data-params="id=monster-level">Read the Monster Level farming guide</button></div>`;
+ return layout(g.title,'ARCANAWIKI Â· GUIDE',inner,'book')}
+function wikiItem(id){const e=item(id);if(!e)return notFound();track(e.id);return layout(e.title,'ARCANAWIKI Â· EQUIPMENT',`<div class="detailCard"><span class="detailMark gameDetailMark">${gameArt(e,90)}</span><div><span class="eyebrow">${esc(e.subtitle)}</span><h2>${esc(e.title)}</h2><p>${esc(e.description)}</p>${chip('Numerical data not imported')}</div></div><div class="actionsGroup">${button('Compare this item','compare',id,'secondary','compare')}${button('See upgrade costs','upgrade',id,'primary','calculator')}${button('Add to Build Studio','equip',id,'secondary','flask')}</div><p class="notice">These actions preserve this exact item selection using its stable Arcana catalog ID.</p>`,'box')}
+function wikiMechanic(id){const m=entityById.get(id);if(!m)return notFound();track(id);return layout(m.title,'ARCANAWIKI Â· MECHANIC',`<div class="detailCard"><span class="detailMark">${icon('info',30)}</span><div><h2>${esc(m.title)}</h2><p>${esc(m.description)}</p></div></div><div class="actionsGroup">${m.id==='pet-equalisation'?button('Open Compound Calculator','route','calculators/pet','primary','calculator'):button('Open related guide','route','wiki/guides','primary','book')}</div>`,'book')}
+function demoActive(){const route=parseRoute();const token=route.query.get('share');return normalizeBuild(token?deepCopy(shared.build||newPersonalBuild()):route.query.get('build')?deepCopy(buildTemplate(route.query.get('build'))||newPersonalBuild()):deepCopy(savedBuild()||newPersonalBuild()))}
+
+function studioSharedHeader(build,active='studio',readonly=false){
+ const section={studio:'Equipment',runes:'Runes',skills:'Class Skills',passives:'Passive Tree'}[active]||'Build Studio';
+ const name=esc(build.title||'My Build'),className=esc(build.className||'Warrior'),description=esc(build.summary||'');
+ const portrait=!readonly?readStudioPortrait():null,avatar=portrait?'<img class="studioPortraitImg" src="'+esc(portrait)+'" alt="">':classEmblem(build.className);
+ const classes=['Warrior','Archer','Mage','Rogue','Druid'];
+ const classControl=readonly?'<span class="studioContextClass">'+className+'</span>':'<select data-build-field="className" aria-label="Character class">'+classes.map(c=>'<option value="'+c+'" '+(c===build.className?'selected':'')+'>'+c+'</option>').join('')+'</select>';
+ const titleControl=readonly?'<strong>'+name+'</strong>':'<input class="studioContextName" data-build-field="title" maxlength="100" aria-label="Build name" placeholder="My Build" value="'+name+'">';
+ const summaryControl=readonly?'<span class="studioContextSummary">'+(description||'No build description')+'</span>':'<input class="studioContextSummary" data-build-field="summary" maxlength="350" aria-label="Build description" placeholder="Add a short build description" value="'+description+'">';
+ const presets=readonly?'':'<section class="studioPresetMenu" aria-label="Saved local presets"><label><span>Saved local builds</span><select data-studio-preset aria-label="Load a saved Build Studio preset"><option value="" '+(!state.activePresetId?'selected':'')+'>Current working draft</option>'+readLocalBuildPresets().map(p=>'<option value="'+esc(p.id)+'" '+(p.id===state.activePresetId?'selected':'')+'>'+esc(p.title)+' Â· '+esc(p.className)+' Â· ML '+esc(p.monsterLevel)+'</option>').join('')+'</select></label><div><button type="button" data-action="savepreset">'+icon('plus',15)+' Save preset</button><button type="button" data-action="deletepreset" data-arg="'+esc(state.activePresetId||'')+'" '+(state.activePresetId?'':'disabled')+'>'+icon('close',15)+' Delete</button></div><small>'+readLocalBuildPresets().length+' / 24 Â· Saved on this device.</small></section>';
+ const actions=readonly?'<button class="studioActionButton primary" data-action="clonebuild" data-arg="'+esc(build.id||'')+'">'+icon('edit',14)+' Use build</button>':'<button class="studioActionButton primary" data-action="savebuild">'+icon('check',14)+' Save draft</button><button class="studioActionButton" data-action="sharebuild">'+icon('link',14)+' Share</button><details class="studioMoreMenu"><summary>'+icon('menu',14)+' More</summary><div><button type="button" data-action="savecloud">'+icon('check',14)+' Save to Account</button>'+presets+'<button type="button" data-action="resetbuild">'+icon('close',14)+' Start fresh</button><button type="button" data-route="beta">'+icon('info',14)+' Report a problem</button></div></details>';
+ const avatarControl=readonly?'<span class="studioContextAvatar">'+avatar+'</span>':'<button type="button" class="studioContextAvatar" data-action="chooseportrait" aria-label="Change build picture">'+avatar+'</button><input id="studioPortraitUpload" class="studioHiddenFile" type="file" accept="image/png,image/jpeg,image/webp" aria-label="Upload build profile picture">';
+ return '<section class="studioProfileGroup studioSharedHeader" aria-label="Build profile and sections"><div class="studioContextUtility"><button type="button" class="studioHomeLink" data-route="home">'+icon('home',15)+' Home</button><span>BUILD STUDIO <i>Â·</i> '+esc(section.toUpperCase())+'</span></div><div class="studioContextProfile">'+avatarControl+'<div class="studioContextFields"><div class="studioContextIdentity">'+titleControl+classControl+'</div>'+summaryControl+'</div></div><div class="studioContextActions">'+actions+'</div>'+labsTabs(active)+'</section>';
+}
+function buildStudio(){const route=parseRoute(),share=route.query.get('share');
+ if(share&&shared.token!==share)return layout('Shared Build','ARCANA LABS','<p class="notice">Opening shared buildâ€¦</p>');
+ if(share&&!shared.build)return layout('Shared Build','ARCANA LABS','<p class="notice">'+esc(shared.error||'Shared build unavailable.')+'</p><button class="btn secondary" data-route="labs/build">My Build Studio</button>');
+ const inspecting=!!route.query.get('build')||!!share,b=demoActive();if(!b)return notFound();if(!inspecting)state.draft=b;
+ const slots=buildLoadout(b.equipment,item,inspecting);
+ const portrait=!inspecting?readStudioPortrait():null;
+ const previewPortrait=portrait?'<img class="studioPortraitImg" src="'+esc(portrait)+'" alt="Custom build profile portrait">':classEmblem(b.className);
+ const name=esc(b.title||'My Build'),desc=esc(b.summary||''),cls=esc(b.className||'Warrior');
+ const clsOptions=['Warrior','Archer','Mage','Rogue','Druid'].map(c=>'<option value="'+c+'" '+(b.className===c?'selected':'')+'>'+c+'</option>').join('');
+ const currentClass=inspecting?'<span class="studioClassReadonly">'+cls+'</span>':
+  '<label class="studioClassControl"><span class="srOnly">Character class</span><select data-build-field="className" aria-label="Character class">'+clsOptions+'</select></label>';
+ const profileActions=inspecting?
+  '<button class="btn primary" data-action="clonebuild" data-arg="'+esc(b.id)+'">'+icon('edit',16)+' Use as my build</button>':
+  '<button class="btn primary" data-action="savebuild">'+icon('check',16)+' Save draft</button>'+
+  '<button class="btn secondary" data-action="sharebuild">'+icon('link',16)+' Share</button>'+
+  '<button class="btn secondary" data-action="savecloud">'+icon('check',16)+' Save to Account</button>';
+ const localPresets=inspecting?[]:readLocalBuildPresets();
+ const presetMenu=inspecting?'':'<section class="studioPresetMenu" aria-label="Saved local presets"><label><span>Saved local builds</span><select data-studio-preset aria-label="Load a saved Build Studio preset"><option value="" '+(!state.activePresetId?'selected':'')+'>Current working draft</option>'+localPresets.map(p=>'<option value="'+esc(p.id)+'" '+(state.activePresetId===p.id?'selected':'')+'>'+esc(p.title)+' Â· '+esc(p.className)+' Â· ML '+esc(p.monsterLevel)+'</option>').join('')+'</select></label><div><button type="button" data-action="savepreset">'+icon('plus',15)+' Save preset</button><button type="button" data-action="deletepreset" data-arg="'+esc(state.activePresetId||'')+'" '+(state.activePresetId?'':'disabled')+'>'+icon('close',15)+' Delete</button></div><small>'+localPresets.length+' / 24 Â· Saved on this device.</small></section>';
+ const profile= '<section class="studioProfile" aria-label="Build profile">'+
+  '<div class="studioProfileMain"><div class="studioProfileVisual">'+
+  '<span class="studioPortraitIcon">'+previewPortrait+'</span>'+
+  (!inspecting?'<button type="button" class="studioPortraitUpload" data-action="chooseportrait" aria-label="Upload a custom build picture">'+icon('edit',13)+' Change picture</button><input id="studioPortraitUpload" class="studioHiddenFile" type="file" accept="image/png,image/jpeg,image/webp" aria-label="Upload build profile picture">'+
+   (portrait?'<button type="button" class="studioPortraitRemove" data-action="removeportrait">Use class icon</button>':''):'')+
+  '</div><div class="studioProfileText">'+
+  '<span class="studioProfileKicker">BUILD STUDIO <i>Â·</i> '+(inspecting?'BUILD PREVIEW':'LOCAL BUILD PROFILE')+'</span>'+
+  (inspecting?'<h1>'+name+'</h1>':'<label class="studioTitleLabel"><span class="srOnly">Build name</span><input class="studioTitleInput" data-build-field="title" maxlength="100" aria-label="Build name" placeholder="My Build" value="'+name+'"></label>')+
+  currentClass+
+  (inspecting?'<p class="studioProfileDescription">'+desc+'</p>':'<label class="studioDescLabel"><span class="srOnly">Build description</span><textarea data-build-field="summary" rows="2" maxlength="350" aria-label="Build description" placeholder="Describe your build...">'+desc+'</textarea></label>')+
+  '</div></div><div class="studioProfileActions">'+profileActions+
+  '<details class="studioMoreMenu"><summary aria-label="More build actions">'+icon('menu',16)+' More</summary><div>'+
+  presetMenu+
+  (!inspecting?'<button type="button" data-action="resetbuild">'+icon('close',16)+' Start fresh</button>':'')+
+  '<button type="button" data-route="beta">'+icon('info',16)+' Report a problem</button>'+
+  '</div></details></div></section>';
+ const gearWorkbench=inspecting
+  ?'<aside class="studioGearWorkbench studioGearReadOnly"><span class="eyebrow">BUILD PREVIEW</span><h3>Equipment</h3><p>This shared or guide build is read-only. Copy it to your own workspace before editing.</p></aside>'
+  :state.slotTarget?.kind==='gear'
+   ?state.gearEdit
+    ?'<aside class="studioGearWorkbench">'+gearEditorMarkup(state.slotTarget.slot,state.gearEdit,b.className)+'</aside>'
+    :'<aside class="studioGearWorkbench"><header class="studioWorkbenchHead"><div><span class="eyebrow">ITEM COLLECTION</span><h3>Choose '+esc(LOADOUT_LAYOUT.find(s=>s.key===state.slotTarget.slot)?.label||'equipment')+'</h3></div><button type="button" class="studioWorkbenchClose" data-action="gearcancel" aria-label="Close equipment picker">Ã—</button></header><label class="filterLine studioGearSearch"><input type="search" id="gearPickerQuery" value="'+esc(state.gearSearch||'')+'" placeholder="Search equipmentâ€¦" autocomplete="off" aria-label="Search equipment"><span>'+icon('search',18)+'</span></label><div class="resultList studioGearResults" id="gearPickerItems">'+gearPickerMarkup(state.slotTarget.slot,b.className,state.gearSearch||'')+'</div><p class="studioWorkbenchHint">Choose an item to set its rarity, awakening and Drop Bonus here.</p></aside>'
+   :'<aside class="studioGearWorkbench studioGearPrompt"><span class="eyebrow">LOADOUT WORKSPACE</span><h3>Choose a slot to begin</h3><p>Select any equipment slot. The item list and its settings will open beside your character, without leaving this page.</p><div class="studioPromptStats"><span><strong>'+Object.values(b.equipment).filter(Boolean).length+'</strong><small>equipped</small></span><span><strong>'+LOADOUT_LAYOUT.length+'</strong><small>slots</small></span></div></aside>';
+ const nav='<nav class="arcanaCrumbs" aria-label="Build Studio location"><button type="button" data-route="home">Home</button><span aria-hidden="true">â€º</span><span aria-current="page">Build Studio</span></nav>';
+ return '<div class="studioPage">'+studioSharedHeader(b,'studio',inspecting)+
+ '<section class="studioPrimaryEquipment" aria-label="Equipment editor"><header class="studioEquipmentHeading"><h2>'+icon('layers',26)+' Equipment</h2><span>'+LOADOUT_LAYOUT.filter(({key})=>Boolean(b.equipment?.[key])).length+' / '+LOADOUT_LAYOUT.length+' equipped</span></header>'+
+ '<div class="studioGearLayout"><div class="studioGearCanvas">'+slots+'</div>'+gearWorkbench+'</div><p class="studioEquipmentHint">Your Arcana sandbox is separate from your in-game preset. Changes here stay in this build.</p></section>'+ '<section class="pfPanel"><h2>Arcana Pathfinder</h2><p>Need to check an upgrade? Browse the cost of any rarity or awakening level without setting up your character or entering materials.</p><button class="btn primary" data-route="calculators/pathfinder">Browse upgrade costs '+icon('arrow',16)+'</button></section>'+
+ '<details class="studioProgressDetails"><summary>'+icon('gem',22)+' Character & Rune Progression <span>ML '+(b.monsterLevel||1)+'</span></summary>'+
+ '<div class="studioML"><div><span class="eyebrow">RUNE GRID</span><strong>Monster Level '+(b.monsterLevel||1)+'</strong><small> Â· '+monsterLevelGrid(b.monsterLevel||1).cols+'Ã—'+monsterLevelGrid(b.monsterLevel||1).rows+' cells</small></div><div class="studioMLActions"><label class="studioMLInput">ML<input aria-label="Build Monster Level" data-monster-level type="number" min="1" max="100000" inputmode="numeric" value="'+(b.monsterLevel||1)+'" '+(inspecting?'disabled':'')+'></label><button class="btn secondary" data-route="labs/runes">Runes '+icon('arrow',14)+'</button></div></div></details>'+
+ '<div class="studioSecondaryGrid"><section class="sectionCard"><div class="sectionCardTop"><h3>'+icon('git',19)+' Skills & Runes</h3></div>'+
+ '<div class="pillSet">'+(b.skills.map(v=>chip(v,'wide')).join('')||chip('No class skills chosen'))+'</div>'+
+ '<div class="actionsGroup"><button class="btn secondary" data-route="labs/skills">Class Skills '+icon('arrow',14)+'</button><button class="btn secondary" data-route="labs/passives">Passive Tree '+icon('arrow',14)+'</button><button class="btn secondary" data-route="labs/runes">Rune Forge '+icon('arrow',14)+'</button></div></section>'+
+ '<section id="studioPetSetup" class="sectionCard"><div class="sectionCardTop"><h3>'+icon('paw',19)+' Pet Bonuses</h3></div>'+petLoadoutView(b,inspecting)+'</section></div>'+
+ '<details class="studioOverviewFold"><summary>Full Build Overview '+icon('arrow',15)+'</summary>'+buildOverviewV7(b)+'</details>'+
+ '<p class="studioBuildNotice"><strong>Game data:</strong> '+esc(b.notes||'Values remain under verification.')+'</p>'+
+ '</div>';}
+
+function pathfinderHub(legacyView='range'){
+ const view=parseRoute().query.get('view')||legacyView;
+ const tabs=[['range','Upgrade Costs','calculator'],['timeline','Upgrade Map','layers'],['upgrade','Rarity Reference','calculator'],['compare','Compare Items','compare']];
+ const selected=tabs.some(t=>t[0]===view)?view:'range';
+ const nav='<nav class="arcanaCrumbs" aria-label="Pathfinder location"><button type="button" data-route="home">Home</button><span aria-hidden="true">â€º</span><span aria-current="page">Pathfinder</span></nav>';
+ const header='<header class="pathfinderHubHead"><span class="pathfinderHubIcon">'+icon('feature-upgrade',25)+'</span><div><h1>Pathfinder</h1><p>Upgrade planning and gear progression</p></div></header>';
+ const chooser='<nav class="pathfinderHubTabs" aria-label="Pathfinder tools">'+tabs.map(([id,title,glyph])=>'<button type="button" class="'+(id===selected?'active':'')+'" data-route="calculators/pathfinder" data-params="view='+id+'" aria-current="'+(id===selected?'page':'false')+'">'+icon(glyph,19)+'<span>'+title+'</span></button>').join('')+'</nav>';
+ const wait='<div class="pathWaiting" role="status"><p>'+esc(recipeState.error||'Loading verified upgrade recipesâ€¦')+'</p><button type="button" data-action="path-refresh" class="btn secondary">Retry</button></div>';
+ const inner=selected==='range'?quickUpgradePanel(recipeState.data,state.pathfinderRange,{page:true,error:recipeState.error,catalog:verifiedState.entries}):selected==='upgrade'?calcUpgrade(true):selected==='compare'?calcCompare(true):pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error,state.pathfinderRange,{includeRange:false,catalog:verifiedState.entries});
+ return '<div class="studioPage pathfinderHub"><section class="pathfinderHubTop">'+nav+header+chooser+'</section><div class="pathfinderHubContent">'+inner+'</div></div>';
+}
+function calcPathfinder(){return pathfinderHub()}
+function calcUpgrade(embedded=false){const id=parseRoute().query.get('item'),e=item(id);if(e)track(e.id);
+ const inner=`<div class="calcWorkspace"><span class="eyebrow">SELECTED EQUIPMENT</span><button class="selection" data-action="chooseupgrade"><span class="tinyIcon ${e?'tinyGameArt':''}">${e?gameArt(e,40):icon('shield',22)}</span><span><strong>${esc(e?.title||'Select an item')}</strong><small>${esc(e?.subtitle||'Use universal search or the item picker')}</small></span>${icon('arrow',16)}</button>${e?`<div class="actionsGroup">${button('View item in Wiki','wikiitem',e.id,'secondary','book')}${button('Compare','compare',e.id,'secondary','compare')}</div>`:''}<div class="calcWarning">${icon('info',20)} <p>Partial cost reference: this snapshot provides base tier changes only, not level-by-level or Awakened totals. No full expected cost is claimed.</p></div></div>${verifiedUpgradeReferencePanel(e?.title)}`;return embedded?'<section class="pathfinderHubSubTool"><h2>Upgrade cost reference</h2>'+inner+'</section>':layout('Upgrade Cost Calculator','ARCANA CALCULATORS',inner,'calculator')}
+function calcCompare(embedded=false){const qp=parseRoute().query;const left=item(qp.get('left')||state.compareLeft),right=item(qp.get('right')||state.compareRight);state.compareLeft=left?.id||null;state.compareRight=right?.id||null;
+ const inner=`<div class="compareGrid">${[['left',left],['right',right]].map(([side,e])=>`<button class="compareSlot" data-action="pickcompare" data-arg="${side}"><span class="detailMark compareArt">${e?gameArt(e,83):icon('plus',26)}</span><span class="eyebrow">${side==='left'?'ITEM A':'ITEM B'}</span><strong>${esc(e?.title||'Select item')}</strong><small>${esc(e?.subtitle||'Tap to choose equipment')}</small></button>`).join('')}</div>
+ ${verifiedComparisonPanel(left?.title,right?.title,state.compareTier)}
+ <div class="actionsGroup">${left?button('Open Item A Wiki','wikiitem',left.id,'secondary','book'):''}${right?button('Open Item B Wiki','wikiitem',right.id,'secondary','book'):''}</div>`;return embedded?'<section class="pathfinderHubSubTool"><h2>Compare equipment</h2>'+inner+'</section>':layout('Compare Items','ARCANA CALCULATORS',inner,'compare')}
+
+function calcDamage(){return '<div class="studioPage"><nav class="arcanaCrumbs" aria-label="Page navigation"><button type="button" data-route="home">Home</button><span>â€º</span><button type="button" data-action="homemenu" data-arg="tools">Tools</button></nav><section class="sectionCard" style="margin-top:14px"><span class="eyebrow">STANDALONE FORMULA TOOL Â· IN DEVELOPMENT</span><h1>Damage Calculator</h1><p>Choose Attack, Pet, or Retaliation, enter your current character values, then adjust individual formula layers to see how total damage changes.</p><p>This tool is separate from Build Studio: it will use values you enter here and will not read or change a build. Arcana is preparing for IdleArc API access. Until access is available, a manual formula calculator is the best we can offer.</p><div class="notice">The formula inputs and live breakdown are still being built.</div><div class="actionsGroup"><button class="btn secondary" type="button" data-action="homemenu" data-arg="tools">Other tools</button></div></section></div>';}
+function calcPet(){return layout('Pet Compound Calculator','ARCANA CALCULATORS',simpleCompoundCalculatorView(state.compoundQuick),'calculator')}
+// Legacy /labs/pets URLs remain supported and focus the integrated pet setup section.
+function petLab(){return buildStudio()}
+function calcAffixes(){return layout('Pet Affix Cost','ARCANA CALCULATORS',simpleAffixCostView(state.affixCostQuick),'paw')}
+function calcFarm(){return layout('ML Farming Comparator','ARCANA CALCULATORS',farmCompareView(state.farmPlan),'sword')}
+function runeForge(){const templateId=parseRoute().query.get('build'),share=parseRoute().query.get('share');
+ if(share&&shared.token!==share)return layout('Rune Forge','BUILD STUDIO','<p class="notice">Opening shared runesâ€¦</p>');
+ if(share&&!shared.build)return layout('Rune Forge','BUILD STUDIO','<p class="notice">'+esc(shared.error||'Shared build unavailable.')+'</p>');
+ const preview=share?shared.build:templateId?buildTemplate(templateId):null;const b=preview?normalizeBuild(preview):ensureDraft();const isReadonly=!!preview;
+ const runeComposer=runeOptionsUI({family:state.runeFamily,shape:state.runeShape,secondary:state.runeSecondary},b,isReadonly,state.runeComposerOpen);
+ return `<div class="studioPage runeForgePage">${studioSharedHeader(b,'runes',isReadonly)}<div class="runeStudioGrid"><div class="runeWorkbenchColumn">${runeGridView(b,state.runeSelected,isReadonly,state.runePending,runeComposer)}</div>${runeWordsView(b,isReadonly,state.runeWordsOpen)}</div>${!b.runeBoard.length&&b.runes.length?`<p class="notice">Reference families: ${esc(b.runes.join(', '))}. This build has no verified rune placement coordinates yet, so the board begins empty.</p>`:''}</div>`;
+}
+function mutateRunes(callback){const b=ensureDraft();const old=structuredClone(b.runeBoard);const out=callback(b);if(out===false)return;state.runeHistory.push(old);if(state.runeHistory.length>20)state.runeHistory.shift();b.runes=[...new Set(b.runeBoard.map(r=>r.family))];persistDraft();render();}
+function wireRuneDrag(){
+ const clear=d=>{clearTimeout(d?.timer);d?.rune?.classList.remove('runeHoldReady','runeDragging');d?.target?.classList.remove('runeDragTarget');d?.board?.classList.remove('isRuneDragging');};
+ document.addEventListener('pointerdown',e=>{
+  const rune=e.target.closest('.runePlaced');
+  if(!rune||parseRoute().query.get('build')||parseRoute().query.get('share'))return;
+  const d={id:rune.dataset.arg,pointerId:e.pointerId,rune,board:rune.closest('.runeBoard'),startX:e.clientX,startY:e.clientY,held:false,started:false,target:null};
+  state.runePointerDrag=d;
+  d.timer=setTimeout(()=>{if(state.runePointerDrag===d){d.held=true;rune.classList.add('runeHoldReady')}},280);
+  try{rune.setPointerCapture(e.pointerId)}catch{}
+ },{passive:false});
+ document.addEventListener('pointermove',e=>{
+  const d=state.runePointerDrag;if(!d||e.pointerId!==d.pointerId)return;
+  const dx=e.clientX-d.startX,dy=e.clientY-d.startY;
+  if(!d.held){if(Math.hypot(dx,dy)>12)clear(d);return;}
+  if(!d.started&&Math.hypot(dx,dy)<6)return;
+  d.started=true;e.preventDefault();d.board?.classList.add('isRuneDragging');d.rune.classList.add('runeDragging');
+  const cell=document.elementFromPoint(e.clientX,e.clientY)?.closest('.runeGridCell');
+  if(d.target!==cell){d.target?.classList.remove('runeDragTarget');cell?.classList.add('runeDragTarget');}
+  d.target=cell||null;
+ },{passive:false});
+ document.addEventListener('pointerup',e=>{
+  const d=state.runePointerDrag;if(!d||e.pointerId!==d.pointerId)return;
+  clear(d);state.runePointerDrag=null;
+  if(!d.started)return;
+  e.preventDefault();state.runeSuppressClick=d.id;state.runeComposerOpen=false;
+  const cell=d.target||document.elementFromPoint(e.clientX,e.clientY)?.closest('.runeGridCell');
+  if(cell)action('runemove',d.id+'|'+cell.dataset.arg);else render();
+  setTimeout(()=>{if(state.runeSuppressClick===d.id)state.runeSuppressClick=null},700);
+ },{passive:false});
+ document.addEventListener('pointercancel',e=>{const d=state.runePointerDrag;if(d&&e.pointerId===d.pointerId){clear(d);state.runePointerDrag=null;}},{passive:true});
+}
+
+
+const ASSASSIN_MOTIFS=[
+  ['Targeted dagger','assassin-01','Tier 1 Â· left'],
+  ['Crossing blades','assassin-02','Tier 1 Â· right'],
+  ['Shadow ambush','assassin-03','Tier 2 Â· left'],
+  ['Death mask','assassin-04','Tier 2 Â· right'],
+  ['Silent lunge','assassin-05','Tier 3 Â· left'],
+  ['Mirror assault','assassin-06','Tier 3 Â· right']
+];
+function skillArt(id){return `<img src="/assets/skills/${id}-precision.svg" alt="" class="arcanaSkillImage" loading="lazy">`}
+function skills(){return '<div class="studioPage studioSubPage">'+studioSkillsContent()+'</div>'}
+function studioSkillsContent(){const q=parseRoute().query,readonly=!!(q.get('share')||q.get('build')),b=readonly?demoActive():ensureDraft();return studioSharedHeader(b,'skills',readonly)+classBoard(state,state.treeData)}
+function visiblePassiveState(){
+ const route=parseRoute(),token=route.query.get('share');
+ if(!token)return {...state,passiveReadOnly:false};
+ if(shared.token!==token||!shared.build)return null;
+ const source=shared.build,tierValue=Number(route.query.get('tier'));
+ const tier=Number.isInteger(tierValue)&&tierValue>=0&&tierValue<20?tierValue:state.passiveTier;
+ return {...state,passiveTier:tier,passiveReadOnly:true,passiveAlloc:source.passiveAlloc||{},passiveFreeMode:source.passiveFreeMode===true,characterLevel:Math.max(1,Math.min(1000,Number(source.characterLevel)||1))};
+}
+function passives(){
+ const token=parseRoute().query.get('share');
+ if(token&&shared.token!==token)return layout('Shared Passive Tree','BUILD STUDIO','<p class="notice">Opening shared passive treeâ€¦</p>','layers');
+ if(token&&!shared.build)return layout('Shared Passive Tree','BUILD STUDIO',`<p class="notice">${esc(shared.error||'Shared passive tree unavailable.')}</p><button class="btn secondary" data-route="labs/passives">Open my passive planner</button>`,'layers');
+ const view=visiblePassiveState(),readonly=!!(token||parseRoute().query.get('build')),build=readonly?demoActive():ensureDraft();
+ return '<div class="studioPage studioSubPage">'+studioSharedHeader(build,'passives',readonly)+passiveBoard(view,state.treeData)+'</div>';
+}
+function storeTreePlan(){const plan={characterLevel:state.characterLevel,treeClassId:state.treeClassId,treeBranchId:state.treeBranchId,passiveAlloc:state.passiveAlloc,classAlloc:state.classAlloc,classAllocById:state.classAllocById,passiveFreeMode:state.passiveFreeMode};try{localStorage.setItem('arcana-v4-tree-plan',JSON.stringify(plan))}catch{}if(state.draft){Object.assign(state.draft,{characterLevel:state.characterLevel,passiveAlloc:structuredClone(state.passiveAlloc),classAllocById:structuredClone(state.classAllocById),passiveFreeMode:state.passiveFreeMode});persistDraft()}}
+function restoreTreePlan(){try{const p=JSON.parse(localStorage.getItem('arcana-v4-tree-plan')||'{}');state.characterLevel=Math.max(1,Math.floor(Number(p.characterLevel)||1));state.treeClassId=p.treeClassId||null;state.treeBranchId=p.treeBranchId||null;state.passiveAlloc=p.passiveAlloc&&typeof p.passiveAlloc==='object'?p.passiveAlloc:{};state.passiveFreeMode=typeof p.passiveFreeMode==='boolean'?p.passiveFreeMode:state.draft?.passiveFreeMode===true;state.classAlloc=p.classAlloc&&typeof p.classAlloc==='object'?p.classAlloc:{};state.classAllocById=p.classAllocById&&typeof p.classAllocById==='object'?p.classAllocById:{}}catch{}}
+async function loadTrees(){
+ // The passive and class simulators share immutable verified October 9, 2026 configuration.
+ // They must not depend on the older /game-assets/skill-tree export returning or being correctly formatted.
+ state.treeStatus='ready';
+ state.treeData=normalizeTree({});
+ if(!state.treeClassId||!state.treeData.classes.some(c=>c.id===state.treeClassId)){
+  state.treeClassId=state.treeData.classes.find(c=>c.name===state.draft?.className)?.id||state.treeData.classes[0]?.id||null;
+ }
+ state.classAlloc=state.classAllocById[state.treeClassId]||state.classAlloc||{};
+ if(!state.classAllocById[state.treeClassId])state.classAllocById[state.treeClassId]={...state.classAlloc};
+ if(parseRoute().route.startsWith('labs/skill')||parseRoute().route.startsWith('labs/passive'))render();
+}
+function adjustPassive(key,delta){if(parseRoute().route==='labs/passives'&&parseRoute().query.has('share')){toast('Shared trees are read-only');return;}const n=activePassiveNode(state.treeData,key),res=passiveAllowed(state.treeData,state.passiveAlloc,n,delta,state.characterLevel,state.passiveFreeMode);if(!res.ok){toast(res.reason);return}state.passiveAlloc=res.allocation;storeTreePlan();rerenderTreeKeepingFocus('passive',key,delta);if(state.layer?.type==='passive-inspector')inspectPassive(key);}
+function adjustClass(id,delta){const {cls,skill}=activeClassSkill(state.treeData,state.treeClassId,id);const res=classAllowed(cls,state.classAlloc,skill,delta,state.characterLevel);if(!res.ok){toast(res.reason);return}state.classAlloc=res.allocation;state.classAllocById[state.treeClassId||'default']=state.classAlloc;storeTreePlan();rerenderTreeKeepingFocus('class',id,delta);if(state.layer?.type==='class-inspector')inspectClass(id);}
+function inspectPassive(key){
+ const node=activePassiveNode(state.treeData,key),current=visiblePassiveState();if(!node||!current)return;
+ const rank=Number(current.passiveAlloc[key]||0),readOnly=current.passiveReadOnly===true;
+ const plus=passiveAllowed(state.treeData,current.passiveAlloc,node,1,current.characterLevel,current.passiveFreeMode),minus=passiveAllowed(state.treeData,current.passiveAlloc,node,-1,current.characterLevel,current.passiveFreeMode);
+ showLayer('PASSIVE NODE',`<section class="skillInspector"><span class="eyebrow">ROW ${node.row+1} Â· ${node.milestone?'MILESTONE':'PASSIVE'} ${readOnly?'Â· SHARED PREVIEW':''}</span><h2>${esc(passiveTitle(node.name))}</h2><p>${esc(node.description||'Verified in-game passive skill.')}</p><div class="passiveInspectorEffect"><strong>${esc(passiveValue(node,1))} per rank</strong><small>${rank?esc(passiveValue(node,rank))+' at your rank':'No points allocated'}</small></div><div class="rank"><button data-action="passiveadjust" data-arg="${esc(key)}|-1" ${readOnly||!minus.ok?'disabled':''} aria-label="Refund point">âˆ’</button><strong>${rank} / ${node.maxRank||'?'}</strong><button data-action="passiveadjust" data-arg="${esc(key)}|1" ${readOnly||!plus.ok?'disabled':''} aria-label="Allocate point">+</button></div><p class="reason">${esc(readOnly?'Shared preview Â· view only':!plus.ok?plus.reason:current.passiveFreeMode?'Free Allocation Â· progression rules are bypassed':`${current.characterLevel} character level Â· passive points remaining: ${Math.max(0,passivePointBudget(current.characterLevel)-allocatedTotal(current.passiveAlloc))}`)}</p></section>`,'passive-inspector');
+}
+function inspectClass(id){const {cls,skill}=activeClassSkill(state.treeData,state.treeClassId,id);if(!skill)return;const rank=+(state.classAlloc[id]||0);const plus=classAllowed(cls,state.classAlloc,skill,1,state.characterLevel),minus=classAllowed(cls,state.classAlloc,skill,-1,state.characterLevel);showLayer('CLASS SKILL',`<section class="skillInspector"><div class="classSkillInspectorArt">${codexOfficialArt({id:'game:class-skill:'+skill.id,gameKind:'class-skill',title:skill.name,className:cls.name},76)}</div><span class="eyebrow">${esc(cls.name.toUpperCase())} Â· SKILL #${esc(id)}</span><h2>${esc(skill.name)}</h2><p>${esc(skill.description||skill.effect||'Details available from the game configuration.')}</p>${skill.prereqs.length?`<p>Requires: ${esc(skill.prereqs.join(', '))}</p>`:''}<div class="rank"><button data-action="classadjust" data-arg="${esc(id)}|-1" ${minus.ok?'':'disabled'} aria-label="Refund skill point">âˆ’</button><strong>${rank} / ${skill.maxRank||'?'}</strong><button data-action="classadjust" data-arg="${esc(id)}|1" ${plus.ok?'':'disabled'} aria-label="Allocate skill point">+</button></div><p class="reason">${esc(!plus.ok?plus.reason:`${Math.max(0,classPointBudget(state.characterLevel)-allocatedTotal(state.classAlloc))} class points available`)}</p></section>`,'class-inspector')}
+function rerenderTreeKeepingFocus(kind,key,delta){
+ const scrolled=window.scrollY;
+ const oldRail=document.querySelector(kind==='passive'?'.coreTreePanel .treeRail':'.classTierRail');
+ const railScroll=oldRail?.scrollLeft||0;
+ render();
+ const newRail=document.querySelector(kind==='passive'?'.coreTreePanel .treeRail':'.classTierRail');
+ if(newRail)newRail.scrollLeft=railScroll;
+ window.scrollTo({top:scrolled,left:0,behavior:'instant'});
+ const selector=`[data-action="${kind}adjust"][data-arg="${CSS.escape(key+'|'+delta)}"]`;
+ const target=document.querySelector(selector);
+ if(target&&!target.disabled)target.focus({preventScroll:true});
+}
+function previewTreeLevel(value){
+ const level=Math.floor(Number(value));if(!Number.isFinite(level)||level<1||level>1000)return;
+ const number=node('treeLevel'),slider=node('treeLevelRange');
+ if(number&&document.activeElement!==number)number.value=String(level);
+ if(slider){slider.value=String(level);slider.style.setProperty('--level-progress',((level-1)/999*100)+'%')}
+ const kind=parseRoute().route==='labs/passives'?'passive':'class',spent=allocatedTotal(kind==='passive'?state.passiveAlloc:state.classAlloc),budget=kind==='passive'?passivePointBudget(level):classPointBudget(level);
+ const counter=document.querySelector('.pointCounter');if(counter){const total=counter.querySelector('strong'),remaining=counter.querySelector('small');if(total)total.textContent=spent+' / '+budget;if(remaining)remaining.textContent=Math.max(0,budget-spent)+' remaining'}
+}
+export function levelValidForAllocations(level,passiveAlloc,classAllocById,classAlloc){
+ const n=Number(level);if(!Number.isInteger(n)||n<1||n>1000)return {ok:false,reason:'Enter a level between 1 and 1000'};
+ if(allocatedTotal(passiveAlloc)>passivePointBudget(n))return {ok:false,reason:'Refund passive points before lowering level'};
+ const classPlans=[...Object.values(classAllocById||{}),classAlloc||{}];
+ if(classPlans.some(plan=>allocatedTotal(plan)>classPointBudget(n)))return {ok:false,reason:'Refund class points before lowering level'};
+ return {ok:true};
+}
+function commitTreeLevel(value){const n=Math.floor(Number(value));const valid=levelValidForAllocations(n,state.passiveAlloc,state.classAllocById,state.classAlloc);
+ if(!valid.ok){toast(valid.reason);previewTreeLevel(state.characterLevel);const input=node('treeLevel');if(input)input.value=String(state.characterLevel);return}
+ if(n===state.characterLevel){previewTreeLevel(n);return}
+ const prevY=window.scrollY;state.characterLevel=n;storeTreePlan();render();
+ window.scrollTo({top:prevY,left:0,behavior:'instant'});
+}
+function selectPassiveTier(value){
+ const tierCount=state.treeData?.passive?.tiers?.length||20,index=Math.max(0,Math.min(tierCount-1,Math.floor(Number(value)||0)));
+ state.passiveTier=index;state.passivePage=0;
+ const route=parseRoute();
+ if(route.route==='labs/passives'&&route.query.get('share')){
+  const query=new URLSearchParams(route.query);query.set('tier',String(index));
+  history.replaceState(history.state,'','#/labs/passives?'+query.toString());
+ }
+ render();
+}
+function passiveMove(delta){
+ const current=visiblePassiveState(),tierCount=state.treeData?.passive?.tiers?.length||0;
+ if(!tierCount||!current)return;
+ const next=current.passiveTier+delta;
+ if(next>=0&&next<tierCount)selectPassiveTier(next);
+}
+function classMove(delta){const groups=getBranch(getClass(state.treeData,state.treeClassId),state.treeBranchId)?.skills||[];const tierCount=skillTierGroups({skills:groups}).length;const next=state.classTierIndex+delta;if(next>=0&&next<tierCount){state.classTierIndex=next;render()}}
+function showSkillStudy(id){const entry=ASSASSIN_MOTIFS.find(x=>x[1]===id);if(!entry)return;
+ showLayer('ARCANA SKILL ART Â· DESIGN REVIEW',`<div class="previewHero"><span class="studyPreviewArt">${skillArt(id)}</span><div><span class="eyebrow">${esc(entry[2])} Â· PROVISIONAL</span><h2>${esc(entry[0])}</h2><p>Original Arcana icon concept inspired by the corresponding in-game visual. The final icon will be mapped to verified skill data and reviewed before publication.</p></div></div><div class="actionsGroup"><button class="btn secondary" data-route="labs/skills">${icon('git',16)} Return to Skill Tree</button></div><p class="mutedSmall">Inner class colors remain fixed. The surrounding UI follows the admin-selected theme.</p>`,'skill-study');}
+
+function lfg(sub='raids'){const {route,query}=parseRoute();if(route==='lfg/listing'){
+ const kind=query.get('kind'),id=query.get('id');const x=allLfg().find(i=>i.kind===kind&&i.id===id);
+ return layout('Raid Details','ARCANALFG',x?lfgDetail(x):`<div class="lfgEmpty">${lfgState.loading?'Loading live raid dataâ€¦':lfgState.error?'The live LFG feed is currently unavailable.':'Listing not found or no longer public.'}</div><button class="btn secondary" data-route="lfg/raids">Back to raids</button>`,'users');}
+ if(lfgState.tab==='guilds')lfgState.tab='active';
+ const info=lfgState.loading&&!lfgState.loaded?'<div class="lfgLoad">Checking current raid listingsâ€¦</div>':lfgState.error?`<div class="lfgWarning">${esc(lfgState.error)}. <a href="https://lfg.arcanacompanion.xyz/" target="_blank" rel="noopener noreferrer">Open existing LFG</a></div>`:'';
+ return layout('ArcanaLFG','LIVE RAIDS & COMMUNITY',info+lfgScreen(lfgState,sub,lfgState),'users');}
+function guildPage(){const {route,query}=parseRoute();const id=query.get('id'),selected=guildState.guilds.find(x=>x.id===id);
+ if(route==='lfg/guild')return layout('Guild Profile','ARCANALFG',guildDetail(selected),'shield');
+ if(route==='lfg/guild/new')return layout('Recruit Players','ARCANALFG',guildForm(null),'users');
+ if(route==='lfg/guild/edit'){if(!selected)return layout('Manage Guild','ARCANALFG','<div class="lfgEmpty">Your listing is missing or expired.</div>','shield');if(!readGuildOwner(id))return layout('Restore Listing','ARCANALFG',`<div class="guildFormPanel"><h2>Owner key needed</h2><p>Paste the recovery key created with this listing. Keys are not retrievable from the server.</p><input id="guildRecovery" autocomplete="off" placeholder="Recovery key"><button class="btn primary full" data-action="guildrecover" data-arg="${esc(id)}">Restore access</button></div>`,'shield');return layout('Manage Guild','ARCANALFG',guildForm(selected),'shield')}
+ if(query.has('q'))guildState.query=query.get('q').slice(0,100);
+ return layout('Guild Recruitment','ARCANALFG',guildDirectory(guildState.guilds,guildState.error,guildState.query)+`<div class="actionsGroup"><button class="btn secondary" data-route="labs/guild-tree">${icon('shield',16)} Guild Skill Tree Planner</button></div>`,'shield');}
+function verifiedReference(id){const e=verifiedState.entries.find(x=>x.id===id);if(!e)return layout('Reference unavailable','ARCANA REFERENCE','<div class="lfgEmpty">This verified reference could not be found. Try Universal Search again.</div><button class="btn secondary" data-action="search">Search Arcana</button>','book');
+ const details=(e.facts||[]).map(([k,v])=>`<div><small>${esc(k)}</small><strong>${esc(v)}</strong></div>`).join('');
+ const related=e.gameKind==='item'?`<button class="btn secondary" data-action="search" data-arg="${esc(e.title)}">${icon('search',16)} Find related equipment and tools</button><button class="btn secondary" data-route="calculators/upgrade">${icon('calculator',16)} Upgrade calculator</button>`:e.gameKind==='class-skill'?`<button class="btn secondary" data-route="labs/skills">${icon('git',16)} Open Class Tree</button>`:e.gameKind==='rune'||e.gameKind==='runeword'?`<button class="btn secondary" data-route="labs/runes">${icon('gem',16)} Open Rune Forge</button>`:e.gameKind.startsWith('pet')?`<button class="btn secondary" data-route="calculators/pet">${icon('paw',16)} Pet Calculator</button>`:'';
+ return layout(e.title,'VERIFIED GAME REFERENCE',`<div class="guildProfile"><span class="eyebrow">${esc(e.subtitle)} Â· OCTOBER 9 CONFIGURATION</span><h2>${esc(e.title)}</h2><p class="guildBio">${esc(e.description||'Verified game entry.')}</p><div class="guildFacts">${details}</div><div class="actionsGroup">${related}</div><p class="mutedSmall">Source: October 9 IdleArc game configuration. This is a concise reference record, not yet a full ArcanaWiki article or a recommendation. Values may change with subsequent patches.</p></div>`,'book');}
+async function guildSave(form){const fd=new FormData(form),data=Object.fromEntries(fd.entries());delete data.class;data.classes=fd.getAll('class');data.arcstoneBoost=fd.has('arcstoneBoost');const {route,query}=parseRoute(),id=query.get('id'),edit=route==='lfg/guild/edit'&&id,key=edit?readGuildOwner(id):'';
+ if(edit&&!key){toast('Owner key required');return}
+ const err=node('guildFormError');if(err){err.hidden=true;err.textContent=''}
+ try{const r=await fetch(V11_GUILD_ENDPOINT+(edit?'/'+encodeURIComponent(id):''),{method:edit?'PATCH':'POST',headers:{'content-type':'application/json',...(edit?{'x-owner-key':key}:{})},body:JSON.stringify(data),signal:AbortSignal.timeout(12000)});const result=await r.json();if(!r.ok)throw Error(result.error||'Could not save listing');if(!edit){saveGuildOwner(result.guild.id,result.ownerKey);showLayer('YOUR RECOVERY KEY',`<h2>Guild listing created</h2><p>Copy your private owner key. It cannot be retrieved later, and you will need it on another device.</p><div class="guildRecoveryKey">${esc(result.ownerKey)}</div><button class="btn primary full" data-action="guildcopykey" data-arg="${esc(result.ownerKey)}">${icon('bookmark',16)} Copy recovery key</button><button class="btn secondary full" data-route="lfg/guild" data-params="id=${encodeURIComponent(result.guild.id)}">View listing</button>`,'guildcreated');}
+ await loadGuilds(true);if(edit){go('lfg/guild',{id});toast('Listing saved and renewed for 30 days.')}}catch(e){if(err){err.hidden=false;err.textContent=e.message}else toast(e.message)}
+}
+function updateLiveResults(){const raw=String(lfgState.mightAmount||'').trim(),n=Number(raw);const might=raw!==''&&Number.isFinite(n)&&n>=0&&n<=999?n*1000**['x1','K','M','B','T','qa','qi','sx','sp'].indexOf(lfgState.mightUnit):null;const matched=lfgFilter(allLfg(),{...lfgState,tab:lfgState.tab==='guilds'?'all':lfgState.tab,might});const el=node('lfgCards');if(el)el.innerHTML=matched.map(lfgCard).join('')||'<div class="lfgEmpty">No matching public groups. Try a different filter.</div>';const count=document.querySelector('.lfgResultsHead strong');if(count&&lfgState.tab!=='guilds')count.textContent=matched.length+' matching groups';}
+function notFound(){return layout('Not found','ARCANA',`<div class="emptyCard"><h3>That destination is not available.</h3>${button('Return home','route','home','primary','home')}</div>`)}
+
+function guildTree(){
+ const q=parseRoute().query,link=q.toString();
+ if((q.has('l')||q.has('p'))&&state.guildTreeLinkKey!==link){
+  state.guildTreePlan=saveGuildTree(guildTreeFromLink(q));
+  state.guildUndo=[];state.guildRedo=[];
+  state.guildTreeLinkKey=link;
+ }
+ return layout('Guild Skill Tree','ARCANA LABS Â· GUILDS',guildTreeView(state.guildTreePlan,state.guildTreeTab,{canUndo:state.guildUndo.length>0,canRedo:state.guildRedo.length>0},state.guildBaseline),'shield');
+}
+function updateGuildTree(plan,{recordHistory=true}={}){
+ const prev=state.guildTreePlan;
+ const focus=document.activeElement?.closest?.('[data-action^="guild"]');
+ const focusAction=focus?.dataset.action,focusArg=focus?.dataset.arg;
+ const next=saveGuildTree(plan);
+ if(recordHistory&&JSON.stringify(next)!==JSON.stringify(prev)){
+  state.guildUndo.push({...prev});if(state.guildUndo.length>60)state.guildUndo.shift();
+  state.guildRedo=[];
+ }
+ state.guildTreePlan=next;
+ const params=guildTreeLinkParams(state.guildTreePlan),q=new URLSearchParams();
+ for(const [k,v] of Object.entries(params))if(v!==null&&v!==undefined&&v!=='')q.set(k,String(v));
+ state.guildTreeLinkKey=q.toString();
+ if(parseRoute().route==='labs/guild-tree'||parseRoute().route==='lfg/guild-tree'){
+  history.replaceState(history.state,'','#/labs/guild-tree'+(q.size?'?'+q:''));
+ }
+ render();
+ if(focusAction&&focusAction!=='guildlink'){
+  const selector='[data-action="'+focusAction+'"]'+(focusArg?'[data-arg="'+CSS.escape(focusArg)+'"]':'');
+  node('content').querySelector(selector)?.focus({preventScroll:true});
+ }
+}
+
+function routeView(){const {route,query}=parseRoute();switch(route){case 'home':return home();case 'directory':return directoryView();case 'journal':return journalIndexView({articles:journalState.articles,category:query.get('category')||'',loading:journalState.loading,error:journalState.error});case 'journal/article':return journalArticleView({article:journalState.bySlug.get(query.get('slug')),articles:journalState.articles,loading:journalState.loadingSlug===query.get('slug'),error:journalState.error});case 'journal-balance':return journalArticleView({article:journalState.bySlug.get('class-balance-top-250-season-2'),articles:journalState.articles,loading:journalState.loadingSlug==='class-balance-top-250-season-2',error:journalState.error});case 'journal-studio':return '<div class="launchPage"><h1>Journal Studio</h1><a class="btn primary" href="/journal/studio">Open editor â†’</a></div>';case 'user':return userCenterView(currentAccount());case 'recent':return recentView();case 'featured':return featuredView();case 'theme-playground':return isLocalThemePlayground()?themePlaygroundView():notFound();case 'admin':case 'admin/traffic':return adminConsoleView({admin:isAppearanceAdmin(),authEnabled:accountStatus().enabled,tab:parseRoute().query.get('tab')||'traffic'});case 'settings':return settingsView({admin:isAppearanceAdmin(),authEnabled:accountStatus().enabled,loggedIn:accountStatus().authenticated});case 'icons':return iconGalleryView();case 'wiki/about':return wikiAboutView();case 'wiki/topics':return wikiLandingView({entries:verifiedState.entries,loaded:verifiedState.loaded,error:verifiedState.error,itemCount:verifiedState.entries.length});case 'wiki/category':return wikiCategory(query.get('slug'))?wikiCategoryView(query.get('slug')):notFound();case 'wiki/topic':return wikiCategoryView(LEGACY_WIKI_TOPIC_REDIRECTS[query.get('slug')]||query.get('slug'));case 'calculators':return calculators();case 'calculators/damage':return calcDamage();case 'labs':return buildStudio();case 'wiki':return wikiLandingView({entries:verifiedState.entries,loaded:verifiedState.loaded,error:verifiedState.error,itemCount:verifiedState.entries.length});case 'lfg':return lfg();case 'guilds/crest':return guildHubPage('guilds',query,currentAccount());case 'guilds':case 'guilds/view':case 'guilds/register':case 'guilds/manage':case 'guilds/moderation':return guildHubPage(route,query,currentAccount());case 'beta':case 'beta/reports':return betaView(route);case 'account':case 'profile':case 'community':case 'community/post':case 'community/create':return communityPage(route,query);case 'wiki/items':return wikiLibraryView({entries:verifiedState.entries,category:'item',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/mechanics':return wikiLibraryView({entries:verifiedState.entries,category:'passive',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/guides':return wikiGuidesView();case 'wiki/studio':return wikiStudioView();case 'wiki/library':return wikiLibraryView({entries:verifiedState.entries,category:wikiState.category=query.get('kind')||'all',query:wikiState.query,limit:wikiState.limit,loaded:verifiedState.loaded,error:verifiedState.error});case 'wiki/article':{const a=wikiArticleById(query.get('id'));if(a)track('wiki:article:'+a.id);return wikiArticleView(a);}case 'wiki/guide':return fullGuide(query.get('id'));case 'wiki/item':return wikiItem(query.get('item'));case 'wiki/mechanic':return wikiMechanic(query.get('id'));case 'labs/build':return buildStudio();case 'labs/runes':return runeForge();case 'labs/pets':return petLab();case 'labs/guild-tree':case 'lfg/guild-tree':return guildTree();case 'labs/skills':return skills();case 'labs/passives':return passives();case 'calculators/upgrade':return pathfinderHub('range');case 'calculators/pathfinder':return calcPathfinder();case 'calculators/compare':return pathfinderHub('compare');case 'calculators/pet':return calcPet();case 'calculators/affixes':return calcAffixes();case 'calculators/ml-farm':return calcFarm();case 'lfg/raids':return lfg('raids');case 'lfg/guilds':return guildPage();case 'lfg/guild':return guildPage();case 'lfg/guild/new':return guildPage();case 'lfg/guild/edit':return guildPage();case 'lfg/listing':return lfg('listing');case 'reference/detail':case 'wiki/reference':{const id=query.get('id')||query.get('item');if(id)track(id);return wikiRecordView(verifiedState.entries.find(e=>e.id===id),verifiedState.entries,wikiState.category);} default:return notFound()}}
+function simpleBackBar(dest){
+ const simple=new Set(['directory','featured','recent','settings','icons','user','account','beta','community','lfg','admin','admin/traffic']);
+ if(!simple.has(dest))return '';
+ return '<nav class="arcanaContextBack" aria-label="Page navigation"><button type="button" data-action="safe-back">'+icon('back',17)+' Back</button><span>'+esc(dest==='settings'?'Options':dest==='user'||dest==='account'?'Profile':dest==='lfg'?'Guild & Raid Finder':dest.charAt(0).toUpperCase()+dest.slice(1))+'</span></nav>';
+}
+function syncAdminPortal(){const button=node('adminPortalBtn');if(!button)return;const permitted=isAppearanceAdmin();button.hidden=!permitted;button.tabIndex=permitted?0:-1;button.setAttribute('aria-hidden',String(!permitted));}
+function renderHeaderAvatar(){syncAdminPortal();const button=node('accountBtn');if(!button)return;const profile=currentAccount();const uri=profile?.avatarDataUrl;button.innerHTML=typeof uri==='string'&&/^data:image\/(?:webp|png|jpeg);base64,/.test(uri)?'<img src="'+esc(uri)+'" alt="">':(profile?.displayName?'<strong>'+esc(profile.displayName.slice(0,1).toUpperCase())+'</strong>':icon('users',22));button.setAttribute('aria-label',profile?'Open user center for '+profile.displayName:'Open guest user center')}
+function siteNoticeMarkup(route){const n=siteNotice();return n.enabled&&!route.startsWith('admin')?'<aside class="siteNotice" role="status">'+esc(n.text)+'</aside>':'';}
+let studioPetFocusHash='';
+function render(){const __treeRails=Object.fromEntries(['.classRail','.branchRail','.passiveTierRail'].map(sel=>[sel,document.querySelector(sel)?.scrollLeft??null]));const __prevGuildRail=document.querySelector('.guildTreeTabs');const __prevGuildX=__prevGuildRail?.scrollLeft??null;const __prevWikiRail=document.querySelector('.wikiCategoryScroll');const __prevWikiX=__prevWikiRail?__prevWikiRail.scrollLeft:null;const {route:dest,query:routeQuery}=parseRoute();if(dest==='journal'&&!journalState.loaded&&!journalState.loading)queueMicrotask(()=>void loadJournalIndex());if(dest==='journal/article'||dest==='journal-balance'){const slug=dest==='journal-balance'?'class-balance-top-250-season-2':routeQuery.get('slug');if(!journalState.loaded&&!journalState.loading)queueMicrotask(()=>void loadJournalIndex());if(slug&&!journalState.bySlug.has(slug)&&journalState.loadingSlug!==slug)queueMicrotask(()=>void loadJournalArticle(slug));}const adminDesign=(isAppearanceAdmin()&&['admin','admin/traffic'].includes(dest)&&parseRoute().query.get('tab')==='appearance')||isLocalThemePlayground();document.documentElement.dataset.arcanaAdminDesign=String(canEditThemeDraft());document.documentElement.dataset.arcanaThemeTryOn=String(tryOnTheme());setDesignPreview(adminDesign||tryOnTheme());if(!adminDesign)endDesignMiniSession();if(dest==='calculators/pathfinder'&&!recipeState.loading&&!recipeState.data&&!recipeState.error)queueMicrotask(()=>void loadPathfinderRecipes());if(dest.startsWith('lfg/guild')&&!guildState.loading&&Date.now()-guildState.updatedAt>30000)queueMicrotask(()=>void loadGuilds());if(dest.startsWith('lfg')&&!lfgState.loading&&(Date.now()-lfgState.updatedAt>30000)){queueMicrotask(()=>void loadPublicLfg())};applyTheme(dest);node('content').classList.toggle('homeFullscreen',dest==='home');node('content').innerHTML=simpleBackBar(dest)+siteNoticeMarkup(dest)+routeView()+(dest==='home'?'':(dest.startsWith('journal')?'':connectedNext(dest))+siteSignature());const petFocus=(dest==='labs/pets'||(dest==='labs/build'&&routeQuery.get('section')==='pets'));if(!petFocus)studioPetFocusHash='';else if(studioPetFocusHash!==location.hash){studioPetFocusHash=location.hash;requestAnimationFrame(()=>document.getElementById('studioPetSetup')?.scrollIntoView({block:'start',behavior:'instant'}));}if(dest==='home')queueMicrotask(()=>void hydrateJournalPreview());if(dest.startsWith('guilds'))queueMicrotask(()=>void loadGuildHub(dest==='guilds/crest'?'guilds':dest,parseRoute().query,render,currentAccount()));if(adminDesign)syncDesignMiniPreview();document.querySelectorAll('#arcanaDock [data-dock]').forEach(b=>{const active=b.dataset.dock===dest||(b.dataset.dock==='community'&&['account','profile','community/post','community/create'].includes(dest));b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});renderHeaderAvatar();if((dest==='labs/build'||dest==='labs/runes'||dest==='labs/passives')&&parseRoute().query.get('share')&&shared.token!==parseRoute().query.get('share'))queueMicrotask(()=>void resolveShared(parseRoute().query.get('share')));
+ if((dest==='admin'||dest==='admin/traffic')&&isAppearanceAdmin())queueMicrotask(()=>void loadAdminConsole(parseRoute().query.get('tab')||'traffic',render));if(dest==='wiki/studio')queueMicrotask(()=>void mountWikiStudio());if(dest==='beta'||dest==='beta/reports')queueMicrotask(()=>void loadBetaStatus(render));if(['account','profile','community','community/post','community/create'].includes(dest))queueMicrotask(()=>void loadCommunityPage(dest,parseRoute().query,render));const __nextGuildRail=node('content').querySelector('.guildTreeTabs');
+if(__nextGuildRail&&__prevGuildX!==null)__nextGuildRail.scrollLeft=__prevGuildX;
+for(const [selector,x] of Object.entries(__treeRails)){const rail=node('content').querySelector(selector);if(rail&&x!==null)rail.scrollLeft=x;}
+const __nextWikiRail=node('content').querySelector('.wikiCategoryScroll');if(__nextWikiRail){
+  if(__prevWikiX!==null)__nextWikiRail.scrollLeft=__prevWikiX;
+  const __activeWikiTab=__nextWikiRail.querySelector('a.active');
+  if(__activeWikiTab){
+    const bounds=__activeWikiTab.getBoundingClientRect(),view=__nextWikiRail.getBoundingClientRect(),pad=12;
+    if(bounds.left<view.left+pad)__nextWikiRail.scrollLeft=Math.max(0,__nextWikiRail.scrollLeft-(view.left+pad-bounds.left));
+    else if(bounds.right>view.right-pad)__nextWikiRail.scrollLeft+=bounds.right-(view.right-pad);
+  }
+ }const currentTab=node('content').querySelector('.labsTab.active');if(currentTab){const rail=currentTab.parentElement;rail.scrollLeft=Math.max(0,currentTab.offsetLeft-rail.offsetLeft-(rail.clientWidth-currentTab.clientWidth)/2)}document.title='Arcana';recordTrafficNavigation(dest);}
+function lockLayerScroll(){if(state.layerScrollLock)return;const body=document.body;const lock={x:window.scrollX||0,y:window.scrollY||0,position:body.style.position,top:body.style.top,left:body.style.left,right:body.style.right,width:body.style.width,overflow:body.style.overflow};state.layerScrollLock=lock;body.classList.add('noScroll');body.style.position='fixed';body.style.top=`-${lock.y}px`;body.style.left=`-${lock.x}px`;body.style.right='0';body.style.width='100%';body.style.overflow='hidden'}
+function unlockLayerScroll(){const lock=state.layerScrollLock;if(!lock)return;const body=document.body;body.classList.remove('noScroll');body.style.position=lock.position;body.style.top=lock.top;body.style.left=lock.left;body.style.right=lock.right;body.style.width=lock.width;body.style.overflow=lock.overflow;state.layerScrollLock=null;window.scrollTo(lock.x,lock.y)}
+function showLayer(kicker,body,type='panel'){if(!state.layer)lockLayerScroll();state.layer={type};node('layer').dataset.type=type;node('layerKicker').textContent=kicker;node('layerContent').innerHTML=body;node('layer').hidden=false}
+function closeLayer(){node('layer').hidden=true;delete node('layer').dataset.type;state.layer=null;unlockLayerScroll()}
+function showHomeMenu(id){const content=homeSubmenu(id);if(!content)return;showLayer('NAVIGATE',content,'home-menu');queueMicrotask(()=>node('layerContent')?.querySelector('.launchNavRow')?.focus({preventScroll:true}))}
+function overlayTitle(text,iconName='search'){return `<h2 class="sheetTitle">${icon(iconName,24)} ${esc(text)}</h2>`}
+function searchLanding(){return '<p class="arcanaSearchHint">Search items, guides, tools, and game mechanics.</p>';}
+function showSearch(q=''){
+ state.search=q;state.searchCategory='all';
+ showLayer('SEARCH',`<div class="arcanaSearchDock"><span class="arcanaSearchGlyph">${icon('search',23)}</span><input id="globalSearch" type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Search Arcana" placeholder="Search items, guides, toolsâ€¦" value="${esc(q)}"><button class="arcanaSearchClose" type="button" data-close aria-label="Close search">${icon('close',22)}</button></div><div id="searchResults" class="arcanaTypeahead" aria-live="polite">${q?resultMarkup(q):searchLanding()}</div>`,'search');
+ queueMicrotask(()=>{const input=node('globalSearch');if(input&&!node('layer').hidden)input.focus({preventScroll:true})});
+}
+function resultMarkup(query){
+ const {matches,guesses}=searchAsYouType(query,v11AllEntries(),{limit:9});
+ if(!matches.length&&!guesses.length)return '<p class="arcanaSearchHint">No matches yet. Try a shorter search.</p>';
+ if(matches.length)return '<div class="arcanaSearchMatches" role="region" aria-label="Search results">'+matches.map(cardEntity).join('')+'</div>';
+ return '<div class="arcanaSearchMatches" role="region" aria-label="Possible corrections"><div class="arcanaSearchGuessLabel">DID YOU MEAN</div>'+guesses.map(x=>'<button class="arcanaSearchGuess" type="button" data-action="searchterm" data-arg="'+esc(x.title)+'">'+icon('search',18)+'<span>'+esc(x.title)+'</span>'+icon('arrow',16)+'</button>').join('')+'</div>';
+}
+function refreshLiveSearch(){const box=node('searchResults');if(box)box.innerHTML=state.search.trim()?resultMarkup(state.search):searchFeatured()}
+function showPreview(id,fromSearch=false){const e=searchExtras().find(x=>x.id===id)||entityById.get(id)||lfgById(id)||guildEntries(guildState.guilds).find(x=>x.id===id)||verifiedState.entries.find(x=>x.id===id)||wikiArticleEntries().find(x=>x.id===id);if(!e)return;track(id);const title=esc(e.title);const buttons=e.kind==='verified'?`${button('View in ArcanaWiki','route',e.route,'primary','book')}${e.gameKind==='class-skill'?button('Open Class Tree','route','labs/skills','secondary','git'):''}${e.gameKind==='passive'?button('Open Passive Tree','route','labs/passives','secondary','layers'):''}${e.gameKind==='runeword'||e.gameKind==='rune'?button('Open Rune Forge','route','labs/runes','secondary','gem'):''}${e.gameKind==='item'?button('Compare this item','compare',e.id,'secondary','compare')+button('See upgrade costs','upgrade',e.id,'secondary','calculator'):''}`:e.kind==='wikiarticle'?button('Read quick guide','route',e.route,'primary','book'):e.kind==='guildlisting'?button('View guild recruitment profile','route',e.route,'primary','shield'):e.kind==='lfglisting'?`${button('View raid in Arcana','route',e.route,'primary','users')}<a class="btn secondary" href="${lfgDeepLink(e.source)}" target="_blank" rel="noopener noreferrer">${icon('up',16)} Apply on live LFG</a>`:e.kind==='lfgguild'?button('View guild activity','route',e.route,'primary','shield'):e.kind==='item'?`${button('View item in Wiki','wikiitem',e.id,'primary','book')}${button('Compare this item','compare',e.id,'secondary','compare')}${button('See upgrade costs','upgrade',e.id,'secondary','calculator')}${button('Add to Build Studio','equip',e.id,'secondary','flask')}`:e.kind==='guide'?`${button('Read full guide','route','wiki/guide?id='+e.id,'primary','book')}${e.buildId?button('Inspect complete build','route','labs/build?build='+e.buildId,'secondary','flask'):''}`:e.kind==='mechanic'?`${button('View in Wiki','route','wiki/mechanic?id='+e.id,'primary','book')}${e.id==='pet-equalisation'?button('Open Pet Calculator','route','calculators/pet','secondary','calculator'):''}`:e.kind==='build'?button('Open my Build Studio','route','labs/build','primary','flask'):button('Open destination','route',e.route||'home','primary','arrow');
+ state.layer={type:'preview',fromSearch};showLayer('QUICK PREVIEW',`${fromSearch?`<button class="backLink" data-action="backsearch">${icon('back',16)} Back to results</button>`:''}<div class="previewHero"><span class="detailMark">${icon(boxIcon(e.kind),32)}</span><div><span class="eyebrow">${esc(e.subtitle)}</span><h2>${title}</h2><p>${esc(e.description)}</p></div></div><div class="actionsGroup">${buttons}</div><p class="mutedSmall">Actions carry this entry's ID. You're never asked to find it twice.</p>`,'preview');state.layer={type:'preview',fromSearch};}
+function quick(){const rec=state.recent.map(id=>entityById.get(id)).filter(Boolean).slice(0,5);showLayer('QUICK ACCESS',`${overlayTitle('Jump back in','clock')}<span class="eyebrow">JUMP TO A DESTINATION</span><div class="arcanaShortcutGrid">${navCards(['items','guides','guildtree','raids'],{compact:true})}</div><span class="eyebrow">POPULAR TOOLS</span><div class="quickGrid">${[['Upgrade Costs','calculators/upgrade','calculator'],['Build Studio','labs/build','flask'],['Rune Forge','labs/runes','gem'],['Pet Compound','calculators/pet','paw'],['Guild Tree','labs/guild-tree','shield'],['ML Farm','calculators/ml-farm','sword']].map(([n,r,i])=>`<button data-route="${r}">${icon(i,22)}${esc(n)}${icon('arrow',14)}</button>`).join('')}</div><span class="eyebrow">RECENTLY VIEWED</span><div class="resultList">${rec.length?rec.map(cardEntity).join(''):'<div class="emptyMini">Viewed items, guides, and mechanics will appear here.</div>'}</div><p class="mutedSmall">Pinning and cross-device recent history will be added alongside optional accounts.</p>`,'quick')}
+function menu(){showLayer('ARCANA DIRECTORY',`${overlayTitle('Explore the ecosystem','menu')}<div class="menuList"><button data-route="settings"><span class="tinyIcon">${icon('sliders',22)}</span><strong>Settings</strong>${icon('arrow',17)}</button>${LINKS.map(([href,label,i])=>`<button data-route="${href}"><span class="tinyIcon">${icon(i,22)}</span><strong>${esc(label)}</strong>${icon('arrow',17)}</button>`).join('')}</div>${isAppearanceAdmin()?`<div class="sectionCard adminEntry"><span class="eyebrow">ADMINISTRATION</span><h3>Arcana Theme Studio</h3><p class="mutedSmall">Creator and admin tools.</p><div class="themeReadout">${themeColorPreview()}</div><button type="button" class="btn secondary full" data-route="settings">${icon('settings',17)} Appearance controls ${icon('arrow',16)}</button></div>`:''}`,'menu')}
+function themeColorPreview(){const t=themeStatus();const {main,secondary,highlight}=t.palette;return `<span class="themeSwatch" style="background:${main}"></span><span class="themeSwatch" style="background:${secondary}"></span><span class="themeSwatch" style="background:${highlight}"></span><span class="themeReadoutText">${t.available?'Central theme active':'Default palette (offline)'}</span>`}
+function pickerOptions(kind,slot,query=''){
+ if(kind==='gear')return gearPickerMarkup(slot,ensureDraft().className,query);
+ const verified=verifiedState.entries.filter(e=>e.gameKind==='item').map(e=>item(e.id));
+ const unique=new Map([...verified,...itemList].filter(Boolean).map(e=>[e.title.toLowerCase(),e]));
+ const normalized=slot==='ring2'?'ring':slot==='charm2'?'charm':slot;
+ const q=query.trim().toLowerCase();
+ const options=[...unique.values()].filter(e=>kind!=='gear'||!slot||!e.slot||e.slot===normalized).filter(e=>!q||[e.title,e.subtitle,e.description].some(v=>String(v||'').toLowerCase().includes(q)));
+ return options.length?options.map(e=>`<button class="resultRow" data-action="selectitem" data-arg="${esc(e.id)}"><span class="tinyIcon tinyGameArt">${gameArt(e,41)}</span><span class="resultText"><strong>${esc(e.title)}</strong><small>${esc(e.subtitle||e.description||'Equipment')}</small></span>${icon('plus',16)}</button>`).join(''):'<div class="emptyMini">No matching equipment in this slot.</div>';
+}
+function picker(kind,slot){
+ state.slotTarget={kind,slot};
+ if(kind==='gear'&&parseRoute().route==='labs/build'){
+  state.gearEdit=null;state.gearSearch='';render();return;
+ }
+ showLayer('SELECT EQUIPMENT',`${overlayTitle('Choose equipment','shield')}<div class="filterLine"><input type="search" id="gearPickerQuery" placeholder="Find equipmentâ€¦" autocomplete="off" aria-label="Search equipment"><span>${icon('search',18)}</span></div><div class="resultList" id="gearPickerItems">${pickerOptions(kind,slot)}</div>`,'picker');
+}
+document.addEventListener('input',e=>{
+ if(e.target?.id!=='gearPickerQuery'||state.slotTarget?.kind!=='gear')return;
+ state.gearSearch=String(e.target.value||'').slice(0,80);
+ const list=node('gearPickerItems');
+ if(list)list.innerHTML=gearPickerMarkup(state.slotTarget.slot,ensureDraft().className,state.gearSearch);
+});
+
+function openGearEditor(slot,value){
+ const entry=asGear(value),fallback=newGear(equipmentId(value));
+ if(!entry&&!fallback){toast('Equipment unavailable in verified game data');return;}
+ state.slotTarget={kind:'gear',slot};
+ state.gearEdit={...fallback,...entry};
+ if(!state.gearEdit.rarity)state.gearEdit.rarity=2;
+ if(!state.gearEdit.bonusTier)state.gearEdit.bonusTier=Math.max(2,state.gearEdit.rarity);
+ showGearEditor();
+}
+function showGearEditor(){
+ if(!state.slotTarget||!state.gearEdit)return;
+ if(parseRoute().route==='labs/build'){render();return;}
+ showLayer('CONFIGURE EQUIPMENT',gearEditorMarkup(state.slotTarget.slot,state.gearEdit,ensureDraft().className),'gear-editor');
+}
+function saveGearEdit(){
+ const {slot}=state.slotTarget||{},v=asGear(state.gearEdit),build=ensureDraft();
+ if(!slot||!v)return;
+ const errors=gearIssues(v,slot,build.className,build.equipment);
+ if(errors.length){toast(errors[0]);return;}
+ if(slot==='weapon'&&baseItem(v)?.twoHanded&&build.equipment.offhand){
+  build.equipment.offhand=null;
+  toast('Off hand cleared for two-handed weapon');
+ }
+ build.equipment[slot]=v;persistDraft();state.gearEdit=null;
+ if(parseRoute().route==='labs/build'){state.slotTarget=null;state.gearSearch='';render();}
+ else{closeLayer();render();}
+ toast('Equipment saved');
+}
+function chooseItem(id){const target=state.slotTarget;if(!target)return;
+ if(target.kind==='gear'){openGearEditor(target.slot,id);return;}
+ closeLayer();
+ const inHub=parseRoute().route==='calculators/pathfinder';if(target.kind==='upgrade'){if(inHub)navigate('calculators/pathfinder',{view:'upgrade',item:id});else navigate('calculators/upgrade',{item:id})}if(target.kind==='compare'){if(target.slot==='left')state.compareLeft=id;else state.compareRight=id;if(inHub)navigate('calculators/pathfinder',{view:'compare',left:state.compareLeft,right:state.compareRight});else navigate('calculators/compare',{left:state.compareLeft,right:state.compareRight})}
+}
+function go(route,params={}){
+ if(route==='journal-balance'){route='journal/article';params={slug:'class-balance-top-250-season-2'}}
+ if(route==='journal-studio'){location.assign('/journal/studio');return;}
+ if(route==='calculators/upgrade'||route==='calculators/compare'){const mode=route.endsWith('/upgrade')?'upgrade':'compare';params={...params,view:mode};route='calculators/pathfinder'}
+ const current=parseRoute();
+ if((route==='beta'||route==='beta/reports')&&current.route!=='beta'&&current.route!=='beta/reports'){try{sessionStorage.setItem('arcana-beta-last-route',location.hash||'#/home')}catch{}}
+ if(current.route==='wiki/library'&&route==='wiki/reference'){
+  wikiState.returnPosition={kind:current.query.get('kind')||'all',top:window.scrollY};
+ }
+ const saved=wikiState.returnPosition;
+ const returning=current.route==='wiki/reference'&&route==='wiki/library'&&saved&&saved.kind===(params.kind||'all');
+ closeLayer();
+ navigate(route,params);
+ if(returning){
+  wikiState.returnPosition=null;
+  requestAnimationFrame(()=>window.scrollTo({top:saved.top,behavior:'instant'}));
+ }else{
+  window.scrollTo({top:0,behavior:'instant'});
+ }
+}
+function syncWorkshopInputs(){
+ if(!canEditThemeDraft())return;
+ const design=readDesign();
+ const px=new Set(['roundness','buttonRoundness','cardPadding','borderWidth','buttonHeight','heroActionHeight','heroActionBorder']);
+ for(const e of document.querySelectorAll('.arcanaDesignLab [data-design-field]')){
+  const key=e.dataset.designField;if(!Object.hasOwn(design,key))continue;
+  e.value=String(design[key]);
+  const value=document.querySelector('[data-design-value="'+key+'"]');
+  if(value)value.textContent=design[key]+(px.has(key)?' px':'%');
+ }
+ for(const e of document.querySelectorAll('.arcanaDesignLab [data-design-hex]')){
+  e.value=design[e.dataset.designHex]||'';
+  e.removeAttribute('aria-invalid');
+  const label=document.querySelector('[data-design-status="'+e.dataset.designHex+'"]');
+  if(label)label.textContent='HEX code';
+ }
+ const psy=document.querySelector('.arcanaDesignLab .psyPalettePicker');if(psy){psy.dataset.psyActive=String(['groove-melt','orbit-jelly','doodle-rift','prism-puddle'].includes(design.pattern));psy.dataset.psyMode=design.psyPaletteMode;}
+ for(const tile of document.querySelectorAll('.arcanaDesignLab [data-theme-pattern]'))tile.setAttribute('aria-pressed',String(tile.dataset.themePattern===design.pattern));
+ for(const card of document.querySelectorAll('.studioLayerCard[data-studio-layer]')){const key=card.dataset.studioLayer==='panels'?'panelPattern':card.dataset.studioLayer==='feature'?'featurePattern':'pattern';card.dataset.layerInherited=String(design[key]==='inherit');card.dataset.layerAbsent=String(design[key]==='none'||design[key]==='plain');}
+  const artPalette=document.querySelector('.visionArtPalette');if(artPalette)artPalette.dataset.visionActive=String(design.pattern.startsWith('vision-'));
+  for(const tile of document.querySelectorAll('.studioV2 .designPreset[data-collection="studio-v2"]')){
+   const p=DESIGN_PRESETS[tile.dataset.arg],selected=p&&p.pattern===design.pattern&&p.artPrimary===design.artPrimary&&p.main===design.main;
+   tile.classList.toggle('selected',!!selected);tile.setAttribute('aria-pressed',String(!!selected));
+  }
+ for(const button of document.querySelectorAll('.arcanaDesignLab [data-hero-cta-style]'))button.setAttribute('aria-pressed',String(button.dataset.heroCtaStyle===design.heroActionStyle));
+ for(const preset of document.querySelectorAll('.arcanaDesignLab .designPreset')){
+  const matches=preset.dataset.presetSearch&&preset.dataset.arg;
+  if(matches){const selected=preset.dataset.arg===Object.keys(DESIGN_PRESETS).find(id=>DESIGN_PRESETS[id].main===design.main&&DESIGN_PRESETS[id].action===design.action&&DESIGN_PRESETS[id].pattern===design.pattern);preset.classList.toggle('selected',selected);preset.setAttribute('aria-pressed',String(selected));}
+ }
+ syncDesignMiniPreview();
+}
+function action(name,arg,btn){if(['accent','custom-accent','site-surface','icon-color','icon-mode'].includes(name)&&!isAppearanceAdmin()){toast('Only Arcana admins can edit appearance');return;}switch(name){
+ case 'chooseportrait':node('studioPortraitUpload')?.click();break;
+ case 'removeportrait':if(clearStudioPortrait()){render();toast('Class icon restored')}else toast('Could not remove the custom image');break;
+ case 'accent':if(setAccent(arg)){render();toast('Theme updated')}else toast('Unable to save theme preference');break;
+  case 'reset-design':if(!canEditThemeDraft()){toast('Admin access required');break}if(resetDesign()){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Design reset. Undo is available.')}break;
+  case 'preview-design':{focusDesignMiniPreview();break;}
+  case 'undo-design':if(!canEditThemeDraft()){toast('Admin access required');break}if(undoDesign()){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Previous design restored')}else toast('No recent design change to undo');break;
+  case 'theme-try-on':{if(isLocalThemePlayground()&&changeTryOn(true)){go('home');toast('Your private theme is now visible around Arcana. Browser only.');}break;}
+   case 'theme-try-off':{if(isLocalThemePlayground()&&changeTryOn(false)){render();toast('Site preview disabled. Studio preview stays editable.');}break;}
+   case 'random-signature':{if(!canEditThemeDraft())break;const keys=Object.keys(DESIGN_PRESETS).filter(id=>DESIGN_PRESETS[id].collection==='studio-v2');const design=readDesign();const other=keys.filter(id=>DESIGN_PRESETS[id].pattern!==design.pattern);const source=other.length?other:keys;const chosen=source[Math.floor(Math.random()*source.length)];if(chosen&&applyDesignPreset(chosen)){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Studio look: '+DESIGN_PRESETS[chosen].name+' Â· Private draft');}break;}
+   case 'design-preset':if(!canEditThemeDraft()){toast('Admin access required');break}if(applyDesignPreset(arg)){applyTheme(parseRoute().route);syncWorkshopInputs();toast('Palette applied. Undo is available.')}else toast('Palette unavailable');break;
+  case 'custom-accent':{const hex=node('arcanaCustomAccentHex')?.value.trim()||node('arcanaCustomAccentPicker')?.value;if(setCustomAccent(hex)){render();toast('Custom color saved')}else toast('Enter a valid six-digit hex color such as #A98BFF');break;}
+ case 'site-surface':if(setSiteSurface(arg)){render();toast('Site appearance updated')}else toast('Unable to save site appearance');break;
+ case 'icon-color':if(setIconColor(arg)){render();toast('Icon color updated')}else toast('Unable to save icon color');break;
+ case 'icon-mode':if(setIconMode(arg)){render();toast('Icon appearance updated')}else toast('Unable to save icon appearance');break;
+ case 'journal-retry':journalState.loaded=false;journalState.error='';if(parseRoute().route==='journal/article')void loadJournalArticle(parseRoute().query.get('slug'));else void loadJournalIndex();render();break;
+ case 'safe-back':if(history.state?.arcana)navigateBack();else go('home');break;
+  case 'wiki-back':if(history.state?.arcana&&history.length>1)navigateBack();else if(arg==='wiki/category'){const article=wikiArticleById(parseRoute().query.get('id'));const parent=article?wikiCategoryForArticle(article):null;go(parent?'wiki/category':'wiki',parent?{slug:parent.id}:{})}else go(['wiki','wiki/guides','wiki/library'].includes(arg)?arg:'wiki');break;
+  case 'skipmain':node('content')?.focus({preventScroll:false});break;
+  case 'homemenu':if(arg==='pathfinder')go('calculators/pathfinder');else if(arg==='tools')go('calculators');else showHomeMenu(arg);break;
+ case 'wikishare':{
+  if(!wikiArticleById(arg)){toast('Guide unavailable');break;}
+  const url=location.origin+location.pathname+location.search+'#/wiki/article?id='+encodeURIComponent(arg);
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Guide link copied')).catch(()=>window.prompt('Copy guide link',url));
+  else window.prompt('Copy guide link',url);
+  break;
+ }
+ case 'wikirefshare':{
+  const id=String(arg||'');
+  if(!verifiedState.entries.some(x=>x.id===id)){toast('Reference unavailable');break;}
+  const url=location.origin+location.pathname+location.search+'#/wiki/reference?id='+encodeURIComponent(id);
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Reference link copied')).catch(()=>window.prompt('Copy reference link',url));
+  else window.prompt('Copy reference link',url);
+  break;
+ }
+ case 'wikisection':{const slug=String(arg||'');if(!/^[a-z0-9-]{1,100}$/.test(slug))break;const target=document.getElementById('section-'+slug);if(target){target.scrollIntoView({behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});target.querySelector('h2')?.focus({preventScroll:true});}break;}
+ case 'wikitop':window.scrollTo({top:0,behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});break;
+ case 'guildtreetab':state.guildTreeTab=arg;render();node('content').querySelector('.guildTreeTabs button.active')?.focus({preventScroll:true});break;
+ case 'path-refresh':recipeState.error='';recipeState.data=null;void loadPathfinderRecipes();break;
+ case 'path-mode':{
+ if(!['normal','awakened'].includes(arg))break;
+ updatePathfinderQuick({mode:arg,stage:arg==='awakened'?'A1':'T1',level:1},true);break;
+}
+case 'path-stage':pathfinderStage(arg);break;
+case 'path-step':{
+ const model=recipeState.data&&timelineModel(recipeState.data,state.pathfinderQuick);
+ const value=Number(arg);if(model&&Number.isInteger(value)&&value>=0&&value<=model.active.max)updatePathfinderQuick({level:value});break;
+}
+case 'path-prev':movePathfinderStep(-1);break;
+case 'path-next':movePathfinderStep(1);break;
+
+ case 'farmreset':state.farmPlan=saveFarmPlan({mode:state.farmPlan.mode,times:[null,null,null]});render();break;
+ case 'guildbaseline':state.guildBaseline=saveGuildBaseline(state.guildTreePlan);state.guildTreeTab='comparison';render();toast('Guild comparison baseline saved.');break;
+ case 'guildbaselineclear':if(window.confirm('Clear this locally saved comparison baseline?')){state.guildBaseline=clearGuildBaseline();render();toast('Comparison baseline cleared.')}break;
+ case 'guildundo':{const prev=state.guildUndo.pop();if(!prev){toast('No earlier guild changes');break;}state.guildRedo.push({...state.guildTreePlan});updateGuildTree(prev,{recordHistory:false});break;}
+ case 'guildredo':{const next=state.guildRedo.pop();if(!next){toast('Nothing to redo');break;}state.guildUndo.push({...state.guildTreePlan});updateGuildTree(next,{recordHistory:false});break;}
+ case 'guildlevelminus':updateGuildTree(guildTreeWithLevel(state.guildTreePlan,state.guildTreePlan.level-1));break;
+ case 'guildlevelplus':updateGuildTree(guildTreeWithLevel(state.guildTreePlan,state.guildTreePlan.level+1));break;
+ case 'guildpointadd':{const r=allocateGuildPoint(state.guildTreePlan,arg);if(r.reason)toast(r.reason);else updateGuildTree(r.plan);break;}
+ case 'guildpointremove':{const r=removeGuildPoint(state.guildTreePlan,arg);if(r.reason)toast(r.reason);else updateGuildTree(r.plan);break;}
+ case 'guildpointmax':{const r=maxGuildPoints(state.guildTreePlan,arg);if(!r.added)toast(r.reason||'No points available');else updateGuildTree(r.plan);break;}
+ case 'guildreset':if(window.confirm('Reset this saved guild tree plan? This does not reset your in-game guild.'))updateGuildTree(freshGuildTree(state.guildTreePlan.level));break;
+ case 'guildlink':{
+  const link=location.href;
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(link).then(()=>toast('Guild build link copied')).catch(()=>window.prompt('Copy your guild tree link',link));
+  else window.prompt('Copy your guild tree link',link);
+  break;
+ }
+case 'searchcategory':state.searchCategory=arg;refreshLiveSearch();break;case 'guildrefresh':void loadGuilds(true);break;case 'guildcopykey':navigator.clipboard?.writeText(arg).then(()=>toast('Recovery key copied')).catch(()=>toast('Copy the key manually'));break;case 'guildrecover':{const key=node('guildRecovery')?.value?.trim();if(!key||key.length<30){toast('Enter the full recovery key');break;}saveGuildOwner(arg,key);closeLayer();go('lfg/guild/edit',{id:arg});break;}case 'guilddelete':{if(!window.confirm('Delete this guild listing? This cannot be undone.'))break;const key=readGuildOwner(arg);fetch(V11_GUILD_ENDPOINT+'/'+encodeURIComponent(arg),{method:'DELETE',headers:{'x-owner-key':key}}).then(async r=>{const b=await r.json();if(!r.ok)throw Error(b.error||'Delete failed');await loadGuilds(true);go('lfg/guilds');toast('Guild listing deleted')}).catch(e=>toast(e.message));break;}case 'lfgtab':lfgState.tab=arg;render();break;case 'lfgrefresh':void loadPublicLfg(true);break;case 'lfgclear':Object.assign(lfgState,{query:'',tier:'',characterClass:'',mightAmount:'',mightUnit:'M'});render();break;case 'lfgguild':lfgState.query=arg;lfgState.tab='all';go('lfg/raids');break;case 'passiveinspect':inspectPassive(arg);break;case 'classinspect':inspectClass(arg);break;case 'passiveadjust':{const [key,d]=arg.split('|');adjustPassive(key,+d);break;}case 'classadjust':{const [key,d]=arg.split('|');adjustClass(key,+d);break;}case 'passivetier':selectPassiveTier(arg);break;case 'passiveprev':passiveMove(-1);break;case 'passivenext':passiveMove(1);break;case 'passivefirst':selectPassiveTier(0);break;case 'passivemilestone':{node('content').querySelector('.passivePanel .milestoneRow')?.scrollIntoView({block:'center',behavior:'smooth'});break;}case 'classselect':{
+ const target=state.treeData?.classes?.find(x=>x.id===arg);if(!target||state.treeClassId===arg)break;
+ if(state.treeClassId)state.classAllocById[state.treeClassId]=state.classAlloc;
+ state.treeClassId=arg;state.treeBranchId=null;state.classAlloc=state.classAllocById[arg]||{};
+ state.classTierIndex=0;
+ if(state.draft){
+  const previous=state.draft.className;
+  state.draft.className=target.name;
+  if(previous!==target.name){
+   for(const [slot,itemValue] of Object.entries(state.draft.equipment||{})){
+    if(itemValue&&!allowedItem(itemValue,slot,target.name))state.draft.equipment[slot]=null;
+   }
+  }
+ }
+ storeTreePlan();render();break;
+}case 'branchselect':state.treeBranchId=arg;state.classTierIndex=0;storeTreePlan();render();break;case 'classtier':state.classTierIndex=+arg;render();break;case 'classprev':classMove(-1);break;case 'classnext':classMove(1);break;case 'resetpassives':{if(allocatedTotal(state.passiveAlloc)>0&&!confirm('Refund all allocated passive points?'))break;state.passiveAlloc={};storeTreePlan();render();break;}case 'resetclasses':{
+ if(allocatedTotal(state.classAlloc)>0&&!window.confirm('Reset all allocated class skill points for this class?'))break;
+ state.classAlloc={};state.classAllocById[state.treeClassId||'default']={};storeTreePlan();render();break;
+}
+case 'resetbranch':{
+ const cls=getClass(state.treeData,state.treeClassId),b=getBranch(cls,state.treeBranchId);
+ if(!b)break;const count=b.skills.reduce((sum,s)=>sum+Number(state.classAlloc[s.id]||0),0);
+ if(!count)break;
+ if(!window.confirm('Refund '+count+' points from '+b.name+'?'))break;
+ // A full branch reset can invalidate skill prerequisites in this class; rebuild allocation conservatively.
+ const candidate={...state.classAlloc};for(const sk of b.skills)delete candidate[sk.id];
+ state.classAlloc=candidate;state.classAllocById[cls.id]=candidate;storeTreePlan();render();break;
+}case 'reloadtree':void loadTrees();
+void loadPublicLfg();break;case 'search':showSearch(arg||'');break;case 'wikicat':navigate('wiki/library',{kind:arg});break;case 'wikimore':{
+ const before=wikiState.limit;
+ wikiState.limit+=36;
+ const category=parseRoute().query.get('kind')||'all';
+ const result=wikiRecordRows(verifiedState.entries,category,wikiState.query,wikiState.limit);
+ const container=node('wikiRecords'),more=node('wikiMore'),showing=node('wikiShowing');
+ if(container)container.innerHTML=result.html;
+ if(more)more.hidden=!result.hasMore;
+ if(showing)showing.textContent=result.count?'Showing '+Math.min(result.count,wikiState.limit)+' of '+result.count:'Season 2 reference library';
+ // Preserve the window scroll position rather than rebuilding the entire page.
+ break;
+}case 'wikiretry':{if(btn){btn.disabled=true;btn.textContent='Retryingâ€¦';}void loadVerifiedIndex();break;}case 'wikiclear':wikiState.query='';wikiState.limit=36;render();break;case 'skillpreview':showSkillStudy(arg);break;case 'clearsearch':showSearch('');break;case 'searchterm':showSearch(arg);break;case 'quick':quick();break;case 'menu':menu();break;case 'backsearch':showSearch(state.lastSearch);break;case 'back':go('home');break;case 'route':{const [path,q='']=arg.split('?');go(path,Object.fromEntries(new URLSearchParams(q)));break;}case 'wikiitem':if(arg.startsWith('game:item:'))go('wiki/reference',{id:arg});else go('wiki/item',{item:arg});break;case 'upgrade':go('calculators/upgrade',{item:arg});break;case 'compare':{state.compareLeft=arg;go('calculators/compare',{left:arg,right:state.compareRight});break;}case 'equip':{const g=baseItem(arg);if(!g){toast('Item not in verified equipment catalog');break;}const slot={main_hand:'weapon',off_hand:'offhand',amulet:'neck'}[g.slot]||g.slot;go('labs/build');openGearEditor(slot,arg);break;}
+case 'pickgear':{
+ const b=ensureDraft();
+ if(arg==='offhand'&&baseItem(b.equipment.weapon)?.twoHanded){toast('Remove the two-handed weapon to equip an off hand');break;}
+ if(b.equipment[arg])openGearEditor(arg,b.equipment[arg]);else picker('gear',arg);
+ break;
+}
+case 'inspectgear':{
+ const raw=demoActive().equipment[arg];
+ if(raw)showLayer('EQUIPPED ITEM',gearInspectMarkup(arg,raw),'gear-inspect');
+ else showLayer('EMPTY EQUIPMENT SLOT',`<p class="lead">This slot is empty. Copy the build to edit it.</p>`);
+ break;
+}
+case 'gearchangebase':{const slot=state.slotTarget?.slot;if(slot)picker('gear',slot);break;}
+case 'gearsave':saveGearEdit();break;
+case 'gearcancel':{state.gearEdit=null;state.slotTarget=null;state.gearSearch='';if(state.layer)closeLayer();else render();break;}
+case 'gearclear':{
+ const slot=state.slotTarget?.slot;if(!slot)break;
+ const b=ensureDraft();b.equipment[slot]=null;persistDraft();state.gearEdit=null;state.slotTarget=null;state.gearSearch='';if(state.layer)closeLayer();render();toast('Equipment removed');break;
+}
+case 'petcompoundstep':{
+ const step=Number(arg);if(![1,5,10,25].includes(step))break;
+ state.compoundQuick=saveCompoundPlan({...state.compoundQuick,level:state.compoundQuick.level+step});render();break;
+}case 'petcompoundreset':{state.compoundQuick=saveCompoundPlan({...state.compoundQuick,level:0});render();break;}
+case 'petaffixstep':{
+ const step=Number(arg);if(![1,10,25,50,100].includes(step))break;
+ state.affixCostQuick=saveAffixCostPlan({...state.affixCostQuick,targetLevel:state.affixCostQuick.targetLevel+step});render();break;
+}case 'petaffixreset':{state.affixCostQuick=saveAffixCostPlan({...state.affixCostQuick,targetLevel:state.affixCostQuick.currentLevel});render();break;}
+case 'comparetier':{const tier=Number(arg);if(!Number.isInteger(tier)||tier<1||tier>6)break;state.compareTier=tier;render();break;}case 'pickcompare':picker('compare',arg);break;case 'chooseupgrade':picker('upgrade');break;case 'selectitem':chooseItem(arg);break;case 'clonebuild':{const source=parseRoute().query.get('share')?shared.build:buildTemplate(arg);if(!source){toast('Shared build unavailable');break;}state.draft=normalizeBuild(deepCopy(source));state.runeSelected=null;state.runeHistory=[];state.draft.id='local-draft';state.draft.title=String(source.title||'Copied build').replace(/demonstration/ig,'copied').slice(0,90);state.draft.version='LOCAL';saveDraft(state.draft);go('labs/build');toast('Build copied into your own local draft.');break;}
+case 'resetbuild':{if(!confirm('Start a new blank build? This replaces your current local Build Studio draft. Save or share it first if you want to keep a copy.'))break;state.activePresetId=null;state.draft=newPersonalBuild();clearStudioPortrait();saveDraft(state.draft);state.runeSelected=null;state.runeHistory=[];go('labs/build');toast('New blank build created.');break;}
+case 'savecloud':{persistDraft();void saveNewAccountBuild(ensureDraft()).then(b=>toast('Saved '+b.title+' to your account.')).catch(err=>toast(err.message||'Sign in to your account first.'));break;}
+case 'sharepassives':{
+ storeTreePlan();
+ // Share only the passive preview: never leak private notes, gear, pet details or other build data.
+ const plan={id:'passive-tree-preview',title:'Passive Skill Tree Preview',className:state.draft?.className||'Warrior',
+  characterLevel:state.characterLevel,passiveAlloc:structuredClone(state.passiveAlloc),
+  passiveFreeMode:state.passiveFreeMode===true,equipment:{},runes:[]};
+ void shareBuildToken(plan).then(token=>{
+  const url=location.origin+location.pathname+'#/labs/passives?share='+encodeURIComponent(token)+'&tier='+state.passiveTier;
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Passive tree link copied')).catch(()=>window.prompt('Copy passive tree link',url));
+  else window.prompt('Copy passive tree link',url);
+ }).catch(err=>toast(String(err.message||err)));
+ break;
+}
+case 'sharebuild':{const b=ensureDraft();persistDraft();void shareBuildToken(b).then(token=>{const url=location.origin+location.pathname+'#/labs/build?share='+encodeURIComponent(token);if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Shareable build link copied')).catch(()=>window.prompt('Copy your build link',url));else window.prompt('Copy your build link',url);}).catch(err=>toast(String(err.message||err)));break;}
+case 'savebuild':if(state.draft)saveDraft(state.draft);toast('Build saved on this device.');break;case 'savepreset':{const preset=saveLocalBuildPreset(ensureDraft());if(!preset){toast('Preset shelf is full or storage is unavailable');break;}state.activePresetId=preset.id;render();toast('Saved '+preset.title+' as a local preset');break;}case 'deletepreset':{const id=state.activePresetId||arg;if(!id)break;const preset=localBuildPresetById(id);if(!preset)break;if(!confirm('Delete saved preset â€œ'+preset.title+'â€? This does not delete the current working draft.'))break;if(!removeLocalBuildPreset(id)){toast('Could not remove this preset');break;}state.activePresetId=null;render();toast('Preset deleted');break;}case 'runesave':persistDraft();toast('Rune grid saved with your character.');break;
+case 'newrune':state.runeSelected=null;state.runePending=null;state.runeComposerOpen=true;render();break;
+case 'runecancel':state.runeComposerOpen=false;state.runePending=null;render();break;
+case 'runeplacementstop':state.runePending=null;state.runeComposerOpen=false;render();break;
+case 'runewordtoggle':{if(parseRoute().query.get('build')||parseRoute().query.get('share'))break;const b=ensureDraft();b.usedRunewords=Array.isArray(b.usedRunewords)?b.usedRunewords:[];b.usedRunewords=b.usedRunewords.includes(arg)?b.usedRunewords.filter(x=>x!==arg):[...b.usedRunewords,arg];persistDraft();break;}
+case 'runefamily':{const family=RUNE_FAMILIES.includes(arg)?arg:'Fury',def=RUNE_FAMILY_DETAILS[family];state.runeFamily=family;if(state.runeSelected){mutateRunes(b=>{const r=b.runeBoard.find(r=>r.id===state.runeSelected);if(r){r.family=family;r.primary=def.primary}})}else{state.runeSecondary=def.suggestedSecondary;render()}break;}
+case 'runeshape':{const shape=arg in RUNE_SHAPES?arg:'small';state.runeShape=shape;if(state.runeSelected){const b=ensureDraft(),r=b.runeBoard.find(r=>r.id===state.runeSelected);if(!r)break;const candidate={...r,shape,w:RUNE_SHAPES[shape].w,h:RUNE_SHAPES[shape].h};const issue=runeIssue(b.runeBoard,candidate,r.id,b.monsterLevel);if(issue){toast(issue);break;}mutateRunes(b=>{Object.assign(b.runeBoard.find(x=>x.id===state.runeSelected),{shape,w:candidate.w,h:candidate.h})});}else render();break;}
+case 'runeplace':{if(parseRoute().query.get('build')||parseRoute().query.get('share')){toast('Copy this build to edit its rune layout');break;}const config=state.runePending||(state.runeComposerOpen?{family:state.runeFamily,shape:state.runeShape,secondary:state.runeSecondary}:null);if(!config){toast('Tap New Rune to configure a rune first');break;}state.runeComposerOpen=false;state.runePending=config;const [x,y]=arg.split('|').map(Number),shape=RUNE_SHAPES[config.shape];const b=ensureDraft();const candidate={id:nextRuneId(b.runeBoard),family:config.family,secondary:config.secondary,shape:config.shape,x,y,w:shape.w,h:shape.h};const res=putRune(b.runeBoard,candidate,b.monsterLevel);if(!res.ok){render();toast(res.reason);break;}state.runeSelected=candidate.id;state.runePending=config;mutateRunes(build=>{build.runeBoard=res.placements;});break;}
+case 'runemove':{if(parseRoute().query.get('build')||parseRoute().query.get('share'))break;const [id,xs,ys]=arg.split('|'),x=Number(xs),y=Number(ys),b=ensureDraft(),r=b.runeBoard.find(v=>v.id===id);if(!r)break;const candidate={...r,x,y},issue=runeIssue(b.runeBoard,candidate,id,b.monsterLevel);if(issue){toast(issue);break;}state.runeSelected=id;mutateRunes(build=>{const placed=build.runeBoard.find(item=>item.id===id);if(placed){placed.x=x;placed.y=y;}});break;}
+case 'runeselect':{state.runeSelected=arg;const r=ensureDraft().runeBoard.find(r=>r.id===arg);if(r){state.runeFamily=r.family;state.runeSecondary=r.secondary;state.runeShape=r.shape;}render();break;}
+case 'runeremove':if(parseRoute().query.get('build')||parseRoute().query.get('share'))break;state.runeSelected=null;mutateRunes(b=>{b.runeBoard=removeRune(b.runeBoard,arg)});break;
+case 'runeundo':{const before=state.runeHistory.pop();if(!before){toast('No more changes to undo');break;}const b=ensureDraft();b.runeBoard=before;b.runes=[...new Set(before.map(r=>r.family))];persistDraft();state.runeSelected=null;render();break;}
+case 'runeclearinactive':{mutateRunes(b=>{b.runeBoard=activeRuneBoard(b.runeBoard,b.monsterLevel).active});state.runeSelected=null;break;}
+case 'runeclear':{const b=ensureDraft();if(!b.runeBoard.length)break;state.runeSelected=null;state.runePending=null;state.runeComposerOpen=false;mutateRunes(build=>{build.runeBoard=[]});toast('Rune grid reset');break;}
+case 'petmode':state.petCalcMode=arg==='permanent'?'permanent':'seasonal';render();break;
+case 'account':go('account');break;case 'refresh-theme':void refreshTheme().then(()=>{if(state.layer)action('account')});break;}}
+let toastTimer;function toast(msg){node('toast').textContent=msg;node('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>node('toast').hidden=true,2500)}
+let renderLock=false;function handleRoute(){if(renderLock)return;renderLock=true;try{render()}finally{renderLock=false}}
+let treeTouchX=0,treeTouchY=0;
+document.addEventListener('touchstart',e=>{const pane=e.target.closest('#passiveSwipe,#classSwipe');if(pane){treeTouchX=e.touches[0].clientX;treeTouchY=e.touches[0].clientY}},{passive:true});
+document.addEventListener('touchend',e=>{const pane=e.target.closest('#passiveSwipe,#classSwipe');if(!pane||!e.changedTouches?.length)return;const x=e.changedTouches[0].clientX-treeTouchX,y=e.changedTouches[0].clientY-treeTouchY;if(Math.abs(x)>45&&Math.abs(x)>Math.abs(y)*1.35){if(pane.id==='passiveSwipe')passiveMove(x<0?1:-1);else classMove(x<0?1:-1)}},{passive:true});
+function wireBuildIdentity(){
+ const apply=e=>{
+  const key=e.target?.dataset?.buildField;
+  if(!['title','className','summary'].includes(key)||!['labs/build','labs/runes','labs/skills','labs/passives'].includes(parseRoute().route)||parseRoute().query.get('share')||parseRoute().query.get('build'))return;
+  const b=ensureDraft();b[key]=String(e.target.value||'').slice(0,key==='summary'?350:100);
+  if(key==='className'&&e.type==='change'){
+   if(state.treeData?.classes?.length){
+    const target=state.treeData.classes.find(cls=>cls.name===b.className);
+    if(target){state.classAllocById[state.treeClassId||target.id]=state.classAlloc;state.treeClassId=target.id;state.treeBranchId=null;state.classAlloc=state.classAllocById[target.id]||{};state.classTierIndex=0;}
+   }
+   let removed=0;
+   for(const [slot,raw] of Object.entries(b.equipment)){if(raw&&!allowedItem(raw,slot,b.className)){b.equipment[slot]=null;removed++;}}
+   if(removed)toast(removed+' incompatible item(s) unequipped for '+b.className);
+  }
+  persistDraft();
+  // Keep the editor focused while typing. Changing class redraws its emblem and legal gear.
+  if(key==='className'&&e.type==='change')render();
+ };
+ document.addEventListener('input',apply);
+ document.addEventListener('change',apply);
+}
+function wireStudioPortrait(){
+ document.addEventListener('change',async e=>{
+  const input=e.target;
+  if(input?.id!=='studioPortraitUpload'||!input.files?.[0])return;
+  const file=input.files[0];input.value='';
+  if(!['labs/build','labs/runes','labs/skills','labs/passives'].includes(parseRoute().route)||parseRoute().query.get('share')||parseRoute().query.get('build'))return;
+  try{await setStudioPortrait(file);render();toast('Build picture saved on this device');}
+  catch(err){toast(err?.message||'Could not save your picture');}
+ });
+}
+function centerPathRail(railId,attribute,value,behavior='auto'){
+ const rail=node(railId),selected=rail?.querySelector('['+attribute+'="'+CSS.escape(String(value))+'"]');
+ if(!rail||!selected)return;
+ const distance=selected.offsetLeft-rail.offsetLeft-(rail.clientWidth-selected.clientWidth)/2;
+ rail.scrollTo({left:Math.max(0,distance),behavior});
+}
+function refreshPathfinderStep(align=false){
+ if(parseRoute().route!=='calculators/pathfinder'||!recipeState.data)return;
+ const model=timelineModel(recipeState.data,state.pathfinderQuick);
+ if(!model)return;
+ state.pathfinderQuick=model.view;
+ const previous=node('pathDetail');
+ if(previous)previous.outerHTML=pathfinderStepDetail(model,verifiedState.entries);
+ const input=node('pathStepRange');
+ if(input){
+  input.value=String(model.view.level);
+  input.setAttribute('aria-valuetext',stageStepLabel(model.active,model.view.level));
+  input.style.setProperty('--path-progress',String(model.active.max?Math.round(100*model.view.level/model.active.max):0)+'%');
+ }
+ const value=node('pathStepValue');
+ if(value)value.textContent=model.view.level===0?'Transition':'+'+model.view.level;
+ for(const button of document.querySelectorAll('#pathStepRail [data-path-step]')){
+  const active=Number(button.dataset.pathStep)===model.view.level;
+  button.classList.toggle('selected',active);
+  button.setAttribute('aria-pressed',String(active));
+ }
+ if(align)centerPathRail('pathStepRail','data-path-step',model.view.level,'smooth');
+}
+function updatePathfinderQuick(update,redraw=false){
+ state.pathfinderQuick=saveQuickView({...state.pathfinderQuick,...update});
+ if(!redraw){refreshPathfinderStep(true);return;}
+ const oldPage=node('content')?.querySelector('.pathPage');
+ if(oldPage&&recipeState.data){
+  const expanded=oldPage.querySelector('#pathRangePanel')?.open||false;
+  const holder=document.createElement('template');
+  holder.innerHTML=pathfinderView(state.pathfinderQuick,recipeState.data,recipeState.error,state.pathfinderRange,{includeRange:false,catalog:verifiedState.entries});
+  const next=holder.content.firstElementChild;
+  if(next){
+   const panel=next.querySelector('#pathRangePanel');
+   if(panel)panel.open=expanded;
+   oldPage.replaceWith(next);
+  }
+ }else render();
+ requestAnimationFrame(()=>{
+  centerPathRail('pathStageRail','data-path-stage',state.pathfinderQuick.stage);
+  centerPathRail('pathStepRail','data-path-step',state.pathfinderQuick.level);
+ });
+}
+function pathfinderStage(stage){
+ if(!recipeState.data)return;
+ const allowed=timelineStages(recipeState.data,state.pathfinderQuick.mode);
+ if(!allowed.some(s=>s.id===stage)||stage===state.pathfinderQuick.stage)return;
+ updatePathfinderQuick({stage,level:1},true);
+}
+function movePathfinderStep(direction){
+ if(!recipeState.data)return;
+ const model=timelineModel(recipeState.data,state.pathfinderQuick);
+ if(!model)return;
+ const level=model.view.level+direction;
+ if(level>=0&&level<=model.active.max){updatePathfinderQuick({level});return;}
+ const index=model.stages.findIndex(s=>s.id===model.active.id),next=model.stages[index+(direction>0?1:-1)];
+ if(next)updatePathfinderQuick({stage:next.id,level:direction>0?0:next.max},true);
+}
+async function savePathfinderChecklist(button){
+ if(!recipeState.data)return toast('Verified upgrade recipes are unavailable.');
+ if(!currentAccount()){toast('Sign in with Discord to save a checklist to your profile.');go('account');return;}
+ const quote=quoteRange(recipeState.data,state.pathfinderRange,state.pathfinderQuick);
+ if(!quote.complete||quote.error||!quote.materials.length)return toast('Select a valid complete upgrade route first.');
+ const scenarios=quoteFailureScenarios(recipeState.data,quote);
+ // Farming lists always reflect the same average estimate visible to players.
+ const selected=scenarios.available?scenarios.expected:quote;
+ const groups=sourceMaterialGroups(selected.materials,recipeState.data.materials,verifiedState.entries)
+  .map(group=>({name:group.name,tier:group.tier,items:group.materials.map(m=>({slug:m.slug,name:m.name,quantity:String(m.quantity)}))}));
+ const label=scenarios.available?'Estimated':'Base';
+ const list={title:label+' Â· Upgrade '+(quote.itemCount>1?quote.itemCount+' items Â· ':'')+quote.range.fromStage+' +'+quote.range.fromLevel+' â†’ '+quote.range.toStage+' +'+quote.range.toLevel,
+  slot:state.pathfinderQuick.slot,from:quote.range.fromStage+' +'+quote.range.fromLevel,
+  to:quote.range.toStage+' +'+quote.range.toLevel,gold:String(selected.gold),
+  sourceVersion:String(recipeState.data.sourceVersion||recipeState.data.source||''),groups};
+ button.disabled=true;button.textContent='Saving to profileâ€¦';
+ try{await saveFarmingList(list);toast('Farming checklist saved to your account.');go('account');}
+ catch(error){toast(error.message);button.disabled=false;button.textContent='Save a farming checklist to my profile';}
+}
+function renderPathfinderCosts(current=state.pathfinderRange){
+ const content=node('pathRangeContent');
+ if(!content||!recipeState.data)return;
+ // Persist both OPEN and CLOSED states; a rerender must not re-expand things.
+ const panels='details[data-material-section],details[data-path-accordion],details[data-path-zone]';
+ const panelKey=d=>d.dataset.pathZone?'zone:'+d.dataset.pathZone:d.dataset.materialSection?'materials:'+d.dataset.materialSection:'panel:'+d.dataset.pathAccordion;
+ const states=new Map([...content.querySelectorAll(panels)].map(d=>[panelKey(d),d.open]));
+ const assumptionsOpen=content.querySelector('details.quickAssumptions')?.open===true;
+ content.innerHTML=quickUpgradeContent(recipeState.data,current,{page:parseRoute().route!=='home',catalog:verifiedState.entries});
+ for(const d of content.querySelectorAll(panels)){
+  const key=panelKey(d);
+  if(states.has(key))d.open=states.get(key);
+ }
+ const note=content.querySelector('details.quickAssumptions');if(note)note.open=assumptionsOpen;
+}
+function wirePathfinderQuick(){
+ document.addEventListener('click',e=>{
+  const button=e.target.closest('[data-path-quantity-step]');
+  if(!button||!recipeState.data)return;
+  const offset=Number(button.dataset.pathQuantityStep);
+  if(offset!==1&&offset!==-1)return;
+  const quantity=normalizeItemQuantity(normalizeItemQuantity(state.pathfinderRange.quantity)+offset);
+  state.pathfinderRange=saveRange({...state.pathfinderRange,quantity});
+  renderPathfinderCosts();
+ });
+ document.addEventListener('click',e=>{const button=e.target.closest('[data-pf-save-list]');if(!button)return;e.preventDefault();if(!button.disabled)void savePathfinderChecklist(button);});
+ document.addEventListener('input',e=>{
+  if(!e.target.matches('[data-path-range]'))return;
+  const value=Number(e.target.value);
+  if(!Number.isInteger(value))return;
+  state.pathfinderQuick={...state.pathfinderQuick,level:value};
+  refreshPathfinderStep(false);
+ });
+ document.addEventListener('change',e=>{
+  if(e.target.matches('[data-path-range]')){state.pathfinderQuick=saveQuickView(state.pathfinderQuick);centerPathRail('pathStepRail','data-path-step',state.pathfinderQuick.level,'smooth');return;}
+  const d=e.target.dataset;
+  if(recipeState.data&&(d.pathFromStage!==undefined||d.pathFromLevel!==undefined||d.pathToStage!==undefined||d.pathToLevel!==undefined||d.pathQuantity!==undefined||d.pathPityProgress!==undefined||d.pathPityCount!==undefined)){
+   const stages=allStages(recipeState.data);
+   const current={...state.pathfinderRange};
+   if(d.pathFromStage!==undefined){current.fromStage=e.target.value;current.fromLevel=Math.min(Number(current.fromLevel||0),stages.find(s=>s.id===current.fromStage)?.max||0);}
+   else if(d.pathToStage!==undefined){
+    current.toStage=e.target.value;
+    current.toLevel=Math.min(Number(current.toLevel||0),stages.find(s=>s.id===current.toStage)?.max||0);
+   }else if(d.pathFromLevel!==undefined)current.fromLevel=Number(e.target.value);
+   else if(d.pathToLevel!==undefined)current.toLevel=Number(e.target.value);
+   else if(d.pathQuantity!==undefined)current.quantity=normalizeItemQuantity(e.target.value);
+   else if(d.pathPityProgress!==undefined)current.pityProgress=normalizePityProgress(e.target.value);
+   else if(d.pathPityCount!==undefined)current.pityCount=normalizePityCount(e.target.value);
+   state.pathfinderRange=saveRange(current);
+   renderPathfinderCosts(current);
+   return;
+  }
+  if(e.target.matches('[data-path-slot]')){
+   updatePathfinderQuick({slot:e.target.value},true);
+  }
+  if(e.target.matches('[data-path-range-slot]'))state.pathfinderQuick=saveQuickView({...state.pathfinderQuick,slot:e.target.value});
+ });
+ // Scroll snapping also selects the nearest visible step or tier. No heavy
+ // rerender happens while a finger is actively dragging the map.
+ let scrollTimer=null;
+ document.addEventListener('scroll',e=>{
+  const rail=e.target;
+  if(rail?.id!=='pathStageRail'&&rail?.id!=='pathStepRail')return;
+  clearTimeout(scrollTimer);
+  scrollTimer=setTimeout(()=>{
+   if(!rail.isConnected||parseRoute().route!=='calculators/pathfinder')return;
+   const field=rail.id==='pathStageRail'?'pathStage':'pathStep';
+   const center=rail.getBoundingClientRect().left+rail.clientWidth/2;
+   const choices=[...rail.querySelectorAll('[data-'+(field==='pathStage'?'path-stage':'path-step')+']')];
+   const nearest=choices.sort((a,b)=>{
+    const midpoint=x=>x.getBoundingClientRect().left+x.getBoundingClientRect().width/2;
+    return Math.abs(midpoint(a)-center)-Math.abs(midpoint(b)-center);
+   })[0];
+   if(!nearest)return;
+   if(field==='pathStage')pathfinderStage(nearest.dataset.pathStage);
+   else {
+    const level=Number(nearest.dataset.pathStep);
+    if(level!==state.pathfinderQuick.level)updatePathfinderQuick({level});
+   }
+  },200);
+ },true);
+}
+
+function filterStudioV2Looks(){
+ const section=document.querySelector('.studioV2Looks');if(!section)return;
+ const term=section.querySelector('[data-design-preset-search]')?.value?.toLowerCase().trim()||'';
+ const family=section.dataset.studioFilter||'All';
+ section.dataset.searching=String(Boolean(term));
+ section.dataset.studioFiltered=String(family!=='All');
+ let count=0;
+ for(const tile of section.querySelectorAll('.studioV2Preset')){
+  const matchText=String(tile.dataset.presetSearch||'').includes(term);
+  const matchFamily=family==='All'||tile.dataset.studioFamily===family;
+  tile.hidden=!(matchText&&matchFamily);
+  if(!tile.hidden)count++;
+ }
+ const empty=section.querySelector('[data-design-no-presets]');if(empty)empty.hidden=count!==0;
+ const more=section.querySelector('[data-theme-preset-expand]');if(more)more.hidden=Boolean(term)||family!=='All';
+}
+function wireThemeStudioControls(){
+ document.addEventListener('click',e=>{
+  const familyBtn=e.target.closest('[data-studio-family-filter]');
+   if(familyBtn&&familyBtn.closest('.studioV2Looks')){
+    const section=familyBtn.closest('.studioV2Looks');
+    section.dataset.studioFilter=familyBtn.dataset.studioFamilyFilter;
+    for(const b of section.querySelectorAll('[data-studio-family-filter]'))b.setAttribute('aria-pressed',String(b===familyBtn));
+    filterStudioV2Looks();return;
+   }
+  const heroChoice=e.target.closest('[data-hero-cta-style]');
+  if(heroChoice&&heroChoice.closest('.arcanaDesignLab')){
+   if(!canEditThemeDraft())return;
+   if(writeDesign('heroActionStyle',heroChoice.dataset.heroCtaStyle)){
+    showDesignMiniPage('home');
+    applyTheme(parseRoute().route);
+    syncWorkshopInputs();
+   }
+   return;
+  }
+  const pattern=e.target.closest('[data-theme-pattern]');
+  if(pattern&&pattern.closest('.arcanaDesignLab')){
+   if(!canEditThemeDraft())return;
+   if((pattern.dataset.themePattern.startsWith('vision-')?applyVisualPreset(pattern.dataset.themePattern):writeDesign('pattern',pattern.dataset.themePattern))){
+    applyTheme(parseRoute().route);
+    syncWorkshopInputs();
+   }
+   return;
+  }
+  const contrastFix=e.target.closest('[data-mini-fix-contrast]');
+  if(contrastFix&&contrastFix.closest('.themeStudioPreview')&&canEditThemeDraft()){
+   if(writeDesign('buttonText',suggestedButtonText(readDesign()))){
+    applyTheme(parseRoute().route);
+    syncWorkshopInputs();
+    toast('Button text adjusted in your private draft. Nothing was published.');
+   }
+   return;
+  }
+  const showAll=e.target.closest('[data-theme-preset-expand]');if(showAll){const wrap=showAll.closest('.themePresetCollection');const expanded=wrap.dataset.showAll!=='true';wrap.dataset.showAll=String(expanded);showAll.setAttribute('aria-expanded',String(expanded));showAll.textContent=expanded?'Show fewer looks â†‘':'Show all '+document.querySelectorAll('.studioV2Preset').length+' looks â†“';return;}
+   const jump=e.target.closest('[data-theme-jump]');
+  if(jump&&jump.closest('.arcanaDesignLab')){
+   const pane=jump.closest('.themeStudioEditor');
+   const id=jump.dataset.themeJump;
+   const target=id==='vault'?pane.querySelector('.themeVaultSection'):pane.querySelector('[data-theme-group="'+id+'"]');
+   if(target){
+    if(target.tagName==='DETAILS')target.open=true;
+    target.scrollIntoView({behavior:document.documentElement.dataset.launchReduceMotion==='true'?'auto':'smooth',block:'start'});
+   }
+   return;
+  }
+  const filter=e.target.closest('[data-theme-pattern-filter]');
+  if(filter&&filter.closest('.arcanaDesignLab')){
+   const category=filter.dataset.themePatternFilter;
+   const section=filter.closest('.themePatternLibrary');
+   for(const button of section.querySelectorAll('[data-theme-pattern-filter]'))button.setAttribute('aria-pressed',String(button===filter));
+   for(const tile of section.querySelectorAll('[data-pattern-category]'))tile.hidden=category==='Premium'?!['Psychedelic','Signature','Material','Atmosphere','Relic','Atelier','Vision'].includes(tile.dataset.patternCategory):category!=='All'&&tile.dataset.patternCategory!==category;
+  }
+ });
+}
+function init(){wireDesignMiniPreview();wireThemeStudioControls();wireThemeVault({toast,onLoad:()=>{applyTheme(parseRoute().route);syncWorkshopInputs();}});document.addEventListener('click',e=>{
+ const summary=e.target.closest('details[data-home-panel] > summary');
+ if(!summary)return;
+ const group=summary.parentElement,key=group.dataset.homePanel;
+ if(Object.prototype.hasOwnProperty.call(homePanels,key))homePanels[key]=!group.open;
+});wireBuildIdentity();document.addEventListener('toggle',e=>{if(e.target.matches?.('.runeWordsPanel'))state.runeWordsOpen=e.target.open;},true);wireRuneDrag();wireStudioPortrait();wirePathfinderQuick();wireFarmingLists({refresh:render,toast});wireWikiStudio();wireBetaUI({go,refresh:render,toast});wireAdminTraffic({refresh:render});wireAdminConsole({refresh:render,toast});initTrafficTracking();wireGuildHub({go,refresh:render,toast,currentAccount});wireCommunityUI({go,getBuild:savedBuild,applyBuild:input=>{state.draft=normalizeBuild(deepCopy(input));state.draft.id='local-draft';state.draft.version='LOCAL';persistDraft();},refresh:render,toast});if(state.draft)state.draft=normalizeBuild(state.draft);restoreTreePlan();initTheme();applyAppPrefs();document.querySelectorAll('#arcanaDock [data-icon]').forEach(el=>{el.innerHTML=icon(el.dataset.icon,24)});initGeneralChat(currentAccount);document.addEventListener('input',e=>{if(e.target.matches('[data-design-preset-search]')&&e.target.closest('.studioV2')){filterStudioV2Looks();return;}if(e.target.matches('[data-design-preset-search]')){const term=e.target.value.toLowerCase().trim();for(const preset of document.querySelectorAll('.arcanaDesignLab .designPreset'))preset.hidden=!String(preset.dataset.presetSearch||'').includes(term);const classics=document.querySelector('.designClassicCollection');if(classics&&term)classics.open=[...classics.querySelectorAll('.designPreset')].some(e=>!e.hidden);const empty=document.querySelector('[data-design-no-presets]');if(empty)empty.hidden=[...document.querySelectorAll('.arcanaDesignLab .designPreset')].some(e=>!e.hidden);const block=document.querySelector('.themePresetCollection');if(block)block.dataset.searching=String(Boolean(term));return;}if(e.target.matches('[data-design-hex]')){if(!canEditThemeDraft())return;const key=e.target.dataset.designHex,hex=normalizeDesignHex(e.target.value),status=document.querySelector('[data-design-status="'+key+'"]');if(hex&&writeDesign(key,hex)){e.target.value=hex;e.target.removeAttribute('aria-invalid');const picker=document.querySelector('input[type="color"][data-design-field="'+key+'"]');if(picker)picker.value=hex;if(status)status.textContent='Applied âœ“';}else if(status)status.textContent='Enter 6 HEX digits';return;}if(e.target.matches('[data-design-field]')){if(!canEditThemeDraft())return;const key=e.target.dataset.designField,value=e.target.value;
+   const changed=key==='panelPattern'||key==='featurePattern'?applyLayerVisualPreset(key==='panelPattern'?'panels':'feature',value):key==='pattern'&&value.startsWith('vision-')?applyVisualPreset(value):writeDesign(key,value);
+   if(changed){if(['panelPattern','featurePattern','pattern'].includes(key))syncWorkshopInputs();const note=document.querySelector('[data-theme-change-hint]');if(note){const descriptions={main:'Page background',card:'Cards and panels',action:'Primary links and actions',secondaryAccent:'Secondary highlights',pattern:'Surface material',patternScale:'Size of repeating details',patternTarget:'Which surfaces receive the texture',intensity:'Visibility of the material',glow:'Glow around accents',heroActionStyle:'Build Studio entrance button only',heroCardStyle:'Homepage Build Studio card only',roundness:'Corners on all cards',buttonStyle:'Shared button appearance',fontSize:'Global text scale'};const label=e.target.closest('label,.designControl')?.querySelector('span')?.textContent||key;note.innerHTML='<strong>'+esc(label)+' updated</strong><span>'+esc(descriptions[key]||'Check the current page preview to see the effect.')+'</span>';}if(e.target.closest('[data-theme-group="feature"]'))showDesignMiniPage('home');const out=document.querySelector('[data-design-value="'+key+'"]');if(out)out.textContent=value+(e.target.type==='range'?(['roundness','buttonRoundness','cardPadding','borderWidth','buttonHeight','heroActionHeight','heroActionBorder'].includes(key)?' px':'%'):'');if(e.target.type==='color'){const textInput=document.querySelector('[data-design-hex="'+key+'"]');if(textInput){textInput.value=value.toUpperCase();textInput.removeAttribute('aria-invalid');}const status=document.querySelector('[data-design-status="'+key+'"]');if(status)status.textContent='Applied âœ“';}}}if(e.target.id==='arcanaCustomAccentPicker'){const field=node('arcanaCustomAccentHex');if(field)field.value=e.target.value.toUpperCase()}});node('brandHome').onclick=()=>go('home');node('accountBtn').onclick=()=>go('user');node('adminPortalBtn').innerHTML=icon('shield',23);syncAdminPortal();void refreshAccount().then(()=>{document.documentElement.dataset.arcanaAdminDesign=String(canEditThemeDraft());if(!isAppearanceAdmin()){setAccent('site');setIconColor('follow-site');setIconMode('two-tone');}renderHeaderAvatar();if(['user','settings','admin','admin/traffic','account'].includes(parseRoute().route))render();else applyTheme(parseRoute().route);});window.addEventListener('arcana:account-updated',renderHeaderAvatar);window.addEventListener('arcana:site-config-change',()=>{if(!document.hidden)render()});document.addEventListener('click',e=>{if(e.target.closest('[data-close]')){closeLayer();return}const preview=e.target.closest('[data-preview]');if(preview){state.lastSearch=state.search;showPreview(preview.dataset.preview,!!state.layer&&state.layer.type==='search');return}if(state.runeComposerOpen&&!e.target.closest('.runeComposer')&&!e.target.closest('[data-action="newrune"]')){state.runePending={family:state.runeFamily,shape:state.runeShape,secondary:state.runeSecondary};state.runeComposerOpen=false;if(!e.target.closest('[data-action]')&&!e.target.closest('[data-route]'))setTimeout(render,0);}const routed=e.target.closest('[data-route]');if(routed){const pars=Object.fromEntries(new URLSearchParams(routed.dataset.params||''));go(routed.dataset.route,pars);return}const act=e.target.closest('[data-action]');if(act?.dataset.action==='runeselect'&&state.runeSuppressClick===act.dataset.arg){state.runeSuppressClick=null;return;}if(act)action(act.dataset.action,act.dataset.arg||'',act);});document.addEventListener('input',e=>{if(e.target.id==='treeLevel'||e.target.id==='treeLevelRange')previewTreeLevel(e.target.value);if(e.target.hasAttribute('data-monster-slider')){const input=node('content').querySelector('[data-monster-level]');if(input)input.value=e.target.value;}if(e.target.id==='guildQuery'){guildState.query=e.target.value;const list=guildFilter(guildState.guilds,guildState.query),box=node('guildCards');if(box)box.innerHTML=list.map(guildCard).join('')||'<div class="lfgEmpty">No matching guilds right now.</div>';const counter=node('guildCount');if(counter)counter.textContent=String(list.length);}if(e.target.id==='lfgQuery'){lfgState.query=e.target.value;updateLiveResults();}if(e.target.id==='lfgMight'){lfgState.mightAmount=e.target.value;updateLiveResults();}if(e.target.id==='globalSearch'){state.search=e.target.value;state.lastSearch=state.search;const box=node('searchResults');if(box)box.innerHTML=state.search.trim()?resultMarkup(state.search):searchFeatured();}if(e.target.id==='gearPickerQuery'){const box=node('gearPickerItems');if(box)box.innerHTML=pickerOptions(state.slotTarget?.kind,state.slotTarget?.slot,e.target.value);}if(e.target.id==='wikiFilter'){wikiState.query=e.target.value;wikiState.limit=36;const result=wikiRecordRows(verifiedState.entries,parseRoute().query.get('kind')||'all',wikiState.query,wikiState.limit),list=node('wikiRecords'),counter=node('wikiFoundCount'),more=node('wikiMore'),showing=node('wikiShowing'),clear=node('content').querySelector('.wikiClearFilter');if(list)list.innerHTML=result.html;if(counter)counter.textContent=result.count+' '+(result.count===1?'reference':'references');if(showing)showing.textContent=result.count?'Showing '+Math.min(result.count,wikiState.limit)+' of '+result.count:'Season 2 reference library';if(clear)clear.hidden=!wikiState.query;if(more)more.hidden=!result.hasMore;}if(e.target.id==='itemFilter'){const q=e.target.value.toLowerCase();node('itemResults').innerHTML=itemList.filter(x=>(x.title+' '+x.keywords).toLowerCase().includes(q)).map(cardEntity).join('')||'<p class="emptyMini">No matching item.</p>'}if(e.target.dataset.petLevel!==undefined){const i=+e.target.dataset.petLevel,n=Math.max(0,Number(e.target.value)||0);state.petLevels[i]=n;const cap=Math.min(...state.petLevels)+10;const el=node('petEffective');if(el){el.textContent=cap;el.nextElementSibling.textContent='Minimum '+Math.min(...state.petLevels)+' + 10'}}});document.addEventListener('change',e=>{
+ if(e.target.matches('[data-studio-preset]')){
+  const id=e.target.value;if(!id){state.activePresetId=null;render();return;}
+  const preset=localBuildPresetById(id);if(!preset){state.activePresetId=null;render();toast('That saved preset is unavailable');return;}
+  if(!confirm('Load â€œ'+preset.title+'â€? This replaces the current local draft.')){render();return;}
+  state.draft=normalizeBuild(deepCopy(preset.build));state.draft.id='local-draft';state.draft.owner='You';state.draft.version='LOCAL';
+  state.characterLevel=Number(state.draft.characterLevel)||1;state.passiveAlloc=structuredClone(state.draft.passiveAlloc||{});state.passiveFreeMode=state.draft.passiveFreeMode===true;state.classAllocById=structuredClone(state.draft.classAllocById||{});state.classAlloc=structuredClone(state.classAllocById);
+  saveDraft(state.draft);state.activePresetId=preset.id;state.slotTarget=null;state.gearEdit=null;state.runeSelected=null;state.runeHistory=[];render();toast('Loaded '+preset.title);return;
+ }
+ if(e.target.matches('[data-design-hex]')){if(!isAppearanceAdmin())return;const key=e.target.dataset.designHex,hex=normalizeDesignHex(e.target.value),status=document.querySelector('[data-design-status="'+key+'"]');if(!hex){e.target.setAttribute('aria-invalid','true');if(status)status.textContent='Use 6 HEX digits, e.g. #A78BFA';}else{e.target.value=hex;e.target.removeAttribute('aria-invalid');if(status)status.textContent='Applied âœ“';}return;}
+ if(e.target.hasAttribute('data-app-pref')){changeAppPref(e.target.dataset.appPref,e.target.checked);return;}
+ if(e.target.matches('[data-passive-free-mode]')){state.passiveFreeMode=e.target.checked===true;storeTreePlan();render();return;}
+ const field=e.target.dataset.gearField;
+ if(field&&state.gearEdit){
+  const g=state.gearEdit;
+  if(field==='rarity'){g.rarity=Number(e.target.value);g.awaken=0;g.bonusTier=Math.max(2,g.rarity);g.bonusId=null;g.roll=null;}
+  if(field==='awaken')g.awaken=Number(e.target.value);
+  if(field==='bonusTier'){g.bonusTier=Number(e.target.value);g.bonusId=null;g.roll=null;}
+  if(field==='bonusId'){g.bonusId=e.target.value||null;g.roll=null;}
+  if(field==='roll')g.roll=e.target.value===''?null:Number(e.target.value);
+  if(field!=='roll'){showGearEditor();if(parseRoute().route==='labs/build')queueMicrotask(()=>document.querySelector('[data-gear-field="'+field+'"]')?.focus({preventScroll:true}));}
+  return;
+ }
+ if(e.target.hasAttribute('data-farm-mode')){state.farmPlan=saveFarmPlan({...state.farmPlan,mode:e.target.value});render();return;}
+ if(e.target.hasAttribute('data-farm-time')){const index=Number(e.target.dataset.farmTime);if(Number.isInteger(index)&&index>=0&&index<3){const times=[...state.farmPlan.times];times[index]=e.target.value;state.farmPlan=saveFarmPlan({...state.farmPlan,times});render();}return;}
+ if(e.target.id==='guildTreeLevel'){updateGuildTree(guildTreeWithLevel(state.guildTreePlan,e.target.value));return;}
+ if(e.target.id==='guildTreeBoost'){updateGuildTree({...state.guildTreePlan,boost:Number(e.target.value)});return;}
+
+ if(e.target.dataset.petBonusTarget!==undefined){
+  if(parseRoute().query.get('build'))return;
+  const i=Number(e.target.dataset.petBonusTarget),v=e.target.value;
+  if(!Number.isInteger(i)||i<0||i>3||v&&!PET_HATCH_BONUSES.includes(v))return;
+  const b=ensureDraft();b.petBonusTargets[i]=v;persistDraft();
+  const counter=node('content').querySelector('.petBuildHead small');
+  if(counter)counter.textContent=b.petBonusTargets.filter(Boolean).length+'/4 selected';
+  return;
+ }
+ if(e.target.id==='petCompoundRarity'){
+  state.compoundQuick=saveCompoundPlan({...state.compoundQuick,rarity:e.target.value});render();return;
+ }
+ if(e.target.id==='petCompoundBonus'){
+  state.compoundQuick=saveCompoundPlan({...state.compoundQuick,bonus:e.target.value});render();return;
+ }
+ if(e.target.id==='petCompoundLevel'){
+  state.compoundQuick=saveCompoundPlan({...state.compoundQuick,level:e.target.value});render();return;
+ }
+ if(e.target.id==='petAffixType'){
+  state.affixCostQuick=saveAffixCostPlan({affix:e.target.value,currentLevel:1,targetLevel:e.target.value==='all_skills'?2:1});render();return;
+ }
+ if(e.target.id==='petAffixCurrent'){
+  state.affixCostQuick=saveAffixCostPlan({...state.affixCostQuick,currentLevel:e.target.value});render();return;
+ }
+ if(e.target.id==='petAffixTarget'){
+  state.affixCostQuick=saveAffixCostPlan({...state.affixCostQuick,targetLevel:e.target.value});render();return;
+ }
+ if(e.target.id==='lfgTier'){lfgState.tier=e.target.value;updateLiveResults();return;}if(e.target.id==='lfgClass'){lfgState.characterClass=e.target.value;updateLiveResults();return;}if(e.target.id==='lfgUnit'){lfgState.mightUnit=e.target.value;updateLiveResults();return;}if(e.target.hasAttribute('data-calc-compound')){const idx=Number(e.target.dataset.calcCompound);if(idx>=0&&idx<4){state.petLevels[idx]=Math.max(0,Math.min(999,Math.floor(Number(e.target.value)||0)));render();}return;}if(e.target.matches('[data-monster-level],[data-monster-slider]')){if(parseRoute().query.get('build'))return;const b=ensureDraft(),raw=Number(e.target.value);if(!Number.isFinite(raw)||raw<1){toast('Monster Level must be at least 1');render();return;}b.monsterLevel=Math.min(100000,Math.floor(raw));const hidden=activeRuneBoard(b.runeBoard,b.monsterLevel).inactive.length;state.runeSelected=null;persistDraft();render();if(hidden)toast(`${hidden} saved rune(s) inactive at this Monster Level`);return;}if(e.target.id==='treeLevel'||e.target.id==='treeLevelRange')commitTreeLevel(e.target.value);if(e.target.hasAttribute('data-rune-family')){if(RUNE_FAMILIES.includes(e.target.value)){state.runeFamily=e.target.value;state.runeSecondary=RUNE_FAMILY_DETAILS[state.runeFamily].suggestedSecondary;render();}return;}if(e.target.hasAttribute('data-rune-shape')){if(e.target.value in RUNE_SHAPES){state.runeShape=e.target.value;render();}return;}if(e.target.hasAttribute('data-rune-secondary')){const val=e.target.value;if(RUNE_SECONDARIES.includes(val)){state.runeSecondary=val;render();}return;}if(e.target.hasAttribute('data-runeword-toggle')){if(parseRoute().query.get('build')||parseRoute().query.get('share'))return;const b=ensureDraft(),key=e.target.dataset.runewordToggle;b.usedRunewords=Array.isArray(b.usedRunewords)?b.usedRunewords:[];b.usedRunewords=e.target.checked?[...new Set([...b.usedRunewords,key])]:b.usedRunewords.filter(x=>x!==key);persistDraft();const panel=e.target.closest('.runeWordsPanel'),count=panel?.querySelector('[data-runeword-count]');if(count)count.textContent=`${b.usedRunewords.length}/${RUNE_WORDS.length}`;e.target.closest('.runeWordRow')?.classList.toggle('checked',e.target.checked);return;}
+const petKeys=['petCompound','petAffix','petAffixLevel','petUnlocked','petHatch','petName','petEquipped','petDrop'];if(petKeys.some(k=>e.target.dataset[k]!==undefined)){
+ if(parseRoute().query.get('build'))return;
+ const key=petKeys.find(k=>e.target.dataset[k]!==undefined),raw=e.target.dataset[key];const [idx,affixIdx]=raw.split(':').map(Number),b=ensureDraft(),p=b.petSetup[idx];if(!p)return;
+ if(key==='petCompound')p.compound=Math.min(999,Math.max(0,Math.floor(Number(e.target.value)||0)));
+ else if(key==='petAffix'){const def=PET_AFFIX_DEFS.find(v=>v.name===e.target.value);p.affixes[affixIdx]={slug:def?.name||'',level:def?1:0};}
+ else if(key==='petAffixLevel'){const aff=p.affixes[affixIdx],def=PET_AFFIX_DEFS.find(v=>v.name===aff?.slug);if(def)aff.level=Math.max(1,Math.min(Number.isFinite(def.max_level)?def.max_level:999,Math.floor(Number(e.target.value)||1)));}
+ else if(key==='petUnlocked'){p.unlockedAffixSlots=Math.max(2,Math.min(4,Math.floor(Number(e.target.value)||2)));}
+ else if(key==='petHatch')p.hatchBonus=e.target.value;
+ else if(key==='petName')p.name=e.target.value.slice(0,90);
+ else if(key==='petDrop'){const val=e.target.value.trim();p.dropBonus=val===''?null:(Number.isFinite(Number(val))&&Number(val)>=0?Math.min(100000000,Number(val)):null);}
+ else if(key==='petEquipped')p.equipped=e.target.checked;
+ if(key!=='petEquipped'&&key!=='petDrop'&&e.target.value&&!(key==='petCompound'&&Number(e.target.value)===0))p.equipped=true;
+ if(key==='petDrop'&&e.target.value.trim()!=='')p.equipped=true;
+ persistDraft();render();
+ }});document.addEventListener('submit',e=>{if(e.target.id==='guildForm'){e.preventDefault();void guildSave(e.target)}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.layer)closeLayer();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();showSearch()}});window.addEventListener('arcana:assets-loaded',()=>{if(parseRoute().route==='calculators/pathfinder')return;if(!state.layer)render();else if(state.layer.type==='search'){node('searchResults').innerHTML=state.search?resultMarkup(state.search):searchFeatured()}});window.addEventListener('arcana:navigate',handleRoute);window.addEventListener('popstate',handleRoute);window.addEventListener('hashchange',handleRoute);if(!location.hash)history.replaceState(null,'','#/home');render();document.dispatchEvent(new Event('arcana:app-ready'));}
+init();
+void initGameAssets();
+void loadTrees();
+// Fetch raids and guild lists only when visiting those sections.
+void loadVerifiedIndex();
+void loadPublishedWikiArticles();
+window.addEventListener('arcana:wiki-published',()=>void loadPublishedWikiArticles());
