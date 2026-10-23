@@ -94,7 +94,7 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
   const zoneKey=zone?.slug||group.id;
   const style=zone?' style="--path-zone-color:'+zone.color+';--path-zone-x:'+zone.atlasX+'%;--path-zone-y:'+zone.atlasY+'%"':'';
   const tier=zone?'Tier '+zone.tier+' · ':'';
-  const items=[...group.materials].sort(alphabetical);
+  const items=[...group.materials];
   return '<details class="quickZoneGroup'+(zone?'':' quickZoneUnknown')+'" data-path-zone="'+esc(zoneKey)+'"'+style+' open>'+
    '<summary class="quickZoneHead"><span class="quickZoneArt">'+(zone?'<span class="quickZoneBackdrop" aria-hidden="true"></span>':'')+
    '<span class="quickZoneGlyph">'+pathfinderZoneIcon(group.name)+'</span></span>'+
