@@ -5,7 +5,15 @@ export const PET_HATCH_BONUSES=[...new Set(Object.values(RULES.pet_bonuses).flat
 const byRarity=r=>RULES.pet_bonuses[r]||[];
 const MAX_PREVIEW_LEVEL=300;
 const safeInt=(v,min,max,defaultValue)=>{if(v===null||v===''||v===undefined)return defaultValue;const n=Number(v);return Number.isFinite(n)?Math.max(min,Math.min(max,Math.floor(n))):defaultValue};
-const accurateCeil=n=>Math.ceil(n-1e-9);
+// Parse the configured decimal multiplier as a rational so binary floating-point
+// noise can never turn an exact ceiling into a round-down.
+export const compoundRoundUp=(value,multiplier)=>{
+ const match=String(multiplier).match(/^(\d+)(?:\.(\d+))?$/);
+ if(!Number.isSafeInteger(value)||!match)return Math.ceil(value*multiplier);
+ const fraction=match[2]||'',denominator=10n**BigInt(fraction.length);
+ const numerator=BigInt(match[1]+fraction),scaled=BigInt(value)*numerator;
+ return Number((scaled+denominator-1n)/denominator);
+};
 export const bonusName=s=>({
  attack_damage:'Attack Damage',pet_damage:'Pet Damage',retaliation:'Retaliation',max_health:'Max Health',dodge:'Dodge',
  exp_gain:'EXP Gain',gold_gain:'Gold Gain',item_find:'Item Find',crit_chance:'Crit Chance',
@@ -33,15 +41,15 @@ export function compoundBonus(raw){
  if(plan.rarity!=='legendary'){
   const pct=config.additive_pct_by_rarity[plan.rarity];
   // Config describes additive, fixed-base growth. Each Compound level adds at least 1.
-  amount=base+level*Math.max(1,accurateCeil(base*pct));
+  amount=base+level*Math.max(1,compoundRoundUp(base*pct));
   method='Rarity-based additive step';
  }else if(config.legendary_tiered_chain.bonus_types.includes(row.type)){
   const band=config.legendary_tiered_chain;
-  for(let i=1;i<=level;i++)amount=accurateCeil(amount*(i<=10?band.multipliers['10']:i<=30?band.multipliers['30']:band.tail_multiplier));
+  for(let i=1;i<=level;i++)amount=compoundRoundUp(amount*(i<=10?band.multipliers['10']:i<=30?band.multipliers['30']:band.tail_multiplier));
   method='Legendary tiered chain · per-level rounded';
  }else if(config.legendary_two_band_chain.bonus_types.includes(row.type)){
   const band=config.legendary_two_band_chain;
-  for(let i=1;i<=level;i++)amount=accurateCeil(amount*(i<=10?band.multipliers['10']:band.tail_multiplier));
+  for(let i=1;i<=level;i++)amount=compoundRoundUp(amount*(i<=10?band.multipliers['10']:band.tail_multiplier));
   method='Legendary two-band chain · per-level rounded';
  }else if(config.legendary_increased_stat_bonus_types.includes(row.type)){
   amount=base+level*config.legendary_increased_stat_step;method='Legendary increased-attribute fixed step';
@@ -49,7 +57,7 @@ export function compoundBonus(raw){
   amount=base+level;method='Configured flat +1 per Compound';
  }else if(config.legendary_linear_tail.bonus_types.includes(row.type)){
   const {after_level,step}=config.legendary_linear_tail;
-  for(let i=1;i<=level;i++)amount=i<=after_level?accurateCeil(amount*config.legendary_multiplier):amount+step;
+  for(let i=1;i<=level;i++)amount=i<=after_level?compoundRoundUp(amount*config.legendary_multiplier):amount+step;
   method='Legendary multiplicative start, then linear tail';
  }else return null;
  return {...plan,base,amount,unit:row.value_type==='percent'?'%':'',method,source:RULES.source.file};
