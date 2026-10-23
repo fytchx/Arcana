@@ -235,7 +235,7 @@ with sync_playwright() as playwright:
     # the destination directly here so a synthetic mobile tap cannot flake the smoke.
     page.evaluate("location.hash='#/labs/build'")
     try:
-        page.wait_for_selector('.studioProfile',timeout=8000)
+        page.wait_for_selector('.studioPage .studioProfileGroup',timeout=8000)
     except Exception:
         print('BUILD STUDIO ROUTE DEBUG:', page.evaluate("({hash:location.hash, route:document.querySelector('#content')?.innerText?.slice(0,1400), dock:document.querySelector('#arcanaDock')?.innerText})"))
         print('BUILD STUDIO PAGE ERRORS:', repr(errors))
@@ -274,14 +274,14 @@ with sync_playwright() as playwright:
     assert 'Feedback received.' in page.locator('.betaCenter').inner_text(), 'Beta submission did not confirm: '+repr(page.locator('.betaCenter').inner_text()[-900:])+' JS errors '+repr(errors)
     assert page.locator('[data-beta-form="feedback"]').count()==1
     page.evaluate("location.hash='#/labs/build'")
-    page.wait_for_selector('.studioProfile')
-    assert page.locator('.studioTitleInput').input_value()=='My Build'
+    page.wait_for_selector('.studioPage .studioProfileGroup')
+    assert page.locator('.studioContextName').input_value()=='My Build'
     assert '0 / 11 equipped' in page.locator('.studioEquipmentHeading').inner_text(), 'New user must start with empty build, not invented demo gear'
     assert page.locator('[data-action="sharebuild"]').count()==1, 'Guest build sharing is not available'
     assert page.locator('.loadoutSlot').count()==11, 'Only the eleven verified game equipment slots must be shown'
     assert page.locator('.loadoutSlot .arcanaSilhouette').count()==11, 'Equipment art must use understated silhouettes'
-    assert page.locator('.studioProfileVisual .arcanaSilhouette').count()==1, 'Class identity emblem should be visible'
-    assert page.locator('.studioProfile').bounding_box()['y']<page.locator('.studioPrimaryEquipment').bounding_box()['y'], 'Equipment should follow the compact profile'
+    assert page.locator('.studioContextAvatar .arcanaSilhouette').count()==1, 'Class identity emblem should be visible'
+    assert page.locator('.studioProfileGroup').bounding_box()['y']<page.locator('.studioPrimaryEquipment').bounding_box()['y'], 'Equipment should follow the compact profile'
     assert page.locator('.pageHead').count()==0, 'Build Studio must not show the old giant page heading'
     assert page.locator('.launchReturnHome').count()==0, 'Build Studio must not duplicate home navigation'
 
