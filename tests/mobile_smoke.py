@@ -165,7 +165,7 @@ with sync_playwright() as playwright:
     assert page.locator('.atlasJournalMore .atlasJournalExtra').count()==1
     assert page.locator('.atlasFeatureLink').count()==2, 'Featured guide and Community links must render'
     assert page.locator('.atlasConvergenceFeature').count()==1, 'Convergence guide must be featured on Home'
-    assert page.locator('[data-journal-latest]').get_attribute('href')=='/journal/idlearc-1-3-7-the-timing-couldnt-be-better'
+    assert page.locator('[data-journal-latest]').get_attribute('href')=='/#/journal/article?slug=idlearc-1-3-7-the-timing-couldnt-be-better'
     assert 'IdleArc 1.3.7' in page.locator('[data-journal-latest]').inner_text()
     assert page.locator('.atlasTile[data-route="calculators/pathfinder"]').count()==1
     assert page.locator('.atlasTile[data-action="homemenu"][data-arg="tools"]').count()==1
@@ -230,6 +230,8 @@ with sync_playwright() as playwright:
     page.locator('#globalSearch').fill('Pathfinder')
     assert page.locator('.arcanaSearchDiscover').count()==0, 'Featured suggestions must disappear when typing'
     assert page.locator('#searchResults').count()==1
+    page.locator('#globalSearch').fill('')
+    assert page.locator('.arcanaSearchHint').count()==1, 'Clearing search should restore the search hint'
     page.locator('#layer [data-close]').first.click()
 
     # The Home hero CTA is already asserted to target labs/build above. Exercise

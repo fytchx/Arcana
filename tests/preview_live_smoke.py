@@ -55,6 +55,8 @@ with sync_playwright() as p:
     assert page.locator('.arcanaSearchDiscoverGrid').count()==0
     search.fill('Pathfinder')
     page.locator('#searchResults').wait_for()
+    search.fill('')
+    page.locator('.arcanaSearchHint').wait_for()
     page.locator('#layer [data-close]').first.click()
     # Old shared URLs must still open inside the app shell.
     page.goto(BASE+'/journal/idlearc-1-3-7-the-timing-couldnt-be-better',wait_until='domcontentloaded')
