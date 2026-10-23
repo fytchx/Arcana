@@ -19,13 +19,13 @@ for module in sorted((ROOT/'src').glob('*.js')):
     source=re.sub(r"from\s*(['\"])\.\/([a-z0-9-]+\.js)(?:\?[^'\"]*)?\1",lambda m:"from "+m.group(1)+"@arcana/"+m.group(2)+m.group(1),source)
     IMPORTS[f'@arcana/{module.name}']='data:text/javascript;base64,'+base64.b64encode(source.encode()).decode()
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
-# Render every stylesheet referenced by the current entry point. This keeps the
-# offline browser aligned as Arcana's modular design layers evolve.
-for href in re.findall(r'<link\\s+rel="stylesheet"\\s+href="(/[^"?]+)(?:\\?[^\"]*)?"', HTML):
-    css_name=href.lstrip('/')
+# Render every stylesheet linked by the real entry point so QA follows the app's
+# current modular design layers automatically.
+for href in re.findall(r'<link rel="stylesheet" href="([^"]+)"', HTML):
+    css_name=urlparse(href).path.lstrip('/')
     css=(ROOT/css_name).read_text()
-    pattern=r'<link\\s+rel="stylesheet"\\s+href="'+re.escape(href)+r'(?:\\?[^\"]*)?">'
-    HTML,count=re.subn(pattern,lambda _: '<style>\\n'+css+'\\n</style>',HTML)
+    pattern='<link rel="stylesheet" href="'+re.escape(href)+'">'
+    HTML,count=re.subn(pattern,lambda _: '<style>'+css+'</style>',HTML)
     assert count==1, 'Stylesheet should appear exactly once: '+href
 HTML=HTML.replace('</head>', '<script type="importmap">'+json.dumps({'imports': IMPORTS})+'</script></head>')
 # Controlled game references verify rendering independently of real API availability.
@@ -101,7 +101,7 @@ with sync_playwright() as playwright:
     page.goto(qa_origin,wait_until='domcontentloaded')
     page.set_content(HTML,wait_until='domcontentloaded')
     try:
-        page.wait_for_selector('.launchHero',timeout=15000)
+        page.wait_for_selector('.atlasHero',timeout=15000)
     except Exception:
         print('EARLY ARCANA ERRORS:',repr(errors))
         print('EARLY BODY:',page.locator('body').inner_text()[:2000])
@@ -375,14 +375,14 @@ with sync_playwright() as playwright:
     page.wait_for_selector('.atlasHero',timeout=8000)
     assert page.locator('html').get_attribute('data-arcana-design-active')=='true', 'Try-on must apply the homepage theme'
     assert page.locator('html').get_attribute('data-arcana-admin-design')=='false', 'Try-on must not elevate admin privileges'
-    assert page.evaluate("getComputedStyle(document.querySelector('.launchHero'),'::after').backgroundImage.includes('gradient')"), 'Try-on must style the actual homepage'
-    real=page.evaluate("""() => {const css=getComputedStyle(document.querySelector('.launchHero'),'::after');return {repeat:css.backgroundRepeat,size:css.backgroundSize}}""")
+    assert page.evaluate("getComputedStyle(document.querySelector('#content.homeFullscreen')).backgroundImage.includes('gradient')"), 'Try-on must style the actual homepage'
+    real=page.evaluate("""() => {const css=getComputedStyle(document.querySelector('#content.homeFullscreen'));return {repeat:css.backgroundRepeat,size:css.backgroundSize}}""")
     assert set(real['repeat'].split(', '))=={'no-repeat'} and set(real['size'].split(', '))=={'100% 100%'}, 'Real homepage still has a tiling seam: '+str(real)
     page.evaluate("location.hash='#/theme-playground'")
     page.wait_for_selector('.themePlayground',timeout=8000)
     page.locator('[data-action="theme-try-off"]').click()
     page.evaluate("location.hash='#/home'")
-    page.wait_for_selector('.launchHero',timeout=8000)
+    page.wait_for_selector('.atlasHero',timeout=8000)
     assert page.locator('html').get_attribute('data-arcana-design-active')!='true', 'Leaving Playground must disable local try-on'
     # Synthetic authenticated QA browser, NOT the owner's real session or credentials.
     # Header admin access must be based on server-returned roles; guest stays hidden.
