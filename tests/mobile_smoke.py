@@ -19,14 +19,14 @@ for module in sorted((ROOT/'src').glob('*.js')):
     source=re.sub(r"from\s*(['\"])\.\/([a-z0-9-]+\.js)(?:\?[^'\"]*)?\1",lambda m:"from "+m.group(1)+"@arcana/"+m.group(2)+m.group(1),source)
     IMPORTS[f'@arcana/{module.name}']='data:text/javascript;base64,'+base64.b64encode(source.encode()).decode()
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
-# Offline browser must render EVERY stylesheet in the real entry point, not just
-# styles.css. Missing launch CSS once passed QA while the entire home was unstyled.
-for css_name in ('styles.css','wiki-studio.css','community.css','guild-hub.css','beta.css','launch-navigation.css','pathfinder-timeline.css','quick-tools.css','arcana-contour.css','theme-studio-finishes.css','signature-themes.css','theme-seamless.css','psychedelic-themes.css','desktop-home-refinement.css','arcana-connected-ux.css','home-three.css','traffic.css','admin.css','journal-widgets.css'):
+# Render every stylesheet referenced by the current entry point. This keeps the
+# offline browser aligned as Arcana's modular design layers evolve.
+for href in re.findall(r'<link\\s+rel="stylesheet"\\s+href="(/[^"?]+)(?:\\?[^\"]*)?"', HTML):
+    css_name=href.lstrip('/')
     css=(ROOT/css_name).read_text()
-    pattern=r'<link rel="stylesheet" href="/'+re.escape(css_name)+r'(?:\?[^"]*)?">'
-    HTML,count=re.subn(pattern,lambda _: '<style>\n'+css+'\n</style>',HTML)
-    assert count==1, 'Homepage missing required CSS reference '+css_name
-
+    pattern=r'<link\\s+rel="stylesheet"\\s+href="'+re.escape(href)+r'(?:\\?[^\"]*)?">'
+    HTML,count=re.subn(pattern,lambda _: '<style>\\n'+css+'\\n</style>',HTML)
+    assert count==1, 'Stylesheet should appear exactly once: '+href
 HTML=HTML.replace('</head>', '<script type="importmap">'+json.dumps({'imports': IMPORTS})+'</script></head>')
 # Controlled game references verify rendering independently of real API availability.
 MOCK_ART={"categories": {
@@ -149,29 +149,27 @@ with sync_playwright() as playwright:
       document.documentElement.style.removeProperty('--theme-highlight');
       document.documentElement.style.removeProperty('--accent');
     }""")
-    # The real October 17 release ships three main cards, not the legacy six-card menu.
+    # Current Atlas Home: six destinations, a Build Studio feature, Journal, and connected links.
     page.evaluate("location.hash='#/home'")
-    page.wait_for_selector('.launchHero',timeout=8000)
+    page.wait_for_selector('.atlasHero',timeout=8000)
     assert page.locator('#arcanaDock button').count()==5
     assert page.locator('#arcanaDock [data-dock="home"]').get_attribute('aria-current')=='page'
-    assert page.locator('#arcanaDock [data-dock="community"]').count()==1
-    assert page.locator('#arcanaDock [data-dock="directory"]').count()==1
     assert 'Community' in page.locator('#arcanaDock').inner_text()
     assert 'Directory' in page.locator('#arcanaDock').inner_text()
     assert 'Profile' not in page.locator('#arcanaDock').inner_text()
     assert 'Options' not in page.locator('#arcanaDock').inner_text()
-    assert page.locator('.launchQuickCard').count()==3
-    assert page.locator('.launchHeroCTA[data-route="labs/build"]').count()==1
-    assert page.locator('.journalHomeTeaser').count()==1
-    assert page.locator('.homeSpotlights > section').count()==2
-    hero_heights=page.locator('.homeSpotlights > section').evaluate_all('(els)=>els.map(e=>e.getBoundingClientRect().height)')
-    assert abs(hero_heights[0]-hero_heights[1])<28, 'Studio and Journal must be comparably prominent'
+    assert page.locator('.atlasHeroGo[data-route="labs/build"]').count()==1
+    assert page.locator('.atlasTile').count()==6, 'All six primary Home destinations must render'
+    assert page.locator('.atlasJournal').count()==1
+    assert page.locator('.atlasJournalStory').count()==1
+    assert page.locator('.atlasJournalMore .atlasJournalExtra').count()==1
+    assert page.locator('.atlasFeatureLink').count()==2, 'Featured guide and Community links must render'
+    assert page.locator('.atlasConvergenceFeature').count()==1, 'Convergence guide must be featured on Home'
     assert page.locator('[data-journal-latest]').get_attribute('href')=='/journal/idlearc-1-3-7-the-timing-couldnt-be-better'
-    assert page.locator('[data-journal-latest]').get_attribute('href').startswith('/journal/')
     assert 'IdleArc 1.3.7' in page.locator('[data-journal-latest]').inner_text()
-    assert page.locator('.launchQuickCard[data-arg="pathfinder"]').count()==1
-    assert page.locator('.launchQuickCard[data-arg="tools"]').count()==1
-    assert page.locator('.launchQuickCard[data-arg="social"]').count()==1, 'Guilds & Community tile missing'
+    assert page.locator('.atlasTile[data-route="calculators/pathfinder"]').count()==1
+    assert page.locator('.atlasTile[data-action="homemenu"][data-arg="tools"]').count()==1
+    assert page.locator('.atlasTile[data-route="community"]').count()==1
     page.screenshot(path=str(OUT/'journal_home_mobile.png'),full_page=True)
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Homepage overflows mobile viewport'
 
@@ -210,14 +208,15 @@ with sync_playwright() as playwright:
     assert page.locator('[data-route="guilds/crest"]').count()==0
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Guild directory overflows mobile viewport'
     page.screenshot(path=str(OUT/'guild-tags-only-mobile.png'),full_page=True)
-    # Real desktop viewport: visible tertiary cards, readable type and bounded page.
+    # Real desktop viewport: all primary destinations use the wider grid without overflow.
     page.set_viewport_size({'width':1440,'height':900})
     page.evaluate("location.hash='#/home'")
-    page.wait_for_selector('.homeSpotlights .launchHero',timeout=15000)
-    assert page.locator('.launchFeatured').is_visible(), 'Desktop feature section hidden'
-    assert page.locator('.launchFeaturedGrid .launchFeatureRow').count()>=3, 'Desktop featured cards missing'
+    page.wait_for_selector('.atlasHome .atlasHero',timeout=15000)
+    assert page.locator('.atlasHome .atlasFeatureLink').count()==2, 'Desktop Home guide/community links missing'
     assert page.locator('#content.homeFullscreen').evaluate('e=>e.getBoundingClientRect().width')>=900, 'Desktop content too narrow'
-    assert page.locator('.launchQuickCopy strong').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)')>=20, 'Desktop cards are too small'
+    columns=page.locator('.atlasTileGrid').evaluate('e=>getComputedStyle(e).gridTemplateColumns.split(" ").length')
+    assert columns==3, 'Desktop Home should present destinations in three columns'
+    assert page.locator('.atlasTileCopy strong').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)')>=18, 'Desktop destination labels are too small'
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Desktop homepage horizontal overflow'
     page.screenshot(path=str(OUT/'desktop-home-full.png'),full_page=True)
     page.set_viewport_size({'width':390,'height':844})
@@ -233,7 +232,7 @@ with sync_playwright() as playwright:
     page.locator('#layer [data-close]').first.click()
 
     page.locator('#arcanaDock [data-dock="home"]').click()
-    page.locator('.launchHeroCTA').click()
+    page.locator('.atlasHeroGo').click()
     page.wait_for_selector('.studioProfile',timeout=8000)
     assert page.locator('#arcanaDock button').count()==5, 'Navigation disappeared in Build Studio'
     # Import Manager is an owner-only, browser-local XML conversion workflow.
@@ -314,7 +313,7 @@ with sync_playwright() as playwright:
         page.locator('[data-mini-toggle]').click()
     live=page.frame_locator('[data-mini-live-frame]')
     try:
-        live.locator('#content.homeFullscreen .launchHero').wait_for(timeout=12000)
+        live.locator('#content.homeFullscreen .atlasHero').wait_for(timeout=12000)
     except Exception:
         print('LIVE FRAME DEBUG',page.locator('[data-mini-live-frame]').evaluate("""el=>({url:el.src,docURL:el.contentDocument?.URL,body:el.contentDocument?.body?.innerText?.slice(0,1400),ready:el.contentDocument?.readyState,content:el.contentDocument?.querySelector('#content')?.innerHTML?.slice(0,900)})"""))
         print('FRAME REQUESTS',repr(frame_requests))
@@ -340,7 +339,7 @@ with sync_playwright() as playwright:
         page.locator('[data-theme-pattern="'+texture+'"]').evaluate('el=>el.click()')
         page.wait_for_timeout(70)
         fields=page.evaluate("""() => {
-            const card=document.querySelector('.miniCanvas .miniHome .miniHero');
+            const card=document.querySelector('.miniCanvas .miniHome .atlasMiniHero');
             const style=getComputedStyle(card,'::before');
             const thumb=document.querySelector('.themePatternThumb[data-preview-pattern="'+document.documentElement.dataset.arcanaDesignPattern+'"]');
             const thumbStyle=thumb?getComputedStyle(thumb):null;
@@ -373,7 +372,7 @@ with sync_playwright() as playwright:
     page.evaluate('window.scrollTo(0,0)')
 
     page.locator('[data-action="theme-try-on"]').click()
-    page.wait_for_selector('.launchHero',timeout=8000)
+    page.wait_for_selector('.atlasHero',timeout=8000)
     assert page.locator('html').get_attribute('data-arcana-design-active')=='true', 'Try-on must apply the homepage theme'
     assert page.locator('html').get_attribute('data-arcana-admin-design')=='false', 'Try-on must not elevate admin privileges'
     assert page.evaluate("getComputedStyle(document.querySelector('.launchHero'),'::after').backgroundImage.includes('gradient')"), 'Try-on must style the actual homepage'
@@ -400,6 +399,6 @@ with sync_playwright() as playwright:
     assert 'Admin Control Center' in admin_page.locator('.adminConsole h1').inner_text()
     admin_page.close()
     assert errors==[], 'Browser errors: '+repr(errors)
-    print('PASS: latest three-card home, Journal spotlight, Community, Directory, Featured, Build Studio, settings, responsive checks and all themes.')
+    print('PASS: current Atlas Home, Journal, Community, Directory, Featured, Build Studio, settings, responsive checks and themes.')
     browser.close()
 
