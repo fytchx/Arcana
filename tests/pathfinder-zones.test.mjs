@@ -63,7 +63,7 @@ test('monster materials follow the game monster listing order instead of alphabe
  ];
  const groups=sourceMaterialGroups(mats,source,catalog);
  assert.deepEqual(groups[0].materials.map(m=>m.name),['Zulu Tooth','Alpha Claw']);
- const snapshot={codex:{tiers:{},awaken:{rows:{'1':[{current:0,target:1,gold:'0',monster_materials:{'second-drop':1,'first-drop':1},extra_materials:[],failure:0}]}},transitions:[]},materials:[
+ const snapshot={codex:{tiers:{},awaken:{rows:{'1':[{current:0,target:1,gold:'1000',monster_materials:{'second-drop':1,'first-drop':1},extra_materials:[],failure:0.63}]}},transitions:[]},materials:[
   {...mats[0],type:'monster_material',sourceBiome:'Verdant Woods'},
   {...mats[1],type:'monster_material',sourceBiome:'Verdant Woods'}
  ]};
