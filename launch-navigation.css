@@ -1048,3 +1048,39 @@ html[data-launch-compact="true"] #content:has(.launchHero) .launchFeatureRow{min
 .pfRecommendation span{color:var(--muted,#b9b4c7);text-align:right}
 @media(max-width:680px){.pfGearRow{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px}.pfGearRow>div:first-child{grid-column:1/-1}.pfStats{grid-template-columns:1fr 1fr}.pfStats>div:first-child{grid-column:1/-1}}
 @media(max-width:380px){.pfMaterialFields{grid-template-columns:1fr}.pfOptions .btn{width:100%}}
+
+
+/* Compact Build Studio header: profile actions and section tabs share one frame. */
+.studioProfileGroup{
+ position:relative;isolation:isolate;margin:0 0 12px;overflow:visible;
+ border:1px solid var(--studio-line,var(--line));border-radius:14px;
+ background:radial-gradient(ellipse at 0% 0%,color-mix(in srgb,var(--theme-highlight) 9%,transparent),transparent 63%),linear-gradient(145deg,color-mix(in srgb,var(--theme-secondary) 94%,#5e6786 6%),var(--theme-main));
+ box-shadow:0 10px 28px #0003,inset 0 1px #ffffff08;
+}
+.studioProfileGroup>.studioProfile{
+ padding:11px 12px 7px;border:0!important;border-radius:14px 14px 0 0;
+ box-shadow:none!important;background:transparent!important;overflow:visible;z-index:4;
+}
+.studioProfileGroup>.studioProfile::before{display:none}
+.studioProfileGroup>.studioProfile .studioProfileActions{margin-top:7px}
+.studioProfileGroup>.labsTabs{
+ margin:0;gap:3px;padding:5px 8px 8px;border:0;border-top:1px solid color-mix(in srgb,var(--studio-line) 70%,transparent);
+ border-radius:0 0 14px 14px;background:transparent;overflow-x:auto;
+}
+.studioProfileGroup .labsTab{min-height:33px;padding:6px 7px;font-size:10px}
+.studioMoreMenu>div{min-width:250px;max-width:calc(100vw - 44px)}
+.studioPresetMenu{display:grid;gap:6px;padding:5px 6px 7px;border-bottom:1px solid color-mix(in srgb,var(--studio-line) 70%,transparent)}
+.studioPresetMenu label{display:grid;gap:4px;color:var(--studio-muted);font-size:10px;font-weight:700}
+.studioPresetMenu select{width:100%;min-height:34px;padding:6px 8px;border:1px solid var(--studio-line);border-radius:7px;background:var(--theme-main);color:var(--text);font-size:11px}
+.studioPresetMenu>div{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.studioPresetMenu>div button{justify-content:center;min-height:31px;padding:5px;font-size:10px}
+.studioPresetMenu small{color:var(--studio-muted);font-size:9px}
+@media(max-width:520px){
+ .studioProfileGroup{margin-bottom:10px}
+ .studioProfileGroup>.studioProfile{padding:9px 9px 6px}
+ .studioProfileGroup>.labsTabs{padding:5px 5px 7px;gap:2px}
+ .studioProfileGroup .labsTab{gap:4px;padding:6px 5px;font-size:9px}
+ .studioProfileGroup .labsTab svg{width:13px;height:13px}
+ .studioProfileActions{grid-template-columns:1fr 1fr 40px;gap:5px}
+ .studioProfileActions>[data-action="savecloud"]{grid-column:1/3}
+}

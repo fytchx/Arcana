@@ -24,3 +24,15 @@ test('Reject malformed and oversized guest links',async()=>{
  await assert.rejects(()=>openBuildToken('u.'+'a'.repeat(90)),/link is damaged|Invalid shared build content/);
  await assert.rejects(()=>shareBuildToken({equipment:{},runes:[],notes:'x'.repeat(76000)}),/too large/);
 });
+
+
+test('Configured equipment keeps rarity, awakening, bonus tier and roll in a share link',async()=>{
+ const equipment={
+  weapon:{id:'game:item:wooden-bow',rarity:6,awaken:17,bonusId:'fierce',bonusTier:8,roll:37},
+  ring2:{id:'game:item:adventurers-ring',rarity:5,awaken:0,bonusId:'fierce',bonusTier:7,roll:29}
+ };
+ const token=await shareBuildToken({id:'configured-gear',title:'Configured gear',className:'Archer',
+  equipment,runes:[],runeBoard:[],pets:[],petSetup:[],monsterLevel:100});
+ const recovered=await openBuildToken(token);
+ assert.deepEqual(recovered.equipment,equipment);
+});

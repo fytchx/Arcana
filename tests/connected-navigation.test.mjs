@@ -4,6 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {NAV_DESTINATIONS,NAV_FLOWS,HOME_START,navDestination,navCard,navCards,relatedDestinations,connectedNext,homeStart,routeLinkData} from '../src/context-nav.js';
 import {WIKI_ARTICLES,WIKI_CONNECTIONS,WIKI_CATEGORY_LIST,wikiArticleById} from '../src/wiki-data.js';
 import {wikiArticleView,wikiRecordView,wikiLibraryView,wikiLandingView} from '../src/wiki-views.js';
+import {HOME_MENUS} from '../src/launch-navigation.js';
 
 const app=()=>readFile(new URL('../src/app.js',import.meta.url),'utf8');
 const allRoutes=new Set(['home','labs','calculators','wiki','lfg','labs/build','labs/runes','labs/skills','labs/passives','labs/pets','labs/guild-tree','calculators/pet','calculators/affixes','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/ml-farm','lfg/raids','lfg/guilds','guilds','wiki/guides','wiki/article','wiki/library']);
@@ -120,4 +121,28 @@ test('Application keeps connected destinations and exposes a universal home path
  assert.match(code,/searchExtras\(\)\.find\(x=>x\.id===id\)/);
  assert.match(code,/__prevWikiX/);
  assert.match(code,/__prevGuildX/);
+});
+
+
+test('Pet loadout destinations open the integrated Build Studio pet section',()=>{
+ const pet=navDestination('petlab');
+ assert.equal(pet.route,'labs/build');
+ assert.deepEqual(pet.params,{section:'pets'});
+ const record=wikiRecordView({id:'game:test-pet',gameKind:'pet',kind:'pet',title:'Test Pet',description:'Pet',facts:[]},[],'pet');
+ assert.match(record,/data-arg="labs\/build\?section=pets"/);
+});
+
+
+test('Damage Calculator is clearly standalone and does not link to Build Studio',async()=>{
+ const code=await app();
+ const calculator=code.match(/function calcDamage\(\)\{[\s\S]*?\nfunction calcPet\(/)?.[0]||'';
+ assert.match(calculator,/Attack, Pet, or Retaliation/);
+ assert.match(calculator,/preparing for IdleArc API access/);
+ assert.match(calculator,/separate from Build Studio/);
+ assert.doesNotMatch(calculator,/data-route="labs\/build"|equipment stats|pet upgrades|inscriptions and class skills/);
+ const menu=HOME_MENUS.tools.links.find(link=>link.route==='calculators/damage');
+ assert.ok(menu);
+ assert.match(menu.detail,/Attack, Pet and Retaliation/);
+ assert.match(menu.detail,/API integration/);
+ assert.doesNotMatch(menu.detail,/build upgrade analysis/i);
 });

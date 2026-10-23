@@ -61,6 +61,7 @@ export function runeIssue(placed,candidate,ignoredId=null,monsterLevel=300){
 export function putRune(placed,candidate,monsterLevel=300){const issue=runeIssue(placed,candidate,null,monsterLevel);if(issue)return {ok:false,reason:issue,placements:placed};return {ok:true,placements:[...placed,normalizeRune(candidate,placed.length)]};}
 export function removeRune(placed,id){return placed.filter(r=>r.id!==id)};
 export function nextRuneId(placed){let i=1;while(placed.some(r=>r.id===`rune-${i}`))i++;return `rune-${i}`;}
+
 export function normalizeBuild(build){
  const b=structuredClone(build||{});b.equipment=b.equipment||{};
  if(!Array.isArray(b.runes))b.runes=[];
@@ -73,6 +74,7 @@ export function normalizeBuild(build){
  b.pets=b.petSetup.filter(p=>p.equipped).map(p=>p.name||statName(p.hatchBonus)||'Equipped pet');
  b.petBonusTargets=normalizedPetBonusTargets(b);
  b.petMode=b.petMode==='permanent'?'permanent':'seasonal';b.schemaVersion=9;
+ b.usedRunewords=Array.isArray(b.usedRunewords)?[...new Set(b.usedRunewords.filter(x=>typeof x==='string').map(x=>x.slice(0,48)))]:[];delete b.runeLocks;
  b.passiveAlloc=b.passiveAlloc&&typeof b.passiveAlloc==='object'?b.passiveAlloc:{};
  b.passiveFreeMode=b.passiveFreeMode===true;
  b.classAllocById=b.classAllocById&&typeof b.classAllocById==='object'?b.classAllocById:{};

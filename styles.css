@@ -1185,3 +1185,310 @@ body,#app.shell{max-width:100%;min-width:0}
 .wikiArticleCredit{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:12px 14px;margin-top:17px;background:var(--theme-highlight-soft);border:1px solid var(--theme-highlight-border);border-radius:10px;font-size:12px;color:var(--soft)}
 .wikiArticleCredit strong{color:var(--theme-accent-text)}
 .wikiArticleCredit span{line-height:1.5}
+
+/* Build Studio one-screen equipment workspace */
+.studioPrimaryEquipment{overflow:hidden}
+.studioGearLayout{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(300px,.78fr);gap:16px;align-items:start}
+.studioGearCanvas{min-width:0}
+.studioGearWorkbench{min-width:0;min-height:280px;padding:18px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,color-mix(in srgb,var(--panel) 94%,var(--accent) 6%),var(--panel2));box-shadow:inset 0 1px color-mix(in srgb,var(--accent) 12%,transparent)}
+.studioWorkbenchHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.studioWorkbenchHead h3,.studioGearWorkbench h3{margin:4px 0 0;font-size:18px}
+.studioWorkbenchClose{width:34px;height:34px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font-size:22px;cursor:pointer}
+.studioGearSearch{margin-bottom:12px}
+.studioGearResults{max-height:480px;overflow:auto;overscroll-behavior:contain}
+.studioWorkbenchHint,.studioGearWorkbench p{font-size:12px;line-height:1.55;color:var(--muted)}
+.studioPromptStats{display:flex;gap:10px;margin-top:24px}
+.studioPromptStats span{display:grid;gap:2px;min-width:82px;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--panel) 80%,transparent)}
+.studioPromptStats strong{font-size:19px}.studioPromptStats small{font-size:11px;color:var(--muted)}
+.studioGearWorkbench .gearEditor{display:grid;gap:12px}
+.studioGearWorkbench .gearEditHero{align-items:center}
+.studioGearWorkbench .gearEditButtons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.studioGearWorkbench .gearEditButtons [data-action="gearcancel"]{grid-column:1/-1}
+.studioGearWorkbench .gearEditFields{grid-template-columns:1fr 1fr}
+.studioGearWorkbench .gearSourceNote{font-size:10px}
+.loadoutSlot .gameArt{width:46px;height:46px;border-radius:10px;background-color:#10131d}
+@media(max-width:880px){.studioGearLayout{grid-template-columns:1fr}.studioGearWorkbench{min-height:0}.studioGearResults{max-height:44vh}}
+@media(max-width:520px){.studioGearWorkbench{padding:14px}.studioGearWorkbench .gearEditFields{grid-template-columns:1fr 1fr}.studioGearResults{max-height:38vh}.studioPrimaryEquipment .loadoutStage{gap:8px}}
+
+/* Render verified IdleArc skill art as framed in-game icons rather than generic circular badges. */
+.classSkillImage{width:68px;height:68px;border-radius:15px;border:2px solid var(--theme-border);background:#10131d;box-shadow:0 5px 12px #0006}
+.classSkillImage .gameArt{width:62px;height:62px;border-radius:10px;background-size:cover}
+.classSkillNode.available .classSkillImage{border-color:var(--theme-highlight-border)}
+.classSkillNode.allocated .classSkillImage{border-color:var(--theme-highlight);box-shadow:0 0 0 2px var(--theme-highlight-soft),0 5px 14px #0008}
+.classSkillNode.locked .classSkillImage{filter:saturate(.62);opacity:.78}
+@media(max-width:700px){.classTreeOverview .classSkillImage{width:58px;height:58px;border-radius:13px}.classTreeOverview .classSkillImage .gameArt{width:52px;height:52px;border-radius:9px}}
+
+
+/* Compact rune dressing room */
+.runeStudioGrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.72fr);gap:12px;align-items:start}
+.runeWorkbenchColumn{display:grid;gap:10px;min-width:0}.runeStudioGrid .runeWorkspace{min-width:0}.runeActionBar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0}
+.runeActionBar>label{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.8rem;font-weight:700}
+.runeActionBar input{width:92px;min-height:38px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font:inherit}
+.runeNewButton{white-space:nowrap;min-height:40px}.runePlacementHint{margin:4px 0 10px;color:var(--muted);font-size:.82rem}
+.runePlacementHint strong{color:var(--text)}.runeGridCell.readyToPlace{cursor:pointer}
+.runeComposer{margin:0 0 12px;padding:14px;border:1px solid var(--line);border-radius:15px;background:linear-gradient(145deg,var(--panel2),var(--panel))}
+.runeComposerFields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:10px}
+.runeComposerFields label{display:grid;gap:5px;color:var(--soft);font-size:.75rem;font-weight:700}
+.runeComposerFields select{width:100%;min-width:0;min-height:40px;padding:8px 9px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:inherit}
+.runeComposerFields small{font-size:.68rem;color:var(--muted);font-weight:500}
+.runeComposerActions{display:flex;gap:8px;margin-top:12px}.runeComposerActions .btn{min-height:38px}
+.runeWordsPanel{border:1px solid var(--line);border-radius:15px;background:var(--panel);overflow:hidden}
+.runeWordsPanel>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;cursor:pointer}
+.runeWordsPanel>summary::-webkit-details-marker{display:none}.runeWordsPanel>summary span{display:grid;gap:3px}
+.runeWordsPanel>summary strong{font-size:.98rem}.runeWordsPanel>summary small,.runeWordsPanel>summary b{color:var(--muted);font-size:.76rem}
+.runeWordsPanel>summary b{padding:5px 8px;border-radius:99px;background:var(--panel2);color:var(--accent)}
+.runeWordsList{max-height:58vh;overflow:auto;border-top:1px solid var(--line)}
+.runeWordRow{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;border-bottom:1px solid color-mix(in srgb,var(--line) 65%,transparent);cursor:pointer}
+.runeWordRow.checked{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.runeWordRow input{width:18px;height:18px;accent-color:var(--accent);margin:2px 0 0}
+.runeWordCopy{display:grid;gap:5px;min-width:0}.runeWordCopy>strong{font-size:.84rem}
+.runeWordCopy>small{color:var(--muted);font-size:.72rem;line-height:1.35}
+.runeWordTypes{display:flex;flex-wrap:wrap;gap:4px}
+.runeFamilyChip{padding:2px 6px;border:1px solid currentColor;border-radius:6px;font-size:.63rem;font-weight:700;text-transform:capitalize}
+.runeSelectedStrip{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-top:1px solid var(--line);color:var(--soft);font-size:.78rem}
+.runeWordsNote{margin:0;padding:10px 12px;color:var(--muted);font-size:.72rem}
+@media(max-width:760px){.runeStudioGrid{grid-template-columns:minmax(0,1fr)}.runeComposerFields{grid-template-columns:1fr 1fr}.runeComposerFields label:last-child{grid-column:1/-1}.runeWordsList{max-height:52vh}}
+@media(max-width:420px){.runeComposerFields{grid-template-columns:1fr}.runeComposerFields label:last-child{grid-column:auto}.runeComposerActions{flex-direction:column}.runeComposerActions .btn{width:100%}}
+
+
+/* Rune Forge: keep the whole mobile placement loop inside one compact workspace. */
+.runeForgePage{padding-top:0;margin-top:0}
+.runeForgePage .runeStudioGrid{grid-template-columns:minmax(0,1fr) minmax(250px,.62fr);gap:10px;align-items:start}
+.runeForgePage .runeWorkbenchColumn{display:block}
+.runeForgePage .runeWorkspace{position:relative;padding:11px}
+.runeForgePage .runeWorkspace>.sectionCardTop{display:flex;align-items:center;gap:10px;margin:0 0 6px}
+.runeForgePage .runeWorkspace>.sectionCardTop h3{font-size:16px;white-space:nowrap;margin:0 auto 0 0}
+.runeForgePage .runeWorkspace>.sectionCardTop>span{font-size:11px;white-space:nowrap}
+.runeBackLink{white-space:nowrap;font-size:11px}
+.runeForgePage .runeActionBar{margin:5px 0 7px}
+.runeForgePage .runeActionBar>label{gap:7px}
+.runeForgePage .runeActionBar input{width:78px;min-height:36px}
+.runeForgePage .runeNewButton{min-height:38px;padding:8px 12px}
+.runeForgePage .runeBoard{margin-top:5px;max-width:none}
+.runeComposer{position:absolute;z-index:20;top:91px;right:12px;width:min(330px,calc(100% - 24px));margin:0;padding:12px;border:1px solid var(--theme-highlight,var(--accent));border-radius:13px;background:var(--theme-card,var(--panel));box-shadow:0 12px 35px #000b}
+.runeComposerTitle{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px}
+.runeComposerTitle strong{font-size:.9rem}.runeComposerTitle small{font-size:.67rem;color:var(--muted);text-align:right}
+.runeComposerFields{display:grid;grid-template-columns:1fr;gap:7px;margin:0}
+.runeComposerFields label{display:grid;grid-template-columns:92px minmax(0,1fr);align-items:center;gap:6px;font-size:.72rem}
+.runeComposerFields select{min-height:35px;padding:6px 8px}
+.runeWordsPanel{align-self:start}
+.runeWordsPanel>summary{padding:11px 12px}
+.runeGridCell.readyToPlace{background:color-mix(in srgb,var(--theme-highlight,var(--accent)) 12%,transparent)}
+.runePlaced{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.runePlaced.runeHoldReady{outline:2px solid var(--theme-highlight,var(--accent));outline-offset:1px;transform:scale(1.035);cursor:grabbing}
+.runeBoard.isRuneDragging .runePlaced{pointer-events:none}
+.runePlaced.runeDragging{opacity:.5}
+@media(max-width:760px){
+ .runeForgePage{padding-top:0;margin-top:0}
+ .runeForgePage .runeStudioGrid{grid-template-columns:minmax(0,1fr);gap:8px}
+ .runeForgePage .runeWorkspace{padding:9px}
+ .runeForgePage .runeWorkspace>.sectionCardTop h3{font-size:14px}
+ .runeForgePage .runeWorkspace>.sectionCardTop>span{font-size:10px}
+ .runeForgePage .runeActionBar{margin:4px 0 5px}
+ .runeForgePage .runeActionBar input{width:72px;min-height:34px}
+ .runeForgePage .runeNewButton{min-height:36px;padding:7px 10px}
+ .runeForgePage .runeBoard{margin-top:4px;gap:2px;padding:3px}
+ .runeComposer{top:82px;right:8px;width:min(320px,calc(100% - 16px));padding:10px}
+ .runeWordsList{max-height:48vh}
+}
+@media(max-width:380px){
+ .runeBackLink{font-size:10px}
+ .runeForgePage .runeWorkspace>.sectionCardTop{gap:6px}
+ .runeForgePage .runeWorkspace>.sectionCardTop h3{font-size:13px}
+ .runeForgePage .runeWorkspace>.sectionCardTop>span{font-size:9px}
+}
+
+.runeForgePage>.labsTabs{margin:0 0 8px}
+@media(max-width:760px){.runeForgePage>.labsTabs{display:none}}
+
+.runeBoard .runeGridCell.runeDragTarget{outline:2px solid var(--theme-highlight,var(--accent));outline-offset:-2px;background:color-mix(in srgb,var(--theme-highlight,var(--accent)) 30%,var(--panel))}
+
+/* Compact shared Build Studio identity and section switcher */
+.studioSharedHeader{position:relative;margin:0 0 10px;padding:8px 10px 7px;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;border:1px solid var(--border);border-radius:14px;background:var(--panel)}
+.studioContextUtility{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:24px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.13em}
+.studioHomeLink{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--text);font-size:11px;font-weight:700}
+.studioContextProfile{display:grid;grid-template-columns:42px minmax(0,1fr);gap:9px;align-items:center}
+.studioContextAvatar{width:42px;height:42px;padding:0;border:1px solid var(--border);border-radius:12px;background:var(--panel);display:grid;place-items:center;overflow:hidden}
+.studioContextAvatar img,.studioContextAvatar svg{max-width:100%;max-height:100%;object-fit:cover}
+.studioContextFields{display:grid;gap:3px;min-width:0}
+.studioContextIdentity{display:flex;align-items:center;gap:8px;min-width:0}
+.studioContextIdentity input,.studioContextIdentity strong{min-width:0;max-width:62%;font-size:16px;font-weight:800}
+.studioContextIdentity select,.studioContextClass{padding:4px 8px;min-height:30px;border:1px solid var(--border);border-radius:8px;background:var(--panel);color:var(--text);font-size:12px}
+.studioContextSummary{width:100%;min-width:0;padding:0;border:0;background:transparent;color:var(--muted);font-size:11px;line-height:1.3}
+.studioContextSummary::placeholder{color:var(--muted)}
+.studioContextActions{display:flex;gap:6px;align-items:center}
+.studioActionButton{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:32px;padding:5px 9px;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--text);font-size:11px;font-weight:700}
+.studioActionButton.primary{background:var(--accent);color:var(--accent-contrast,var(--page))}
+.studioMoreMenu{margin-left:auto;position:relative}
+.studioMoreMenu>summary{list-style:none;cursor:pointer;display:flex;gap:4px;align-items:center;justify-content:center;min-height:32px;padding:5px 8px;border:1px solid var(--border);border-radius:9px;background:var(--panel);font-size:11px;font-weight:700}
+.studioMoreMenu>summary::-webkit-details-marker{display:none}
+.studioMoreMenu>div{position:absolute;z-index:30;right:0;top:calc(100% + 5px);width:min(300px,88vw);max-height:70vh;overflow:auto;padding:8px;border:1px solid var(--border);border-radius:12px;background:var(--page);box-shadow:0 12px 40px #0008}
+.studioMoreMenu>div>button,.studioPresetMenu button{width:100%;min-height:34px;margin:2px 0;display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;background:var(--panel);color:var(--text);font-size:12px}
+.studioPresetMenu{display:grid;gap:6px;padding:7px;margin:5px 0;border:1px solid var(--border);border-radius:9px;background:var(--panel)}
+.studioPresetMenu label{display:grid;gap:4px;font-size:11px}.studioPresetMenu select{width:100%;min-height:32px}
+.studioPresetMenu>div{display:flex;gap:5px}.studioPresetMenu>div button{justify-content:center}.studioPresetMenu small{color:var(--muted)}
+.studioSharedHeader>.labsTabs{margin:0;gap:5px}
+.studioSharedHeader .labsTab{min-height:34px;padding:5px 7px;font-size:10px}
+.runeWorkspace{position:relative}
+.runeComposer{position:absolute;z-index:20;top:54px;right:8px;width:min(340px,calc(100% - 16px));padding:10px;box-shadow:0 16px 44px #000a}
+.runePlacementHint{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.runePlacementHint button{border:0;background:transparent;color:var(--accent);font-size:11px;font-weight:800;text-decoration:underline}
+@media(max-width:760px){
+ .studioSharedHeader{padding:6px 7px;gap:5px;margin-bottom:7px}
+ .studioContextUtility{min-height:21px;font-size:9px}
+ .studioHomeLink{padding:3px 6px}
+ .studioContextProfile{grid-template-columns:36px minmax(0,1fr);gap:7px}
+ .studioContextAvatar{width:36px;height:36px}
+ .studioContextIdentity input,.studioContextIdentity strong{font-size:14px}
+ .studioContextIdentity select,.studioContextClass{min-height:27px;font-size:11px}
+ .studioContextSummary{font-size:10px}
+ .studioContextActions{gap:4px}
+ .studioActionButton,.studioMoreMenu>summary{min-height:29px;padding:4px 7px;font-size:10px}
+ .studioSharedHeader>.labsTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:visible}
+ .studioSharedHeader .labsTab{white-space:normal;min-height:31px;padding:4px 3px;font-size:9px}
+ .studioSharedHeader .labsTab svg{width:13px;height:13px}
+ .runeComposer{top:48px;right:5px;width:min(330px,calc(100% - 10px));padding:8px}
+}
+
+
+/* Build Studio polish: compact, theme-aware controls with clearer point allocation. */
+.studioSharedHeader{padding:8px 10px;gap:7px;margin:0 0 8px;border-radius:16px}
+.studioContextUtility{min-height:24px}
+.studioContextProfile{gap:9px}
+.studioContextAvatar{width:42px;height:42px}
+.studioContextActions{gap:6px}
+.studioSharedHeader>.labsTabs{margin:0;gap:5px;padding:4px 0 0}
+.studioSharedHeader .labsTab{min-height:36px;border-radius:10px}
+.studioPage .breadcrumb,.studioSubPage .breadcrumb{margin-block:2px 7px}
+.levelStudio{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 10px;padding:8px 10px;margin:0 0 8px;border-radius:12px}
+.levelStudio .levelHead{display:contents}
+.levelStudio .levelHead>div:first-child{display:flex;align-items:center;gap:7px}
+.levelStudio .levelHead .eyebrow{font-size:8px;letter-spacing:.08em}
+.levelStudio .levelHead label{font-size:11px}
+.levelStudio .levelNumber{display:flex;align-items:center;gap:5px}
+.levelStudio .levelNumber input{width:68px;min-height:32px;padding:4px 7px;font-size:13px}
+.levelStudio .levelNumber span{font-size:8px}
+.levelStudio input[type="range"]{grid-column:1/-1;height:16px;margin:0}
+.levelStudio .levelBottom{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0;font-size:9px}
+.levelStudio .pointCounter{display:flex;align-items:center;gap:5px;font-size:9px}
+.levelStudio .pointCounter strong{font-size:11px;color:var(--theme-accent-text)}
+.levelStudio .pointCounter small{font-size:9px}
+.classTreeOverview{padding:9px!important;border-radius:15px}
+.classTreeOverview .classRail{gap:5px;margin:0 0 5px;padding:0 0 5px}
+.classTreeOverview .classRail button{min-height:35px;padding:5px 8px;border-radius:10px;font-size:10px}
+.classTreeOverview .classRail button svg,.classTreeOverview .classRail button img{width:20px;height:20px}
+.classTreeOverview .classHeading{padding:4px 1px 7px;margin:0 0 6px}
+.classTreeOverview .classMark{width:36px;height:36px;border-radius:10px}
+.classTreeOverview .classHeading h2{font-size:17px;margin:1px 0}
+.classTreeOverview .classHeading p{font-size:10px;margin:2px 0 0}
+.classTreeOverview .classHeading .eyebrow{font-size:8px}
+.classTreeOverview .branchRail{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:0 0 6px}
+.classTreeOverview .branchRail button{min-height:39px;padding:5px 4px;font-size:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.classTreeOverview .branchRail button small{font-size:8px;opacity:.78}
+.classTreeOverview .classBranchIntro{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:0 0 6px;padding:0}
+.classTreeOverview .classBranchIntro .eyebrow{display:none}
+.classTreeOverview .classBranchIntro h3{font-size:12px;margin:0}
+.classTreeOverview .classBranchIntro h3 small{font-size:9px}
+.classTreeOverview .classBranchIntro>.btn{min-height:29px;padding:4px 7px;font-size:9px}
+.classTreeOverview .classTierStack{gap:7px}
+.classTreeOverview .classTierBlock{padding:6px;border-radius:11px}
+.classTreeOverview .classTierHeader{gap:6px;margin:0 0 5px}
+.classTreeOverview .classTierHeader .classTierBadge{width:25px;height:25px}
+.classTreeOverview .classTierHeader strong{font-size:10px}
+.classTreeOverview .classTierHeader small{font-size:8px}
+.classTreeOverview .classTierCards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,145px),1fr));gap:6px}
+.classTreeOverview .classSkillNode{width:auto;min-width:0;min-height:0;padding:7px;border-radius:11px;display:grid;grid-template-columns:38px minmax(0,1fr);column-gap:7px;align-items:center}
+.classTreeOverview .classSkillNode .classSkillImage{width:38px;height:38px;grid-row:span 2;border-radius:9px;border-width:1px}
+.classTreeOverview .classSkillNode .classSkillImage .gameArt{width:34px;height:34px}
+.classTreeOverview .classSkillNode .classSkillInspect{min-width:0}
+.classTreeOverview .classSkillNode .classSkillInspect strong{font-size:10px;line-height:1.2}
+.classTreeOverview .classSkillNode .classSkillInspect small{font-size:8px;line-height:1.25}
+.classTreeOverview .classNodeFoot{grid-column:2;min-width:0}
+.inlineStepper{display:inline-grid;grid-template-columns:30px minmax(28px,auto) 30px;align-items:center;gap:4px}
+.inlineStepper button{width:30px;min-width:30px;height:30px;min-height:30px;border:1px solid var(--theme-border);border-radius:9px;background:var(--theme-overlay);color:var(--text);font-size:17px;font-weight:800;line-height:1;box-shadow:0 1px 0 var(--theme-border)}
+.inlineStepper .stepPlus{border-color:var(--theme-highlight-border);background:var(--theme-highlight-soft);color:var(--theme-accent-text)}
+.inlineStepper button:disabled{opacity:.38;box-shadow:none}
+.inlineStepper button:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:2px}
+.inlineStepper output{font-size:10px;font-weight:800;color:var(--text);text-align:center}
+.passiveAllocationMode{padding:8px 10px;margin:0 0 7px;gap:8px;border-radius:12px}
+.passiveModeText>strong{font-size:11px}
+.passiveModeText p{font-size:9px;line-height:1.35;margin-top:2px}
+.passiveModeSwitch{gap:6px;font-size:9px}
+.passiveSwitchTrack{width:38px;height:22px}
+.passiveSwitchTrack:after{width:16px;height:16px}
+.passiveModeSwitch input:checked+.passiveSwitchTrack:after{transform:translateX(15px)}
+.passiveTreeLead{padding:8px 10px;margin:0 0 7px}
+.passiveTreeLead h2{font-size:15px}
+.passiveTreeLead p{font-size:9px;line-height:1.35}
+.passiveTierRail{padding:4px 0;margin:0 0 7px;gap:4px}
+.passiveTierRail button{min-height:31px;padding:4px 7px;font-size:9px}
+.passiveTierRows .passiveRow{padding:7px 5px;margin:0 0 6px;border-radius:11px}
+.passiveTierRows .passiveRowLabel{margin:0 0 5px}
+.passiveTierRows .passiveRowLabel strong{font-size:10px}
+.passiveTierRows .passiveRowLabel small{font-size:8px}
+.passiveTierRows .passiveRowNodes{gap:5px}
+.passiveTierRows .passiveNode{min-height:0;padding:6px 3px;border-radius:9px}
+.passiveTierRows .passiveSymbol{width:28px;height:28px}
+.passiveTierRows .passiveName{font-size:9px;line-height:1.2}
+.passiveTierRows .passiveStatGain{font-size:9px}
+.passiveTierRows .inlineStepper{grid-template-columns:28px minmax(22px,auto) 28px;gap:2px}
+.passiveTierRows .inlineStepper button{width:28px;min-width:28px;height:28px;min-height:28px}
+.passiveTierRows .inlineStepper output{font-size:9px}
+.treeFootControls{gap:6px;margin-top:7px}
+.treeFootControls .btn{min-height:34px;padding:6px 8px;font-size:10px}
+.runeActionButtons{display:flex;align-items:center;gap:6px}
+.runeResetButton,.runeNewButton{min-height:36px;padding:7px 10px;font-size:11px;white-space:nowrap}
+.runeResetButton:disabled{opacity:.4}
+.runeWordsPanel>summary{scroll-margin-top:10px}
+.runeWordsList{overscroll-behavior:contain}
+.runeWordRow{scroll-margin-top:10px}
+.loadoutStage{gap:5px!important}
+@media(max-width:700px){
+ .studioSharedHeader{padding:6px 7px;gap:5px;margin-bottom:6px}
+ .studioContextUtility{min-height:20px}
+ .studioContextProfile{grid-template-columns:34px minmax(0,1fr);gap:6px}
+ .studioContextAvatar{width:34px;height:34px}
+ .studioContextIdentity input,.studioContextIdentity strong{font-size:13px}
+ .studioContextIdentity select,.studioContextClass{min-height:25px;font-size:10px}
+ .studioContextSummary{font-size:9px;line-height:1.2}
+ .studioContextActions{gap:3px}
+ .studioActionButton,.studioMoreMenu>summary{min-height:27px;padding:3px 6px;font-size:9px}
+ .studioSharedHeader .labsTab{min-height:32px;padding:4px 2px;font-size:9px}
+ .studioPage{gap:7px}
+ .classTreeOverview .classRail{overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain}
+ .classTreeOverview .classRail button{flex:none}
+ .classTreeOverview .classTierCards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .classTreeOverview .classSkillNode{grid-template-columns:30px minmax(0,1fr);padding:6px;column-gap:5px}
+ .classTreeOverview .classSkillNode .classSkillImage{width:30px;height:30px}
+ .classTreeOverview .classSkillNode .classSkillImage .gameArt{width:26px;height:26px}
+ .classTreeOverview .classSkillNode .classSkillInspect strong{font-size:9px}
+ .classTreeOverview .classSkillNode .classSkillInspect small{font-size:7px}
+ .classTreeOverview .classNodeFoot .inlineStepper{margin:3px 0 0}
+ .inlineStepper{grid-template-columns:28px minmax(24px,auto) 28px;gap:2px}
+ .inlineStepper button{width:28px;min-width:28px;height:28px;min-height:28px}
+ .passiveTierRows .passiveRowNodes{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .runeActionBar{align-items:center;gap:6px}
+ .runeActionBar>label{font-size:10px}
+ .runeActionButtons{gap:5px}
+ .runeResetButton,.runeNewButton{min-height:32px;padding:5px 7px;font-size:10px}
+ .runeActionBar input{width:60px;min-height:30px}
+}
+@media(max-width:380px){
+ .classTreeOverview .classTierCards{grid-template-columns:1fr}
+ .classTreeOverview .classSkillNode{grid-template-columns:36px minmax(0,1fr)}
+ .classTreeOverview .classSkillNode .classSkillImage{width:36px;height:36px}
+ .classTreeOverview .classSkillNode .classSkillImage .gameArt{width:32px;height:32px}
+ .runeResetButton,.runeNewButton{padding:4px 6px;font-size:9px}
+}
+
+.classTreeOverview .classSkillInspect{display:grid!important;grid-template-columns:38px minmax(0,1fr);grid-template-rows:auto auto;align-items:center;justify-items:start;text-align:left;column-gap:7px;row-gap:2px}
+.classTreeOverview .classSkillImage{grid-column:1;grid-row:1/3}
+.classTreeOverview .classSkillInspect>strong{grid-column:2;grid-row:1;align-self:end}
+.classTreeOverview .classSkillEffect{grid-column:2;grid-row:2;text-align:left;font-size:8px;line-height:1.2;-webkit-line-clamp:2;line-clamp:2}
+@media(max-width:700px){.classTreeOverview .classSkillInspect{grid-template-columns:30px minmax(0,1fr);column-gap:5px}.classTreeOverview .classSkillEffect{font-size:7px}}
+@media(max-width:380px){.classTreeOverview .classSkillInspect{grid-template-columns:36px minmax(0,1fr)}}
+
+
+/* Keep class skill details and allocation controls spanning the full card. */
+.classTreeOverview .classSkillNode>.classSkillInspect{grid-column:1/-1;width:100%}
+.classTreeOverview .classSkillNode>.classNodeFoot{grid-column:1/-1}

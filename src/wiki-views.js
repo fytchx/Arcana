@@ -119,9 +119,9 @@ export function wikiRecordView(entry,all=[],returnCategory='all'){if(!entry)retu
  if(kind==='class-skill')actions.push(['Open Class Skill Tree','route','labs/skills','git'],['Plan a full build','route','labs/build','flask']);
  if(kind==='passive')actions.push(['Open Passive Tree','route','labs/passives','layers'],['Season 2 guide','route','wiki/article?id=season-2','book']);
  if(['rune','runeword'].includes(kind))actions.push(['Open Rune Forge','route','labs/runes','gem'],['How rune grids unlock','route','wiki/article?id=rune-grid','book']);
- if(kind==='pet-affix')actions.push(['Pet Affix Cost Calculator','route','calculators/affixes','calculator'],['Configure pet loadout','route','labs/pets','paw'],['Pet Affix upgrade guide','route','wiki/article?id=pet-affix-costs','book']);
- if(kind==='pet-bonus')actions.push(['Pet Compound Calculator','route','calculators/pet','calculator'],['Configure pet loadout','route','labs/pets','paw']);
- if(kind==='pet')actions.push(['Configure pet loadout','route','labs/pets','paw'],['Read Pet Compound guide','route','wiki/article?id=pet-compound','book']);
+ if(kind==='pet-affix')actions.push(['Pet Affix Cost Calculator','route','calculators/affixes','calculator'],['Configure pet loadout','route','labs/build?section=pets','paw'],['Pet Affix upgrade guide','route','wiki/article?id=pet-affix-costs','book']);
+ if(kind==='pet-bonus')actions.push(['Pet Compound Calculator','route','calculators/pet','calculator'],['Configure pet loadout','route','labs/build?section=pets','paw']);
+ if(kind==='pet')actions.push(['Configure pet loadout','route','labs/build?section=pets','paw'],['Read Pet Compound guide','route','wiki/article?id=pet-compound','book']);
  if(kind==='biome'||kind==='monster')actions.push(['Browse Biomes & Monsters','route','wiki/library?kind=monster','search'],['Monster Level farming guide','route','wiki/article?id=monster-level','book']);
  if(kind==='material')actions.push(['Open Upgrade Calculator','route','calculators/upgrade','calculator'],['Forge guide','route','wiki/article?id=forge','book']);
  if(kind==='item-affix')actions.push(['Compare equipment','route','calculators/compare','compare']);

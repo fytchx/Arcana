@@ -30,7 +30,7 @@ export const HOME_MENUS=Object.freeze({
   link('Pet Affix Calculator','Pet Shard costs and affix upgrade planning.','calculators/affixes','calculator'),
   link('ML Farming Comparator','Compare Monster Level farming efficiency.','calculators/ml-farm','sword'),
   link('Guild Skill Planner','Allocate, compare and share guild skill points.','labs/guild-tree','shield'),
-  link('Damage Calculator · Work in Progress','Damage comparisons and build upgrade analysis in development.','calculators/damage','calculator')
+  link('Damage Calculator · In Development','Standalone Attack, Pet and Retaliation formula sandbox; API integration is planned when access is available.','calculators/damage','calculator')
  ]},
  builds:{title:'Builds, Guides & Wiki',detail:'Player guides, community builds, sharing and character planning.',links:[
   link('Player Guides','Guides for classes, progression and game systems.','wiki/guides','book'),
