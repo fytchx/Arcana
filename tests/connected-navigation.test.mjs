@@ -71,9 +71,14 @@ test('Tool journeys and home quick actions are rendered with real controls',()=>
 test('Wiki articles link to inline tools and curated related guide pages',()=>{
  for(const article of WIKI_ARTICLES){
   const html=wikiArticleView(article);
-  assert.match(html,/Continue in Arcana/);
-  assert.match(html,/Related guides and game records/);
-  assert.match(html,/data-route="wiki\/article"/);
+  if(article.id==='bruto-season-2-progression'){
+   assert.match(html,/USEFUL LINKS/);
+   assert.doesNotMatch(html,/Related guides and game records|wikiSectionActions/);
+  }else{
+   assert.match(html,/Continue in Arcana/);
+   assert.match(html,/Related guides and game records/);
+   assert.match(html,/data-route="wiki\/article"/);
+  }
  }
  const season=wikiArticleView(wikiArticleById('season-2'));
  assert.match(season,/wikiSectionActions/);
@@ -111,10 +116,10 @@ test('Application keeps connected destinations and exposes a universal home path
  assert.ok(code.includes('function home(){return homeScreen();}'));
  assert.match(code,/case 'directory':return directoryView\(\)/);
  assert.match(code,/case 'wiki\/category':return wikiCategory/);
- assert.match(code,/case 'homemenu':if\(arg==='pathfinder'\)go\('calculators\/pathfinder'\)/);
+  assert.match(code,/case 'homemenu':if\(arg==='pathfinder'\)go\('calculators\/pathfinder'\);else if\(arg==='tools'\)go\('calculators'\)/);
  assert.match(code,/case 'labs':return buildStudio\(\)/);
  assert.match(code,/syncAdminPortal\(\)/);
-  assert.match(code,/function searchFeatured\(/);
+  assert.match(code,/function searchLanding\(/);
   assert.match(code,/case 'search':showSearch/);
  assert.match(code,/data-route="home"/);
  assert.match(code,/SEARCHABLE_TOOLS/);

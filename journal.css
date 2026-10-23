@@ -6,3 +6,25 @@
 .journalHomeTop{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.journalHomeTop span{font-size:11px;font-weight:850;letter-spacing:.16em;color:#80c7ff}.journalHomeTop a{font-size:12px;text-decoration:none;color:#7ab7ff;font-weight:700}
 .journalHomeArticle{display:flex;flex-direction:column;text-decoration:none;gap:5px}.journalHomeCategory{font-size:10px;letter-spacing:.1em;font-weight:800;color:#83bcf6}.journalHomeArticle strong{font-size:clamp(21px,4.4vw,27px);color:#f3f8ff;line-height:1.25;letter-spacing:-.018em}.journalHomeArticle small{font-size:12px;color:#a8bed9;line-height:1.5}.journalHomeRead{font-size:12px;color:#8cc2ff;font-weight:800;margin-top:8px}.journalHomeArticle:hover .journalHomeRead{text-decoration:underline}
 .communityJournalGateway{margin:18px 0 28px}.communityJournalGateway a{display:flex;flex-direction:column;gap:7px;padding:22px;border-radius:17px;border:1px solid #416d9e;background:radial-gradient(circle at right,#22558b55,transparent 53%),linear-gradient(135deg,#162c4b,#111d31);text-decoration:none}.communityJournalGateway strong{font-size:clamp(20px,4.4vw,28px);line-height:1.2;color:#f1f7ff}.communityJournalGateway small{font-size:13px;color:#b1c5dc;line-height:1.45}.communityJournalGateway a>span:last-child{font-size:13px;font-weight:850;color:#80bcff;margin-top:8px}.communityContributionTitle{margin:0 0 12px;font-size:21px;color:#eef5ff}
+/* Shared Arcana visual language: the Journal keeps its editorial layout while
+   using the same ink, violet accent, quiet borders, and surfaces as the app. */
+:root{--j-bg:#0b0e16;--j-panel:#171b28;--j-panel2:#202337;--j-border:#39384c;--j-text:#f3f1fa;--j-muted:#b0afc3;--j-blue:#bba4ff;--j-cyan:#9bc9ff}
+body{background:radial-gradient(ellipse at 50% -18%,#30234b 0,#11121d 39%,var(--j-bg) 78%);font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+.journalNav{position:sticky;top:0;z-index:20;max-width:none;min-height:68px;padding:10px max(18px,calc((100vw - 1120px)/2));background:#0b0e16ed;border-bottom:1px solid #39384c;backdrop-filter:blur(18px)}
+.journalBrand{letter-spacing:.12em;font-size:14px}.journalBrand img{width:38px;height:38px}
+.journalNav nav a{min-height:40px;display:inline-flex;align-items:center;padding:8px 12px;border:1px solid transparent;border-radius:10px}
+.journalNav nav a:hover,.journalNav nav a[aria-current]{background:#bba4ff16;border-color:#bba4ff36;color:#f3f1fa}
+.journalShell{padding-top:24px}
+.journalHero h1 em,.journalEyebrow,.journalBadge{color:var(--j-blue)}
+.journalHero:before{background:#8d63f01c}
+.journalStory{background:linear-gradient(145deg,#1a1d2c,#121520 82%);box-shadow:0 14px 34px #0003}
+.journalStoryFeature{background:radial-gradient(circle at 90% 15%,#9c77ff24,transparent 46%),linear-gradient(135deg,#242039,#121520 78%);border-color:#8068b5}
+.journalStory:hover{border-color:#bba4ff;box-shadow:0 18px 40px #0005}
+.journalFilters a{border-color:#39384c;color:#c7c3d6}
+.journalFilters a[aria-current],.journalFilters a:hover{background:#bba4ff1e;border-color:#bba4ff;color:#f3f1fa}
+.journalJoin,.journalDataCard{background:linear-gradient(145deg,#191c2b,#121520);border-color:#39384c}
+.journalDataTitle,.journalTable thead th{color:#d4c6ff}
+.journalTableScroll{border-color:#39384c}
+.journalArticle header{border-color:#39384c}
+.journalFooter{border-color:#39384c}
+@media(max-width:700px){.journalNav{padding:9px 13px;min-height:62px}.journalBrand{gap:8px;font-size:12px}.journalBrand img{width:34px;height:34px}.journalNav nav{gap:3px}.journalNav nav a{font-size:11px;padding:7px 9px;min-height:38px}.journalShell{padding-top:14px}}

@@ -158,6 +158,7 @@
 #globalSearch::-webkit-search-cancel-button{display:none}
 .arcanaSearchClose{flex:none;display:grid;place-items:center;width:39px;height:39px;color:#edf0f7;border-radius:9px;border:0;background:#ffffff12;cursor:pointer}
 .arcanaTypeahead:empty{display:none}
+.arcanaSearchHint{margin:10px 5px 2px;padding:11px 12px;border:1px solid color-mix(in srgb,var(--theme-highlight) 18%,#354258);border-radius:10px;background:color-mix(in srgb,var(--theme-secondary) 94%,black);color:var(--muted,#bfc3ce);font-size:12px;line-height:1.5}
 .arcanaTypeahead{max-height:min(56dvh,500px);overflow:auto;margin-top:8px}
 .arcanaSearchMatches{display:flex;flex-direction:column;gap:5px}
 .arcanaSearchMatches .resultRow,.arcanaSearchGuess{display:flex;align-items:center;gap:11px;min-height:52px;padding:9px 11px;border:1px solid color-mix(in srgb,var(--theme-highlight) 16%,#354258);background:color-mix(in srgb,var(--theme-secondary) 92%,black);border-radius:10px;color:#f3f6ff;text-align:left}
