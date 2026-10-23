@@ -25,7 +25,8 @@ test('continuous field rendering overrides all CSS tile sizes everywhere a textu
  assert.ok(index.indexOf('/theme-seamless.css')>index.indexOf('/signature-themes.css'));
  assert.ok(index.indexOf('/theme-seamless.css')>index.indexOf('/home-three.css'));
  assert.ok(server.includes("'/theme-seamless.css'"));
- assert.ok(smoke.includes("'theme-seamless.css'"));
+ assert.ok(smoke.includes('for href in re.findall('),'Browser smoke should load every stylesheet linked by index.html');
+ assert.ok(smoke.includes('css_name=urlparse(href).path'),'Browser smoke should resolve stylesheet URLs to repository files');
 });
 test('legacy micro-patterns and signature materials scale gradient geometry, not images',async()=>{
  const seam=await read('../theme-seamless.css'),legacy=await read('../arcana-contour.css');
