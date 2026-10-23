@@ -141,13 +141,13 @@ test('Pet loadout destinations open the integrated Build Studio pet section',()=
 test('Damage Calculator is clearly standalone and does not link to Build Studio',async()=>{
  const code=await app();
  const calculator=code.match(/function calcDamage\(\)\{[\s\S]*?\nfunction calcPet\(/)?.[0]||'';
- assert.match(calculator,/Attack, Pet, or Retaliation/);
- assert.match(calculator,/preparing for IdleArc API access/);
- assert.match(calculator,/separate from Build Studio/);
- assert.doesNotMatch(calculator,/data-route="labs\/build"|equipment stats|pet upgrades|inscriptions and class skills/);
+ assert.match(calculator,/damageFormulaView/);
+ const {damageFormulaView}=await import('../src/damage-formula-ui.js');
+ const html=damageFormulaView();
+ for(const mode of ['attack','retaliation','pet'])assert.ok(html.includes('data-formula-mode="'+mode+'"'));
+ assert.doesNotMatch(html,/data-route="labs\/build"/);
  const menu=HOME_MENUS.tools.links.find(link=>link.route==='calculators/damage');
  assert.ok(menu);
- assert.match(menu.detail,/Attack, Pet and Retaliation/);
- assert.match(menu.detail,/API integration/);
+ assert.match(menu.detail,/Attack, Retaliation, or Pet/);
  assert.doesNotMatch(menu.detail,/build upgrade analysis/i);
 });
