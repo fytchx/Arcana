@@ -18,9 +18,9 @@ html[data-arcana-design-active=true][data-arcana-art-layered=true] #content:not(
  background-repeat:no-repeat!important;
 }
 /* Panels deliberately exclude the Build Studio hero. */
-html[data-arcana-design-active=true][data-arcana-art-layered=true] #content.homeFullscreen .atlasHome :is(.atlasTile,.atlasFeatureLink,.atlasUpdate,.atlasJournalStory){
+html[data-arcana-design-active=true][data-arcana-art-layered=true] #content.homeFullscreen .atlasHome :is(.atlasTile,.atlasFeatureLink,.atlasUpdate,.atlasJournalStory,.atlasJournalExtra){
  background-color:var(--atlas-panel)!important;
- background-image:linear-gradient(color-mix(in srgb,var(--atlas-panel) var(--arcana-panel-opacity-percent,88%),transparent),color-mix(in srgb,var(--atlas-panel) var(--arcana-panel-opacity-percent,88%),transparent)),var(--arcana-art-panels,none)!important;
+ background-image:linear-gradient(color-mix(in srgb,var(--atlas-panel) max(var(--arcana-panel-opacity-percent,96%),96%),transparent),color-mix(in srgb,var(--atlas-panel) max(var(--arcana-panel-opacity-percent,96%),96%),transparent)),var(--arcana-art-panels,none)!important;
  background-size:cover!important;
  background-position:center!important;
  background-repeat:no-repeat!important;
@@ -40,7 +40,7 @@ html[data-arcana-design-active=true][data-arcana-art-layered=true] #content.home
  background-repeat:no-repeat!important;
 }
 .miniCanvas[data-art-layered=true][data-mini-pattern][data-mini-pattern-target] .miniHome :is(.atlasMiniTile,.atlasMiniPatch){
- background-image:linear-gradient(color-mix(in srgb,var(--mini-panel) var(--mini-panel-opacity-percent,88%),transparent),color-mix(in srgb,var(--mini-panel) var(--mini-panel-opacity-percent,88%),transparent)),var(--mini-art-panels,none)!important;
+ background-image:linear-gradient(color-mix(in srgb,var(--mini-panel) max(var(--mini-panel-opacity-percent,96%),96%),transparent),color-mix(in srgb,var(--mini-panel) max(var(--mini-panel-opacity-percent,96%),96%),transparent)),var(--mini-art-panels,none)!important;
  background-position:center!important;background-size:cover!important;
  background-repeat:no-repeat!important;
 }
