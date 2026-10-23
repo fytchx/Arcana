@@ -5,7 +5,7 @@ export const PET_HATCH_BONUSES=[...new Set(Object.values(RULES.pet_bonuses).flat
 const byRarity=r=>RULES.pet_bonuses[r]||[];
 const MAX_PREVIEW_LEVEL=300;
 const safeInt=(v,min,max,defaultValue)=>{if(v===null||v===''||v===undefined)return defaultValue;const n=Number(v);return Number.isFinite(n)?Math.max(min,Math.min(max,Math.floor(n))):defaultValue};
-export const compoundRoundUp=(value,multiplier)=>Math.ceil(value*multiplier);
+export const compoundRoundUp=value=>Math.ceil(value);
 export const bonusName=s=>({
  attack_damage:'Attack Damage',pet_damage:'Pet Damage',retaliation:'Retaliation',max_health:'Max Health',dodge:'Dodge',
  exp_gain:'EXP Gain',gold_gain:'Gold Gain',item_find:'Item Find',crit_chance:'Crit Chance',
