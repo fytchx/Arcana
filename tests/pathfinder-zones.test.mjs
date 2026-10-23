@@ -48,6 +48,28 @@ test('materials remain source-attributed, grouped in verified biome progression,
  assert.equal(groups[2].materials[0].sourceVerified,false);
  assert.equal(groups[0].materials[0].sourceVerified,true);
 });
+test('monster materials follow the game monster listing order instead of alphabetical or numeric-ID order',()=>{
+ const mats=[
+  {slug:'second-drop',name:'Alpha Claw',quantity:1n},
+  {slug:'first-drop',name:'Zulu Tooth',quantity:1n}
+ ];
+ const source=[
+  {slug:'second-drop',type:'monster_material',monster_id:102,sourceBiome:'Verdant Woods'},
+  {slug:'first-drop',type:'monster_material',monster_id:901,sourceBiome:'Verdant Woods'}
+ ];
+ const catalog=[
+  {id:'game:monster:901',title:'First Monster',gameKind:'monster',facts:[['Monster ID','901'],['Biome','Verdant Woods']]},
+  {id:'game:monster:102',title:'Second Monster',gameKind:'monster',facts:[['Monster ID','102'],['Biome','Verdant Woods']]}
+ ];
+ const groups=sourceMaterialGroups(mats,source,catalog);
+ assert.deepEqual(groups[0].materials.map(m=>m.name),['Zulu Tooth','Alpha Claw']);
+ const snapshot={codex:{tiers:{},awaken:{rows:{'1':[{current:0,target:1,gold:'0',monster_materials:{'second-drop':1,'first-drop':1},extra_materials:[],failure:0}]}},transitions:[]},materials:[
+  {...mats[0],type:'monster_material',sourceBiome:'Verdant Woods'},
+  {...mats[1],type:'monster_material',sourceBiome:'Verdant Woods'}
+ ]};
+ const html=quickUpgradeContent(snapshot,{fromStage:'A1',fromLevel:0,toStage:'A1',toLevel:1,quantity:1},{catalog});
+ assert.ok(html.indexOf('Zulu Tooth')<html.indexOf('Alpha Claw'));
+});
 test('primary material list uses per-zone accordion cards, official sprite strip, emblem and tinted card styles',async()=>{
  const monster_materials={'ice-bone':2,'wood-zulu':3,'wood-alpha':4,'dark-eye':1};
  const mats=[
