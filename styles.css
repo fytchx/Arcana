@@ -1249,3 +1249,54 @@ body,#app.shell{max-width:100%;min-width:0}
 .runeWordsNote{margin:0;padding:10px 12px;color:var(--muted);font-size:.72rem}
 @media(max-width:760px){.runeStudioGrid{grid-template-columns:minmax(0,1fr)}.runeComposerFields{grid-template-columns:1fr 1fr}.runeComposerFields label:last-child{grid-column:1/-1}.runeWordsList{max-height:52vh}}
 @media(max-width:420px){.runeComposerFields{grid-template-columns:1fr}.runeComposerFields label:last-child{grid-column:auto}.runeComposerActions{flex-direction:column}.runeComposerActions .btn{width:100%}}
+
+
+/* Rune Forge: keep the whole mobile placement loop inside one compact workspace. */
+.runeForgePage{padding-top:0;margin-top:0}
+.runeForgePage .runeStudioGrid{grid-template-columns:minmax(0,1fr) minmax(250px,.62fr);gap:10px;align-items:start}
+.runeForgePage .runeWorkbenchColumn{display:block}
+.runeForgePage .runeWorkspace{position:relative;padding:11px}
+.runeForgePage .runeWorkspace>.sectionCardTop{display:flex;align-items:center;gap:10px;margin:0 0 6px}
+.runeForgePage .runeWorkspace>.sectionCardTop h3{font-size:16px;white-space:nowrap;margin:0 auto 0 0}
+.runeForgePage .runeWorkspace>.sectionCardTop>span{font-size:11px;white-space:nowrap}
+.runeBackLink{white-space:nowrap;font-size:11px}
+.runeForgePage .runeActionBar{margin:5px 0 7px}
+.runeForgePage .runeActionBar>label{gap:7px}
+.runeForgePage .runeActionBar input{width:78px;min-height:36px}
+.runeForgePage .runeNewButton{min-height:38px;padding:8px 12px}
+.runeForgePage .runeBoard{margin-top:5px;max-width:none}
+.runeComposer{position:absolute;z-index:20;top:91px;right:12px;width:min(330px,calc(100% - 24px));margin:0;padding:12px;border:1px solid var(--theme-highlight,var(--accent));border-radius:13px;background:var(--theme-card,var(--panel));box-shadow:0 12px 35px #000b}
+.runeComposerTitle{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px}
+.runeComposerTitle strong{font-size:.9rem}.runeComposerTitle small{font-size:.67rem;color:var(--muted);text-align:right}
+.runeComposerFields{display:grid;grid-template-columns:1fr;gap:7px;margin:0}
+.runeComposerFields label{display:grid;grid-template-columns:92px minmax(0,1fr);align-items:center;gap:6px;font-size:.72rem}
+.runeComposerFields select{min-height:35px;padding:6px 8px}
+.runeWordsPanel{align-self:start}
+.runeWordsPanel>summary{padding:11px 12px}
+.runeGridCell.readyToPlace{background:color-mix(in srgb,var(--theme-highlight,var(--accent)) 12%,transparent)}
+.runePlaced{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.runePlaced.runeHoldReady{outline:2px solid var(--theme-highlight,var(--accent));outline-offset:1px;transform:scale(1.035);cursor:grabbing}
+.runeBoard.isRuneDragging .runePlaced{pointer-events:none}
+.runePlaced.runeDragging{opacity:.5}
+@media(max-width:760px){
+ .runeForgePage{padding-top:0;margin-top:0}
+ .runeForgePage .runeStudioGrid{grid-template-columns:minmax(0,1fr);gap:8px}
+ .runeForgePage .runeWorkspace{padding:9px}
+ .runeForgePage .runeWorkspace>.sectionCardTop h3{font-size:14px}
+ .runeForgePage .runeWorkspace>.sectionCardTop>span{font-size:10px}
+ .runeForgePage .runeActionBar{margin:4px 0 5px}
+ .runeForgePage .runeActionBar input{width:72px;min-height:34px}
+ .runeForgePage .runeNewButton{min-height:36px;padding:7px 10px}
+ .runeForgePage .runeBoard{margin-top:4px;gap:2px;padding:3px}
+ .runeComposer{top:82px;right:8px;width:min(320px,calc(100% - 16px));padding:10px}
+ .runeWordsList{max-height:48vh}
+}
+@media(max-width:380px){
+ .runeBackLink{font-size:10px}
+ .runeForgePage .runeWorkspace>.sectionCardTop{gap:6px}
+ .runeForgePage .runeWorkspace>.sectionCardTop h3{font-size:13px}
+ .runeForgePage .runeWorkspace>.sectionCardTop>span{font-size:9px}
+}
+
+.runeForgePage>.labsTabs{margin:0 0 8px}
+@media(max-width:760px){.runeForgePage>.labsTabs{display:none}}
