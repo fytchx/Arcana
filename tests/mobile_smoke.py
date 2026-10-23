@@ -336,9 +336,11 @@ with sync_playwright() as playwright:
     page.wait_for_selector('.atlasHero',timeout=8000)
     assert page.locator('html').get_attribute('data-arcana-design-active')=='true', 'Try-on must apply the homepage theme'
     assert page.locator('html').get_attribute('data-arcana-admin-design')=='false', 'Try-on must not elevate admin privileges'
-    assert page.evaluate("getComputedStyle(document.querySelector('#content.homeFullscreen')).backgroundImage.includes('gradient')"), 'Try-on must style the actual homepage'
-    real=page.evaluate("""() => {const css=getComputedStyle(document.querySelector('#content.homeFullscreen'));return {repeat:css.backgroundRepeat,size:css.backgroundSize}}""")
-    assert set(real['repeat'].split(', '))=={'no-repeat'} and set(real['size'].split(', '))=={'100% 100%'}, 'Real homepage still has a tiling seam: '+str(real)
+    # Curated looks now render independent SVG artwork layers, replacing legacy gradients.
+    real=page.evaluate("""() => {const css=getComputedStyle(document.querySelector('#content.homeFullscreen'));return {image:css.backgroundImage,repeat:css.backgroundRepeat,size:css.backgroundSize}}""")
+    assert page.locator('html').get_attribute('data-arcana-art-layered')=='true', 'Curated artwork layers were not applied'
+    assert 'data:image/svg+xml' in real['image'], 'Try-on must paint the selected artwork on the actual homepage'
+    assert set(real['repeat'].split(', '))=={'no-repeat'} and set(real['size'].split(', '))=={'cover'}, 'Real homepage artwork should cover its surface without tiling'
     page.evaluate("location.hash='#/theme-playground'")
     page.wait_for_selector('.themePlayground',timeout=8000)
     page.locator('[data-action="theme-try-off"]').click()
