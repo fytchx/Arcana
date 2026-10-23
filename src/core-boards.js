@@ -130,11 +130,10 @@ export function classBoard(state,tree){
    ${classes.map(x=>`<button type="button" role="tab" aria-selected="${cls.id===x.id}" class="${cls.id===x.id?'selected':''}" data-action="classselect" data-arg="${esc(x.id)}">${realClassIcon(x)}<span>${esc(x.name)}</span></button>`).join('')}
   </div>
   <div class="classHeading"><div class="classMark">${realClassIcon(cls)}</div><div><span class="eyebrow">CLASS SKILL SIMULATOR</span><h2>${esc(cls.name)}</h2><p>${used} / ${budget} points spent · ${Math.max(0,budget-used)} available at level ${state.characterLevel}</p></div></div>
-  <div class="classSpendRail" aria-label="Points spent in each class branch">${allBranchSpent.map(x=>`<div><span>${esc(x.name)}</span><strong>${x.used} pt</strong></div>`).join('')}</div>
   <div class="branchRail" role="tablist" aria-label="Class skill branches">
-   ${cls.branches.map(x=>`<button type="button" role="tab" aria-selected="${x.id===branch.id}" class="${x.id===branch.id?'selected':''}" data-action="branchselect" data-arg="${esc(x.id)}">${esc(x.name)}</button>`).join('')}
+   ${cls.branches.map(x=>`<button type="button" role="tab" aria-selected="${x.id===branch.id}" class="${x.id===branch.id?'selected':''}" data-action="branchselect" data-arg="${esc(x.id)}">${esc(x.name)}<small>${allBranchSpent.find(b=>b.name===x.name)?.used||0} pt</small></button>`).join('')}
   </div>
-  <div class="classBranchIntro"><div><span class="eyebrow">${esc(branch.name.toUpperCase())} SKILL TREE</span><h3>${esc(branch.name)} <small>${spentInBranch} spent</small></h3><p>All three tiers visible. Tap a skill to view its full effect, or use + and − to allocate points.</p></div><button type="button" class="btn secondary" data-action="resetbranch">Reset branch</button></div>
+  <div class="classBranchIntro"><div><span class="eyebrow">${esc(branch.name.toUpperCase())} SKILL TREE</span><h3>${esc(branch.name)} <small>${spentInBranch} spent</small></h3></div><button type="button" class="btn secondary" data-action="resetbranch">Reset branch</button></div>
   <div class="classTierStack" id="classTreeStack" aria-label="${esc(branch.name)} full three-tier skill tree">
    ${groups.map(([tier,skills])=>{
     const gate=Math.max(0,tier*5),available=spentInBranch>=gate;
