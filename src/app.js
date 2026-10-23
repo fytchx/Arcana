@@ -240,6 +240,8 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
   '<button class="btn primary" data-action="savebuild">'+icon('check',16)+' Save draft</button>'+
   '<button class="btn secondary" data-action="sharebuild">'+icon('link',16)+' Share</button>'+
   '<button class="btn secondary" data-action="savecloud">'+icon('check',16)+' Save to Account</button>';
+ const localPresets=inspecting?[]:readLocalBuildPresets();
+ const presetMenu=inspecting?'':'<section class="studioPresetMenu" aria-label="Saved local presets"><label><span>Saved local builds</span><select data-studio-preset aria-label="Load a saved Build Studio preset"><option value="" '+(!state.activePresetId?'selected':'')+'>Current working draft</option>'+localPresets.map(p=>'<option value="'+esc(p.id)+'" '+(state.activePresetId===p.id?'selected':'')+'>'+esc(p.title)+' · '+esc(p.className)+' · ML '+esc(p.monsterLevel)+'</option>').join('')+'</select></label><div><button type="button" data-action="savepreset">'+icon('plus',15)+' Save preset</button><button type="button" data-action="deletepreset" data-arg="'+esc(state.activePresetId||'')+'" '+(state.activePresetId?'':'disabled')+'>'+icon('close',15)+' Delete</button></div><small>'+localPresets.length+' / 24 · Saved on this device.</small></section>';
  const profile= '<section class="studioProfile" aria-label="Build profile">'+
   '<div class="studioProfileMain"><div class="studioProfileVisual">'+
   '<span class="studioPortraitIcon">'+previewPortrait+'</span>'+
@@ -256,8 +258,6 @@ function buildStudio(){const route=parseRoute(),share=route.query.get('share');
   (!inspecting?'<button type="button" data-action="resetbuild">'+icon('close',16)+' Start fresh</button>':'')+
   '<button type="button" data-route="beta">'+icon('info',16)+' Report a problem</button>'+
   '</div></details></div></section>';
- const localPresets=inspecting?[]:readLocalBuildPresets();
- const presetMenu=inspecting?'':'<section class="studioPresetMenu" aria-label="Saved local presets"><label><span>Saved local builds</span><select data-studio-preset aria-label="Load a saved Build Studio preset"><option value="" '+(!state.activePresetId?'selected':'')+'>Current working draft</option>'+localPresets.map(p=>'<option value="'+esc(p.id)+'" '+(state.activePresetId===p.id?'selected':'')+'>'+esc(p.title)+' · '+esc(p.className)+' · ML '+esc(p.monsterLevel)+'</option>').join('')+'</select></label><div><button type="button" data-action="savepreset">'+icon('plus',15)+' Save preset</button><button type="button" data-action="deletepreset" data-arg="'+esc(state.activePresetId||'')+'" '+(state.activePresetId?'':'disabled')+'>'+icon('close',15)+' Delete</button></div><small>'+localPresets.length+' / 24 · Saved on this device.</small></section>';
  const gearWorkbench=inspecting
   ?'<aside class="studioGearWorkbench studioGearReadOnly"><span class="eyebrow">BUILD PREVIEW</span><h3>Equipment</h3><p>This shared or guide build is read-only. Copy it to your own workspace before editing.</p></aside>'
   :state.slotTarget?.kind==='gear'
