@@ -1300,3 +1300,5 @@ body,#app.shell{max-width:100%;min-width:0}
 
 .runeForgePage>.labsTabs{margin:0 0 8px}
 @media(max-width:760px){.runeForgePage>.labsTabs{display:none}}
+
+.runeBoard .runeGridCell.runeDragTarget{outline:2px solid var(--theme-highlight,var(--accent));outline-offset:-2px;background:color-mix(in srgb,var(--theme-highlight,var(--accent)) 30%,var(--panel))}

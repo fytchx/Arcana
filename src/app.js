@@ -312,7 +312,7 @@ function runeForge(){const templateId=parseRoute().query.get('build'),share=pars
 }
 function mutateRunes(callback){const b=ensureDraft();const old=structuredClone(b.runeBoard);const out=callback(b);if(out===false)return;state.runeHistory.push(old);if(state.runeHistory.length>20)state.runeHistory.shift();b.runes=[...new Set(b.runeBoard.map(r=>r.family))];persistDraft();render();}
 function wireRuneDrag(){
- const clear=d=>{clearTimeout(d?.timer);d?.rune?.classList.remove('runeHoldReady','runeDragging');d?.board?.classList.remove('isRuneDragging');};
+ const clear=d=>{clearTimeout(d?.timer);d?.rune?.classList.remove('runeHoldReady','runeDragging');d?.target?.classList.remove('runeDragTarget');d?.board?.classList.remove('isRuneDragging');};
  document.addEventListener('pointerdown',e=>{
   const rune=e.target.closest('.runePlaced');
   if(!rune||parseRoute().query.get('build')||parseRoute().query.get('share'))return;
@@ -328,6 +328,7 @@ function wireRuneDrag(){
   if(!d.started&&Math.hypot(dx,dy)<6)return;
   d.started=true;e.preventDefault();d.board?.classList.add('isRuneDragging');d.rune.classList.add('runeDragging');
   const cell=document.elementFromPoint(e.clientX,e.clientY)?.closest('.runeGridCell');
+  if(d.target!==cell){d.target?.classList.remove('runeDragTarget');cell?.classList.add('runeDragTarget');}
   d.target=cell||null;
  },{passive:false});
  document.addEventListener('pointerup',e=>{
