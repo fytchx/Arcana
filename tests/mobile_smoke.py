@@ -108,7 +108,8 @@ with sync_playwright() as playwright:
         raise
     assert page.locator('#arcanaDock button').count()==5, 'All five navigation tabs must exist'
     assert page.locator('#generalChatBtn').is_visible(), 'General chat launcher missing'
-    page.evaluate("location.hash='#/settings'")
+    assert page.locator('.arcanaSignature').count()==0, 'Signature belongs only on Directory'
+    page.evaluate("location.hash='#/directory'")
     page.wait_for_selector('.arcanaSignature',timeout=8000)
     assert errors==[], 'App failed to initialize: '+repr(errors)
     assert page.locator('.skipMain').count()==1, 'Accessible skip navigation missing'
@@ -152,6 +153,7 @@ with sync_playwright() as playwright:
     # Current Atlas Home: six destinations, a Build Studio feature, Journal, and connected links.
     page.evaluate("location.hash='#/home'")
     page.wait_for_selector('.atlasHero',timeout=8000)
+    assert page.locator('.arcanaSignature').count()==0, 'Signature must not follow navigation away from Directory'
     assert page.locator('#arcanaDock button').count()==5
     assert page.locator('#arcanaDock [data-dock="home"]').get_attribute('aria-current')=='page'
     assert 'Community' in page.locator('#arcanaDock').inner_text()
