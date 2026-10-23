@@ -41,7 +41,7 @@ test('Pathfinder is the one-stop upgrade destination, with four integrated modes
  assert.match(app,/function pathfinderHub\(legacyView='range'\)/);
  for(const route of ['timeline','range','upgrade','compare'])assert.ok(app.includes("['"+route+"'"),route);
  assert.match(app,/quickUpgradePanel\(recipeState.data,state.pathfinderRange/);
- assert.match(app,/case 'homemenu':if\(arg==='pathfinder'\)go\('calculators\/pathfinder'\)/);
+ assert.match(app,/case 'homemenu':if\(arg==='pathfinder'\)go\('calculators\/pathfinder'\);else if\(arg==='tools'\)go\('calculators'\)/);
  assert.match(app,/function skills\(\)\{return '<div class="studioPage studioSubPage">/);
  assert.doesNotMatch(board,/return `\$\{boardSwitch\('passive'\)\}/);
  assert.doesNotMatch(board,/return `\$\{boardSwitch\('class'\)\}/);

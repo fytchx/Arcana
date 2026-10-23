@@ -26,7 +26,10 @@ test('guide keeps core original strategy, math and links intact',()=>{
  assert.ok(NAV_DESTINATIONS.pathfinder);
  const markup=wikiArticleView(guide);
  assert.match(markup,/ON THIS PAGE/);
- assert.match(markup,/Continue in Arcana/);
+ assert.match(markup,/USEFUL LINKS/);
+ assert.match(markup,/Keep these tools close/);
+ assert.doesNotMatch(markup,/wikiSectionActions/,'Guide tools should live in one useful-links section, not recur between sections');
+ assert.equal((markup.match(/class="wikiAction"/g)||[]).length,guide.actions.length);
  assert.match(markup,/Community strategy/);
  assert.doesNotMatch(markup,/Originally published at/);
 });

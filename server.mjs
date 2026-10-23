@@ -46,7 +46,7 @@ const localArtAudit=(async()=>{
   return {ready:true,groups:categories.length,version:manifest.version};
  }catch(e){console.warn('ARCANA_LOCAL_ART_UNAVAILABLE',String(e));return {ready:false,groups:0,error:String(e)};}
 })();
-const TYPES = Object.freeze({'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.webp':'image/webp','.png':'image/png','.jpg':'image/jpeg','.json':'application/json; charset=utf-8'});
+const TYPES = Object.freeze({'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.webp':'image/webp','.png':'image/png','.jpg':'image/jpeg','.json':'application/json; charset=utf-8','.webmanifest':'application/manifest+json; charset=utf-8'});
 function send(res,status,body,headers={}) {res.writeHead(status,{'x-content-type-options':'nosniff',...headers});res.end(body);}
 function json(res,status,payload,headers={}) {send(res,status,JSON.stringify(payload),{'content-type':'application/json; charset=utf-8',...headers});}
 async function get(url, ms=9000) {const r=await fetch(url,{signal:AbortSignal.timeout(ms),headers:{accept:'*/*'}});return r;}
@@ -156,6 +156,10 @@ const server=http.createServer(async(req,res)=>{
   if((req.method==='GET'||req.method==='HEAD')&&pathname.length>1&&pathname.endsWith('/')&&seoPageByPath(pathname.slice(0,-1))){
    res.writeHead(308,{'location':pathname.slice(0,-1),'cache-control':'no-store'});res.end();return;
   }
+  if((req.method==='GET'||req.method==='HEAD')&&(/^\/journal\/?$/.test(pathname)||/^\/journal\/[a-z0-9]+(?:-[a-z0-9]+)*\/?$/i.test(pathname))){
+   const page=await readFile(resolve(ROOT,'index.html'));
+   send(res,200,req.method==='HEAD'?null:page,{'content-type':'text/html; charset=utf-8','cache-control':'no-store'});return;
+  }
   if(await handleJournalRequest(req,res,parsedUrl))return;
   if(req.method!=='GET'&&req.method!=='HEAD'){send(res,405,'Method not allowed');return;}
   if(pathname==='/health'||pathname==='/__health') {const art=await localArtAudit;const ok=!REQUIRE_LOCAL_ART||art.ready;json(res,ok?200:503,{ok,release:REVISION,source:'tracked frontend files',artwork:{local:art.ready,groups:art.groups,version:art.version||null},dependencyEndpoints:Object.keys(BASES)});return;}
@@ -193,7 +197,7 @@ const server=http.createServer(async(req,res)=>{
   }
   const normalized=pathname==='/'?'/index.html':pathname;
   // Serve only public frontend assets. Never expose account/session files or local Wiki data.
-  const publicPage=new Set(['/index.html','/privacy.html','/beta-rules.html','/styles.css','/wiki-studio.css','/community.css','/guild-hub.css','/beta.css','/launch-navigation.css','/pathfinder-timeline.css','/quick-tools.css','/home-three.css','/arcana-contour.css','/theme-studio-finishes.css','/signature-themes.css','/theme-seamless.css','/psychedelic-themes.css','/desktop-home-refinement.css','/arcana-connected-ux.css','/home-atlas.css','/atlas-atelier-textures.css','/visual-art.css','/studio-v2.css','/studio-layers.css','/traffic.css','/admin.css','/journal.css','/journal-widgets.css','/journal-studio.js','/googledcf6cfe1a260efea.html']).has(normalized);
+  const publicPage=new Set(['/index.html','/manifest.webmanifest','/privacy.html','/beta-rules.html','/styles.css','/wiki-studio.css','/community.css','/guild-hub.css','/beta.css','/launch-navigation.css','/pathfinder-timeline.css','/quick-tools.css','/home-three.css','/arcana-contour.css','/theme-studio-finishes.css','/signature-themes.css','/theme-seamless.css','/psychedelic-themes.css','/desktop-home-refinement.css','/arcana-connected-ux.css','/home-atlas.css','/atlas-atelier-textures.css','/visual-art.css','/studio-v2.css','/studio-layers.css','/visual-polish.css','/traffic.css','/admin.css','/journal.css','/journal-widgets.css','/journal-studio.js','/googledcf6cfe1a260efea.html']).has(normalized);
   const publicModule=/^\/src\/[a-z][a-z0-9-]*\.js$/.test(normalized);
   const publicAsset=/^\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.(?:webp|svg|png|jpg|jpeg|json)$/.test(normalized);
   if(!publicPage&&!publicModule&&!publicAsset){send(res,404,'Not found');return;}

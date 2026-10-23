@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {handleJournalRequest} from '../src/journal-server.mjs';
 import {JOURNAL_SEEDS} from '../src/journal-seeds.mjs';
+import {journalIndexView,journalArticleView} from '../src/journal-views.js';
 
 async function request(path,method='GET',headers={}){
  const req={method,headers, url:path};
@@ -23,6 +24,9 @@ test('Journal index is server rendered, indexable and provides real article link
  assert.match(r.text,/Building a Proper Damage Calculator/);
  assert.match(r.text,/name="robots" content="index,follow"/);
  assert.match(r.text,/rel="canonical" href="https:\/\/arcanacompanion.xyz\/journal"/);
+ assert.match(r.text,/href="\/#\/calculators\/pathfinder"/);
+ assert.match(r.text,/href="\/#\/labs\/build"/);
+ assert.match(r.text,/href="\/#\/wiki"/);
 });
 test('Story has verified class chart and social metadata, without unsupported balance claims',async()=>{
  const r=await request('/journal/class-balance-top-250-season-2');
@@ -45,6 +49,18 @@ test('Unknown and draft content never appears as a live story',async()=>{
  assert.equal(list.status,200);
  assert.equal(JSON.parse(list.text).articles.length,3);
  assert.equal(JSON.parse(list.text).articles[0].slug,'idlearc-1-3-7-the-timing-couldnt-be-better');
+});
+test('Native Journal views use Arcana guide styling and navigate inside the app shell',async()=>{
+ const list=JSON.parse((await request('/api/journal')).text).articles;
+ const index=journalIndexView({articles:list});
+ assert.match(index,/wikiBreadcrumbs/);assert.match(index,/journalStoryCard/);
+ assert.match(index,/data-route="journal\/article"/);
+ assert.doesNotMatch(index,/journalNav|journalShell|journal.css/);
+ const article=JSON.parse((await request('/api/journal?slug=class-balance-top-250-season-2')).text);
+ const view=journalArticleView({article,articles:list});
+ assert.match(view,/wikiArticleIntro/);assert.match(view,/journalNativeBody/);
+ assert.match(view,/TOP 250 CLASS REPRESENTATION/);
+ assert.match(view,/data-route="wiki\/guides"/);
 });
 test('Guest publishing and editorial studio cannot be accessed',async()=>{
  const admin=await request('/api/journal/admin');assert.equal(admin.status,401);

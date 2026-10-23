@@ -29,8 +29,9 @@ test('admin-only header and search discovery share public navigation without lea
  assert.match(app,/isAppearanceAdmin\(\)/);
  assert.match(app,/button.hidden=!permitted/);
  assert.match(app,/showLayer\('SEARCH'/);
- assert.match(app,/arcanaSearchDiscoverGrid/);
- assert.match(app,/q\?resultMarkup\(q\):searchFeatured\(\)/);
+ assert.match(app,/function searchLanding\(/);
+ assert.match(app,/q\?resultMarkup\(q\):searchLanding\(\)/);
+ assert.match(app,/input\.focus\(\{preventScroll:true\}\)/);
  assert.match(css,/#adminPortalBtn\[hidden\]\{display:none!important\}/);
  assert.match(server,/'\/arcana-connected-ux.css'/);
  const traffic=await read('src/admin-traffic-ui.js');

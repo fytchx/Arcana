@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {PET_RULES_2026_10_09 as RULES} from '../src/pet-rule-snapshot.js';
-import {petBonusEntries,compoundBonus,normalizeCompoundPlan,affixCost,normalizeAffixCostPlan,normalizedPetBonusTargets,
+import {petBonusEntries,compoundBonus,compoundRoundUp,normalizeCompoundPlan,affixCost,normalizeAffixCostPlan,normalizedPetBonusTargets,
  readCompoundPlan,saveCompoundPlan,readAffixCostPlan,saveAffixCostPlan} from '../src/pet-simple-math.js';
 import {simpleCompoundCalculatorView,simpleAffixCostView} from '../src/pet-simple-views.js';
 import {normalizeBuild} from '../src/labs-engine.js';
@@ -20,6 +20,9 @@ test('Compound calculations match game-observed C10 examples',()=>{
  assert.equal(legendary.base,15);
  assert.equal(legendary.amount,101);
  assert.equal(legendary.unit,'%');
+ assert.equal(compoundBonus({rarity:'legendary',bonus:'pet_damage',level:30}).amount,714); // Matches the in-game Dragon +30 value.
+ assert.equal(compoundRoundUp(714*1.07),764); // 714 × 1.07 = 763.98
+ assert.equal(compoundRoundUp(766.01),767);
  const normal=compoundBonus({rarity:'uncommon',bonus:'dodge',level:10});
  assert.equal(normal.base,2);
  assert.equal(normal.amount,12);
