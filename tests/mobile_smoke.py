@@ -309,7 +309,7 @@ with sync_playwright() as playwright:
     target=page.locator('.studioV2Preset[aria-pressed="false"]').first
     target_id=target.get_attribute('data-arg')
     target.click()
-    page.wait_for_function("id=>document.querySelector('.studioV2Preset[data-arg=\\"'+id+'\\"]')?.getAttribute('aria-pressed')==='true'",arg=target_id)
+    page.wait_for_function("id => Array.from(document.querySelectorAll('.studioV2Preset')).some(el => el.dataset.arg === id && el.getAttribute('aria-pressed') === 'true')",arg=target_id)
     assert page.locator('.studioV2Preset[aria-pressed="true"]').count()==1
     assert page.locator('[data-theme-save]').count()==12
     strength=page.locator('.studioV2 [data-design-field="artStrength"]')
