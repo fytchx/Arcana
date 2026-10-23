@@ -234,7 +234,13 @@ with sync_playwright() as playwright:
     # The Home hero CTA is already asserted to target labs/build above. Exercise
     # the destination directly here so a synthetic mobile tap cannot flake the smoke.
     page.evaluate("location.hash='#/labs/build'")
-    page.wait_for_selector('.studioProfile',timeout=8000)
+    try:
+        page.wait_for_selector('.studioProfile',timeout=8000)
+    except Exception:
+        print('BUILD STUDIO ROUTE DEBUG:', page.evaluate("({hash:location.hash, route:document.querySelector('#content')?.innerText?.slice(0,1400), dock:document.querySelector('#arcanaDock')?.innerText})"))
+        print('BUILD STUDIO PAGE ERRORS:', repr(errors))
+        print('BUILD STUDIO MARKUP:', page.locator('#content').inner_html()[:1600])
+        raise
     assert page.locator('#arcanaDock button').count()==5, 'Navigation disappeared in Build Studio'
     # Import Manager is an owner-only, browser-local XML conversion workflow.
     page.evaluate("location.hash='#/wiki/studio'")
