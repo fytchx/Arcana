@@ -368,7 +368,8 @@ const ASSASSIN_MOTIFS=[
   ['Mirror assault','assassin-06','Tier 3 · right']
 ];
 function skillArt(id){return `<img src="/assets/skills/${id}-precision.svg" alt="" class="arcanaSkillImage" loading="lazy">`}
-function skills(){const q=parseRoute().query,readonly=!!(q.get('share')||q.get('build')),b=readonly?demoActive():ensureDraft();return '<div class="studioPage studioSubPage">'+studioSharedHeader(b,'skills',readonly)+classBoard(state,state.treeData)+'</div>'}
+function skills(){return '<div class="studioPage studioSubPage">'+studioSkillsContent()+'</div>'}
+function studioSkillsContent(){const q=parseRoute().query,readonly=!!(q.get('share')||q.get('build')),b=readonly?demoActive():ensureDraft();return studioSharedHeader(b,'skills',readonly)+classBoard(state,state.treeData)}
 function visiblePassiveState(){
  const route=parseRoute(),token=route.query.get('share');
  if(!token)return {...state,passiveReadOnly:false};
