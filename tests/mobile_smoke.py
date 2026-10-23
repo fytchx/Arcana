@@ -290,81 +290,32 @@ with sync_playwright() as playwright:
     assert page.locator('[data-app-pref="reduceMotion"]').count()==1
     assert page.locator('.slateAccentChoice').count()==0
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Settings overflows mobile viewport'
-    # Preview-only, browser-local art sandbox: no authenticated write path is used.
+    # Preview-only, browser-local art sandbox: verify the current Theme Studio v2.
     page.evaluate("location.hash='#/theme-playground'")
     page.wait_for_selector('.themePlayground',timeout=8000)
-    assert page.locator('.designPresetSignature').count()==24
-    assert page.locator('.designUnifiedPresetGrid [data-collection="psychedelic"]').count()==4
-    assert page.locator('.designUnifiedPresetGrid .designPreset').count()==42
-    # True SVG <use> references must paint the colored motifs in Chromium.
-    paints=page.evaluate("""async () => {
-       const {psychedelicSvg,PSYCHEDELIC_IDS,PSYCHEDELIC_DEFAULTS}=await import('@arcana/psychedelic-patterns.js');
-       const output={};
-       for(const id of PSYCHEDELIC_IDS){
-         const css=psychedelicSvg(id,PSYCHEDELIC_DEFAULTS);
-         const img=new Image();img.src=css.substring(5,css.length-2);await img.decode();
-         const cv=document.createElement('canvas');cv.width=360;cv.height=360;
-         const ctx=cv.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);
-         const data=ctx.getImageData(0,0,360,360).data,seen=new Set();
-         for(let y=8;y<360;y+=13)for(let x=8;x<360;x+=13){
-          const pos=(y*360+x)*4;
-          seen.add([data[pos],data[pos+1],data[pos+2]].join(':'));
-         }
-         output[id]=seen.size;
-       }
-       return output;
-    }""")
-    assert all(count>=4 for count in paints.values()), 'Psychedelic vector SVG did not paint distinct colors: '+str(paints)
-
+    expected_presets=page.evaluate("async()=> (await import('@arcana/studio-v2-presets.js')).STUDIO_V2_PRESET_IDS.length")
+    expected_art=page.evaluate("async()=> (await import('@arcana/visual-art.js')).VISUAL_ART.length")
+    assert page.locator('.studioV2PresetGrid .studioV2Preset').count()==expected_presets
+    assert page.locator('.studioV2ArtworkSection .visionArtChoice').count()==expected_art
+    assert page.locator('.visionArtThumb[data-preview-pattern]').count()==expected_art, 'Theme artwork previews are missing'
+    assert page.locator('.themeStudioPreview [data-mini-live-frame]').count()==1, 'Current Arcana preview iframe missing'
     if page.locator('[data-mini-toggle]').get_attribute('aria-expanded')=='false':
         page.locator('[data-mini-toggle]').click()
     live=page.frame_locator('[data-mini-live-frame]')
-    try:
-        live.locator('#content.homeFullscreen .atlasHero').wait_for(timeout=12000)
-    except Exception:
-        print('LIVE FRAME DEBUG',page.locator('[data-mini-live-frame]').evaluate("""el=>({url:el.src,docURL:el.contentDocument?.URL,body:el.contentDocument?.body?.innerText?.slice(0,1400),ready:el.contentDocument?.readyState,content:el.contentDocument?.querySelector('#content')?.innerHTML?.slice(0,900)})"""))
-        print('FRAME REQUESTS',repr(frame_requests))
-        print('ALL FRAMES',repr([(frame.url,frame.locator('body').count(),frame.locator('body').inner_text()[:180]) for frame in page.frames]))
-        print('LIVE FRAME PAGE ERRORS',repr(errors))
-        raise
-    assert live.locator('body').count()==1, 'Theme preview failed to load the real current Arcana page'
+    live.locator('#content.homeFullscreen .atlasHero').wait_for(timeout=12000)
+    assert live.locator('body').count()==1, 'Theme preview failed to load the current Arcana page'
     page.screenshot(path=str(OUT/'current-arcana-live-mini.png'),full_page=True)
-    assert page.locator('.designUnifiedPresetGrid [data-collection="classic"]').count()==18
+    # Applying a curated look must update its selected state and stay browser-local.
+    target=page.locator('.studioV2Preset[aria-pressed="false"]').first
+    target_id=target.get_attribute('data-arg')
+    target.click()
+    page.wait_for_function("id=>document.querySelector('.studioV2Preset[data-arg=\\"'+id+'\\"]')?.getAttribute('aria-pressed')==='true'",arg=target_id)
+    assert page.locator('.studioV2Preset[aria-pressed="true"]').count()==1
     assert page.locator('[data-theme-save]').count()==12
-    page.locator('.designPresetSignature[data-arg="astral"]').click()
-    assert page.locator('html').get_attribute('data-arcana-design-pattern')=='astral-sovereign'
-    assert page.evaluate("getComputedStyle(document.querySelector('.designPresetSignature[data-collection=signature] .designPresetArt')).backgroundImage.includes('gradient')")
-    assert page.evaluate("getComputedStyle(document.querySelector('.designPresetSignature[data-collection=psychedelic] .designPresetArt')).backgroundImage.includes('data:image/svg+xml')"), 'Recolorable motifs must display in premium swatches'
-    assert page.locator('[data-mini-canvas]').get_attribute('data-mini-pattern')=='astral-sovereign'
-    page.locator('[data-design-field="aura"]').evaluate("el=>{el.value='77';el.dispatchEvent(new Event('input',{bubbles:true}))}")
-    assert page.evaluate("JSON.parse(localStorage.getItem('arcana-admin-design-preview-v1')).aura")==77
-    page.locator('[data-action="random-signature"]').click()
-    assert page.locator('html').get_attribute('data-arcana-design-pattern')!='astral-sovereign'
-    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Signature Playground overflows mobile viewport'
-    # Actual Chromium paint-layer checks: no square tile boundaries on any material family.
-    for texture in ('astral-sovereign','abyssal-bloom','moire','grid','fog','contours'):
-        page.locator('[data-theme-pattern="'+texture+'"]').evaluate('el=>el.click()')
-        page.wait_for_timeout(70)
-        fields=page.evaluate("""() => {
-            const card=document.querySelector('.miniCanvas .miniHome .atlasMiniHero');
-            const style=getComputedStyle(card,'::before');
-            const thumb=document.querySelector('.themePatternThumb[data-preview-pattern="'+document.documentElement.dataset.arcanaDesignPattern+'"]');
-            const thumbStyle=thumb?getComputedStyle(thumb):null;
-            return {pattern:document.querySelector('[data-mini-canvas]').dataset.miniPattern,
-                repeat:style.backgroundRepeat,size:style.backgroundSize,image:style.backgroundImage,
-                mask:style.maskImage,thumbRepeat:thumbStyle?.backgroundRepeat,thumbSize:thumbStyle?.backgroundSize};
-        }""")
-        assert fields['pattern']==texture, 'Mini preview out of sync: '+str(fields)
-        assert 'gradient' in fields['image'], 'Missing texture image: '+texture
-        assert set(fields['repeat'].split(', '))=={'no-repeat'}, 'Texture tiles on '+texture+': '+str(fields)
-        assert set(fields['size'].split(', '))=={'100% 100%'}, 'Texture cuts off on '+texture+': '+str(fields)
-        assert set(fields['thumbRepeat'].split(', '))=={'no-repeat'}, 'Finish thumbnail tiles on '+texture
-        assert set(fields['thumbSize'].split(', '))=={'100% 100%'}, 'Finish thumb cutoff on '+texture
-        if texture in ('astral-sovereign','moire','contours'):
-            page.screenshot(path=str(OUT/('seamfree-'+texture+'.png')),full_page=True)
-    # Restore the Signature look for a full-site test.
-    page.locator('[data-theme-pattern="astral-sovereign"]').evaluate('el=>el.click()')
-    page.screenshot(path=str(OUT/'signature-playground-mobile.png'),full_page=True)
+    strength=page.locator('.studioV2 [data-design-field="artStrength"]')
+    strength.evaluate("el=>{el.value='77';el.dispatchEvent(new Event('input',{bubbles:true}))}")
+    assert page.evaluate("JSON.parse(localStorage.getItem('arcana-admin-design-preview-v1')).artStrength")==77
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Theme Studio overflows mobile viewport'
     # Theme preview must stay alongside the editor while scrolling on desktop.
     page.set_viewport_size({'width':1360,'height':860})
     page.evaluate('window.scrollTo(0,520)')
