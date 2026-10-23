@@ -73,6 +73,7 @@ export function normalizeBuild(build){
  b.pets=b.petSetup.filter(p=>p.equipped).map(p=>p.name||statName(p.hatchBonus)||'Equipped pet');
  b.petBonusTargets=normalizedPetBonusTargets(b);
  b.petMode=b.petMode==='permanent'?'permanent':'seasonal';b.schemaVersion=9;
+ b.usedRunewords=Array.isArray(b.usedRunewords)?[...new Set(b.usedRunewords.filter(x=>typeof x==='string').map(x=>x.slice(0,48)))]:[];
  b.passiveAlloc=b.passiveAlloc&&typeof b.passiveAlloc==='object'?b.passiveAlloc:{};
  b.passiveFreeMode=b.passiveFreeMode===true;
  b.classAllocById=b.classAllocById&&typeof b.classAllocById==='object'?b.classAllocById:{};
