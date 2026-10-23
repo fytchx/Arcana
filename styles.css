@@ -1330,19 +1330,7 @@ body,#app.shell{max-width:100%;min-width:0}
 .studioSharedHeader>.labsTabs{margin:0;gap:5px}
 .studioSharedHeader .labsTab{min-height:34px;padding:5px 7px;font-size:10px}
 .runeWorkspace{position:relative}
-.runeComposer,.runeWordConfirm{position:absolute;z-index:20;top:54px;right:8px;width:min(340px,calc(100% - 16px));box-shadow:0 16px 44px #000a}
-.runeComposer{padding:10px}
-.runeWordConfirm{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px;border:1px solid var(--accent);border-radius:12px;background:var(--page);color:var(--text)}
-.runeWordConfirm>div:first-child{display:grid;gap:4px;min-width:0}
-.runeWordConfirm small{color:var(--muted);font-size:11px;line-height:1.3}
-.runeWordConfirm>div:last-child{display:flex;gap:5px;align-items:center;flex:none}
-.runeWordConfirm .btn{min-height:32px;padding:5px 8px;font-size:11px}
-.runeWordDismiss,.runeLockedTag button{width:30px;height:30px;border:1px solid var(--border);border-radius:50%;background:#b52e38;color:white;font-size:22px;line-height:1}
-.runeLockedOverlay{z-index:4;pointer-events:none;display:flex;align-items:flex-start;justify-content:flex-end;padding:2px}
-.runeLockedTag{display:flex;gap:5px;align-items:center;max-width:100%;padding:2px 4px 2px 7px;border:1px solid var(--accent);border-radius:999px;background:color-mix(in srgb,var(--page) 90%,var(--accent));color:var(--text);font-size:10px;font-weight:800;box-shadow:0 2px 8px #0008}
-.runeLockedTag span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.runeLockedTag button{pointer-events:auto;width:24px;height:24px;font-size:18px}
-.runePlaced.runeLocked{outline:1px solid color-mix(in srgb,var(--accent) 76%,transparent);outline-offset:-2px}
+.runeComposer{position:absolute;z-index:20;top:54px;right:8px;width:min(340px,calc(100% - 16px));padding:10px;box-shadow:0 16px 44px #000a}
 .runePlacementHint{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .runePlacementHint button{border:0;background:transparent;color:var(--accent);font-size:11px;font-weight:800;text-decoration:underline}
 @media(max-width:760px){
@@ -1359,6 +1347,5 @@ body,#app.shell{max-width:100%;min-width:0}
  .studioSharedHeader>.labsTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:visible}
  .studioSharedHeader .labsTab{white-space:normal;min-height:31px;padding:4px 3px;font-size:9px}
  .studioSharedHeader .labsTab svg{width:13px;height:13px}
- .runeComposer,.runeWordConfirm{top:48px;right:5px;width:min(330px,calc(100% - 10px));padding:8px}
- .runeWordConfirm small{font-size:10px}
+ .runeComposer{top:48px;right:5px;width:min(330px,calc(100% - 10px));padding:8px}
 }
