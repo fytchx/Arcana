@@ -124,6 +124,7 @@
 .atlasFeatureLink strong{font:650 clamp(16px,2.2vw,20px)/1.25 Georgia,serif}
 .atlasFeatureLink small{color:var(--atlas-sub);font-size:11px;line-height:1.45}
 .atlasFeatureLink:hover,.atlasJournalExtra:hover{border-color:var(--atlas-icon)}
+.atlasConvergenceFeature{border-color:var(--atlas-icon);background:var(--atlas-panel-strong,var(--atlas-panel))}
 @media(min-width:760px){
  #content.homeFullscreen:has(.atlasHome){padding-top:25px!important}
  .atlasHome{gap:24px}

@@ -186,6 +186,7 @@ const homeSecondary=(route,title,description,symbol)=>
 function home(){return homeScreen();}
 function featuredView(){
  const items=[
+  ['Convergence: Complete Season 2 Guide','Master the tier loop, elite encounters, monster seats and all 37 Lattice nodes.','wiki/article','book','id=convergence-complete-guide'],
   ['Arcana Journal','Independent IdleArc news, meta analysis and community perspectives.','journal','book'],
   ['Class Balance: Top 250','See the ranked class data and the full Season 2 balance analysis.','journal-balance','shield'],
   ['Build Studio','Create, save and compare fully connected equipment, runes and skills.','labs/build','flask'],
@@ -195,7 +196,7 @@ function featuredView(){
   ['Featured Wiki','Browse verified articles and game systems.','wiki','book'],
   ['Beta Feedback','Tell us what to improve before launch.','beta','spark']
  ];
- return '<div class="launchPage arcanaFeaturedPage"><span class="launchEyebrow">DISCOVER</span><h1>Featured</h1><p>Builds, guides, tools and updates worth a look. More community features will appear here as they are published.</p><div class="arcanaFeaturedRows">'+items.map(([name,detail,route,glyph])=>'<button class="launchFeatureRow" type="button" data-route="'+esc(route)+'"><span class="launchFeatureIcon">'+icon(glyph,22)+'</span><span><strong>'+esc(name)+'</strong><small>'+esc(detail)+'</small></span>'+icon('arrow',17)+'</button>').join('')+'</div></div>';
+ return '<div class="launchPage arcanaFeaturedPage"><span class="launchEyebrow">DISCOVER</span><h1>Featured</h1><p>Builds, guides, tools and updates worth a look. More community features will appear here as they are published.</p><div class="arcanaFeaturedRows">'+items.map(([name,detail,route,glyph,params])=>'<button class="launchFeatureRow" type="button" data-route="'+esc(route)+'"'+(params?' data-params="'+esc(params)+'"':'')+'><span class="launchFeatureIcon">'+icon(glyph,22)+'</span><span><strong>'+esc(name)+'</strong><small>'+esc(detail)+'</small></span>'+icon('arrow',17)+'</button>').join('')+'</div></div>';
 }
 
 function recentView(){const recent=state.recent.map(id=>entityById.get(id)||verifiedState.entries.find(e=>e.id===id)||wikiArticleEntries().find(e=>e.id===id)).filter(Boolean).slice(0,15);const saved=resumableWorkspaces({draft:savedBuild(),guild:state.guildTreePlan,compound:state.compoundQuick,affix:state.affixCostQuick,farm:state.farmPlan,recent:state.recent.map(id=>id.startsWith('wiki:article:')?wikiArticleById(id.slice(13)):null).filter(Boolean)});return '<div class="launchPage"><span class="launchEyebrow">USER CENTER</span><h1>Recent Activity</h1><p>Your saved planning work and recently viewed references, available to continue on this device.</p>'+(saved||'<p class="mutedSmall">No saved planning activity yet. Start in Build Studio.</p>')+'<h2>Recently viewed</h2><div class="resultList">'+(recent.length?recent.map(cardEntity).join(''):'<p class="mutedSmall">Pages you open will appear here.</p>')+'</div></div>'}
