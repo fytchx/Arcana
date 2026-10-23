@@ -93,7 +93,7 @@ test('homepage navigation keeps wiki and guild recruitment accessible from globa
  assert.match(nav,/Damage Calculator · In Development/);
  assert.match(app,/\['wiki','ArcanaWiki'/);
  assert.match(app,/\['lfg','Guild & Raid Finder'/);
- assert.match(app,/WORK IN PROGRESS/);
+ assert.match(app,/IN DEVELOPMENT/);
  assert.doesNotMatch(app,/return damageLabView/);
  assert.match(css,/grid-template-columns:minmax\(0,1fr\)!important/);
  assert.match(css,/overflow-y:visible!important/);
