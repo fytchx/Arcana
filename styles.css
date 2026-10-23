@@ -1492,3 +1492,24 @@ body,#app.shell{max-width:100%;min-width:0}
 /* Keep class skill details and allocation controls spanning the full card. */
 .classTreeOverview .classSkillNode>.classSkillInspect{grid-column:1/-1;width:100%}
 .classTreeOverview .classSkillNode>.classNodeFoot{grid-column:1/-1}
+
+/* Subtle progression sliders across Rune Forge and both character skill planners */
+.runeMlSliderControl{display:grid;gap:3px;margin:-2px 0 9px;padding:0 2px}
+.runeMlSliderMeta{display:flex;align-items:baseline;gap:8px;color:var(--muted);font-size:9px;line-height:1.2}
+.runeMlSliderMeta>span:first-child{font-size:8px;letter-spacing:.1em;font-weight:750;opacity:.78}
+.runeMlSliderMeta strong{color:var(--soft);font-size:10px;font-weight:650}
+.runeMlSliderMeta strong small{font-size:9px;color:var(--muted);font-weight:500}
+.runeMlSliderMeta>span:last-child{margin-left:auto;font-variant-numeric:tabular-nums;opacity:.8}
+.runeMlSliderControl input[type=range]{display:block;width:100%;height:24px;margin:0;appearance:none;-webkit-appearance:none;background:transparent;touch-action:pan-x;cursor:pointer}
+.runeMlSliderControl input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:99px;background:color-mix(in srgb,var(--theme-highlight,var(--accent)) 24%,var(--theme-overlay,var(--panel)))}
+.runeMlSliderControl input[type=range]::-moz-range-track{height:3px;border-radius:99px;background:color-mix(in srgb,var(--theme-highlight,var(--accent)) 24%,var(--theme-overlay,var(--panel)))}
+.runeMlSliderControl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;margin-top:-5px;border:2px solid var(--theme-card,var(--panel));border-radius:50%;background:color-mix(in srgb,var(--theme-highlight,var(--accent)) 70%,var(--soft));box-shadow:0 0 0 1px color-mix(in srgb,var(--theme-highlight,var(--accent)) 32%,transparent)}
+.runeMlSliderControl input[type=range]::-moz-range-thumb{width:10px;height:10px;border:2px solid var(--theme-card,var(--panel));border-radius:50%;background:color-mix(in srgb,var(--theme-highlight,var(--accent)) 70%,var(--soft));box-shadow:0 0 0 1px color-mix(in srgb,var(--theme-highlight,var(--accent)) 32%,transparent)}
+.runeMlSliderControl input[type=range]:focus-visible{outline:2px solid var(--theme-highlight,var(--accent));outline-offset:1px;border-radius:8px}
+.levelStudio{padding:9px 13px 7px;margin:8px 0 10px;border-color:color-mix(in srgb,var(--theme-border) 78%,var(--soft));background:color-mix(in srgb,var(--theme-card) 96%,var(--theme-highlight));box-shadow:none}
+.levelStudio:before{display:none}
+.levelStudio input[type=range]{height:26px;margin:0;background:linear-gradient(90deg,color-mix(in srgb,var(--theme-highlight) 46%,var(--theme-accent-text)) var(--level-progress,0%),color-mix(in srgb,var(--theme-highlight) 13%,var(--theme-overlay)) var(--level-progress,0%));background-size:100% 3px;background-repeat:no-repeat;background-position:center;touch-action:pan-x}
+.levelStudio input[type=range]::-webkit-slider-thumb{height:14px;width:14px;border:2px solid var(--theme-card);background:var(--theme-accent-text);box-shadow:0 0 0 1px var(--theme-highlight-border)}
+.levelStudio input[type=range]::-moz-range-thumb{height:10px;width:10px;border:2px solid var(--theme-card);background:var(--theme-accent-text);box-shadow:0 0 0 1px var(--theme-highlight-border)}
+.levelStudio .levelHead .eyebrow{opacity:.72}
+.levelStudio .levelHead label{font-size:12px;font-weight:700;color:var(--soft)}
