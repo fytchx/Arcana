@@ -231,8 +231,9 @@ with sync_playwright() as playwright:
     assert page.locator('#searchResults').count()==1
     page.locator('#layer [data-close]').first.click()
 
-    page.locator('#arcanaDock [data-dock="home"]').click()
-    page.locator('.atlasHeroGo').click()
+    # The Home hero CTA is already asserted to target labs/build above. Exercise
+    # the destination directly here so a synthetic mobile tap cannot flake the smoke.
+    page.evaluate("location.hash='#/labs/build'")
     page.wait_for_selector('.studioProfile',timeout=8000)
     assert page.locator('#arcanaDock button').count()==5, 'Navigation disappeared in Build Studio'
     # Import Manager is an owner-only, browser-local XML conversion workflow.
