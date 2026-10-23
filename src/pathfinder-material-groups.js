@@ -18,9 +18,11 @@ export function sourceMaterialGroups(materials=[],sourceMaterials=[],catalog=[])
  const biomes=entries.filter(e=>kind(e)==='biome');
  const catalogMaterials=entries.filter(e=>kind(e)==='material');
  const source=new Map((sourceMaterials||[]).map(m=>[keyFrom(m),m]));
+ const monsterOrderById=new Map();
+ const monsterOrderByTitle=new Map(monsters.map((m,i)=>[text(m.title).toLowerCase(),i]));
  const byMonsterId=new Map(monsters.flatMap((m,i)=>{
   const ids=[numericId(m),number(info(m,'Monster ID','ID','Monster number'))].filter(Boolean);
-  return ids.map(id=>[id,m]);
+  return ids.map(id=>{if(!monsterOrderById.has(id))monsterOrderById.set(id,i);return [id,m]});
  }));
  const biomeByName=new Map(biomes.map((b,i)=>[text(b.title).toLowerCase(),{row:b,index:i}]));
  const groups=new Map();
@@ -39,12 +41,13 @@ export function sourceMaterialGroups(materials=[],sourceMaterials=[],catalog=[])
   const tier=/^(?:tier\s*)?0$/i.test(rawTier)?'':rawTier; // Source tier zero is not an established biome progression label.
   const unlock=number(info(bi?.row,'Unlock Monster Level','Unlock ML','Monster Level','Minimum ML','Unlock Level','Order','Index'));
   const monsterNum=targetId||numericId(monster)||Number.MAX_SAFE_INTEGER;
+  const sourceOrder=monster?(monsterOrderByTitle.get(text(monster.title).toLowerCase())??Number.MAX_SAFE_INTEGER):(targetId?monsterOrderById.get(targetId)??Number.MAX_SAFE_INTEGER:Number.MAX_SAFE_INTEGER);
   const groupKey=biome?'biome:'+biome.toLowerCase():materialIsMonster(meta)||materialIsMonster(mat)?'unknown-source':'special';
   if(!groups.has(groupKey))groups.set(groupKey,{id:groupKey,name:biome|| (groupKey==='special'?'Forge & special materials':'Biome not verified'),tier:biome?(tier||'Tier unverified'):'',order:biome?(unlock??numericId(bi?.row)??Number.MAX_SAFE_INTEGER-100):Number.MAX_SAFE_INTEGER,monsterOrder:monsterNum,kind:biome?'biome':groupKey==='special'?'special':'unknown',materials:[]});
   const g=groups.get(groupKey);
   if(g.tier==='Tier unverified'&&tier)g.tier=tier;
   g.monsterOrder=Math.min(g.monsterOrder,monsterNum);
-  g.materials.push({...mat,sourceMonster:text(sourceName||monster?.title),biome:biome||'',tier:tier||'',sourceVerified:Boolean(biome)});
+  g.materials.push({...mat,sourceMonster:text(sourceName||monster?.title),sourceOrder,biome:biome||'',tier:tier||'',sourceVerified:Boolean(biome)});
  }
  const arranged=[...groups.values()].sort((a,b)=>{
   if(a.kind!==b.kind)return ({biome:0,unknown:1,special:2}[a.kind]-{biome:0,unknown:1,special:2}[b.kind]);
@@ -57,10 +60,9 @@ export function sourceMaterialGroups(materials=[],sourceMaterials=[],catalog=[])
   }
   return a.order-b.order||a.monsterOrder-b.monsterOrder||sortText(a.name,b.name);
  });
- for(const g of arranged)g.materials.sort((a,b)=>{
-  const ma=source.get(keyFrom(a))||{},mb=source.get(keyFrom(b))||{};
-  return sortText(a.name,b.name)||(number(ma.monster_id)||Number.MAX_SAFE_INTEGER)-(number(mb.monster_id)||Number.MAX_SAFE_INTEGER);
- });
+ // Keep drops in the source game's monster listing order; only materials from
+ // the same monster use a name tie-breaker.
+ for(const g of arranged)g.materials.sort((a,b)=>a.sourceOrder-b.sourceOrder||sortText(a.name,b.name));
  return arranged;
 }
 export function recipeSlotStatus(snapshot){
