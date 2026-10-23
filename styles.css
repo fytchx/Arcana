@@ -1349,3 +1349,134 @@ body,#app.shell{max-width:100%;min-width:0}
  .studioSharedHeader .labsTab svg{width:13px;height:13px}
  .runeComposer{top:48px;right:5px;width:min(330px,calc(100% - 10px));padding:8px}
 }
+
+
+/* Build Studio polish: compact, theme-aware controls with clearer point allocation. */
+.studioSharedHeader{padding:8px 10px;gap:7px;margin:0 0 8px;border-radius:16px}
+.studioContextUtility{min-height:24px}
+.studioContextProfile{gap:9px}
+.studioContextAvatar{width:42px;height:42px}
+.studioContextActions{gap:6px}
+.studioSharedHeader>.labsTabs{margin:0;gap:5px;padding:4px 0 0}
+.studioSharedHeader .labsTab{min-height:36px;border-radius:10px}
+.studioPage .breadcrumb,.studioSubPage .breadcrumb{margin-block:2px 7px}
+.levelStudio{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 10px;padding:8px 10px;margin:0 0 8px;border-radius:12px}
+.levelStudio .levelHead{display:contents}
+.levelStudio .levelHead>div:first-child{display:flex;align-items:center;gap:7px}
+.levelStudio .levelHead .eyebrow{font-size:8px;letter-spacing:.08em}
+.levelStudio .levelHead label{font-size:11px}
+.levelStudio .levelNumber{display:flex;align-items:center;gap:5px}
+.levelStudio .levelNumber input{width:68px;min-height:32px;padding:4px 7px;font-size:13px}
+.levelStudio .levelNumber span{font-size:8px}
+.levelStudio input[type="range"]{grid-column:1/-1;height:16px;margin:0}
+.levelStudio .levelBottom{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0;font-size:9px}
+.levelStudio .pointCounter{display:flex;align-items:center;gap:5px;font-size:9px}
+.levelStudio .pointCounter strong{font-size:11px;color:var(--theme-accent-text)}
+.levelStudio .pointCounter small{font-size:9px}
+.classTreeOverview{padding:9px!important;border-radius:15px}
+.classTreeOverview .classRail{gap:5px;margin:0 0 5px;padding:0 0 5px}
+.classTreeOverview .classRail button{min-height:35px;padding:5px 8px;border-radius:10px;font-size:10px}
+.classTreeOverview .classRail button svg,.classTreeOverview .classRail button img{width:20px;height:20px}
+.classTreeOverview .classHeading{padding:4px 1px 7px;margin:0 0 6px}
+.classTreeOverview .classMark{width:36px;height:36px;border-radius:10px}
+.classTreeOverview .classHeading h2{font-size:17px;margin:1px 0}
+.classTreeOverview .classHeading p{font-size:10px;margin:2px 0 0}
+.classTreeOverview .classHeading .eyebrow{font-size:8px}
+.classTreeOverview .branchRail{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:0 0 6px}
+.classTreeOverview .branchRail button{min-height:39px;padding:5px 4px;font-size:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.classTreeOverview .branchRail button small{font-size:8px;opacity:.78}
+.classTreeOverview .classBranchIntro{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:0 0 6px;padding:0}
+.classTreeOverview .classBranchIntro .eyebrow{display:none}
+.classTreeOverview .classBranchIntro h3{font-size:12px;margin:0}
+.classTreeOverview .classBranchIntro h3 small{font-size:9px}
+.classTreeOverview .classBranchIntro>.btn{min-height:29px;padding:4px 7px;font-size:9px}
+.classTreeOverview .classTierStack{gap:7px}
+.classTreeOverview .classTierBlock{padding:6px;border-radius:11px}
+.classTreeOverview .classTierHeader{gap:6px;margin:0 0 5px}
+.classTreeOverview .classTierHeader .classTierBadge{width:25px;height:25px}
+.classTreeOverview .classTierHeader strong{font-size:10px}
+.classTreeOverview .classTierHeader small{font-size:8px}
+.classTreeOverview .classTierCards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,145px),1fr));gap:6px}
+.classTreeOverview .classSkillNode{width:auto;min-width:0;min-height:0;padding:7px;border-radius:11px;display:grid;grid-template-columns:38px minmax(0,1fr);column-gap:7px;align-items:center}
+.classTreeOverview .classSkillNode .classSkillImage{width:38px;height:38px;grid-row:span 2;border-radius:9px;border-width:1px}
+.classTreeOverview .classSkillNode .classSkillImage .gameArt{width:34px;height:34px}
+.classTreeOverview .classSkillNode .classSkillInspect{min-width:0}
+.classTreeOverview .classSkillNode .classSkillInspect strong{font-size:10px;line-height:1.2}
+.classTreeOverview .classSkillNode .classSkillInspect small{font-size:8px;line-height:1.25}
+.classTreeOverview .classNodeFoot{grid-column:2;min-width:0}
+.inlineStepper{display:inline-grid;grid-template-columns:30px minmax(28px,auto) 30px;align-items:center;gap:4px}
+.inlineStepper button{width:30px;min-width:30px;height:30px;min-height:30px;border:1px solid var(--theme-border);border-radius:9px;background:var(--theme-overlay);color:var(--text);font-size:17px;font-weight:800;line-height:1;box-shadow:0 1px 0 var(--theme-border)}
+.inlineStepper .stepPlus{border-color:var(--theme-highlight-border);background:var(--theme-highlight-soft);color:var(--theme-accent-text)}
+.inlineStepper button:disabled{opacity:.38;box-shadow:none}
+.inlineStepper button:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:2px}
+.inlineStepper output{font-size:10px;font-weight:800;color:var(--text);text-align:center}
+.passiveAllocationMode{padding:8px 10px;margin:0 0 7px;gap:8px;border-radius:12px}
+.passiveModeText>strong{font-size:11px}
+.passiveModeText p{font-size:9px;line-height:1.35;margin-top:2px}
+.passiveModeSwitch{gap:6px;font-size:9px}
+.passiveSwitchTrack{width:38px;height:22px}
+.passiveSwitchTrack:after{width:16px;height:16px}
+.passiveModeSwitch input:checked+.passiveSwitchTrack:after{transform:translateX(15px)}
+.passiveTreeLead{padding:8px 10px;margin:0 0 7px}
+.passiveTreeLead h2{font-size:15px}
+.passiveTreeLead p{font-size:9px;line-height:1.35}
+.passiveTierRail{padding:4px 0;margin:0 0 7px;gap:4px}
+.passiveTierRail button{min-height:31px;padding:4px 7px;font-size:9px}
+.passiveTierRows .passiveRow{padding:7px 5px;margin:0 0 6px;border-radius:11px}
+.passiveTierRows .passiveRowLabel{margin:0 0 5px}
+.passiveTierRows .passiveRowLabel strong{font-size:10px}
+.passiveTierRows .passiveRowLabel small{font-size:8px}
+.passiveTierRows .passiveRowNodes{gap:5px}
+.passiveTierRows .passiveNode{min-height:0;padding:6px 3px;border-radius:9px}
+.passiveTierRows .passiveSymbol{width:28px;height:28px}
+.passiveTierRows .passiveName{font-size:9px;line-height:1.2}
+.passiveTierRows .passiveStatGain{font-size:9px}
+.passiveTierRows .inlineStepper{grid-template-columns:28px minmax(22px,auto) 28px;gap:2px}
+.passiveTierRows .inlineStepper button{width:28px;min-width:28px;height:28px;min-height:28px}
+.passiveTierRows .inlineStepper output{font-size:9px}
+.treeFootControls{gap:6px;margin-top:7px}
+.treeFootControls .btn{min-height:34px;padding:6px 8px;font-size:10px}
+.runeActionButtons{display:flex;align-items:center;gap:6px}
+.runeResetButton,.runeNewButton{min-height:36px;padding:7px 10px;font-size:11px;white-space:nowrap}
+.runeResetButton:disabled{opacity:.4}
+.runeWordsPanel>summary{scroll-margin-top:10px}
+.runeWordsList{overscroll-behavior:contain}
+.runeWordRow{scroll-margin-top:10px}
+.loadoutStage{gap:5px!important}
+@media(max-width:700px){
+ .studioSharedHeader{padding:6px 7px;gap:5px;margin-bottom:6px}
+ .studioContextUtility{min-height:20px}
+ .studioContextProfile{grid-template-columns:34px minmax(0,1fr);gap:6px}
+ .studioContextAvatar{width:34px;height:34px}
+ .studioContextIdentity input,.studioContextIdentity strong{font-size:13px}
+ .studioContextIdentity select,.studioContextClass{min-height:25px;font-size:10px}
+ .studioContextSummary{font-size:9px;line-height:1.2}
+ .studioContextActions{gap:3px}
+ .studioActionButton,.studioMoreMenu>summary{min-height:27px;padding:3px 6px;font-size:9px}
+ .studioSharedHeader .labsTab{min-height:32px;padding:4px 2px;font-size:9px}
+ .studioPage{gap:7px}
+ .classTreeOverview .classRail{overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain}
+ .classTreeOverview .classRail button{flex:none}
+ .classTreeOverview .classTierCards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .classTreeOverview .classSkillNode{grid-template-columns:30px minmax(0,1fr);padding:6px;column-gap:5px}
+ .classTreeOverview .classSkillNode .classSkillImage{width:30px;height:30px}
+ .classTreeOverview .classSkillNode .classSkillImage .gameArt{width:26px;height:26px}
+ .classTreeOverview .classSkillNode .classSkillInspect strong{font-size:9px}
+ .classTreeOverview .classSkillNode .classSkillInspect small{font-size:7px}
+ .classTreeOverview .classNodeFoot .inlineStepper{margin:3px 0 0}
+ .inlineStepper{grid-template-columns:28px minmax(24px,auto) 28px;gap:2px}
+ .inlineStepper button{width:28px;min-width:28px;height:28px;min-height:28px}
+ .passiveTierRows .passiveRowNodes{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .runeActionBar{align-items:center;gap:6px}
+ .runeActionBar>label{font-size:10px}
+ .runeActionButtons{gap:5px}
+ .runeResetButton,.runeNewButton{min-height:32px;padding:5px 7px;font-size:10px}
+ .runeActionBar input{width:60px;min-height:30px}
+}
+@media(max-width:380px){
+ .classTreeOverview .classTierCards{grid-template-columns:1fr}
+ .classTreeOverview .classSkillNode{grid-template-columns:36px minmax(0,1fr)}
+ .classTreeOverview .classSkillNode .classSkillImage{width:36px;height:36px}
+ .classTreeOverview .classSkillNode .classSkillImage .gameArt{width:32px;height:32px}
+ .runeResetButton,.runeNewButton{padding:4px 6px;font-size:9px}
+}
