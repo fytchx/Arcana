@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {endpointStage,normalizeOptimizerSliders,readOptimizerSliders,saveOptimizerSliders,totalUpgradeMaterials,upgradeOptimizerSliderView} from '../src/upgrade-optimizer-v2.js';
+import {optimizerTierRanges,OPTIMIZER_TIER_DATA} from '../src/upgrade-optimizer-tier-data.js';
 
 const fixture={
  codex:{
@@ -51,4 +52,10 @@ test('app points to latest optimizer without changing damage calculator route',a
  assert.match(app,/upgradeOptimizerSliderView/);
  assert.match(app,/wireUpgradeOptimizerSliders/);
  assert.match(app,/case 'calculators\/damage':return calcDamage\(\)/);
+});
+
+test('October 21 source ranges include all forty base items and newer special implicits',()=>{
+ assert.equal(OPTIMIZER_TIER_DATA.size,40);
+ assert.deepEqual(optimizerTierRanges('pathfinder-treads',6).secondary,{stat:'gold_exp_gain',min:18,max:20});
+ assert.deepEqual(optimizerTierRanges('wardplate',6).secondary,{stat:'flat_damage_reduction',min:4,max:5});
 });
