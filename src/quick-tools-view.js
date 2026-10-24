@@ -34,7 +34,7 @@ export function quickUpgradePanel(snapshot,raw={},options={}){
  const page=options.page===true;
  const classes='quickCosts '+(page?'quickCostsFull':'quickCostsHome');
  const heading=page?'':
- '<div class="quickCostsHead"><div><span class="quickEyebrow">UPGRADE COST CALCULATOR</span><h2>Upgrade Costs</h2><p>Materials and Gold for any upgrade range.</p></div><span class="quickHint">A1 → A2</span></div>';
+ '<div class="quickCostsHead"><div><span class="quickEyebrow">UPGRADE COST CALCULATOR</span><h2>Upgrade Costs</h2><p>Monster materials for any upgrade range.</p></div><span class="quickHint">A1 → A2</span></div>';
  const inner=quickUpgradeContent(snapshot,raw,{page,error:options.error||'',catalog:options.catalog||[]});
  return '<section class="'+classes+'" aria-label="Quick upgrade cost calculator">'+heading+'<div id="pathRangeContent">'+inner+'</div>'+
  (page?'<div class="quickCostsExtra"><button type="button" data-pf-save-list>Save farming checklist</button><button type="button" data-route="calculators/pathfinder" data-params="view=timeline">Explore the upgrade map →</button></div>':
@@ -110,7 +110,7 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  const goldTip=esc(money(rendered.gold)+' Gold');
  const forge='<details class="quickMaterialSection quickForgeSection" data-material-section="special">'+
   '<summary class="quickSectionSummary"><strong>Gold &amp; rare materials</strong>'+
-  '<small class="quickGoldSummary" title="'+goldTip+'">'+goldValue+' Gold · '+other.length+' rare types</small><span aria-hidden="true">⌄</span></summary>'+
+  '<small class="quickGoldSummary" title="'+goldTip+'">'+other.length+' special materials · gold optional</small><span aria-hidden="true">⌄</span></summary>'+
   '<div class="quickSectionBody">'+(other.length?'<div class="quickMaterialList quickMaterialListSorted">'+other.map(materialRow).join('')+'</div>':'<p class="quickEmpty">No rare materials needed.</p>')+'</div></details>';
  const firstStep=scenarios.available?(scenarios.perStep.find(step=>step.failChance>0)||scenarios.perStep[0]):null;
  const pityCap=firstStep?.pityCap||1;
