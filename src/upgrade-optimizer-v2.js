@@ -213,6 +213,32 @@ export function wireUpgradeOptimizerSliders(context){
    if(next){next.focus({preventScroll:true});next.setSelectionRange(cursor,cursor)}
    return;
   }
+  // Persist typed numbers before another control can redraw the planner.
+  // Waiting for `change` alone can lose a still-focused mobile text input.
+  if(input.matches('input[data-uo-affix="value"]')){
+   const entry=state.items[Number(input.dataset.uoIndex)],slot=Number(input.dataset.uoAffixIndex);
+   const affix=entry?.affixes[slot];if(!affix)return;
+   affix.value=input.value;
+   if(input.value.trim()){
+    affix.reference={...entry.current};
+    affix.referenceRank=affix.rank||0;
+   }else delete affix.reference;
+   state=saveOptimizerSliders(state);return;
+  }
+  if(input.matches('input[data-uo-observed]')){
+   const entry=state.items[Number(input.dataset.uoIndex)],field=input.dataset.uoObserved;
+   if(!entry||!['primary','secondary'].includes(field))return;
+   entry.observed[field]=input.value;
+   state=saveOptimizerSliders(state);return;
+  }
+  if(input.matches('input[data-uo-stock]')){
+   state.stock[input.dataset.uoStock]=input.value;
+   state=saveOptimizerSliders(state);return;
+  }
+  if(input.matches('input[data-uo-gold-stock]')){
+   state.goldStock=input.value;
+   state=saveOptimizerSliders(state);return;
+  }
   if(!input.matches('input[data-uo-field]'))return;
   const {uoIndex,uoSide,uoField}=input.dataset;
   const raw=Number(input.value);
