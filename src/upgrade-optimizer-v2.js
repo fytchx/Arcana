@@ -2,8 +2,9 @@
  * The Oct 21 2026 game config provides item tier stat ranges and awaken multiplier,
  * but not individual rolled stat values or the executable implicit-stat rounding path.
  * Never fabricate exact A-rank implicit stats from a tier range. */
-import {OPTIMIZER_CHOICES,OPTIMIZER_ITEM_BY_ID,optimizerChoice,optimizerStatLabel,OPTIMIZER_ITEM_SOURCE} from './upgrade-optimizer-data.js';
+import {OPTIMIZER_ITEM_BY_ID,optimizerChoice,optimizerStatLabel} from './upgrade-optimizer-data.js';
 import {optimizerTierRanges} from './upgrade-optimizer-tier-data.js';
+import {FAMILY_ITEMS,familyById,familyVariant,familyArtwork,slotTitle} from './upgrade-family.js';
 import {allStages,quoteRange} from './pathfinder-range.js';
 import {quoteFailureScenarios} from './pathfinder-failures.js';
 import {sourceMaterialGroups} from './pathfinder-material-groups.js';
@@ -15,7 +16,12 @@ const clamp=(n,min,max)=>Math.max(min,Math.min(max,Number.isFinite(Number(n))?Ma
 const esc=x=>String(x??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
 const fmt=x=>typeof x==='bigint'?x.toLocaleString('en-US'):Number(x).toLocaleString('en-US',{maximumFractionDigits:2});
 const summaryNumber=x=>{const n=typeof x==='bigint'?x:BigInt(x||0);for(const [size,name] of [[1000000000000000n,'Qa'],[1000000000000n,'T'],[1000000000n,'B'],[1000000n,'M'],[1000n,'K']])if(n>=size)return (Number((n*10n+size/2n)/size)/10).toLocaleString('en-US',{maximumFractionDigits:1})+name;return fmt(n)};
-const itemValue=key=>optimizerChoice(key)||null;
+// Legacy saved keys named every rarity separately. Resolve them to one Codex
+// family without losing the user's existing current/target upgrade settings.
+const itemValue=key=>{
+ const family=familyById(key);if(family)return {key:family.id,itemId:family.id,tier:6};
+ const old=optimizerChoice(key);return old?{...old,key:old.itemId}:null;
+};
 const endpoint=(raw={},fallback={rarity:6,awaken:0,level:0})=>{
  const rarity=clamp(raw.rarity??fallback.rarity,1,6);
  const awaken=rarity===6?clamp(raw.awaken??fallback.awaken,0,30):0;
@@ -45,15 +51,19 @@ export function saveOptimizerSliders(value,store=globalThis.localStorage){
  try{store?.setItem(OPTIMIZER_SLIDER_KEY,JSON.stringify(clean))}catch{}
  return clean;
 }
-let state=readOptimizerSliders(),editingIndex=-1;
-const SLOT_NAMES={main_hand:'Weapons',off_hand:'Offhand',chest:'Chest',head:'Helmets',hands:'Gloves',feet:'Boots',ring:'Rings',amulet:'Amulets',belt:'Belts',torch:'Torches'};
+let state=readOptimizerSliders(),editingIndex=-1,selectingIndex=-1,pickerSlot='all',pickerQuery='';
 const SLOT_ORDER=['main_hand','off_hand','chest','head','hands','feet','belt','ring','amulet','torch'];
-const options=selected=>'<option value=""'+(!selected?' selected':'')+'>Choose equipment…</option>'+
- SLOT_ORDER.map(slot=>{
-  const picks=OPTIMIZER_CHOICES.filter(x=>OPTIMIZER_ITEM_BY_ID.get(x.itemId)?.slot===slot);
-  return picks.length?'<optgroup label="'+esc(SLOT_NAMES[slot])+'">'+picks.map(x=>
-   '<option value="'+esc(x.key)+'"'+(x.key===selected?' selected':'')+'>'+esc(x.label)+'</option>').join('')+'</optgroup>':'';
- }).join('');
+export const optimizerBaseItemPicker=i=>{
+ const matching=FAMILY_ITEMS.filter(x=>(pickerSlot==='all'||x.slot===pickerSlot)&&(!pickerQuery||[x.name,slotTitle(x.slot)].join(' ').toLowerCase().includes(pickerQuery.toLowerCase())));
+ return '<section class="uoPicker" aria-label="Choose a base item"><div class="uoPickerIntro"><div><span class="uoEyebrow">IDLEARC CODEX</span><h3>Choose your base item</h3><p>One item per family. Its name and art evolve with rarity.</p></div><span class="uoFamilyCount">'+matching.length+' / '+FAMILY_ITEMS.length+'</span></div>'+
+ '<label class="uoSearchLabel"><span>Find equipment</span><input type="search" data-uo-search placeholder="Search 40 base items…" value="'+esc(pickerQuery)+'" autocomplete="off"></label>'+
+ '<div class="uoSlotRail" aria-label="Filter by equipment slot"><button type="button" data-uo-filter="all" aria-pressed="'+(pickerSlot==='all')+'">All</button>'+SLOT_ORDER.map(slot=>'<button type="button" data-uo-filter="'+slot+'" aria-pressed="'+(pickerSlot===slot)+'">'+esc(slotTitle(slot))+'</button>').join('')+'</div>'+
+ '<div class="uoFamilyGrid">'+(matching.length?matching.map(f=>'<button type="button" class="uoFamilyTile" data-uo-family="'+esc(f.id)+'" data-uo-index="'+i+'" aria-label="Select '+esc(f.name)+'"><span class="uoFamilyArt">'+familyArtwork(f.id,{rarity:1,awaken:0})+'</span><span class="uoFamilyName">'+esc(f.name)+'</span><small>'+esc(slotTitle(f.slot))+'</small></button>').join(''):'<p class="uoPickerEmpty">No base items match that search.</p>')+'</div></section>';
+};
+const variantGallery=(id,i)=>'<details class="uoVariants"><summary><span>Explore all six rarities</span><small>Tap one to set your current rarity</small></summary><div class="uoVariantRail">'+[1,2,3,4,5,6].map(r=>{
+ const v=familyVariant(id,{rarity:r,awaken:0});
+ return '<button type="button" data-uo-rarity="'+r+'" data-uo-index="'+i+'" class="uoVariantTile"><span class="uoVariantArt uoRarity'+r+'">'+familyArtwork(id,{rarity:r,awaken:0})+'</span><strong>'+esc(TIER_LABELS[r-1])+'</strong><small>'+esc(v.name)+'</small></button>';
+ }).join('')+'</div></details>';
 const panelLabel=p=>p.awaken>0?'A'+p.awaken:p.rarity===6?'Infernal':'T'+p.rarity+' · '+TIER_LABELS[p.rarity-1];
 const levelLabel=p=>panelLabel(p)+' +'+p.level;
 const slider=(i,side,key,value,min,max,title,caption)=>{
@@ -63,11 +73,13 @@ const slider=(i,side,key,value,min,max,title,caption)=>{
  '</label>';
 };
 function endpointMarkup(i,side,point){
- const awakenDisabled=point.rarity!==6;
  const max=point.rarity===6?30:[4,9,14,19,24,30][point.rarity-1];
+ const id=state.items[i]?.itemKey,variant=familyVariant(id,point);
  return '<section class="uoEndpoint"><header><strong>'+ (side==='current'?'CURRENT':'TARGET')+'</strong><span class="uoStage" data-uo-stage="'+i+'-'+side+'">'+esc(levelLabel(point))+'</span></header>'+
+ '<div class="uoEndpointIdentity"><span class="uoEndpointArt uoRarity'+point.rarity+'">'+familyArtwork(id,point)+'</span><div><strong>'+esc(variant?.name||'Equipment')+'</strong><small>'+esc(variant?.tierLabel||'')+'</small></div></div>'+
  slider(i,side,'rarity',point.rarity,1,6,'Rarity',TIER_LABELS[point.rarity-1])+
- (awakenDisabled?'<p class="uoDisabledNote">Awakening unlocks at Infernal.</p>':slider(i,side,'awaken',point.awaken,0,30,'Awakening rank',point.awaken?'A'+point.awaken:'None'))+
+ slider(i,side,'awaken',point.awaken,0,30,'Awakening rank',point.awaken?'A'+point.awaken:'None')+
+ (point.rarity<6?'<p class="uoDisabledNote">Increasing awakening automatically changes rarity to Infernal.</p>':'')+
  slider(i,side,'level',point.level,0,max,'Enhancement','+'+point.level)+'</section>';
 }
 function quote(snapshot,item){
@@ -109,18 +121,19 @@ function statView(choice,item){
  '<p>Configured rarity base ranges, not a prediction of your individual roll at '+esc(levelLabel(item.target))+'. Awakening adds a configured 12% scaling parameter per rank, but the exact implicit calculation and rounding are not provided in the configuration.</p></div></details>';
 }
 export function optimizerItemCard(item,i,snapshot){
- const choice=optimizerChoice(item.itemKey),expanded=editingIndex===i;
- const title=choice?.label||'Choose equipment',route=levelLabel(item.current)+' → '+levelLabel(item.target);
+ const choice=itemValue(item.itemKey),expanded=editingIndex===i;
+ const id=choice?.itemId,title=familyVariant(id,item.current)?.name||'Choose equipment',route=levelLabel(item.current)+' → '+levelLabel(item.target);
  const quoteInfo=choice?quote(snapshot,item):null;
  const chosenCost=quoteInfo?.result||null;
  return '<article class="uoItem'+(expanded?' uoOpen':'')+'">'+
- '<div class="uoCardLine"><span class="uoItemNum">'+(i+1)+'</span><div class="uoCardText"><strong>'+esc(title)+'</strong><small>'+esc(choice?route:'Select an item to begin')+'</small></div>'+
+ '<div class="uoCardLine"><span class="uoItemNum">'+(choice?'<span class="uoRowArt">'+familyArtwork(id,item.current)+'</span>':(i+1))+'</span><div class="uoCardText"><strong>'+esc(title)+'</strong><small>'+esc(choice?route:'Select a base item from the Codex')+'</small></div>'+
  '<button type="button" class="uoToggle" data-uo-action="toggle" data-uo-index="'+i+'" aria-expanded="'+expanded+'">'+(expanded?'Done':'Edit')+'</button>'+
  '<button type="button" class="uoRemove" data-uo-action="remove" data-uo-index="'+i+'" aria-label="Remove '+esc(title)+'">×</button></div>'+
- (expanded?'<div class="uoEditor"><label class="uoChoose"><span>Equipment</span><select data-uo-item="'+i+'">'+options(item.itemKey)+'</select></label>'+
- (choice?'<div class="uoRangeGrid">'+endpointMarkup(i,'current',item.current)+endpointMarkup(i,'target',item.target)+'</div>'+
+ (expanded?'<div class="uoEditor">'+
+ (selectingIndex===i||!choice?optimizerBaseItemPicker(i):'<div class="uoChosen"><div><span class="uoEyebrow">BASE ITEM</span><strong>'+esc(familyById(id)?.name||title)+'</strong><small>Infernal is the default starting rarity.</small></div><button type="button" data-uo-action="pick" data-uo-index="'+i+'">Change item</button></div>'+
+ variantGallery(id,i)+'<div class="uoRangeGrid">'+endpointMarkup(i,'current',item.current)+endpointMarkup(i,'target',item.target)+'</div>'+
  '<div class="uoCardFoot"><span>'+esc(route)+'</span>'+(quoteInfo?.error?'<small>'+esc(quoteInfo.error)+'</small>':'<strong>'+(chosenCost?.materials?.length||0)+' material types</strong>')+'</div>'+
- statView(choice,item):'<p class="uoHelp">Choose equipment above to set the current and target upgrade levels.</p>')+'</div>':'')+
+ statView(choice,item))+'</div>':'')+
  '</article>';
 }
 const grouped=(materials,snapshot,catalog)=>sourceMaterialGroups(materials,snapshot?.materials||[],catalog||[]);
@@ -168,9 +181,21 @@ export function wireUpgradeOptimizerSliders(context){
  getContext=context;
  if(installed)return;
  installed=true;
+ if(typeof document!=='undefined'&&!document.getElementById('arcanaOptimizerStyles')){
+  const link=document.createElement('link');link.id='arcanaOptimizerStyles';link.rel='stylesheet';link.href='/upgrade-optimizer.css?v=codex-family-20261023';document.head.append(link);
+ }
  document.addEventListener('input',event=>{
-  const input=event.target.closest('input[data-uo-field]');
-  if(!input||!input.closest('#arcanaUpgradeOptimizerV2'))return;
+  const input=event.target;
+  if(!input.closest('#arcanaUpgradeOptimizerV2'))return;
+  if(input.matches('input[data-uo-search]')){
+   pickerQuery=input.value;
+   const cursor=input.selectionStart;
+   redraw();
+   const next=document.querySelector('#arcanaUpgradeOptimizerV2 [data-uo-search]');
+   if(next){next.focus({preventScroll:true});next.setSelectionRange(cursor,cursor)}
+   return;
+  }
+  if(!input.matches('input[data-uo-field]'))return;
   const {uoIndex,uoSide,uoField}=input.dataset;
   const raw=Number(input.value);
   const label=document.querySelector('[data-uo-label="'+uoIndex+'-'+uoSide+'-'+uoField+'"]');
@@ -180,40 +205,57 @@ export function wireUpgradeOptimizerSliders(context){
   const input=event.target,root=input.closest('#arcanaUpgradeOptimizerV2');
   if(!root)return;
   if(input.matches('[data-uo-mode]'))state.costMode=input.value;
-  else if(input.matches('[data-uo-item]')){
-   const entry=state.items[Number(input.dataset.uoItem)];if(!entry)return;
-   const choice=itemValue(input.value);
-   entry.itemKey=choice?.key||'';
-   if(choice){
-    const point=choice.tier>=7?{rarity:6,awaken:1,level:0}:{rarity:choice.tier||6,awaken:0,level:0};
-    entry.current=endpoint(point);
-    entry.target=endpoint({...point,level:1});
-   }
-  }else if(input.matches('input[data-uo-field]')){
+  else if(input.matches('input[data-uo-field]')){
    const entry=state.items[Number(input.dataset.uoIndex)];if(!entry)return;
    const side=input.dataset.uoSide,field=input.dataset.uoField;
    if(!['current','target'].includes(side)||!['rarity','awaken','level'].includes(field))return;
    const point={...entry[side],[field]:Number(input.value)};
    if(field==='rarity'&&point.rarity<6)point.awaken=0;
+   if(field==='awaken'&&point.awaken>0)point.rarity=6;
    entry[side]=endpoint(point);
    if(side==='current'&&position(entry.target)<position(entry.current))entry.target={...entry.current};
   }else return;
   state=saveOptimizerSliders(state);redraw();
  });
  document.addEventListener('click',event=>{
+  const familyButton=event.target.closest('[data-uo-family]');
+  if(familyButton?.closest('#arcanaUpgradeOptimizerV2')){
+   const entry=state.items[Number(familyButton.dataset.uoIndex)];
+   if(!entry||!familyById(familyButton.dataset.uoFamily))return;
+   entry.itemKey=familyButton.dataset.uoFamily;
+   entry.current={rarity:6,awaken:0,level:0};
+   entry.target={rarity:6,awaken:0,level:1};
+   selectingIndex=-1;pickerQuery='';pickerSlot='all';
+   state=saveOptimizerSliders(state);redraw();return;
+  }
+  const filterButton=event.target.closest('[data-uo-filter]');
+  if(filterButton?.closest('#arcanaUpgradeOptimizerV2')){
+   pickerSlot=filterButton.dataset.uoFilter;redraw();return;
+  }
+  const rarityButton=event.target.closest('[data-uo-rarity]');
+  if(rarityButton?.closest('#arcanaUpgradeOptimizerV2')){
+   const entry=state.items[Number(rarityButton.dataset.uoIndex)];if(!entry)return;
+   entry.current=endpoint({...entry.current,rarity:Number(rarityButton.dataset.uoRarity),awaken:0});
+   if(position(entry.target)<position(entry.current))entry.target={...entry.current};
+   state=saveOptimizerSliders(state);redraw();return;
+  }
   const button=event.target.closest('[data-uo-action]');
   if(!button||!button.closest('#arcanaUpgradeOptimizerV2'))return;
   const action=button.dataset.uoAction,index=Number(button.dataset.uoIndex);
   if(action==='add'&&state.items.length<MAX_ITEMS){
-   state.items.push(blankItem());editingIndex=state.items.length-1;
+   state.items.push(blankItem());editingIndex=state.items.length-1;selectingIndex=editingIndex;pickerQuery='';pickerSlot='all';
   }else if(action==='clear'){
-   state.items=[];editingIndex=-1;
+   state.items=[];editingIndex=-1;selectingIndex=-1;pickerQuery='';pickerSlot='all';
   }else if(action==='toggle'){
    editingIndex=editingIndex===index?-1:index;
+  }else if(action==='pick'){
+   editingIndex=index;selectingIndex=index;pickerQuery='';pickerSlot='all';
   }else if(action==='remove'&&index>=0&&index<state.items.length){
    state.items.splice(index,1);
    if(editingIndex===index)editingIndex=-1;
    else if(editingIndex>index)editingIndex--;
+   if(selectingIndex===index)selectingIndex=-1;
+   else if(selectingIndex>index)selectingIndex--;
   }else return;
   state=saveOptimizerSliders(state);redraw();
  });

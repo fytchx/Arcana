@@ -11,10 +11,8 @@ export const slotTitle=slot=>({main_hand:'Weapons',off_hand:'Offhands',chest:'Ch
 export const rarityName=tier=>rarityNames[Math.max(0,Math.min(5,Number(tier||1)-1))];
 const variantsById=new Map(FAMILY_ITEMS.map(item=>{
  const entries=OPTIMIZER_CHOICES.filter(c=>c.itemId===item.id);
- const named=entries.map(e=>e.label);
- const matches=entries.filter(x=>x.tier===6);
- const inferred=matches.length>1?matches[matches.length-1].label:null;
- return [item.id,{entries,named,awakened:inferred&&inferred!==matches[0]?.label?inferred:null}];
+ const awakened=entries.find(x=>x.awakened)?.label||null;
+ return [item.id,{entries,awakened}];
 }));
 export const familyById=id=>OPTIMIZER_ITEM_BY_ID.get(id)||null;
 export function familyVariant(id,point){
@@ -23,13 +21,16 @@ export function familyVariant(id,point){
  const rarity=Math.max(1,Math.min(6,Number(point?.rarity)||6));
  const rank=rarity===6?Math.max(0,Math.min(30,Number(point?.awaken)||0)):0;
  const variants=variantsById.get(id);
- const tierEntry=variants?.entries.find(x=>x.tier===rarity);
+ const tierEntry=variants?.entries.find(x=>x.tier===rarity&&!x.awakened);
  const name=rank>0?(variants?.awakened||tierEntry?.label||item.name):tierEntry?.label||item.name;
  return {id,name,baseName:item.name,rarity,rank,tierLabel:rank?'Awakened A'+rank:rarityName(rarity),slot:item.slot,primary:item.primary,secondary:item.secondary};
 }
 export function familyArtwork(id,point,px=64){
  const v=familyVariant(id,point);
- return v?codexOfficialArt({id:'game:item:'+id,kind:'item',title:v.name},px):'<span class="gameArt gameArt-missing">◇</span>';
+ // These in-game display names differ from the keys in the supplied
+ // official equipment atlas. Both aliases refer to verified artwork entries.
+ const artTitle=v?.name==='Sandals of Starszy'?'Sandals':v?.name==='Steel Plate Gauntlets'?'Steel Plate Gloves':v?.name==='Gilded Plate Gauntlets'?'Gilded Plate Gloves':v?.name;
+ return v?codexOfficialArt({id:'game:item:'+id,kind:'item',title:artTitle},px):'<span class="gameArt gameArt-missing">◇</span>';
 }
 const softLevels=(rank,level)=>{
  // The source explicitly reduces enhancement growth after the effective level-90 cap.

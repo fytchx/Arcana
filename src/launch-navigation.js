@@ -23,6 +23,7 @@ export const HOME_MENUS=Object.freeze({
   link('Upgrade Map','Browse all ranks, enhancements and materials.','calculators/pathfinder','layers',{view:'timeline'}),
   link('Rarity Reference','Equipment rarities and upgrade information.','calculators/pathfinder','shield',{view:'upgrade'}),
   link('Compare Equipment','Compare equipment and item upgrades.','calculators/pathfinder','compare',{view:'compare'}),
+  link('Upgrade Optimizer','Choose Codex equipment and plan rarity or Awakening upgrades.','calculators/optimizer','compare'),
   link('Material Reference','Materials and their wiki entries.','wiki/library','box',{kind:'material'})
  ]},
  tools:{title:'Tools',detail:'Pet calculators, farming tools, guild planning and damage analysis.',links:[

@@ -6,7 +6,7 @@ export const OPTIMIZER_ITEMS=Object.freeze(RAW.map(([id,name,slot,primary,second
 export const OPTIMIZER_ITEM_BY_ID=new Map(OPTIMIZER_ITEMS.map(x=>[x.id,x]));
 export const OPTIMIZER_CHOICES=Object.freeze(OPTIMIZER_ITEMS.flatMap(item=>{
  const labels=VARIANTS[item.id];if(!labels)return [{key:item.id+'|'+item.name,label:item.name,itemId:item.id,tier:6}];
- const entries=labels.map((label,index)=>({key:item.id+'|'+label,label,itemId:item.id,tier:Math.min(index+1,6)}));
+ const entries=labels.map((label,index)=>({key:item.id+'|'+label,label,itemId:item.id,tier:Math.min(index+1,6),awakened:index===6,variantIndex:index}));
  if(!entries.some(x=>x.label===item.name))entries.unshift({key:item.id+'|'+item.name,label:item.name,itemId:item.id,tier:1});
  return entries;
 }).sort((a,b)=>a.label.localeCompare(b.label,'en')));

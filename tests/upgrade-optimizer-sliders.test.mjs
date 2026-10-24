@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {endpointStage,normalizeOptimizerSliders,readOptimizerSliders,saveOptimizerSliders,totalUpgradeMaterials,upgradeOptimizerSliderView,optimizerItemCard} from '../src/upgrade-optimizer-v2.js';
+import {endpointStage,normalizeOptimizerSliders,readOptimizerSliders,saveOptimizerSliders,totalUpgradeMaterials,upgradeOptimizerSliderView,optimizerItemCard,optimizerBaseItemPicker} from '../src/upgrade-optimizer-v2.js';
 import {optimizerTierRanges,OPTIMIZER_TIER_DATA} from '../src/upgrade-optimizer-tier-data.js';
+import {FAMILY_ITEMS,familyVariant} from '../src/upgrade-family.js';
 
 const fixture={
  codex:{
@@ -63,6 +64,19 @@ test('October 21 source ranges include all forty base items and newer special im
  assert.deepEqual(optimizerTierRanges('wardplate',6).secondary,{stat:'flat_damage_reduction',min:4,max:5});
 });
 
+test('visual Codex picker offers forty base families without duplicate rarity choices',()=>{
+ const html=optimizerBaseItemPicker(0);
+ assert.equal(FAMILY_ITEMS.length,40);
+ assert.equal((html.match(/data-uo-family=/g)||[]).length,40);
+ assert.match(html,/Sandals of Starszy/);
+ assert.doesNotMatch(html,/Chainmail Boots/);
+ assert.match(html,/Search 40 base items/);
+ assert.match(html,/data-uo-filter="feet"/);
+ assert.equal(familyVariant('sandals-of-starszy',{rarity:1}).name,'Sandals of Starszy');
+ assert.equal(familyVariant('sandals-of-starszy',{rarity:6}).name,'Steel Plate Boots');
+ assert.equal(familyVariant('sandals-of-starszy',{rarity:6,awaken:1}).name,'Gilded Plate Boots');
+});
+
 test('clear-all state can persist as an empty list and the last item can be removed',()=>{
  const bag=new Map(),store={getItem:key=>bag.get(key),setItem:(key,value)=>bag.set(key,value)};
  const withOne=normalizeOptimizerSliders({items:[{itemKey:'rags|Chainmail Armor',current:{rarity:6,awaken:3,level:10},target:{rarity:6,awaken:4,level:0}}]});
@@ -75,7 +89,7 @@ test('clear-all state can persist as an empty list and the last item can be remo
 test('a selected item renders a compact row and consumes real Pathfinder quotes',()=>{
  const candidate=normalizeOptimizerSliders({items:[{itemKey:'sandals-of-starszy|Chainmail Boots',current:{rarity:6,awaken:1,level:0},target:{rarity:6,awaken:1,level:1}}]}).items[0];
  const html=optimizerItemCard(candidate,0,fixture);
- assert.match(html,/Chainmail Boots/);
+ assert.match(html,/Gilded Plate Boots/);
  assert.match(html,/A1 \+0 → A1 \+1/);
  assert.match(html,/data-uo-action="toggle"/);
  assert.doesNotMatch(html,/data-uo-field="rarity"/,'only expanded editors should show controls');
