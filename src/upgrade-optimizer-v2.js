@@ -45,7 +45,7 @@ export function normalizeOptimizerSliders(raw){
  const r=raw&&typeof raw==='object'?raw:{},incoming=Array.isArray(r.items)?r.items:[];
  const items=incoming.slice(0,MAX_ITEMS).map(normalizedItem);
  const stock=r.stock&&typeof r.stock==='object'&&!Array.isArray(r.stock)?Object.fromEntries(Object.entries(r.stock).filter(([slug,v])=>/^[a-z0-9-]{1,80}$/.test(slug)&&typeof v==='string').slice(0,200).map(([slug,v])=>[slug,v.slice(0,32)])):{};
- return {costMode:['min','expected','pity'].includes(r.costMode)?r.costMode:'expected',focus:typeof r.focus==='string'?r.focus.slice(0,80):'',stock,goldStock:String(r.goldStock??'').slice(0,32),items};
+ return {costMode:['min','expected','pity'].includes(r.costMode)?r.costMode:'expected',focus:typeof r.focus==='string'?r.focus.slice(0,80):'',strategy:r.strategy==='set'?'set':'single',stock,goldStock:String(r.goldStock??'').slice(0,32),items};
 }
 export function readOptimizerSliders(store=globalThis.localStorage){
  try{return normalizeOptimizerSliders(JSON.parse(store?.getItem(OPTIMIZER_SLIDER_KEY)||'null'))}catch{return normalizeOptimizerSliders()}
@@ -148,7 +148,7 @@ function totals(snapshot,catalog){
    route:levelLabel(item.current)+' → '+levelLabel(item.target),
    breakdown:projectItemBreakdown(item.itemKey,item.current,item.target,item.observed,item.affixes),cost:q.result};
  }).filter(Boolean);
- const comparison=compareUpgradeChoices(choices,state.focus,state.stock,state.goldStock);
+ const comparison=compareUpgradeChoices(choices,state.focus,state.stock,state.goldStock,state.strategy);
  const decisionBoard=renderDecisionBoard(comparison,state,groups);
  const monster=groups.filter(g=>g.kind!=='special'),rare=groups.filter(g=>g.kind==='special');
  const modeName={min:'Minimum',expected:'Expected',pity:'Pity maximum'}[state.costMode];
@@ -215,6 +215,7 @@ export function wireUpgradeOptimizerSliders(context){
   if(!root)return;
   if(input.matches('[data-uo-mode]'))state.costMode=input.value;
   else if(input.matches('[data-uo-focus]'))state.focus=input.value;
+  else if(input.matches('[data-uo-strategy]'))state.strategy=input.value;
   else if(input.matches('[data-uo-stock]'))state.stock[input.dataset.uoStock]=input.value;
   else if(input.matches('[data-uo-gold-stock]'))state.goldStock=input.value;
   else if(input.matches('[data-uo-observed]')){

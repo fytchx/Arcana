@@ -114,6 +114,7 @@ const projectImplicit=(stat,from,to,observedRaw,unmodeled=false)=>{
  return {stat,label:optimizerStatLabel(stat),kind:'implicit',fromMin:from.min,fromMax:from.max,
   toMin:to.min,toMax:to.max,from:observed??fromMid,to:projected===null?toMid:rounded(projected),
   delta:rounded((projected===null?toMid:projected)-(observed??fromMid)),
+  percentGain:(observed??fromMid)>0?rounded(100*((projected===null?toMid:projected)-(observed??fromMid))/(observed??fromMid)):null,
   deltaMin:Math.min(gainMin,gainMax),deltaMax:Math.max(gainMin,gainMax),observed:observed!==null};
 };
 export function projectItemBreakdown(id,current,target,observed={},inputs=[]){
@@ -135,7 +136,7 @@ export function projectItemBreakdown(id,current,target,observed={},inputs=[]){
   const predicted=persists?rounded(value*factor):0;
   const capped=AFFIX_SCALING.frozenCapStats.includes(def.stat)||AFFIX_SCALING.growingCapStats.includes(def.stat);
   return {index,id:def.id,name:def.name,label:affixStatLabel(def.stat),stat:def.stat,kind:'affix',from:value,to:predicted,
-   delta:rounded(predicted-value),approx:true,persists,capped};
+   delta:rounded(predicted-value),percentGain:value>0?rounded(100*(predicted-value)/value):null,approx:true,persists,capped};
  }).filter(Boolean);
  const rows=[...implicits,...affixes];
  const gains=new Map();

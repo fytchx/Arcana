@@ -54,9 +54,11 @@ test('entered actual roll anchors the range preview and entered affix scales int
  const base=projectItemBreakdown('sandals-of-starszy',t6,a1,{primary:'1600'},[{id:13,value:'35'}]);
  assert.equal(base.implicits[0].from,1600);
  assert.ok(base.implicits[0].to>1600);
+ assert.ok(base.implicits[0].percentGain>0);
  assert.equal(base.affixes[0].name,'of Fortification');
  assert.equal(base.affixes[0].from,35);
  assert.ok(base.affixes[0].to>35);
+ assert.ok(base.affixes[0].percentGain>0);
  assert.ok(Math.abs(base.affixes[0].delta-(base.affixes[0].to-35))<1e-9);
  assert.equal(normalizeAffixInputs([{id:999,value:'2.5k'}])[0].id,0);
  assert.ok(affixScale(a1)>affixScale(t6));
@@ -93,20 +95,39 @@ test('exact affordable subset respects different materials and gold instead of a
   candidate(1,'B',{defense:80},[mat('blue',8)],60),
   candidate(2,'C',{defense:160},[mat('red',7),mat('blue',8)],90)
  ];
- const enough=compareUpgradeChoices(choices,'defense',{red:'5',blue:'8'},'150');
+ const enough=compareUpgradeChoices(choices,'defense',{red:'5',blue:'8'},'150','set');
  assert.equal(enough.allBudgetKnown,true);
  assert.deepEqual(enough.bestSet.indices.sort(),[0,1]);
  assert.equal(enough.bestSet.gain,180);
+ const single=compareUpgradeChoices(choices,'defense',{red:'5',blue:'8'},'150');
+ assert.deepEqual(single.bestSet.indices,[0]);
+ assert.equal(single.bestSet.gain,100);
  const noGold=compareUpgradeChoices(choices,'defense',{red:'5',blue:'8'},'');
  assert.equal(noGold.allBudgetKnown,false);
  assert.equal(noGold.bestSet,null);
  const tooLittle=compareUpgradeChoices(choices,'defense',{red:'0',blue:'0'},'0');
  assert.equal(tooLittle.bestSet,null);
 });
+test('partial inventory recommends only fully specified paths and marks the caveat',()=>{
+ const choices=[
+  candidate(0,'Affordable Boots',{defense:100},[mat('red',4)],20),
+  candidate(1,'Unknown Chest',{defense:500},[mat('blue',7)],20)
+ ];
+ const partial=compareUpgradeChoices(choices,'defense',{red:'5'},'1M','set');
+ assert.equal(partial.allBudgetKnown,false);
+ assert.deepEqual(partial.bestSet.indices,[0]);
+ const board=renderDecisionBoard(partial,{strategy:'set',stock:{red:'5'},goldStock:'1M'},[]);
+ assert.match(board,/BEST CONFIRMED COMBINATION/);
+ assert.match(board,/overall winner may change/);
+ const all=compareUpgradeChoices(choices,'defense',{red:'5',blue:'7'},'1M','set');
+ assert.equal(all.allBudgetKnown,true);
+ assert.deepEqual(all.bestSet.indices.sort(),[0,1]);
+});
 test('optimizer persistence retains affixes, observed stats, inventory and objective',()=>{
- const plan=normalizeOptimizerSliders({focus:'defense',stock:{'grubs-eye':'1.2k'},goldStock:'3B',
+ const plan=normalizeOptimizerSliders({focus:'defense',strategy:'set',stock:{'grubs-eye':'1.2k'},goldStock:'3B',
   items:[{itemKey:'sandals-of-starszy',current:t6,target:a1,observed:{primary:'1.6k'},affixes:[{id:13,value:'37'}]}]});
  assert.equal(plan.focus,'defense');
+ assert.equal(plan.strategy,'set');
  assert.equal(plan.stock['grubs-eye'],'1.2k');
  assert.equal(plan.goldStock,'3B');
  assert.deepEqual(plan.items[0].affixes,[{id:13,value:'37'}]);

@@ -56,6 +56,8 @@ test('app points to latest optimizer without changing damage calculator route',a
  assert.match(app,/upgradeOptimizerSliderView/);
  assert.match(app,/wireUpgradeOptimizerSliders/);
  assert.match(app,/case 'calculators\/damage':return calcDamage\(\)/);
+ assert.match(app,/class="pathfinderOptimizerLink" data-route="calculators\/optimizer"/);
+ assert.match(app,/Which upgrade is worth your mats\?/);
 });
 
 test('October 21 source ranges include all forty base items and newer special implicits',()=>{
