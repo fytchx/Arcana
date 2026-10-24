@@ -8,14 +8,14 @@ import {allStages,quoteRange} from './pathfinder-range.js';
 import {quoteFailureScenarios} from './pathfinder-failures.js';
 import {sourceMaterialGroups} from './pathfinder-material-groups.js';
 
-export const OPTIMIZER_SLIDER_KEY='arcana-upgrade-optimizer-sliders-v2';
+export const OPTIMIZER_SLIDER_KEY='arcana-upgrade-optimizer-sliders-v3-clean';
 const TIER_LABELS=['Normal','Uncommon','Rare','Epic','Legendary','Infernal'];
 const MAX_ITEMS=12;
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,Number.isFinite(Number(n))?Math.trunc(Number(n)):min));
 const esc=x=>String(x??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
 const fmt=x=>typeof x==='bigint'?x.toLocaleString('en-US'):Number(x).toLocaleString('en-US',{maximumFractionDigits:2});
 const summaryNumber=x=>{const n=typeof x==='bigint'?x:BigInt(x||0);for(const [size,name] of [[1000000000000000n,'Qa'],[1000000000000n,'T'],[1000000000n,'B'],[1000000n,'M'],[1000n,'K']])if(n>=size)return (Number((n*10n+size/2n)/size)/10).toLocaleString('en-US',{maximumFractionDigits:1})+name;return fmt(n)};
-const itemValue=key=>optimizerChoice(key)||OPTIMIZER_CHOICES.find(x=>x.label==='Chainmail Boots')||OPTIMIZER_CHOICES[0];
+const itemValue=key=>optimizerChoice(key)||null;
 const endpoint=(raw={},fallback={rarity:6,awaken:0,level:0})=>{
  const rarity=clamp(raw.rarity??fallback.rarity,1,6);
  const awaken=rarity===6?clamp(raw.awaken??fallback.awaken,0,30):0;
@@ -24,19 +24,18 @@ const endpoint=(raw={},fallback={rarity:6,awaken:0,level:0})=>{
 };
 export const endpointStage=p=>p.awaken>0?'A'+p.awaken:'T'+p.rarity;
 const position=p=>(p.awaken>0?5+p.awaken:p.rarity-1)*31+p.level;
-const example=()=>({itemKey:'sandals-of-starszy|Chainmail Boots',current:{rarity:6,awaken:5,level:24},target:{rarity:6,awaken:6,level:0}});
-const otherExample=()=>({itemKey:'rags|Chainmail Armor',current:{rarity:6,awaken:6,level:23},target:{rarity:6,awaken:6,level:30}});
+const blankItem=()=>({itemKey:'',current:{rarity:6,awaken:0,level:0},target:{rarity:6,awaken:0,level:1}});
 const normalizedItem=raw=>{
  const r=raw||{},choice=itemValue(String(r.itemKey||''));
- const initial=choice.tier===7?{rarity:6,awaken:1,level:0}:{rarity:choice.tier||6,awaken:0,level:0};
+ const initial=choice?.tier===7?{rarity:6,awaken:1,level:0}:{rarity:choice?.tier||6,awaken:0,level:0};
  const current=endpoint(r.current||{},initial);
  const target=endpoint(r.target||{},current);
- return {itemKey:choice.key,current,target};
+ return {itemKey:choice?.key||'',current,target};
 };
 export function normalizeOptimizerSliders(raw){
- const r=raw&&typeof raw==='object'?raw:{},incoming=Array.isArray(r.items)?r.items:[example(),otherExample()];
+ const r=raw&&typeof raw==='object'?raw:{},incoming=Array.isArray(r.items)?r.items:[];
  const items=incoming.slice(0,MAX_ITEMS).map(normalizedItem);
- return {costMode:['min','expected','pity'].includes(r.costMode)?r.costMode:'expected',items:items.length?items:[normalizedItem(example())]};
+ return {costMode:['min','expected','pity'].includes(r.costMode)?r.costMode:'expected',items};
 }
 export function readOptimizerSliders(store=globalThis.localStorage){
  try{return normalizeOptimizerSliders(JSON.parse(store?.getItem(OPTIMIZER_SLIDER_KEY)||'null'))}catch{return normalizeOptimizerSliders()}
@@ -46,8 +45,8 @@ export function saveOptimizerSliders(value,store=globalThis.localStorage){
  try{store?.setItem(OPTIMIZER_SLIDER_KEY,JSON.stringify(clean))}catch{}
  return clean;
 }
-let state=readOptimizerSliders();
-const options=selected=>OPTIMIZER_CHOICES.map(x=>'<option value="'+esc(x.key)+'"'+(x.key===selected?' selected':'')+'>'+esc(x.label)+'</option>').join('');
+let state=readOptimizerSliders(),editingIndex=-1;
+const options=selected=>'<option value=""'+(!selected?' selected':'')+'>Choose equipment…</option>'+OPTIMIZER_CHOICES.map(x=>'<option value="'+esc(x.key)+'"'+(x.key===selected?' selected':'')+'>'+esc(x.label)+'</option>').join('');
 const panelLabel=p=>p.awaken>0?'A'+p.awaken:p.rarity===6?'Infernal':'T'+p.rarity+' · '+TIER_LABELS[p.rarity-1];
 const levelLabel=p=>panelLabel(p)+' +'+p.level;
 const slider=(i,side,key,value,min,max,title,caption)=>{
@@ -65,6 +64,7 @@ function endpointMarkup(i,side,point){
  slider(i,side,'level',point.level,0,max,'Enhancement','+'+point.level)+'</section>';
 }
 function quote(snapshot,item){
+ if(!item.itemKey)return {error:'Choose equipment'};
  if(!snapshot)return {error:'Loading Pathfinder recipes'};
  if(position(item.target)<position(item.current))return {error:'Target must be at or above the current upgrade.'};
  const fromStage=endpointStage(item.current),toStage=endpointStage(item.target);
@@ -78,6 +78,7 @@ function quote(snapshot,item){
 export function totalUpgradeMaterials(snapshot,items,mode='expected'){
  const maps=new Map();let gold=0n,attempts=0,errors=[],ready=0,unmodeled=[];
  for(let i=0;i<items.length;i++){
+  if(!items[i].itemKey)continue;
   const raw=state.costMode;state.costMode=mode;
   let q;try{q=quote(snapshot,items[i])}finally{state.costMode=raw}
   if(q.error){errors.push('Item '+(i+1)+': '+q.error);continue}
@@ -88,8 +89,9 @@ export function totalUpgradeMaterials(snapshot,items,mode='expected'){
  return {materials:[...maps.values()],gold,attempts,ready,errors,unmodeled};
 }
 function statView(choice,item){
- const original=OPTIMIZER_ITEM_BY_ID.get(choice.itemId);
+ const original=OPTIMIZER_ITEM_BY_ID.get(choice?.itemId);
  if(!original)return '';
+ if(!choice)return '';
  const a=optimizerTierRanges(choice.itemId,item.current.rarity),b=optimizerTierRanges(choice.itemId,item.target.rarity);
  if(!a||!b)return '';
  const arr=[{name:optimizerStatLabel(original.primary),from:a.primary,to:b.primary}];
