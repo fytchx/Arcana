@@ -33,13 +33,13 @@ const endpoint=(raw={},fallback={rarity:6,awaken:0,level:0})=>{
 };
 export const endpointStage=p=>p.awaken>0?'A'+p.awaken:'T'+p.rarity;
 const position=p=>(p.awaken>0?5+p.awaken:p.rarity-1)*31+p.level;
-const blankItem=()=>({itemKey:'',current:{rarity:6,awaken:0,level:0},target:{rarity:6,awaken:0,level:1},observed:{primary:'',secondary:''},affixes:[]});
+const blankItem=()=>({itemKey:'',current:{rarity:6,awaken:0,level:0},target:{rarity:6,awaken:0,level:1},observed:{primary:'',secondary:''},affixes:[],pathGroup:''});
 const normalizedItem=raw=>{
  const r=raw||{},choice=itemValue(String(r.itemKey||''));
  const initial=choice?.tier===7?{rarity:6,awaken:1,level:0}:{rarity:choice?.tier||6,awaken:0,level:0};
  const current=endpoint(r.current||{},initial);
  const target=endpoint(r.target||{},current);
- return {itemKey:choice?.key||'',current,target,observed:normalizeObserved(r.observed),affixes:normalizeAffixInputs(r.affixes)};
+ return {itemKey:choice?.key||'',current,target,observed:normalizeObserved(r.observed),affixes:normalizeAffixInputs(r.affixes),pathGroup:typeof r.pathGroup==='string'&&/^alt-[a-z0-9-]{1,50}$/.test(r.pathGroup)?r.pathGroup:''};
 };
 export function normalizeOptimizerSliders(raw){
  const r=raw&&typeof raw==='object'?raw:{},incoming=Array.isArray(r.items)?r.items:[];
@@ -147,7 +147,7 @@ function totals(snapshot,catalog){
   if(q.error)return null;
   return {index,item,name:familyVariant(item.itemKey,item.current)?.name||familyById(item.itemKey)?.name||'Equipment',
    route:levelLabel(item.current)+' → '+levelLabel(item.target),
-   breakdown:projectItemBreakdown(item.itemKey,item.current,item.target,item.observed,item.affixes),cost:q.result};
+   breakdown:projectItemBreakdown(item.itemKey,item.current,item.target,item.observed,item.affixes),cost:q.result,pathGroup:item.pathGroup};
  }).filter(Boolean);
  const comparison=compareUpgradeChoices(choices,state.focus,state.stock,state.goldStock,state.strategy);
  const decisionBoard=renderDecisionBoard(comparison,state,groups);
@@ -250,7 +250,7 @@ export function wireUpgradeOptimizerSliders(context){
    entry.itemKey=familyButton.dataset.uoFamily;
    entry.current={rarity:6,awaken:0,level:0};
    entry.target={rarity:6,awaken:0,level:1};
-   entry.observed={primary:'',secondary:''};entry.affixes=[];
+   entry.observed={primary:'',secondary:''};entry.affixes=[];entry.pathGroup='';
    selectingIndex=-1;pickerQuery='';pickerSlot='all';
    state=saveOptimizerSliders(state);redraw();return;
   }
@@ -282,8 +282,9 @@ export function wireUpgradeOptimizerSliders(context){
    entry.affixes.push({id:0,value:''});
   }else if(action==='compare-path'&&state.items[index]?.itemKey&&state.items.length<MAX_ITEMS){
    const original=state.items[index];
+   original.pathGroup=original.pathGroup||'alt-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);
    const next={itemKey:original.itemKey,current:{...original.current},target:{...original.target},
-    observed:{...original.observed},affixes:original.affixes.map(a=>({...a}))};
+    observed:{...original.observed},affixes:original.affixes.map(a=>({...a})),pathGroup:original.pathGroup};
    const cap=next.target.rarity===6?30:[4,9,14,19,24,30][next.target.rarity-1];
    if(next.target.level<cap)next.target.level++;
    state.items.splice(index+1,0,next);

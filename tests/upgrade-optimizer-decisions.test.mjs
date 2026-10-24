@@ -123,13 +123,24 @@ test('partial inventory recommends only fully specified paths and marks the cave
  assert.equal(all.allBudgetKnown,true);
  assert.deepEqual(all.bestSet.indices.sort(),[0,1]);
 });
+test('two alternative target paths for one item cannot both be recommended together',()=>{
+ const choices=[
+  {...candidate(0,'Boots +1',{defense:100},[mat('red',2)],10),pathGroup:'alt-one'},
+  {...candidate(1,'Same boots +2',{defense:180},[mat('red',3)],10),pathGroup:'alt-one'},
+  candidate(2,'Independent ring',{defense:60},[mat('blue',1)],10)
+ ];
+ const result=compareUpgradeChoices(choices,'defense',{red:'50',blue:'50'},'1M','set');
+ assert.deepEqual(result.bestSet.indices.sort(),[1,2]);
+ assert.equal(result.bestSet.gain,240);
+});
 test('optimizer persistence retains affixes, observed stats, inventory and objective',()=>{
  const plan=normalizeOptimizerSliders({focus:'defense',strategy:'set',stock:{'grubs-eye':'1.2k'},goldStock:'3B',
-  items:[{itemKey:'sandals-of-starszy',current:t6,target:a1,observed:{primary:'1.6k'},affixes:[{id:13,value:'37'}]}]});
+  items:[{itemKey:'sandals-of-starszy',current:t6,target:a1,observed:{primary:'1.6k'},affixes:[{id:13,value:'37'}],pathGroup:'alt-shared'}]});
  assert.equal(plan.focus,'defense');
  assert.equal(plan.strategy,'set');
  assert.equal(plan.stock['grubs-eye'],'1.2k');
  assert.equal(plan.goldStock,'3B');
  assert.deepEqual(plan.items[0].affixes,[{id:13,value:'37'}]);
  assert.equal(plan.items[0].observed.primary,'1.6k');
+ assert.equal(plan.items[0].pathGroup,'alt-shared');
 });

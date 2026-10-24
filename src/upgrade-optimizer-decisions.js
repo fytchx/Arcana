@@ -46,12 +46,13 @@ export function compareUpgradeChoices(candidates,focus,stock={},goldStock='',str
   // each distinct material instead of replacing rarities with fake exchange rates.
   for(let mask=1;mask<(1<<count);mask++){
    if(strategy!=='set'&&(mask&(mask-1))!==0)continue;
-   const chosen=[],costs=new Map();let gain=0,totalGold=0n,units=0;
+   const chosen=[],costs=new Map(),usedAlternateGroups=new Set();let gain=0,totalGold=0n,units=0,duplicates=false;
    for(let i=0;i<count;i++)if(mask&(1<<i)){
     const c=knownChoices[i];chosen.push(c);gain+=c.gain;totalGold+=c.cost.gold;units+=c.units;
+    if(c.pathGroup){if(usedAlternateGroups.has(c.pathGroup))duplicates=true;else usedAlternateGroups.add(c.pathGroup)}
     for(const m of c.cost.materials)costs.set(m.slug,(costs.get(m.slug)||0n)+m.quantity);
    }
-   if(totalGold>gold||[...costs].some(([slug,amount])=>amount>owned[slug]))continue;
+   if(duplicates||totalGold>gold||[...costs].some(([slug,amount])=>amount>owned[slug]))continue;
    if(!bestSet||greater(gain,bestSet.gain)||Math.abs(gain-bestSet.gain)<1e-9&&(units<bestSet.units||units===bestSet.units&&totalGold<bestSet.gold)){
     bestSet={indices:chosen.map(x=>x.index),names:chosen.map(x=>x.name),gain,units,gold:totalGold,materials:costs};
    }
