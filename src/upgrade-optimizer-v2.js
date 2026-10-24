@@ -3,7 +3,7 @@
  * but not individual rolled stat values or the executable implicit-stat rounding path.
  * Never fabricate exact A-rank implicit stats from a tier range. */
 import {OPTIMIZER_CHOICES,OPTIMIZER_ITEM_BY_ID,optimizerChoice,optimizerStatLabel,OPTIMIZER_ITEM_SOURCE} from './upgrade-optimizer-data.js';
-import {VERIFIED_ITEM_SNAPSHOT,verifiedRange} from './verified-item-snapshot.js';
+import {optimizerTierRanges} from './upgrade-optimizer-tier-data.js';
 import {allStages,quoteRange} from './pathfinder-range.js';
 import {quoteFailureScenarios} from './pathfinder-failures.js';
 import {sourceMaterialGroups} from './pathfinder-material-groups.js';
@@ -90,7 +90,7 @@ export function totalUpgradeMaterials(snapshot,items,mode='expected'){
 function statView(choice,item){
  const original=OPTIMIZER_ITEM_BY_ID.get(choice.itemId);
  if(!original)return '';
- const a=verifiedRange(original.name,item.current.rarity),b=verifiedRange(original.name,item.target.rarity);
+ const a=optimizerTierRanges(choice.itemId,item.current.rarity),b=optimizerTierRanges(choice.itemId,item.target.rarity);
  if(!a||!b)return '';
  const arr=[{name:optimizerStatLabel(original.primary),from:a.primary,to:b.primary}];
  if(a.secondary&&b.secondary)arr.push({name:optimizerStatLabel(original.secondary),from:a.secondary,to:b.secondary});
