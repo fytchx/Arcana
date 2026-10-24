@@ -111,15 +111,15 @@ function statView(choice,item){
 export function optimizerItemCard(item,i,snapshot){
  const choice=optimizerChoice(item.itemKey),expanded=editingIndex===i;
  const title=choice?.label||'Choose equipment',route=levelLabel(item.current)+' → '+levelLabel(item.target);
- const quoteInfo=choice?quoteCandidate(snapshot,item):null;
- const chosenCost=quoteInfo?.ok?(state.costMode==='pity'&&quoteInfo.pity?quoteInfo.pity:state.costMode==='expected'&&quoteInfo.estimated?quoteInfo.estimated:quoteInfo.raw):null;
+ const quoteInfo=choice?quote(snapshot,item):null;
+ const chosenCost=quoteInfo?.result||null;
  return '<article class="uoItem'+(expanded?' uoOpen':'')+'">'+
  '<div class="uoCardLine"><span class="uoItemNum">'+(i+1)+'</span><div class="uoCardText"><strong>'+esc(title)+'</strong><small>'+esc(choice?route:'Select an item to begin')+'</small></div>'+
  '<button type="button" class="uoToggle" data-uo-action="toggle" data-uo-index="'+i+'" aria-expanded="'+expanded+'">'+(expanded?'Done':'Edit')+'</button>'+
  '<button type="button" class="uoRemove" data-uo-action="remove" data-uo-index="'+i+'" aria-label="Remove '+esc(title)+'">×</button></div>'+
  (expanded?'<div class="uoEditor"><label class="uoChoose"><span>Equipment</span><select data-uo-item="'+i+'">'+options(item.itemKey)+'</select></label>'+
  (choice?'<div class="uoRangeGrid">'+endpointMarkup(i,'current',item.current)+endpointMarkup(i,'target',item.target)+'</div>'+
- '<div class="uoCardFoot"><span>'+esc(route)+'</span>'+(quoteInfo&&!quoteInfo.ok?'<small>'+esc(quoteInfo.note)+'</small>':'<strong>'+(chosenCost?.materials?.length||0)+' material types</strong>')+'</div>'+
+ '<div class="uoCardFoot"><span>'+esc(route)+'</span>'+(quoteInfo?.error?'<small>'+esc(quoteInfo.error)+'</small>':'<strong>'+(chosenCost?.materials?.length||0)+' material types</strong>')+'</div>'+
  statView(choice,item):'<p class="uoHelp">Choose equipment above to set the current and target upgrade levels.</p>')+'</div>':'')+
  '</article>';
 }
