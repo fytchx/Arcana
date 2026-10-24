@@ -89,7 +89,18 @@ export function affixScale(point){
  const {rarity,rank,effective}=stageLevels(point);
  return AFFIX_SCALING.tierMultipliers[rarity-1]*(1+effective*AFFIX_SCALING.enhancementPerLevel)*(1+rank*AFFIX_SCALING.awakenPerRank);
 }
-export const normalizeAffixInputs=raw=>Array.isArray(raw)?raw.slice(0,5).map(v=>({id:affixById(v?.id)?.id||0,value:String(v?.value??'').slice(0,32)})):[];
+const normalizeReference=raw=>{
+ if(!raw||typeof raw!=='object')return null;
+ const rarity=Math.max(1,Math.min(6,Math.trunc(Number(raw.rarity)||6)));
+ return {rarity,awaken:rarity===6?Math.max(0,Math.min(30,Math.trunc(Number(raw.awaken)||0))):0,
+  level:Math.max(0,Math.min(rarity===6?30:[4,9,14,19,24][rarity-1],Math.trunc(Number(raw.level)||0)))};
+};
+export const normalizeAffixInputs=raw=>Array.isArray(raw)?raw.slice(0,5).map(v=>{
+ const entry={id:affixById(v?.id)?.id||0,value:String(v?.value??'').slice(0,32)};
+ const reference=normalizeReference(v?.reference);
+ if(reference)entry.reference=reference;
+ return entry;
+}):[];
 export const normalizeObserved=raw=>({primary:String(raw?.primary??'').slice(0,32),secondary:String(raw?.secondary??'').slice(0,32)});
 const rounded=x=>Math.round((x+Number.EPSILON)*100)/100;
 const midpoint=range=>(range.min+range.max)/2;
@@ -132,11 +143,17 @@ export function projectItemBreakdown(id,current,target,observed={},inputs=[]){
   const def=affixById(input.id),value=parseStatAmount(input.value),valid=!!def&&legal.has(def.id);
   if(!valid||value===null)return null;
   const persists=index<targetLimit;
-  const factor=affixScale(target)/affixScale(current);
-  const predicted=persists?rounded(value*factor):0;
+  // A rerolled affix retains its roll quality as the equipment advances. A
+  // displayed stat captured at A1+0 is *not* reinterpreted as an A5+20 value
+  // when the user moves the current-rank slider. Store the reference stage and
+  // project both endpoints from that same observed roll.
+  const reference=input.reference||current;
+  const base=affixScale(reference),from=rounded(value*affixScale(current)/base);
+  const predicted=persists?rounded(value*affixScale(target)/base):0;
   const capped=AFFIX_SCALING.frozenCapStats.includes(def.stat)||AFFIX_SCALING.growingCapStats.includes(def.stat);
-  return {index,id:def.id,name:def.name,label:affixStatLabel(def.stat),stat:def.stat,kind:'affix',from:value,to:predicted,
-   delta:rounded(predicted-value),percentGain:value>0?rounded(100*(predicted-value)/value):null,approx:true,persists,capped};
+  return {index,id:def.id,name:def.name,label:affixStatLabel(def.stat),stat:def.stat,kind:'affix',from,to:predicted,
+   delta:rounded(predicted-from),percentGain:from>0?rounded(100*(predicted-from)/from):null,
+   reference,referenceValue:value,approx:true,persists,capped};
  }).filter(Boolean);
  const rows=[...implicits,...affixes];
  const gains=new Map();

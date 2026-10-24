@@ -12,6 +12,7 @@ import {normalizeOptimizerSliders} from '../src/upgrade-optimizer-v2.js';
 const t6={rarity:6,awaken:0,level:0};
 const t6plus={rarity:6,awaken:0,level:1};
 const a1={rarity:6,awaken:1,level:0};
+const a1plus={rarity:6,awaken:1,level:1};
 const mat=(slug,quantity)=>({slug,name:slug,quantity:BigInt(quantity)});
 const candidate=(index,name,stats,materials,gold)=>({index,name,route:'T6 +0 → T6 +1',item:{itemKey:'sandals-of-starszy',current:t6},
  breakdown:{rows:Object.keys(stats).map(stat=>({stat,label:stat})),gains:new Map(Object.entries(stats))},
@@ -66,6 +67,19 @@ test('entered actual roll anchors the range preview and entered affix scales int
  assert.equal(noUpgrade.implicits[0].delta,0);
  assert.equal(noUpgrade.affixes[0].delta,0);
 });
+test('an affix roll stays anchored to its captured gear rank when current equipment changes',()=>{
+ const input=[{id:13,value:'35',reference:t6}];
+ const first=projectItemBreakdown('sandals-of-starszy',t6,a1,{},input).affixes[0];
+ const later=projectItemBreakdown('sandals-of-starszy',t6plus,a1,{},input).affixes[0];
+ assert.equal(first.from,35);
+ assert.ok(later.from>35,'same roll must grow with current gear rank');
+ assert.equal(later.to,first.to,'target projection must not change when start slider moves');
+ const advanced=projectItemBreakdown('sandals-of-starszy',a1,a1plus,{},input).affixes[0];
+ assert.ok(advanced.from>35);
+ assert.ok(advanced.to>advanced.from);
+ assert.equal(advanced.referenceValue,35);
+ assert.deepEqual(advanced.reference,t6);
+});
 test('projected outcome appears on an actual item and affix input renders five legal slots',()=>{
  const raw={itemKey:'sandals-of-starszy',current:t6,target:a1,observed:{primary:'1600'},affixes:[{id:13,value:'35'}]};
  const item=normalizeOptimizerSliders({items:[raw]}).items[0];
@@ -76,6 +90,7 @@ test('projected outcome appears on an actual item and affix input renders five l
  assert.match(stats,/Entered affix gains/);
  assert.match(affixes,/of Fortification/);
  assert.match(affixes,/data-uo-affix="value"/);
+ assert.match(affixes,/Value at Infernal \+0/);
  assert.match(affixes,/4? \/ 5 slots/);
 });
 test('comparison chooses a single stat and cannot compare defense as if it were gold gain',()=>{
@@ -142,7 +157,7 @@ test('optimizer persistence retains affixes, observed stats, inventory and objec
  assert.equal(plan.strategy,'set');
  assert.equal(plan.stock['grubs-eye'],'1.2k');
  assert.equal(plan.goldStock,'3B');
- assert.deepEqual(plan.items[0].affixes,[{id:13,value:'37'}]);
+ assert.deepEqual(plan.items[0].affixes,[{id:13,value:'37',reference:t6}]);
  assert.equal(plan.items[0].observed.primary,'1.6k');
  assert.equal(plan.items[0].pathGroup,'alt-shared');
 });

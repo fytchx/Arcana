@@ -6,6 +6,7 @@ const num=n=>Number(n).toLocaleString('en-US',{maximumFractionDigits:2});
 const compact=n=>{const x=Number(n);if(!Number.isFinite(x))return '—';for(const [size,name] of [[1e15,'Qa'],[1e12,'T'],[1e9,'B'],[1e6,'M'],[1e3,'K']])if(Math.abs(x)>=size)return num(x/size)+name;return num(x)};
 const plus=n=>(n>0?'+':'')+num(n);
 const range=(lo,hi)=>lo===hi?num(lo):num(lo)+'–'+num(hi);
+const rankLabel=point=>point?.awaken?'A'+point.awaken+' +'+(point.level||0):point?.rarity===6?'Infernal +'+(point.level||0):'T'+(point?.rarity||1)+' +'+(point?.level||0);
 
 export function renderStatProjection(breakdown,item,index){
  if(!breakdown)return '';
@@ -32,12 +33,12 @@ export function renderAffixEditor(item,index,breakdown){
   const def=affixById(entry.id),matches=breakdown?.affixes?.find(a=>a.index===j),invalid=entry.value&&!parseStatAmount(entry.value)&&entry.value!=='0';
   const options=kind=>legal.filter(x=>x.kind===kind).map(x=>'<option value="'+x.id+'"'+(entry.id===x.id?' selected':'')+'>'+esc(x.name)+' · '+esc(affixStatLabel(x.stat))+'</option>').join('');
   return '<div class="uoAffixInput"><span class="uoAffixIndex">'+(j+1)+'</span><label>Affix <select data-uo-affix="id" data-uo-affix-index="'+j+'" data-uo-index="'+index+'" aria-label="Affix '+(j+1)+' type"><option value="0">Choose affix…</option><optgroup label="Prefixes">'+options('prefix')+'</optgroup><optgroup label="Suffixes">'+options('suffix')+'</optgroup></select></label>'+
-   '<label>Value shown in-game <input type="text" inputmode="decimal" data-uo-affix="value" data-uo-affix-index="'+j+'" data-uo-index="'+index+'" placeholder="e.g. 15 or 2.5k" value="'+esc(entry.value)+'"></label>'+
+   '<label>Value at '+esc(rankLabel(entry.reference||item.current))+' <input type="text" inputmode="decimal" data-uo-affix="value" data-uo-affix-index="'+j+'" data-uo-index="'+index+'" aria-label="Affix '+(j+1)+' observed value" placeholder="e.g. 15 or 2.5k" value="'+esc(entry.value)+'"></label>'+
    '<button type="button" class="uoAffixRemove" data-uo-action="remove-affix" data-uo-index="'+index+'" data-uo-affix-index="'+j+'" aria-label="Remove affix '+(j+1)+'">×</button>'+
    (matches?'<small class="uoAffixResult">After upgrade: ≈ '+num(matches.to)+' ('+plus(matches.delta)+')</small>':invalid?'<small class="uoAffixError">Enter a valid number (K/M/B supported)</small>':'')+'</div>';
  }).join('');
  return '<section class="uoAffixEditor"><div class="uoSectionTitle"><div><span class="uoEyebrow">YOUR ACTUAL EQUIPMENT</span><h3>Affixes</h3></div><small>'+entries.length+' / '+slots+' slots</small></div>'+
- '<p>Select the affixes already on this item and enter the value currently shown in-game. We’ll calculate their projected increase along this path.</p>'+
+ '<p>Enter each affix’s displayed value once at the current equipment rank. Its rolled quality stays fixed—even if max rolled—while the value grows as the gear is upgraded. Editing the number sets a new reference at the current rank.</p>'+
  '<div class="uoAffixRows">'+rows+'</div>'+
  (slots>entries.length?'<button class="uoAffixAdd" data-uo-action="add-affix" data-uo-index="'+index+'" type="button">+ Add affix</button>':'')+
  (slots===0?'<small>Normal rarity has no regular affix slots.</small>':'')+

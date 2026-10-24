@@ -39,7 +39,8 @@ const normalizedItem=raw=>{
  const initial=choice?.tier===7?{rarity:6,awaken:1,level:0}:{rarity:choice?.tier||6,awaken:0,level:0};
  const current=endpoint(r.current||{},initial);
  const target=endpoint(r.target||{},current);
- return {itemKey:choice?.key||'',current,target,observed:normalizeObserved(r.observed),affixes:normalizeAffixInputs(r.affixes),pathGroup:typeof r.pathGroup==='string'&&/^alt-[a-z0-9-]{1,50}$/.test(r.pathGroup)?r.pathGroup:''};
+ const affixes=normalizeAffixInputs(r.affixes).map(a=>a.value&&!a.reference?{...a,reference:{...current}}:a);
+ return {itemKey:choice?.key||'',current,target,observed:normalizeObserved(r.observed),affixes,pathGroup:typeof r.pathGroup==='string'&&/^alt-[a-z0-9-]{1,50}$/.test(r.pathGroup)?r.pathGroup:''};
 };
 export function normalizeOptimizerSliders(raw){
  const r=raw&&typeof raw==='object'?raw:{},incoming=Array.isArray(r.items)?r.items:[];
@@ -233,8 +234,15 @@ export function wireUpgradeOptimizerSliders(context){
   }else if(input.matches('[data-uo-affix]')){
    const entry=state.items[Number(input.dataset.uoIndex)],slot=Number(input.dataset.uoAffixIndex);
    if(!entry?.affixes[slot])return;
-   if(input.dataset.uoAffix==='id')entry.affixes[slot].id=Number(input.value);
-   else if(input.dataset.uoAffix==='value')entry.affixes[slot].value=input.value;
+   if(input.dataset.uoAffix==='id'){
+    const nextId=Number(input.value);
+    if(entry.affixes[slot].id!==nextId)entry.affixes[slot]={id:nextId,value:''};
+   }
+   else if(input.dataset.uoAffix==='value'){
+    entry.affixes[slot].value=input.value;
+    if(input.value.trim())entry.affixes[slot].reference={...entry.current};
+    else delete entry.affixes[slot].reference;
+   }
    else return;
   }
   else if(input.matches('input[data-uo-field]')){
@@ -291,7 +299,7 @@ export function wireUpgradeOptimizerSliders(context){
    const original=state.items[index];
    original.pathGroup=original.pathGroup||'alt-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);
    const next={itemKey:original.itemKey,current:{...original.current},target:{...original.target},
-    observed:{...original.observed},affixes:original.affixes.map(a=>({...a})),pathGroup:original.pathGroup};
+    observed:{...original.observed},affixes:original.affixes.map(a=>({...a,reference:a.reference?{...a.reference}:undefined})),pathGroup:original.pathGroup};
    const cap=next.target.rarity===6?30:[4,9,14,19,24,30][next.target.rarity-1];
    if(next.target.level<cap)next.target.level++;
    state.items.splice(index+1,0,next);

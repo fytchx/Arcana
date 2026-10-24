@@ -97,5 +97,5 @@ test('a selected item renders a compact row and consumes real Pathfinder quotes'
  assert.doesNotMatch(html,/data-uo-field="rarity"/,'only expanded editors should show controls');
  const source=await readFile(new URL('../src/upgrade-optimizer-v2.js',import.meta.url),'utf8');
  assert.match(source,/data-uo-action="compare-path"/);
- assert.match(source,/affixes:original.affixes.map\(a=>\(\{\.\.\.a\}\)\)/);
+ assert.match(source,/affixes:original.affixes.map/);
 });
