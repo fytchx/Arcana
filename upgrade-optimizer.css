@@ -58,3 +58,10 @@
 .uoComparePath span{font-size:12px;font-weight:800;white-space:nowrap}.uoComparePath small{font-size:10px;line-height:1.35;color:var(--uoDim)}
 .uoComparePath:disabled{opacity:.38;cursor:not-allowed}
 @media(max-width:650px){.uoComparePath{display:grid;gap:4px}}
+.uoCandidate{min-width:0}.uoCandidateCosts{margin:0 5px 5px;padding:0 11px 7px;border:1px solid var(--uoLine);border-top:0;border-radius:0 0 9px 9px;color:var(--uoDim)}
+.uoCandidateCosts>summary{cursor:pointer;font-size:11px;font-weight:750;padding:7px 3px}
+.uoCandidateMatGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:7px 0}
+.uoCandidateMat{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:7px 9px;border-radius:6px;background:color-mix(in srgb,var(--uoSurface) 77%,#64758a 23%)}
+.uoCandidateMat>span{min-width:0;display:grid;gap:3px;font-size:11px;color:var(--text)}.uoCandidateMat small{font-size:9px;color:var(--uoDim)}.uoCandidateMat strong{font-size:11px;color:var(--text);white-space:nowrap}
+.uoCandidateCosts>p{display:flex;justify-content:space-between;margin:6px 1px;font-size:11px}
+@media(max-width:560px){.uoCandidateMatGrid{grid-template-columns:1fr}}

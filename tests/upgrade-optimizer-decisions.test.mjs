@@ -88,6 +88,8 @@ test('comparison chooses a single stat and cannot compare defense as if it were 
  assert.match(html,/Where should the materials go\?/);
  assert.match(html,/Outside selected stat/);
  assert.match(html,/data-uo-stock="one"/);
+ assert.match(html,/Materials for this path/);
+ assert.match(html,/Gold:/);
 });
 test('exact affordable subset respects different materials and gold instead of a fake exchange rate',()=>{
  const choices=[

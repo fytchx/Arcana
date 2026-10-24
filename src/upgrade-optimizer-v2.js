@@ -151,11 +151,18 @@ function totals(snapshot,catalog){
  }).filter(Boolean);
  const comparison=compareUpgradeChoices(choices,state.focus,state.stock,state.goldStock,state.strategy);
  const decisionBoard=renderDecisionBoard(comparison,state,groups);
+ const seenPathGroups=new Set();
+ const containsAlternatives=choices.some(c=>{
+  if(!c.pathGroup)return false;
+  if(seenPathGroups.has(c.pathGroup))return true;
+  seenPathGroups.add(c.pathGroup);return false;
+ });
  const monster=groups.filter(g=>g.kind!=='special'),rare=groups.filter(g=>g.kind==='special');
  const modeName={min:'Minimum',expected:'Expected',pity:'Pity maximum'}[state.costMode];
- return decisionBoard+'<section class="uoSummary"><div class="uoSummaryTop"><div><span class="uoEyebrow">COMBINED MATERIALS</span><h2>Farming list</h2><p>'+tally.ready+' item'+(tally.ready===1?'':'s')+' · '+tally.materials.length+' material types</p></div>'+
+ return decisionBoard+'<section class="uoSummary"><div class="uoSummaryTop"><div><span class="uoEyebrow">'+(containsAlternatives?'SCENARIO REFERENCE':'COMBINED MATERIALS')+'</span><h2>'+(containsAlternatives?'All-scenario totals':'Farming list')+'</h2><p>'+tally.ready+' item'+(tally.ready===1?'':'s')+' · '+tally.materials.length+' material types</p></div>'+
  '<label>Estimate<select data-uo-mode><option value="expected"'+(state.costMode==='expected'?' selected':'')+'>Expected</option>'+
  '<option value="min"'+(state.costMode==='min'?' selected':'')+'>Minimum</option><option value="pity"'+(state.costMode==='pity'?' selected':'')+'>Pity max</option></select></label></div>'+
+ (containsAlternatives?'<p class="uoWarnings"><strong>Not a spending plan:</strong> This reference adds every scenario, including mutually exclusive alternatives for the same equipment. Open “Materials for this path” in the comparison above to see each option separately.</p>':'')+
  (tally.errors.length?'<div class="uoWarnings">'+tally.errors.map(x=>'<p>'+esc(x)+'</p>').join('')+'</div>':'')+
  (tally.unmodeled.length?'<p class="uoWarnings">Failure estimates unavailable for some routes. Showing minimum quantities for those items.</p>':'')+
  '<div class="uoMaterialSections">'+(monster.length?monster.map((g,i)=>materialGroup(g,i===0)).join(''):'<p class="uoEmptyMaterials">No monster materials needed.</p>')+'</div>'+
@@ -192,7 +199,7 @@ export function wireUpgradeOptimizerSliders(context){
  if(installed)return;
  installed=true;
  if(typeof document!=='undefined'&&!document.getElementById('arcanaOptimizerStyles')){
-  const link=document.createElement('link');link.id='arcanaOptimizerStyles';link.rel='stylesheet';link.href='/upgrade-optimizer.css?v=decision-studio-20261024b';document.head.append(link);
+  const link=document.createElement('link');link.id='arcanaOptimizerStyles';link.rel='stylesheet';link.href='/upgrade-optimizer.css?v=decision-studio-20261024c';document.head.append(link);
  }
  document.addEventListener('input',event=>{
   const input=event.target;

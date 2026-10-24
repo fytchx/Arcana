@@ -51,6 +51,7 @@ export function renderDecisionBoard(result,state,groups){
  const stock=state.stock||{},allMats=[...new Map(ranked.flatMap(x=>x.cost.materials).map(m=>[m.slug,m])).values()];
  const filled=allMats.filter(m=>parseStatAmount(stock[m.slug])!==null).length;
  const byBiome=groups.flatMap(g=>g.materials.map(m=>({group:g.name,...m}))).filter(m=>allMats.some(x=>x.slug===m.slug));
+ const biomeBySlug=new Map(groups.flatMap(g=>g.materials.map(m=>[m.slug,g.name])));
  const ordered=byBiome.length?byBiome:allMats;
  const stockInputs=ordered.map(m=>'<label class="uoStockRow"><span>'+esc(m.name)+(m.group?'<small>'+esc(m.group)+'</small>':'')+'</span><input type="text" inputmode="decimal" placeholder="Owned · e.g. 2.5k" data-uo-stock="'+esc(m.slug)+'" value="'+esc(stock[m.slug]??'')+'" aria-label="Owned '+esc(m.name)+'"></label>').join('');
  const list=ranked.map((r,i)=>{
@@ -59,8 +60,10 @@ export function renderDecisionBoard(result,state,groups){
   const badge=r.budgetComplete?(r.affordable?'<b class="uoCanAfford">Affordable</b>':'<b class="uoShortfall">Missing materials</b>'):'<b class="uoUnknownBudget">Inventory unknown</b>';
   const missing=r.missing.filter(m=>m.short>0n);
   const shortText=missing.length?'Short: '+missing.slice(0,2).map(m=>m.name+' ×'+compact(m.short)).join(', ')+(missing.length>2?' +'+(missing.length-2)+' more':''):r.missingGold>0n?'Need '+compact(r.missingGold)+' gold':'';
-  return '<div class="uoCompareRow"><span class="uoRank">'+(contributes?i+1:'—')+'</span><span class="uoCompareArt">'+familyArtwork(r.item.itemKey,r.item.current,48)+'</span><div class="uoCompareName"><strong>'+esc(r.name)+'</strong><small>'+esc(r.route)+'</small>'+badge+'</div>'+
-   '<div class="uoCompareNumbers"><strong class="'+(r.gain>0?'uoPositive':'uoUnknownBudget')+'">'+(contributes?'≈ +'+num(r.gain):'No gain')+'</strong><small>'+cost+' mats · '+compact(r.cost.gold)+' gold</small><small>'+esc(contributes?display+' gain / 1k mats':'Outside selected stat')+'</small>'+(shortText?'<small class="uoMissingDetail">'+esc(shortText)+'</small>':'')+'</div></div>';
+  const pathMaterials=r.cost.materials.map(m=>'<div class="uoCandidateMat"><span>'+esc(m.name)+'<small>'+esc(biomeBySlug.get(m.slug)||'Special materials')+'</small></span><strong>'+compact(m.quantity)+'</strong></div>').join('');
+  return '<div class="uoCandidate"><div class="uoCompareRow"><span class="uoRank">'+(contributes?i+1:'—')+'</span><span class="uoCompareArt">'+familyArtwork(r.item.itemKey,r.item.current,48)+'</span><div class="uoCompareName"><strong>'+esc(r.name)+'</strong><small>'+esc(r.route)+'</small>'+badge+'</div>'+
+   '<div class="uoCompareNumbers"><strong class="'+(r.gain>0?'uoPositive':'uoUnknownBudget')+'">'+(contributes?'≈ +'+num(r.gain):'No gain')+'</strong><small>'+cost+' mats · '+compact(r.cost.gold)+' gold</small><small>'+esc(contributes?display+' gain / 1k mats':'Outside selected stat')+'</small>'+(shortText?'<small class="uoMissingDetail">'+esc(shortText)+'</small>':'')+'</div></div>'+
+   '<details class="uoCandidateCosts"><summary>Materials for this path</summary><div class="uoCandidateMatGrid">'+(pathMaterials||'<p>No materials required.</p>')+'</div><p>Gold: <strong>'+compact(r.cost.gold)+'</strong></p></details></div>';
  }).join('');
  const isSet=state.strategy==='set';
  const knownCount=relevant.filter(r=>r.budgetComplete).length;
