@@ -111,7 +111,7 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  const forge='<details class="quickMaterialSection quickForgeSection" data-material-section="special">'+
   '<summary class="quickSectionSummary"><strong>Gold &amp; rare materials</strong>'+
   '<small class="quickGoldSummary" title="'+goldTip+'">'+other.length+' special materials · gold optional</small><span aria-hidden="true">⌄</span></summary>'+
-  '<div class="quickSectionBody">'+(other.length?'<div class="quickMaterialList quickMaterialListSorted">'+other.map(materialRow).join('')+'</div>':'<p class="quickEmpty">No rare materials needed.</p>')+'</div></details>';
+  '<div class="quickSectionBody"><div class="quickMaterial" aria-label="Optional gold cost"><span>Gold <small>Optional currency reference</small></span><strong>'+goldValue+' Gold</strong></div>'+(other.length?'<div class="quickMaterialList quickMaterialListSorted">'+other.map(materialRow).join('')+'</div>':'<p class="quickEmpty">No rare materials needed.</p>')+'</div></details>';
  const firstStep=scenarios.available?(scenarios.perStep.find(step=>step.failChance>0)||scenarios.perStep[0]):null;
  const pityCap=firstStep?.pityCap||1;
  const pityDone=Math.max(0,Math.min(pityCap-1,Math.trunc(Number(range.pityCount)||0)));
