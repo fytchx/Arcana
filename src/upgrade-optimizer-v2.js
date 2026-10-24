@@ -163,12 +163,10 @@ export function wireUpgradeOptimizerSliders(context){
  document.addEventListener('input',event=>{
   const input=event.target.closest('input[data-uo-field]');
   if(!input||!input.closest('#arcanaUpgradeOptimizerV2'))return;
-  const {uoIndex,uoSide,uoField}=input.dataset,point=state.items[Number(uoIndex)]?.[uoSide];
-  if(!point)return;
+  const {uoIndex,uoSide,uoField}=input.dataset;
   const raw=Number(input.value);
   const label=document.querySelector('[data-uo-label="'+uoIndex+'-'+uoSide+'-'+uoField+'"]');
   if(label)label.textContent=uoField==='rarity'?TIER_LABELS[raw-1]:uoField==='awaken'?(raw?'A'+raw:'None'):'+'+raw;
-  // Do not rebuild while a touch slider is being dragged.
  });
  document.addEventListener('change',event=>{
   const input=event.target,root=input.closest('#arcanaUpgradeOptimizerV2');
@@ -176,9 +174,13 @@ export function wireUpgradeOptimizerSliders(context){
   if(input.matches('[data-uo-mode]'))state.costMode=input.value;
   else if(input.matches('[data-uo-item]')){
    const entry=state.items[Number(input.dataset.uoItem)];if(!entry)return;
-   const choice=itemValue(input.value);entry.itemKey=choice.key;
-   const point=choice.tier>=7?{rarity:6,awaken:1,level:0}:{rarity:choice.tier||6,awaken:0,level:0};
-   entry.current=endpoint(point);entry.target=endpoint({...point,level:Math.min(1,[4,9,14,19,24,30][point.rarity-1])});
+   const choice=itemValue(input.value);
+   entry.itemKey=choice?.key||'';
+   if(choice){
+    const point=choice.tier>=7?{rarity:6,awaken:1,level:0}:{rarity:choice.tier||6,awaken:0,level:0};
+    entry.current=endpoint(point);
+    entry.target=endpoint({...point,level:1});
+   }
   }else if(input.matches('input[data-uo-field]')){
    const entry=state.items[Number(input.dataset.uoIndex)];if(!entry)return;
    const side=input.dataset.uoSide,field=input.dataset.uoField;
@@ -186,19 +188,25 @@ export function wireUpgradeOptimizerSliders(context){
    const point={...entry[side],[field]:Number(input.value)};
    if(field==='rarity'&&point.rarity<6)point.awaken=0;
    entry[side]=endpoint(point);
-   // When current moves ahead, slide target forward rather than showing a broken route.
    if(side==='current'&&position(entry.target)<position(entry.current))entry.target={...entry.current};
-  }
+  }else return;
   state=saveOptimizerSliders(state);redraw();
  });
  document.addEventListener('click',event=>{
   const button=event.target.closest('[data-uo-action]');
   if(!button||!button.closest('#arcanaUpgradeOptimizerV2'))return;
-  if(button.dataset.uoAction==='add'&&state.items.length<MAX_ITEMS){
-   const exampleItem=OPTIMIZER_CHOICES.find(x=>x.label==='Pathfinder Treads')||OPTIMIZER_CHOICES[0];
-   state.items.push(normalizedItem({itemKey:exampleItem.key,current:{rarity:6,awaken:0,level:0},target:{rarity:6,awaken:1,level:0}}));
-  }else if(button.dataset.uoAction==='reset')state=normalizeOptimizerSliders(null);
-  else if(button.dataset.uoAction==='remove'&&state.items.length>1)state.items.splice(Number(button.dataset.uoIndex),1);
+  const action=button.dataset.uoAction,index=Number(button.dataset.uoIndex);
+  if(action==='add'&&state.items.length<MAX_ITEMS){
+   state.items.push(blankItem());editingIndex=state.items.length-1;
+  }else if(action==='clear'){
+   state.items=[];editingIndex=-1;
+  }else if(action==='toggle'){
+   editingIndex=editingIndex===index?-1:index;
+  }else if(action==='remove'&&index>=0&&index<state.items.length){
+   state.items.splice(index,1);
+   if(editingIndex===index)editingIndex=-1;
+   else if(editingIndex>index)editingIndex--;
+  }else return;
   state=saveOptimizerSliders(state);redraw();
  });
 }
