@@ -46,7 +46,14 @@ export function saveOptimizerSliders(value,store=globalThis.localStorage){
  return clean;
 }
 let state=readOptimizerSliders(),editingIndex=-1;
-const options=selected=>'<option value=""'+(!selected?' selected':'')+'>Choose equipment…</option>'+OPTIMIZER_CHOICES.map(x=>'<option value="'+esc(x.key)+'"'+(x.key===selected?' selected':'')+'>'+esc(x.label)+'</option>').join('');
+const SLOT_NAMES={main_hand:'Weapons',off_hand:'Offhand',chest:'Chest',head:'Helmets',hands:'Gloves',feet:'Boots',ring:'Rings',amulet:'Amulets',belt:'Belts',torch:'Torches'};
+const SLOT_ORDER=['main_hand','off_hand','chest','head','hands','feet','belt','ring','amulet','torch'];
+const options=selected=>'<option value=""'+(!selected?' selected':'')+'>Choose equipment…</option>'+
+ SLOT_ORDER.map(slot=>{
+  const picks=OPTIMIZER_CHOICES.filter(x=>OPTIMIZER_ITEM_BY_ID.get(x.itemId)?.slot===slot);
+  return picks.length?'<optgroup label="'+esc(SLOT_NAMES[slot])+'">'+picks.map(x=>
+   '<option value="'+esc(x.key)+'"'+(x.key===selected?' selected':'')+'>'+esc(x.label)+'</option>').join('')+'</optgroup>':'';
+ }).join('');
 const panelLabel=p=>p.awaken>0?'A'+p.awaken:p.rarity===6?'Infernal':'T'+p.rarity+' · '+TIER_LABELS[p.rarity-1];
 const levelLabel=p=>panelLabel(p)+' +'+p.level;
 const slider=(i,side,key,value,min,max,title,caption)=>{
