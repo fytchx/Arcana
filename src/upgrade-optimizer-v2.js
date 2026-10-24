@@ -102,33 +102,39 @@ function statView(choice,item){
  '<p>Configured rarity base ranges, not a prediction of your individual roll at '+esc(levelLabel(item.target))+'. Awakening adds a configured 12% scaling parameter per rank, but the exact implicit calculation and rounding are not provided in the configuration.</p></div></details>';
 }
 function itemCard(item,i,snapshot){
- const choice=itemValue(item.itemKey),result=quote(snapshot,item);
- const materials=result.result?.materials?.length||0;
- return '<article class="uoItem"><div class="uoItemHeader"><div class="uoItemNum">'+(i+1)+'</div><div><small>EQUIPMENT '+(i+1)+'</small><strong>'+esc(choice.label)+'</strong></div><button type="button" data-uo-action="remove" data-uo-index="'+i+'" aria-label="Remove item '+(i+1)+'"'+(state.items.length===1?' disabled':'')+'>×</button></div>'+
- '<label class="uoChoose"><span>Select item</span><select data-uo-item="'+i+'" aria-label="Select item '+(i+1)+'">'+options(item.itemKey)+'</select></label>'+
- '<div class="uoRangeGrid">'+endpointMarkup(i,'current',item.current)+endpointMarkup(i,'target',item.target)+'</div>'+
- '<div class="uoItemResults"><div><span>Upgrade path</span><strong>'+esc(levelLabel(item.current))+' → '+esc(levelLabel(item.target))+'</strong></div>'+
- '<div><span>Materials</span><strong>'+(result.error?'Unavailable':materials+' types')+'</strong></div></div>'+
- (result.error?'<p class="uoError">'+esc(result.error)+'</p>':'')+
- statView(choice,item)+'</article>';
+ const choice=optimizerChoice(item.itemKey),expanded=editingIndex===i;
+ const title=choice?.label||'Choose equipment',route=levelLabel(item.current)+' → '+levelLabel(item.target);
+ const quoteInfo=choice?quote(snapshot,item):null;
+ return '<article class="uoItem'+(expanded?' uoOpen':'')+'">'+
+ '<div class="uoCardLine"><span class="uoItemNum">'+(i+1)+'</span><div class="uoCardText"><strong>'+esc(title)+'</strong><small>'+esc(choice?route:'Select an item to begin')+'</small></div>'+
+ '<button type="button" class="uoToggle" data-uo-action="toggle" data-uo-index="'+i+'" aria-expanded="'+expanded+'">'+(expanded?'Done':'Edit')+'</button>'+
+ '<button type="button" class="uoRemove" data-uo-action="remove" data-uo-index="'+i+'" aria-label="Remove '+esc(title)+'">×</button></div>'+
+ (expanded?'<div class="uoEditor"><label class="uoChoose"><span>Equipment</span><select data-uo-item="'+i+'">'+options(item.itemKey)+'</select></label>'+
+ (choice?'<div class="uoRangeGrid">'+endpointMarkup(i,'current',item.current)+endpointMarkup(i,'target',item.target)+'</div>'+
+ '<div class="uoCardFoot"><span>'+esc(route)+'</span>'+(quoteInfo?.error?'<small>'+esc(quoteInfo.error)+'</small>':'<strong>'+(quoteInfo?.result?.materials?.length||0)+' material types</strong>')+'</div>'+
+ statView(choice,item):'<p class="uoHelp">Choose equipment above to set the current and target upgrade levels.</p>')+'</div>':'')+
+ '</article>';
 }
 const grouped=(materials,snapshot,catalog)=>sourceMaterialGroups(materials,snapshot?.materials||[],catalog||[]);
-function materialGroup(group){
- return '<details class="uoMaterialGroup" open><summary><strong>'+esc(group.name)+'</strong><small>'+group.materials.length+' materials</small><span>⌄</span></summary>'+
+function materialGroup(group,open=false){
+ return '<details class="uoMaterialGroup"'+(open?' open':'')+'><summary><strong>'+esc(group.name)+'</strong><small>'+group.materials.length+' types</small><span>⌄</span></summary>'+
  '<div>'+group.materials.map(m=>'<div class="uoMaterial"><span>'+esc(m.name)+(m.sourceMonster?'<small>'+esc(m.sourceMonster)+'</small>':'')+'</span><strong>'+fmt(m.quantity)+'</strong></div>').join('')+'</div></details>';
 }
 function totals(snapshot,catalog){
- if(!snapshot)return '<section class="uoSummary"><p>Loading Pathfinder material recipes…</p></section>';
+ if(!state.items.some(x=>x.itemKey))return '';
+ if(!snapshot)return '<section class="uoSummary" role="status">Loading Pathfinder materials…</section>';
  const tally=totalUpgradeMaterials(snapshot,state.items,state.costMode);
  const groups=grouped(tally.materials,snapshot,catalog);
  const monster=groups.filter(g=>g.kind!=='special'),rare=groups.filter(g=>g.kind==='special');
- const modeName={min:'Minimum',expected:'Expected materials',pity:'Pity scenario'}[state.costMode];
- return '<section class="uoSummary" aria-live="polite"><header><span class="uoEyebrow">COMBINED MATERIAL REQUIREMENTS</span><h2>What you need to farm</h2><p>'+tally.ready+' item'+(tally.ready===1?'':'s')+' · '+modeName+' · '+tally.materials.length+' material types</p></header>'+
+ const modeName={min:'Minimum',expected:'Expected',pity:'Pity maximum'}[state.costMode];
+ return '<section class="uoSummary"><div class="uoSummaryTop"><div><span class="uoEyebrow">COMBINED MATERIALS</span><h2>Farming list</h2><p>'+tally.ready+' item'+(tally.ready===1?'':'s')+' · '+tally.materials.length+' material types</p></div>'+
+ '<label>Estimate<select data-uo-mode><option value="expected"'+(state.costMode==='expected'?' selected':'')+'>Expected</option>'+
+ '<option value="min"'+(state.costMode==='min'?' selected':'')+'>Minimum</option><option value="pity"'+(state.costMode==='pity'?' selected':'')+'>Pity max</option></select></label></div>'+
  (tally.errors.length?'<div class="uoWarnings">'+tally.errors.map(x=>'<p>'+esc(x)+'</p>').join('')+'</div>':'')+
- (tally.unmodeled.length?'<p class="uoWarnings">Some failure estimates are unavailable; those items use minimum recipe quantities.</p>':'')+
- '<div class="uoMaterialSections">'+(monster.length?monster.map(materialGroup).join(''):'<p class="uoEmpty">No monster materials required for these upgrades.</p>')+'</div>'+
- (rare.length?'<section class="uoSpecial"><h3>Awakening & special materials</h3>'+rare.map(materialGroup).join('')+'</section>':'')+
- '<details class="uoMoney"><summary>Additional costs and attempts <span>⌄</span></summary><div><p>Gold <strong>'+summaryNumber(tally.gold)+'</strong></p><p>Attempts <strong>'+fmt(tally.attempts)+'</strong></p><small>Gold is secondary. Failure and pity scenarios follow Pathfinder’s existing model.</small></div></details></section>';
+ (tally.unmodeled.length?'<p class="uoWarnings">Failure estimates unavailable for some routes. Showing minimum quantities for those items.</p>':'')+
+ '<div class="uoMaterialSections">'+(monster.length?monster.map((g,i)=>materialGroup(g,i===0)).join(''):'<p class="uoEmptyMaterials">No monster materials needed.</p>')+'</div>'+
+ (rare.length?'<details class="uoSpecial"><summary>Special materials <small>'+rare.reduce((a,g)=>a+g.materials.length,0)+' types</small></summary><div>'+rare.map(g=>materialGroup(g,true)).join('')+'</div></details>':'')+
+ '<details class="uoMoney"><summary>Gold and upgrade attempts</summary><div><p>Gold <strong>'+summaryNumber(tally.gold)+'</strong></p><p>Attempts <strong>'+fmt(tally.attempts)+'</strong></p></div></details></section>';
 }
 export function upgradeOptimizerSliderView(snapshot,catalog=[]){
  const first=totals(snapshot,catalog);
