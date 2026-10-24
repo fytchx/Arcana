@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {endpointStage,normalizeOptimizerSliders,readOptimizerSliders,saveOptimizerSliders,totalUpgradeMaterials,upgradeOptimizerSliderView} from '../src/upgrade-optimizer-v2.js';
+import {endpointStage,normalizeOptimizerSliders,readOptimizerSliders,saveOptimizerSliders,totalUpgradeMaterials,upgradeOptimizerSliderView,optimizerItemCard} from '../src/upgrade-optimizer-v2.js';
 import {optimizerTierRanges,OPTIMIZER_TIER_DATA} from '../src/upgrade-optimizer-tier-data.js';
 
 const fixture={
@@ -70,4 +70,13 @@ test('clear-all state can persist as an empty list and the last item can be remo
  withOne.items.splice(0,1);
  saveOptimizerSliders(withOne,store);
  assert.deepEqual(readOptimizerSliders(store).items,[]);
+});
+
+test('a selected item renders a compact row and consumes real Pathfinder quotes',()=>{
+ const candidate=normalizeOptimizerSliders({items:[{itemKey:'sandals-of-starszy|Chainmail Boots',current:{rarity:6,awaken:1,level:0},target:{rarity:6,awaken:1,level:1}}]}).items[0];
+ const html=optimizerItemCard(candidate,0,fixture);
+ assert.match(html,/Chainmail Boots/);
+ assert.match(html,/A1 \+0 → A1 \+1/);
+ assert.match(html,/data-uo-action="toggle"/);
+ assert.doesNotMatch(html,/data-uo-field="rarity"/,'only expanded editors should show controls');
 });
