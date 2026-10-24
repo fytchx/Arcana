@@ -88,11 +88,14 @@ test('clear-all state can persist as an empty list and the last item can be remo
  assert.deepEqual(readOptimizerSliders(store).items,[]);
 });
 
-test('a selected item renders a compact row and consumes real Pathfinder quotes',()=>{
+test('a selected item renders a compact row and consumes real Pathfinder quotes',async()=>{
  const candidate=normalizeOptimizerSliders({items:[{itemKey:'sandals-of-starszy|Chainmail Boots',current:{rarity:6,awaken:1,level:0},target:{rarity:6,awaken:1,level:1}}]}).items[0];
  const html=optimizerItemCard(candidate,0,fixture);
  assert.match(html,/Gilded Plate Boots/);
  assert.match(html,/A1 \+0 → A1 \+1/);
  assert.match(html,/data-uo-action="toggle"/);
  assert.doesNotMatch(html,/data-uo-field="rarity"/,'only expanded editors should show controls');
+ const source=await readFile(new URL('../src/upgrade-optimizer-v2.js',import.meta.url),'utf8');
+ assert.match(source,/data-uo-action="compare-path"/);
+ assert.match(source,/affixes:original.affixes.map\(a=>\(\{\.\.\.a\}\)\)/);
 });

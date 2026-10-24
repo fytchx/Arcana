@@ -127,6 +127,7 @@ export function optimizerItemCard(item,i,snapshot){
  (selectingIndex===i||!choice?optimizerBaseItemPicker(i):'<div class="uoChosen"><div><span class="uoEyebrow">BASE ITEM</span><strong>'+esc(familyById(id)?.name||title)+'</strong><small>Infernal is the default starting rarity.</small></div><button type="button" data-uo-action="pick" data-uo-index="'+i+'">Change item</button></div>'+
  variantGallery(id,i)+'<div class="uoRangeGrid">'+endpointMarkup(i,'current',item.current)+endpointMarkup(i,'target',item.target)+'</div>'+
  renderStatProjection(breakdown,item,i)+renderAffixEditor(item,i,breakdown)+
+ '<button type="button" class="uoComparePath" data-uo-action="compare-path" data-uo-index="'+i+'"'+(state.items.length>=MAX_ITEMS?' disabled':'')+'><span>+ Compare another upgrade path</span><small>Copies this equipment, current stats and affixes. Adjust the new target to compare options.</small></button>'+
  '<div class="uoCardFoot"><span>'+esc(route)+'</span>'+(quoteInfo?.error?'<small>'+esc(quoteInfo.error)+'</small>':'<strong>'+(chosenCost?.materials?.length||0)+' material types</strong>')+'</div>')+'</div>':'')+
  '</article>';
 }
@@ -191,7 +192,7 @@ export function wireUpgradeOptimizerSliders(context){
  if(installed)return;
  installed=true;
  if(typeof document!=='undefined'&&!document.getElementById('arcanaOptimizerStyles')){
-  const link=document.createElement('link');link.id='arcanaOptimizerStyles';link.rel='stylesheet';link.href='/upgrade-optimizer.css?v=decision-studio-20261024';document.head.append(link);
+  const link=document.createElement('link');link.id='arcanaOptimizerStyles';link.rel='stylesheet';link.href='/upgrade-optimizer.css?v=decision-studio-20261024b';document.head.append(link);
  }
  document.addEventListener('input',event=>{
   const input=event.target;
@@ -279,6 +280,14 @@ export function wireUpgradeOptimizerSliders(context){
    const entry=state.items[index],slots=maxAffixSlots(entry.current);
    if(entry.affixes.length>=slots)return;
    entry.affixes.push({id:0,value:''});
+  }else if(action==='compare-path'&&state.items[index]?.itemKey&&state.items.length<MAX_ITEMS){
+   const original=state.items[index];
+   const next={itemKey:original.itemKey,current:{...original.current},target:{...original.target},
+    observed:{...original.observed},affixes:original.affixes.map(a=>({...a}))};
+   const cap=next.target.rarity===6?30:[4,9,14,19,24,30][next.target.rarity-1];
+   if(next.target.level<cap)next.target.level++;
+   state.items.splice(index+1,0,next);
+   editingIndex=index+1;selectingIndex=-1;
   }else if(action==='remove-affix'&&state.items[index]?.affixes){
    const slot=Number(button.dataset.uoAffixIndex);
    if(!Number.isInteger(slot)||slot<0||slot>=state.items[index].affixes.length)return;

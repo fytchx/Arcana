@@ -54,3 +54,7 @@
 @media(max-width:380px){.uoDecisions{padding:11px}.uoCompareArt{display:none}.uoCompareRow{gap:5px}.uoCompareNumbers{min-width:99px}.uoSectionTitle h2{font-size:17px}.uoActualValue{flex-wrap:wrap}.uoActualValue input{width:100%}}
 .uoStockActions{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.uoStockActions button{padding:8px 11px;min-height:35px;border-radius:8px;border:1px solid var(--uoLine);color:inherit;background:var(--uoSurface);font-size:11px;font-weight:700;cursor:pointer}.uoStockActions button:first-child{border-color:color-mix(in srgb,var(--theme-highlight,#75bfea) 50%,var(--uoLine))}.uoMissingDetail{color:#f6c296!important;line-height:1.35}
 .uoDecisionControls{display:flex;flex-wrap:wrap;gap:6px 20px;align-items:center}.uoDecisionControls .uoFocus{margin:10px 0}.uoDecisionControls select{width:min(250px,66vw)}
+.uoComparePath{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:12px;padding:11px 13px;border:1px dashed color-mix(in srgb,var(--theme-highlight,#75bfea) 45%,var(--uoLine));border-radius:10px;background:color-mix(in srgb,var(--theme-highlight,#75bfea) 8%,var(--uoSurface));color:inherit;text-align:left;cursor:pointer}
+.uoComparePath span{font-size:12px;font-weight:800;white-space:nowrap}.uoComparePath small{font-size:10px;line-height:1.35;color:var(--uoDim)}
+.uoComparePath:disabled{opacity:.38;cursor:not-allowed}
+@media(max-width:650px){.uoComparePath{display:grid;gap:4px}}
