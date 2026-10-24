@@ -39,7 +39,7 @@ const normalizedItem=raw=>{
  const initial=choice?.tier===7?{rarity:6,awaken:1,level:0}:{rarity:choice?.tier||6,awaken:0,level:0};
  const current=endpoint(r.current||{},initial);
  const target=endpoint(r.target||{},current);
- const affixes=normalizeAffixInputs(r.affixes).map(a=>a.value&&!a.reference?{...a,reference:{...current}}:a);
+ const affixes=normalizeAffixInputs(r.affixes).map(a=>a.value&&!a.reference?{...a,reference:{...current},referenceRank:a.rank}:a);
  return {itemKey:choice?.key||'',current,target,observed:normalizeObserved(r.observed),affixes,pathGroup:typeof r.pathGroup==='string'&&/^alt-[a-z0-9-]{1,50}$/.test(r.pathGroup)?r.pathGroup:''};
 };
 export function normalizeOptimizerSliders(raw){
@@ -200,7 +200,7 @@ export function wireUpgradeOptimizerSliders(context){
  if(installed)return;
  installed=true;
  if(typeof document!=='undefined'&&!document.getElementById('arcanaOptimizerStyles')){
-  const link=document.createElement('link');link.id='arcanaOptimizerStyles';link.rel='stylesheet';link.href='/upgrade-optimizer.css?v=decision-studio-20261024c';document.head.append(link);
+  const link=document.createElement('link');link.id='arcanaOptimizerStyles';link.rel='stylesheet';link.href='/upgrade-optimizer.css?v=affix-ranks-20261024';document.head.append(link);
  }
  document.addEventListener('input',event=>{
   const input=event.target;
@@ -236,13 +236,23 @@ export function wireUpgradeOptimizerSliders(context){
    if(!entry?.affixes[slot])return;
    if(input.dataset.uoAffix==='id'){
     const nextId=Number(input.value);
-    if(entry.affixes[slot].id!==nextId)entry.affixes[slot]={id:nextId,value:''};
+    if(entry.affixes[slot].id!==nextId)entry.affixes[slot]={id:nextId,value:'',rank:0,plannedBoosts:0};
    }
    else if(input.dataset.uoAffix==='value'){
     entry.affixes[slot].value=input.value;
-    if(input.value.trim())entry.affixes[slot].reference={...entry.current};
+    if(input.value.trim()){
+     entry.affixes[slot].reference={...entry.current};
+     entry.affixes[slot].referenceRank=entry.affixes[slot].rank||0;
+    }
     else delete entry.affixes[slot].reference;
    }
+   else if(input.dataset.uoAffix==='rank'){
+    const affix=entry.affixes[slot],wasCurrent=affix.reference&&
+     affix.reference.rarity===entry.current.rarity&&affix.reference.awaken===entry.current.awaken&&affix.reference.level===entry.current.level;
+    affix.rank=clamp(input.value,0,entry.current.awaken||0);
+    if(wasCurrent)affix.referenceRank=affix.rank;
+   }
+   else if(input.dataset.uoAffix==='plannedBoosts')entry.affixes[slot].plannedBoosts=clamp(input.value,0,Math.max(0,(entry.target.awaken||0)-(entry.current.awaken||0)));
    else return;
   }
   else if(input.matches('input[data-uo-field]')){
@@ -294,7 +304,7 @@ export function wireUpgradeOptimizerSliders(context){
   }else if(action==='add-affix'&&state.items[index]?.itemKey){
    const entry=state.items[index],slots=maxAffixSlots(entry.current);
    if(entry.affixes.length>=slots)return;
-   entry.affixes.push({id:0,value:''});
+   entry.affixes.push({id:0,value:'',rank:0,plannedBoosts:0});
   }else if(action==='compare-path'&&state.items[index]?.itemKey&&state.items.length<MAX_ITEMS){
    const original=state.items[index];
    original.pathGroup=original.pathGroup||'alt-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);

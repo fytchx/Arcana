@@ -10,7 +10,7 @@ export const AFFIX_SOURCE='IdleArc game configuration 2026-09-30-001';
 export const AFFIX_SCALING=Object.freeze({
  tierMultipliers:[1,1.2,1.4,1.7,2,2.5],
  enhancementPerLevel:0.03,
- awakenPerRank:0.1,
+ boostPerAffixRank:0.1,
  softcapStart:90,
  softcapRate:0.5,
  frozenCapStats:['damage_reduction'],
@@ -85,9 +85,13 @@ const stageLevels=point=>{
  const level=Math.max(0,Math.min(30,Number(point?.level)||0));
  return {rarity,rank,effective:softLevels(rank*30+level)};
 };
-export function affixScale(point){
- const {rarity,rank,effective}=stageLevels(point);
- return AFFIX_SCALING.tierMultipliers[rarity-1]*(1+effective*AFFIX_SCALING.enhancementPerLevel)*(1+rank*AFFIX_SCALING.awakenPerRank);
+export function affixScale(point,affixRank=0){
+ const {rarity,effective}=stageLevels(point);
+ const ownRank=Math.max(0,Math.min(30,Math.trunc(Number(affixRank)||0)));
+ // Equipment enhancement affects every affix. The extra 10% is allocated
+ // to one affix at a time, as shown by the Roman ranks on an A10 item
+ // summing to 10; it is not a blanket 10% on all five affixes per A-rank.
+ return AFFIX_SCALING.tierMultipliers[rarity-1]*(1+effective*AFFIX_SCALING.enhancementPerLevel)*(1+ownRank*AFFIX_SCALING.boostPerAffixRank);
 }
 const normalizeReference=raw=>{
  if(!raw||typeof raw!=='object')return null;
@@ -96,9 +100,11 @@ const normalizeReference=raw=>{
   level:Math.max(0,Math.min(rarity===6?30:[4,9,14,19,24][rarity-1],Math.trunc(Number(raw.level)||0)))};
 };
 export const normalizeAffixInputs=raw=>Array.isArray(raw)?raw.slice(0,5).map(v=>{
- const entry={id:affixById(v?.id)?.id||0,value:String(v?.value??'').slice(0,32)};
+ const count=n=>Math.max(0,Math.min(30,Math.trunc(Number(n)||0)));
+ const entry={id:affixById(v?.id)?.id||0,value:String(v?.value??'').slice(0,32),
+  rank:count(v?.rank),plannedBoosts:count(v?.plannedBoosts)};
  const reference=normalizeReference(v?.reference);
- if(reference)entry.reference=reference;
+ if(reference){entry.reference=reference;entry.referenceRank=count(v?.referenceRank??v?.rank)}
  return entry;
 }):[];
 export const normalizeObserved=raw=>({primary:String(raw?.primary??'').slice(0,32),secondary:String(raw?.secondary??'').slice(0,32)});
@@ -108,7 +114,7 @@ const projectImplicit=(stat,from,to,observedRaw,unmodeled=false)=>{
  if(!stat||!from||!to)return null;
  const observed=parseStatAmount(observedRaw);
  const fromMid=midpoint(from),toMid=midpoint(to);
- if(unmodeled)return {stat,label:optimizerStatLabel(stat),kind:'implicit',
+ if(unmodeled)return {stat,label:optimizerStatLabel(stat),kind:'implicit',confidence:from.confidence,
   fromMin:from.min,fromMax:from.max,toMin:to.min,toMax:to.max,
   from:observed??fromMid,to:null,delta:null,observed:observed!==null,unmodeled:true};
  let projected=null;
@@ -122,7 +128,7 @@ const projectImplicit=(stat,from,to,observedRaw,unmodeled=false)=>{
    to.min+percentile*(to.max-to.min):observed*(fromMid>0?toMid/fromMid:1);
  }
  const gainMin=to.min-from.min,gainMax=to.max-from.max;
- return {stat,label:optimizerStatLabel(stat),kind:'implicit',fromMin:from.min,fromMax:from.max,
+ return {stat,label:optimizerStatLabel(stat),kind:'implicit',confidence:from.confidence,fromMin:from.min,fromMax:from.max,
   toMin:to.min,toMax:to.max,from:observed??fromMid,to:projected===null?toMid:rounded(projected),
   delta:rounded((projected===null?toMid:projected)-(observed??fromMid)),
   percentGain:(observed??fromMid)>0?rounded(100*((projected===null?toMid:projected)-(observed??fromMid))/(observed??fromMid)):null,
@@ -139,25 +145,45 @@ export function projectItemBreakdown(id,current,target,observed={},inputs=[]){
  const implicits=[projectImplicit(item.primary,from.primary,to.primary,rolls.primary,unresolved(from.primary))];
  if(from.secondary&&to.secondary)implicits.push(projectImplicit(item.secondary,from.secondary,to.secondary,rolls.secondary,unresolved(from.secondary)));
  const limit=maxAffixSlots(current),targetLimit=maxAffixSlots(target);
- const affixes=normalizeAffixInputs(inputs).slice(0,limit).map((input,index)=>{
+ const normalizedInputs=normalizeAffixInputs(inputs);
+ const availableBoosts=Math.max(0,(target.awaken||0)-(current.awaken||0));
+ const plannedBoosts=normalizedInputs.reduce((sum,entry)=>sum+entry.plannedBoosts,0);
+ const unassignedBoosts=Math.max(0,availableBoosts-plannedBoosts);
+ const invalidBoostPlan=plannedBoosts>availableBoosts||normalizedInputs.some(entry=>
+  entry.rank>(current.awaken||0)||entry.rank+entry.plannedBoosts>(target.awaken||0));
+ const affixes=normalizedInputs.slice(0,limit).map((input,index)=>{
   const def=affixById(input.id),value=parseStatAmount(input.value),valid=!!def&&legal.has(def.id);
-  if(!valid||value===null)return null;
+  if(!valid)return null;
   const persists=index<targetLimit;
   // A rerolled affix retains its roll quality as the equipment advances. A
   // displayed stat captured at A1+0 is *not* reinterpreted as an A5+20 value
   // when the user moves the current-rank slider. Store the reference stage and
   // project both endpoints from that same observed roll.
   const reference=input.reference||current;
-  const base=affixScale(reference),from=rounded(value*affixScale(current)/base);
-  const predicted=persists?rounded(value*affixScale(target)/base):0;
+  const referenceRank=input.referenceRank??input.rank;
+  const base=affixScale(reference,referenceRank);
+  const fromFactor=affixScale(current,input.rank)/base;
+  const targetRank=input.rank+input.plannedBoosts;
+  const lowFactor=persists?affixScale(target,targetRank)/base:0;
+  const highFactor=persists?affixScale(target,Math.min(target.awaken||0,targetRank+unassignedBoosts))/base:0;
+  const from=value===null?null:rounded(value*fromFactor);
+  const low=value===null?null:rounded(value*lowFactor);
+  const high=value===null?null:rounded(value*highFactor);
+  const uncertain=invalidBoostPlan||unassignedBoosts>0;
+  const predicted=uncertain?null:low;
   const capped=AFFIX_SCALING.frozenCapStats.includes(def.stat)||AFFIX_SCALING.growingCapStats.includes(def.stat);
   return {index,id:def.id,name:def.name,label:affixStatLabel(def.stat),stat:def.stat,kind:'affix',from,to:predicted,
-   delta:rounded(predicted-from),percentGain:from>0?rounded(100*(predicted-from)/from):null,
-   reference,referenceValue:value,approx:true,persists,capped};
+   toMin:low,toMax:high,delta:from!==null&&predicted!==null?rounded(predicted-from):null,
+   percentGain:from>0&&predicted!==null?rounded(100*(predicted-from)/from):null,
+   percentGainMin:fromFactor>0?rounded(100*(lowFactor-fromFactor)/fromFactor):null,
+   percentGainMax:fromFactor>0?rounded(100*(highFactor-fromFactor)/fromFactor):null,
+   reference,referenceRank,referenceValue:value,rank:input.rank,plannedBoosts:input.plannedBoosts,
+   needsValue:value===null,uncertain,invalid:invalidBoostPlan,unassignedBoosts,approx:true,persists,capped};
  }).filter(Boolean);
  const rows=[...implicits,...affixes];
  const gains=new Map();
- for(const row of rows)if(row.delta!==null)gains.set(row.stat,rounded((gains.get(row.stat)||0)+row.delta));
- return {implicits,affixes,rows,gains,hasUnenteredAffixes:inputs.length>affixes.length,hasObservedRoll:implicits.some(x=>x.observed),
+ for(const row of rows)if(typeof row.delta==='number')gains.set(row.stat,rounded((gains.get(row.stat)||0)+row.delta));
+ return {implicits,affixes,rows,gains,availableBoosts,plannedBoosts,unassignedBoosts,invalidBoostPlan,
+  hasUnenteredAffixes:inputs.length>affixes.length,hasObservedRoll:implicits.some(x=>x.observed),
   caveat:'Projected values are estimates based on configured scaling and range behavior, not verified in-game outcomes. Affix caps and rounding can change the final result.'};
 }

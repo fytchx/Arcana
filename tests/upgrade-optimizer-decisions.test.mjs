@@ -21,7 +21,7 @@ const candidate=(index,name,stats,materials,gold)=>({index,name,route:'T6 +0 →
 test('config-backed ordinary affixes are slot-aware and never treated as pet affixes',()=>{
  assert.equal(EQUIPMENT_AFFIXES.length,26);
  assert.equal(AFFIX_SCALING.enhancementPerLevel,.03);
- assert.equal(AFFIX_SCALING.awakenPerRank,.1);
+ assert.equal(AFFIX_SCALING.boostPerAffixRank,.1);
  const boots=affixesForItem('sandals-of-starszy');
  assert.ok(boots.some(x=>x.name==='of Fortification'));
  assert.ok(!boots.some(x=>x.name==='Blazing'));
@@ -51,8 +51,18 @@ test('projected implicit enhancement rises, but the fixed Torch skill does not b
  assert.equal(torch.implicits[0].unmodeled,true);
  assert.equal(torch.gains.has('all_skills'),false);
 });
+test('Gnarled Stick pet damage secondary stays at 50% through enhancement and awakening',()=>{
+ const stick={rarity:6,awaken:10,level:24};
+ const next={rarity:6,awaken:11,level:0};
+ assert.equal(projectedStats('gnarled-stick',stick).secondary.min,50);
+ assert.equal(projectedStats('gnarled-stick',next).secondary.max,50);
+ const result=projectItemBreakdown('gnarled-stick',stick,next);
+ assert.equal(result.implicits[1].delta,0);
+ assert.equal(result.implicits[1].confidence,'verified-fixed');
+ assert.equal(result.rows.some(row=>row.kind==='drop-bonus'),false);
+});
 test('entered actual roll anchors the range preview and entered affix scales into A1',()=>{
- const base=projectItemBreakdown('sandals-of-starszy',t6,a1,{primary:'1600'},[{id:13,value:'35'}]);
+ const base=projectItemBreakdown('sandals-of-starszy',t6,a1,{primary:'1600'},[{id:13,value:'35',plannedBoosts:1}]);
  assert.equal(base.implicits[0].from,1600);
  assert.ok(base.implicits[0].to>1600);
  assert.ok(base.implicits[0].percentGain>0);
@@ -62,10 +72,28 @@ test('entered actual roll anchors the range preview and entered affix scales int
  assert.ok(base.affixes[0].percentGain>0);
  assert.ok(Math.abs(base.affixes[0].delta-(base.affixes[0].to-35))<1e-9);
  assert.equal(normalizeAffixInputs([{id:999,value:'2.5k'}])[0].id,0);
- assert.ok(affixScale(a1)>affixScale(t6));
+ assert.ok(affixScale(a1,0)>affixScale(t6,0));
  const noUpgrade=projectItemBreakdown('sandals-of-starszy',a1,a1,{primary:'2k'},[{id:13,value:'35'}]);
  assert.equal(noUpgrade.implicits[0].delta,0);
  assert.equal(noUpgrade.affixes[0].delta,0);
+});
+test('affix Awakening is allocated per affix, never blanket-applied to every affix',()=>{
+ const current={rarity:6,awaken:10,level:24},target={rarity:6,awaken:11,level:0};
+ const inputs=[{id:6,value:'969',rank:4,plannedBoosts:1,reference:current,referenceRank:4},
+  {id:30,value:'415',rank:2,plannedBoosts:0,reference:current,referenceRank:2}];
+ const result=projectItemBreakdown('gnarled-stick',current,target,{},inputs);
+ assert.equal(result.plannedBoosts,1);
+ assert.equal(result.unassignedBoosts,0);
+ assert.equal(result.affixes[0].rank,4);
+ assert.equal(result.affixes[1].rank,2);
+ assert.ok(result.affixes[0].percentGain>result.affixes[1].percentGain);
+ const unassigned=projectItemBreakdown('gnarled-stick',current,target,{},inputs.map(x=>({...x,plannedBoosts:0})));
+ assert.equal(unassigned.affixes[0].uncertain,true);
+ assert.equal(unassigned.affixes[0].delta,null);
+ assert.equal(unassigned.gains.has('pet_damage_bonus'),false);
+ const noValue=projectItemBreakdown('gnarled-stick',current,current,{},[{id:6,value:'',rank:4}]);
+ assert.equal(noValue.affixes[0].needsValue,true);
+ assert.equal(noValue.affixes[0].delta,null);
 });
 test('an affix roll stays anchored to its captured gear rank when current equipment changes',()=>{
  const input=[{id:13,value:'35',reference:t6}];
@@ -87,10 +115,11 @@ test('projected outcome appears on an actual item and affix input renders five l
  const stats=renderStatProjection(preview,item,0),affixes=renderAffixEditor(item,0,preview);
  assert.match(stats,/What changes\?/);
  assert.match(stats,/data-uo-observed="primary"/);
- assert.match(stats,/Entered affix gains/);
+ assert.match(stats,/Affix growth/);
  assert.match(affixes,/of Fortification/);
  assert.match(affixes,/data-uo-affix="value"/);
- assert.match(affixes,/Value at Infernal \+0/);
+ assert.match(affixes,/Actual value at Infernal \+0/);
+ assert.match(affixes,/Current affix rank/);
  assert.match(affixes,/4? \/ 5 slots/);
 });
 test('comparison chooses a single stat and cannot compare defense as if it were gold gain',()=>{
@@ -157,7 +186,7 @@ test('optimizer persistence retains affixes, observed stats, inventory and objec
  assert.equal(plan.strategy,'set');
  assert.equal(plan.stock['grubs-eye'],'1.2k');
  assert.equal(plan.goldStock,'3B');
- assert.deepEqual(plan.items[0].affixes,[{id:13,value:'37',reference:t6}]);
+ assert.deepEqual(plan.items[0].affixes,[{id:13,value:'37',rank:0,plannedBoosts:0,reference:t6,referenceRank:0}]);
  assert.equal(plan.items[0].observed.primary,'1.6k');
  assert.equal(plan.items[0].pathGroup,'alt-shared');
 });

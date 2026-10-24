@@ -42,15 +42,24 @@ const softLevels=(rank,level)=>{
 const UNITS_WITHOUT_GENERIC_ENHANCEMENT=new Set([
  'all_skills','helm_all_skills','pet_mastery_level'
 ]);
+// The Gnarled Stick still displays +50% Pet Damage at A10 +24 in the
+// October 24 in-game capture. This is its fixed secondary implicit, not an
+// ordinary Pet Damage affix. Do not apply generic Awakening growth to it.
+const VERIFIED_FIXED_SECONDARIES=new Set(['stick_pet_damage']);
 const RATE_IMPLICITS=new Set([
  'block_chance','crit_damage','crit_chance','claw_crit_chance',
  'helm_crit_chance','glove_crit_chance','boots_double_hit','boots_block_chance',
  'flat_damage_reduction','attack_pet_damage','stick_pet_damage',
  'glove_attack_damage','helm_pet_damage','gold_exp_gain'
 ]);
-const scaleRange=(src,tier,rank,level)=>{
+const scaleRange=(src,tier,rank,level,secondary=false)=>{
  const cfg=tierCfg[tier-1];
  const increment=cfg?.[1]||0;
+ if(secondary&&VERIFIED_FIXED_SECONDARIES.has(src.stat))return {min:src.min,max:src.max,confidence:'verified-fixed'};
+ // Several side-grade bonuses have a single tier value, but the available
+ // config does not establish whether every one scales after Infernal. Keep
+ // them visible without inventing an A-rank projection.
+ if(secondary&&src.min===src.max)return {min:src.min,max:src.max,confidence:'tier-only'};
  // 12% per Awakening rank is explicit. The game's complete implicit operation
  // order/roll identity is not in config, so these are projections, never exact rolls.
  // An all-skills or mastery implicit must never receive a fabricated +11 per
@@ -72,7 +81,7 @@ export function projectedStats(id,point){
  const base=optimizerTierRanges(id,tier);
  if(!base)return null;
  const primary=scaleRange(base.primary,tier,rank,lv);
- const secondary=base.secondary?scaleRange(base.secondary,tier,rank,lv):null;
+ const secondary=base.secondary?scaleRange(base.secondary,tier,rank,lv,true):null;
  return {id,tier,rank,level:lv,primary:{...primary,stat:item.primary,label:optimizerStatLabel(item.primary)},secondary:secondary?{...secondary,stat:item.secondary,label:optimizerStatLabel(item.secondary)}:null};
 }
 const mid=x=>Math.round((x.min+x.max)/2);

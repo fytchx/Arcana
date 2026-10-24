@@ -15,7 +15,9 @@ export function compareUpgradeChoices(candidates,focus,stock={},goldStock='',str
   .map(([stat,label])=>({stat,label})).sort((a,b)=>a.label.localeCompare(b.label));
  const objective=focusStats.some(x=>x.stat===focus)?focus:focusStats.find(x=>x.stat==='defense')?.stat||focusStats[0]?.stat||'';
  const ranked=full.map(candidate=>{
-  const gain=candidate.breakdown.gains.get(objective)||0;
+  const objectiveRows=candidate.breakdown.rows.filter(row=>row.stat===objective);
+  const modeled=objectiveRows.length>0&&objectiveRows.every(row=>!row.unmodeled&&!row.needsValue&&!row.uncertain&&!row.invalid);
+  const gain=modeled?candidate.breakdown.gains.get(objective)||0:0;
   const units=materialCount(candidate.cost),required=candidate.cost.materials||[];
   const known=required.filter(m=>toBig(stock[m.slug])!==null).length;
   const missing=required.map(m=>{
@@ -26,7 +28,7 @@ export function compareUpgradeChoices(candidates,focus,stock={},goldStock='',str
   const missingGold=goldOwned===null?null:goldOwned<candidate.cost.gold?candidate.cost.gold-goldOwned:0n;
   const budgetComplete=known===required.length&&goldOwned!==null;
   const affordable=budgetComplete&&missing.every(m=>m.short===0n)&&missingGold===0n;
-  return {...candidate,gain,units,density:gain>0?(units>0?gain/units:Infinity):0,
+  return {...candidate,gain,modeled,hasObjective:objectiveRows.length>0,units,density:gain>0?(units>0?gain/units:Infinity):0,
    missing,missingGold,known,requiredCount:required.length,budgetComplete,affordable};
  }).sort((a,b)=>b.density-a.density||b.gain-a.gain||a.index-b.index);
 
