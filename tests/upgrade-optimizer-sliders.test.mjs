@@ -30,22 +30,25 @@ test('combined materials sum matching slugs from multiple items',()=>{
  assert.equal(q.materials.find(m=>m.slug==='infernal-fragment').quantity,20n);
  assert.equal(q.gold,1000n);
 });
-test('material shopping list comes before sliders and gold stays collapsed',()=>{
+test('planner starts genuinely empty and only presents material totals after adding gear',()=>{
  const html=upgradeOptimizerSliderView(fixture,[]);
- assert.ok(html.includes('COMBINED MATERIAL REQUIREMENTS'));
- assert.ok(html.indexOf('COMBINED MATERIAL REQUIREMENTS')<html.indexOf('data-uo-items'));
- assert.ok(html.includes('data-uo-field="rarity"'));
- assert.ok(html.includes('data-uo-field="awaken"'));
- assert.ok(html.includes('data-uo-field="level"'));
- assert.match(html,/<details class="uoMoney">/);
- assert.match(html,/Item stat reference/);
+ assert.match(html,/No equipment added/);
+ assert.match(html,/Add equipment/);
+ assert.match(html,/Clear all/);
+ assert.doesNotMatch(html,/Chainmail Boots/);
+ assert.doesNotMatch(html,/Farming list/);
+ assert.doesNotMatch(html,/data-uo-field="rarity"/);
 });
 test('sliders save independently from the damage calculator and preserve multiple candidates',()=>{
  const map=new Map(),store={getItem:k=>map.get(k),setItem:(k,v)=>map.set(k,v)};
  const initial=normalizeOptimizerSliders();
  assert.deepEqual(saveOptimizerSliders(initial,store),readOptimizerSliders(store));
- assert.equal(initial.items.length,2);
+ assert.equal(initial.items.length,0);
  assert.ok([...map.keys()][0].includes('upgrade-optimizer'));
+ // Previously saved sample entries must not be imported from the old version.
+ const old=new Map([['arcana-upgrade-optimizer-sliders-v2',JSON.stringify({items:[{itemKey:'sandals-of-starszy|Chainmail Boots'}]})]]);
+ assert.deepEqual(readOptimizerSliders({getItem:key=>old.get(key)}).items,[]);
+
 });
 test('app points to latest optimizer without changing damage calculator route',async()=>{
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
@@ -58,4 +61,13 @@ test('October 21 source ranges include all forty base items and newer special im
  assert.equal(OPTIMIZER_TIER_DATA.size,40);
  assert.deepEqual(optimizerTierRanges('pathfinder-treads',6).secondary,{stat:'gold_exp_gain',min:18,max:20});
  assert.deepEqual(optimizerTierRanges('wardplate',6).secondary,{stat:'flat_damage_reduction',min:4,max:5});
+});
+
+test('clear-all state can persist as an empty list and the last item can be removed',()=>{
+ const bag=new Map(),store={getItem:key=>bag.get(key),setItem:(key,value)=>bag.set(key,value)};
+ const withOne=normalizeOptimizerSliders({items:[{itemKey:'rags|Chainmail Armor',current:{rarity:6,awaken:3,level:10},target:{rarity:6,awaken:4,level:0}}]});
+ assert.equal(withOne.items.length,1);
+ withOne.items.splice(0,1);
+ saveOptimizerSliders(withOne,store);
+ assert.deepEqual(readOptimizerSliders(store).items,[]);
 });
