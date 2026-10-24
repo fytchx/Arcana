@@ -33,20 +33,35 @@ export function familyArtwork(id,point,px=64){
  return v?codexOfficialArt({id:'game:item:'+id,kind:'item',title:artTitle},px):'<span class="gameArt gameArt-missing">◇</span>';
 }
 const softLevels=(rank,level)=>{
- // The source explicitly reduces enhancement growth after the effective level-90 cap.
- // A rank adds 30 enhanced levels; each rank’s +0 is its checkpoint.
+ // The config specifies a level-90 enhancement softcap. An A-rank begins at
+ // its preceding 30-level checkpoint; it must not lose every prior level's
+ // estimated contribution just because the displayed +level resets to zero.
  const count=Math.max(0,Math.min(30,rank))*30+Math.max(0,Math.min(30,level));
  return count<=90?count:90+(count-90)*.5;
 };
-const effectiveEnhancement=(rank,level)=>softLevels(rank,level)-softLevels(rank,0);
+const UNITS_WITHOUT_GENERIC_ENHANCEMENT=new Set([
+ 'all_skills','helm_all_skills','pet_mastery_level'
+]);
+const RATE_IMPLICITS=new Set([
+ 'block_chance','crit_damage','crit_chance','claw_crit_chance',
+ 'helm_crit_chance','glove_crit_chance','boots_double_hit','boots_block_chance',
+ 'flat_damage_reduction','attack_pet_damage','stick_pet_damage',
+ 'glove_attack_damage','helm_pet_damage','gold_exp_gain'
+]);
 const scaleRange=(src,tier,rank,level)=>{
  const cfg=tierCfg[tier-1];
  const increment=cfg?.[1]||0;
  // 12% per Awakening rank is explicit. The game's complete implicit operation
  // order/roll identity is not in config, so these are projections, never exact rolls.
- const factor=1+rank*.12;
- const add=increment*effectiveEnhancement(rank,level);
- return {min:Math.ceil((src.min+add)*factor),max:Math.ceil((src.max+add)*factor)};
+ // An all-skills or mastery implicit must never receive a fabricated +11 per
+ // enhancement. Rate-type implicits likewise cannot gain eleven percentage
+ // points per level. Only flat values use the configured generic increment.
+ const special=UNITS_WITHOUT_GENERIC_ENHANCEMENT.has(src.stat);
+ const rate=RATE_IMPLICITS.has(src.stat);
+ const factor=special?1:1+rank*.12;
+ const add=special||rate?0:increment*softLevels(rank,level);
+ return {min:Math.ceil((src.min+add)*factor),max:Math.ceil((src.max+add)*factor),
+  confidence:special?'tier-only':rate?'awakening-estimate':'range-estimate'};
 };
 export function projectedStats(id,point){
  const item=familyById(id);
