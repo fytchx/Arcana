@@ -113,7 +113,7 @@ export async function handleSiteAdminRequest(req,res,url){
    const member=await readJSON(resolve(dataRoot(),'users',file));
    if(!member||member.suspended)continue;
    const visible=publicProfile(member);
-   members.push({id:visible.id,displayName:visible.displayName,inGameName:visible.inGameName,guild:visible.guild,roles:visible.roles,joinedAt:visible.joinedAt,betaTesterSince:visible.betaTesterSince});
+   members.push({id:visible.id,displayName:visible.displayName,inGameName:visible.inGameName,guild:visible.guild,roles:visible.roles,awards:visible.awards,joinedAt:visible.joinedAt,betaTesterSince:visible.betaTesterSince});
   }
   members.sort((a,b)=>String(b.joinedAt).localeCompare(String(a.joinedAt)));
   const page=Math.max(1,Math.min(10000,Number(url.searchParams.get('page'))||1));
