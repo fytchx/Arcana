@@ -64,7 +64,7 @@ export function publicProfile(account){
 export const selfProfile=account=>({...publicProfile(account),permissions:{
  createCommunity:can(asCreator(account),'community:create'),publishWiki:can(asCreator(account),'wiki:publish'),
  hideContent:can(asCreator(account),'community:hide'),deleteContent:can(asCreator(account),'community:delete'),
- manageRoles:can(asCreator(account),'roles:manage'),viewAnalytics:can(asCreator(account),'analytics:view'),manageSite:can(asCreator(account),'site:manage')}});
+ manageRoles:can(asCreator(account),'roles:manage'),viewAnalytics:can(asCreator(account),'analytics:view'),manageSite:can(asCreator(account),'site:manage'),reviewCharacters:can(asCreator(account),'character:review'),manageRecords:can(asCreator(account),'records:manage'),staffAccess:can(asCreator(account),'staff:access')},verificationStatus:account.profile?.characterClaim?.status||'none'});
 const accountFile=id=>resolve(dataRoot(),'users',id+'.json');
 const sessionFile=token=>resolve(dataRoot(),'sessions',sha(token)+'.json');
 export async function accountUser(req){
