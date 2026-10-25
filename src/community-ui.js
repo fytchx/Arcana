@@ -2,6 +2,7 @@ import {esc,icon} from './ui.js';
 import {guildBadge} from './guild-badge.js';
 import {cloudBuildView,loadAccountBuilds,wireCloudBuildUI} from './account-builds-ui.js';
 import {farmListsAccountView,loadFarmingLists} from './farming-lists-ui.js';
+import {accountCharacterLink} from './community-archive-ui.js';
 const state={me:undefined,enabled:false,betaEnrollmentOpen:false,posts:[],myPosts:[],profilePosts:[],post:null,profile:null,loading:null,error:'',lastRoute:'',requested:'',guildRegistry:[]};
 const titleProfile=p=>guildBadge(p,state.guildRegistry)+' '+esc(p?.displayName||'Arcana player');
 let avatarPending=null;
@@ -20,9 +21,9 @@ const fields=[
 ];
 const profileCard=(p,{full=false}={})=>{
  if(!p)return notice('Player profile not available.');
- return '<article class="playerCard"><div class="playerCardHead"><span class="playerAvatar">'+(p.avatarDataUrl?'<img src="'+esc(p.avatarDataUrl)+'" alt="" loading="lazy">':esc((p.displayName||'?').slice(0,1).toUpperCase()))+'</span><div><span class="eyebrow">ARCANA PLAYER CARD</span><h2>'+titleProfile(p)+'</h2><div class="roleBadges">'+labels(p.roles)+'</div></div></div>'+
+ return '<article class="playerCard"><div class="playerCardHead"><span class="playerAvatar">'+(p.avatarDataUrl?'<img src="'+esc(p.avatarDataUrl)+'" alt="" loading="lazy">':esc((p.displayName||'?').slice(0,1).toUpperCase()))+'</span><div><span class="eyebrow">ARCANA PLAYER CARD</span><h2>'+titleProfile(p)+'</h2><div class="roleBadges">'+labels(p.roles)+(p.verifiedCharacter?'<span class="accountRole arcVerifiedBadge">✓ Arcana-Reviewed Character</span>':'')+'</div></div></div>'+
  '<div class="playerFacts">'+[
-  ['IN-GAME NAME',p.inGameName],['GUILD',p.guild],['FAVORITE CLASS',p.favoriteClass],
+  ['VERIFIED CHARACTER',p.verifiedCharacter?.name],['IN-GAME NAME',p.inGameName],['GUILD',p.guild],['FAVORITE CLASS',p.favoriteClass],
   ['RAID TEAM STATUS',p.raidStatus],['GUILD STATUS',p.guildStatus]
  ].filter(([,v])=>v).map(([k,v])=>'<div><small>'+k+'</small><strong>'+esc(v)+'</strong></div>').join('')+'</div>'+
  (p.description?'<p class="playerBio">'+esc(p.description)+'</p>':'')+
@@ -30,7 +31,7 @@ const profileCard=(p,{full=false}={})=>{
  '</article>';
 };
 const signInPanel=()=>{
- return '<section class="communityWelcome"><h2>Join Arcana, keep the freedom.</h2><p>Your calculators, Build Studio and shareable planner links stay completely free without an account. An account adds your player card and lets you publish community builds and guides.</p>'+
+ return '<section class="communityWelcome"><h2>Join Arcana, keep the freedom.</h2><p>Public calculators, Build Studio and shareable planner links stay free without an account. An account adds your player card and lets you publish community builds and guides.</p>'+
  (state.enabled?'<a class="btn primary" href="/api/account/login">'+icon('users',17)+' Create account / Sign in with Discord</a>'+(state.betaEnrollmentOpen?'<p class="mutedSmall">Accounts created during beta receive the permanent Founding Beta Tester badge. Your account and contributions are intended to remain after full launch.</p>':''):
  '<p class="mutedSmall">Account sign-in is not enabled on this preview. All guest tools remain available.</p>')+
   '<p class="mutedSmall">By signing in, you can review our <a href="/privacy.html">Privacy Notice</a> and <a href="/beta-rules.html">Beta Guidelines</a>. Your profile and published contributions are public.</p>'+
@@ -43,17 +44,23 @@ const profileForm=p=>{
  '<label>About your character and what you are looking for<textarea name="description" maxlength="500" rows="5" placeholder="Builds you enjoy, raid team goals, or guild details">'+esc(p.description||'')+'</textarea></label>'+
  '<button class="btn primary" type="submit">Save player card</button><p class="mutedSmall">Tags may be 2–4 letters (A–Z) and must be unclaimed or belong to your registered guild. Unregistered tags remain gray; approved registered tags use their chosen colors. <button class="inlineLink" type="button" data-route="guilds">Explore guilds</button></p><p class="mutedSmall">Everything on this card is public. Only share details you want other players to see. Guild and class information is self-reported.</p></form>';
 };
-function accountView(){
+function accountView(query=new URLSearchParams()){
  if(state.me===undefined)return notice('Loading your Arcana account…');
- if(!state.me)return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">ARCANA MEMBERSHIP</span><h1>Your Arcana identity</h1><p>Every player gets full access to Arcana tools, with or without a login.</p></div>'+signInPanel()+'</div>';
- const p=state.me;
- return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">ARCANA MEMBER</span><h1>My player card</h1><p>Make it easy for other IdleArc players to find and recognize you.</p></div>'+
- profileCard(p,{full:true})+farmListsAccountView()+profileForm(p)+cloudBuildView()+
- (state.myPosts.length?'<section class="communityMyPosts"><h2>My published guides & builds</h2><div class="communityPostGrid">'+state.myPosts.map(communityPostCard).join('')+'</div></section>':'')+
- (false?'<form class="accountProfileForm" data-community-form="roles"><h2>Manage approved roles</h2><p class="mutedSmall">Enter the player ID from their public profile URL. Wiki Editors may publish official pages. Moderators can hide contributions; only Admins and the Creator can delete.</p><label>Player ID<input name="id" required placeholder="Account ID from their player-card link" maxlength="36"></label><fieldset class="accountRoleSelect"><legend>Approved roles</legend><label><input type="checkbox" name="roles" value="wiki-editor"> Arcana Wiki Editor</label><label><input type="checkbox" name="roles" value="moderator"> Moderator</label>'+(
- p.roles?.some(r=>r.id==='creator')?'<label><input type="checkbox" name="roles" value="admin"> Admin</label><label><input type="checkbox" name="roles" value="developer"> Developer</label>':'')+'</fieldset><button class="btn primary" type="submit">Set member roles</button><p class="mutedSmall">Select the roles to grant. Leave every checkbox unchecked to revoke additional roles. Creator assignments cannot be modified.</p></form>':'')+
- '<div class="communityAccountActions">'+(p.permissions?.viewAnalytics?'<button class="btn primary" data-route="admin">Admin Control Center</button>':'')+'<button class="btn secondary" data-route="community/create">Create a community post</button><button class="btn secondary" data-route="guilds">Guild Hub</button>'+
- (p.permissions?.publishWiki?'<button class="btn secondary" data-route="wiki/studio">Open Wiki Studio</button>':'')+
+ if(!state.me)return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">ARCANA MEMBERSHIP</span><h1>Welcome to your Arcana</h1><p>Public tools stay available without an account. Sign in to save builds, link characters and contribute.</p></div>'+signInPanel()+'</div>';
+ const p=state.me,requested=query?.get('tab'),tab=['overview','profile','character','saves','contributions'].includes(requested)?requested:'overview';
+ const tabs=[['overview','Overview'],['profile','Edit profile'],['character','Character link'],['saves','Saved work'],['contributions','My contributions']];
+ const nav='<nav class="arcAccountTabs" aria-label="Account sections">'+tabs.map(([id,label])=>'<button type="button" data-route="account" data-params="tab='+id+'" class="'+(tab===id?'active':'')+'" aria-current="'+(tab===id?'page':'false')+'">'+label+'</button>').join('')+'</nav>';
+ const quick='<div class="arcAccountQuick"><button data-route="guilds">'+icon('shield',19)+' Guild Hub</button><button data-route="records">'+icon('book',19)+' Season History</button><button data-route="settings">'+icon('settings',19)+' App Preferences</button><button data-route="beta">'+icon('info',19)+' Feedback</button>'+(p.permissions?.staffAccess?'<button data-route="staff">'+icon('users',19)+' Staff Workspace</button>':'')+'</div>';
+ const contributions=state.myPosts.length?'<section class="communityMyPosts"><h2>My published guides & builds</h2><div class="communityPostGrid">'+state.myPosts.map(communityPostCard).join('')+'</div></section>':notice('Your published builds and guides will appear here.');
+ const content=tab==='overview'?profileCard(p,{full:true})+quick+
+ '<section class="arcArchiveBox"><h2>Make Arcana yours</h2><p>Manage character verification, saved builds, guild presence and community contributions from one place.</p><div class="arcAccountQuick"><button data-route="account" data-params="tab=character">Link a character</button><button data-route="account" data-params="tab=saves">Saved builds</button><button data-route="community/create">Share a guide</button></div></section>':
+ tab==='profile'?profileCard(p,{full:true})+profileForm(p):
+ tab==='character'?accountCharacterLink(p):
+ tab==='saves'?farmListsAccountView()+cloudBuildView():
+ contributions+'<button class="btn primary" data-route="community/create">Publish a guide or build</button>';
+ return '<link rel="stylesheet" href="/community-archive.css?v=20261025"><div class="communityPage arcAccount"><div class="communityHero"><span class="eyebrow">ARCANA MEMBER PORTAL</span><h1>My Arcana</h1><p>Your identity, characters, saved plans and contributions, together.</p></div>'+
+ nav+content+'<div class="communityAccountActions">'+(p.permissions?.viewAnalytics?'<button class="btn secondary" data-route="admin">Admin Control Center</button>':'')+
+ (p.permissions?.publishWiki?'<button class="btn secondary" data-route="wiki/studio">Wiki Studio</button>':'')+
  '<button class="btn secondary" data-community-action="logout">Sign out</button></div></div>';
 }
 const communityPostCard=p=>'<article class="communityPostCard"><span class="eyebrow">'+esc(p.kind==='build'?'PLAYER BUILD':'PLAYER GUIDE')+'</span>'+
@@ -101,7 +108,7 @@ function createView(query){
  '<button class="btn primary" type="submit">'+(editing?'Save changes':'Publish to community')+'</button></form></div>';
 }
 export function communityPage(route,query){
- if(route==='account')return accountView();
+ if(route==='account')return accountView(query);
  if(route==='profile')return '<div class="communityPage"><button class="wikiBack" data-route="community">'+icon('back',16)+' Community</button>'+profileCard(state.profile,{full:true})+(state.profilePosts.length?'<section class="communityMyPosts"><h2>Builds & guides by this player</h2><div class="communityPostGrid">'+state.profilePosts.map(communityPostCard).join('')+'</div></section>':'')+'</div>';
  if(route==='community')return communityView();
  if(route==='community/post')return detailView();
