@@ -26,6 +26,8 @@ const selectRoles=(selected,creator)=>{
  return [['wiki-editor','Wiki Editor'],['moderator','Moderator'],...(creator?[['admin','Administrator'],['developer','Developer']]:[])].map(([key,label])=>
  '<label class="adminRoleCheck"><input type="checkbox" name="roles" value="'+key+'" '+(assigned.has(key)?'checked':'')+'>'+esc(label)+'</label>').join('');
 };
+const AWARD_OPTIONS=[['guide-author','Guide Author'],['wiki-contributor','Wiki Contributor'],['bug-hunter','Bug Hunter'],['ui-designer','Visual Designer'],['community-helper','Community Helper'],['dev-contributor','Developer Contributor'],['season-historian','Season Historian']];
+const selectAwards=user=>{const granted=new Set((user?.awards||[]).map(x=>x.id||x));return AWARD_OPTIONS.map(([id,label])=>'<label class="adminRoleCheck"><input type="checkbox" name="awards" value="'+id+'" '+(granted.has(id)?'checked':'')+'>'+label+'</label>').join('')};
 const listedMembers=()=>state.members.filter(u=>!state.query||[u.displayName,u.inGameName,u.guild,u.id].some(v=>String(v||'').toLowerCase().includes(state.query.toLowerCase())));
 const listMembers=()=>listedMembers().map(user=>'<button class="adminMemberRow '+(state.member?.id===user.id?'active':'')+'" type="button" data-admin-member="'+esc(user.id)+'"><span><strong>'+esc(user.displayName)+'</strong><small>'+esc([user.inGameName,user.guild].filter(Boolean).join(' · ')||user.id)+'</small></span><span class="adminMemberRole">'+esc(roleLabels(user.roles))+'</span></button>').join('')||'<p class="adminEmpty">No members match your search on this page.</p>';
 function membersView(){
@@ -36,7 +38,7 @@ function membersView(){
   '<label class="adminField">Search this page<input id="adminMemberFilter" type="search" value="'+esc(state.query)+'" placeholder="Player, guild or account ID"></label>'+
   '<div id="adminMemberList" class="adminMemberList">'+listMembers()+'</div>'+
   '<div class="adminPagination"><button data-admin-command="prev" '+(state.page<2?'disabled':'')+'>Previous</button><span>'+state.page+' / '+state.pages+'</span><button data-admin-command="next" '+(state.page>=state.pages?'disabled':'')+'>Next</button></div>'+
- (selected?'<form id="adminRoleForm" class="adminRoleForm"><h3>'+esc(selected.displayName)+'</h3><p>Account ID: <code>'+esc(selected.id)+'</code></p><fieldset><legend>Assign roles</legend>'+selectRoles(selected,creator)+'</fieldset><button class="btn primary" type="submit" '+(state.busy?'disabled':'')+'>Save member roles</button><p class="adminHelp">Unchecking all additional roles leaves the account as a regular Member. The Creator identity and permanent beta badge are protected.</p></form>':infoBar('Select a member above to manage roles.')));
+ (selected?'<form id="adminRoleForm" class="adminRoleForm"><h3>'+esc(selected.displayName)+'</h3><p>Account ID: <code>'+esc(selected.id)+'</code></p><fieldset><legend>Assign roles</legend>'+selectRoles(selected,creator)+'</fieldset><fieldset><legend>Contributor recognition (no staff privileges)</legend>'+selectAwards(selected)+'</fieldset><button class="btn primary" type="submit" '+(state.busy?'disabled':'')+'>Save member roles</button><p class="adminHelp">Unchecking all additional roles leaves the account as a regular Member. The Creator identity and permanent beta badge are protected.</p></form>':infoBar('Select a member above to manage roles.')));
 }
 function appearanceView(){
  const published=state.config?.design;
@@ -134,10 +136,10 @@ export function wireAdminConsole({refresh,toast}){
   if(e.target.id==='adminRoleForm'){
    e.preventDefault();
    const account=state.member;if(!account)return;
-   const roles=[...new FormData(e.target).getAll('roles')];
+   const roles=[...new FormData(e.target).getAll('roles')],awards=[...new FormData(e.target).getAll('awards')];
    if(!confirm('Update roles for '+account.displayName+'?'))return;
-   void adminFetch('/api/admin/roles/'+encodeURIComponent(account.id),{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({roles})})
-    .then(data=>{const index=state.members.findIndex(u=>u.id===account.id);if(index>=0)state.members[index]={...state.members[index],roles:data.profile.roles};state.member={...account,roles:data.profile.roles};toast('Member roles saved.');state.error='';refresh();})
+   void adminFetch('/api/admin/roles/'+encodeURIComponent(account.id),{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({roles,awards})})
+    .then(data=>{const index=state.members.findIndex(u=>u.id===account.id);if(index>=0)state.members[index]={...state.members[index],roles:data.profile.roles,awards:data.profile.awards};state.member={...account,roles:data.profile.roles,awards:data.profile.awards};toast('Member roles and recognition saved.');state.error='';refresh();})
     .catch(err=>{state.error=err.message;refresh()});return;
   }
   if(e.target.id==='adminNoticeForm'){
