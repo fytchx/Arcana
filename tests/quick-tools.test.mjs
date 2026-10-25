@@ -67,7 +67,8 @@ test('Pathfinder uses verified recipes and the homepage has no calculator',async
  assert.match(app,/quickUpgradePanel\(recipeState.data,state.pathfinderRange/);
  assert.match(app,/quickUpgradeContent\(recipeState\.data,current/);
  assert.match(app,/initialQuickRange\(payload,state\.pathfinderRange\)/);
- assert.match(app,/case 'calculators\/damage':return calcDamage/);
+ assert.match(app,/case 'calculators\/damage':return isAppearanceAdmin\(\)\?calcDamage\(\):notFound\(\)/);
+  assert.match(server,/requireCapability\(req,'site:manage'\)/);
  assert.match(app,/function pathfinderHub\(legacyView='range'\)/);
  assert.match(page,/quick-tools\.css/);assert.match(server,/quick-tools\.css/);
  assert.match(page,/home-three\.css/);assert.match(server,/home-three\.css/);
