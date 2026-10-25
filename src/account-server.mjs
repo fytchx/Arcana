@@ -1,7 +1,7 @@
 import {randomBytes, randomUUID, createHash, timingSafeEqual} from 'node:crypto';
 import {mkdir, readFile, writeFile, rename, unlink} from 'node:fs/promises';
 import {resolve, dirname} from 'node:path';
-import {can, rolesOf, publicRoles, mayChangeRoles} from './account-policy.js';
+import {can, rolesOf, publicRoles, mayChangeRoles,AWARD_LABELS} from './account-policy.js';
 
 const ACCOUNT_ID=/^[0-9a-f]{8}-[0-9a-f-]{27,36}$/;
 const DISCORD_ID=/^[0-9]{16,22}$/;
@@ -56,12 +56,13 @@ const safeText=(value,max)=>String(value||'').trim().slice(0,max).replace(/[\u00
 const asCreator=account=>({...account,isCreator:DISCORD_ID.test(process.env.ARCANA_CREATOR_DISCORD_ID||'')&&account.discordId===process.env.ARCANA_CREATOR_DISCORD_ID});
 const ARCANA_BANNERS=['nebula','frost','ember','forest','royal'];
 export function publicProfile(account){
- const a=asCreator(account),earned=new Set(rolesOf(a));if(a.profile?.verifiedCharacter?.status==='approved')earned.add('verified-character');
+ const a=asCreator(account),earned=new Set(rolesOf(a));for(const award of a.awards||[])if(AWARD_LABELS[award])earned.add(award);if(a.profile?.verifiedCharacter?.status==='approved')earned.add('verified-character');
  const featured=Array.isArray(a.profile?.featuredBadges)?a.profile.featuredBadges.filter(id=>earned.has(id)).slice(0,3):[];
  return {id:a.id,displayName:a.profile?.displayName||a.discordName||'Arcana player',
  inGameName:a.profile?.inGameName||'',guild:a.profile?.guild||'',guildTag:a.profile?.guildTag||'',guildId:a.profile?.guildId||'',favoriteClass:a.profile?.favoriteClass||'',
  description:a.profile?.description||'',tagline:a.profile?.tagline||'',bannerTheme:ARCANA_BANNERS.includes(a.profile?.bannerTheme)?a.profile.bannerTheme:'nebula',featuredBadges:featured,avatarDataUrl:a.profile?.avatarDataUrl||'',raidStatus:a.profile?.raidStatus||'',guildStatus:a.profile?.guildStatus||'',
  verifiedCharacter:a.profile?.verifiedCharacter?.status==='approved'?{name:a.profile.verifiedCharacter.name,approvedAt:a.profile.verifiedCharacter.approvedAt}:null,
+ awards:(a.awards||[]).filter(id=>AWARD_LABELS[id]).map(id=>({id,label:AWARD_LABELS[id]})),
  roles:publicRoles(a),joinedAt:a.joinedAt||'',betaTesterSince:a.betaTesterSince||'',suspended:!!a.suspended};
 }
 export const selfProfile=account=>({...publicProfile(account),permissions:{
@@ -200,7 +201,7 @@ export async function handleAccountRequest(req,res,url){
   if(Object.hasOwn(fields,'bannerTheme')){if(!ARCANA_BANNERS.includes(fields.bannerTheme))throw error(422,'Unknown profile banner style.');profile.bannerTheme=fields.bannerTheme;}
   if(Object.hasOwn(fields,'featuredBadges')){
    if(!Array.isArray(fields.featuredBadges)||fields.featuredBadges.length>3||new Set(fields.featuredBadges).size!==fields.featuredBadges.length)throw error(422,'Choose up to three distinct earned badges.');
-   const earned=new Set(rolesOf(user));if(user.profile?.verifiedCharacter?.status==='approved')earned.add('verified-character');
+   const earned=new Set(rolesOf(user));for(const award of user.awards||[])if(AWARD_LABELS[award])earned.add(award);if(user.profile?.verifiedCharacter?.status==='approved')earned.add('verified-character');
    if(fields.featuredBadges.some(x=>!earned.has(x)))throw error(403,'You may only feature badges you have earned.');
    profile.featuredBadges=fields.featuredBadges;
   }
@@ -221,13 +222,14 @@ export async function handleAccountRequest(req,res,url){
  if(assign&&method==='PATCH'){
   checkOrigin(req);const actor=await requireUser(req,'roles:manage');
   const input=await parseJSON(req);
-  const next=input?.roles;
+  const next=input?.roles,awards=input?.awards;
   if(!Array.isArray(next)||new Set(next).size!==next.length||next.length>4)throw error(422,'Invalid role list.');
+  if(awards!==undefined&&(!Array.isArray(awards)||awards.length>Object.keys(AWARD_LABELS).length||new Set(awards).size!==awards.length||awards.some(id=>!Object.hasOwn(AWARD_LABELS,id))))throw error(422,'Invalid contributor awards.');
   const updated=await queued(async()=>{
    const target=await readJSON(accountFile(assign[1]));
    if(!target)throw error(404,'Member not found.');
    if(!mayChangeRoles(actor,asCreator(target),next))throw error(403,'Only the Creator can grant or change privileged roles.');
-   target.roles=[...next];await saveAtomic(accountFile(target.id),target);return target;
+   target.roles=[...next];if(awards!==undefined)target.awards=[...awards];await saveAtomic(accountFile(target.id),target);return target;
   });
   sendJSON(res,200,{profile:publicProfile(updated)});return true;
  }
