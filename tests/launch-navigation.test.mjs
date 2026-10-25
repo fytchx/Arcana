@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {HOME_CARDS,HOME_MENUS,DIRECTORY,WIKI_TOPICS,homeScreen,homeSubmenu,directoryView,wikiTopicView,userCenterView,settingsView} from '../src/launch-navigation.js';
 import {ACCENT_PRESETS,selectedAccent,setAccent,themeStatus} from '../src/theme.js';
 
-const routes=new Set(['journal','journal/article','journal-studio','journal-balance','home','directory','user','recent','settings','icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/category','wiki/items','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','calculators/damage','calculators/optimizer','community','community/create','account','beta','lfg/raids','lfg/guilds','guilds','guilds/crest']);
+const routes=new Set(['journal','journal/article','journal-studio','journal-balance','home','directory','user','recent','settings','icons','wiki','wiki/about','wiki/topics','wiki/topic','wiki/category','wiki/items','wiki/article','wiki/guides','wiki/library','wiki/studio','labs/build','labs/runes','labs/passives','labs/skills','labs/guild-tree','calculators/upgrade','calculators/pathfinder','calculators/compare','calculators/pet','calculators/affixes','calculators/ml-farm','calculators/damage','calculators/optimizer','records','staff','community','community/create','account','beta','lfg/raids','lfg/guilds','guilds','guilds/crest']);
 test('six Atlas tiles open real Arcana destinations',()=>{
  assert.deepEqual(HOME_CARDS.map(x=>x.title),['Pathfinder','Tools','Guilds & Community']);
  const html=homeScreen();
@@ -25,6 +25,8 @@ test('all submenu and A-Z destinations are resolvable routes',()=>{
  for(const item of DIRECTORY)assert.ok(routes.has(item.route),item.label);
  assert.deepEqual([...DIRECTORY].map(x=>x.label).sort((a,b)=>a.localeCompare(b,'en',{sensitivity:'base'})),DIRECTORY.map(x=>x.label));
  assert.match(directoryView(),/Explore Arcana A–Z/);
+  assert.doesNotMatch(directoryView(),/data-route="calculators\/(damage|optimizer)"/);
+  assert.match(directoryView(true),/data-route="calculators\/optimizer"/);
 });
 test('topic shells are navigable, safely escaped and do not invent article content',()=>{
  for(const topic of WIKI_TOPICS){
