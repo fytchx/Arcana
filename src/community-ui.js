@@ -73,6 +73,7 @@ function communityView(){
  '<section class="communityPathways" aria-label="Explore community resources">'+
  '<button type="button" class="communityPathway" data-route="guilds"><span>'+icon('shield',26)+'</span><strong>Guild Hub</strong><small>Find guilds, recruitment and members.</small><em>Explore guilds →</em></button>'+
  '<button type="button" class="communityPathway" data-route="wiki/guides"><span>'+icon('book',26)+'</span><strong>Guides &amp; Wiki</strong><small>Published strategies and verified game knowledge.</small><em>Read guides →</em></button>'+
+ '<button type="button" class="communityPathway" data-route="records"><span>'+icon('award',26)+'</span><strong>Season History</strong><small>Discover the top players and guilds from past seasons.</small><em>Explore history →</em></button>'+ 
  '<button type="button" class="communityPathway" data-route="labs/build"><span>'+icon('flask',26)+'</span><strong>Build Studio</strong><small>Inspect a setup and experiment with your own.</small><em>Try Build Studio →</em></button>'+
  '<a class="communityPathway" href="/journal"><span>'+icon('clock',26)+'</span><strong>Arcana Journal</strong><small>News, analysis and balance discussions.</small><em>Latest stories →</em></a></section>'+
  '<div class="communityContributionHead"><div><span class="eyebrow">FROM THE COMMUNITY</span><h2>Player builds &amp; guides</h2></div><button type="button" class="btn secondary" data-route="wiki/guides">Browse all guides →</button></div>'+
@@ -109,7 +110,7 @@ function createView(query){
 }
 export function communityPage(route,query){
  if(route==='account')return accountView(query);
- if(route==='profile')return '<div class="communityPage"><button class="wikiBack" data-route="community">'+icon('back',16)+' Community</button>'+profileCard(state.profile,{full:true})+(state.profilePosts.length?'<section class="communityMyPosts"><h2>Builds & guides by this player</h2><div class="communityPostGrid">'+state.profilePosts.map(communityPostCard).join('')+'</div></section>':'')+'</div>';
+ if(route==='profile')return '<link rel="stylesheet" href="/community-archive.css?v=20261025"><div class="communityPage"><button class="wikiBack" data-route="community">'+icon('back',16)+' Community</button>'+profileCard(state.profile,{full:true})+(state.profilePosts.length?'<section class="communityMyPosts"><h2>Builds & guides by this player</h2><div class="communityPostGrid">'+state.profilePosts.map(communityPostCard).join('')+'</div></section>':'')+'</div>';
  if(route==='community')return communityView();
  if(route==='community/post')return detailView();
  if(route==='community/create')return createView(query);
