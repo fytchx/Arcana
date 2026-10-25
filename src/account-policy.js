@@ -6,6 +6,10 @@ export const ROLE_NAMES = Object.freeze({
  admin:'Admin',developer:'Developer',creator:'Creator'
 });
 const CAPABILITIES = Object.freeze({
+ 'character:claim':['member'],
+ 'character:review':['moderator','admin','creator'],
+ 'records:manage':['admin','creator'],
+ 'staff:access':['wiki-editor','moderator','admin','developer','creator'],
  'community:create':['member','wiki-editor','moderator','admin','developer','creator'],
  'listings:create':['member','wiki-editor','moderator','admin','developer','creator'],
  'wiki:publish':['wiki-editor','admin','creator'],
