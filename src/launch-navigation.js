@@ -56,7 +56,8 @@ export const HOME_MENUS=Object.freeze({
   link('Legacy Guild Listings','Older recruitment listings.','lfg/guilds','users'),
   link('Find a Raid','Raid listings and groups.','lfg/raids','users'),
   link('Guild Skill Planner','Plan guild skill bonuses.','labs/guild-tree','shield'),
-  link('Player Community','Profiles, guides and shared builds.','community','users')
+  link('Player Community','Profiles, guides and shared builds.','community','users'),
+  link('Season History','Past guild champions and class leaders.','records','book')
  ]}
 });
 export const HOME_CARDS=Object.freeze([
@@ -67,14 +68,16 @@ export const HOME_CARDS=Object.freeze([
 const attrs=x=>'data-route="'+esc(x.route)+'"'+(x.params?' data-params="'+esc(new URLSearchParams(x.params).toString())+'"':'');
 const navrow=x=>'<button type="button" class="launchNavRow" '+attrs(x)+'><span class="launchNavIcon">'+icon(x.icon||'arrow',20)+'</span><span class="launchNavCopy"><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',17)+'</button>';
 export function homeScreen(){return atlasHomeScreen(icon);}
-export function homeSubmenu(id){
+const isPrivateRoute=x=>['calculators/damage','calculators/optimizer'].includes(x);
+export function homeSubmenu(id,admin=false){
  const menu=HOME_MENUS[id]; if(!menu)return '';
- return '<div class="launchMenu" role="group" aria-label="'+esc(menu.title)+' destinations"><div class="launchMenuIntro"><span class="launchEyebrow">EXPLORE ARCANA</span><h2>'+esc(menu.title)+'</h2><p>'+esc(menu.detail)+'</p></div><div class="launchMenuLinks">'+menu.links.map(navrow).join('')+'</div></div>';
+ return '<div class="launchMenu" role="group" aria-label="'+esc(menu.title)+' destinations"><div class="launchMenuIntro"><span class="launchEyebrow">EXPLORE ARCANA</span><h2>'+esc(menu.title)+'</h2><p>'+esc(menu.detail)+'</p></div><div class="launchMenuLinks">'+(admin?menu.links:menu.links.filter(x=>!isPrivateRoute(x.route))).map(navrow).join('')+'</div></div>';
 }
 const extras=[
  link('Arcana Journal','IdleArc news, class balance, opinion and development updates.','journal','book'),
  link('About IdleArc','Game overview and navigation.','wiki/about','info'),
- link('Account & Profile','Your player card and account.','account','users'),
+ link('My Arcana','Profile, linked characters, saves and contributions.','account','users'),
+ link('Season History','Historical guild and class rankings.','records','book'),
  link('App Settings','Display and accessibility preferences.','settings','cog'),
  link('Arcana Minimal Icons','Browse all original recolorable SVGs.','icons','gem'),
  link('Build Studio','Equipment, pets, runes, and skills.','labs/build','shield'),
@@ -86,15 +89,14 @@ const extras=[
  link('Recent Activity','Return to work and recently viewed entries.','recent','clock'),
  link('Wiki Studio · Editors','Edit and publish wiki content.','wiki/studio','edit'),
  link('Beta Feedback','Send a bug report or suggestion.','beta','info'),
- link('User Center','Account, recent work and settings.','user','users'),
  link('All Wiki Topics','Browse topic categories.','wiki/topics','book')
 ];
 export const DIRECTORY=Object.freeze([...extras,...Object.values(HOME_MENUS).flatMap(x=>x.links)]
  .filter((x,i,all)=>all.findIndex(y=>y.route===x.route&&JSON.stringify(y.params||{})===JSON.stringify(x.params||{}))===i)
  .sort((a,b)=>a.label.localeCompare(b.label,'en',{sensitivity:'base'})));
-export function directoryView(){
+export function directoryView(admin=false){
  const groups=new Map();
- for(const x of DIRECTORY){const letter=x.label.charAt(0).toUpperCase();if(!groups.has(letter))groups.set(letter,[]);groups.get(letter).push(x);}
+ for(const x of DIRECTORY.filter(x=>admin||!isPrivateRoute(x.route))){const letter=x.label.charAt(0).toUpperCase();if(!groups.has(letter))groups.set(letter,[]);groups.get(letter).push(x);}
  return '<div class="launchPage"><span class="launchEyebrow">ALL DESTINATIONS</span><h1>Explore Arcana A–Z</h1><p>All Arcana destinations, organized alphabetically.</p><div class="launchAlphabet">'+[...groups].map(([letter,links])=>'<section class="launchAlphabetGroup"><h2>'+esc(letter)+'</h2><div>'+links.map(navrow).join('')+'</div></section>').join('')+'</div></div>';
 }
 export function wikiTopicsView(){
@@ -115,13 +117,14 @@ export function wikiAboutView(){
 export function userCenterView(profile=null){
  const label=profile?.displayName||'Guest adventurer';
  return '<div class="launchPage"><span class="launchEyebrow">PERSONAL PORTAL</span><h1>User Center</h1><p>Pick up where you left off, manage your profile or adjust this device’s preferences.</p><div class="launchUserCard"><strong>'+esc(label)+'</strong><small>'+(profile?'Signed in to Arcana':'You can use the tools without an account')+'</small></div><div class="launchMenuLinks">'+[
- link('My Profile & Account','Player card, login and published content.','account','users'),
+ link('My Arcana','Player card, character linking, saved work and contributions.','account','users'),
+  link('Season History','Community achievements and rankings.','records','book'),
  link('Recent Activity','Continue work and revisit guides.','recent','clock'),
  link('App Settings','Display and accessibility options.','settings','cog'),
  link('Icon Library','Browse Arcana icon styles.','icons','gem'),
  link('My Build Studio','Jump back into your character.','labs/build','shield'),
  link('Beta Feedback','Report anything that needs fixing.','beta','info'),
- ...(profile?.roles?.some(r=>['admin','creator'].includes(r.id||r))?[link('Admin Dashboard','Private traffic statistics and management tools.','admin','shield'),link('Journal Studio','Write, edit and publish Journal articles.','journal-studio','edit')]:[])
+ ...(profile?.roles?.some(r=>['admin','creator'].includes(r.id||r))?[link('Admin Dashboard','Administration, staff roles and private labs.','admin','shield'),link('Journal Studio','Write, edit and publish Journal articles.','journal-studio','edit')]:[])
  ].map(navrow).join('')+'</div></div>';
 }
 const PREF_KEY='arcana-launch-prefs';
