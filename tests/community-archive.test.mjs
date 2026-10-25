@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {can} from '../src/account-policy.js';
+import {characterName,seasonalEntry} from '../src/community-archive-server.mjs';
+test('only authorized staff can review claims and publish rankings',()=>{assert.equal(can({roles:[]},'character:claim'),true);assert.equal(can({roles:['wiki-editor']},'character:review'),false);assert.equal(can({roles:['moderator']},'character:review'),true);assert.equal(can({roles:['moderator']},'records:manage'),false);assert.equal(can({roles:['admin']},'records:manage'),true)});
+test('manual rankings are validated, not fabricated',()=>{assert.equal(characterName('[OVK] Fytch'),'[OVK] Fytch');const data={season:'Season 2',category:'class',characterClass:'Mage',rank:1,name:'PlayerOne',description:'Top-ranked Mage this season'};assert.equal(seasonalEntry(data).rank,1);assert.throws(()=>seasonalEntry({...data,rank:0}),/Rank/);assert.throws(()=>seasonalEntry({...data,source:'javascript:bad()'}),/HTTPS/);});
