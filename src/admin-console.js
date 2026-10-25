@@ -60,12 +60,16 @@ function siteView(){
  '<button class="btn primary" type="submit">Publish announcement settings</button></form>')+
  section('Site health','Quick operational visibility without exposing secrets or deployment controls.',
  state.status?'<div class="adminSiteStatus"><strong>'+esc(state.status.ok?'Healthy':'Needs attention')+'</strong><p>Release: '+esc(state.status.release||'Unknown')+'</p><p>Artwork available: '+esc(state.status.artwork?.local?'Yes':'Remote fallback')+'</p></div>':infoBar('Loading status from the live service…'))+
- section('Safety & recovery','Publishing a theme never changes accounts, builds, wiki articles, or game data. A previous design can be restored from Appearance.',
+ section('Private experimental calculators','Unreleased tools require an authenticated Arcana Admin or Creator.',
+  '<div class="launchMenuLinks">'+actionLink('Upgrade Optimizer','Experimental equipment upgrade planner.','calculators/optimizer','calculator')+actionLink('Damage Calculator','Experimental damage formulas.','calculators/damage','calculator')+'</div>')+
+  section('Safety & recovery','Publishing a theme never changes accounts, builds, wiki articles, or game data. A previous design can be restored from Appearance.',
  '<button type="button" data-admin-command="refresh-status" class="btn secondary">Refresh site status</button>');
 }
 function contentView(){return section('Wiki & community publishing','Manage editorial content with the existing role and moderation permissions.',
  '<div class="launchMenuLinks">'+actionLink('Wiki Studio','Edit or publish verified articles and images.','wiki/studio','book')+
- actionLink('Community Contributions','Review published player guides and builds.','community','users')+
+ actionLink('Community Operations','Review character claims and curate season history.','staff','shield')+
+  actionLink('Season History','Browse published class and guild rankings.','records','book')+
+  actionLink('Community Contributions','Review published player guides and builds.','community','users')+
  actionLink('Beta Reports','See user suggestions and bug reports.','beta/reports','info')+
  actionLink('Wiki categories','Browse the current player-facing wiki.','wiki','layers')+'</div>')+
  section('Administration boundaries','Verified game data and artwork must remain source-backed. Existing editor permissions, player accounts, and builds are unchanged by a design publish.',infoBar('Only authorized editors can publish the official Wiki. Moderator and Admin permissions still control community changes.'));}
