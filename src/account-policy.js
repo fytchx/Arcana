@@ -1,6 +1,7 @@
 // Arcana permissions are capabilities, not client-side labels.
 // Every server mutation must call can() using a server-authenticated identity.
 export const ARCANA_ROLES = Object.freeze(['member','beta-tester','wiki-editor','moderator','admin','developer','creator']);
+export const AWARD_LABELS=Object.freeze({'guide-author':'Guide Author','wiki-contributor':'Wiki Contributor','bug-hunter':'Bug Hunter','ui-designer':'Visual Designer','community-helper':'Community Helper','dev-contributor':'Developer Contributor','season-historian':'Season Historian'});
 export const ROLE_NAMES = Object.freeze({
  member:'Arcana Member','beta-tester':'Founding Beta Tester','wiki-editor':'Arcana Wiki Editor',moderator:'Moderator',
  admin:'Admin',developer:'Developer',creator:'Creator'
