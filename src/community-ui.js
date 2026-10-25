@@ -21,7 +21,8 @@ const fields=[
 ];
 const profileCard=(p,{full=false}={})=>{
  if(!p)return notice('Player profile not available.');
- return '<article class="playerCard"><div class="playerCardHead"><span class="playerAvatar">'+(p.avatarDataUrl?'<img src="'+esc(p.avatarDataUrl)+'" alt="" loading="lazy">':esc((p.displayName||'?').slice(0,1).toUpperCase()))+'</span><div><span class="eyebrow">ARCANA PLAYER CARD</span><h2>'+titleProfile(p)+'</h2><div class="roleBadges">'+labels(p.roles)+(p.verifiedCharacter?'<span class="accountRole arcVerifiedBadge">✓ Arcana-Reviewed Character</span>':'')+'</div></div></div>'+
+ return '<article class="playerCard arcPlayerCard arcBanner-'+esc(p.bannerTheme||'nebula')+'"><div class="arcProfileBanner"><span>ARCANA · PLAYER IDENTITY</span><strong>'+esc(p.tagline||'Your place in the IdleArc community')+'</strong></div><div class="playerCardHead"><span class="playerAvatar">'+(p.avatarDataUrl?'<img src="'+esc(p.avatarDataUrl)+'" alt="" loading="lazy">':esc((p.displayName||'?').slice(0,1).toUpperCase()))+'</span><div><span class="eyebrow">ARCANA PLAYER CARD</span><h2>'+titleProfile(p)+'</h2><div class="roleBadges">'+labels(p.roles)+(p.verifiedCharacter?'<span class="accountRole arcVerifiedBadge">✓ Arcana-Reviewed Character</span>':'')+'</div></div></div>'+
+ (p.featuredBadges?.length?'<div class="arcFeaturedBadges"><small>FEATURED BADGES</small><div>'+p.featuredBadges.map(id=>'<span class="accountRole arcFeaturedBadge">'+esc(id==='verified-character'?'✓ Character Verified':(p.roles||[]).find(r=>r.id===id)?.label||id)+'</span>').join('')+'</div></div>':'')+
  '<div class="playerFacts">'+[
   ['VERIFIED CHARACTER',p.verifiedCharacter?.name],['IN-GAME NAME',p.inGameName],['GUILD',p.guild],['FAVORITE CLASS',p.favoriteClass],
   ['RAID TEAM STATUS',p.raidStatus],['GUILD STATUS',p.guildStatus]
@@ -41,6 +42,9 @@ const profileForm=p=>{
  return '<form class="accountProfileForm" data-community-form="profile"><h2>Edit player card</h2>'+
  fields.map(([key,label,type,max])=>'<label>'+label+'<input name="'+key+'" type="'+type+'" maxlength="'+max+'" value="'+esc(p[key]||'')+'"></label>').join('')+
  '<label>Player card picture (optional)<input id="arcanaAvatarFile" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" class="btn secondary" data-community-action="clear-avatar">Remove picture</button><p id="arcanaAvatarStatus" class="mutedSmall" role="status"></p>'+ 
+ '<label>Profile banner style<select name="bannerTheme">'+[['nebula','Nebula Violet'],['frost','Frost Blue'],['ember','Infernal Ember'],['forest','Verdant Forest'],['royal','Royal Indigo']].map(([id,label])=>'<option value="'+id+'"'+((p.bannerTheme||'nebula')===id?' selected':'')+'>'+label+'</option>').join('')+'</select></label>'+
+ '<label>Short profile tagline<input name="tagline" maxlength="100" placeholder="Something other players should know" value="'+esc(p.tagline||'')+'"></label>'+
+ '<fieldset class="arcBadgeSelector"><legend>Feature up to three earned badges</legend>'+[...(p.roles||[]).map(x=>[x.id,x.label]),...(p.verifiedCharacter?[['verified-character','Character Verified']]:[])].map(([id,label])=>'<label><input type="checkbox" name="featuredBadges" value="'+esc(id)+'"'+(p.featuredBadges?.includes(id)?' checked':'')+'>'+esc(label)+'</label>').join('')+'</fieldset>'+
  '<label>About your character and what you are looking for<textarea name="description" maxlength="500" rows="5" placeholder="Builds you enjoy, raid team goals, or guild details">'+esc(p.description||'')+'</textarea></label>'+
  '<button class="btn primary" type="submit">Save player card</button><p class="mutedSmall">Tags may be 2–4 letters (A–Z) and must be unclaimed or belong to your registered guild. Unregistered tags remain gray; approved registered tags use their chosen colors. <button class="inlineLink" type="button" data-route="guilds">Explore guilds</button></p><p class="mutedSmall">Everything on this card is public. Only share details you want other players to see. Guild and class information is self-reported.</p></form>';
 };
@@ -198,6 +202,7 @@ export function wireCommunityUI({go,getBuild,applyBuild,refresh,toast}){
    const data=Object.fromEntries(new FormData(form));
    if(form.dataset.communityForm==='profile'){
     if(avatarPending!==null)data.avatarDataUrl=avatarPending;
+    data.featuredBadges=new FormData(form).getAll('featuredBadges');
      const out=await getJSON('/api/account/profile',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({profile:data})});
      avatarPending=null;
     state.me=out.profile;window.dispatchEvent(new Event('arcana:account-updated'));toast('Player card updated.');refresh();return;
