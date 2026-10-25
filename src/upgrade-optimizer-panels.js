@@ -79,7 +79,7 @@ export function renderDecisionBoard(result,state,groups){
   const pathMaterials=r.cost.materials.map(m=>'<div class="uoCandidateMat"><span>'+esc(m.name)+'<small>'+esc(biomeBySlug.get(m.slug)||'Special materials')+'</small></span><strong>'+compact(m.quantity)+'</strong></div>').join('');
   return '<div class="uoCandidate"><div class="uoCompareRow"><span class="uoRank">'+(contributes?i+1:'—')+'</span><span class="uoCompareArt">'+familyArtwork(r.item.itemKey,r.item.current,48)+'</span><div class="uoCompareName"><strong>'+esc(r.name)+'</strong><small>'+esc(r.route)+'</small>'+badge+'</div>'+
    '<div class="uoCompareNumbers"><strong class="'+(r.gain>0?'uoPositive':'uoUnknownBudget')+'">'+(contributes?'≈ +'+num(r.gain):esc(noGain))+'</strong><small>'+cost+' mats · '+compact(r.cost.gold)+' gold</small><small>'+esc(contributes?display+' gain / 1k mats':noGain)+'</small>'+(shortText?'<small class="uoMissingDetail">'+esc(shortText)+'</small>':'')+'</div></div>'+
-   '<details class="uoCandidateCosts"><summary>Materials for this path</summary><div class="uoCandidateMatGrid">'+(pathMaterials||'<p>No materials required.</p>')+'</div><p>Gold: <strong>'+compact(r.cost.gold)+'</strong></p></details></div>';
+   '<details class="uoCandidateCosts" data-uo-panel="path-'+r.index+'"><summary>Materials for this path</summary><div class="uoCandidateMatGrid">'+(pathMaterials||'<p>No materials required.</p>')+'</div><p>Gold: <strong>'+compact(r.cost.gold)+'</strong></p></details></div>';
  }).join('');
  const isSet=state.strategy==='set';
  const knownCount=relevant.filter(r=>r.budgetComplete).length;
