@@ -59,6 +59,7 @@ export function publicProfile(account){
  return {id:a.id,displayName:a.profile?.displayName||a.discordName||'Arcana player',
  inGameName:a.profile?.inGameName||'',guild:a.profile?.guild||'',guildTag:a.profile?.guildTag||'',guildId:a.profile?.guildId||'',favoriteClass:a.profile?.favoriteClass||'',
  description:a.profile?.description||'',avatarDataUrl:a.profile?.avatarDataUrl||'',raidStatus:a.profile?.raidStatus||'',guildStatus:a.profile?.guildStatus||'',
+ verifiedCharacter:a.profile?.verifiedCharacter?.status==='approved'?{name:a.profile.verifiedCharacter.name,approvedAt:a.profile.verifiedCharacter.approvedAt}:null,
  roles:publicRoles(a),joinedAt:a.joinedAt||'',betaTesterSince:a.betaTesterSince||'',suspended:!!a.suspended};
 }
 export const selfProfile=account=>({...publicProfile(account),permissions:{
