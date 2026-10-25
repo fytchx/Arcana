@@ -54,11 +54,13 @@ const cookies=req=>Object.fromEntries(String(req.headers.cookie||'').split(';').
 }).filter(([k])=>k));
 const safeText=(value,max)=>String(value||'').trim().slice(0,max).replace(/[\u0000-\u001f\u007f]/g,' ');
 const asCreator=account=>({...account,isCreator:DISCORD_ID.test(process.env.ARCANA_CREATOR_DISCORD_ID||'')&&account.discordId===process.env.ARCANA_CREATOR_DISCORD_ID});
+const ARCANA_BANNERS=['nebula','frost','ember','forest','royal'];
 export function publicProfile(account){
- const a=asCreator(account);
+ const a=asCreator(account),earned=new Set(rolesOf(a));if(a.profile?.verifiedCharacter?.status==='approved')earned.add('verified-character');
+ const featured=Array.isArray(a.profile?.featuredBadges)?a.profile.featuredBadges.filter(id=>earned.has(id)).slice(0,3):[];
  return {id:a.id,displayName:a.profile?.displayName||a.discordName||'Arcana player',
  inGameName:a.profile?.inGameName||'',guild:a.profile?.guild||'',guildTag:a.profile?.guildTag||'',guildId:a.profile?.guildId||'',favoriteClass:a.profile?.favoriteClass||'',
- description:a.profile?.description||'',avatarDataUrl:a.profile?.avatarDataUrl||'',raidStatus:a.profile?.raidStatus||'',guildStatus:a.profile?.guildStatus||'',
+ description:a.profile?.description||'',tagline:a.profile?.tagline||'',bannerTheme:ARCANA_BANNERS.includes(a.profile?.bannerTheme)?a.profile.bannerTheme:'nebula',featuredBadges:featured,avatarDataUrl:a.profile?.avatarDataUrl||'',raidStatus:a.profile?.raidStatus||'',guildStatus:a.profile?.guildStatus||'',
  verifiedCharacter:a.profile?.verifiedCharacter?.status==='approved'?{name:a.profile.verifiedCharacter.name,approvedAt:a.profile.verifiedCharacter.approvedAt}:null,
  roles:publicRoles(a),joinedAt:a.joinedAt||'',betaTesterSince:a.betaTesterSince||'',suspended:!!a.suspended};
 }
@@ -117,8 +119,8 @@ const equal=(a,b)=>{
  const x=Buffer.from(String(a)),y=Buffer.from(String(b));
  return x.length===y.length&&timingSafeEqual(x,y);
 };
-const profileFields=['displayName','inGameName','guild','favoriteClass','description','raidStatus','guildStatus'];
-const fieldLengths={displayName:50,inGameName:48,guild:70,favoriteClass:45,description:500,raidStatus:90,guildStatus:90};
+const profileFields=['displayName','inGameName','guild','favoriteClass','description','raidStatus','guildStatus','tagline'];
+const fieldLengths={displayName:50,inGameName:48,guild:70,favoriteClass:45,description:500,raidStatus:90,guildStatus:90,tagline:100};
 function validAvatar(value){
  if(value==='')return '';
  if(typeof value!=='string'||value.length>64000)throw error(422,'Avatar is too large (maximum 45 KB).');
@@ -195,6 +197,13 @@ export async function handleAccountRequest(req,res,url){
   }
   for(const key of profileFields)if(Object.hasOwn(fields,key))profile[key]=safeText(fields[key],fieldLengths[key]);
   if(Object.hasOwn(fields,'avatarDataUrl'))profile.avatarDataUrl=validAvatar(fields.avatarDataUrl);
+  if(Object.hasOwn(fields,'bannerTheme')){if(!ARCANA_BANNERS.includes(fields.bannerTheme))throw error(422,'Unknown profile banner style.');profile.bannerTheme=fields.bannerTheme;}
+  if(Object.hasOwn(fields,'featuredBadges')){
+   if(!Array.isArray(fields.featuredBadges)||fields.featuredBadges.length>3||new Set(fields.featuredBadges).size!==fields.featuredBadges.length)throw error(422,'Choose up to three distinct earned badges.');
+   const earned=new Set(rolesOf(user));if(user.profile?.verifiedCharacter?.status==='approved')earned.add('verified-character');
+   if(fields.featuredBadges.some(x=>!earned.has(x)))throw error(403,'You may only feature badges you have earned.');
+   profile.featuredBadges=fields.featuredBadges;
+  }
   if(profile.displayName.length<2)throw error(422,'Display name needs at least two characters.');
   const updated=await queued(async()=>{
    const current=await readJSON(accountFile(user.id));
