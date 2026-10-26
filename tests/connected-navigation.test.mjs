@@ -113,7 +113,7 @@ test('Application keeps connected destinations and exposes a universal home path
  const code=await app();
  assert.doesNotMatch(code,/globalHomeBar\(dest\)/);
   assert.match(code,/node\('content'\)\.innerHTML=simpleBackBar\(dest\)\+siteNoticeMarkup\(dest\)\+routeView\(\)/);
- assert.ok(code.includes('function home(){return homeScreen();}'));
+ assert.ok(code.includes('function home(){return homeScreen(currentAccount());}'));
  assert.match(code,/case 'directory':return directoryView\(isAppearanceAdmin\(\)\)/);
  assert.match(code,/case 'wiki\/category':return wikiCategory/);
   assert.match(code,/case 'homemenu':if\(arg==='pathfinder'\)go\('calculators\/pathfinder'\);else if\(arg==='tools'\)go\('calculators'\)/);
