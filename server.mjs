@@ -147,6 +147,7 @@ const server=http.createServer(async(req,res)=>{
    if(pathname.startsWith('/api/account/farming-lists')&&await safeFarmingListRequest(req,res,parsedUrl))return;
   if((pathname.startsWith('/api/account/')||pathname.startsWith('/api/profiles/')||pathname.startsWith('/api/admin/roles/'))&&await safeAccountRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/community/')&&await safeCommunityRequest(req,res,parsedUrl))return;
+  if(pathname.startsWith('/api/arcana-archive/')&&await safeCommunityArchive(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/guild-hub')&&await safeGuildHubRequest(req,res,parsedUrl))return;
    if(pathname.startsWith('/api/chat/')&&await safeGeneralChatRequest(req,res,parsedUrl))return;
   if(pathname.startsWith('/api/beta/')&&await betaFeedbackRequest(req,res,parsedUrl))return;
