@@ -199,7 +199,7 @@ with sync_playwright() as playwright:
     page.locator('#arcanaDock [data-dock="community"]').click()
     page.wait_for_selector('.communityPage',timeout=8000)
     assert page.locator('.communityPathways a[href="/journal"]').count()==1
-    assert page.locator('.communityPathway').count()==4
+    assert page.locator('.communityPathway').count()>=4, 'Community must retain its four core pathways as optional destinations expand'
     assert page.locator('.communityPathways [data-route="wiki/guides"]').count()==1
     assert 'Player builds' in page.locator('.communityPage').inner_text()
     assert page.locator('#arcanaDock [data-dock="community"]').get_attribute('aria-current')=='page'
