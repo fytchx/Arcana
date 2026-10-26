@@ -31,13 +31,13 @@ const profileCard=(p,{full=false}={})=>{
  (full?'<button type="button" class="btn secondary" data-community-action="copy-profile" data-id="'+esc(p.id)+'">'+icon('link',16)+' Copy player-card link</button>':'<button class="btn secondary" data-route="profile" data-params="id='+esc(p.id)+'">View player card '+icon('arrow',15)+'</button>')+
  '</article>';
 };
-const signInPanel=()=>{
- return '<section class="communityWelcome"><h2>Join Arcana, keep the freedom.</h2><p>Public calculators, Build Studio and shareable planner links stay free without an account. An account adds your player card and lets you publish community builds and guides.</p>'+
- (state.enabled?'<a class="btn primary" href="/api/account/login">'+icon('users',17)+' Create account / Sign in with Discord</a>'+(state.betaEnrollmentOpen?'<p class="mutedSmall">Accounts created during beta receive the permanent Founding Beta Tester badge. Your account and contributions are intended to remain after full launch.</p>':''):
- '<p class="mutedSmall">Account sign-in is not enabled on this preview. All guest tools remain available.</p>')+
-  '<p class="mutedSmall">By signing in, you can review our <a href="/privacy.html">Privacy Notice</a> and <a href="/beta-rules.html">Beta Guidelines</a>. Your profile and published contributions are public.</p>'+
- '</section>';
-};
+const signInPanel=()=>'<section class="arcAccountJoin" aria-label="Sign up or log in to Arcana">'+
+ '<div class="arcAccountJoinIntro"><span class="eyebrow">ONE ACCOUNT · ONE PLACE</span><h2>Sign up or log in with Discord</h2><p>New here? Your Arcana account is created automatically the first time you sign in. Already a member? Use the same button to return to your profile. No separate registration form or password.</p></div>'+
+ (state.enabled?'<a class="arcAccountJoinPrimary" href="/api/account/login" aria-label="Continue with Discord to sign up or log in">'+icon('users',20)+' Continue with Discord '+icon('arrow',16)+'</a>':
+ '<p class="arcAccountAuthUnavailable" role="status">Discord sign-in is unavailable in this environment. You can still browse Arcana without an account.</p>')+
+ (state.betaEnrollmentOpen?'<p class="arcBetaPerk">'+icon('award',17)+' New members joining during the founding beta period receive a permanent Beta Tester badge.</p>':'')+
+ '<div class="arcAccountJoinBenefits"><div>'+icon('users',19)+'<strong>Your player profile</strong><small>Customize your card and badges</small></div><div>'+icon('layers',19)+'<strong>Your saved work</strong><small>Keep builds and farming plans together</small></div><div>'+icon('shield',19)+'<strong>Your community</strong><small>Link your character and contribute</small></div></div>'+
+ '<p class="arcAccountJoinLegal">Arcana is a community-built IdleArc companion site. Guest tools stay free. By signing in you can review our <a href="/privacy.html">Privacy Notice</a> and <a href="/beta-rules.html">Beta Guidelines</a>. Your public player card and published contributions are visible to others.</p></section>';
 const profileForm=p=>{
  return '<form class="accountProfileForm" data-community-form="profile"><h2>Edit player card</h2>'+
  fields.map(([key,label,type,max])=>'<label>'+label+'<input name="'+key+'" type="'+type+'" maxlength="'+max+'" value="'+esc(p[key]||'')+'"></label>').join('')+
@@ -50,19 +50,19 @@ const profileForm=p=>{
 };
 function accountView(query=new URLSearchParams()){
  if(state.me===undefined)return notice('Loading your Arcana account…');
- if(!state.me)return '<div class="communityPage"><div class="communityHero"><span class="eyebrow">ARCANA MEMBERSHIP</span><h1>Welcome to your Arcana</h1><p>Public tools stay available without an account. Sign in to save builds, link characters and contribute.</p></div>'+signInPanel()+'</div>';
+ if(!state.me)return '<link rel="stylesheet" href="/community-archive.css?v=20261025"><div class="communityPage arcAccount arcAccountGuest"><div class="communityHero"><span class="eyebrow">MY ARCANA · ACCOUNT</span><h1>Your place in Arcana</h1><p>One page for signing up, logging in, and managing your player profile. Your account opens right here after Discord sign-in.</p></div>'+(query?.get('error')==='sign-in'?'<p class="arcAccountLoginError" role="alert">Discord sign-in did not complete. Please try again below.</p>':'')+signInPanel()+'</div>';
  const p=state.me,requested=query?.get('tab'),tab=['overview','profile','character','saves','contributions'].includes(requested)?requested:'overview';
- const tabs=[['overview','Overview'],['profile','Edit profile'],['character','Character link'],['saves','Saved work'],['contributions','My contributions']];
+ const tabs=[['overview','Overview'],['profile','Profile & settings'],['character','Character link'],['saves','Saved work'],['contributions','My contributions']];
  const nav='<nav class="arcAccountTabs" aria-label="Account sections">'+tabs.map(([id,label])=>'<button type="button" data-route="account" data-params="tab='+id+'" class="'+(tab===id?'active':'')+'" aria-current="'+(tab===id?'page':'false')+'">'+label+'</button>').join('')+'</nav>';
- const quick='<div class="arcAccountQuick"><button data-route="guilds">'+icon('shield',19)+' Guild Hub</button><button data-route="records">'+icon('book',19)+' Season History</button><button data-route="settings">'+icon('settings',19)+' App Preferences</button><button data-route="beta">'+icon('info',19)+' Feedback</button>'+(p.permissions?.staffAccess?'<button data-route="staff">'+icon('users',19)+' Staff Workspace</button>':'')+'</div>';
+ const quick='<div class="arcAccountQuick"><button data-route="guilds">'+icon('shield',19)+' Guild Hub</button><button data-route="records">'+icon('book',19)+' Season History</button><button data-route="settings">'+icon('settings',19)+' Site Preferences</button><button data-route="beta">'+icon('info',19)+' Feedback</button>'+(p.permissions?.staffAccess?'<button data-route="staff">'+icon('users',19)+' Staff Workspace</button>':'')+'</div>';
  const contributions=state.myPosts.length?'<section class="communityMyPosts"><h2>My published guides & builds</h2><div class="communityPostGrid">'+state.myPosts.map(communityPostCard).join('')+'</div></section>':notice('Your published builds and guides will appear here.');
  const content=tab==='overview'?profileCard(p,{full:true})+quick+
  '<section class="arcArchiveBox"><h2>Make Arcana yours</h2><p>Manage character verification, saved builds, guild presence and community contributions from one place.</p><div class="arcAccountQuick"><button data-route="account" data-params="tab=character">Link a character</button><button data-route="account" data-params="tab=saves">Saved builds</button><button data-route="community/create">Share a guide</button></div></section>':
- tab==='profile'?profileCard(p,{full:true})+profileForm(p):
+ tab==='profile'?'<section class="arcAccountSession"><span>'+icon('check-circle',18)+' Signed in with Discord</span><strong>'+esc(p.displayName||'Arcana player')+'</strong><p>Edit your public player card below. Site appearance preferences are separate and saved on each device.</p><button type="button" class="btn secondary" data-route="settings">Site appearance preferences '+icon('arrow',15)+'</button></section>'+profileForm(p):
  tab==='character'?accountCharacterLink(p):
  tab==='saves'?farmListsAccountView()+cloudBuildView():
  contributions+'<button class="btn primary" data-route="community/create">Publish a guide or build</button>';
- return '<link rel="stylesheet" href="/community-archive.css?v=20261025"><div class="communityPage arcAccount"><div class="communityHero"><span class="eyebrow">ARCANA MEMBER PORTAL</span><h1>My Arcana</h1><p>Your identity, characters, saved plans and contributions, together.</p></div>'+
+ return '<link rel="stylesheet" href="/community-archive.css?v=20261025"><div class="communityPage arcAccount"><div class="communityHero"><span class="eyebrow">MY ARCANA · SIGNED IN</span><h1>My Arcana</h1><p>Manage your account, profile, characters, saved plans and contributions right here.</p></div>'+
  nav+content+'<div class="communityAccountActions">'+(p.permissions?.viewAnalytics?'<button class="btn secondary" data-route="admin">Admin Control Center</button>':'')+
  (p.permissions?.publishWiki?'<button class="btn secondary" data-route="wiki/studio">Wiki Studio</button>':'')+
  '<button class="btn secondary" data-community-action="logout">Sign out</button></div></div>';
