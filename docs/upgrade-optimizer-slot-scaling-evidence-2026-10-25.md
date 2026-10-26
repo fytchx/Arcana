@@ -97,3 +97,46 @@
 4. Screenshots from separate Warrior's Rings are **not** controlled before/after experiments. Observed Legendary visual A5+1 Ring Strength +353, 5/5 affixes; Infernal visual A6 Ring Strength +420, 5/5 affixes. These invalidate rarity-only scaling and blanket Infernal affix-slot counts, but don't measure a percentage between the two items.
 5. Keep gems/sockets and cosmetic rarity out of upgrade ROI. Keep drop bonuses (including Reflecting) out, as they do not increase through the slot's upgrade progress.
 6. Need exact A1+0 displayed implicit / affix baseline and authoritative operation order. Until established, do not claim precise stat projections. Source data and coefficients alone are not proof of arithmetic implementation.
+
+
+## Deeper source audit — correction to earlier projection assumptions
+
+### Primary evidence: official Season 2 Forge patch notes
+IdleArc official v1.3.1 patch (September 25, 2026):
+https://idlearc.com/patch-notes/1-3-1
+- Forge makes gear **slots** own tier, enhancement and Awakening, with progression preserved when switching equipped items.
+- Every slot tier opens an affix position; Forge may fill empty positions regardless of an item's cosmetic appearance or original rarity.
+- Gear score still grants a **small** rarity bonus. Thus "rarity is cosmetic for slot upgrade progression" does not mean every property of a dropped item is purely cosmetic.
+- The source explains a Legendary-looking item with 5/5 affixes on a high-ranked slot. Do not derive affix capacity from visual rarity.
+
+### Raw config audited
+- Complete 581,710-byte October 5 file: `idlearc_config_game_2026-10-05.json` (version string `2026-10-01-007+...+forge+affixcap...`), containing actual `itemization`, `items`, `affixes`, and `forge` tables.
+- October 17 version fragment on Drive matches those coefficient fields, but its stored excerpt is incomplete. Arcana's October 21 compact equipment snapshot is **item ranges**, not server calculation code.
+- `forge.awaken_positions=5`, `forge.affix_capacity=true`, `forge.tracks` includes `ring_1` and `ring_2`, `forge.rarity_table` supplies generation-roll definitions. The base item's `implicit_by_tier` is a distinct table, not a slot Awakening table.
+- Explicit coefficients: `itemization.awaken.multiplier_per_level=.12`; `affix_boost_per_awaken=.10`; `affix_enhancement_scaling=.03`; `enhancement_softcap_start=90`, `enhancement_softcap_rate=.5`; `cap_base_expansion=.2`; `cap_level_expansion=.2`. Exact arithmetic **cannot be inferred** from constants alone.
+
+### Root cause of the grossly inaccurate predictions
+`src/upgrade-family.js` calculates `add=increment*softLevels(rank,level)` for all flat implicits where `increment` is `itemization.tiers[6].increment=11`. It then applies `factor=1+rank*.12`, for example A6+0 Warrior's Ring:
+- `softLevels(6,0)=135`
+- T6 max Strength=124, `add=11*135=1485`
+- Predicted max `ceil((124+1485)*1.72)=2768`
+- Observed in-game Warrior's Ring A6+0 **+420 Strength**.
+This shows that `tiers[6].increment` **cannot simply be 11 Strength per enhancement level**. The current app's automated tests validated implementation consistency but did not verify the game formula.
+
+### Screenshot consistency checks; NOT proof of complete formula
+Two different Warrior's Rings:
+- Legendary appearance, Ring 1, A5+1: base Strength 353; Defense 182% with individual affix Awakening III; Double Damage Chance 46%, no affix rank; Strength affix 161, no rank; Double Hit Chance 46% rank I.
+- Infernal appearance, Ring 2, A6+0: base Strength 420; Defense 170% with affix Awakening I; Double Damage Chance 48% with no rank; Strength affix 208 rank I; Double Hit Chance 58% rank II.
+- Raw config lists `of Devastation` and `of Double Hit` both at 1–2; if they have the same underlying unboosted roll, 48% × 1.20 = 57.6%, displaying as 58%. Compound 1.1² also gives 58 after rounding. This corroborates **about 10% per individual affix tier**, but cannot distinguish additive versus compound boosts or certify identical initial rolls.
+- Removing *hypothetical additive* ranks from Defense: A5 unboosted ≈182/1.3=140; A6 ≈170/1.1=154.55, ratio +10.4%. This is compatible with 12% slot-Awakening growth **but different rolls are involved**, so it is not a measured rate.
+- The screenshot Reflecting percentages (48.3%, 50.7%) are item drop bonuses, not ordinary affixes; gem values are independent and must not be projected with equipment progression.
+- Confirmed Forge mechanic permits 5/5 affixes on Legendary appearance at A5.
+
+### Mathematical identifiability warning
+`multiplier_per_level=.12` alone permits multiple interpretations: linear `1 + 0.12*r` vs compound `1.12^r`, which diverge appreciably at high ranks. The config provides no readable routine showing which path, how rolling baselines are stored, when effective-level softcaps apply, or whether ceil/round occurs at intermediate stages. Without actual executable game implementation or a **matched** before/after measurement, exact A1+0 displayed baseline and exact final displayed values **remain unproved**.
+
+### Implementation decisions required
+1. Replace the old `increment*softLevels` projection, and decouple `slotRank` from `cosmeticRarity` everywhere before trusting rankings.
+2. Keep `baseMax` and `max rolled affix quality` separate from `displayed affix cap`; Forge `affix_capacity` is separate from drop rarity.
+3. Expose independent affix Roman ranks and grant no boosts to drop bonuses or fixed side-grade stats.
+4. Never mark a numeric projection exact until the actual algorithm and rounding order are verified.
