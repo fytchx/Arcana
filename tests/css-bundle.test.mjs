@@ -13,10 +13,10 @@ test('stylesheet bundling preserves source order and keeps CSS imports legal',()
   ['fonts.css',"@import url('https://fonts.googleapis.com/css?family=Example');\n.beta{color:blue}"],
   ['omega.css','.omega{color:green}']
  ]);
- assert.ok(output.startsWith("@import url('https://fonts.googleapis.com/css?family=Example');"));
+ assert.ok(!output.includes('@import'),'External fonts must not block critical CSS');
  assert.ok(output.indexOf('.alpha')<output.indexOf('.beta'));
  assert.ok(output.indexOf('.beta')<output.indexOf('.omega'));
- assert.equal((output.match(/@import/g)||[]).length,1);
+ assert.equal((output.match(/@import/g)||[]).length,0);
 });
 
 test('homepage loads exactly one CSS entry, which includes every existing theme and feature style',async()=>{
