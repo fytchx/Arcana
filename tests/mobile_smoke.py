@@ -37,7 +37,7 @@ for href in re.findall(r'<link rel="stylesheet" href="([^"]+)"', HTML):
                 imports.append(match.group(0).strip())
                 return ''
             parts.append('/* Arcana source: '+name+' */\n'+css_import.sub(lift,raw))
-        css='\n'.join(list(dict.fromkeys(imports))+parts)
+        css='\n'.join(parts)
     else:
         css=(ROOT/css_name).read_text()
     pattern='<link rel="stylesheet" href="'+re.escape(href)+'">'
