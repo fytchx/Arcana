@@ -207,5 +207,5 @@ export const STUDIO_V2_PRESETS=Object.freeze({...ATELIER_PRESETS,...Object.fromE
   heroCardEmblem:family==='Monochrome'?'hidden':'subtle'
  };
  return [id,Object.freeze(value)];
-})));
+}))});
 export const STUDIO_V2_PRESET_IDS=Object.freeze(Object.keys(STUDIO_V2_PRESETS));
