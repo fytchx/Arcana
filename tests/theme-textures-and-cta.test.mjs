@@ -51,8 +51,10 @@ test('new isolated styles are delivered through the production allowlist and loa
  const index=await read('../index.html'),server=await read('../server.mjs');
  const css=await read('../theme-studio-finishes.css');
  assert.ok(server.includes("'/theme-studio-finishes.css'"));
- assert.ok(index.includes('/theme-studio-finishes.css'));
- assert.ok(index.indexOf('/theme-studio-finishes.css')>index.indexOf('/arcana-contour.css'));
+ const bundle=await read('../src/css-bundle.mjs');
+  assert.ok(index.includes('/arcana-site.css'));
+  assert.ok(bundle.includes("'theme-studio-finishes.css'"));
+ assert.ok(bundle.indexOf("'theme-studio-finishes.css'")>bundle.indexOf("'arcana-contour.css'"));
  assert.match(css,/min-height:max\(44px,var\(--arcana-hero-cta-height/);
  assert.match(css,/prefers-reduced-motion:reduce/);
  assert.match(css,/data-arcana-pattern-target="background"/);
