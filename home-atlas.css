@@ -174,3 +174,15 @@
  .atlasHero{min-height:74px;padding-block:9px}
  #content.homeFullscreen:has(.atlasHome){padding-top:9px!important}
 }
+
+
+/* Account discovery: small, unmistakable one-tap entrance without adding a seventh tool tile. */
+.atlasAccountEntry{display:flex;align-items:center;gap:12px;min-width:0;padding:12px clamp(13px,2.5vw,19px);border:1px solid color-mix(in srgb,var(--atlas-icon) 30%,var(--atlas-outline));border-radius:14px;background:color-mix(in srgb,var(--atlas-panel) 93%,var(--atlas-icon) 7%)}
+.atlasAccountEntryIcon{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:11px;background:var(--atlas-icon-box);border:1px solid color-mix(in srgb,var(--atlas-icon) 18%,var(--atlas-outline));color:var(--atlas-icon)}
+.atlasAccountEntryCopy{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.atlasAccountEntryCopy strong{font-size:clamp(12px,2vw,15px);font-weight:780;line-height:1.3}
+.atlasAccountEntryCopy small{color:var(--atlas-sub);font-size:11px;line-height:1.4}
+.atlasAccountEntryButton{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:none;min-height:43px;padding:10px 14px;border:1px solid color-mix(in srgb,var(--atlas-icon) 60%,var(--atlas-outline));border-radius:10px;background:var(--atlas-icon-box);color:var(--atlas-copy);font-size:12px!important;font-weight:850!important;white-space:nowrap;cursor:pointer}
+.atlasAccountEntryButton:hover{border-color:var(--atlas-icon);background:color-mix(in srgb,var(--atlas-icon) 22%,var(--atlas-panel))}
+@media(max-width:520px){.atlasAccountEntry{gap:9px;padding:12px 10px}.atlasAccountEntryIcon{width:34px;height:34px;flex-basis:34px}.atlasAccountEntryCopy strong{font-size:12px}.atlasAccountEntryCopy small{font-size:10px}.atlasAccountEntryButton{font-size:11px!important;padding:10px 9px;min-height:42px}.atlasAccountEntryButton svg{width:14px;height:14px}}
+@media(max-width:365px){.atlasAccountEntryIcon{display:none}.atlasAccountEntryCopy small{font-size:9px}.atlasAccountEntryButton{font-size:10px!important}}
