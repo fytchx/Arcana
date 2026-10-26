@@ -36,6 +36,7 @@ function bodyMarkup(body){
   const t=block.trim();
   if(t==='[[distribution]]')return distribution();
   if(t==='[[rank-bands]]')return bands();
+  if(t==='[[arcana-feedback-cta]]')return "<section class=\"journalFeedbackPanel\" aria-label=\"Send Arcana feedback\"><span class=\"journalFeedbackEyebrow\">YOUR VOICE MATTERS</span><h2>Help shape what comes next</h2><p>Something missing, confusing, or just not working? Tell me about it. No account needed.</p><div class=\"journalFeedbackActions\"><a class=\"journalFeedbackPrimary\" href=\"/#/beta\">Share feedback or a suggestion →</a><a class=\"journalFeedbackSecondary\" href=\"/#/community\">Explore the community →</a></div></section>";
   if(t.startsWith('## '))return '<h2>'+richInline(t.slice(3))+'</h2>';
   if(t.startsWith('### '))return '<h3>'+richInline(t.slice(4))+'</h3>';
   if(t.split('\n').every(line=>line.startsWith('- ')))return '<ul>'+t.split('\n').map(line=>'<li>'+richInline(line.slice(2))+'</li>').join('')+'</ul>';
