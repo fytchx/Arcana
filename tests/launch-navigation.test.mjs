@@ -13,7 +13,7 @@ test('six Atlas tiles open real Arcana destinations',()=>{
  assert.match(html,/data-route="labs\/build"/);
  assert.match(html,/data-route="calculators\/pathfinder"/);
  assert.match(html,/data-action="homemenu" data-arg="tools"/);
- for(const route of ['wiki/guides','wiki','community','guilds','directory'])assert.match(html,new RegExp('data-route="'+route+'"'));
+ for(const route of ['wiki/guides','wiki','community','calculators/ml-farm','directory'])assert.match(html,new RegExp('data-route="'+route+'"'));
  for(const card of HOME_CARDS){const popup=homeSubmenu(card.id);assert.ok(popup.includes(card.title.replaceAll('&','&amp;')));assert.match(popup,/launchNavRow/);}
 });
 test('all submenu and A-Z destinations are resolvable routes',()=>{
@@ -86,14 +86,14 @@ test('only administrators set appearance; users can keep reduced motion',async()
 });
 
 
-test('Atlas home presents Studio above six destinations and a dynamic Journal',async()=>{
+test('Atlas home leads with six tools, then a featured guide and dynamic Journal',async()=>{
  const html=homeScreen();
  assert.match(html,/class="atlasUpdate"/);
- assert.match(html,/class="atlasHero"/);
+ assert.match(html,/class="atlasHero atlasGuideHighlight"/);
  assert.match(html,/class="atlasTileGrid"/);
  assert.match(html,/class="atlasJournal"/);
  assert.match(html,/idlearc-1-3-7-the-timing-couldnt-be-better/);
- assert.ok(html.indexOf('atlasHero')<html.indexOf('atlasTileGrid'));
+ assert.ok(html.indexOf('atlasTileGrid')<html.indexOf('atlasHero'));
  assert.ok(html.indexOf('atlasTileGrid')<html.indexOf('atlasJournal'));
  assert.equal((html.match(/class="atlasTile"/g)||[]).length,6);
  const stylesheet=await readFile(new URL('../home-atlas.css',import.meta.url),'utf8');
