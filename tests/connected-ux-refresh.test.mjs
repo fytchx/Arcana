@@ -9,15 +9,15 @@ const read=p=>readFile(new URL('../'+p,import.meta.url),'utf8');
 test('single curated Studio V2 gallery contains 100 curated artwork-first looks',()=>{
  const panel=designPanel({showPreview:false});
  const count=(panel.match(/data-action="design-preset"/g)||[]).length;
- assert.equal(count,100);
- assert.equal((panel.match(/data-collection="studio-v2"/g)||[]).length,100);
- assert.equal((panel.match(/class="visionArtChoice studioV2Artwork"/g)||[]).length,18);
+ assert.equal(count,105);
+ assert.equal((panel.match(/data-collection="studio-v2"/g)||[]).length,105);
+ assert.equal((panel.match(/class="visionArtChoice studioV2Artwork"/g)||[]).length,23);
  assert.doesNotMatch(panel,/data-collection="classic"|data-collection="signature"|data-collection="psychedelic"/);
  assert.match(panel,/data-theme-group="presets"/);
  assert.match(panel,/data-theme-change-hint/);
- assert.equal(THEME_PATTERNS.length,154);
+ assert.equal(THEME_PATTERNS.length,159);
  for(const id of ['presets','colors','textures','surfaces','type','vault'])assert.match(panel,new RegExp('data-theme-jump="'+id+'"'));
- assert.equal(Object.keys(DESIGN_PRESETS).length,142,'legacy presets are retained for draft compatibility');
+ assert.equal(Object.keys(DESIGN_PRESETS).length,147,'legacy presets are retained for draft compatibility');
 });
 test('universal My Arcana header and search discovery preserve private controls',async()=>{
  const html=await read('index.html'),app=await read('src/app.js'),css=await read('arcana-connected-ux.css'),server=await read('server.mjs');
