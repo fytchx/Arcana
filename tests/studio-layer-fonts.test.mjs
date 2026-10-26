@@ -77,7 +77,7 @@ test('layered surface variables and typography feed site, embedded iframe, and m
  assert.match(frame,/paintArtLayers\(root,values\)/);
  assert.match(mini,/--mini-art-['"]?\+layer/);
  assert.match(app,/applyLayerVisualPreset/);
- assert.match(index,/studio-layers\.css\?v=/);
+ assert.match(index,/arcana-site\.css\?v=/);
  assert.match(server,/'\/studio-layers\.css'/);
  const properties=new Map();
  const root={style:{setProperty:(key,v)=>properties.set(key,v)},dataset:{}};
