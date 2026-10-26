@@ -1,7 +1,13 @@
 /* Player identity, private character-review queue and editorial season archive. */
 import {esc,icon} from './ui.js';
 const state={records:[],revision:0,recordsReady:false,recordsLoading:false,claims:[],claimsReady:false,claimsLoading:false,myClaim:undefined,myClaimLoading:false,proof:null,error:'',selectedSeason:'all',recordEdit:'',uploadedProof:''};
-const api=async(path,options={})=>{const r=await fetch('/api/arcana-archive'+path,{credentials:'same-origin',cache:'no-store',...options}),out=await r.json();if(!r.ok)throw Error(out.error||'Archive unavailable.');return out};
+const api=async(path,options={})=>{
+ const r=await fetch('/api/arcana-archive'+path,{credentials:'same-origin',cache:'no-store',...options});
+ const out=await r.json().catch(()=>null);
+ if(!r.ok)throw Error(out?.error||'Character verification service is unavailable. Please try again.');
+ if(!out||typeof out!=='object')throw Error('Invalid response from the Arcana account service.');
+ return out;
+};
 const b=(title,route,description)=>'<button type="button" class="arcArchiveNav" data-route="'+esc(route)+'"><strong>'+esc(title)+'</strong><span>'+esc(description)+'</span>'+icon('arrow',16)+'</button>';
 export function accountCharacterLink(me){
  if(!me)return '';
@@ -9,7 +15,7 @@ export function accountCharacterLink(me){
  return '<section class="arcArchiveBox"><div class="arcArchiveSectionHead"><span class="eyebrow">CHARACTER IDENTITY</span><h2>Link your IdleArc character</h2></div>'+
  '<p>Upload a screenshot of your name as shown on IdleArc’s main monster-fighting screen. An Arcana moderator will manually review it. This is a community-reviewed claim, not official game API verification.</p>'+
  (verified?'<div class="arcVerified"><span>✓</span><div><strong>Arcana-reviewed character</strong><small>'+esc(verified)+'</small></div></div>':'')+
- (claim?.status?'<p class="arcClaimStatus">Claim status: <strong>'+esc(claim.status)+'</strong> · '+esc(claim.name||'')+(claim.note?' · '+esc(claim.note):'')+'</p>':state.myClaim===undefined?'<p>Loading your claim status…</p>':'<p>No claim submitted yet.</p>')+
+ (claim?.status?'<p class="arcClaimStatus">Claim status: <strong>'+esc(claim.status)+'</strong> · '+esc(claim.name||'')+(claim.note?' · '+esc(claim.note):'')+'</p>':state.myClaim===undefined?'<p>Loading your claim status…</p>':state.error?'<p class="arcClaimStatus" role="status">'+esc(state.error)+'</p>':'<p>No claim submitted yet.</p>')+
  (!disabled?'<form data-arc-form="claim" class="arcClaimForm"><label>Character name exactly as shown in-game<input name="name" maxlength="48" minlength="2" required placeholder="e.g. [OVK] Fytch" value="'+esc(me.inGameName||'')+'"></label>'+
  '<label>Screenshot showing the name on the combat screen<input type="file" id="arcCharacterProof" accept="image/png,image/jpeg,image/webp" required></label>'+
  '<p id="arcCharacterProofStatus" role="status">Screenshots are resized before uploading and are visible only to authorized reviewers.</p>'+
@@ -80,7 +86,9 @@ export async function loadArchiveData(route,me,refresh){
   if(route==='staff'&&me?.permissions?.reviewCharacters&&!state.claimsReady&&!state.claimsLoading){
    state.claimsLoading=true;try{state.claims=(await api('/claims')).claims||[];state.claimsReady=true;}finally{state.claimsLoading=false}refresh();
   }
- }catch(e){state.error=e.message;console.warn('Arcana community archive:',e.message);}
+ }catch(e){state.error=e.message;
+  if(route==='account'&&state.myClaim===undefined){state.myClaim=null;refresh();}
+  console.warn('Arcana community archive:',e.message);}
 }
 async function optimizeScreenshot(file){
  if(!/^image\/(?:png|jpeg|webp)$/.test(file.type)||file.size>9000000)throw Error('Choose an image under 9 MB.');
@@ -108,6 +116,9 @@ export function wireArchiveUI({go,refresh,toast}){
  document.addEventListener('submit',e=>{
   const form=e.target.closest('[data-arc-form]');if(!form)return;e.preventDefault();
   const kind=form.dataset.arcForm;
+  if(form.dataset.arcSubmitting==='true')return;
+  form.dataset.arcSubmitting='true';
+  const submitButton=form.querySelector('button[type="submit"]');if(submitButton)submitButton.disabled=true;
   void(async()=>{
    if(kind==='claim'){
     if(!state.uploadedProof)throw Error('Choose a screenshot and wait until it is ready.');
@@ -120,7 +131,7 @@ export function wireArchiveUI({go,refresh,toast}){
     await api(id?'/records/'+encodeURIComponent(id):'/records',{method:id?'PATCH':'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data)});
     const next=await api('/records');state.records=next.records||[];state.recordsReady=true;form.reset();toast(id?'Record updated.':'Season record published.');refresh();
    }
-  })().catch(x=>{toast(x.message);console.warn(x)});
+  })().catch(x=>{toast(x.message);console.warn(x)}).finally(()=>{delete form.dataset.arcSubmitting;if(submitButton)submitButton.disabled=false});
  });
  document.addEventListener('click',e=>{
   const b=e.target.closest('[data-arc-action]');if(!b)return;
