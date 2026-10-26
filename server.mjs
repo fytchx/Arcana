@@ -7,6 +7,7 @@ import { createHash } from 'node:crypto';
 import { handleWikiRequest } from './src/wiki-server.mjs';
 import {handleJournalRequest} from './src/journal-server.mjs';
 import {seoPageByPath,renderSeoPage} from './src/seo-pages.mjs';
+import {siteCssBundle} from './src/css-bundle.mjs';
 import {handleTrafficRequest} from './src/traffic-server.mjs';
 import { safeAccountRequest, requireCapability, dataRoot } from './src/account-server.mjs';
 import {createPathfinderRecipeCache} from './src/pathfinder-recipe-cache.mjs';
@@ -131,6 +132,17 @@ const server=http.createServer(async(req,res)=>{
  try {
   const parsedUrl=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
   const {pathname}=parsedUrl;
+  // Single ordered stylesheet with cached gzip compression and per-encoding ETags.
+  if((req.method==='GET'||req.method==='HEAD')&&pathname==='/arcana-site.css'){
+   const bundle=await siteCssBundle(ROOT);
+   const useGzip=/(?:^|,)\s*gzip\b/i.test(String(req.headers['accept-encoding']||''));
+   const etag=useGzip?bundle.gzipEtag:bundle.etag;
+   const headers={'content-type':'text/css; charset=utf-8','cache-control':'public,no-cache,must-revalidate',
+    'vary':'Accept-Encoding','etag':etag,...(useGzip?{'content-encoding':'gzip'}:{})};
+   if(req.headers['if-none-match']===etag){send(res,304,null,headers);return;}
+   send(res,200,req.method==='HEAD'?null:(useGzip?bundle.gzip:bundle.plain),headers);
+   return;
+  }
   // One canonical customer-facing origin. Keep preview health checks available,
   // but prevent www sessions and staging logins from creating separate identities.
   const host=String(req.headers.host||'').toLowerCase().replace(/:[0-9]+$/,'');

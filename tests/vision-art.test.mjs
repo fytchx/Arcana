@@ -73,6 +73,6 @@ test('gallery, actual home, miniature and real iframe all share the same art ren
  assert.match(mini,/syncVisualSamples\(globalThis\.document,readDesign\(\)\)/);
  assert.match(frame,/artUrl\(values\.pattern,values\)/);
  assert.match(app,/applyVisualPreset\(pattern\.dataset\.themePattern\)/);
- assert.match(index,/visual-art\.css\?v=/);
+ assert.match(index,/arcana-site\.css\?v=/);
  assert.match(server,/'\/visual-art.css'/);
 });

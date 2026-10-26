@@ -101,7 +101,7 @@ test('admin routes share one manager, while public settings never show local sty
  assert.match(app,/adminConsoleView\(/);assert.match(app,/setDesignPreview\(/);
  assert.match(app,/siteNoticeMarkup\(/);
  assert.match(server,/safeSiteAdminRequest\(/);
- assert.match(html,/admin\.css/);
+ assert.match(html,/arcana-site\.css/);
  for(const section of ['Traffic','Appearance','Members & Roles','Content','Site Controls'])assert.ok(panel.includes(section));
  const start=nav.indexOf('export function settingsView('),end=nav.indexOf('export function iconGalleryView()',start);
  const settings=nav.slice(start,end);
