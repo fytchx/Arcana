@@ -260,7 +260,7 @@
 .quickFarmSummary strong{font-size:clamp(15px,2.2vw,18px)}
 .quickFarmSummary>span{font-size:11px;color:var(--muted);font-weight:650}
 .quickMaterialModes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;background:color-mix(in srgb,var(--theme-main) 42%,var(--theme-secondary));border:1px solid var(--line);border-radius:var(--arcana-card-radius,12px)}
-.quickMaterialModes button{appearance:none;min-width:0;min-height:38px;border:1px solid transparent;border-radius:var(--arcana-button-radius,8px);padding:7px 4px;background:transparent;color:var(--muted);font:800 clamp(10px,1.8vw,12px)/1.2 inherit;cursor:pointer;text-align:center;transition:background .16s,border-color .16s,color .16s}
+.quickMaterialModes button{appearance:none;min-width:0;min-height:38px;border:1px solid transparent;border-radius:var(--arcana-button-radius,8px);padding:7px 4px;background:transparent;color:var(--muted);font-family:inherit;font-size:clamp(10px,1.8vw,12px);font-weight:800;line-height:1.2;cursor:pointer;text-align:center;transition:background .16s,border-color .16s,color .16s}
 .quickMaterialModes button:hover{color:var(--text);background:color-mix(in srgb,var(--theme-highlight) 7%,var(--theme-secondary))}
 .quickMaterialModes button.active,.quickMaterialModes button[aria-pressed="true"]{border-color:color-mix(in srgb,var(--theme-highlight) 55%,var(--line));color:var(--text);background:color-mix(in srgb,var(--theme-highlight) 15%,var(--theme-secondary));box-shadow:0 1px 5px color-mix(in srgb,var(--theme-main) 50%,transparent)}
 .quickMaterialModes button:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:1px}
