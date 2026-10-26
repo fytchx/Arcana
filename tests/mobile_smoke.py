@@ -236,8 +236,14 @@ with sync_playwright() as playwright:
     page.wait_for_selector('.atlasHome .atlasHero',timeout=15000)
     assert page.locator('.atlasHome .atlasFeatureLink').count()==2, 'Desktop Home guide/community links missing'
     assert page.locator('#content.homeFullscreen').evaluate('e=>e.getBoundingClientRect().width')>=900, 'Desktop content too narrow'
-    columns=page.locator('.atlasTileGrid').evaluate('e=>getComputedStyle(e).gridTemplateColumns.split(" ").length')
-    assert columns==3, 'Desktop Home should present destinations in three columns'
+    grid_debug=page.locator('.atlasTileGrid').evaluate("""e => ({
+        template:getComputedStyle(e).gridTemplateColumns,
+        width:e.getBoundingClientRect().width,
+        viewport:innerWidth,
+        media760:matchMedia('(min-width:760px)').matches
+    })""")
+    columns=len(grid_debug['template'].split())
+    assert columns==3, f'Desktop Home should have three columns: {grid_debug}'
     assert page.locator('.atlasTileCopy strong').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)')>=18, 'Desktop destination labels are too small'
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+3'), 'Desktop homepage horizontal overflow'
     page.screenshot(path=str(OUT/'desktop-home-full.png'),full_page=True)
