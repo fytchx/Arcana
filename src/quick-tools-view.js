@@ -86,13 +86,14 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  const alphabetical=(a,b)=>a.name.localeCompare(b.name,'en',{sensitivity:'base'})||a.slug.localeCompare(b.slug);
  const monsterGroups=groups.filter(g=>g.kind==='biome'||g.kind==='unknown');
  const monsterCount=monsterGroups.reduce((n,g)=>n+g.materials.length,0);
+ const monsterUnits=monsterGroups.reduce((n,g)=>n+g.materials.reduce((total,m)=>total+BigInt(m.quantity),0n),0n);
  const other=groups.filter(g=>g.kind==='special').flatMap(g=>g.materials).sort(alphabetical);
  const attempts=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:1}).format(n);
  const displayAttempts=rendered.attempts===undefined?money(quote.steps):attempts(rendered.attempts);
  const meta='<div class="quickAverageIntro" role="status" aria-live="polite" data-path-active-budget="'+selectedMode+'"><div>'+
-  '<strong>'+esc(scenarios.available?modeLabels[selectedMode]+' upgrade costs':'Base upgrade costs')+'</strong>'+
+  '<strong>'+esc(scenarios.available?modeLabels[selectedMode]+' material costs':'Base material costs')+'</strong>'+
   '<small>'+esc(scenarios.available?modeNotes[selectedMode]:'Listed recipe costs only')+(count>1?' · '+count+' items':'')+'</small></div>'+
-  '<span>'+displayAttempts+' attempts</span></div>';
+  '<span>'+money(monsterUnits)+' monster drops · '+displayAttempts+' attempts</span></div>';
  const summary=(title,sub)=>'<summary class="quickSectionSummary"><strong>'+esc(title)+'</strong><small>'+esc(sub)+'</small><span aria-hidden="true">⌄</span></summary>';
  const zoneGroupsMarkup=monsterGroups.map(group=>{
   const zone=pathfinderZone(group.name);
@@ -110,13 +111,14 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  const monsterSection='<details class="quickMaterialSection quickFarmFirst" data-material-section="monsters" open>'+
   summary('Monster materials',monsterCount+' types · '+monsterGroups.length+' zones')+
   '<div class="quickSectionBody quickZoneList">'+(monsterCount?zoneGroupsMarkup:'<p class="quickEmpty">No monster drops required.</p>')+'</div></details>';
- // Exactly one headline gold figure. Rare materials appear beneath it only if expanded.
+ // Forge materials follow monster drops; gold is a quiet footer, never the headline.
  const goldValue=shortGold(rendered.gold);
  const goldTip=esc(money(rendered.gold)+' Gold');
- const forge='<details class="quickMaterialSection quickForgeSection" data-material-section="special">'+
-  '<summary class="quickSectionSummary"><strong>Gold &amp; rare materials</strong>'+
-  '<small class="quickGoldSummary" title="'+goldTip+'">'+other.length+' special materials · gold optional</small><span aria-hidden="true">⌄</span></summary>'+
-  '<div class="quickSectionBody"><div class="quickMaterial" aria-label="Optional gold cost"><span>Gold <small>Optional currency reference</small></span><strong>'+goldValue+' Gold</strong></div>'+(other.length?'<div class="quickMaterialList quickMaterialListSorted">'+other.map(materialRow).join('')+'</div>':'<p class="quickEmpty">No rare materials needed.</p>')+'</div></details>';
+ const forge='<details class="quickMaterialSection quickForgeSection" data-material-section="special" open>'+
+  '<summary class="quickSectionSummary"><strong>Rare materials &amp; gold</strong>'+
+  '<small class="quickGoldSummary">'+other.length+' rare / forge material'+(other.length===1?'':'s')+'</small><span aria-hidden="true">⌄</span></summary>'+
+  '<div class="quickSectionBody">'+(other.length?'<div class="quickMaterialList quickMaterialListSorted">'+other.map(materialRow).join('')+'</div>':'<p class="quickEmpty">No rare materials needed.</p>')+
+  '<div class="quickGoldFooter" title="'+goldTip+'"><span>Gold <small>Currency reference</small></span><strong>'+goldValue+'</strong></div></div></details>';
  const firstStep=scenarios.available?(scenarios.perStep.find(step=>step.failChance>0)||scenarios.perStep[0]):null;
  const pityCap=firstStep?.pityCap||1;
  const pityDone=Math.max(0,Math.min(pityCap-1,Math.trunc(Number(range.pityCount)||0)));
@@ -129,17 +131,20 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  ).join('')+'</div></details>':'';
  const budgets=scenarios.available?'<details class="quickAdvanced quickOddsPlanner" data-path-accordion="breakdown">'+
   '<summary class="quickSummaryLine"><strong>Odds &amp; cost scenarios</strong><small>Minimum · Average · Pity maximum</small><b aria-hidden="true">⌄</b></summary>'+
-  '<div class="quickAdvancedBody"><p class="quickScenarioIntro">Choose a scenario to update the materials, Gold and farming checklist shown below.</p>'+
+  '<div class="quickAdvancedBody"><p class="quickScenarioIntro">Choose a scenario to update the material totals and farming checklist. Gold stays at the bottom.</p>'+
   '<div class="quickBudgetChoices" role="group" aria-label="Upgrade cost scenario">'+[
    ['Minimum','min','No failures'],
    ['Average','expected','Expected cost'],
    ['Pity maximum','pity','Worst-case model']
   ].map(([label,key,description])=>{
    const stat=scenarios[key],active=selectedMode===key;
+   const monsterTotal=sourceMaterialGroups(stat.materials,snapshot.materials||[],options.catalog||[])
+    .filter(g=>g.kind==='biome'||g.kind==='unknown')
+    .reduce((sum,g)=>sum+g.materials.reduce((amount,m)=>amount+BigInt(m.quantity),0n),0n);
    return '<button type="button" class="quickBudgetChoice'+(active?' isSelected':'')+'" data-path-cost-mode="'+key+'" aria-pressed="'+active+'" aria-label="Show '+label+' upgrade costs">'+
     '<span class="quickBudgetChoiceHeader"><strong>'+label+'</strong><span class="quickBudgetChoiceCheck" aria-hidden="true">'+(active?'✓':'○')+'</span></span>'+
     '<small>'+description+'</small><span class="quickBudgetAttempts">'+attempts(stat.attempts)+' attempts</span>'+
-    '<b title="'+esc(money(stat.gold)+' Gold')+'">'+shortGold(stat.gold)+' Gold</b></button>';
+    '<b title="'+esc(money(monsterTotal)+' monster materials')+'">'+money(monsterTotal)+' <span class="quickBudgetUnit">monster mats</span></b></button>';
   }).join('')+'</div>'+
   '<label class="quickPityInput">Failures already counted on first pending upgrade <span><input type="number" data-path-pity-count min="0" max="'+Math.max(0,pityCap-1)+'" step="1" inputmode="numeric" value="'+pityDone+'" aria-label="Pity attempts already counted"> / '+pityCap+'</span></label>'+
   odds+
