@@ -19,20 +19,21 @@ test('single curated Studio V2 gallery contains 100 curated artwork-first looks'
  for(const id of ['presets','colors','textures','surfaces','type','vault'])assert.match(panel,new RegExp('data-theme-jump="'+id+'"'));
  assert.equal(Object.keys(DESIGN_PRESETS).length,142,'legacy presets are retained for draft compatibility');
 });
-test('admin-only header and search discovery share public navigation without leaking admin controls',async()=>{
+test('universal My Arcana header and search discovery preserve private controls',async()=>{
  const html=await read('index.html'),app=await read('src/app.js'),css=await read('arcana-connected-ux.css'),server=await read('server.mjs');
- assert.match(html,/id="adminPortalBtn"[^>]*data-route="admin"[^>]*hidden/);
+ assert.doesNotMatch(html,/id="adminPortalBtn"/);
+ assert.match(html,/class="launchTopRight"><button type="button" class="launchAccount" id="accountBtn"/);
  assert.doesNotMatch(html,/id="searchBtn"/);
  assert.match(html,/data-dock="search"/);
  assert.doesNotMatch(html,/data-dock="featured"/);
- assert.match(app,/function syncAdminPortal\(/);
+ assert.doesNotMatch(app,/function syncAdminPortal\(/);
  assert.match(app,/isAppearanceAdmin\(\)/);
- assert.match(app,/button.hidden=!permitted/);
+ assert.match(app,/node\('accountBtn'\)\.onclick=\(\)=>go\('account'\)/);
  assert.match(app,/showLayer\('SEARCH'/);
  assert.match(app,/function searchLanding\(/);
  assert.match(app,/q\?resultMarkup\(q\):searchLanding\(\)/);
  assert.match(app,/input\.focus\(\{preventScroll:true\}\)/);
- assert.match(css,/#adminPortalBtn\[hidden\]\{display:none!important\}/);
+ assert.match(css,/\.launchTopRight \.launchAccount/);
  assert.match(server,/'\/arcana-connected-ux.css'/);
  const traffic=await read('src/admin-traffic-ui.js');
  assert.match(traffic,/state\.loadedAt=Date\.now\(\);\}finally|state\.loadedAt=Date\.now\(\);\}/);
