@@ -15,7 +15,7 @@ export function atlasHomeScreen(icon,profile=null){
   return '<button type="button" class="atlasTile" '+nav+' aria-label="Explore '+x.title+'"><span class="atlasTileIcon" aria-hidden="true">'+icon(x.icon,29)+'</span><span class="atlasTileCopy"><strong>'+x.title+'</strong><small>'+x.detail+'</small></span><span class="atlasTileArrow" aria-hidden="true">'+icon('arrow',17)+'</span></button>';
  }).join('');
  const accountName=typeof profile?.displayName==='string'&&profile.displayName.trim()?profile.displayName.trim():'Arcana player';
- const accountPrompt=profile?'<strong>Welcome back, '+escapeHTML(accountName)+'</strong><small>Your builds, character, badges and account settings.</small>':'<strong>Join the Arcana community</strong><small>One Discord login creates your account or signs you back in.</small>';
+ const accountPrompt=profile?'<strong>Welcome back, '+escapeHTML(accountName)+'</strong><small>Your builds, character, badges and account settings.</small>':'<strong>My Arcana</strong><small>Profiles, saved builds and community.</small>';
  const accountButton=profile?'My Account':'Sign up / Log in';
  return '<div class="atlasHome" aria-label="Arcana homepage">'+
  '<a class="atlasUpdate" href="/#/journal/article?slug=idlearc-1-3-7-the-timing-couldnt-be-better"><span class="atlasUpdateTag">PATCH NOTES</span><span class="atlasUpdateTitle">IdleArc 1.3.7: A Step Forward</span><span class="atlasUpdateDate">OCT 18 '+icon('arrow',15)+'</span></a>'+
