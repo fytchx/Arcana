@@ -31,9 +31,8 @@ test('header profile entry is visible and opens the canonical account route',asy
 });
 test('login and registered account management stay on the same URL',async()=>{
  const account=await source('src/community-ui.js'),server=await source('src/account-server.mjs');
- assert.match(account,/Sign up or log in with Discord/);
- assert.match(account,/href="\/api\/account\/login"/);
  assert.match(account,/Sign in or create your account with Discord/);
+ assert.match(account,/href="\/api\/account\/login"/);
  assert.match(account,/function accountView\(query=new URLSearchParams\(\)\)/);
  assert.match(account,/if\(!state\.me\)return/);
  assert.match(account,/nav\+accountSpecialPortalMarkup\(p\)\+content\+/);
