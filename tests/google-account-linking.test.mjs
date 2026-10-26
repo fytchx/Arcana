@@ -129,9 +129,10 @@ test('Google and Discord can sign in independently and link explicitly without l
 
   // Another member cannot steal a Google identity linked to someone else's Arcana profile.
   googleSub='123456789012345678901';
-  start=await begin('/api/account/google/link',discordSession);
+  const alreadyLinked=await fetch(base+'/api/account/google/link',{headers:{cookie:discordSession},redirect:'manual'});
   // Their account already has Google, linking a second identity is a no-op redirect.
-  assert.equal(start.url.hostname,'127.0.0.1');
+  assert.equal(alreadyLinked.status,303);
+  assert.equal(alreadyLinked.headers.get('location'),' /#/account'.trim());
   const signin=(await me(discordSession)).user;
   assert.equal(signin.id,second.id);
 
