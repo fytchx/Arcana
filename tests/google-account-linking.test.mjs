@@ -127,14 +127,24 @@ test('Google and Discord can sign in independently and link explicitly without l
   assert.equal(second.authProviders.discord,true);
   assert.equal(second.isOwner,false);
 
-  // Another member cannot steal a Google identity linked to someone else's Arcana profile.
+  // A third account must not claim a Google identity already linked to someone else.
+  discordId='333333333333333333';
+  start=await begin('/api/account/login');
+  callback=await finish('/api/account/callback',start);
+  const thirdSession=cookieFor(callback,'arcana-session'),third=(await me(thirdSession)).user;
+  assert.notEqual(third.id,first.id);
   googleSub='123456789012345678901';
+  start=await begin('/api/account/google/link',thirdSession);
+  callback=await finish('/api/account/google/callback',start,thirdSession);
+  assert.match(callback.headers.get('location'),/error=sign-in/);
+  assert.equal((await me(thirdSession)).user.authProviders.google,false,'A linked Google login must not be stolen');
+  assert.equal((await me(googleSession)).user.id,first.id);
+
+  // Accounts with Google already linked cannot silently overwrite it.
   const alreadyLinked=await fetch(base+'/api/account/google/link',{headers:{cookie:discordSession},redirect:'manual'});
-  // Their account already has Google, linking a second identity is a no-op redirect.
   assert.equal(alreadyLinked.status,303);
   assert.equal(alreadyLinked.headers.get('location'),' /#/account'.trim());
-  const signin=(await me(discordSession)).user;
-  assert.equal(signin.id,second.id);
+  assert.equal((await me(discordSession)).user.id,second.id);
 
   // A forged ID-token audience must never yield a new signed-in session.
   googleSub='444444444444444444444';wrongAudience=true;
