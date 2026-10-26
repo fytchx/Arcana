@@ -15,14 +15,14 @@ const fixture={
  ]])),transitions:Array.from({length:30},(_,i)=>({rank:i+1,gold:'300',materials:[{slug:'core',quantity:3}]}))}},
  materials:[{slug:'iron',name:'Iron'},{slug:'silver',name:'Silver'},{slug:'stone',name:'Stone'},{slug:'core',name:'Core'}]
 };
-test('homepage preserves Build Studio and routes six discovery destinations',()=>{
+test('homepage exposes Build Studio under Create and Share while leading with six tool destinations',()=>{
  const home=homeScreen();
- assert.ok(home.indexOf('class="atlasHero"')<home.indexOf('class="atlasTileGrid"'));
+ assert.ok(home.indexOf('class="atlasTileGrid"')<home.indexOf('class="atlasHero atlasGuideHighlight"'));
  assert.equal((home.match(/class="atlasTile"/g)||[]).length,6);
  assert.doesNotMatch(home,/quickDashboard|quickActions|id="pathRangeContent"|data-route="calculators\/pet"|data-route="calculators\/damage"/);
  assert.match(home,/data-route="calculators\/pathfinder"/);
  assert.match(home,/data-action="homemenu" data-arg="tools"/);
- assert.match(home,/data-route="guilds"/);
+ assert.match(home,/data-route="calculators\/ml-farm"/);
 });
 test('first-use calculator defaults to A1 +0 → A2 +0 while preserving saved checkpoints',()=>{
  const full=structuredClone(fixture);for(const level of Object.values(full.codex.awaken.rows)){
