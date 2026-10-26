@@ -16,7 +16,7 @@ test('Theme Studio places independent always-visible preview beside long control
  assert.match(page,/class="themeStudioEditor"/);
  assert.match(page,/class="themeStudioPreview"/);
  assert.equal((page.match(/data-mini-canvas/g)||[]).length,1);
- assert.equal((page.match(/class="visionArtChoice studioV2Artwork"/g)||[]).length,18);
+ assert.equal((page.match(/class="visionArtChoice studioV2Artwork"/g)||[]).length,23);
  assert.match(page,/Publish to everyone/);
  assert.match(page,/Restore published design/);
  assert.doesNotMatch(designPanel({showPreview:false}),/designMiniPreview/);
@@ -42,8 +42,8 @@ test('preview remains live across five pages, three devices, before-after, plus 
 });
 test('legacy textures remain validated while Studio V2 displays only authored Vision art',async()=>{
  const css=(await read('../arcana-contour.css'))+(await read('../signature-themes.css'))+(await read('../psychedelic-themes.css'))+(await read('../atlas-atelier-textures.css'))+(await read('../visual-art.css'));
- assert.equal(THEME_PATTERNS.length,154);
- assert.equal(new Set(THEME_PATTERN_IDS).size,154);
+ assert.equal(THEME_PATTERNS.length,159);
+ assert.equal(new Set(THEME_PATTERN_IDS).size,159);
  const html=designPanel({showPreview:false});
  for(const p of THEME_PATTERNS){
   assert.equal(validateDesignField('pattern',p.id),p.id);
@@ -55,7 +55,7 @@ test('legacy textures remain validated while Studio V2 displays only authored Vi
   }
  }
  assert.equal((html.match(/class="studioV2Preset"/g)||[]).length,0,'new presets include designPreset as first class');
- assert.equal((html.match(/class="designPreset studioV2Preset"/g)||[]).length,100);
+ assert.equal((html.match(/class="designPreset studioV2Preset"/g)||[]).length,105);
  assert.equal(validateDesignField('pattern','<script>'),null);
  assert.equal(DEFAULT_DESIGN.pattern,'vision-violet-fault');
 });
