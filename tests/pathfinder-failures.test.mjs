@@ -93,7 +93,7 @@ test('quantity multiplies each scenario independently without removing biome and
  assert.match(worst,/data-path-cost-mode="pity" aria-pressed="true"/);
  assert.match(worst,/2,300/,'pity maximum must show 230 fragments per item');
  assert.match(worst,/20 attempts/,'pity attempts must scale to ten items');
- assert.match(worst,/1.5B Gold/,'pity Gold reference should update with selected case');
+ assert.match(worst,/15.04B Gold/,'pity Gold reference must cover all ten items');
  assert.doesNotMatch(worst,/data-path-active-budget="expected"/);
 });
 test('starting pity reduces modeled risk only for the first step and is preserved with quantity',()=>{
