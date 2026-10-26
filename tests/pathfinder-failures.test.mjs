@@ -100,7 +100,7 @@ test('quantity multiplies each scenario independently without removing biome and
  assert.match(worst,/data-path-active-budget="pity"/);
  assert.match(worst,/data-path-cost-mode="pity" aria-pressed="true"/);
  assert.match(worst,/2,300/,'pity maximum must show 230 fragments per item');
- assert.match(worst,/20 attempts/,'pity attempts must scale to ten items');
+ assert.match(worst,/Pity max 20/,'pity attempts must scale to ten items');
  assert.match(worst,/15.04B/,'pity Gold reference should be present only at the bottom');
  assert.doesNotMatch(worst,/data-path-active-budget="expected"/);
 });
