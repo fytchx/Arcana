@@ -166,7 +166,7 @@ with sync_playwright() as playwright:
       document.documentElement.style.removeProperty('--theme-highlight');
       document.documentElement.style.removeProperty('--accent');
     }""")
-    # Current Atlas Home: six destinations, a Build Studio feature, Journal, and connected links.
+    # Current Atlas Home: six practical tools, a compact guide feature, Journal, and sharing.
     page.evaluate("location.hash='#/home'")
     page.wait_for_selector('.atlasHero',timeout=8000)
     assert page.locator('.arcanaSignature').count()==0, 'Signature must not follow navigation away from Directory'
@@ -176,13 +176,13 @@ with sync_playwright() as playwright:
     assert 'Directory' in page.locator('#arcanaDock').inner_text()
     assert 'Profile' not in page.locator('#arcanaDock').inner_text()
     assert 'Options' not in page.locator('#arcanaDock').inner_text()
-    assert page.locator('.atlasHeroGo[data-route="labs/build"]').count()==1
+    assert page.locator('.atlasHeroGo[data-route="wiki/article"]').count()==1
     assert page.locator('.atlasTile').count()==6, 'All six primary Home destinations must render'
     assert page.locator('.atlasJournal').count()==1
     assert page.locator('.atlasJournalStory').count()==1
     assert page.locator('.atlasJournalMore .atlasJournalExtra').count()==1
-    assert page.locator('.atlasFeatureLink').count()==2, 'Featured guide and Community links must render'
-    assert page.locator('.atlasConvergenceFeature').count()==1, 'Convergence guide must be featured on Home'
+    assert page.locator('.atlasFeatureLink').count()==2, 'Create and Share destinations must render'
+    assert page.locator('.atlasGuideHighlight').count()==1, 'Convergence guide must be featured on Home'
     # This offline harness has no Journal API: verify the static featured
     # article remains clickable, with a real slug and visible editorial text.
     featured=page.locator('[data-journal-latest]')
@@ -234,7 +234,7 @@ with sync_playwright() as playwright:
     page.set_viewport_size({'width':1440,'height':900})
     page.evaluate("location.hash='#/home'")
     page.wait_for_selector('.atlasHome .atlasHero',timeout=15000)
-    assert page.locator('.atlasHome .atlasFeatureLink').count()==2, 'Desktop Home guide/community links missing'
+    assert page.locator('.atlasHome .atlasFeatureLink').count()==2, 'Desktop Create and Share links missing'
     assert page.locator('#content.homeFullscreen').evaluate('e=>e.getBoundingClientRect().width')>=900, 'Desktop content too narrow'
     grid_debug=page.locator('.atlasTileGrid').evaluate("""e => ({
         template:getComputedStyle(e).gridTemplateColumns,
@@ -375,6 +375,20 @@ with sync_playwright() as playwright:
     page.evaluate("location.hash='#/home'")
     page.wait_for_selector('.atlasHero',timeout=8000)
     assert page.locator('html').get_attribute('data-arcana-design-active')!='true', 'Leaving Playground must disable local try-on'
+    # With both OAuth providers configured, the same account screen presents
+    # both choices. This browser uses fixture responses, not OAuth credentials.
+    guest_auth_html=HTML.replace("if(path.includes('/api/wiki/import-access'))",
+        "if(path.includes('/api/account/me')) return new Response(JSON.stringify({user:null,enabled:true,providers:{google:true,discord:true},betaEnrollmentOpen:true}),{status:200,headers:{'content-type':'application/json'}}); if(path.includes('/api/wiki/import-access'))")
+    guest_auth_page=browser.new_page(viewport={'width':390,'height':844})
+    guest_auth_page.route(qa_origin,lambda route:route.fulfill(status=200,body=guest_auth_html,content_type='text/html'))
+    guest_auth_page.goto(qa_origin,wait_until='domcontentloaded')
+    guest_auth_page.wait_for_selector('#arcanaBoot',state='detached',timeout=15000)
+    guest_auth_page.locator('#accountBtn').click()
+    guest_auth_page.wait_for_selector('.arcSignInMethods',timeout=8000)
+    assert guest_auth_page.locator('a[href="/api/account/google/login"]').count()==1, 'Google login choice missing'
+    assert guest_auth_page.locator('a[href="/api/account/login"]').count()==1, 'Discord login choice missing'
+    guest_auth_page.close()
+
     # Synthetic authenticated QA browser, NOT the owner's real session or credentials.
     # Everyone uses the universal account button. Only the verified owner receives
     # the account-page management portal; the retired header admin button stays absent.

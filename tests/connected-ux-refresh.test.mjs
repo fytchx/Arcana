@@ -39,17 +39,17 @@ test('universal My Arcana header and search discovery preserve private controls'
  assert.match(traffic,/state\.loadedAt=Date\.now\(\);\}finally|state\.loadedAt=Date\.now\(\);\}/);
  assert.match(traffic,/Traffic service unavailable/);
 });
-test('home atlas prioritizes Studio, six connected tools, and live Journal',async()=>{
+test('home atlas prioritizes practical tools, guides, sharing and live Journal',async()=>{
  const markup=homeScreen(),css=await read('home-atlas.css');
- assert.equal((markup.match(/class="atlasHero"/g)||[]).length,1);
+ assert.equal((markup.match(/class="atlasHero atlasGuideHighlight"/g)||[]).length,1);
  assert.equal((markup.match(/class="atlasTile"/g)||[]).length,6);
  assert.equal((markup.match(/data-journal-latest/g)||[]).length,1);
- for(const route of ['calculators/pathfinder','guilds','community','wiki/guides','wiki','labs/build'])assert.match(markup,new RegExp('data-route="'+route+'"'));
+ for(const route of ['calculators/pathfinder','calculators/ml-farm','community','wiki/guides','wiki','labs/build'])assert.match(markup,new RegExp('data-route="'+route+'"'));
  assert.match(markup,/data-arg="tools"/);
  assert.match(css,/--atlas-icon-box/);
  assert.match(css,/--atlas-icon/);
  assert.match(css,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
- assert.ok(markup.indexOf('class="atlasHero"')<markup.indexOf('class="atlasTileGrid"'));
+ assert.ok(markup.indexOf('class="atlasTileGrid"')<markup.indexOf('class="atlasHero atlasGuideHighlight"'));
  assert.ok(markup.indexOf('class="atlasTileGrid"')<markup.indexOf('class="atlasJournal"'));
 });
 test('community is linked to builds, guilds, guides and Journal without duplicate oversized cards',async()=>{

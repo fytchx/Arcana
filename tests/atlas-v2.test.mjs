@@ -10,7 +10,7 @@ test('Atlas v2 preserves six real entry points while compressing the mobile firs
  const markup=homeScreen(),css=await read('home-atlas.css');
  assert.equal((markup.match(/class="atlasTile"/g)||[]).length,6);
  assert.match(markup,/class="atlasUpdate"/);
- assert.match(markup,/class="atlasHero"/);
+ assert.match(markup,/class="atlasHero atlasGuideHighlight"/);
  assert.match(markup,/id="atlasJournalMore"/);
  assert.match(markup,/data-journal-latest/);
  assert.match(markup,/data-route="wiki\/guides"/);

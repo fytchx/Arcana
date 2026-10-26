@@ -186,3 +186,39 @@
 .atlasAccountEntryButton:hover{border-color:var(--atlas-icon);background:color-mix(in srgb,var(--atlas-icon) 22%,var(--atlas-panel))}
 @media(max-width:520px){.atlasAccountEntry{gap:9px;padding:12px 10px}.atlasAccountEntryIcon{width:34px;height:34px;flex-basis:34px}.atlasAccountEntryCopy strong{font-size:12px}.atlasAccountEntryCopy small{font-size:10px}.atlasAccountEntryButton{font-size:11px!important;padding:10px 9px;min-height:42px}.atlasAccountEntryButton svg{width:14px;height:14px}}
 @media(max-width:365px){.atlasAccountEntryIcon{display:none}.atlasAccountEntryCopy small{font-size:9px}.atlasAccountEntryButton{font-size:10px!important}}
+
+
+/* Companion dashboard: practical tools above editorial content, sharing below. */
+.atlasHome{gap:clamp(12px,2.1vw,22px)}
+.atlasAccountEntry{padding:7px 12px;min-height:44px;border-color:var(--atlas-outline);background:var(--atlas-panel)}
+.atlasAccountEntryCopy strong{font-size:12px}
+.atlasAccountEntryButton{min-height:34px;padding:6px 12px;font-size:11px!important}
+.atlasGuideHighlight{min-height:88px;padding:14px 18px;border-radius:14px;box-shadow:none}
+.atlasGuideHighlight .atlasHeroEmblem{width:170px;top:-60px;right:-16px}
+.atlasGuideHighlight .atlasHeroIcon{width:43px;height:43px;border-radius:11px}
+.atlasGuideHighlight .atlasHeroIcon svg{width:24px;height:24px}
+.atlasGuideHighlight .atlasHeroText strong{font:650 clamp(18px,2.7vw,25px)/1.13 Georgia,serif;letter-spacing:-.02em}
+.atlasGuideHighlight .atlasHeroText small{font-size:11px}
+.atlasGuideHighlight .atlasHeroGo{width:35px;height:35px}
+.atlasSharing{min-width:0}
+.atlasSharing .atlasFeatureLinks{margin-top:0}
+.atlasSharing .atlasFeatureLink{text-align:left;cursor:pointer}
+.arcSignInMethods{display:grid;gap:10px}
+.arcGoogleLogin,.arcDiscordLogin{display:flex;justify-content:center;align-items:center;gap:10px}
+.arcGoogleLogin svg:first-child{flex:none}
+.arcLinkedLogins{border:1px solid var(--line,var(--atlas-outline));border-radius:14px;padding:16px;margin-top:18px}
+.arcLinkedLogins h2{font-size:16px;margin:0 0 5px}
+.arcLinkedLoginRow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line,var(--atlas-outline));font-size:13px}
+.arcLinkedLoginRow:first-of-type{margin-top:10px}
+.arcLoginConnected{display:inline-flex;align-items:center;gap:6px;color:var(--accent,#9ab);font-size:12px}
+.arcLinkedLoginRow .btn{font-size:12px;min-height:37px}
+@media(max-width:759px){
+ .atlasHome{gap:12px}
+ .atlasGuideHighlight{min-height:75px;padding:10px 12px;gap:9px}
+ .atlasGuideHighlight .atlasHeroIcon{width:37px;height:37px}
+ .atlasGuideHighlight .atlasHeroText strong{font-size:17px}
+ .atlasGuideHighlight .atlasHeroText small{font-size:10px}
+ .atlasGuideHighlight .atlasEyebrow{font-size:8px}
+ .atlasGuideHighlight .atlasHeroGo{width:29px;height:33px}
+ .atlasSharing .atlasFeatureLinks{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
