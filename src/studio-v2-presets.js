@@ -1,3 +1,4 @@
+import {ATELIER_PRESETS} from './atelier-presets.js';
 // Arcana Studio v2. Every entry is a real Vision artwork + full working UI palette.
 // Legacy presets remain readable by the importer, but none appear in the new gallery.
 const PALETTES={
@@ -171,8 +172,8 @@ const allEntries=[
  ...ENTRIES.map(([id,name,art,palette,,family])=>[id,name,art,palette,...LAYER_SCHEME[family],family]),
  ...MORE_ENTRIES
 ];
-export const STUDIO_V2_FAMILIES=Object.freeze([...new Set(allEntries.map(r=>r[6]))]);
-export const STUDIO_V2_PRESETS=Object.freeze(Object.fromEntries(allEntries.map(([id,name,artName,palette,panelArtName,featureArtName,family],index)=>{
+export const STUDIO_V2_FAMILIES=Object.freeze(['Atelier / 2026',...new Set(allEntries.map(r=>r[6]))]);
+export const STUDIO_V2_PRESETS=Object.freeze({...ATELIER_PRESETS,...Object.fromEntries(allEntries.map(([id,name,artName,palette,panelArtName,featureArtName,family],index)=>{
  const [main,card,action,secondaryAccent,text,mutedText,borderColor]=PALETTES[palette];
  const brighten=n=>Math.min(255,n+17).toString(16).padStart(2,'0').toUpperCase();
  const iconBox='#'+main.slice(1).match(/../g).map(x=>brighten(parseInt(x,16))).join('');
