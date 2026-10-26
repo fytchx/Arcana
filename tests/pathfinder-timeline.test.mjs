@@ -104,7 +104,7 @@ test('preview HTML and server serve timeline stylesheet; main logo remains intac
  const css=await readFile(new URL('../pathfinder-timeline.css',import.meta.url),'utf8');
  assert.match(app,/pathfinder-timeline-view\.js/);
  assert.match(app,/wirePathfinderQuick\(\)/);
- assert.match(page,/pathfinder-timeline\.css/);
+ assert.match(page,/arcana-site\.css/);
  assert.match(server,/pathfinder-timeline\.css/);
  assert.match(page,/brandHome/);
  assert.match(css,/var\(--theme-highlight/);
