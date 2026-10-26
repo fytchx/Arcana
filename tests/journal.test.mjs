@@ -11,10 +11,11 @@ async function request(path,method='GET',headers={}){
  return {handled,...res,text:String(res.body||'')};
 }
 test('Journal first articles use the measured 250-player snapshot',()=>{
- assert.equal(JOURNAL_SEEDS.length,3);
- assert.equal(JOURNAL_SEEDS[0].slug,'class-balance-top-250-season-2');
- assert.match(JOURNAL_SEEDS[0].body,/41.6%/);
- assert.match(JOURNAL_SEEDS[0].body,/not a complete diagnosis/);
+ assert.ok(JOURNAL_SEEDS.length>=4);
+ const balance=JOURNAL_SEEDS.find(x=>x.slug==='class-balance-top-250-season-2');
+ assert.ok(balance);
+ assert.match(balance.body,/41.6%/);
+ assert.match(balance.body,/not a complete diagnosis/);
 });
 test('Journal index is server rendered, indexable and provides real article links',async()=>{
  const r=await request('/journal');
@@ -47,8 +48,10 @@ test('Unknown and draft content never appears as a live story',async()=>{
  assert.equal(missing.status,404);
  const list=await request('/api/journal');
  assert.equal(list.status,200);
- assert.equal(JSON.parse(list.text).articles.length,3);
- assert.equal(JSON.parse(list.text).articles[0].slug,'idlearc-1-3-7-the-timing-couldnt-be-better');
+ const articles=JSON.parse(list.text).articles;
+ assert.ok(articles.length>=4);
+ assert.equal(articles[0].slug,'help-shape-arcana');
+ assert.ok(articles.find(x=>x.slug==='idlearc-1-3-7-the-timing-couldnt-be-better'));
 });
 test('Native Journal views use Arcana guide styling and navigate inside the app shell',async()=>{
  const list=JSON.parse((await request('/api/journal')).text).articles;
@@ -74,14 +77,14 @@ test('SEO discovery endpoints include current public stories',async()=>{
 
 
 test('October 18 update acknowledges changes without overwriting the original analysis',async()=>{
- const earlier=JOURNAL_SEEDS[0];
+ const earlier=JOURNAL_SEEDS.find(x=>x.slug==='class-balance-top-250-season-2');
  assert.equal(earlier.slug,'class-balance-top-250-season-2');
  assert.match(earlier.body,/104 Rogues/);
  assert.match(earlier.body,/41.6%/);
- const originalAnnouncement=JOURNAL_SEEDS[1];
+ const originalAnnouncement=JOURNAL_SEEDS.find(x=>x.slug==='building-the-arcana-damage-calculator');
  assert.equal(originalAnnouncement.slug,'building-the-arcana-damage-calculator');
  assert.match(originalAnnouncement.body,/character sandbox/);
- const patch=JOURNAL_SEEDS[2];
+ const patch=JOURNAL_SEEDS.find(x=>x.slug==='idlearc-1-3-7-the-timing-couldnt-be-better');
  assert.equal(patch.slug,'idlearc-1-3-7-the-timing-couldnt-be-better');
  assert.match(patch.body,/pet affix auto-reroll/i);
  assert.match(patch.body,/from \+3% to \+4%/);
