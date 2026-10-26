@@ -166,7 +166,7 @@ with sync_playwright() as playwright:
       document.documentElement.style.removeProperty('--theme-highlight');
       document.documentElement.style.removeProperty('--accent');
     }""")
-    # Current Atlas Home: six destinations, a Build Studio feature, Journal, and connected links.
+    # Current Atlas Home: six practical tools, a compact guide feature, Journal, and sharing.
     page.evaluate("location.hash='#/home'")
     page.wait_for_selector('.atlasHero',timeout=8000)
     assert page.locator('.arcanaSignature').count()==0, 'Signature must not follow navigation away from Directory'
@@ -176,13 +176,13 @@ with sync_playwright() as playwright:
     assert 'Directory' in page.locator('#arcanaDock').inner_text()
     assert 'Profile' not in page.locator('#arcanaDock').inner_text()
     assert 'Options' not in page.locator('#arcanaDock').inner_text()
-    assert page.locator('.atlasHeroGo[data-route="labs/build"]').count()==1
+    assert page.locator('.atlasHeroGo[data-route="wiki/article"]').count()==1
     assert page.locator('.atlasTile').count()==6, 'All six primary Home destinations must render'
     assert page.locator('.atlasJournal').count()==1
     assert page.locator('.atlasJournalStory').count()==1
     assert page.locator('.atlasJournalMore .atlasJournalExtra').count()==1
-    assert page.locator('.atlasFeatureLink').count()==2, 'Featured guide and Community links must render'
-    assert page.locator('.atlasConvergenceFeature').count()==1, 'Convergence guide must be featured on Home'
+    assert page.locator('.atlasFeatureLink').count()==2, 'Create and Share destinations must render'
+    assert page.locator('.atlasGuideHighlight').count()==1, 'Convergence guide must be featured on Home'
     # This offline harness has no Journal API: verify the static featured
     # article remains clickable, with a real slug and visible editorial text.
     featured=page.locator('[data-journal-latest]')
@@ -234,7 +234,7 @@ with sync_playwright() as playwright:
     page.set_viewport_size({'width':1440,'height':900})
     page.evaluate("location.hash='#/home'")
     page.wait_for_selector('.atlasHome .atlasHero',timeout=15000)
-    assert page.locator('.atlasHome .atlasFeatureLink').count()==2, 'Desktop Home guide/community links missing'
+    assert page.locator('.atlasHome .atlasFeatureLink').count()==2, 'Desktop Create and Share links missing'
     assert page.locator('#content.homeFullscreen').evaluate('e=>e.getBoundingClientRect().width')>=900, 'Desktop content too narrow'
     grid_debug=page.locator('.atlasTileGrid').evaluate("""e => ({
         template:getComputedStyle(e).gridTemplateColumns,
