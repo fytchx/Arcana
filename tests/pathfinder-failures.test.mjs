@@ -119,7 +119,8 @@ test('no failure probabilities means no false pity guarantee and base costs rema
  assert.equal(r.available,false);assert.match(r.reason,/not verified/);
  const html=quickUpgradeContent(missing,{...fromTo,costMode:'pity'});
  assert.match(html,/Failure and pity scenarios unavailable/);
- assert.match(html,/885M Gold/);
+ assert.match(html,/class="quickGoldFooter" title="885,000,000 Gold"/);
+ assert.match(html,/<strong>885M<\/strong>/);
  assert.doesNotMatch(html,/data-path-cost-mode="pity"/);
 });
 test('native site wire-up preserves quantity handlers, starting pity, scenario and checklist',async()=>{
