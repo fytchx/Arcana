@@ -135,7 +135,7 @@ const server=http.createServer(async(req,res)=>{
   // Single ordered stylesheet with cached gzip compression and per-encoding ETags.
   if((req.method==='GET'||req.method==='HEAD')&&pathname==='/arcana-site.css'){
    const bundle=await siteCssBundle(ROOT);
-   const useGzip=/(?:^|,)\\s*gzip\\b/i.test(String(req.headers['accept-encoding']||''));
+   const useGzip=/(?:^|,)\s*gzip\b/i.test(String(req.headers['accept-encoding']||''));
    const etag=useGzip?bundle.gzipEtag:bundle.etag;
    const headers={'content-type':'text/css; charset=utf-8','cache-control':'public,max-age=3600',
     'vary':'Accept-Encoding','etag':etag,...(useGzip?{'content-encoding':'gzip'}:{})};
