@@ -18,12 +18,11 @@ export const HOME_MENUS=Object.freeze({
   link('Item Codex','Equipment descriptions and artwork.','wiki/items','shield'),
   link('All Topics','Complete wiki category index.','wiki/topics','layers')
  ]},
- pathfinder:{title:'Pathfinder',detail:'Item upgrading, materials, enhancement costs, equipment comparison and upgrade planning.',links:[
+ pathfinder:{title:'Pathfinder',detail:'Item upgrading, materials, enhancement costs and equipment comparison.',links:[
   link('Upgrade Costs','Total materials and Gold between two upgrade levels.','calculators/pathfinder','calculator',{view:'range'}),
   link('Upgrade Map','Browse all ranks, enhancements and materials.','calculators/pathfinder','layers',{view:'timeline'}),
   link('Rarity Reference','Equipment rarities and upgrade information.','calculators/pathfinder','shield',{view:'upgrade'}),
   link('Compare Equipment','Compare equipment and item upgrades.','calculators/pathfinder','compare',{view:'compare'}),
-  link('Upgrade Optimizer','Choose Codex equipment and plan rarity or Awakening upgrades.','calculators/optimizer','compare'),
   link('Material Reference','Materials and their wiki entries.','wiki/library','box',{kind:'material'})
  ]},
  tools:{title:'Tools',detail:'Pet calculators, farming tools, guild planning and damage analysis.',links:[
@@ -31,8 +30,7 @@ export const HOME_MENUS=Object.freeze({
   link('Pet Affix Calculator','Pet Shard costs and affix upgrade planning.','calculators/affixes','calculator'),
   link('ML Farming Comparator','Compare Monster Level farming efficiency.','calculators/ml-farm','sword'),
   link('Guild Skill Planner','Allocate, compare and share guild skill points.','labs/guild-tree','shield'),
-  link('Damage Calculator','Enter your Attack, Retaliation, or Pet breakdown and test changes.','calculators/damage','calculator'),
-  link('Upgrade Optimizer','Compare item stat gains against upgrade materials and gold.','calculators/optimizer','compare')
+  link('Damage Calculator','Enter your Attack, Retaliation, or Pet breakdown and test changes.','calculators/damage','calculator')
  ]},
  builds:{title:'Builds, Guides & Wiki',detail:'Player guides, community builds, sharing and character planning.',links:[
   link('Player Guides','Guides for classes, progression and game systems.','wiki/guides','book'),
