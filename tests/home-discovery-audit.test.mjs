@@ -19,7 +19,7 @@ test('Player tools, guides, Wiki and community get six useful home destinations'
  for(const route of ['wiki/guides','community','wiki','calculators/ml-farm','calculators/pathfinder'])assert.ok(html.includes('data-route="'+route+'"'),'Missing direct route: '+route);
  assert.match(html,/data-action="homemenu" data-arg="tools"/);
  assert.equal((html.match(/data-journal-latest/g)||[]).length,1);
- assert.ok(html.indexOf('class="atlasTileGrid"')<html.indexOf('class="atlasHero"'));
+ assert.ok(html.indexOf('class="atlasTileGrid"')<html.indexOf('class="atlasHero atlasGuideHighlight"'));
 });
 test('Mobile guide shortcuts remain compact and motion-safe',async()=>{
  const css=await readFile(new URL('../arcana-connected-ux.css',import.meta.url),'utf8');
