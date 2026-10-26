@@ -1,8 +1,8 @@
 /* Arcana Connected UX: one hierarchy across navigation, studio, and community. */
-#adminPortalBtn[hidden]{display:none!important}
+/* One universal account button lives in the former Admin Portal position. */
 .launchTopRight{display:flex;align-items:center;justify-content:flex-end}
-.launchAdminBtn{min-width:45px;min-height:44px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--theme-highlight,#bea6fd) 32%,transparent);border-radius:12px;color:var(--theme-highlight,#c9baff);background:color-mix(in srgb,var(--theme-highlight,#b9a5fa) 12%,var(--theme-main,#151126));cursor:pointer}
-.launchAdminBtn:focus-visible,.launchAdminBtn:hover{outline:2px solid var(--theme-highlight,#ad93ff);outline-offset:2px}
+.launchTopRight .launchAccount{border:1px solid color-mix(in srgb,var(--theme-highlight,#bea6fd) 30%,var(--theme-border,var(--line)));background:var(--theme-secondary,var(--panel));color:var(--theme-accent-text,var(--text))}
+.launchTopRight .launchAccount:focus-visible,.launchTopRight .launchAccount:hover{border-color:var(--theme-highlight,#ad93ff)}
 .arcanaSearchDiscover{padding:7px 2px 12px}
 .arcanaSearchDiscover>.eyebrow{letter-spacing:.13em}
 .arcanaSearchDiscover h2{font-size:clamp(19px,2.7vw,24px);margin:8px 0 4px;color:var(--text)}
