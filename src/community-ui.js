@@ -48,6 +48,8 @@ const profileForm=p=>{
  '<label>About your character and what you are looking for<textarea name="description" maxlength="500" rows="5" placeholder="Builds you enjoy, raid team goals, or guild details">'+esc(p.description||'')+'</textarea></label>'+
  '<button class="btn primary" type="submit">Save player card</button><p class="mutedSmall">Tags may be 2–4 letters (A–Z) and must be unclaimed or belong to your registered guild. Unregistered tags remain gray; approved registered tags use their chosen colors. <button class="inlineLink" type="button" data-route="guilds">Explore guilds</button></p><p class="mutedSmall">Everything on this card is public. Only share details you want other players to see. Guild and class information is self-reported.</p></form>';
 };
+export const accountSpecialPortalMarkup=profile=>profile?.isOwner===true?
+ '<div class="arcOwnerPortal"><div><span class="eyebrow">OWNER ACCESS</span><strong>Site management</strong></div><button type="button" class="btn primary" data-route="admin">'+icon('shield',17)+' Admin Control Panel '+icon('arrow',15)+'</button></div>':'';
 function accountView(query=new URLSearchParams()){
  if(state.me===undefined)return notice('Loading your Arcana account…');
  if(!state.me)return '<link rel="stylesheet" href="/community-archive.css?v=20261025"><div class="communityPage arcAccount arcAccountGuest"><div class="communityHero"><span class="eyebrow">MY ARCANA</span><h1>Account</h1></div>'+(query?.get('error')==='sign-in'?'<p class="arcAccountLoginError" role="alert">Discord sign-in did not complete. Please try again below.</p>':'')+signInPanel()+'</div>';
@@ -63,7 +65,7 @@ function accountView(query=new URLSearchParams()){
  tab==='saves'?farmListsAccountView()+cloudBuildView():
  contributions+'<button class="btn primary" data-route="community/create">Publish a guide or build</button>';
  return '<link rel="stylesheet" href="/community-archive.css?v=20261025"><div class="communityPage arcAccount"><div class="communityHero"><span class="eyebrow">MY ARCANA</span><h1>My Account</h1></div>'+
- nav+(p.isOwner===true?'<div class="arcOwnerPortal"><div><span class="eyebrow">OWNER ACCESS</span><strong>Site management</strong></div><button type="button" class="btn primary" data-route="admin">'+icon('shield',17)+' Admin Control Panel '+icon('arrow',15)+'</button></div>':'')+content+
+ nav+accountSpecialPortalMarkup(p)+content+
  '<div class="communityAccountActions"><button class="btn secondary" data-community-action="logout">Sign out</button></div></div>';
 }
 const communityPostCard=p=>'<article class="communityPostCard"><span class="eyebrow">'+esc(p.kind==='build'?'PLAYER BUILD':'PLAYER GUIDE')+'</span>'+
