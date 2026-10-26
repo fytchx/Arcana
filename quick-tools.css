@@ -255,38 +255,59 @@
 @media(prefers-reduced-motion:reduce){.quickZoneChevron{transition:none}}
 
 
-/* Selectable Pathfinder budgets, contained in an optional closed-by-default fold. */
-.quickOddsPlanner{border-color:color-mix(in srgb,var(--theme-highlight) 36%,var(--line));box-shadow:inset 0 1px color-mix(in srgb,var(--text) 4%,transparent)}
-.quickOddsPlanner>.quickSummaryLine{background:color-mix(in srgb,var(--theme-highlight) 6%,var(--theme-secondary))}
-.quickOddsPlanner>.quickSummaryLine:focus-visible,.quickBudgetChoice:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:-3px}
-.quickOddsPlanner .quickScenarioIntro{margin:0;color:var(--muted);font-size:11px;line-height:1.55}
-.quickBudgetChoices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
-.quickBudgetChoice{appearance:none;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:5px;min-width:0;min-height:122px;padding:13px 12px;text-align:left;font:inherit;color:var(--text);cursor:pointer;border:1px solid var(--line);border-radius:var(--arcana-card-radius,11px);background:color-mix(in srgb,var(--theme-main) 42%,var(--theme-secondary));transition:border-color .16s,background .16s,transform .16s;box-shadow:inset 0 1px color-mix(in srgb,var(--text) 5%,transparent)}
-.quickBudgetChoice:hover{border-color:color-mix(in srgb,var(--theme-highlight) 72%,var(--line));transform:translateY(-1px)}
-.quickBudgetChoice.isSelected{border-color:var(--theme-highlight);background:color-mix(in srgb,var(--theme-highlight) 13%,var(--theme-secondary));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-highlight) 29%,transparent)}
-.quickBudgetChoiceHeader{display:flex;align-items:center;justify-content:space-between;gap:4px}
-.quickBudgetChoiceHeader strong{font-size:clamp(12px,1.6vw,15px);font-weight:850;line-height:1.2}
-.quickBudgetChoiceCheck{color:var(--theme-highlight);font-size:15px;flex:none}
-.quickBudgetChoice>small{font-size:10px;line-height:1.25;color:var(--muted)}
-.quickBudgetAttempts{font-size:11px;color:var(--text);font-variant-numeric:tabular-nums;margin-top:auto}
-.quickBudgetChoice>b{font-size:clamp(13px,2vw,18px);color:var(--theme-highlight);font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.2}
-.quickOddsPlanner .quickPityInput{border-top:1px solid var(--line);padding-top:11px;font-size:11px}
-.quickOddsPlanner .quickOddsByStep{margin-top:0}
-.quickOddsPlanner .quickOddsByStep>summary{min-height:42px}
+/* Pathfinder: return to the compact, material-first farming layout. */
+.quickFarmSummary{padding:10px 13px}
+.quickFarmSummary strong{font-size:clamp(15px,2.2vw,18px)}
+.quickFarmSummary>span{font-size:11px;color:var(--muted);font-weight:650}
+.quickMaterialModes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;background:color-mix(in srgb,var(--theme-main) 42%,var(--theme-secondary));border:1px solid var(--line);border-radius:var(--arcana-card-radius,12px)}
+.quickMaterialModes button{appearance:none;min-width:0;min-height:38px;border:1px solid transparent;border-radius:var(--arcana-button-radius,8px);padding:7px 4px;background:transparent;color:var(--muted);font:800 clamp(10px,1.8vw,12px)/1.2 inherit;cursor:pointer;text-align:center;transition:background .16s,border-color .16s,color .16s}
+.quickMaterialModes button:hover{color:var(--text);background:color-mix(in srgb,var(--theme-highlight) 7%,var(--theme-secondary))}
+.quickMaterialModes button.active,.quickMaterialModes button[aria-pressed="true"]{border-color:color-mix(in srgb,var(--theme-highlight) 55%,var(--line));color:var(--text);background:color-mix(in srgb,var(--theme-highlight) 15%,var(--theme-secondary));box-shadow:0 1px 5px color-mix(in srgb,var(--theme-main) 50%,transparent)}
+.quickMaterialModes button:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:1px}
+.quickCosts .quickMaterialSection.quickFarmFirst{border-color:color-mix(in srgb,var(--theme-highlight) 35%,var(--line))}
+.quickFarmFirst>.quickSectionSummary>strong{font-size:14px}
+.quickMaterialSection.quickForgeSection .quickSectionSummary small{font-size:10px;max-width:55%;text-align:right;line-height:1.35}
+.quickGoldLast{opacity:.78}
+.quickGoldLast[open]{opacity:1}
+.quickGoldLast>.quickSectionSummary{padding:9px 13px;min-height:38px!important}
+.quickGoldLast>.quickSectionSummary>strong{font-size:11px!important;font-weight:650!important}
+.quickGoldLast>.quickSectionSummary>small{font-size:10px!important}
+.quickGoldLast .quickSectionBody{gap:4px}
+.quickGoldQuiet{font-size:10px;color:var(--muted);line-height:1.5;margin:4px 0 0}
+.quickMaterialBreakdown{border-color:var(--line);background:color-mix(in srgb,var(--theme-main) 25%,var(--theme-secondary))}
+.quickMaterialBreakdown>.quickSummaryLine{min-height:42px;padding:10px 12px}
+.quickMaterialBreakdown>.quickSummaryLine>strong{font-size:12px}
+.quickMaterialBreakdown>.quickSummaryLine>small{font-size:10px}
+.quickMaterialBreakdown .quickAdvancedBody{gap:12px;padding:10px}
+.quickMaterialBreakdown .quickScenarioIntro{font-size:11px;line-height:1.5;color:var(--muted);margin:0}
+.quickCompareMaterials{display:grid;gap:9px}
+.quickCompareGroup{min-width:0;display:grid;gap:5px}
+.quickCompareGroup h4{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--theme-highlight);margin:8px 0 2px;font-weight:800}
+.quickCompareMaterial{display:grid;gap:7px;min-width:0;padding:9px 10px;border:1px solid var(--line);border-radius:var(--arcana-card-radius,9px);background:color-mix(in srgb,var(--theme-main) 42%,var(--theme-secondary))}
+.quickCompareMaterial>strong{font-size:12px;font-weight:750;color:var(--text);min-width:0}
+.quickCompareThree{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.quickCompareThree>span{min-width:0;display:grid;gap:3px;padding:7px 8px;border:1px solid transparent;border-radius:7px;background:color-mix(in srgb,var(--theme-main) 58%,var(--theme-secondary))}
+.quickCompareThree>span.active{border-color:color-mix(in srgb,var(--theme-highlight) 40%,var(--line));background:color-mix(in srgb,var(--theme-highlight) 10%,var(--theme-main))}
+.quickCompareThree small{font-size:9px;color:var(--muted);font-weight:650}
+.quickCompareThree b{font-size:clamp(12px,2vw,15px);font-variant-numeric:tabular-nums;color:var(--text);overflow-wrap:anywhere}
+.quickCompareThree>span.active b{color:var(--theme-highlight)}
+.quickPityProgress{padding-top:8px;border-top:1px solid var(--line)}
+.quickAttemptNote{font-size:10px;color:var(--muted);line-height:1.5}
+.quickMaterialBreakdown .quickOddsByStep{margin:0}
+.quickMaterialBreakdown .quickAssumptions{margin:0}
 @media(max-width:640px){
- .quickBudgetChoices{gap:6px}
- .quickBudgetChoice{min-height:115px;padding:10px 8px;gap:5px}
- .quickBudgetChoiceHeader strong{font-size:12px}
- .quickBudgetChoice>small{font-size:9px}
- .quickBudgetAttempts{font-size:10px}
- .quickBudgetChoice>b{font-size:13px}
- .quickOddsPlanner>.quickSummaryLine{gap:6px}
- .quickOddsPlanner>.quickSummaryLine>strong{font-size:12px}
- .quickOddsPlanner>.quickSummaryLine>small{font-size:10px;min-width:0;text-align:right}
+ .quickFarmSummary{padding:9px 11px}
+ .quickMaterialModes button{min-height:36px;padding:6px 3px;font-size:11px}
+ .quickCompareMaterial{padding:8px}
+ .quickCompareThree{gap:4px}
+ .quickCompareThree>span{padding:6px}
+ .quickCompareThree b{font-size:12px}
+ .quickMaterialBreakdown>.quickSummaryLine{gap:6px}
+ .quickMaterialBreakdown>.quickSummaryLine>small{font-size:9px;min-width:0;text-align:right}
 }
-@media(max-width:355px){
- .quickBudgetChoice{padding:9px 6px}
- .quickBudgetChoiceHeader strong{font-size:11px}
- .quickBudgetChoice>b{font-size:12px}
+@media(max-width:350px){
+ .quickMaterialModes button{font-size:10px}
+ .quickCompareThree>span{padding:5px}
+ .quickCompareThree b{font-size:11px}
 }
-@media(prefers-reduced-motion:reduce){.quickBudgetChoice{transition:none}}
+@media(prefers-reduced-motion:reduce){.quickMaterialModes button{transition:none}}
