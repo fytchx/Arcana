@@ -167,8 +167,19 @@ with sync_playwright() as playwright:
     assert page.locator('.atlasJournalMore .atlasJournalExtra').count()==1
     assert page.locator('.atlasFeatureLink').count()==2, 'Featured guide and Community links must render'
     assert page.locator('.atlasConvergenceFeature').count()==1, 'Convergence guide must be featured on Home'
-    assert page.locator('[data-journal-latest]').get_attribute('href')=='/#/journal/article?slug=idlearc-1-3-7-the-timing-couldnt-be-better'
-    assert 'IdleArc 1.3.7' in page.locator('[data-journal-latest]').inner_text()
+    # Journal's featured story is driven by published records, not a forever-fixed slug.
+    latest=page.evaluate("""async () => {
+      const response=await fetch('/api/journal',{cache:'no-store'});
+      if(!response.ok)throw Error('Journal API returned '+response.status);
+      const payload=await response.json();
+      return payload.articles?.[0]||null;
+    }""")
+    assert latest and latest['slug'], 'Journal should have a published featured article'
+    page.wait_for_function("""slug => {
+      const href=document.querySelector('[data-journal-latest]')?.getAttribute('href');
+      return href==='/#/journal/article?slug='+encodeURIComponent(slug);
+    }""",arg=latest['slug'],timeout=8000)
+    assert (latest.get('teaserTitle') or latest['title']) in page.locator('[data-journal-latest]').inner_text()
     assert page.locator('.atlasTile[data-route="calculators/pathfinder"]').count()==1
     assert page.locator('.atlasTile[data-action="homemenu"][data-arg="tools"]').count()==1
     assert page.locator('.atlasTile[data-route="community"]').count()==1
