@@ -376,16 +376,19 @@ with sync_playwright() as playwright:
     page.wait_for_selector('.atlasHero',timeout=8000)
     assert page.locator('html').get_attribute('data-arcana-design-active')!='true', 'Leaving Playground must disable local try-on'
     # Synthetic authenticated QA browser, NOT the owner's real session or credentials.
-    # Header admin access must be based on server-returned roles; guest stays hidden.
-    assert page.locator('#adminPortalBtn').is_hidden(), 'Guest should never see admin controls'
+    # Everyone uses the universal account button. Only the verified owner receives
+    # the account-page management portal; the retired header admin button stays absent.
+    assert page.locator('#adminPortalBtn').count()==0, 'Legacy admin header button must be absent'
+    assert page.locator('#accountBtn').is_visible(), 'Universal account button must remain available'
     admin_html=HTML.replace("if(path.includes('/api/wiki/import-access'))",
-        "if(path.includes('/api/account/me')) return new Response(JSON.stringify({user:{id:'qa-admin',displayName:'Arcana QA Admin',roles:[{id:'admin'}]},enabled:true}),{status:200,headers:{'content-type':'application/json'}}); if(path.includes('/api/wiki/import-access'))")
+        "if(path.includes('/api/account/me')) return new Response(JSON.stringify({user:{id:'qa-admin',displayName:'Arcana QA Admin',isOwner:true,roles:[{id:'admin',label:'Administrator'}]},enabled:true}),{status:200,headers:{'content-type':'application/json'}}); if(path.includes('/api/wiki/import-access'))")
     admin_page=browser.new_page(viewport={'width':390,'height':844})
     admin_page.route(qa_origin,lambda route:route.fulfill(status=200,body=admin_html,content_type='text/html'))
     admin_page.goto(qa_origin,wait_until='domcontentloaded')
-    admin_page.locator('#adminPortalBtn').wait_for(state='visible',timeout=12000)
     admin_page.wait_for_selector('#arcanaBoot',state='detached',timeout=15000)
-    admin_page.locator('#adminPortalBtn').evaluate('el=>el.click()')
+    admin_page.locator('#accountBtn').click()
+    admin_page.locator('.arcOwnerPortal [data-route="admin"]').wait_for(state='visible',timeout=12000)
+    admin_page.locator('.arcOwnerPortal [data-route="admin"]').click()
     admin_page.wait_for_selector('.adminConsole',timeout=10000)
     assert 'Admin Control Center' in admin_page.locator('.adminConsole h1').inner_text()
     admin_page.close()
