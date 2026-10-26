@@ -32,7 +32,7 @@ test('account entry remains guest-safe and only one top-right control exists',as
  const [html,app,ui]=await Promise.all(['index.html','src/app.js','src/community-ui.js'].map(read));
  assert.equal((html.match(/id="accountBtn"/g)||[]).length,1);
  assert.doesNotMatch(html,/id="adminPortalBtn"/);
- assert.match(app,/if\\(\\['home','user','settings','admin'/);
- assert.match(ui,/nav\\+accountSpecialPortalMarkup\\(p\\)\\+content/);
- assert.doesNotMatch(ui,/p\\.permissions\\?\\.staffAccess\\?'<button data-route="staff"/);
+ assert.match(app,/if\(\['home','user','settings','admin'/);
+ assert.match(ui,/nav\+accountSpecialPortalMarkup\(p\)\+content/);
+ assert.doesNotMatch(ui,/p\.permissions\?\.staffAccess\?'<button data-route="staff"/);
 });
