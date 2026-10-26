@@ -64,10 +64,10 @@ test('every homepage stylesheet is publicly served by the Arcana server',async()
  const whitelist=server.match(/const publicPage=new Set\(\[([^\]]+)\]\)\.has\(normalized\)/);
  assert.ok(whitelist,'Expected static document allowlist was changed: update this regression check');
  const styles=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="(\/[^"?]+)(?:\?[^\"]*)?"/g)].map(match=>match[1]);
- assert.ok(styles.includes('/launch-navigation.css'),'Launch stylesheet is required for mobile navigation');
- for(const stylesheet of styles){
-  assert.ok(whitelist[1].includes("'"+stylesheet+"'"),stylesheet+' is blocked by server.mjs (HTTP 404)');
- }
+ assert.deepEqual(styles,['/arcana-site.css'],'Home must load one bundled stylesheet');
+ assert.match(server,/pathname==='\\/arcana-site\\.css'/,'Bundled stylesheet endpoint must be public');
+ assert.match(server,/siteCssBundle\\(ROOT\\)/,'Server must serve the authored CSS in stable order');
+ assert.ok(whitelist[1].includes("'/launch-navigation.css'"),'Launch CSS source must remain available for compatibility');
 });
 
 test('only administrators set appearance; users can keep reduced motion',async()=>{
