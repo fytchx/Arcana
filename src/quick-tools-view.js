@@ -46,11 +46,15 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  if(!stages.length)return '<p class="quickError">Upgrade recipes are not available.</p>';
  const quote=quoteRange(snapshot,range,{stage:range.fromStage});
  const scenarios=quoteFailureScenarios(snapshot,quote);
- // One answer by default: expected materials with failed attempts and pity.
- // Saved legacy minimum/pity tabs are intentionally ignored by this primary view.
- const rendered=scenarios.available?{...quote,gold:scenarios.expected.gold,
-  materials:scenarios.expected.materials,perItem:scenarios.perItem.expected,
-  attempts:scenarios.expected.attempts}:quote;
+ // Average is the uncluttered first-use view. Optional min/pity selections
+ // apply to the *actual* material list, gold and saved farming checklists.
+ const selectedMode=scenarios.available&&['min','expected','pity'].includes(range.costMode)?range.costMode:'expected';
+ const selected=scenarios.available?scenarios[selectedMode]:quote;
+ const modeLabels={min:'Minimum',expected:'Average',pity:'Pity maximum'};
+ const modeNotes={min:'No failed attempts',expected:'Estimated failures and pity',pity:'Modeled pity limit'};
+ const rendered=scenarios.available?{...quote,gold:selected.gold,
+  materials:selected.materials,perItem:scenarios.perItem[selectedMode],
+  attempts:selected.attempts}:quote;
  const from=stages.find(s=>s.id===range.fromStage),to=stages.find(s=>s.id===range.toStage);
  const stageOptions=selected=>stages.map(s=>opt(s.id,s.id+(s.name&&s.id.startsWith('T')?' · '+s.name:''),selected)).join('');
  const levelOptions=(stage,value)=>Array.from({length:Math.max(0,stage?.max||0)+1},(_,n)=>opt(String(n),'+'+n,String(value))).join('');
@@ -85,8 +89,9 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  const other=groups.filter(g=>g.kind==='special').flatMap(g=>g.materials).sort(alphabetical);
  const attempts=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:1}).format(n);
  const displayAttempts=rendered.attempts===undefined?money(quote.steps):attempts(rendered.attempts);
- const meta='<div class="quickAverageIntro" role="status" aria-live="polite"><div><strong>Estimated upgrade costs</strong>'+
-  '<small>Average with failed attempts'+(count>1?' · '+count+' items':'')+'</small></div>'+
+ const meta='<div class="quickAverageIntro" role="status" aria-live="polite" data-path-active-budget="'+selectedMode+'"><div>'+
+  '<strong>'+esc(scenarios.available?modeLabels[selectedMode]+' upgrade costs':'Base upgrade costs')+'</strong>'+
+  '<small>'+esc(scenarios.available?modeNotes[selectedMode]:'Listed recipe costs only')+(count>1?' · '+count+' items':'')+'</small></div>'+
   '<span>'+displayAttempts+' attempts</span></div>';
  const summary=(title,sub)=>'<summary class="quickSectionSummary"><strong>'+esc(title)+'</strong><small>'+esc(sub)+'</small><span aria-hidden="true">⌄</span></summary>';
  const zoneGroupsMarkup=monsterGroups.map(group=>{
@@ -115,29 +120,33 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  const firstStep=scenarios.available?(scenarios.perStep.find(step=>step.failChance>0)||scenarios.perStep[0]):null;
  const pityCap=firstStep?.pityCap||1;
  const pityDone=Math.max(0,Math.min(pityCap-1,Math.trunc(Number(range.pityCount)||0)));
- const budgets=scenarios.available?'<details class="quickAdvanced" data-path-accordion="breakdown">'+
-  '<summary class="quickSummaryLine"><strong>Detailed cost breakdown</strong><small>Minimum · Average · Pity maximum</small><b aria-hidden="true">⌄</b></summary>'+
-  '<div class="quickAdvancedBody"><div class="quickBudgetRows">'+[
-   ['Minimum','min','No failed upgrades'],
-   ['Average','expected','Includes estimated failures'],
-   ['Pity maximum','pity','Success on the final pity attempt']
-  ].map(([label,key,description])=>{
-   const stat=scenarios[key];
-   return '<div class="quickBudgetRow"><div><strong>'+label+'</strong><small>'+description+'</small></div>'+
-    '<span>'+attempts(stat.attempts)+' attempts</span><strong title="'+esc(money(stat.gold)+' Gold')+'">'+shortGold(stat.gold)+' Gold</strong></div>';
-  }).join('')+'</div>'+
-  '<label class="quickPityInput">Already failed first pending upgrade <span><input type="number" data-path-pity-count min="0" max="'+Math.max(0,pityCap-1)+'" step="1" inputmode="numeric" value="'+pityDone+'" aria-label="Pity attempts already counted"> / '+pityCap+'</span></label>'+
-  '<details class="quickAssumptions"><summary>How the estimates work</summary><p>Average costs account for upgrade success chances, pity and the 30% failure refund. Pity guarantees success on attempt N of N. Starting pity applies only to the first pending failable upgrade of each item. Costs are estimates, and exact per-item spending varies.</p></details>'+
-  '</div></details>':
-  '<details class="quickAdvanced" data-path-accordion="breakdown"><summary class="quickSummaryLine"><strong>Detailed cost breakdown</strong><small>Unavailable</small><b aria-hidden="true">⌄</b></summary>'+
-  '<div class="quickAdvancedBody"><p>Failure/pity scenarios unavailable: '+esc(scenarios.reason||'Verified failure odds missing')+'. Base costs are shown instead.</p></div></details>';
  const pct=value=>(value*100).toLocaleString('en-US',{maximumFractionDigits:2})+'%';
- const odds=scenarios.available&&scenarios.perStep.length?'<details class="quickOddsByStep" data-path-accordion="odds"><summary><strong>Chance &amp; pity for every upgrade</strong><small>'+scenarios.perStep.length+' steps · optional</small><span aria-hidden="true">⌄</span></summary>'+
+ const odds=scenarios.available&&scenarios.perStep.length?'<details class="quickOddsByStep" data-path-accordion="odds"><summary><strong>Success chances by upgrade</strong><small>'+scenarios.perStep.length+' steps · view odds and pity</small><span aria-hidden="true">⌄</span></summary>'+
  '<div class="quickOddsGrid">'+scenarios.perStep.map(step=>
   '<div class="quickOddsRow"><strong>'+esc(step.stage)+(step.level?' +'+step.level:' transition')+'</strong>'+
   '<span>'+pct(1-step.failChance)+' success · '+pct(step.failChance)+' failure</span>'+
-  '<small>'+(step.failChance===0?'Guaranteed first try':'Pity '+step.pityCap+' attempts'+(step.pityCount?' · '+step.pityCount+' counted':''))+'</small></div>'
+  '<small>'+(step.failChance===0?'Guaranteed first try':'Average '+attempts(step.expectedAttempts)+' attempts · Pity '+step.pityCap+' attempts'+(step.pityCount?' · '+step.pityCount+' counted':''))+'</small></div>'
  ).join('')+'</div></details>':'';
- return plan+meta+monsterSection+forge+budgets+odds;
+ const budgets=scenarios.available?'<details class="quickAdvanced quickOddsPlanner" data-path-accordion="breakdown">'+
+  '<summary class="quickSummaryLine"><strong>Odds &amp; cost scenarios</strong><small>Minimum · Average · Pity maximum</small><b aria-hidden="true">⌄</b></summary>'+
+  '<div class="quickAdvancedBody"><p class="quickScenarioIntro">Choose a scenario to update the materials, Gold and farming checklist shown below.</p>'+
+  '<div class="quickBudgetChoices" role="group" aria-label="Upgrade cost scenario">'+[
+   ['Minimum','min','No failures'],
+   ['Average','expected','Expected cost'],
+   ['Pity maximum','pity','Worst-case model']
+  ].map(([label,key,description])=>{
+   const stat=scenarios[key],active=selectedMode===key;
+   return '<button type="button" class="quickBudgetChoice'+(active?' isSelected':'')+'" data-path-cost-mode="'+key+'" aria-pressed="'+active+'" aria-label="Show '+label+' upgrade costs">'+
+    '<span class="quickBudgetChoiceHeader"><strong>'+label+'</strong><span class="quickBudgetChoiceCheck" aria-hidden="true">'+(active?'✓':'○')+'</span></span>'+
+    '<small>'+description+'</small><span class="quickBudgetAttempts">'+attempts(stat.attempts)+' attempts</span>'+
+    '<b title="'+esc(money(stat.gold)+' Gold')+'">'+shortGold(stat.gold)+' Gold</b></button>';
+  }).join('')+'</div>'+
+  '<label class="quickPityInput">Failures already counted on first pending upgrade <span><input type="number" data-path-pity-count min="0" max="'+Math.max(0,pityCap-1)+'" step="1" inputmode="numeric" value="'+pityDone+'" aria-label="Pity attempts already counted"> / '+pityCap+'</span></label>'+
+  odds+
+  '<details class="quickAssumptions"><summary>How these estimates work</summary><p>Minimum assumes every upgrade succeeds immediately. Average uses the listed success odds, modeled pity and the 30% refund after failure. Pity maximum assumes each step reaches its modeled pity limit. Pity carry-over between upgrades is not verified. A completed failed attempt reduces the remaining pity count for the first pending step only.</p></details>'+
+  '</div></details>':
+  '<details class="quickAdvanced quickOddsPlanner" data-path-accordion="breakdown"><summary class="quickSummaryLine"><strong>Odds &amp; cost scenarios</strong><small>Unavailable</small><b aria-hidden="true">⌄</b></summary>'+
+  '<div class="quickAdvancedBody"><p>Failure and pity scenarios unavailable: '+esc(scenarios.reason||'Verified failure odds missing')+'. Base recipe costs are shown instead.</p></div></details>';
+ return plan+meta+budgets+monsterSection+forge;
 
 }

@@ -967,15 +967,16 @@ function movePathfinderStep(direction){
 }
 async function savePathfinderChecklist(button){
  if(!recipeState.data)return toast('Verified upgrade recipes are unavailable.');
- if(!currentAccount()){toast('Sign in with Discord to save a checklist to your profile.');go('account');return;}
+ if(!currentAccount()){toast('Sign in to Arcana to save a checklist to your profile.');go('account');return;}
  const quote=quoteRange(recipeState.data,state.pathfinderRange,state.pathfinderQuick);
  if(!quote.complete||quote.error||!quote.materials.length)return toast('Select a valid complete upgrade route first.');
  const scenarios=quoteFailureScenarios(recipeState.data,quote);
- // Farming lists always reflect the same average estimate visible to players.
- const selected=scenarios.available?scenarios.expected:quote;
+ // Save precisely the budget selected in the visible Pathfinder material list.
+ const costMode=['min','expected','pity'].includes(quote.range.costMode)?quote.range.costMode:'expected';
+ const selected=scenarios.available?scenarios[costMode]:quote;
  const groups=sourceMaterialGroups(selected.materials,recipeState.data.materials,verifiedState.entries)
   .map(group=>({name:group.name,tier:group.tier,items:group.materials.map(m=>({slug:m.slug,name:m.name,quantity:String(m.quantity)}))}));
- const label=scenarios.available?'Estimated':'Base';
+ const label=scenarios.available?({min:'Minimum',expected:'Average',pity:'Pity maximum'}[costMode]):'Base';
  const list={title:label+' · Upgrade '+(quote.itemCount>1?quote.itemCount+' items · ':'')+quote.range.fromStage+' +'+quote.range.fromLevel+' → '+quote.range.toStage+' +'+quote.range.toLevel,
   slot:state.pathfinderQuick.slot,from:quote.range.fromStage+' +'+quote.range.fromLevel,
   to:quote.range.toStage+' +'+quote.range.toLevel,gold:String(selected.gold),
@@ -1000,6 +1001,14 @@ function renderPathfinderCosts(current=state.pathfinderRange){
  const note=content.querySelector('details.quickAssumptions');if(note)note.open=assumptionsOpen;
 }
 function wirePathfinderQuick(){
+ document.addEventListener('click',e=>{
+  const button=e.target.closest('[data-path-cost-mode]');
+  if(!button||!recipeState.data)return;
+  const mode=button.dataset.pathCostMode;
+  if(!['min','expected','pity'].includes(mode))return;
+  state.pathfinderRange=saveRange({...state.pathfinderRange,costMode:mode});
+  renderPathfinderCosts();
+ });
  document.addEventListener('click',e=>{
   const button=e.target.closest('[data-path-quantity-step]');
   if(!button||!recipeState.data)return;

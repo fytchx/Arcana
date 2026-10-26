@@ -68,21 +68,33 @@ test('quantity multiplies each scenario independently without removing biome and
  }
  const h=quickUpgradeContent(snapshot,{...fromTo,quantity:10,costMode:'expected'});
  for(const str of ['data-path-accordion="route"','data-path-accordion="breakdown"',
- 'data-path-pity-count','Already failed first pending upgrade','Grub','Abyssal Ember',
- 'Minimum','Average','Pity maximum','10 items','Estimated upgrade costs'])assert.ok(h.includes(str),str);
- assert.doesNotMatch(h,/data-path-cost-mode/,'average is automatically selected, not another tab');
+ 'data-path-pity-count','Failures already counted on first pending upgrade','Grub','Abyssal Ember',
+ 'Minimum','Average','Pity maximum','10 items','Average upgrade costs'])assert.ok(h.includes(str),str);
+ for(const mode of ['min','expected','pity'])assert.match(h,new RegExp('data-path-cost-mode="'+mode+'"'));
+ assert.match(h,/data-path-cost-mode="expected" aria-pressed="true"/);
+ assert.match(h,/data-path-active-budget="expected"/);
+ assert.match(h,/<details class="quickAdvanced quickOddsPlanner" data-path-accordion="breakdown">/);
+ assert.doesNotMatch(h,/<details[^>]*data-path-accordion="breakdown"[^>]*open/,'Scenarios must remain hidden until requested');
  assert.ok(h.indexOf('Monster materials')<h.indexOf('Gold &amp; rare materials'));
  assert.match(h,/data-material-section="monsters"/);assert.match(h,/data-material-section="special"/);
- assert.match(h,/Chance &amp; pity for every upgrade/);assert.match(h,/63% failure/);assert.match(h,/Pity 2 attempts/);
+ assert.match(h,/Success chances by upgrade/);assert.match(h,/63% failure/);assert.match(h,/Pity 2 attempts/);
  assert.match(h,/<details class="quickOddsByStep" data-path-accordion="odds">/);
  assert.match(h,/<details[^>]*data-material-section="monsters"[^>]*open/);
  assert.doesNotMatch(h,/<details[^>]*data-material-section="special"[^>]*open/);
  assert.match(h,/10 items/);
- assert.match(h,/Estimated upgrade costs/);
+ assert.match(h,/Odds &amp; cost scenarios/);
  assert.match(h,/1,950/); // Estimated fragments = 195 * 10.
- const oldMode=quickUpgradeContent(snapshot,{...fromTo,quantity:10,costMode:'pity'});
- assert.match(oldMode,/1,950/,'old saved mode must not override default average');
- assert.doesNotMatch(oldMode,/<button[^>]*data-path-cost-mode/);
+ const min=quickUpgradeContent(snapshot,{...fromTo,quantity:10,costMode:'min'});
+ assert.match(min,/data-path-active-budget="min"/);
+ assert.match(min,/data-path-cost-mode="min" aria-pressed="true"/);
+ assert.match(min,/1,350/,'minimum must show 135 fragments per item');
+ const worst=quickUpgradeContent(snapshot,{...fromTo,quantity:10,costMode:'pity'});
+ assert.match(worst,/data-path-active-budget="pity"/);
+ assert.match(worst,/data-path-cost-mode="pity" aria-pressed="true"/);
+ assert.match(worst,/2,300/,'pity maximum must show 230 fragments per item');
+ assert.match(worst,/20 attempts/,'pity attempts must scale to ten items');
+ assert.match(worst,/15.04B Gold/,'pity Gold reference must cover all ten items');
+ assert.doesNotMatch(worst,/data-path-active-budget="expected"/);
 });
 test('starting pity reduces modeled risk only for the first step and is preserved with quantity',()=>{
  const zero=quoteFailureScenarios(snapshot,quoteRange(snapshot,fromTo));
@@ -100,15 +112,15 @@ test('no failure probabilities means no false pity guarantee and base costs rema
  const base=quoteRange(missing,fromTo),r=quoteFailureScenarios(missing,base);
  assert.equal(r.available,false);assert.match(r.reason,/not verified/);
  const html=quickUpgradeContent(missing,{...fromTo,costMode:'pity'});
- assert.match(html,/Failure\/pity scenarios unavailable/);
+ assert.match(html,/Failure and pity scenarios unavailable/);
  assert.match(html,/885M Gold/);
  assert.doesNotMatch(html,/data-path-cost-mode="pity"/);
 });
 test('native site wire-up preserves quantity handlers, starting pity, scenario and checklist',async()=>{
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
  const css=await readFile(new URL('../quick-tools.css',import.meta.url),'utf8');
- for(const needle of ['data-path-accordion','data-path-quantity-step','d.pathPityCount','quoteFailureScenarios','selected.materials','selected.gold'])
+ for(const needle of ['data-path-accordion','data-path-quantity-step','d.pathPityCount','data-path-cost-mode','costMode:mode','quoteFailureScenarios','selected.materials','selected.gold'])
   assert.ok(app.includes(needle),needle);
- for(const needle of ['.quickAverageIntro','.quickAdvanced','.quickGoldSummary','var(--theme-main)','var(--theme-highlight)'])
+ for(const needle of ['.quickAverageIntro','.quickAdvanced','.quickBudgetChoice','.quickGoldSummary','var(--theme-main)','var(--theme-highlight)'])
   assert.ok(css.includes(needle),needle);
 });

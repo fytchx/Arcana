@@ -253,3 +253,40 @@
  .quickZoneTitle strong{font-size:14px}
 }
 @media(prefers-reduced-motion:reduce){.quickZoneChevron{transition:none}}
+
+
+/* Selectable Pathfinder budgets, contained in an optional closed-by-default fold. */
+.quickOddsPlanner{border-color:color-mix(in srgb,var(--theme-highlight) 36%,var(--line));box-shadow:inset 0 1px color-mix(in srgb,var(--text) 4%,transparent)}
+.quickOddsPlanner>.quickSummaryLine{background:color-mix(in srgb,var(--theme-highlight) 6%,var(--theme-secondary))}
+.quickOddsPlanner>.quickSummaryLine:focus-visible,.quickBudgetChoice:focus-visible{outline:2px solid var(--theme-highlight);outline-offset:-3px}
+.quickOddsPlanner .quickScenarioIntro{margin:0;color:var(--muted);font-size:11px;line-height:1.55}
+.quickBudgetChoices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.quickBudgetChoice{appearance:none;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:5px;min-width:0;min-height:122px;padding:13px 12px;text-align:left;font:inherit;color:var(--text);cursor:pointer;border:1px solid var(--line);border-radius:var(--arcana-card-radius,11px);background:color-mix(in srgb,var(--theme-main) 42%,var(--theme-secondary));transition:border-color .16s,background .16s,transform .16s;box-shadow:inset 0 1px color-mix(in srgb,var(--text) 5%,transparent)}
+.quickBudgetChoice:hover{border-color:color-mix(in srgb,var(--theme-highlight) 72%,var(--line));transform:translateY(-1px)}
+.quickBudgetChoice.isSelected{border-color:var(--theme-highlight);background:color-mix(in srgb,var(--theme-highlight) 13%,var(--theme-secondary));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-highlight) 29%,transparent)}
+.quickBudgetChoiceHeader{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.quickBudgetChoiceHeader strong{font-size:clamp(12px,1.6vw,15px);font-weight:850;line-height:1.2}
+.quickBudgetChoiceCheck{color:var(--theme-highlight);font-size:15px;flex:none}
+.quickBudgetChoice>small{font-size:10px;line-height:1.25;color:var(--muted)}
+.quickBudgetAttempts{font-size:11px;color:var(--text);font-variant-numeric:tabular-nums;margin-top:auto}
+.quickBudgetChoice>b{font-size:clamp(13px,2vw,18px);color:var(--theme-highlight);font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.2}
+.quickOddsPlanner .quickPityInput{border-top:1px solid var(--line);padding-top:11px;font-size:11px}
+.quickOddsPlanner .quickOddsByStep{margin-top:0}
+.quickOddsPlanner .quickOddsByStep>summary{min-height:42px}
+@media(max-width:640px){
+ .quickBudgetChoices{gap:6px}
+ .quickBudgetChoice{min-height:115px;padding:10px 8px;gap:5px}
+ .quickBudgetChoiceHeader strong{font-size:12px}
+ .quickBudgetChoice>small{font-size:9px}
+ .quickBudgetAttempts{font-size:10px}
+ .quickBudgetChoice>b{font-size:13px}
+ .quickOddsPlanner>.quickSummaryLine{gap:6px}
+ .quickOddsPlanner>.quickSummaryLine>strong{font-size:12px}
+ .quickOddsPlanner>.quickSummaryLine>small{font-size:10px;min-width:0;text-align:right}
+}
+@media(max-width:355px){
+ .quickBudgetChoice{padding:9px 6px}
+ .quickBudgetChoiceHeader strong{font-size:11px}
+ .quickBudgetChoice>b{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){.quickBudgetChoice{transition:none}}
