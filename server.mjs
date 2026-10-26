@@ -8,7 +8,8 @@ import { handleWikiRequest } from './src/wiki-server.mjs';
 import {handleJournalRequest} from './src/journal-server.mjs';
 import {seoPageByPath,renderSeoPage} from './src/seo-pages.mjs';
 import {handleTrafficRequest} from './src/traffic-server.mjs';
-import { safeAccountRequest, requireCapability } from './src/account-server.mjs';
+import { safeAccountRequest, requireCapability, dataRoot } from './src/account-server.mjs';
+import {createPathfinderRecipeCache} from './src/pathfinder-recipe-cache.mjs';
 import {safeCommunityArchive} from './src/community-archive-server.mjs';
 import {safeSiteAdminRequest} from './src/site-admin-server.mjs';
 import { safeAccountBuildRequest } from './src/account-builds.mjs';
@@ -99,10 +100,8 @@ async function verifiedCatalog(){
  console.log('ARCANA_CATALOG_COUNTS',JSON.stringify({original:payload.entries.length,additional:extras.length,currencies:extras.filter(e=>e.kind==='currency').length,pets:extras.filter(e=>e.kind==='pet').length}));
  return catalogCache;
 }
-let previewRecipe=null,previewRecipeTime=0;
 let recipeZip=null,recipeZipRef=null;
-async function sourceBackedRecipes(){
- if(previewRecipe&&Date.now()-previewRecipeTime<3600000)return previewRecipe;
+async function fetchVerifiedRecipes(){
  const response=await get(BASES.legacyArt+'/assets/data.b64',12000);
  if(!response.ok)throw Error('Verified reference HTTP '+response.status);
  const source=(await response.text()).trim();
@@ -111,7 +110,7 @@ async function sourceBackedRecipes(){
  const data=JSON.parse(raw.toString('utf8')),cd=data.codex;
  if(!cd?.tiers?.['6']?.rows||!cd.awaken?.rows?.['30']||!Array.isArray(data.materials))throw Error('Upgrade data incomplete');
  const verifiedCosts=applyVerifiedUpgradeCosts(cd,data.materials);
- previewRecipe={source:'Arcana game-cost snapshot',sourceVersion:String(cd.source_version||'')+' / upgrade materials '+verifiedCosts.sourceVersion,verifiedDate:String(cd.verified_date||''),
+ const recipe={source:'Arcana game-cost snapshot',sourceVersion:String(cd.source_version||'')+' / upgrade materials '+verifiedCosts.sourceVersion,verifiedDate:String(cd.verified_date||''),
  codex:{tiers:Object.fromEntries(Object.entries(cd.tiers).map(([k,v])=>[k,{name:v.name,max_level:v.max_level,rows:v.rows}])),
  tier_upgrades:cd.tier_upgrades,awaken:{rows:Object.fromEntries(Object.entries(cd.awaken.rows).filter(([k])=>Number(k)>=1&&Number(k)<=30)),transitions:cd.awaken.transitions.filter(x=>Number(x.rank)<=30)}},
  materials:data.materials.map(m=>({slug:m.slug,name:m.name,type:m.type,monster_id:m.monster_id??null,
@@ -119,8 +118,14 @@ async function sourceBackedRecipes(){
   sourceMonster:typeof (m.sourceMonster??m.monster_name)==='string'?(m.sourceMonster??m.monster_name):'',
   tier:typeof (m.tier??m.biome_tier)==='string'||typeof (m.tier??m.biome_tier)==='number'?String(m.tier??m.biome_tier):''}))};
  // Pathfinder costs are independent of the remote monster catalog.
- previewRecipeTime=Date.now();return previewRecipe;
+ return recipe;
 }
+const pathfinderRecipeCache=createPathfinderRecipeCache({
+ file:resolve(dataRoot(),'cache','verified-pathfinder-recipes-v1.json'),
+ fetchFresh:fetchVerifiedRecipes,
+ warn:(...message)=>console.warn(...message)
+});
+const sourceBackedRecipes=()=>pathfinderRecipeCache.get();
 
 const server=http.createServer(async(req,res)=>{
  try {
@@ -222,6 +227,9 @@ const server=http.createServer(async(req,res)=>{
 });
 server.listen(PORT,'0.0.0.0',()=>{
  console.log(`Arcana ${REVISION} listening on port ${PORT}`);
+ // Warm the verified snapshot without delaying the server's health endpoint.
+ void sourceBackedRecipes().then(()=>console.log('PATHFINDER_RECIPE_SNAPSHOT_READY'))
+  .catch(error=>console.warn('PATHFINDER_SOURCE_UNAVAILABLE',String(error)));
  if(process.env.ARCANA_ART_AUDIT==='1'){
   import('./scripts/art-audit.mjs').then(({runArtAudit})=>runArtAudit({catalogOrigin:`http://127.0.0.1:${PORT}`,officialOrigin:BASES.officialArt}))
    .catch(e=>console.error('ARCANA_STAGING_ART_AUDIT_ERROR',String(e)));
