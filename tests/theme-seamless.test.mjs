@@ -21,9 +21,10 @@ test('continuous field rendering overrides all CSS tile sizes everywhere a textu
  for(const selector of ['#content:not(.homeFullscreen)','.pathRangeWorkspace','.launchHero,.launchQuickCard', '.miniHero,.miniTile', '.themePatternThumb[data-preview-pattern]', '.designPresetArt[data-signature-art]', '[data-mini-pattern-target="background"]']){
    assert.ok(css.includes(selector),selector+' not covered by seam engine');
  }
- assert.ok(index.includes('/theme-seamless.css'));
- assert.ok(index.indexOf('/theme-seamless.css')>index.indexOf('/signature-themes.css'));
- assert.ok(index.indexOf('/theme-seamless.css')>index.indexOf('/home-three.css'));
+ const bundle=await read('../src/css-bundle.mjs');
+  assert.ok(index.includes('/arcana-site.css'));
+ assert.ok(bundle.indexOf("'theme-seamless.css'")>bundle.indexOf("'signature-themes.css'"));
+ assert.ok(bundle.indexOf("'theme-seamless.css'")>bundle.indexOf("'home-three.css'"));
  assert.ok(server.includes("'/theme-seamless.css'"));
  assert.ok(smoke.includes('for href in re.findall('),'Browser smoke should load every stylesheet linked by index.html');
  assert.ok(smoke.includes('css_name=urlparse(href).path'),'Browser smoke should resolve stylesheet URLs to repository files');
