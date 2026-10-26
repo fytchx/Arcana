@@ -68,39 +68,58 @@ test('quantity multiplies each scenario independently without removing biome and
  }
  const h=quickUpgradeContent(snapshot,{...fromTo,quantity:10,costMode:'expected'});
  for(const str of ['data-path-accordion="route"','data-path-accordion="breakdown"',
- 'data-path-pity-count','Failures already counted on first pending upgrade','Grub','Abyssal Ember',
- 'Minimum','Average','Pity maximum','10 items','Average material costs'])assert.ok(h.includes(str),str);
+ 'data-path-pity-count','Failed attempts already counted for your first upgrade','Grub','Abyssal Ember',
+ 'Minimum','Average','Pity maximum','10 items','Materials to farm'])assert.ok(h.includes(str),str);
  for(const mode of ['min','expected','pity'])assert.match(h,new RegExp('data-path-cost-mode="'+mode+'"'));
  assert.match(h,/data-path-cost-mode="expected" aria-pressed="true"/);
  assert.match(h,/data-path-active-budget="expected"/);
- assert.match(h,/<details class="quickAdvanced quickOddsPlanner" data-path-accordion="breakdown">/);
+ assert.match(h,/<details class="quickAdvanced quickMaterialBreakdown" data-path-accordion="breakdown">/);
  assert.doesNotMatch(h,/<details[^>]*data-path-accordion="breakdown"[^>]*open/,'Scenarios must remain hidden until requested');
- assert.ok(h.indexOf('Monster materials')<h.indexOf('Rare materials &amp; gold'));
+ assert.ok(h.indexOf('Monster materials')<h.indexOf('Other upgrade materials'));
+ assert.ok(h.indexOf('Other upgrade materials')<h.indexOf('Gold (optional)'),'Gold must come after every material');
+ assert.ok(h.indexOf('Monster materials')<h.indexOf('Compare materials &amp; pity odds'),'The first actionable result must be monster materials');
+ assert.ok(h.indexOf('data-path-cost-mode="expected"')<h.indexOf('Monster materials'),'Compact material mode switch must precede the farming list');
+ assert.match(h,/class="quickCompareMaterials"/);
+ assert.match(h,/class="quickMaterialModes"/);
+ assert.doesNotMatch(h,/quickBudgetChoice|quickBudgetAttempts|Gold &amp; rare materials/,'No gold-first budget cards');
  assert.match(h,/data-material-section="monsters"/);assert.match(h,/data-material-section="special"/);
  assert.match(h,/Success chances by upgrade/);assert.match(h,/63% failure/);assert.match(h,/Pity 2 attempts/);
  assert.match(h,/<details class="quickOddsByStep" data-path-accordion="odds">/);
  assert.match(h,/<details[^>]*data-material-section="monsters"[^>]*open/);
- assert.match(h,/<details[^>]*data-material-section="special"[^>]*open/);
+ assert.match(h,/<details[^>]*data-material-section="special"[^>]*open/,'Required rare materials should be visible');
+ assert.doesNotMatch(h,/<details[^>]*data-material-section="gold"[^>]*open/,'Gold must start collapsed');
+ assert.match(h,/<details[^>]*data-material-section="gold"/);
  assert.match(h,/10 items/);
- assert.match(h,/Odds &amp; cost scenarios/);
+ assert.match(h,/Compare materials &amp; pity odds/);
  assert.match(h,/1,950/); // Estimated fragments = 195 * 10.
- assert.match(h,/title="150 monster materials"/,'scenario cards must headline monster drops instead of Gold');
- assert.ok(h.indexOf('Abyssal Ember')<h.indexOf('quickGoldFooter'),'rare materials must precede subdued Gold footer');
- assert.doesNotMatch(h,/<b title="[\d,]+ Gold">/,'Gold must not headline scenario cards');
  const min=quickUpgradeContent(snapshot,{...fromTo,quantity:10,costMode:'min'});
  assert.match(min,/data-path-active-budget="min"/);
  assert.match(min,/data-path-cost-mode="min" aria-pressed="true"/);
  assert.match(min,/1,350/,'minimum must show 135 fragments per item');
- assert.match(min,/title="100 monster materials"/);
  const worst=quickUpgradeContent(snapshot,{...fromTo,quantity:10,costMode:'pity'});
  assert.match(worst,/data-path-active-budget="pity"/);
  assert.match(worst,/data-path-cost-mode="pity" aria-pressed="true"/);
  assert.match(worst,/2,300/,'pity maximum must show 230 fragments per item');
- assert.match(worst,/title="170 monster materials"/);
- assert.match(worst,/20 attempts/,'pity attempts must scale to ten items');
- assert.match(worst,/15.04B/,'pity Gold reference must cover all ten items');
- assert.match(worst,/class="quickGoldFooter"/);
+ assert.match(worst,/Pity max 20/,'pity attempts must scale to ten items');
+ assert.match(worst,/15.04B/,'pity Gold reference should be present only at the bottom');
  assert.doesNotMatch(worst,/data-path-active-budget="expected"/);
+});
+test('material ranges show each quantity in the correct order, while Gold is always last',()=>{
+ const average=quickUpgradeContent(snapshot,{...fromTo,quantity:1});
+ const choiceIdx=average.indexOf('class="quickMaterialModes"');
+ const monsters=average.indexOf('Monster materials');
+ const other=average.indexOf('Other upgrade materials');
+ const detail=average.indexOf('Compare materials &amp; pity odds');
+ const gold=average.indexOf('Gold (optional)');
+ assert.ok(choiceIdx>=0 && choiceIdx<monsters && monsters<other && other<detail && detail<gold);
+ assert.match(average,/data-path-active-budget="expected"/);
+ for(const quantity of ['135','195','230'])assert.match(average,new RegExp('>'+quantity+'<'),'Fragment comparison must include '+quantity);
+ assert.match(average,/Grub&#39;s Eye|Grub's Eye/);
+ assert.doesNotMatch(average,/quickBudgetChoice/);
+ const selected=quickUpgradeContent(snapshot,{...fromTo,costMode:'pity'});
+ assert.match(selected,/data-path-active-budget="pity"/);
+ assert.match(selected,/data-path-cost-mode="pity" aria-pressed="true"/);
+ assert.ok(selected.indexOf('Gold (optional)')>selected.indexOf('Other upgrade materials'));
 });
 test('starting pity reduces modeled risk only for the first step and is preserved with quantity',()=>{
  const zero=quoteFailureScenarios(snapshot,quoteRange(snapshot,fromTo));
@@ -119,8 +138,7 @@ test('no failure probabilities means no false pity guarantee and base costs rema
  assert.equal(r.available,false);assert.match(r.reason,/not verified/);
  const html=quickUpgradeContent(missing,{...fromTo,costMode:'pity'});
  assert.match(html,/Failure and pity scenarios unavailable/);
- assert.match(html,/class="quickGoldFooter" title="885,000,000 Gold"/);
- assert.match(html,/<strong>885M<\/strong>/);
+ assert.match(html,/885M/);
  assert.doesNotMatch(html,/data-path-cost-mode="pity"/);
 });
 test('native site wire-up preserves quantity handlers, starting pity, scenario and checklist',async()=>{
@@ -128,6 +146,6 @@ test('native site wire-up preserves quantity handlers, starting pity, scenario a
  const css=await readFile(new URL('../quick-tools.css',import.meta.url),'utf8');
  for(const needle of ['data-path-accordion','data-path-quantity-step','d.pathPityCount','data-path-cost-mode','costMode:mode','quoteFailureScenarios','selected.materials','selected.gold'])
   assert.ok(app.includes(needle),needle);
- for(const needle of ['.quickAverageIntro','.quickAdvanced','.quickBudgetChoice','.quickGoldSummary','var(--theme-main)','var(--theme-highlight)'])
+ for(const needle of ['.quickAverageIntro','.quickAdvanced','.quickMaterialModes','.quickCompareMaterials','.quickGoldLast','var(--theme-main)','var(--theme-highlight)'])
   assert.ok(css.includes(needle),needle);
 });
