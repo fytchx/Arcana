@@ -3,7 +3,7 @@ import {guildBadge} from './guild-badge.js';
 import {cloudBuildView,loadAccountBuilds,wireCloudBuildUI} from './account-builds-ui.js';
 import {farmListsAccountView,loadFarmingLists} from './farming-lists-ui.js';
 import {accountCharacterLink} from './community-archive-ui.js';
-const state={me:undefined,enabled:false,betaEnrollmentOpen:false,posts:[],myPosts:[],profilePosts:[],post:null,profile:null,loading:null,error:'',lastRoute:'',requested:'',guildRegistry:[]};
+const state={me:undefined,enabled:false,providers:{discord:false,google:false},betaEnrollmentOpen:false,posts:[],myPosts:[],profilePosts:[],post:null,profile:null,loading:null,error:'',lastRoute:'',requested:'',guildRegistry:[]};
 const titleProfile=p=>guildBadge(p,state.guildRegistry)+' '+esc(p?.displayName||'Arcana player');
 let avatarPending=null;
 const labels=roles=>(roles||[]).map(r=>'<span class="accountRole role-'+esc(r.id)+'">'+esc(r.label)+'</span>').join('');
@@ -32,12 +32,25 @@ const profileCard=(p,{full=false}={})=>{
  '</article>';
 };
 const signInPanel=()=>'<section class="arcAccountJoin" aria-label="Sign up or log in to Arcana">'+
- '<div class="arcAccountJoinIntro"><h2>My Arcana</h2><p>Sign in or create your account with Discord.</p></div>'+
- (state.enabled?'<a class="arcAccountJoinPrimary" href="/api/account/login" aria-label="Continue with Discord to sign up or log in">'+icon('users',20)+' Continue with Discord '+icon('arrow',16)+'</a>':
- '<p class="arcAccountAuthUnavailable" role="status">Discord sign-in is unavailable in this environment. You can still browse Arcana without an account.</p>')+
+ '<div class="arcAccountJoinIntro"><h2>Welcome to Arcana</h2><p>Choose how you want to sign in or create your account.</p></div>'+
+ '<div class="arcSignInMethods">'+
+ (state.providers.google?'<a class="arcAccountJoinPrimary arcGoogleLogin" href="/api/account/google/login" aria-label="Continue with Google">'+
+ '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="#4285F4" d="M21.35 12.22c0-.73-.07-1.42-.19-2.1H12v3.97h5.24a4.48 4.48 0 0 1-1.95 2.94v2.45h3.16c1.84-1.7 2.9-4.2 2.9-7.26Z"/><path fill="#34A853" d="M12 21.7c2.62 0 4.83-.87 6.45-2.22l-3.16-2.45c-.88.58-2 .93-3.29.93-2.53 0-4.67-1.71-5.44-4.02H3.3v2.52A9.75 9.75 0 0 0 12 21.7Z"/><path fill="#FBBC05" d="M6.56 13.94a5.8 5.8 0 0 1 0-3.73V7.69H3.3a9.75 9.75 0 0 0 0 8.77l3.26-2.52Z"/><path fill="#EA4335" d="M12 6.2c1.43 0 2.71.49 3.72 1.46l2.79-2.79A9.31 9.31 0 0 0 12 2.45a9.75 9.75 0 0 0-8.7 5.24l3.26 2.52c.77-2.31 2.91-4.02 5.44-4.02Z"/></svg>'+
+ ' Continue with Google '+icon('arrow',16)+'</a>':'')+
+ (state.providers.discord?'<a class="arcAccountJoinPrimary arcDiscordLogin" href="/api/account/login" aria-label="Continue with Discord">'+icon('users',20)+' Continue with Discord '+icon('arrow',16)+'</a>':'')+
+ '</div>'+
+ (!state.enabled?'<p class="arcAccountAuthUnavailable" role="status">Account sign-in is not configured in this environment. Arcana tools remain available without an account.</p>':'')+
+ '<p class="mutedSmall arcSignInHelp">Already have an account? Use your original sign-in method, then connect another method in My Arcana. Accounts are never merged automatically.</p>'+
  (state.betaEnrollmentOpen?'<p class="arcBetaPerk">'+icon('award',17)+' New members joining during the founding beta period receive a permanent Beta Tester badge.</p>':'')+
- 
  '<p class="arcAccountJoinLegal"><a href="/privacy.html">Privacy</a> · <a href="/beta-rules.html">Community Guidelines</a></p></section>';
+const linkedSignInMethods=p=>'<section class="arcLinkedLogins" aria-label="Connected sign-in methods"><h2>Sign-in methods</h2>'+
+ '<p class="mutedSmall">Connect another sign-in method to this same Arcana account.</p>'+
+ '<div class="arcLinkedLoginRow"><strong>Google</strong>'+
+ (p.authProviders?.google?'<span class="arcLoginConnected">'+icon('check',16)+' Connected</span>':
+ state.providers.google?'<a href="/api/account/google/link" class="btn secondary">Connect Google</a>':'<small>Not configured yet</small>')+'</div>'+
+ '<div class="arcLinkedLoginRow"><strong>Discord</strong>'+
+ (p.authProviders?.discord?'<span class="arcLoginConnected">'+icon('check',16)+' Connected</span>':
+ state.providers.discord?'<a href="/api/account/discord/link" class="btn secondary">Connect Discord</a>':'<small>Not configured yet</small>')+'</div></section>';
 const profileForm=p=>{
  return '<form class="accountProfileForm" data-community-form="profile"><h2>Edit player card</h2>'+
  fields.map(([key,label,type,max])=>'<label>'+label+'<input name="'+key+'" type="'+type+'" maxlength="'+max+'" value="'+esc(p[key]||'')+'"></label>').join('')+
@@ -52,7 +65,7 @@ export const accountSpecialPortalMarkup=profile=>profile?.isOwner===true?
  '<div class="arcOwnerPortal"><div><span class="eyebrow">OWNER ACCESS</span><strong>Site management</strong></div><button type="button" class="btn primary" data-route="admin">'+icon('shield',17)+' Admin Control Panel '+icon('arrow',15)+'</button></div>':'';
 function accountView(query=new URLSearchParams()){
  if(state.me===undefined)return notice('Loading your Arcana account…');
- if(!state.me)return '<link rel="stylesheet" href="/community-archive.css?v=20261025"><div class="communityPage arcAccount arcAccountGuest"><div class="communityHero"><span class="eyebrow">MY ARCANA</span><h1>Account</h1></div>'+(query?.get('error')==='sign-in'?'<p class="arcAccountLoginError" role="alert">Discord sign-in did not complete. Please try again below.</p>':'')+signInPanel()+'</div>';
+ if(!state.me)return '<link rel="stylesheet" href="/community-archive.css?v=20261025"><div class="communityPage arcAccount arcAccountGuest"><div class="communityHero"><span class="eyebrow">MY ARCANA</span><h1>Account</h1></div>'+(query?.get('error')==='sign-in'?'<p class="arcAccountLoginError" role="alert">Sign-in or account linking did not complete. Try again or use your original sign-in method.</p>':'')+signInPanel()+'</div>';
  const p=state.me,requested=query?.get('tab'),tab=['overview','profile','character','saves','contributions'].includes(requested)?requested:'overview';
  const tabs=[['overview','Overview'],['profile','Profile & settings'],['character','Character link'],['saves','Saved work'],['contributions','My contributions']];
  const nav='<nav class="arcAccountTabs" aria-label="Account sections">'+tabs.map(([id,label])=>'<button type="button" data-route="account" data-params="tab='+id+'" class="'+(tab===id?'active':'')+'" aria-current="'+(tab===id?'page':'false')+'">'+label+'</button>').join('')+'</nav>';
@@ -65,7 +78,7 @@ function accountView(query=new URLSearchParams()){
  tab==='saves'?farmListsAccountView()+cloudBuildView():
  contributions+'<button class="btn primary" data-route="community/create">Publish a guide or build</button>';
  return '<link rel="stylesheet" href="/community-archive.css?v=20261025"><div class="communityPage arcAccount"><div class="communityHero"><span class="eyebrow">MY ARCANA</span><h1>My Account</h1></div>'+
- nav+accountSpecialPortalMarkup(p)+content+
+ nav+accountSpecialPortalMarkup(p)+content+(tab==='overview'||tab==='profile'?linkedSignInMethods(p):'')+
  '<div class="communityAccountActions"><button class="btn secondary" data-community-action="logout">Sign out</button></div></div>';
 }
 const communityPostCard=p=>'<article class="communityPostCard"><span class="eyebrow">'+esc(p.kind==='build'?'PLAYER BUILD':'PLAYER GUIDE')+'</span>'+
@@ -124,8 +137,8 @@ export function communityPage(route,query){
 export function currentAccount(){return state.me||null}
 export function accountStatus(){return {enabled:state.enabled===true,authenticated:!!state.me}}
 export async function refreshAccount(){
- try{const data=await getJSON('/api/account/me');state.me=data.user;state.enabled=Boolean(data.enabled);state.betaEnrollmentOpen=Boolean(data.betaEnrollmentOpen);}
- catch{state.me=null;state.enabled=false;}
+ try{const data=await getJSON('/api/account/me');state.me=data.user;state.enabled=Boolean(data.enabled);state.providers={discord:Boolean(data.providers?.discord),google:Boolean(data.providers?.google)};state.betaEnrollmentOpen=Boolean(data.betaEnrollmentOpen);}
+ catch{state.me=null;state.enabled=false;state.providers={discord:false,google:false};}
 }
 export async function loadCommunityPage(route,query,refresh){
  const key=route+'?'+query.toString();
