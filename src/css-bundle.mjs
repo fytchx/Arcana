@@ -17,8 +17,8 @@ export const SITE_STYLES=Object.freeze([
 ]);
 
 let cached=null;
-// @import must appear before every regular CSS rule. Hoist the existing
-// Google Fonts import without changing the order of all other declarations.
+// @import must appear before every regular CSS rule. Remove the existing
+// Google Fonts import. Fonts load separately so critical styles never wait on Google.
 const CSS_IMPORT=/^[ \t]*@import[ \t]+[^;\r\n]+;[ \t]*(?:\r?\n)?/gm;
 export function buildSiteCss(sources){
  const imports=[],parts=[];
@@ -26,7 +26,7 @@ export function buildSiteCss(sources){
   const body=source.replace(CSS_IMPORT,rule=>{imports.push(rule.trim());return '';});
   parts.push('/* Arcana source: '+name+' */\n'+body);
  }
- return [...new Set(imports),...parts].join('\n');
+ return parts.join('\n');
 }
 export async function siteCssBundle(root){
  if(cached)return cached;
