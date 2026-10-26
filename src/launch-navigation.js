@@ -67,7 +67,7 @@ export const HOME_CARDS=Object.freeze([
 ]);
 const attrs=x=>'data-route="'+esc(x.route)+'"'+(x.params?' data-params="'+esc(new URLSearchParams(x.params).toString())+'"':'');
 const navrow=x=>'<button type="button" class="launchNavRow" '+attrs(x)+'><span class="launchNavIcon">'+icon(x.icon||'arrow',20)+'</span><span class="launchNavCopy"><strong>'+esc(x.label)+'</strong><small>'+esc(x.detail)+'</small></span>'+icon('arrow',17)+'</button>';
-export function homeScreen(){return atlasHomeScreen(icon);}
+export function homeScreen(profile=null){return atlasHomeScreen(icon,profile);}
 const isPrivateRoute=x=>['calculators/damage','calculators/optimizer'].includes(x);
 export function homeSubmenu(id,admin=false){
  const menu=HOME_MENUS[id]; if(!menu)return '';
