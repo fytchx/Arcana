@@ -375,6 +375,20 @@ with sync_playwright() as playwright:
     page.evaluate("location.hash='#/home'")
     page.wait_for_selector('.atlasHero',timeout=8000)
     assert page.locator('html').get_attribute('data-arcana-design-active')!='true', 'Leaving Playground must disable local try-on'
+    # With both OAuth providers configured, the same account screen presents
+    # both choices. This browser uses fixture responses, not OAuth credentials.
+    guest_auth_html=HTML.replace("if(path.includes('/api/wiki/import-access'))",
+        "if(path.includes('/api/account/me')) return new Response(JSON.stringify({user:null,enabled:true,providers:{google:true,discord:true},betaEnrollmentOpen:true}),{status:200,headers:{'content-type':'application/json'}}); if(path.includes('/api/wiki/import-access'))")
+    guest_auth_page=browser.new_page(viewport={'width':390,'height':844})
+    guest_auth_page.route(qa_origin,lambda route:route.fulfill(status=200,body=guest_auth_html,content_type='text/html'))
+    guest_auth_page.goto(qa_origin,wait_until='domcontentloaded')
+    guest_auth_page.wait_for_selector('#arcanaBoot',state='detached',timeout=15000)
+    guest_auth_page.locator('#accountBtn').click()
+    guest_auth_page.wait_for_selector('.arcSignInMethods',timeout=8000)
+    assert guest_auth_page.locator('a[href="/api/account/google/login"]').count()==1, 'Google login choice missing'
+    assert guest_auth_page.locator('a[href="/api/account/login"]').count()==1, 'Discord login choice missing'
+    guest_auth_page.close()
+
     # Synthetic authenticated QA browser, NOT the owner's real session or credentials.
     # Everyone uses the universal account button. Only the verified owner receives
     # the account-page management portal; the retired header admin button stays absent.
