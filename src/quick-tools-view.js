@@ -51,7 +51,7 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  const selectedMode=scenarios.available&&['min','expected','pity'].includes(range.costMode)?range.costMode:'expected';
  const selected=scenarios.available?scenarios[selectedMode]:quote;
  const modeLabels={min:'Minimum',expected:'Average',pity:'Pity maximum'};
- const modeNotes={min:'No failed attempts',expected:'Estimated failures and pity',pity:'Modeled pity limit'};
+ const modeNotes={min:'No failures',expected:'Expected attempts',pity:'Modeled pity limit'};
  const rendered=scenarios.available?{...quote,gold:selected.gold,
   materials:selected.materials,perItem:scenarios.perItem[selectedMode],
   attempts:selected.attempts}:quote;
@@ -89,18 +89,22 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  const other=groups.filter(g=>g.kind==='special').flatMap(g=>g.materials).sort(alphabetical);
  const attempts=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:1}).format(n);
  const displayAttempts=rendered.attempts===undefined?money(quote.steps):attempts(rendered.attempts);
- const meta='<div class="quickAverageIntro" role="status" aria-live="polite" data-path-active-budget="'+selectedMode+'"><div>'+
-  '<strong>'+esc(scenarios.available?modeLabels[selectedMode]+' upgrade costs':'Base upgrade costs')+'</strong>'+
-  '<small>'+esc(scenarios.available?modeNotes[selectedMode]:'Listed recipe costs only')+(count>1?' · '+count+' items':'')+'</small></div>'+
-  '<span>'+displayAttempts+' attempts</span></div>';
+ const meta='<div class="quickAverageIntro quickFarmSummary" role="status" aria-live="polite" data-path-active-budget="'+selectedMode+'"><div>'+
+  '<strong>Materials to farm</strong>'+
+  '<small>'+esc(scenarios.available?modeLabels[selectedMode]+' estimate':'Base recipe amounts')+' · '+count+' item'+(count===1?'':'s')+'</small></div>'+
+  '<span>'+rendered.materials.length+' material type'+(rendered.materials.length===1?'':'s')+'</span></div>';
+ const modeSelect=scenarios.available?'<div class="quickMaterialModes" role="group" aria-label="Material cost scenario">'+
+  [['min','Minimum'],['expected','Average'],['pity','Pity maximum']].map(([key,label])=>
+   '<button type="button" data-path-cost-mode="'+key+'" aria-pressed="'+(selectedMode===key)+'" class="'+(selectedMode===key?'active':'')+'">'+label+'</button>'
+  ).join('')+'</div>':'';
  const summary=(title,sub)=>'<summary class="quickSectionSummary"><strong>'+esc(title)+'</strong><small>'+esc(sub)+'</small><span aria-hidden="true">⌄</span></summary>';
- const zoneGroupsMarkup=monsterGroups.map(group=>{
+ const zoneGroupsMarkup=monsterGroups.map((group,groupIndex)=>{
   const zone=pathfinderZone(group.name);
   const zoneKey=zone?.slug||group.id;
   const style=zone?' style="--path-zone-color:'+zone.color+';--path-zone-x:'+zone.atlasX+'%;--path-zone-y:'+zone.atlasY+'%"':'';
   const tier=zone?'Tier '+zone.tier+' · ':'';
   const items=[...group.materials];
-  return '<details class="quickZoneGroup'+(zone?'':' quickZoneUnknown')+'" data-path-zone="'+esc(zoneKey)+'"'+style+' open>'+
+  return '<details class="quickZoneGroup'+(zone?'':' quickZoneUnknown')+'" data-path-zone="'+esc(zoneKey)+'"'+style+(groupIndex===0?' open':'')+'>'+
    '<summary class="quickZoneHead"><span class="quickZoneArt">'+(zone?'<span class="quickZoneBackdrop" aria-hidden="true"></span>':'')+
    '<span class="quickZoneGlyph">'+pathfinderZoneIcon(group.name)+'</span></span>'+
    '<span class="quickZoneTitle"><strong>'+esc(group.name)+'</strong><small>'+tier+items.length+' material'+(items.length===1?'':'s')+'</small></span>'+
@@ -110,13 +114,17 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
  const monsterSection='<details class="quickMaterialSection quickFarmFirst" data-material-section="monsters" open>'+
   summary('Monster materials',monsterCount+' types · '+monsterGroups.length+' zones')+
   '<div class="quickSectionBody quickZoneList">'+(monsterCount?zoneGroupsMarkup:'<p class="quickEmpty">No monster drops required.</p>')+'</div></details>';
- // Exactly one headline gold figure. Rare materials appear beneath it only if expanded.
- const goldValue=shortGold(rendered.gold);
- const goldTip=esc(money(rendered.gold)+' Gold');
- const forge='<details class="quickMaterialSection quickForgeSection" data-material-section="special">'+
-  '<summary class="quickSectionSummary"><strong>Gold &amp; rare materials</strong>'+
-  '<small class="quickGoldSummary" title="'+goldTip+'">'+other.length+' special materials · gold optional</small><span aria-hidden="true">⌄</span></summary>'+
-  '<div class="quickSectionBody"><div class="quickMaterial" aria-label="Optional gold cost"><span>Gold <small>Optional currency reference</small></span><strong>'+goldValue+' Gold</strong></div>'+(other.length?'<div class="quickMaterialList quickMaterialListSorted">'+other.map(materialRow).join('')+'</div>':'<p class="quickEmpty">No rare materials needed.</p>')+'</div></details>';
+ // First show monster drops in game biome and monster order. Other required
+ // materials follow. Gold is strictly last, optional, and hidden by default.
+ const forge='<details class="quickMaterialSection quickForgeSection" data-material-section="special"'+(other.length?' open':'')+'>'+
+  '<summary class="quickSectionSummary"><strong>Other upgrade materials</strong>'+
+  '<small>'+other.length+' types · fragments, essences &amp; embers</small><span aria-hidden="true">⌄</span></summary>'+
+  '<div class="quickSectionBody">'+(other.length?'<div class="quickMaterialList quickMaterialListSorted">'+other.map(m=>materialRow(m)).join('')+'</div>':'<p class="quickEmpty">No additional materials required.</p>')+'</div></details>';
+ const gold='<details class="quickMaterialSection quickGoldLast" data-material-section="gold">'+
+  '<summary class="quickSectionSummary"><strong>Gold (optional)</strong><small>See currency totals</small><span aria-hidden="true">⌄</span></summary>'+
+  '<div class="quickSectionBody"><div class="quickMaterial"><span>'+esc(scenarios.available?modeLabels[selectedMode]:'Base')+' Gold</span><strong title="'+esc(money(rendered.gold)+' Gold')+'">'+shortGold(rendered.gold)+'</strong></div>'+
+  (scenarios.available?'<p class="quickGoldQuiet">Minimum '+shortGold(scenarios.min.gold)+' · Average '+shortGold(scenarios.expected.gold)+' · Pity maximum '+shortGold(scenarios.pity.gold)+'</p>':'')+
+  '</div></details>';
  const firstStep=scenarios.available?(scenarios.perStep.find(step=>step.failChance>0)||scenarios.perStep[0]):null;
  const pityCap=firstStep?.pityCap||1;
  const pityDone=Math.max(0,Math.min(pityCap-1,Math.trunc(Number(range.pityCount)||0)));
@@ -127,26 +135,31 @@ export function quickUpgradeContent(snapshot,raw={},options={}){
   '<span>'+pct(1-step.failChance)+' success · '+pct(step.failChance)+' failure</span>'+
   '<small>'+(step.failChance===0?'Guaranteed first try':'Average '+attempts(step.expectedAttempts)+' attempts · Pity '+step.pityCap+' attempts'+(step.pityCount?' · '+step.pityCount+' counted':''))+'</small></div>'
  ).join('')+'</div></details>':'';
- const budgets=scenarios.available?'<details class="quickAdvanced quickOddsPlanner" data-path-accordion="breakdown">'+
-  '<summary class="quickSummaryLine"><strong>Odds &amp; cost scenarios</strong><small>Minimum · Average · Pity maximum</small><b aria-hidden="true">⌄</b></summary>'+
-  '<div class="quickAdvancedBody"><p class="quickScenarioIntro">Choose a scenario to update the materials, Gold and farming checklist shown below.</p>'+
-  '<div class="quickBudgetChoices" role="group" aria-label="Upgrade cost scenario">'+[
-   ['Minimum','min','No failures'],
-   ['Average','expected','Expected cost'],
-   ['Pity maximum','pity','Worst-case model']
-  ].map(([label,key,description])=>{
-   const stat=scenarios[key],active=selectedMode===key;
-   return '<button type="button" class="quickBudgetChoice'+(active?' isSelected':'')+'" data-path-cost-mode="'+key+'" aria-pressed="'+active+'" aria-label="Show '+label+' upgrade costs">'+
-    '<span class="quickBudgetChoiceHeader"><strong>'+label+'</strong><span class="quickBudgetChoiceCheck" aria-hidden="true">'+(active?'✓':'○')+'</span></span>'+
-    '<small>'+description+'</small><span class="quickBudgetAttempts">'+attempts(stat.attempts)+' attempts</span>'+
-    '<b title="'+esc(money(stat.gold)+' Gold')+'">'+shortGold(stat.gold)+' Gold</b></button>';
-  }).join('')+'</div>'+
-  '<label class="quickPityInput">Failures already counted on first pending upgrade <span><input type="number" data-path-pity-count min="0" max="'+Math.max(0,pityCap-1)+'" step="1" inputmode="numeric" value="'+pityDone+'" aria-label="Pity attempts already counted"> / '+pityCap+'</span></label>'+
+ // The detailed comparison and success odds stay optional. The main material
+ // list always shows the selected case and remains above the currency section.
+ const comparisons=scenarios.available?(()=>{
+  const merged=new Map();
+  for(const key of ['min','expected','pity'])for(const m of scenarios[key].materials)merged.set(m.slug,m);
+  const grouped=sourceMaterialGroups([...merged.values()],snapshot.materials||[],options.catalog||[]);
+  const values=Object.fromEntries(['min','expected','pity'].map(key=>[key,new Map(scenarios[key].materials.map(m=>[m.slug,m.quantity]))]));
+  return '<div class="quickCompareMaterials" aria-label="Minimum average and pity maximum quantities for each material">'+grouped.map(group=>
+    '<section class="quickCompareGroup"><h4>'+esc(group.kind==='special'?'Other materials':group.name)+'</h4>'+
+    group.materials.map(m=>'<div class="quickCompareMaterial"><strong>'+esc(m.name)+'</strong><div class="quickCompareThree">'+
+      [['min','Min'],['expected','Avg'],['pity','Max']].map(([key,label])=>
+       '<span'+(selectedMode===key?' class="active"':'')+'><small>'+label+'</small><b title="'+esc(money(values[key].get(m.slug)||0n))+'">'+money(values[key].get(m.slug)||0n)+'</b></span>').join('')+
+    '</div></div>').join('')+'</section>').join('')+'</div>';
+ })():'';
+ const budgets=scenarios.available?'<details class="quickAdvanced quickMaterialBreakdown" data-path-accordion="breakdown">'+
+  '<summary class="quickSummaryLine"><strong>Compare materials &amp; pity odds</strong><small>Detailed quantities · optional</small><b aria-hidden="true">⌄</b></summary>'+
+  '<div class="quickAdvancedBody"><p class="quickScenarioIntro">Compare the exact material quantities for all three modeled scenarios. Choose Minimum, Average or Pity maximum above to change your farming checklist.</p>'+
+  comparisons+
+  '<div class="quickPityProgress"><label class="quickPityInput">Failed attempts already counted for your first upgrade <span><input type="number" data-path-pity-count min="0" max="'+Math.max(0,pityCap-1)+'" step="1" inputmode="numeric" value="'+pityDone+'" aria-label="Pity attempts already counted"> / '+pityCap+'</span></label></div>'+
+  '<div class="quickAttemptNote">Attempt estimates: Min '+attempts(scenarios.min.attempts)+' · Average '+attempts(scenarios.expected.attempts)+' · Pity max '+attempts(scenarios.pity.attempts)+'</div>'+
   odds+
-  '<details class="quickAssumptions"><summary>How these estimates work</summary><p>Minimum assumes every upgrade succeeds immediately. Average uses the listed success odds, modeled pity and the 30% refund after failure. Pity maximum assumes each step reaches its modeled pity limit. Pity carry-over between upgrades is not verified. A completed failed attempt reduces the remaining pity count for the first pending step only.</p></details>'+
+  '<details class="quickAssumptions"><summary>About the estimates</summary><p>Minimum assumes no failures. Average accounts for listed success odds, a 30% failure refund and the modeled pity limit. Pity maximum assumes each upgrade reaches its modeled limit. Pity carry-over between different upgrades is not independently verified.</p></details>'+
   '</div></details>':
-  '<details class="quickAdvanced quickOddsPlanner" data-path-accordion="breakdown"><summary class="quickSummaryLine"><strong>Odds &amp; cost scenarios</strong><small>Unavailable</small><b aria-hidden="true">⌄</b></summary>'+
-  '<div class="quickAdvancedBody"><p>Failure and pity scenarios unavailable: '+esc(scenarios.reason||'Verified failure odds missing')+'. Base recipe costs are shown instead.</p></div></details>';
- return plan+meta+budgets+monsterSection+forge;
+  '<details class="quickAdvanced quickMaterialBreakdown" data-path-accordion="breakdown"><summary class="quickSummaryLine"><strong>Compare materials &amp; pity odds</strong><small>Odds unavailable</small><b aria-hidden="true">⌄</b></summary>'+
+  '<div class="quickAdvancedBody"><p>Failure and pity scenarios unavailable: '+esc(scenarios.reason||'Verified failure odds missing')+'. Base recipe costs are displayed without speculative ranges.</p></div></details>';
+ return plan+meta+modeSelect+monsterSection+forge+budgets+gold;
 
 }
