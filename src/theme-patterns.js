@@ -1,5 +1,10 @@
 // Every texture is CSS-generated. No third-party image downloads or assets.
 export const THEME_PATTERNS=Object.freeze([
+ ['vision-atelier-chapel','Chromatic Chapel','Vision'],
+ ['vision-atelier-circuit','Ghost Circuit','Vision'],
+ ['vision-atelier-atlas','Cinder Atlas','Vision'],
+ ['vision-atelier-afterglow','Acid Afterglow','Vision'],
+ ['vision-atelier-porcelain','Porcelain Nocturne','Vision'],
  ['vision-violet-fault','Violet Fault','Vision'],
  ['vision-pulse-terrain','Pulse Terrain','Vision'],
  ['vision-ribbon-bloom','Ribbon Bloom','Vision'],
