@@ -187,7 +187,7 @@ with sync_playwright() as playwright:
     # article remains clickable, with a real slug and visible editorial text.
     featured=page.locator('[data-journal-latest]')
     featured_href=featured.get_attribute('href') or ''
-    assert re.fullmatch(r'/#/journal/article\\?slug=[a-z0-9-]+',featured_href), 'Featured Journal link must target a real article route'
+    assert re.fullmatch(r'/#/journal/article\?slug=[a-z0-9-]+',featured_href), 'Featured Journal link must target a real article route'
     assert len(featured.locator('strong').inner_text().strip())>8, 'Featured Journal title must be visible'
     assert page.locator('.atlasTile[data-route="calculators/pathfinder"]').count()==1
     assert page.locator('.atlasTile[data-action="homemenu"][data-arg="tools"]').count()==1
