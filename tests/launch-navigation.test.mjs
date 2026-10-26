@@ -45,7 +45,8 @@ test('topic shells are navigable, safely escaped and do not invent article conte
 test('global home control is registered and the old bottom nav is absent',async()=>{
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
- assert.match(html,/id="adminPortalBtn"/);
+ assert.doesNotMatch(html,/id="adminPortalBtn"/);
+ assert.match(html,/class="launchTopRight"><button type="button" class="launchAccount" id="accountBtn"/);
   assert.match(html,/data-dock="search"/);
   assert.doesNotMatch(html,/id="searchBtn"/);
  assert.match(html,/id="accountBtn"/);
