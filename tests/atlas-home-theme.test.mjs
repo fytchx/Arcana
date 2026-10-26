@@ -10,8 +10,8 @@ test('Atlas homepage has a focused hero, two-column mobile grid and six real des
  assert.equal((home.match(/class="atlasTile"/g)||[]).length,6);
  assert.equal((home.match(/data-journal-latest/g)||[]).length,1);
  assert.match(home,/src="\/assets\/arcana-logo.webp"/);
- for(const name of ['Pathfinder','Calculators','ArcanaWiki','Guilds','Builds','Guides'])assert.match(home,new RegExp('>'+name+'<'));
- assert.ok(home.indexOf('atlasHero')<home.indexOf('atlasTileGrid'));
+ for(const name of ['Pathfinder','Pet Calculators','Farming Tools','Player Guides','ArcanaWiki','Community'])assert.match(home,new RegExp('>'+name+'<'));
+ assert.ok(home.indexOf('atlasTileGrid')<home.indexOf('atlasHero'));
  assert.ok(home.indexOf('atlasTileGrid')<home.indexOf('atlasJournal'));
  assert.match(css,/\.atlasTileGrid\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
  assert.match(css,/@media\(min-width:760px\)/);
