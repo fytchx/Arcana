@@ -37,7 +37,7 @@ test('panel, icon-box and icon-glyph colors are separately validated and editabl
 });
 test('Atlas stylesheet is attached to the actual app and served through the approved static allowlist',async()=>{
  const [index,server,css]=await Promise.all([read('index.html'),read('server.mjs'),read('home-atlas.css')]);
- assert.match(index,/home-atlas\.css\?v=/);
+ assert.match(index,/arcana-site\.css\?v=/);
  assert.match(server,/'\/home-atlas.css'/);
  for(const cssVar of ['--atlas-panel','--atlas-icon-box','--atlas-icon'])assert.ok(css.includes(cssVar));
 });
