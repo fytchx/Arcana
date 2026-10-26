@@ -137,7 +137,7 @@ const server=http.createServer(async(req,res)=>{
    const bundle=await siteCssBundle(ROOT);
    const useGzip=/(?:^|,)\s*gzip\b/i.test(String(req.headers['accept-encoding']||''));
    const etag=useGzip?bundle.gzipEtag:bundle.etag;
-   const headers={'content-type':'text/css; charset=utf-8','cache-control':'public,max-age=3600',
+   const headers={'content-type':'text/css; charset=utf-8','cache-control':'public,no-cache,must-revalidate',
     'vary':'Accept-Encoding','etag':etag,...(useGzip?{'content-encoding':'gzip'}:{})};
    if(req.headers['if-none-match']===etag){send(res,304,null,headers);return;}
    send(res,200,req.method==='HEAD'?null:(useGzip?bundle.gzip:bundle.plain),headers);
