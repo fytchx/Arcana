@@ -38,7 +38,7 @@ test('quick upgrade rendering uses source-backed quote and clear failure guards'
  const html=quickUpgradePanel(fixture,{fromStage:'T1',fromLevel:0,toStage:'T1',toLevel:2});
  const result=quoteRange(fixture,{fromStage:'T1',fromLevel:0,toStage:'T1',toLevel:2});
  assert.equal(result.gold,300n);
- for(const token of ['data-path-from-stage','data-path-from-level','data-path-to-stage','data-path-to-level','Gold','300','Iron','Base material costs'])assert.ok(html.includes(token),token);
+ for(const token of ['data-path-from-stage','data-path-from-level','data-path-to-stage','data-path-to-level','Gold','300','Iron','Materials to farm'])assert.ok(html.includes(token),token);
  assert.match(quickUpgradeContent(null,{}),/Loading game upgrade recipes/);
  const back=quickUpgradeContent(fixture,{fromStage:'A2',fromLevel:1,toStage:'A1',toLevel:1});
  assert.match(back,/target must be after/);

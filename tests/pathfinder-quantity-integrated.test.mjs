@@ -19,15 +19,16 @@ test('quantity bounds and old saved plans work',()=>{
  assert.deepEqual(saveRange(range,store),range);assert.deepEqual(readRange(store),range);
  assert.equal(saveRange({...range,quantity:10},store).quantity,10);
 });
-test('native calculator lists monster drops before rare materials and a subdued gold footer',()=>{
+test('native calculator lists monster drops before other materials and keeps Gold collapsed last',()=>{
  const html=quickUpgradePanel(fixture,{...range,quantity:10},{page:true,catalog});
- for(const x of ['pathItemQuantity','data-path-quantity-step="1"','10 items','First Biome','Second Biome','Third Biome','Rare materials &amp; gold','Abyssal Ember','data-pf-save-list','data-route="wiki/reference"'])assert.ok(html.includes(x),x);
+ for(const x of ['pathItemQuantity','data-path-quantity-step="1"','10 items','First Biome','Second Biome','Third Biome','Other upgrade materials','Abyssal Ember','data-pf-save-list','data-route="wiki/reference"'])assert.ok(html.includes(x),x);
  assert.ok(html.indexOf('Alpha')<html.indexOf('Beta'));assert.ok(html.indexOf('Beta')<html.indexOf('Gamma'));
- assert.ok(html.indexOf('Gamma')<html.indexOf('Rare materials &amp; gold'));
+ assert.ok(html.indexOf('Gamma')<html.indexOf('Other upgrade materials'));
  assert.match(html,/data-material-section="monsters"/);assert.match(html,/data-material-section="special"/);
  assert.match(html,/<details[^>]*data-material-section="monsters"[^>]*open/);
  assert.match(html,/<details[^>]*data-material-section="special"[^>]*open/);
- assert.ok(html.indexOf('Abyssal Ember')<html.indexOf('class="quickGoldFooter"'));
+ assert.doesNotMatch(html,/<details[^>]*data-material-section="gold"[^>]*open/);
+ assert.ok(html.indexOf('Other upgrade materials')<html.indexOf('Gold (optional)'));
  assert.match(html,/data-path-accordion="route" open/);
 });
 test('incomplete recipe prevents total display',()=>{
