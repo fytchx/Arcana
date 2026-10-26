@@ -1,4 +1,5 @@
 // Arcana Atlas: compact, connected home destinations. Built with the real icon registry.
+const escapeHTML=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 // All destinations use the site's existing router or home-menu action.
 const destinations=[
  {title:'Pathfinder',detail:'Upgrade costs and materials',icon:'feature-upgrade',route:'calculators/pathfinder'},
@@ -8,13 +9,17 @@ const destinations=[
  {title:'Builds',detail:'Community setups',icon:'users',route:'community'},
  {title:'Guides',detail:'Progression and strategy',icon:'book',route:'wiki/guides'}
 ];
-export function atlasHomeScreen(icon){
+export function atlasHomeScreen(icon,profile=null){
  const tiles=destinations.map(x=>{
   const nav=x.menu?'data-action="homemenu" data-arg="'+x.menu+'"':'data-route="'+x.route+'"';
   return '<button type="button" class="atlasTile" '+nav+' aria-label="Explore '+x.title+'"><span class="atlasTileIcon" aria-hidden="true">'+icon(x.icon,29)+'</span><span class="atlasTileCopy"><strong>'+x.title+'</strong><small>'+x.detail+'</small></span><span class="atlasTileArrow" aria-hidden="true">'+icon('arrow',17)+'</span></button>';
  }).join('');
+ const accountName=typeof profile?.displayName==='string'&&profile.displayName.trim()?profile.displayName.trim():'Arcana player';
+ const accountPrompt=profile?'<strong>Welcome back, '+escapeHTML(accountName)+'</strong><small>Your builds, character, badges and account settings.</small>':'<strong>Join the Arcana community</strong><small>One Discord login creates your account or signs you back in.</small>';
+ const accountButton=profile?'My Account':'Sign up / Log in';
  return '<div class="atlasHome" aria-label="Arcana homepage">'+
  '<a class="atlasUpdate" href="/#/journal/article?slug=idlearc-1-3-7-the-timing-couldnt-be-better"><span class="atlasUpdateTag">PATCH NOTES</span><span class="atlasUpdateTitle">IdleArc 1.3.7: A Step Forward</span><span class="atlasUpdateDate">OCT 18 '+icon('arrow',15)+'</span></a>'+
+ '<section class="atlasAccountEntry" aria-label="Arcana account"><div class="atlasAccountEntryIcon" aria-hidden="true">'+icon('users',22)+'</div><div class="atlasAccountEntryCopy"><span class="atlasEyebrow">MY ARCANA</span>'+accountPrompt+'</div><button type="button" class="atlasAccountEntryButton" data-route="account" aria-label="'+accountButton+'">'+accountButton+' '+icon('arrow',16)+'</button></section>'+ 
  '<section class="atlasHero" aria-label="Build Studio"><img class="atlasHeroEmblem" src="/assets/arcana-logo.webp" alt="" loading="lazy"><span class="atlasHeroIcon" aria-hidden="true">'+icon('feature-build-studio',38)+'</span><span class="atlasHeroText"><span class="atlasEyebrow">THE HEART OF ARCANA</span><strong>Build Studio</strong><small>Test gear, runes, pets and skills</small></span><button type="button" class="atlasHeroGo" data-route="labs/build" aria-label="Open Build Studio">'+icon('arrow',22)+'</button></section>'+
  '<section class="atlasTools" aria-labelledby="atlasToolsHeading"><div class="atlasSectionHead"><h2 id="atlasToolsHeading">EXPLORE ARCANA</h2><button type="button" data-route="directory">All tools '+icon('arrow',15)+'</button></div><div class="atlasTileGrid">'+tiles+'</div></section>'+
  '<section class="atlasJournal" aria-labelledby="atlasJournalHeading"><div class="atlasSectionHead"><h2 id="atlasJournalHeading">THE JOURNAL</h2><a href="/#/journal">All stories '+icon('arrow',15)+'</a></div>'+
