@@ -23,7 +23,23 @@ HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
 # current modular design layers automatically.
 for href in re.findall(r'<link rel="stylesheet" href="([^"]+)"', HTML):
     css_name=urlparse(href).path.lstrip('/')
-    css=(ROOT/css_name).read_text()
+    if css_name=='arcana-site.css':
+        # The production server bundles authored sources in exactly this order.
+        source=(ROOT/'src/css-bundle.mjs').read_text()
+        order=source.split('export const SITE_STYLES=Object.freeze([',1)[1].split(']);',1)[0]
+        stylesheet_files=re.findall(r"'([^']+\.css)'",order)
+        assert len(stylesheet_files)==26,'CSS bundle source inventory changed'
+        imports,parts=[],[]
+        css_import=re.compile(r'(?m)^[ \t]*@import[ \t]+[^;\r\n]+;[ \t]*(?:\r?\n)?')
+        for name in stylesheet_files:
+            raw=(ROOT/name).read_text()
+            def lift(match):
+                imports.append(match.group(0).strip())
+                return ''
+            parts.append('/* Arcana source: '+name+' */\n'+css_import.sub(lift,raw))
+        css='\n'.join(list(dict.fromkeys(imports))+parts)
+    else:
+        css=(ROOT/css_name).read_text()
     pattern='<link rel="stylesheet" href="'+re.escape(href)+'">'
     HTML,count=re.subn(pattern,lambda _: '<style>'+css+'</style>',HTML)
     assert count==1, 'Stylesheet should appear exactly once: '+href
