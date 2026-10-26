@@ -90,7 +90,7 @@ test('primary material list uses per-zone accordion cards, official sprite strip
  assert.ok(html.indexOf('data-path-zone="verdant-woods"')<html.indexOf('data-path-zone="frozen-peaks"'));
  assert.ok(html.indexOf('data-path-zone="frozen-peaks"')<html.indexOf('data-path-zone="umbral-rift"'));
  assert.ok(html.indexOf('Alpha Root')<html.indexOf('Zulu Root'));
- assert.ok(html.indexOf('data-path-zone="umbral-rift"')<html.indexOf('Gold &amp; rare materials'));
+ assert.ok(html.indexOf('data-path-zone="umbral-rift"')<html.indexOf('Other upgrade materials'));
  assert.match(html,/--path-zone-color:#65BD75/);
  assert.match(html,/--path-zone-color:#78C9F3/);
  assert.match(html,/--path-zone-color:#AD80F0/);
