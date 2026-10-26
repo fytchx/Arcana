@@ -1,7 +1,9 @@
 // Arcana Visual Art Collection, wave/contour geometry. Pure deterministic SVG.
 // No photos, raster filters, blur, randomness, remote assets or canvas dependencies.
 // Every artwork has four independent HEX pigment channels; SVG stays vector-sharp.
+import {ATELIER_ART,atelierGeometry} from './atelier-art.js';
 export const VISUAL_ART=Object.freeze([
+ ...ATELIER_ART,
  {id:'vision-violet-fault',name:'Violet Fault',family:'Neon Topography',note:'Luminous fracture lines converging around a quiet valley',colors:['#100B2E','#ED55B8','#6552F5','#9AC7FF']},
  {id:'vision-pulse-terrain',name:'Pulse Terrain',family:'Neon Topography',note:'Electric ridgelines with controlled, atmospheric perspective',colors:['#101D39','#65D9F4','#EC70B5','#E2DAFF']},
  {id:'vision-ribbon-bloom',name:'Ribbon Bloom',family:'Ribbon / Veil',note:'Layered translucent sculptures framing a calm center',colors:['#170A31','#EE6CAF','#8C42DC','#F8B1D3']},
@@ -65,6 +67,7 @@ function braid(centerX,width,stride=1){
  return out;
 }
 function geometry(id){
+ if(id.startsWith('vision-atelier-'))return atelierGeometry(id);
  let s='';
  if(id==='vision-violet-fault'){
   s+=ellipse(310,180,260,210,'url(#halo)',.27);
