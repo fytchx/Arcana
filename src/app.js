@@ -211,6 +211,7 @@ const homeSecondary=(route,title,description,symbol)=>
 function home(){return homeScreen();}
 function featuredView(){
  const items=[
+  ['Help Shape Arcana','What is Arcana? What should change? Tell me what to build next.','journal/article','spark','slug=help-shape-arcana'],
   ['Convergence: Complete Season 2 Guide','Master the tier loop, elite encounters, monster seats and all 37 Lattice nodes.','wiki/article','book','id=convergence-complete-guide'],
   ['Arcana Journal','Independent IdleArc news, meta analysis and community perspectives.','journal','book'],
   ['Class Balance: Top 250','See the ranked class data and the full Season 2 balance analysis.','journal-balance','shield'],
@@ -219,7 +220,7 @@ function featuredView(){
   ['Community Builds','Discover player builds and share your own.','community','users'],
   ['Pathfinder','Swipe through upgrade materials and currency costs.','calculators/pathfinder','layers'],
   ['Featured Wiki','Browse verified articles and game systems.','wiki','book'],
-  ['Beta Feedback','Tell us what to improve before launch.','beta','spark']
+  ['Beta Feedback','Send feedback, report a bug, or suggest a feature.','beta','spark']
  ];
  return '<div class="launchPage arcanaFeaturedPage"><span class="launchEyebrow">DISCOVER</span><h1>Featured</h1><p>Builds, guides, tools and updates worth a look. More community features will appear here as they are published.</p><div class="arcanaFeaturedRows">'+items.map(([name,detail,route,glyph,params])=>'<button class="launchFeatureRow" type="button" data-route="'+esc(route)+'"'+(params?' data-params="'+esc(params)+'"':'')+'><span class="launchFeatureIcon">'+icon(glyph,22)+'</span><span><strong>'+esc(name)+'</strong><small>'+esc(detail)+'</small></span>'+icon('arrow',17)+'</button>').join('')+'</div></div>';
 }
