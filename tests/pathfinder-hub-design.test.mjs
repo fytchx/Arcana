@@ -86,11 +86,11 @@ test('mini style preview is updated by the existing saved-design writes',async()
  for(const pattern of ['rings','stars','plain'])assert.ok(css.includes('data-mini-pattern="'+pattern+'"'));
 });
 
-test('one hundred curated palettes can be applied and undone without a page render',()=>{
+test('curated palettes can be applied and undone without a page render',()=>{
  const old=globalThis.localStorage,mem=new Map();
  try{
   globalThis.localStorage={getItem:k=>mem.get(k)||null,setItem:(k,v)=>mem.set(k,v),removeItem:k=>mem.delete(k)};
-  assert.equal(Object.keys(DESIGN_PRESETS).length,142);
+  assert.equal(Object.keys(DESIGN_PRESETS).length,147);
   assert.equal(applyDesignPreset('emerald'),true);
   assert.equal(readDesign().action,'#34E8A1');
   assert.equal(readDesign().main,'#071510');
