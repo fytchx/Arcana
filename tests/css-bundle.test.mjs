@@ -10,7 +10,7 @@ const root=fileURLToPath(new URL('../',import.meta.url));
 test('stylesheet bundling preserves source order and keeps CSS imports legal',()=>{
  const output=buildSiteCss([
   ['alpha.css','.alpha{color:red}'],
-  ['fonts.css',"@import url('https://fonts.googleapis.com/css?family=Example');\\n.beta{color:blue}"],
+  ['fonts.css',"@import url('https://fonts.googleapis.com/css?family=Example');\n.beta{color:blue}"],
   ['omega.css','.omega{color:green}']
  ]);
  assert.ok(output.startsWith("@import url('https://fonts.googleapis.com/css?family=Example');"));
@@ -21,7 +21,7 @@ test('stylesheet bundling preserves source order and keeps CSS imports legal',()
 
 test('homepage loads exactly one CSS entry, which includes every existing theme and feature style',async()=>{
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
- const cssLinks=[...html.matchAll(/<link\\s+rel="stylesheet"\\s+href="(\\/[^"?]+)/g)].map(match=>match[1]);
+ const cssLinks=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="(\/[^"?]+)/g)].map(match=>match[1]);
  assert.deepEqual(cssLinks,['/arcana-site.css']);
  assert.equal(SITE_STYLES.length,26);
  assert.equal(new Set(SITE_STYLES).size,SITE_STYLES.length);
@@ -40,9 +40,9 @@ test('homepage loads exactly one CSS entry, which includes every existing theme 
  }
  // Preserve non-import declaration bytes, without silently dropping a feature stylesheet.
  for(let i=0;i<SITE_STYLES.length;i++){
-  const cleaned=sourceContents[i].replace(/^[ \\t]*@import[ \\t]+[^;\\r\\n]+;[ \\t]*(?:\\r?\\n)?/gm,'');
+  const cleaned=sourceContents[i].replace(/^[ \t]*@import[ \t]+[^;\r\n]+;[ \t]*(?:\r?\n)?/gm,'');
   assert.ok(css.includes(cleaned),'Missing rules from '+SITE_STYLES[i]);
  }
- assert.match(html,/<h1>Arcana: The IdleArc Companion<\\/h1>/);
- assert.match(html,/href="\\/pathfinder"/);
+ assert.match(html,/<h1>Arcana: The IdleArc Companion<\/h1>/);
+ assert.match(html,/href="\/pathfinder"/);
 });
