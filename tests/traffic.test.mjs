@@ -85,7 +85,7 @@ test('Traffic routes and privacy statement ship together',async()=>{
  assert.match(app,/case 'admin':case 'admin\/traffic'/);
  assert.match(app,/recordTrafficNavigation\(dest\)/);
  assert.match(app,/loadAdminConsole\(parseRoute\(\)\.query\.get\('tab'\)\|\|'traffic',render\)/);
- assert.match(page,/\/traffic.css/);
+ assert.match(page,/\/arcana-site.css/);
  assert.match(privacy,/Basic website traffic statistics/);
  assert.match(privacy,/IP addresses/);
 });
