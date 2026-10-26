@@ -62,7 +62,7 @@ test('new studio uses working live preview and published-theme channel, not a se
  assert.match(editor,/themeVaultMarkup\(\)/);
  assert.match(app,/filterStudioV2Looks\(\)/);
  assert.match(app,/data-studio-family-filter/);
- assert.match(index,/\/studio-v2\.css/);
+ assert.match(index,/\/arcana-site\.css/);
  assert.match(server,/'\/studio-v2.css'/);
  assert.match(css,/--arcana-panel-opacity-percent/);
  assert.match(css,/data-arcana-design-density=compact/);
