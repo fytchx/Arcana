@@ -1,4 +1,4 @@
-import {randomBytes, randomUUID, createHash, timingSafeEqual} from 'node:crypto';
+import {randomBytes, randomUUID, createHash, timingSafeEqual, createPublicKey, verify} from 'node:crypto';
 import {mkdir, readFile, writeFile, rename, unlink} from 'node:fs/promises';
 import {resolve, dirname} from 'node:path';
 import {can, rolesOf, publicRoles, mayChangeRoles,AWARD_LABELS} from './account-policy.js';
@@ -10,15 +10,17 @@ export const betaEnrollmentOpen=()=>process.env.ARCANA_BETA_COHORT_OPEN==='1';
 const MAX_PROFILE_BYTES=80000;
 let writeQueue=Promise.resolve();
 export const dataRoot=()=>resolve(process.env.ARCANA_ACCOUNT_DATA_DIR || resolve(process.env.ARCANA_WIKI_DATA_DIR||'.arcana-wiki-data','accounts'));
-export const authAvailable=()=>{
- const base=process.env.ARCANA_AUTH_BASE_URL||'';
- try {const url=new URL(base);return Boolean(process.env.ARCANA_DISCORD_CLIENT_ID&&process.env.ARCANA_DISCORD_CLIENT_SECRET&&
-  (url.protocol==='https:'||(url.hostname==='localhost'&&url.protocol==='http:')));}
+const oauthBaseReady=()=>{
+ try{const url=new URL(process.env.ARCANA_AUTH_BASE_URL||'');return url.protocol==='https:'||(url.hostname==='localhost'&&url.protocol==='http:');}
  catch{return false;}
 };
+export const discordAuthAvailable=()=>Boolean(oauthBaseReady()&&process.env.ARCANA_DISCORD_CLIENT_ID&&process.env.ARCANA_DISCORD_CLIENT_SECRET);
+export const googleAuthAvailable=()=>Boolean(oauthBaseReady()&&process.env.ARCANA_GOOGLE_CLIENT_ID&&process.env.ARCANA_GOOGLE_CLIENT_SECRET);
+export const authAvailable=()=>discordAuthAvailable()||googleAuthAvailable();
 const baseUrl=()=>new URL(process.env.ARCANA_AUTH_BASE_URL||'http://localhost:3000');
 const cookieName=()=>baseUrl().protocol==='https:'?'__Host-arcana-session':'arcana-session';
 const stateName=()=>baseUrl().protocol==='https:'?'__Host-arcana-oauth':'arcana-oauth';
+const googleStateName=()=>baseUrl().protocol==='https:'?'__Host-arcana-google-oauth':'arcana-google-oauth';
 const cookieFlags=age=>'Path=/; HttpOnly; SameSite=Lax; '+(baseUrl().protocol==='https:'?'Secure; ':'')+'Max-Age='+age;
 const sha=value=>createHash('sha256').update(String(value)).digest('hex');
 export const sendJSON=(res,code,data)=>{res.writeHead(code,{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'});res.end(JSON.stringify(data));};
@@ -58,14 +60,14 @@ const ARCANA_BANNERS=['nebula','frost','ember','forest','royal'];
 export function publicProfile(account){
  const a=asCreator(account),earned=new Set(rolesOf(a));for(const award of a.awards||[])if(AWARD_LABELS[award])earned.add(award);if(a.profile?.verifiedCharacter?.status==='approved')earned.add('verified-character');
  const featured=Array.isArray(a.profile?.featuredBadges)?a.profile.featuredBadges.filter(id=>earned.has(id)).slice(0,3):[];
- return {id:a.id,displayName:a.profile?.displayName||a.discordName||'Arcana player',
+ return {id:a.id,displayName:a.profile?.displayName||a.discordName||a.googleName||'Arcana player',
  inGameName:a.profile?.inGameName||'',guild:a.profile?.guild||'',guildTag:a.profile?.guildTag||'',guildId:a.profile?.guildId||'',favoriteClass:a.profile?.favoriteClass||'',
  description:a.profile?.description||'',tagline:a.profile?.tagline||'',bannerTheme:ARCANA_BANNERS.includes(a.profile?.bannerTheme)?a.profile.bannerTheme:'nebula',featuredBadges:featured,avatarDataUrl:a.profile?.avatarDataUrl||'',raidStatus:a.profile?.raidStatus||'',guildStatus:a.profile?.guildStatus||'',
  verifiedCharacter:a.profile?.verifiedCharacter?.status==='approved'?{name:a.profile.verifiedCharacter.name,approvedAt:a.profile.verifiedCharacter.approvedAt}:null,
  awards:(a.awards||[]).filter(id=>AWARD_LABELS[id]).map(id=>({id,label:AWARD_LABELS[id]})),
  roles:publicRoles(a),joinedAt:a.joinedAt||'',betaTesterSince:a.betaTesterSince||'',suspended:!!a.suspended};
 }
-export const selfProfile=account=>({...publicProfile(account),isOwner:asCreator(account).isCreator===true,permissions:{
+export const selfProfile=account=>({...publicProfile(account),authProviders:{discord:Boolean(account.discordId),google:Boolean(account.googleSub)},isOwner:asCreator(account).isCreator===true,permissions:{
  createCommunity:can(asCreator(account),'community:create'),publishWiki:can(asCreator(account),'wiki:publish'),
  hideContent:can(asCreator(account),'community:hide'),deleteContent:can(asCreator(account),'community:delete'),
  manageRoles:can(asCreator(account),'roles:manage'),viewAnalytics:can(asCreator(account),'analytics:view'),manageSite:can(asCreator(account),'site:manage'),reviewCharacters:can(asCreator(account),'character:review'),manageRecords:can(asCreator(account),'records:manage'),staffAccess:can(asCreator(account),'staff:access')},verificationStatus:account.profile?.characterClaim?.status||'none'});
@@ -113,6 +115,92 @@ async function discordIdentity(user){
   return account;
  });
 }
+// A Google user is identified only by the verified OIDC subject, never by email.
+const GOOGLE_SUB=/^[A-Za-z0-9_-]{10,128}$/;
+const GOOGLE_JWKS='https://www.googleapis.com/oauth2/v3/certs';
+let jwksCache=null;
+async function googleKeys(){
+ if(jwksCache&&jwksCache.until>Date.now())return jwksCache.keys;
+ const response=await fetch(GOOGLE_JWKS,{signal:AbortSignal.timeout(10000)});
+ if(!response.ok)throw error(502,'Google verification keys unavailable.');
+ const data=await response.json();
+ if(!Array.isArray(data.keys)||!data.keys.length)throw error(502,'Google verification keys unavailable.');
+ const keys=data.keys.filter(k=>k.kty==='RSA'&&k.alg==='RS256'&&typeof k.kid==='string'&&k.n&&k.e);
+ if(!keys.length)throw error(502,'Google verification keys unavailable.');
+ jwksCache={keys,until:Date.now()+15*60*1000};return keys;
+}
+async function verifyGoogleIdToken(jwt,nonce){
+ const parts=String(jwt||'').split('.');
+ if(parts.length!==3||parts.some(x=>!x||x.length>12000))throw error(401,'Invalid Google identity token.');
+ let header,payload;
+ try{
+  header=JSON.parse(Buffer.from(parts[0],'base64url').toString('utf8'));
+  payload=JSON.parse(Buffer.from(parts[1],'base64url').toString('utf8'));
+ }catch{throw error(401,'Invalid Google identity token.');}
+ if(header.alg!=='RS256'||typeof header.kid!=='string'||header.kid.length>200)throw error(401,'Invalid Google identity signature.');
+ const key=(await googleKeys()).find(k=>k.kid===header.kid);
+ if(!key||!verify('RSA-SHA256',Buffer.from(parts[0]+'.'+parts[1]),createPublicKey({key,format:'jwk'}),Buffer.from(parts[2],'base64url')))
+  throw error(401,'Google identity signature could not be verified.');
+ const now=Math.floor(Date.now()/1000);
+ if(!['accounts.google.com','https://accounts.google.com'].includes(payload.iss)||
+  payload.aud!==process.env.ARCANA_GOOGLE_CLIENT_ID||
+  typeof payload.exp!=='number'||payload.exp<=now||
+  typeof payload.iat!=='number'||payload.iat>now+60||payload.iat<now-3600||
+  !equal(payload.nonce,nonce)||!GOOGLE_SUB.test(String(payload.sub||''))||
+  payload.email_verified!==true)
+  throw error(401,'Google identity could not be verified.');
+ return {sub:payload.sub,name:safeText(payload.name||payload.given_name||'Arcana player',70)};
+}
+async function googleIdentity(identity,{linkAccount=null}={}){
+ if(!GOOGLE_SUB.test(identity.sub))throw error(401,'Invalid Google identity.');
+ return queued(async()=>{
+  const indexPath=resolve(dataRoot(),'google',identity.sub+'.json');
+  const indexed=await readJSON(indexPath);
+  const linkedId=indexed?.id;
+  if(linkAccount){
+   const existing=linkedId&&ACCOUNT_ID.test(linkedId)?await readJSON(accountFile(linkedId)):null;
+   if(linkedId&&(!existing||linkedId!==linkAccount.id))throw error(409,'This Google login belongs to another Arcana account.');
+   const account=await readJSON(accountFile(linkAccount.id));
+   if(!account||account.suspended)throw error(403,'Account unavailable.');
+   if(account.googleSub&&account.googleSub!==identity.sub)throw error(409,'This Arcana account already has a different Google login.');
+   account.googleSub=identity.sub;account.googleName=identity.name;
+   await saveAtomic(accountFile(account.id),account);
+   await saveAtomic(indexPath,{id:account.id});
+   return account;
+  }
+  let account=linkedId&&ACCOUNT_ID.test(linkedId)?await readJSON(accountFile(linkedId)):null;
+  if(linkedId&&!account)throw error(409,'Google identity is linked to an unavailable account.');
+  if(!account){
+   const name=safeText(identity.name||'Arcana player',50)||'Arcana player';
+   account={id:randomUUID(),googleSub:identity.sub,googleName:identity.name,roles:[],
+    betaTesterSince:betaEnrollmentOpen()?new Date().toISOString():'',
+    profile:{displayName:name,inGameName:'',guild:'',favoriteClass:'',description:'',raidStatus:'',guildStatus:''},
+    joinedAt:new Date().toISOString(),suspended:false};
+   await saveAtomic(accountFile(account.id),account);
+   await saveAtomic(indexPath,{id:account.id});
+  }else{
+   if(account.suspended)throw error(403,'Account unavailable.');
+   if(betaEnrollmentOpen()&&!account.betaTesterSince)account.betaTesterSince=new Date().toISOString();
+   account.googleName=identity.name;await saveAtomic(accountFile(account.id),account);
+  }
+  return account;
+ });
+}
+async function linkDiscordIdentity(user,linkAccount){
+ if(!user||!DISCORD_ID.test(String(user.id||'')))throw error(502,'Unable to verify Discord identity.');
+ return queued(async()=>{
+  const path=resolve(dataRoot(),'discord',user.id+'.json');
+  const indexed=await readJSON(path);
+  if(indexed?.id&&indexed.id!==linkAccount.id)throw error(409,'This Discord login belongs to another Arcana account.');
+  const account=await readJSON(accountFile(linkAccount.id));
+  if(!account||account.suspended)throw error(403,'Account unavailable.');
+  if(account.discordId&&account.discordId!==user.id)throw error(409,'This Arcana account already has another Discord login.');
+  account.discordId=user.id;account.discordName=safeText(user.global_name||user.username,70);
+  await saveAtomic(accountFile(account.id),account);
+  await saveAtomic(path,{id:account.id});
+  return account;
+ });
+}
 const redirect=(res,url,cookie=null)=>{
  res.writeHead(303,{'location':url,'cache-control':'no-store',...(cookie?{'set-cookie':cookie}:{})});res.end();
 };
@@ -139,10 +227,12 @@ export async function handleAccountRequest(req,res,url){
  const {pathname}=url, method=req.method;
  if(pathname==='/api/account/me'&&method==='GET'){
   const user=await accountUser(req);
-  sendJSON(res,200,{enabled:authAvailable(),betaEnrollmentOpen:betaEnrollmentOpen(),user:user?selfProfile(user):null});return true;
+  sendJSON(res,200,{enabled:authAvailable(),providers:{discord:discordAuthAvailable(),google:googleAuthAvailable()},betaEnrollmentOpen:betaEnrollmentOpen(),user:user?selfProfile(user):null});return true;
  }
- if(pathname==='/api/account/login'&&method==='GET'){
-  if(!authAvailable()){sendJSON(res,503,{error:'Account sign-in is not configured on this environment.'});return true;}
+ if((pathname==='/api/account/login'||pathname==='/api/account/discord/link')&&method==='GET'){
+  if(!discordAuthAvailable()){sendJSON(res,503,{error:'Account sign-in is not configured on this environment.'});return true;}
+  const link=pathname==='/api/account/discord/link';
+  const member=link?await requireUser(req):null;
   const state=randomBytes(28).toString('base64url');
   const authorize=new URL('https://discord.com/oauth2/authorize');
   authorize.searchParams.set('response_type','code');
@@ -150,12 +240,13 @@ export async function handleAccountRequest(req,res,url){
   authorize.searchParams.set('redirect_uri',new URL('/api/account/callback',baseUrl()).href);
   authorize.searchParams.set('scope','identify');
   authorize.searchParams.set('state',state);
-  redirect(res,authorize.href,stateName()+'='+state+'; '+cookieFlags(600));return true;
+  redirect(res,authorize.href,stateName()+'='+state+(link?'~'+member.id:'')+'; '+cookieFlags(600));return true;
  }
  if(pathname==='/api/account/callback'&&method==='GET'){
   const clear=stateName()+'=; '+cookieFlags(0);
-  const callbackState=url.searchParams.get('state'),cookieState=cookies(req)[stateName()];
-  if(!authAvailable()||!url.searchParams.get('code')||!callbackState||!cookieState||!equal(callbackState,cookieState)){
+  const callbackState=url.searchParams.get('state'),cookieState=cookies(req)[stateName()]||'';
+  const [expectedState,linkId]=cookieState.split('~');
+  if(!discordAuthAvailable()||!url.searchParams.get('code')||!callbackState||!expectedState||!equal(callbackState,expectedState)){
    redirect(res,'/#/account?error=sign-in',clear);return true;
   }
   try{
@@ -168,9 +259,51 @@ export async function handleAccountRequest(req,res,url){
    if(!token.access_token)throw Error('Missing OAuth access token');
    const who=await fetch('https://discord.com/api/v10/users/@me',{headers:{authorization:'Bearer '+token.access_token},signal:AbortSignal.timeout(10000)});
    if(!who.ok)throw Error('Discord identity unavailable');
-   const account=await discordIdentity(await who.json());
-   redirect(res,'/#/account',[clear,await createSession(res,account)]);
+   const identity=await who.json();
+   const member=linkId?await accountUser(req):null;
+   if(linkId&&(!member||member.id!==linkId))throw error(403,'The original Arcana session changed. Please reconnect.');
+   const account=linkId?await linkDiscordIdentity(identity,member):await discordIdentity(identity);
+   redirect(res,'/#/account',[clear,...(linkId?[]:[await createSession(res,account)])]);
   }catch(e){console.error('Arcana OAuth callback error:',e.message);redirect(res,'/#/account?error=sign-in',clear);}
+  return true;
+ }
+ if((pathname==='/api/account/google/login'||pathname==='/api/account/google/link')&&method==='GET'){
+  if(!googleAuthAvailable()){sendJSON(res,503,{error:'Google sign-in is not configured in this environment.'});return true;}
+  const link=pathname==='/api/account/google/link',member=link?await requireUser(req):null;
+  if(member?.googleSub){redirect(res,'/#/account');return true;}
+  const state=randomBytes(28).toString('base64url'),nonce=randomBytes(24).toString('base64url');
+  const authorize=new URL('https://accounts.google.com/o/oauth2/v2/auth');
+  authorize.searchParams.set('client_id',process.env.ARCANA_GOOGLE_CLIENT_ID);
+  authorize.searchParams.set('redirect_uri',new URL('/api/account/google/callback',baseUrl()).href);
+  authorize.searchParams.set('response_type','code');
+  authorize.searchParams.set('scope','openid email profile');
+  authorize.searchParams.set('state',state);
+  authorize.searchParams.set('nonce',nonce);
+  redirect(res,authorize.href,googleStateName()+'='+[state,nonce,...(member?[member.id]:[])].join('~')+'; '+cookieFlags(600));return true;
+ }
+ if(pathname==='/api/account/google/callback'&&method==='GET'){
+  const clear=googleStateName()+'=; '+cookieFlags(0);
+  const [expectedState,expectedNonce,linkId]=String(cookies(req)[googleStateName()]||'').split('~');
+  const state=url.searchParams.get('state'),code=url.searchParams.get('code');
+  if(!googleAuthAvailable()||!state||!expectedState||!expectedNonce||!equal(state,expectedState)||!code){
+   redirect(res,'/#/account?error=sign-in',clear);return true;
+  }
+  try{
+   const member=linkId?await accountUser(req):null;
+   if(linkId&&(!member||member.id!==linkId))throw error(403,'The original Arcana session changed.');
+   const body=new URLSearchParams({grant_type:'authorization_code',code,client_id:process.env.ARCANA_GOOGLE_CLIENT_ID,
+    client_secret:process.env.ARCANA_GOOGLE_CLIENT_SECRET,redirect_uri:new URL('/api/account/google/callback',baseUrl()).href});
+   const response=await fetch('https://oauth2.googleapis.com/token',{method:'POST',
+    headers:{'content-type':'application/x-www-form-urlencoded'},body,signal:AbortSignal.timeout(10000)});
+   if(!response.ok)throw error(502,'Google token exchange failed.');
+   const tokens=await response.json();
+   const identity=await verifyGoogleIdToken(tokens.id_token,expectedNonce);
+   const account=await googleIdentity(identity,{linkAccount:member});
+   redirect(res,'/#/account',[clear,...(linkId?[]:[await createSession(res,account)])]);
+  }catch(e){
+   console.error('Arcana Google sign-in error:',e.message);
+   redirect(res,'/#/account?error=sign-in',clear);
+  }
   return true;
  }
  if(pathname==='/api/account/logout'&&method==='POST'){
