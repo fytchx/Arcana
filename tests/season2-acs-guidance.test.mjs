@@ -34,3 +34,15 @@ test('equipment guide uses verified boot differences and correctly frames Sage h
  assert.match(gear,/valuable Drop Bonus/);
  assert.doesNotMatch(gear,/A helmet with a great supporting bonus might be better/);
 });
+
+test('rune families remain build-specific and runeword filler advice stays conditional',()=>{
+ const runes=section('Runes and Rune Grid progression')?.body||'';
+ const words=section('Rune Words and repeated formations')?.body||'';
+ assert.match(runes,/primary bonus actually helps your build first/);
+ assert.match(runes,/Bond Rune's Pet Damage bonus doesn't belong in a pure Attack Damage build/);
+ assert.match(runes,/Critical Damage or Double Hit/);
+ assert.match(runes,/EXP Gain secondary/);
+ assert.match(words,/completing a good Rune Word is worth using a filler Rune/);
+ assert.match(words,/If completing a word weakens your build more than the word helps, skip it/);
+ assert.doesNotMatch(runes,/a less impressive rune is worth using simply because its secondary fits the build perfectly/);
+});
