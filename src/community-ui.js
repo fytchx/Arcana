@@ -65,7 +65,7 @@ export const accountSpecialPortalMarkup=profile=>profile?.isOwner===true?
  '<div class="arcOwnerPortal"><div><span class="eyebrow">OWNER ACCESS</span><strong>Site management</strong></div><button type="button" class="btn primary" data-route="admin">'+icon('shield',17)+' Admin Control Panel '+icon('arrow',15)+'</button></div>':'';
 function accountView(query=new URLSearchParams()){
  if(state.me===undefined)return notice('Loading your Arcana account…');
- if(!state.me)return '<link rel="stylesheet" href="/community-archive.css?v=20261025"><div class="communityPage arcAccount arcAccountGuest"><div class="communityHero"><span class="eyebrow">MY ARCANA</span><h1>Account</h1></div>'+(query?.get('error')==='sign-in'?'<p class="arcAccountLoginError" role="alert">Sign-in or account linking did not complete. Try again or use your original sign-in method.</p>':'')+signInPanel()+'</div>';
+ if(!state.me)return '<div class="communityPage arcAccount arcAccountGuest"><div class="communityHero"><span class="eyebrow">MY ARCANA</span><h1>Account</h1></div>'+(query?.get('error')==='sign-in'?'<p class="arcAccountLoginError" role="alert">Sign-in or account linking did not complete. Try again or use your original sign-in method.</p>':'')+signInPanel()+'</div>';
  const p=state.me,requested=query?.get('tab'),tab=['overview','profile','character','saves','contributions'].includes(requested)?requested:'overview';
  const tabs=[['overview','Overview'],['profile','Profile & settings'],['character','Character link'],['saves','Saved work'],['contributions','My contributions']];
  const nav='<nav class="arcAccountTabs" aria-label="Account sections">'+tabs.map(([id,label])=>'<button type="button" data-route="account" data-params="tab='+id+'" class="'+(tab===id?'active':'')+'" aria-current="'+(tab===id?'page':'false')+'">'+label+'</button>').join('')+'</nav>';
@@ -77,7 +77,7 @@ function accountView(query=new URLSearchParams()){
  tab==='character'?accountCharacterLink(p):
  tab==='saves'?farmListsAccountView()+cloudBuildView():
  contributions+'<button class="btn primary" data-route="community/create">Publish a guide or build</button>';
- return '<link rel="stylesheet" href="/community-archive.css?v=20261025"><div class="communityPage arcAccount"><div class="communityHero"><span class="eyebrow">MY ARCANA</span><h1>My Account</h1></div>'+
+ return '<div class="communityPage arcAccount"><div class="communityHero"><span class="eyebrow">MY ARCANA</span><h1>My Account</h1></div>'+
  nav+accountSpecialPortalMarkup(p)+content+(tab==='overview'||tab==='profile'?linkedSignInMethods(p):'')+
  '<div class="communityAccountActions"><button class="btn secondary" data-community-action="logout">Sign out</button></div></div>';
 }
@@ -128,7 +128,7 @@ function createView(query){
 }
 export function communityPage(route,query){
  if(route==='account')return accountView(query);
- if(route==='profile')return '<link rel="stylesheet" href="/community-archive.css?v=20261025"><div class="communityPage"><button class="wikiBack" data-route="community">'+icon('back',16)+' Community</button>'+profileCard(state.profile,{full:true})+(state.profilePosts.length?'<section class="communityMyPosts"><h2>Builds & guides by this player</h2><div class="communityPostGrid">'+state.profilePosts.map(communityPostCard).join('')+'</div></section>':'')+'</div>';
+ if(route==='profile')return '<div class="communityPage"><button class="wikiBack" data-route="community">'+icon('back',16)+' Community</button>'+profileCard(state.profile,{full:true})+(state.profilePosts.length?'<section class="communityMyPosts"><h2>Builds & guides by this player</h2><div class="communityPostGrid">'+state.profilePosts.map(communityPostCard).join('')+'</div></section>':'')+'</div>';
  if(route==='community')return communityView();
  if(route==='community/post')return detailView();
  if(route==='community/create')return createView(query);
