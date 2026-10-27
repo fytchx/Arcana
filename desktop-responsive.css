@@ -1,0 +1,257 @@
+/* Desktop reading and workspace proportions.
+   Desktop-only overrides: mobile and tablet layouts retain their existing rules. */
+@media (min-width:1024px) {
+  /* Existing fixed 850px content cap makes desktop pages tiny, especially at
+     browser zoom levels below 100%. The home dashboard has its own layout. */
+  #content:not(.homeFullscreen) {
+    box-sizing:border-box;
+    width:min(calc(100% - 48px),1320px);
+    max-width:1320px;
+    padding-left:clamp(24px,2.6vw,42px)!important;
+    padding-right:clamp(24px,2.6vw,42px)!important;
+  }
+
+  /* Help articles, guides, Codex and connected account pages use the canvas. */
+  #content :is(.wikiPortal,.wikiLibrary,.wikiGuidesPage,.wikiArticle,.wikiReferencePage) {
+    box-sizing:border-box;
+    width:100%;
+    max-width:1120px;
+  }
+  #content .wikiCompleteGuide {
+    max-width:1200px;
+  }
+  #content .wikiArticle .wikiArticleIntro {
+    box-sizing:border-box;
+    width:100%;
+  }
+  #content .wikiArticle .wikiArticleBody {
+    max-width:86ch;
+    margin-inline:auto;
+  }
+  #content .wikiArticle .wikiArticleIntro h1 {
+    font-size:clamp(31px,2.5vw,43px);
+  }
+  #content .wikiCompleteGuide .wikiArticleIntro h1 {
+    font-size:clamp(33px,2.7vw,45px);
+  }
+  #content .wikiArticle .wikiArticleIntro > p {
+    max-width:72ch;
+    font-size:clamp(14px,1vw,16px);
+  }
+  #content .wikiArticle .wikiArticleSection p,
+  #content .wikiArticle .wikiArticleSection li {
+    max-width:80ch;
+    font-size:clamp(15px,1vw,17px);
+    line-height:1.78;
+  }
+  #content .wikiArticle .wikiArticleSection h2 {
+    font-size:clamp(21px,1.6vw,27px);
+  }
+  #content .wikiArticle .wikiArticleToc button {
+    font-size:14px;
+    min-height:48px;
+  }
+  #content .wikiArticle:not(.wikiCompleteGuide) .wikiArticleToc > div {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  #content .wikiCompleteGuide .wikiGuideTocItems {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  #content .wikiCompleteGuide .wikiGuideTocItems button {
+    min-height:50px;
+    font-size:13px;
+  }
+  #content .wikiCompleteGuide .wikiGuideTocGroup > summary strong {
+    font-size:15px;
+  }
+
+  #content .communityPage {
+    box-sizing:border-box;
+    width:100%;
+    max-width:1160px;
+  }
+  #content .arcAccount .arcAccountTabs button {
+    font-size:14px;
+  }
+  #content .arcAccount .arcAccountQuick button {
+    font-size:14px;
+  }
+}
+
+@media (min-width:1440px) {
+  #content:not(.homeFullscreen) {
+    max-width:1420px;
+  }
+  #content :is(.wikiPortal,.wikiLibrary,.wikiGuidesPage,.wikiArticle,.wikiReferencePage) {
+    max-width:1220px;
+  }
+  #content .wikiCompleteGuide {
+    max-width:1260px;
+  }
+}
+
+/* Navigation that feels at home on a monitor, without changing phone UI.
+   All links use existing Arcana routes and preserve site theme variables. */
+.arcanaDesktopNav,.arcanaDesktopChatLabel{display:none}
+@media (min-width:1024px) {
+  :root{--arcana-header-height:74px;--arcana-dock-height:98px}
+
+  #app.shell .top{
+    display:flex;
+    align-items:center;
+    gap:clamp(14px,1.5vw,28px);
+    height:74px;
+    min-height:74px;
+    padding-inline:clamp(22px,3.2vw,64px);
+    border-bottom:1px solid color-mix(in srgb,var(--theme-highlight) 22%,var(--theme-border));
+    box-shadow:0 8px 28px #00000020;
+  }
+  #app.shell .launchBrand{
+    order:1;
+    justify-self:auto;
+    flex:0 0 auto;
+    display:inline-flex;
+    gap:11px;
+    margin-right:clamp(8px,1.5vw,25px);
+    padding:6px 0;
+    white-space:nowrap;
+  }
+  #app.shell .launchBrand img{width:39px;height:39px}
+  #app.shell .launchBrandName{font-size:17px;letter-spacing:.19em;font-weight:800}
+
+  #app.shell .arcanaDesktopNav{
+    order:2;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    min-width:0;
+  }
+  #app.shell .arcanaDesktopNav button{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:42px;
+    padding:10px clamp(12px,1.2vw,20px);
+    border:1px solid transparent;
+    border-radius:11px;
+    background:transparent;
+    color:var(--muted,var(--text));
+    font-family:inherit;
+    font-size:13px;
+    font-weight:700;
+    line-height:1.2;
+    letter-spacing:.01em;
+    transition:background .15s ease,color .15s ease,border-color .15s ease;
+  }
+  #app.shell .arcanaDesktopNav button:is(:hover,:focus-visible){
+    color:var(--text);
+    background:var(--theme-highlight-soft);
+    border-color:var(--theme-highlight-border);
+  }
+  #app.shell .arcanaDesktopNav button.active,
+  #app.shell .arcanaDesktopNav button[aria-current="page"]{
+    color:var(--theme-accent-text,var(--text));
+    background:color-mix(in srgb,var(--theme-highlight) 12%,transparent);
+    border-color:color-mix(in srgb,var(--theme-highlight) 22%,transparent);
+  }
+  #app.shell .launchTopLeft{
+    order:3;
+    justify-self:auto;
+    margin-left:auto;
+    flex:none;
+  }
+  #app.shell .launchTopRight{
+    order:4;
+    justify-self:auto;
+    flex:none;
+  }
+  #app.shell .launchChatBtn{
+    display:inline-flex;
+    width:auto;
+    min-width:93px;
+    height:43px;
+    padding:0 13px;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    border-radius:12px;
+    color:var(--text);
+  }
+  #app.shell .arcanaDesktopChatLabel{
+    display:inline;
+    font-size:13px;
+    font-weight:750;
+  }
+  #app.shell #accountBtn{
+    display:inline-flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    width:auto;
+    min-width:114px;
+    height:43px;
+    padding:0 13px;
+    border-radius:12px;
+    color:var(--text);
+  }
+  #app.shell #accountBtn::after{
+    content:"My Arcana";
+    font-size:13px;
+    font-weight:750;
+    white-space:nowrap;
+  }
+  #app.shell #accountBtn img{height:24px;width:24px;object-fit:cover;border-radius:50%}
+
+  /* Keep all five familiar destinations, but stop stretching them over
+     the entire browser window. */
+  #arcanaDock{
+    left:50%;
+    right:auto;
+    bottom:14px;
+    transform:translateX(-50%);
+    width:min(710px,calc(100vw - 48px));
+    height:72px;
+    min-height:0;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:5px;
+    padding:8px;
+    border:1px solid color-mix(in srgb,var(--theme-highlight) 28%,var(--theme-border));
+    border-radius:19px;
+    background:color-mix(in srgb,var(--arcana-nav-panel,var(--theme-main)) 93%,black 7%);
+    box-shadow:0 16px 45px #0009,0 1px 0 #ffffff10 inset;
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+  }
+  html[data-arcana-design-active="true"] #arcanaDock{
+    background:color-mix(in srgb,var(--arcana-nav-panel,var(--theme-secondary)) 94%,black 6%);
+  }
+  #arcanaDock button{
+    min-height:54px;
+    height:54px;
+    padding:9px 8px;
+    flex-direction:row;
+    justify-content:center;
+    gap:8px;
+    border:1px solid transparent;
+    border-radius:12px;
+    transition:background .15s ease,color .15s ease;
+  }
+  #arcanaDock .arcanaDockGlyph{height:auto;min-width:21px}
+  #arcanaDock svg{width:21px;height:21px}
+  #arcanaDock button:last-child .arcanaDockGlyph svg{width:22px;height:22px}
+  #arcanaDock .arcanaDockLabel{font-size:12px;font-weight:750;line-height:1.1}
+  #arcanaDock button:is(:hover,:focus-visible){
+    background:color-mix(in srgb,var(--theme-highlight) 10%,transparent);
+    color:var(--text);
+  }
+  #arcanaDock button.active{
+    border-color:color-mix(in srgb,var(--theme-highlight) 25%,transparent);
+    background:color-mix(in srgb,var(--theme-highlight) 15%,transparent);
+    color:var(--theme-accent-text,var(--text));
+  }
+  #app.shell{padding-bottom:calc(var(--arcana-dock-height) + 10px)}
+}
+@media(min-width:1024px) and (prefers-reduced-motion:reduce){
+  #arcanaDock button,#app.shell .arcanaDesktopNav button{transition:none}
+}
