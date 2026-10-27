@@ -292,6 +292,98 @@ export const SEASON2_COMPLETE_GUIDE=Object.freeze({
           "6×7"
         ]
       ]
+    },
+    {
+      "part": "Pets, runes and gems",
+      "title": "Rune Words and repeated formations",
+      "body": "Rune Words are combinations made by arranging qualifying Runes in the grid. There are 24 of them, and they add another reason to think carefully about your available space.\n\nA recent update clarified something important: the SAME Rune Word can form multiple times on SEPARATE runes. Every complete copy contributes its FULL bonus.\n\nThat means the best layout isn't necessarily one copy of everything you can fit. Repeating a strong formation might be better than spreading your grid across several weaker effects.\n\nExperiment with Rune Forge and compare the total bonuses. Sometimes the opportunity cost of rearranging your existing runes makes a particular word less attractive than it looks in the Codex."
+    },
+    {
+      "part": "Pets, runes and gems",
+      "title": "Gems, sockets and quality",
+      "body": "Gems begin dropping at ML 20. The four families are Garnet, Jade, Lapis and Amber. Their bonuses depend on where you socket them, so the same Gem family can behave differently across equipment.\n\nSockets unlock at ML 20, 65, 115 and 160. Your equipment eventually provides twenty sockets in total, though each slot has its own capacity.\n\nRarities are Rough, Cut, Polished, Brilliant and Flawless. Three eligible Gems fuse into a Gem of the next rarity, except Flawless. Flawless Gems begin dropping at ML 160 and CANNOT be made by fusing lower rarities.\n\nQuality and secondary stats are worth checking too. Two Gems of the same family and rarity aren't necessarily equal.\n\nGem Auto-Salvage now has a separate ABOVE-100% quality option for each rarity. Unless you enable that option, Gems above 100% quality are kept.\n\nDon't leave a bunch of sockets empty just because you're trying to fuse everything into one rare Gem. Useful filled sockets often beat empty ones. Also, Belt sockets use Jewelry Gem effects rather than Armor effects.",
+      "table": [
+        [
+          "Socket unlock",
+          "ML",
+          "Gold cost"
+        ],
+        [
+          "First",
+          "20",
+          "25K"
+        ],
+        [
+          "Second",
+          "65",
+          "50M"
+        ],
+        [
+          "Third",
+          "115",
+          "20B"
+        ],
+        [
+          "Fourth",
+          "160",
+          "2T"
+        ]
+      ]
+    },
+    {
+      "part": "Pets, runes and gems",
+      "title": "Talismans and Ruby spending",
+      "body": "You can equip two Talismans. The main types are Fury, Spirit, Iron and Recovery.\n\nInfusion and Inscriptions give you ways to develop them and choose stats useful to your build. They're a major long-term investment, but Rubies are also valuable elsewhere.\n\nDon't spend a ridiculous amount on a Talisman increase without comparing what you'd gain from another upgrade. Expensive doesn't automatically mean effective.\n\nSeason 2 also has rules limiting how far one equipped Talisman can outpace the other at higher Inscription progression. Keep both in mind when planning resources."
+    },
+    {
+      "part": "Guilds and activities",
+      "title": "Guilds and Guild Skill Tree",
+      "body": "I'd join an active guild as soon as possible. Besides the bonuses, having people to learn from can save you a lot of trial and error.\n\nGuildstone comes from eligible Boss Fight rewards, NOT ordinary monster farming. Consistent participation matters.\n\nThe guild's shared Skill Tree has Vanguard, Finesse and Fortune bonuses covering damage, Defense, Crit, EXP, Gold and more. Guild leadership decides where points go.\n\nAfter Guild Level 68, subsequent levels award two skill points and provide access to further Ascension progression.\n\nIf your guild is planning changes, Arcana's Guild Skill Planner is a safe place to compare allocations without actually spending in-game points."
+    },
+    {
+      "part": "Guilds and activities",
+      "title": "Dungeons, Daily Missions and Goblins",
+      "body": "Dungeons offer different resource destinations. Crypt starts at ML 1, Gold Hoard at 12, Den at 15, Vault at 18 and Mine at 25.\n\nChoose the destination that supplies what you need. Gold and Pet resources don't have the same value at every point in the season.\n\nDaily Missions offer rotating rewards. More difficult tiers become available at ML 50 and ML 100.\n\nGoblin Invasion adds special encounters and rewards to normal monster farming. Because kill speed matters here, temporarily lowering Fighting Level to one-shot those enemies can be useful. Just remember to return to ML pushing afterward.\n\nThe Arc Pass has free and optional Premium rewards, so check for anything you've already unlocked."
+    },
+    {
+      "part": "Guilds and activities",
+      "title": "Boss Fights, Tower and Rift Raids",
+      "body": "Boss Fights reward damage during a timed encounter, and eligible ones contribute Guildstone. A separate boss-damage preset can be very useful.\n\nThe Tower unlocks at Character Level 10. It gets harder as you advance, and survivability may matter more than it does during ordinary farming.\n\nRift Raids are cooperative fights with two to four players. Each gets a 30-second strike against the Titan. Normally you have two raid entries per day. Participation requires Character Level 10 and an account that's at least 24 hours old.\n\nRaid performance affects your Spoils Chests. A full four-player group can receive an additional chest roll.\n\nA recent update added fifteen class formations. Two eligible party members whose banners count can pair up to improve their banner bonus. The game can recheck banners if a strike reveals substantially higher Might than the party initially had.\n\nRift Raids also support Auto-Presets for equipment, Runes, skill trees and pets. You can go in with a dedicated raid build without manually changing your everyday loadout.\n\nThe exact formation bonuses are best checked in-game when planning a serious raid party."
+    },
+    {
+      "part": "Guilds and activities",
+      "title": "Elemental Conflux",
+      "body": "Conflux unlocks at ML 30, long before the separate Convergence endgame.\n\nIt has a 60-minute daily limit, a 100 Elemental Shard daily cap and double Character EXP. Shards improve Fire, Water, Air, Earth, Poison and Nature Mastery.\n\nBeginning at ML 90, farming at your highest ML improves the rare-material opportunities for resources such as Abyssal Ember, Eternal Sigil and Primeval Core.\n\nWhether you should stay for the full time depends on your goals. If you need Shards or rare materials, Conflux may be useful. If you need ordinary Forge materials or ML progress, regular farming might serve you better.\n\nDon't do an activity longer than you need just because it's available."
+    },
+    {
+      "part": "Convergence and endgame",
+      "title": "Convergence at ML 350",
+      "body": "Convergence is a separate progression system that unlocks at ML 350.\n\nYou begin with four monster seats, and each can be locked to a specific monster or left Wild. Locked seats help with targeted materials. Wild seats add a drop bonus and can generate Convergent Elites. The Lattice can eventually expand your seats to six.\n\nConvergence kills provide Resonance, which increases Convergence Level and awards points for the Lattice.\n\nThe combat tier adjusts with your performance. Higher difficulty offers opportunities for better rewards, but you still need to kill monsters efficiently.\n\nI'd rather farm a tier consistently than barely survive something stronger. Improve the setup and push farther when you're ready."
+    },
+    {
+      "part": "Convergence and endgame",
+      "title": "The Lattice and Convergent Elites",
+      "body": "The Lattice has 37 nodes across its core and six constellations: Might, Bastion, Harvest, Fortune, Ascendance and Wild.\n\nSome nodes improve combat, some improve materials or Gold, and others change seats, Resonance or Elite farming. You can equip up to two Keystones in a loadout, but consider their tradeoffs.\n\nWild seats can generate Convergent Elites. Their base appearance chance is 1%, with pity after 300 qualifying kills. They're tougher but can provide valuable extra rewards.\n\nKeep multiple Lattice loadouts if you have different goals. The best setup for pushing difficulty might not be the best one for collecting materials."
+    },
+    {
+      "part": "Making it easier",
+      "title": "Presets, Auto-Presets and accounts",
+      "body": "By the middle and late game, I recommend separate presets for everyday farming, pushing ML, Boss Fights, Tower and special activities.\n\nAuto-Presets can help apply those setups automatically. Rift Raids now support your gear, Rune, skill-tree and pet presets without forcing you to change your normal equipped loadout.\n\nYou can also turn on Share my detailed stats publicly if you want other players to see your stats, Runes and Pets when they open your profile. That setting is OFF by default.\n\nWorld Selection now lets you tap a locked biome to preview its monsters and elemental weaknesses.\n\nCharacter Slots are now called Storage Slots. They're only purchased during the Keep Both step at season end, so don't mistake them for an early character-progression upgrade."
+    },
+    {
+      "part": "Making it easier",
+      "title": "Daily routine and common mistakes",
+      "body": "When you log in, check what your character collected and whether you're still killing your chosen monsters quickly. Then look at Boss Fights, Guild Boss, Dungeons, Tower, Raids, Daily Missions, Conflux and Arc Pass rewards, depending on what you need.\n\nReview your next useful upgrade, choose the monster that drops its materials, and set your farming preset accordingly.\n\nIf you're pushing ML during a long offline session, remember monsters will get stronger as you climb. Don't assume a one-shot today will stay a one-shot forever.\n\nMistakes I'd avoid:\n- Ignoring the next ML unlock because a lower level feels comfortable.\n- Struggling through slow kills when temporarily dropping Fighting Level would get the materials for an upgrade faster.\n- Ignoring a brilliant Radiant drop just because it doesn't match your original plan.\n- Building Mage Attack around only INT without comparing STR, or overlooking Harmony.\n- Forgetting Double Damage benefits Retaliation.\n- Overinvesting in a single Seasonal pet while the others lag behind.\n- Salvaging useful items or Gems because the automation settings are outdated.\n- Forgetting that duplicate Rune Words can activate separately.\n- Spending resources without checking what the upgrade actually improves."
+    },
+    {
+      "part": "Making it easier",
+      "title": "Using Arcana",
+      "body": "Arcana is here to make these decisions easier.\n\nPathfinder shows the monster materials needed for equipment upgrades and helps you plan around failed attempts and pity.\n\nThe ML Farming Comparator uses your measured kill times to compare farming targets.\n\nThe Damage Calculator lets you enter your Attack, Pet or Retaliation breakdown and test changes. Some server rounding behavior is not fully verified, so estimated results should be treated as estimates.\n\nBuild Studio connects equipment, pets, Runes and skills. The Pet Compound and Pet Affix calculators help with their separate upgrade systems, while the Guild Skill Planner helps guilds compare point allocation.\n\nArcanaWiki and the Codex provide more detailed references for monsters, equipment, materials and Rune Words.\n\nI've linked those tools next to the sections where they make sense, so you can go straight from reading about a mechanic to trying it out."
+    },
+    {
+      "part": "Making it easier",
+      "title": "Final thoughts",
+      "body": "Keep working toward higher Monster Level. One-shot what you can, farm the materials you need, make upgrades that genuinely help and keep pushing.\n\nSome of your best choices will come from planning. Others will come from a ridiculous drop that changes the build you thought you wanted.\n\nYou don't need to play exactly like anyone else. Understand your own character, try things when they look promising and make the most of what the game gives you.\n\nThere's always another biome, another upgrade and another build worth trying. That's what keeps it interesting."
     }
   ],
   "actions": [
@@ -377,6 +469,31 @@ export const SEASON2_COMPLETE_GUIDE=Object.freeze({
       "Runes and Rune Grid progression": [
         "runes",
         "runeGuide"
+      ],
+      "Rune Words and repeated formations": [
+        "runes",
+        "runewords"
+      ],
+      "Gems, sockets and quality": [
+        "gemGuide",
+        "build"
+      ],
+      "Guilds and Guild Skill Tree": [
+        "guildtree",
+        "guilds"
+      ],
+      "Boss Fights, Tower and Rift Raids": [
+        "raids",
+        "raidGuide"
+      ],
+      "The Lattice and Convergent Elites": [
+        "build"
+      ],
+      "Using Arcana": [
+        "pathfinder",
+        "farm",
+        "compound",
+        "affixes"
       ]
     }
   }
