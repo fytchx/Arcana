@@ -23,7 +23,10 @@ test('homepage loads exactly one CSS entry, which includes every existing theme 
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  const cssLinks=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="(\/[^"?]+)/g)].map(match=>match[1]);
  assert.deepEqual(cssLinks,['/arcana-site.css']);
- assert.equal(SITE_STYLES.length,27);
+ assert.equal(SITE_STYLES.length,29);
+ assert.ok(SITE_STYLES.includes('community-archive.css'),'Account styles must load with the site, not after account navigation');
+ assert.ok(SITE_STYLES.includes('desktop-responsive.css'),'Desktop overrides must be part of the critical stylesheet');
+ assert.equal(SITE_STYLES.at(-1),'desktop-responsive.css','Desktop overrides must retain the final cascade position');
  assert.ok(SITE_STYLES.includes('season2-guide.css'),'Season 2 reader stylesheet must be bundled');
  assert.equal(new Set(SITE_STYLES).size,SITE_STYLES.length);
  const sourceContents=await Promise.all(SITE_STYLES.map(file=>readFile(new URL('../'+file,import.meta.url),'utf8')));
