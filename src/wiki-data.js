@@ -1,5 +1,6 @@
 import {VERIFIED_CLASS_SKILL_TREES} from './verified-class-skills.js';
 import {BRUTO_PROGRESSION_GUIDE} from './bruto-progression-guide.js';
+import {SEASON2_COMPLETE_GUIDE} from './season2-complete-guide.js';
 // Short class introductions sourced from the verified skill branches.
 // Full skill effects are held by Class Skills, not duplicated on the Wiki.
 const CLASS_OVERVIEWS=Object.freeze([
@@ -19,6 +20,7 @@ const CLASS_OVERVIEWS=Object.freeze([
    The October 9 config is the canonical source of game entities and stats.
    Human-written articles are concise, not speculative, and do not imply optimal builds. */
 export const WIKI_ARTICLES=Object.freeze([
+ SEASON2_COMPLETE_GUIDE,
  {id:'retaliation-warrior-zane',title:'Retaliation Warrior · Zane’s Season 2 Setup',category:'Build Guides',readTime:'4 min',
  author:'Zane',summary:'A Retaliation Warrior built around Defense, Block Chance and counterattack multipliers, with pets, gems and upgrade priorities.',
  keywords:'warrior retaliation season 2 zane kiffens build defense block strength gems pets deflection bulwark stance critical double hit double damage incoming attacks damage formula',sections:[
