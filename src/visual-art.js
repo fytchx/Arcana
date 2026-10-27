@@ -4,6 +4,7 @@
 import {ATELIER_ART,atelierGeometry} from './atelier-art.js';
 export const VISUAL_ART=Object.freeze([
  ...ATELIER_ART,
+ {id:'vision-astral-veil',name:'Astral Veil',family:'Dreamlike Cosmos',note:'Violet nebula clouds, deep midnight and a scattered field of radiant stars',colors:['#0D0821','#AD71F8','#603EC9','#EBDBFF']},
  {id:'vision-violet-fault',name:'Violet Fault',family:'Neon Topography',note:'Luminous fracture lines converging around a quiet valley',colors:['#100B2E','#ED55B8','#6552F5','#9AC7FF']},
  {id:'vision-pulse-terrain',name:'Pulse Terrain',family:'Neon Topography',note:'Electric ridgelines with controlled, atmospheric perspective',colors:['#101D39','#65D9F4','#EC70B5','#E2DAFF']},
  {id:'vision-ribbon-bloom',name:'Ribbon Bloom',family:'Ribbon / Veil',note:'Layered translucent sculptures framing a calm center',colors:['#170A31','#EE6CAF','#8C42DC','#F8B1D3']},
@@ -69,7 +70,23 @@ function braid(centerX,width,stride=1){
 function geometry(id){
  if(id.startsWith('vision-atelier-'))return atelierGeometry(id);
  let s='';
- if(id==='vision-violet-fault'){
+ if(id==='vision-astral-veil'){
+   // Seam-free, deterministic vector nebula and starfield.
+   s+=ellipse(885,245,565,360,'url(#astralNebula)',.98);
+   s+=ellipse(465,430,460,325,'url(#astralMist)',.91);
+   s+=ellipse(220,135,310,225,'url(#astralNebula)',.46);
+   s+=ellipse(1050,555,480,270,'url(#astralMist)',.63);
+   s+=ellipse(630,125,330,200,'url(#astralNebula)',.48);
+   for(let i=0;i<240;i++){
+     const x=(i*173+i*i*13+41)%1200,y=(i*71+i*i*7+39)%620;
+     const radius=i%29===0?2.3:i%9===0?1.5:.55+(i%5)*.16;
+     s+=circle(x,y,radius,i%7===0?'url(#spark)':'url(#astralDust)',.40+(i%6)*.10);
+     if(i%19===0){
+       s+=circle(x,y,13,'url(#astralStarGlow)',.66);
+       s+=path('M '+rnd(x-6)+' '+rnd(y)+' L '+rnd(x+6)+' '+rnd(y)+' M '+rnd(x)+' '+rnd(y-6)+' L '+rnd(x)+' '+rnd(y+6),'url(#spark)',.8,.47);
+     }
+   }
+ }else if(id==='vision-violet-fault'){
   s+=ellipse(310,180,260,210,'url(#halo)',.27);
   for(let i=0;i<65;i++){const y=70+i*8.1;const d=L(x=>y+Math.sin(x/150+i*.1)*34-(155+Math.sin(i/10)*24)*Math.exp(-Math.pow((x-340)/245,2))*Math.exp(-Math.pow((i-32)/39,2))+35*Math.exp(-Math.pow((x-880)/280,2)),0,1200,72);s+=path(d,i%9===0?'url(#spark)':'url(#ink)',i%11===0?2:1.05,.09+.72*(1-Math.abs(i-35)/66));}
  }else if(id==='vision-pulse-terrain'){
@@ -213,6 +230,11 @@ export function artUrl(id,values={}){
  '<linearGradient id="rose" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+primary+'" stop-opacity=".86"/><stop offset="1" stop-color="'+secondary+'" stop-opacity=".18"/></linearGradient>'+
  '<linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+secondary+'" stop-opacity=".6"/><stop offset="1" stop-color="'+glow+'" stop-opacity=".04"/></linearGradient>'+
  '<radialGradient id="halo"><stop stop-color="'+glow+'" stop-opacity=".22"/><stop offset="1" stop-color="'+glow+'" stop-opacity="0"/></radialGradient>'+
+ (id==='vision-astral-veil'?
+   '<radialGradient id="astralNebula"><stop stop-color="'+primary+'" stop-opacity=".68"/><stop offset=".42" stop-color="'+secondary+'" stop-opacity=".40"/><stop offset="1" stop-color="'+secondary+'" stop-opacity="0"/></radialGradient>'+
+   '<radialGradient id="astralMist"><stop stop-color="'+glow+'" stop-opacity=".36"/><stop offset=".4" stop-color="'+primary+'" stop-opacity=".27"/><stop offset="1" stop-color="'+primary+'" stop-opacity="0"/></radialGradient>'+
+   '<radialGradient id="astralDust"><stop stop-color="'+glow+'" stop-opacity="1"/><stop offset=".45" stop-color="'+glow+'" stop-opacity=".72"/><stop offset="1" stop-color="'+secondary+'" stop-opacity=".12"/></radialGradient>'+
+   '<radialGradient id="astralStarGlow"><stop stop-color="'+glow+'" stop-opacity=".55"/><stop offset=".3" stop-color="'+primary+'" stop-opacity=".20"/><stop offset="1" stop-color="'+primary+'" stop-opacity="0"/></radialGradient>':'')+
  '</defs>';
  let artGeom=geometry(id);
  if(detail<100){

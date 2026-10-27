@@ -8,12 +8,12 @@ import {DEFAULT_DESIGN,DESIGN_FIELDS,validateDesignField,applyDesignPreset,readD
 const read=p=>readFile(new URL('../'+p,import.meta.url),'utf8');
 test('new studio shows 105 curated presets, 23 authored artworks and no old texture library',()=>{
  const html=designPanel({showPreview:false});
- assert.equal(STUDIO_V2_PRESET_IDS.length,105);
- assert.equal(VISUAL_ART.length,23);
- assert.equal(new Set(STUDIO_V2_PRESET_IDS).size,105);
+ assert.equal(STUDIO_V2_PRESET_IDS.length,106);
+ assert.equal(VISUAL_ART.length,24);
+ assert.equal(new Set(STUDIO_V2_PRESET_IDS).size,106);
  assert.ok(STUDIO_V2_FAMILIES.length>=5);
- assert.equal((html.match(/class="designPreset studioV2Preset"/g)||[]).length,105);
- assert.equal((html.match(/class="visionArtChoice studioV2Artwork"/g)||[]).length,23);
+ assert.equal((html.match(/class="designPreset studioV2Preset"/g)||[]).length,106);
+ assert.equal((html.match(/class="visionArtChoice studioV2Artwork"/g)||[]).length,24);
  for(const id of STUDIO_V2_PRESET_IDS)assert.ok(html.includes('data-arg="'+id+'"'));
  for(const art of VISUAL_ART)assert.ok(html.includes('data-theme-pattern="'+art.id+'"'));
  assert.doesNotMatch(html,/data-theme-pattern="atelier-|data-collection="signature"|data-theme-pattern="runes"|Browse all 148|42 presets|psyPalettePicker/);

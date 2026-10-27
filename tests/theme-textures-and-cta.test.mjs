@@ -10,8 +10,8 @@ const read=p=>readFile(new URL(p,import.meta.url),'utf8');
 test('legacy texture renderer is still restorable but the new editor shows only authored artwork',async()=>{
  const css=(await read('../arcana-contour.css'))+(await read('../signature-themes.css'))+(await read('../psychedelic-themes.css'))+(await read('../atlas-atelier-textures.css'))+(await read('../visual-art.css'));
  const form=designPanel({showPreview:false});
- assert.equal(THEME_PATTERNS.length,159);
- assert.equal(new Set(THEME_PATTERNS.map(p=>p.id)).size,159);
+ assert.equal(THEME_PATTERNS.length,160);
+ assert.equal(new Set(THEME_PATTERNS.map(p=>p.id)).size,160);
  for(const texture of THEME_PATTERNS){
   assert.equal(validateDesignField('pattern',texture.id),texture.id);
   if(texture.category==='Vision')assert.ok(form.includes('data-theme-pattern="'+texture.id+'"'));

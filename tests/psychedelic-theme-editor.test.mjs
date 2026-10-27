@@ -13,8 +13,8 @@ test('four authentic SVG pattern families and palettes are individually editable
  assert.equal(PSYCHEDELIC_IDS.length,4);
  assert.equal(new Set(PSYCHEDELIC_IDS).size,4);
  assert.equal(Object.keys(PSYCHEDELIC_PRESETS).length,4);
- assert.equal(Object.keys(DESIGN_PRESETS).length,147);
- assert.equal(THEME_PATTERNS.length,159);
+ assert.equal(Object.keys(DESIGN_PRESETS).length,148);
+ assert.equal(THEME_PATTERNS.length,160);
  for(const id of PSYCHEDELIC_IDS){
   assert.equal(THEME_PATTERNS.find(x=>x.id===id)?.category,'Psychedelic');
   const preset=Object.values(PSYCHEDELIC_PRESETS).find(x=>x.pattern===id);
@@ -57,7 +57,7 @@ test('retired psychedelic designs remain validated and restorable without clutte
   assert.ok(css.includes('data-mini-pattern="'+id+'"'));
   assert.ok(!editor.includes('data-theme-pattern="'+id+'"'));
  }
- assert.equal((editor.match(/class="designPreset studioV2Preset"/g)||[]).length,105);
+ assert.equal((editor.match(/class="designPreset studioV2Preset"/g)||[]).length,106);
  assert.ok(preview.includes('data-mini-live-frame'));
  assert.match(real,/doc\.querySelector\('#content'\)/);
  assert.match(real,/arcanaDesignActive='true'/);

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {THEME_PATTERNS,THEME_PATTERN_IDS} from '../src/theme-patterns.js';
 import {validateDesignField,DEFAULT_DESIGN,DESIGN_PRESETS} from '../src/design-controls.js';
+import {artUrl} from '../src/visual-art.js';
 import {designPanel,settingsView} from '../src/launch-navigation.js';
 import {designMiniMarkup,endDesignMiniSession} from '../src/design-mini-preview.js';
 import {themeVaultMarkup} from '../src/theme-studio-vault.js';
@@ -16,7 +17,7 @@ test('Theme Studio places independent always-visible preview beside long control
  assert.match(page,/class="themeStudioEditor"/);
  assert.match(page,/class="themeStudioPreview"/);
  assert.equal((page.match(/data-mini-canvas/g)||[]).length,1);
- assert.equal((page.match(/class="visionArtChoice studioV2Artwork"/g)||[]).length,23);
+ assert.equal((page.match(/class="visionArtChoice studioV2Artwork"/g)||[]).length,24);
  assert.match(page,/Publish to everyone/);
  assert.match(page,/Restore published design/);
  assert.doesNotMatch(designPanel({showPreview:false}),/designMiniPreview/);
@@ -81,17 +82,18 @@ test('readability meter reports real contrast ratios and safe button text sugges
  assert.equal(themeReadability({...bad,buttonText:suggestedButtonText(bad)})[2].pass,true);
 });
 
-test('Astral Veil is an editable cosmic preset with a continuous starfield and independent glass panels',async()=>{
+test('Astral Veil is an editable, fully rendered violet galaxy with independent artwork layers',()=>{
  const preset=DESIGN_PRESETS['astral-veil'];
  assert.ok(preset);
- assert.equal(preset.pattern,'atelier-astral-veil');
- assert.equal(preset.panelPattern,'atelier-smoked-glass');
- assert.equal(preset.patternTarget,'background');
- assert.equal(validateDesignField('pattern',preset.pattern),preset.pattern);
- for(const [key,value] of Object.entries(preset))if(key!=='name'&&key!=='tagline'&&key!=='collection'){
+ assert.equal(preset.pattern,'vision-astral-veil');
+ assert.equal(preset.panelPattern,'vision-aether-frame');
+ assert.equal(preset.featurePattern,'vision-celestial-tapestry');
+ for(const [key,value] of Object.entries(preset)){
+   if(['name','tagline','collection'].includes(key))continue;
    assert.notEqual(validateDesignField(key,value),null,'Invalid Astral Veil field: '+key);
  }
- const css=await read('../atlas-atelier-textures.css');
- for(const selector of ['data-arcana-design-pattern="atelier-astral-veil"','data-mini-pattern="atelier-astral-veil"','data-preview-pattern="atelier-astral-veil"'])assert.ok(css.includes(selector));
- assert.ok(css.includes('Non-tiled CSS gradients'));
+ const svg=decodeURIComponent(artUrl(preset.pattern,preset));
+ assert.match(svg,/astralNebula/);
+ assert.match(svg,/astralDust/);
+ assert.match(svg,/<circle /);
 });

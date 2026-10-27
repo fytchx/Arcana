@@ -175,7 +175,7 @@ const allEntries=[
 export const STUDIO_V2_FAMILIES=Object.freeze(['Atelier / 2026',...new Set(allEntries.map(r=>r[6]))]);
 export const STUDIO_V2_PRESETS=Object.freeze({...ATELIER_PRESETS,'astral-veil':Object.freeze({
   name:'Astral Veil',tagline:'Cosmic / Violet Nebula',collection:'studio-v2',
-  pattern:'atelier-astral-veil',panelPattern:'atelier-smoked-glass',featurePattern:'atelier-stardust-veil',
+  pattern:'vision-astral-veil',panelPattern:'vision-aether-frame',featurePattern:'vision-celestial-tapestry',
   main:'#0D0821',card:'#1A1333',navBar:'#15102A',iconBox:'#291B49',iconGlyph:'#CCB6FF',
   action:'#9876FC',secondaryAccent:'#83C7FF',text:'#F6F1FF',mutedText:'#C9BFE1',borderColor:'#6D568F',buttonText:'#0D0821',
   artBase:'#12092C',artPrimary:'#A36AF3',artSecondary:'#6340C9',artGlow:'#DBBEFF',artStrength:95,artDetail:99,

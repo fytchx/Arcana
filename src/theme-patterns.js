@@ -5,7 +5,8 @@ export const THEME_PATTERNS=Object.freeze([
  ['vision-atelier-atlas','Cinder Atlas','Vision'],
  ['vision-atelier-afterglow','Acid Afterglow','Vision'],
  ['vision-atelier-porcelain','Porcelain Nocturne','Vision'],
- ['vision-violet-fault','Violet Fault','Vision'],
+ ['vision-astral-veil','Astral Veil','Vision'],
+  ['vision-violet-fault','Violet Fault','Vision'],
  ['vision-pulse-terrain','Pulse Terrain','Vision'],
  ['vision-ribbon-bloom','Ribbon Bloom','Vision'],
  ['vision-veil-current','Veil Current','Vision'],
@@ -77,8 +78,7 @@ export const THEME_PATTERNS=Object.freeze([
  ['atelier-opal-interference','Glass · Opal interference','Atelier'],
  ['atelier-glacier-sheen','Glass · Glacier sheen','Atelier'],
  ['atelier-black-mirror','Glass · Black mirror','Atelier'],
- ['atelier-astral-veil','Cosmos · Astral Veil','Atelier'],
-  ['atelier-starfield','Cosmos · Distant starfield','Atelier'],
+ ['atelier-starfield','Cosmos · Distant starfield','Atelier'],
  ['atelier-nebula-vapor','Cosmos · Nebula vapor','Atelier'],
  ['atelier-orbital-chart','Cosmos · Orbital chart','Atelier'],
  ['atelier-lunar-halo','Cosmos · Lunar halo','Atelier'],
@@ -103,5 +103,5 @@ export const THEME_PATTERNS=Object.freeze([
  ['atelier-ion-grid','Tech · Ion grid','Atelier'],
  ['atelier-quantum-lines','Tech · Quantum lines','Atelier'],
  ['astral-sovereign','Celestial gold cartography','Signature'],['abyssal-bloom','Bioluminescent currents','Signature'],['infernal-obsidian','Molten volcanic fractures','Signature'],['opaline-eternity','Opaline crystal refraction','Signature'],['phantom-spectrum','Spectral holography','Signature'],['velvet-requiem','Embroidered wine velvet','Signature'],['emerald-sanctum','Luminous jade botanicals','Signature'],['golden-dynasty','Imperial gilded marble','Signature'],['lunar-cathedral','Moonlit silver vaults','Signature'],['dragons-hoard','Dragon-scale bronze','Signature'],['sakura-dreamscape','Porcelain blossoms','Signature'],['neon-revenant','Neon circuit phosphor','Signature'],['bloodmoon-covenant','Bloodmoon gothic tracery','Signature'],['elysian-marble','Champagne alabaster','Signature'],['nebula-genesis','Celestial vapor clouds','Signature'],['desert-oracle','Lapis sandstone engravings','Signature'],['iridescent-mirage','Jeweled interference','Signature'],['forgotten-archive','Illuminated manuscript','Signature'],['diamond-singularity','Prismatic black diamond','Signature'],['void-emperor','Black silver aura','Signature']
-].map(([id,name,category])=>Object.freeze({id,name,category,behavior:id==='plain'?'none':category==='Psychedelic'?'material':["runes","mosaic","filigree","old-map","arcane-script","temple","star-chart","rune-dust","diamond-singularity","dragons-hoard","bloodmoon-covenant","golden-dynasty","astral-sovereign"].includes(id)?'ornamental':["atelier-astral-veil","aurora","nebula","crystal","facets","constellations","sunburst","marble","frostlines","embers","ivy","pearl","silk","obsidian-glass","deep-space","fog","volumetric","sunset","abyss","moonlight","biolume","cosmic-dust","cracked-crystal","goldleaf","shadow-floral","mana","astral-sovereign","abyssal-bloom","infernal-obsidian","opaline-eternity","phantom-spectrum","velvet-requiem","emerald-sanctum","golden-dynasty","lunar-cathedral","dragons-hoard","sakura-dreamscape","neon-revenant","bloodmoon-covenant","elysian-marble","nebula-genesis","desert-oracle","iridescent-mirage","forgotten-archive","diamond-singularity","void-emperor"].includes(id)?'atmospheric':'material'})));
+].map(([id,name,category])=>Object.freeze({id,name,category,behavior:id==='plain'?'none':category==='Psychedelic'?'material':["runes","mosaic","filigree","old-map","arcane-script","temple","star-chart","rune-dust","diamond-singularity","dragons-hoard","bloodmoon-covenant","golden-dynasty","astral-sovereign"].includes(id)?'ornamental':["vision-astral-veil","aurora","nebula","crystal","facets","constellations","sunburst","marble","frostlines","embers","ivy","pearl","silk","obsidian-glass","deep-space","fog","volumetric","sunset","abyss","moonlight","biolume","cosmic-dust","cracked-crystal","goldleaf","shadow-floral","mana","astral-sovereign","abyssal-bloom","infernal-obsidian","opaline-eternity","phantom-spectrum","velvet-requiem","emerald-sanctum","golden-dynasty","lunar-cathedral","dragons-hoard","sakura-dreamscape","neon-revenant","bloodmoon-covenant","elysian-marble","nebula-genesis","desert-oracle","iridescent-mirage","forgotten-archive","diamond-singularity","void-emperor"].includes(id)?'atmospheric':'material'})));
 export const THEME_PATTERN_IDS=Object.freeze(THEME_PATTERNS.map(x=>x.id));

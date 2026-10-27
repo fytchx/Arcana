@@ -9,9 +9,9 @@ const read=p=>readFile(new URL('../'+p,import.meta.url),'utf8');
 const svgFromUrl=url=>decodeURIComponent(url.slice('url("data:image/svg+xml,'.length,-2));
 
 test('twenty-three truly different vector designs, each with four safe color channels',()=>{
- assert.equal(VISUAL_ART.length,23);
- assert.equal(new Set(VISUAL_ART_IDS).size,23);
- assert.equal(THEME_PATTERN_IDS.length,159);
+ assert.equal(VISUAL_ART.length,24);
+ assert.equal(new Set(VISUAL_ART_IDS).size,24);
+ assert.equal(THEME_PATTERN_IDS.length,160);
  const output=[];
  for(const art of VISUAL_ART){
   assert.ok(THEME_PATTERN_IDS.includes(art.id),art.id);
@@ -28,7 +28,7 @@ test('twenty-three truly different vector designs, each with four safe color cha
   assert.doesNotMatch(svg,/<script|<image|<foreignObject|<filter|onload=|href=["']https?:/i);
   output.push(svg);
  }
- assert.equal(new Set(output).size,23,'Gallery contains duplicate geometry');
+ assert.equal(new Set(output).size,24,'Gallery contains duplicate geometry');
 });
 test('changing pigment channels changes SVG geometry coloring without altering the design',()=>{
  const original={artBase:'#111122',artPrimary:'#AA33DD',artSecondary:'#36D4CF',artGlow:'#FFBB44'};
@@ -63,7 +63,7 @@ test('art colors are part of validated private theme state and palette selection
 test('gallery, actual home, miniature and real iframe all share the same art renderer',async()=>{
  const [index,server,css,controls,mini,frame,app]=await Promise.all(['index.html','server.mjs','visual-art.css','src/design-controls.js','src/design-mini-preview.js','src/theme-live-frame.js','src/app.js'].map(read));
  const panel=designPanel({showPreview:false});
- assert.equal((panel.match(/class="visionArtChoice studioV2Artwork"/g)||[]).length,23);
+ assert.equal((panel.match(/class="visionArtChoice studioV2Artwork"/g)||[]).length,24);
  for(const art of VISUAL_ART)assert.match(panel,new RegExp('data-theme-pattern="'+art.id+'"'));
  for(const key of ['artBase','artPrimary','artSecondary','artGlow'])assert.match(panel,new RegExp('data-design-field="'+key+'"'));
  assert.match(css,/\.visionArtThumb/);
