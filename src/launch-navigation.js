@@ -44,6 +44,7 @@ export const HOME_MENUS=Object.freeze({
  ]},
  guides:{title:'Player Guides',detail:'Published guides and community contributions.',links:[
   link('Player Guides','Browse player guides.','wiki/guides','book'),
+  link('The Complete Season 2 Guide','Full progression guide, every major system and tools.','wiki/article','book',{id:'season-2-complete-zane'}),
   link('Season 2 Guide','Season 2 progression and systems.','wiki/article','layers',{id:'season-2'}),
   link('Community Guides','Browse community guides and builds.','community','users'),
   link('Publish a Guide','Create a player guide.','community/create','edit',{kind:'guide'}),
