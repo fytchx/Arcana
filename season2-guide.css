@@ -1,0 +1,49 @@
+
+/* Season 2 long-form guide: native Arcana colors, mobile-first navigation. */
+.wikiCompleteGuide{--guide-border:var(--theme-highlight-border);max-width:1120px;margin-inline:auto}
+.wikiCompleteGuide .wikiArticleIntro{position:relative;overflow:hidden;padding:clamp(18px,3.5vw,32px);
+ background:radial-gradient(ellipse at 95% 6%,var(--theme-highlight-soft),transparent 56%),linear-gradient(140deg,var(--theme-card-raised),var(--theme-card));}
+.wikiCompleteGuide .wikiArticleIntro h1{font-size:clamp(28px,4.4vw,42px);max-width:20ch;line-height:1.1;letter-spacing:-.035em}
+.wikiCompleteGuide .wikiArticleIntro>p{max-width:68ch;font-size:clamp(13px,1.4vw,15px);line-height:1.75}
+.wikiCompleteToc{margin:22px 0 30px;border:1px solid var(--guide-border);border-radius:18px;background:var(--theme-card);
+ padding:clamp(14px,2.5vw,23px);scroll-margin-top:95px}
+.wikiCompleteTocHeader{margin:0 0 16px}
+.wikiCompleteTocHeader h2{font-size:clamp(20px,2.6vw,25px);margin:6px 0 5px}
+.wikiCompleteTocHeader p{font-size:13px;color:var(--soft);margin:0;line-height:1.65}
+.wikiGuideTocGroups{display:grid;gap:8px}
+.wikiGuideTocGroup{border:1px solid var(--theme-border);border-radius:12px;overflow:hidden;background:var(--theme-card-raised)}
+.wikiGuideTocGroup>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;color:var(--text)}
+.wikiGuideTocGroup>summary::-webkit-details-marker{display:none}
+.wikiGuideTocGroup>summary:after{content:'+';font-size:19px;line-height:1;font-weight:400;color:var(--theme-accent-text)}
+.wikiGuideTocGroup[open]>summary:after{content:'−'}
+.wikiGuideTocGroup>summary strong{font-size:14px;letter-spacing:.01em}
+.wikiGuideTocGroup>summary small{font-size:11px;color:var(--soft);margin-left:auto}
+.wikiGuideTocItems{padding:0 9px 9px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.wikiGuideTocItems button{display:flex;align-items:center;gap:9px;min-height:44px;padding:10px 11px;background:var(--theme-card);border:1px solid var(--theme-border);border-radius:9px;text-align:left;color:var(--text);font-size:12px;line-height:1.4;cursor:pointer}
+.wikiGuideTocItems button:hover,.wikiGuideTocItems button:focus-visible{border-color:var(--guide-border);background:var(--theme-highlight-soft)}
+.wikiGuideTocItems button span{flex:1}
+.wikiGuideTocItems button small{font-variant-numeric:tabular-nums;color:var(--theme-accent-text);font-weight:700;font-size:10px}
+.wikiGuideTocItems button svg{width:14px;flex:none;opacity:.6}
+.wikiCompleteGuide .wikiArticleBody{max-width:85ch;margin-inline:auto}
+.wikiCompleteGuide .wikiArticleSection{padding:clamp(23px,4vw,36px) 2px;scroll-margin-top:95px}
+.wikiCompleteGuide .wikiArticleSection h2{font-size:clamp(19px,2.5vw,24px);line-height:1.28;margin:0 0 17px}
+.wikiCompleteGuide .wikiArticleSection p{font-size:clamp(13px,1.5vw,15px);line-height:1.85;max-width:78ch;color:var(--text);opacity:.9;margin:0 0 17px}
+.wikiCompleteGuide .wikiArticleSection ul{line-height:1.8;max-width:75ch}
+.wikiCompleteGuide .wikiArticleSection .wikiTableFrame{margin-top:18px;max-width:100%;overflow-x:auto;border-radius:12px}
+.wikiCompleteGuide .wikiArticleSection table{width:100%;min-width:320px}
+.wikiCompleteGuide .wikiArticleSection th{white-space:nowrap}
+.wikiCompleteGuide .wikiSectionActions{margin-top:15px}
+.wikiGuideSectionPager{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:23px 0 0}
+.wikiGuideSectionPager button{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:9px 12px;border:1px solid var(--theme-highlight-border);border-radius:10px;color:var(--theme-accent-text);background:var(--theme-highlight-soft);font-size:12px;cursor:pointer}
+.wikiGuideSectionPager button:last-child{max-width:70%;text-align:right}
+.wikiGuideSectionPager button:hover,.wikiGuideSectionPager button:focus-visible{filter:brightness(1.15)}
+.wikiCompleteGuide .wikiArticleActions{margin-top:28px}
+@media(max-width:620px){
+ .wikiCompleteToc{margin:14px 0 22px;padding:13px}
+ .wikiGuideTocItems{grid-template-columns:minmax(0,1fr)}
+ .wikiGuideTocItems button{min-height:43px}
+ .wikiCompleteGuide .wikiArticleSection p{font-size:13.5px;line-height:1.78}
+ .wikiCompleteGuide .wikiArticleSection h2{font-size:20px}
+ .wikiGuideSectionPager button:last-child{max-width:100%;flex:1;justify-content:flex-end}
+}
+@media(prefers-reduced-motion:reduce){.wikiCompleteGuide *{scroll-behavior:auto}}
