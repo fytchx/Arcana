@@ -158,6 +158,140 @@ export const SEASON2_COMPLETE_GUIDE=Object.freeze({
       "part": "Progression and farming",
       "title": "Frenzy, Lucky and farming bonuses",
       "body": "Frenzy can create additional rewarded kills for loot, Gold and EXP, but those extra kills do NOT advance Monster Level. It's useful for resource farming, not direct ML pushing.\n\nLucky can improve dropped equipment tiers and has extra value in later Gilded farming. Item Drop Chance helps you find items, Material Drop Chance helps with Forge resources, and Gold and EXP bonuses serve their own purposes.\n\nBut remember the one-shot mindset. A farming setup with every bonus imaginable isn't very useful if it takes forever to kill anything.\n\nKeep enough damage to farm efficiently, then add bonuses where they make sense."
+    },
+    {
+      "part": "Progression and farming",
+      "title": "Progression: ML 1 to 65",
+      "body": "Early on, focus on learning your class and making the most of your drops. Get into a guild, spend skill points, start using the Forge and get familiar with your available activities.\n\nML 20 brings Gems, ML 30 opens Conflux and ML 50 is the Torch milestone. At ML 60, Runic Cores become available.\n\nA good early item might change what you build. Don't be stubborn about sticking to an original plan if RNG gives you something better.\n\nTry to keep progressing toward ML 65, with material-farming detours when your damage is falling behind. You don't have to perfect every Uncommon item along the way."
+    },
+    {
+      "part": "Progression and farming",
+      "title": "Progression: ML 65 to 185",
+      "body": "The middle stages are where builds start to feel more complete. You get a larger Rune Grid, more Gem sockets and stronger item rarities.\n\nWork on the equipment slots, pets, runes and skills that directly strengthen what your build does. You'll get better results from a handful of useful investments than by upgrading every system just because the button is available.\n\nML 90 is important for Conflux rare-material farming and early Epic drops. ML 115 brings the main Epic range and the third Gem socket. ML 150 adds early Legendary drops and more Rune Grid space, while ML 160 makes Flawless Gems possible.\n\nKeep moving toward ML 185, where Legendary equipment reaches its main drop range. If one-shotting becomes difficult, farm the materials for your next power spike and push again."
+    },
+    {
+      "part": "Progression and farming",
+      "title": "Progression: ML 185 to 350",
+      "body": "The run toward Infernal equipment gets expensive. Material planning starts to matter a lot more, and you should be comparing the gains from different upgrades rather than blindly pushing whichever one is closest.\n\nContinue improving your Forge slots, pets, Runes, Gems and Talismans. The grid expands to 6×6 at ML 220, then reaches 6×7 at ML 300.\n\nML 260 introduces Infernal drops. Look at the whole item, including its bonuses, instead of assuming an Infernal piece is automatically better for everything.\n\nKeep pushing until ML 350, where Convergence becomes available. You don't need a perfect character to get there, but the stronger your setup is, the more comfortable the next stage will feel."
+    },
+    {
+      "part": "Equipment and upgrades",
+      "title": "Equipment and the Forge",
+      "body": "Season 2 changed equipment upgrading in a big way: your main Forge progression belongs to the equipment SLOT, not the specific item you've equipped.\n\nThat means you can switch between different base items without resetting the slot's upgrade progress. The three tracks to understand are Tier, Enhance and Awaken.\n\nEquipment comes in six main rarities. From Normal through Infernal, each rarity adds more potential normal affix positions. Gilded, Radiant and Mythic drops can bring especially interesting special bonuses.\n\nDifferent base item families in the same slot can have different stats and built-in properties. A helmet with a great supporting bonus might be better than one with more of its main stat.\n\nDon't get tunnel vision about rarity. The actual item and its bonuses are what matter.",
+      "table": [
+        [
+          "Tier",
+          "Rarity",
+          "Normal affix slots"
+        ],
+        [
+          "1",
+          "Normal",
+          "0"
+        ],
+        [
+          "2",
+          "Uncommon",
+          "1"
+        ],
+        [
+          "3",
+          "Rare",
+          "2"
+        ],
+        [
+          "4",
+          "Epic",
+          "3"
+        ],
+        [
+          "5",
+          "Legendary",
+          "4"
+        ],
+        [
+          "6",
+          "Infernal",
+          "5"
+        ]
+      ]
+    },
+    {
+      "part": "Equipment and upgrades",
+      "title": "Reforging and salvaging",
+      "body": "Reforging uses three eligible matching items to produce a higher-rarity result. Anchor Stones can preserve selected properties through supported Reforging options.\n\nSalvaging turns unwanted gear into resources, but it also creates an easy way to throw away something useful if your filters are too aggressive.\n\nLook beyond rarity before salvaging. An item with a strong special Drop Bonus might deserve a place in a farming preset even if it isn't your main piece.\n\nReview Auto-Salvage as your character progresses. Rules that made sense when you were collecting Rare items might not be appropriate once you're hunting special Infernal drops."
+    },
+    {
+      "part": "Equipment and upgrades",
+      "title": "Awakening, failure costs and materials",
+      "body": "Higher Forge ranks take a lot of materials. Some upgrades require resources from several monsters or biomes, so make a plan instead of blindly farming the same target.\n\nYou need to know which monsters drop the resources, how many you need and how failures and pity affect the actual cost.\n\nDon't assume every upgrade succeeds first try. Compare the minimum, expected average and maximum possible costs when those estimates are supported.\n\nThe important part for most players is the MATERIALS. Gold is useful, but it shouldn't dominate a long upgrade checklist.\n\nThe Monster Material Exchange also lets you trade five lower-biome monster materials for one selected higher-biome material. Compare that cost with farming the higher material directly.\n\nPathfinder can show the materials in monster and biome order and help with your upgrade plan."
+    },
+    {
+      "part": "Equipment and upgrades",
+      "title": "Affixes and special Drop Bonuses",
+      "body": "An item isn't just its rarity and base stat. Normal affixes and special Drop Bonuses make equipment worth comparing closely.\n\nSome bonuses favor Attack, Pet Damage or Retaliation. Others support farming through effects like Frenzy, Lucky or resource bonuses.\n\nA rare item with an excellent bonus can sometimes be more useful for a particular purpose than a higher-rarity item with an irrelevant one.\n\nAstral Catalysts improve special Drop Bonuses, which means the quality of the original roll matters. I'd be picky about what receives expensive investment.\n\nOnce you have enough gear, consider keeping separate pieces for normal farming and difficult encounters. One loadout doesn't need to do everything."
+    },
+    {
+      "part": "Pets, runes and gems",
+      "title": "Pets, hatching and evolved affixes",
+      "body": "You can equip four pets, and one acts as your attacking pet. Other equipped pets provide their useful bonuses.\n\nThe base hatch chances are Common 50%, Uncommon 25%, Rare 15%, Epic 8% and Legendary 2%. Epic enters the available pool after 10 hatches, Legendary after 20. Pity guarantees an Epic within 20 and a Legendary within 60. Each egg gives you two choices.\n\nSpecies, rarity and Hatch Bonus are separate things. Getting a rarer pet isn't always better than one with the bonus your current build needs.\n\nPet Mastery, evolved affixes and Compounding are separate progression systems. Don't assume improving one automatically improves the others.\n\nThe Premium pet affix auto-reroll feature lets you select a target affix and a Pet Shard spending limit. It's a lot less tedious, but you should still pay attention to the cost."
+    },
+    {
+      "part": "Pets, runes and gems",
+      "title": "Raeik and Legendary ACS fodder",
+      "body": "Raeik is a very rare new pet with a special purpose.\n\nYou CANNOT equip Raeik. You can sell him for 25–150 Arcstone depending on rarity, or use him as Compound fodder for any pet, regardless of its species or Hatch Bonus.\n\nOnly eggs obtained AFTER the Raeik update can hatch him. Eggs you already had before the update aren't eligible.\n\nThere's another useful change for Legendary pets: one with an All Class Skills Hatch Bonus can now be compounded into ANY other Legendary pet for DOUBLE Compound points.\n\nThat creates some worthwhile decisions. Keep the pet, use its special Compound value, or sell Raeik for Arcstone depending on what helps your account most."
+    },
+    {
+      "part": "Pets, runes and gems",
+      "title": "Pet Compound and equalization",
+      "body": "Compounding increases a pet's main Hatch Bonus, not its evolved affixes.\n\nSeasonal characters have an equalization rule: an equipped pet's EFFECTIVE Compound level can be no more than 10 levels above the weakest equipped pet. An empty equipped slot counts as Compound +0.\n\nFor example, if your four equipped pets are +30, +5, +5 and +5, the strongest pet currently gets the Hatch Bonus scaling of +15. The extra stored levels aren't lost. They'll start contributing as the others catch up.\n\nUncommon normally caps at +10, Rare at +20, Epic at +30, while Legendary doesn't have the same ordinary cap.\n\nThis is why I wouldn't spend everything Compounding one pet and completely neglect the others. Develop a balanced group of four so you're actually getting the value of what you've spent."
+    },
+    {
+      "part": "Pets, runes and gems",
+      "title": "Runes and Rune Grid progression",
+      "body": "Runes have a family, primary bonus, secondary stat, shape and level. You fit them into the Rune Grid, which automatically expands as you advance ML.\n\nThe main families include Fury for Attack, Vitality for Health, Precision for Crit Chance, Fortitude for Defense, Wisdom for EXP, Fortune for Gold and Bond for Pet Damage.\n\nSecondary stats matter, and sometimes a less impressive rune is worth using simply because its secondary fits the build perfectly.\n\nRunic Cores become available at ML 60 and are used for Rune Awakening. Reforging also gives you ways to work toward the types and shapes you want.\n\nThink about how your runes fit TOGETHER, not just which individual rune has the biggest number.",
+      "table": [
+        [
+          "ML",
+          "Rune Grid"
+        ],
+        [
+          "1",
+          "2×2"
+        ],
+        [
+          "10",
+          "3×3"
+        ],
+        [
+          "30",
+          "4×3"
+        ],
+        [
+          "45",
+          "5×3"
+        ],
+        [
+          "65",
+          "6×3"
+        ],
+        [
+          "90",
+          "6×4"
+        ],
+        [
+          "150",
+          "6×5"
+        ],
+        [
+          "220",
+          "6×6"
+        ],
+        [
+          "300",
+          "6×7"
+        ]
+      ]
     }
   ],
   "actions": [
@@ -227,6 +361,22 @@ export const SEASON2_COMPLETE_GUIDE=Object.freeze({
       ],
       "The one-shot mindset": [
         "farm"
+      ],
+      "Awakening, failure costs and materials": [
+        "pathfinder",
+        "materials"
+      ],
+      "Affixes and special Drop Bonuses": [
+        "compare",
+        "items"
+      ],
+      "Pet Compound and equalization": [
+        "compound",
+        "petlab"
+      ],
+      "Runes and Rune Grid progression": [
+        "runes",
+        "runeGuide"
       ]
     }
   }
