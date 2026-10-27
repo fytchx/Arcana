@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {THEME_PATTERNS,THEME_PATTERN_IDS} from '../src/theme-patterns.js';
-import {validateDesignField,DEFAULT_DESIGN} from '../src/design-controls.js';
+import {validateDesignField,DEFAULT_DESIGN,DESIGN_PRESETS} from '../src/design-controls.js';
 import {designPanel,settingsView} from '../src/launch-navigation.js';
 import {designMiniMarkup,endDesignMiniSession} from '../src/design-mini-preview.js';
 import {themeVaultMarkup} from '../src/theme-studio-vault.js';
@@ -42,8 +42,8 @@ test('preview remains live across five pages, three devices, before-after, plus 
 });
 test('legacy textures remain validated while Studio V2 displays only authored Vision art',async()=>{
  const css=(await read('../arcana-contour.css'))+(await read('../signature-themes.css'))+(await read('../psychedelic-themes.css'))+(await read('../atlas-atelier-textures.css'))+(await read('../visual-art.css'));
- assert.equal(THEME_PATTERNS.length,159);
- assert.equal(new Set(THEME_PATTERN_IDS).size,159);
+ assert.equal(THEME_PATTERNS.length,160);
+ assert.equal(new Set(THEME_PATTERN_IDS).size,160);
  const html=designPanel({showPreview:false});
  for(const p of THEME_PATTERNS){
   assert.equal(validateDesignField('pattern',p.id),p.id);
@@ -55,7 +55,7 @@ test('legacy textures remain validated while Studio V2 displays only authored Vi
   }
  }
  assert.equal((html.match(/class="studioV2Preset"/g)||[]).length,0,'new presets include designPreset as first class');
- assert.equal((html.match(/class="designPreset studioV2Preset"/g)||[]).length,105);
+ assert.equal((html.match(/class="designPreset studioV2Preset"/g)||[]).length,106);
  assert.equal(validateDesignField('pattern','<script>'),null);
  assert.equal(DEFAULT_DESIGN.pattern,'vision-violet-fault');
 });
@@ -79,4 +79,19 @@ test('readability meter reports real contrast ratios and safe button text sugges
  assert.equal(checks.filter(x=>x.pass).length,0);
  assert.equal(suggestedButtonText(bad),'#0D1019');
  assert.equal(themeReadability({...bad,buttonText:suggestedButtonText(bad)})[2].pass,true);
+});
+
+test('Astral Veil is an editable cosmic preset with a continuous starfield and independent glass panels',async()=>{
+ const preset=DESIGN_PRESETS['astral-veil'];
+ assert.ok(preset);
+ assert.equal(preset.pattern,'atelier-astral-veil');
+ assert.equal(preset.panelPattern,'atelier-smoked-glass');
+ assert.equal(preset.patternTarget,'background');
+ assert.equal(validateDesignField('pattern',preset.pattern),preset.pattern);
+ for(const [key,value] of Object.entries(preset))if(key!=='name'&&key!=='tagline'&&key!=='collection'){
+   assert.notEqual(validateDesignField(key,value),null,'Invalid Astral Veil field: '+key);
+ }
+ const css=await read('../atlas-atelier-textures.css');
+ for(const selector of ['data-arcana-design-pattern="atelier-astral-veil"','data-mini-pattern="atelier-astral-veil"','data-preview-pattern="atelier-astral-veil"'])assert.ok(css.includes(selector));
+ assert.ok(css.includes('Non-tiled CSS gradients'));
 });

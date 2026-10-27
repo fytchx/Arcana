@@ -173,7 +173,25 @@ const allEntries=[
  ...MORE_ENTRIES
 ];
 export const STUDIO_V2_FAMILIES=Object.freeze(['Atelier / 2026',...new Set(allEntries.map(r=>r[6]))]);
-export const STUDIO_V2_PRESETS=Object.freeze({...ATELIER_PRESETS,...Object.fromEntries(allEntries.map(([id,name,artName,palette,panelArtName,featureArtName,family],index)=>{
+export const STUDIO_V2_PRESETS=Object.freeze({...ATELIER_PRESETS,'astral-veil':Object.freeze({
+  name:'Astral Veil',tagline:'Cosmic / Violet Nebula',collection:'studio-v2',
+  pattern:'atelier-astral-veil',panelPattern:'atelier-smoked-glass',featurePattern:'atelier-stardust-veil',
+  main:'#0D0821',card:'#1A1333',navBar:'#15102A',iconBox:'#291B49',iconGlyph:'#CCB6FF',
+  action:'#9876FC',secondaryAccent:'#83C7FF',text:'#F6F1FF',mutedText:'#C9BFE1',borderColor:'#6D568F',buttonText:'#0D0821',
+  artBase:'#12092C',artPrimary:'#A36AF3',artSecondary:'#6340C9',artGlow:'#DBBEFF',artStrength:95,artDetail:99,
+  artWeight:100,artZoom:100,artPositionX:50,artPositionY:50,
+  panelArtBase:'#1A1333',panelArtPrimary:'#7353AE',panelArtSecondary:'#A789E0',panelArtGlow:'#E5D5FF',
+  featureArtBase:'#19102F',featureArtPrimary:'#AD7FFF',featureArtSecondary:'#81A8F5',featureArtGlow:'#EEE7FF',
+  panelOpacity:76,patternTarget:'background',intensity:67,glow:36,edges:45,roundness:17,buttonRoundness:13,
+  buttonFill:94,fontFamily:'manrope',headingFont:'cinzel',density:'comfortable',buttonStyle:'gradient',
+  heroCardStyle:'glass',heroActionStyle:'ribbon',heroSize:'showcase',heroActionAlign:'center',
+  iconMode:'two-tone',fontSize:100,cardPadding:16,cardShadow:36,headerOpacity:92,patternScale:100,
+  borderWidth:1,buttonHeight:48,accentBlend:33,aura:68,sheen:39,detail:83,
+  psyPaletteMode:'custom',psyBackground:'#1A1333',psyPrimary:'#AD7FFF',psySecondary:'#83C7FF',
+  psyAccent:'#9876FC',psyOutline:'#0D0821',psyStroke:46,
+  heroActionWidth:100,heroActionHeight:48,heroActionGlow:27,heroActionBorder:1,
+  heroActionIcon:'show',heroActionSubtitle:'auto',heroCardEmblem:'subtle'
+ }),...Object.fromEntries(allEntries.map(([id,name,artName,palette,panelArtName,featureArtName,family],index)=>{
  const [main,card,action,secondaryAccent,text,mutedText,borderColor]=PALETTES[palette];
  const brighten=n=>Math.min(255,n+17).toString(16).padStart(2,'0').toUpperCase();
  const iconBox='#'+main.slice(1).match(/../g).map(x=>brighten(parseInt(x,16))).join('');
