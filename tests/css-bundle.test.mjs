@@ -23,7 +23,8 @@ test('homepage loads exactly one CSS entry, which includes every existing theme 
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  const cssLinks=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="(\/[^"?]+)/g)].map(match=>match[1]);
  assert.deepEqual(cssLinks,['/arcana-site.css']);
- assert.equal(SITE_STYLES.length,26);
+ assert.equal(SITE_STYLES.length,27);
+ assert.ok(SITE_STYLES.includes('season2-guide.css'),'Season 2 reader stylesheet must be bundled');
  assert.equal(new Set(SITE_STYLES).size,SITE_STYLES.length);
  const sourceContents=await Promise.all(SITE_STYLES.map(file=>readFile(new URL('../'+file,import.meta.url),'utf8')));
  const bundle=await siteCssBundle(root);
