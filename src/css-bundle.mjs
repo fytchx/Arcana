@@ -13,7 +13,7 @@ export const SITE_STYLES=Object.freeze([
  'theme-seamless.css','psychedelic-themes.css','desktop-home-refinement.css',
  'arcana-connected-ux.css','home-atlas.css','atlas-atelier-textures.css',
  'visual-art.css','studio-v2.css','studio-layers.css','visual-polish.css',
- 'damage-formula.css','season2-guide.css'
+ 'damage-formula.css','season2-guide.css','community-archive.css','desktop-responsive.css'
 ]);
 
 let cached=null;
