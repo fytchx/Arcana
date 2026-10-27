@@ -1,0 +1,91 @@
+/* Desktop reading and workspace proportions.
+   Desktop-only overrides: mobile and tablet layouts retain their existing rules. */
+@media (min-width:1024px) {
+  /* Existing fixed 850px content cap makes desktop pages tiny, especially at
+     browser zoom levels below 100%. The home dashboard has its own layout. */
+  #content:not(.homeFullscreen) {
+    box-sizing:border-box;
+    width:min(calc(100% - 48px),1320px);
+    max-width:1320px;
+    padding-left:clamp(24px,2.6vw,42px)!important;
+    padding-right:clamp(24px,2.6vw,42px)!important;
+  }
+
+  /* Help articles, guides, Codex and connected account pages use the canvas. */
+  #content :is(.wikiPortal,.wikiLibrary,.wikiGuidesPage,.wikiArticle,.wikiReferencePage) {
+    box-sizing:border-box;
+    width:100%;
+    max-width:1120px;
+  }
+  #content .wikiCompleteGuide {
+    max-width:1200px;
+  }
+  #content .wikiArticle .wikiArticleIntro {
+    box-sizing:border-box;
+    width:100%;
+  }
+  #content .wikiArticle .wikiArticleBody {
+    max-width:86ch;
+    margin-inline:auto;
+  }
+  #content .wikiArticle .wikiArticleIntro h1 {
+    font-size:clamp(31px,2.5vw,43px);
+  }
+  #content .wikiCompleteGuide .wikiArticleIntro h1 {
+    font-size:clamp(33px,2.7vw,45px);
+  }
+  #content .wikiArticle .wikiArticleIntro > p {
+    max-width:72ch;
+    font-size:clamp(14px,1vw,16px);
+  }
+  #content .wikiArticle .wikiArticleSection p,
+  #content .wikiArticle .wikiArticleSection li {
+    max-width:80ch;
+    font-size:clamp(15px,1vw,17px);
+    line-height:1.78;
+  }
+  #content .wikiArticle .wikiArticleSection h2 {
+    font-size:clamp(21px,1.6vw,27px);
+  }
+  #content .wikiArticle .wikiArticleToc button {
+    font-size:14px;
+    min-height:48px;
+  }
+  #content .wikiArticle:not(.wikiCompleteGuide) .wikiArticleToc > div {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  #content .wikiCompleteGuide .wikiGuideTocItems {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  #content .wikiCompleteGuide .wikiGuideTocItems button {
+    min-height:50px;
+    font-size:13px;
+  }
+  #content .wikiCompleteGuide .wikiGuideTocGroup > summary strong {
+    font-size:15px;
+  }
+
+  #content .communityPage {
+    box-sizing:border-box;
+    width:100%;
+    max-width:1160px;
+  }
+  #content .arcAccount .arcAccountTabs button {
+    font-size:14px;
+  }
+  #content .arcAccount .arcAccountQuick button {
+    font-size:14px;
+  }
+}
+
+@media (min-width:1440px) {
+  #content:not(.homeFullscreen) {
+    max-width:1420px;
+  }
+  #content :is(.wikiPortal,.wikiLibrary,.wikiGuidesPage,.wikiArticle,.wikiReferencePage) {
+    max-width:1220px;
+  }
+  #content .wikiCompleteGuide {
+    max-width:1260px;
+  }
+}
