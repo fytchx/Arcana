@@ -24,3 +24,13 @@ test('temporary ACS hatch pets are not recommended for expensive affix investmen
  assert.match(fodder,/doesn't refund any Pet Shards/);
  assert.deepEqual(guide.connections.sectionLinks['ACS pets: keepers, fodder and Pet Shards'],['affixes','compound','petlab']);
 });
+
+test('equipment guide uses verified boot differences and correctly frames Sage helmet tradeoffs',()=>{
+ const gear=section('Equipment and the Forge')?.body||'';
+ assert.match(gear,/Grounded Treads have higher Defense and built-in Block Chance/);
+ assert.match(gear,/Swiftstride Boots offer Double Hit/);
+ assert.match(gear,/Sage Diadem is hard to replace for most builds because of its All Class Skills/);
+ assert.match(gear,/Retaliation Warrior is one possible exception/);
+ assert.match(gear,/valuable Drop Bonus/);
+ assert.doesNotMatch(gear,/A helmet with a great supporting bonus might be better/);
+});
