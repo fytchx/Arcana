@@ -9,10 +9,11 @@ test('all 36 guide chapter controls open the overlay instead of jumping to the c
  assert.equal(article.sections.length,36);
  const html=wikiArticleView(article);
  const pagerCount=(html.match(/data-action="wikichapters"/g)||[]).length;
- console.log('GUIDE_CHAPTER_DIAGNOSTIC',JSON.stringify({id:article.id,sections:article.sections.length,pagerCount,hasContents:html.includes('id="section-guide-contents"'),hasNext:html.includes('Next: '),staleContentsAction:html.includes('data-action="wikisection" data-arg="guide-contents"')}));
  assert.equal(pagerCount,36);
  assert.doesNotMatch(html,/data-action="wikisection" data-arg="guide-contents"/);
  assert.match(html,/id="section-guide-contents"/,'Keep the original contents page available');
+ assert.match(html,/class="wikiArticleToc wikiCompleteToc"/,'Full guide must render grouped chapter contents');
+ assert.match(html,/class="wikiGuideTocGroup"/,'Chapter groups should be visible in original reading map');
  assert.match(html,/Next: /,'Keep chapter-to-chapter paging');
 });
 test('chapter overlay lists source-controlled sections, highlights current, filters and restores scroll',async()=>{
