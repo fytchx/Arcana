@@ -31,7 +31,7 @@ test('release verifier fails when a required public route is broken',async()=>{
   await assert.rejects(verifyRelease({
     target:'production',expectedSha:SHA,attempts:1,log:()=>{},
     fetchFn:async url=>url.endsWith('/health')?json({ok:true,commit:SHA}):url.endsWith('/api/wiki/articles')?okFail():ok()
-  }),/Release NOT VERIFIED.*Wiki/);
+  }),/Release NOT VERIFIED.*wiki/);
 });
 function okFail(){return new Response('unavailable',{status:503});}
 
