@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {wikiArticleView} from '../src/wiki-views.js';
 import {wikiArticleById} from '../src/wiki-data.js';
-test('practical route gives a jump before the long contents and preserves the full guide',()=>{
+test('practical route gives a jump before the long contents and preserves the full guide',async()=>{
  const guide=wikiArticleById('season-2-complete-zane');
  const html=wikiArticleView(guide);
  assert.equal(guide.sections.length,37);
