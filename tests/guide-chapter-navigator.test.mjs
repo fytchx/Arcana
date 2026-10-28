@@ -4,13 +4,13 @@ import {readFile} from 'node:fs/promises';
 import {wikiArticleView} from '../src/wiki-views.js';
 import {wikiArticleById} from '../src/wiki-data.js';
 
-test('all 36 guide chapter controls open the overlay instead of jumping to the contents',()=>{
+test('all 37 guide chapter controls open the overlay instead of jumping to the contents',()=>{
  const article=wikiArticleById('season-2-complete-zane');
- assert.equal(article.sections.length,36);
+ assert.equal(article.sections.length,37);
  const html=wikiArticleView(article);
  const pagerCount=(html.match(/data-action="wikichapters"/g)||[]).length;
- assert.equal(pagerCount,36);
- assert.doesNotMatch(html,/data-action="wikisection" data-arg="guide-contents"/);
+ assert.equal(pagerCount,37);
+ assert.match(html,/data-action="wikisection" data-arg="guide-contents"/,'Quick-start jump must keep the reading map accessible');
  assert.match(html,/id="section-guide-contents"/,'Keep the original contents page available');
  assert.match(html,/class="wikiArticleToc wikiCompleteToc"/,'Full guide must render grouped chapter contents');
  assert.match(html,/class="wikiGuideTocGroup"/,'Chapter groups should be visible in original reading map');
