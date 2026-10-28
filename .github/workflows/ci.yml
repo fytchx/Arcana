@@ -7,7 +7,8 @@ on:
   workflow_dispatch:
 concurrency:
   group: arcana-checks-${{ github.ref }}
-  cancel-in-progress: true
+  # Never cancel main's push checks; Railway Wait for CI relies on an actual result.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 permissions:
   contents: read
 jobs:
