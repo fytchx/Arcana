@@ -1,0 +1,161 @@
+{
+  "schema": "arcana.ml-xp.observations.v1",
+  "recorded_at": "2026-10-28",
+  "source": "User-provided IdleArc screenshots; fields transcribed from visible UI, displayed values rounded.",
+  "caveat": "The XP-per-kill symbols on biome cards are interpreted as ML progress per kill; direct empirical confirmation pending. Player identity and account details intentionally excluded.",
+  "entries": [
+    {
+      "file": "1000046207.png",
+      "ml": 216,
+      "requirement_display": "207.52K",
+      "per_kill": {
+        "murky": 6,
+        "frozen": 7.5,
+        "shadow": 10.5,
+        "infernal": 15,
+        "elder": 18,
+        "glass": 20.25,
+        "drowned": 22.5
+      }
+    },
+    {
+      "file": "1000046206.jpg",
+      "ml": 559,
+      "requirement_display": "3.19M"
+    },
+    {
+      "file": "1000046205.jpg",
+      "ml": 559,
+      "per_kill": {
+        "elder": 37.2,
+        "glass": 41.85,
+        "drowned": 46.5,
+        "summit": 51.15,
+        "rift": 55.8,
+        "crown": 61.38
+      },
+      "notes": "All values equal predicted XP/kill with effective ML 500; player currently on Convergence. Could be 500 cap or other effective ML behavior."
+    },
+    {
+      "file": "1000046204.jpg",
+      "ml": 234,
+      "requirement_display": "268.89K",
+      "per_kill": {
+        "elder": 20.7,
+        "glass": 23.29,
+        "drowned": 25.88,
+        "summit": 28.46
+      }
+    },
+    {
+      "file": "1000046203.jpg",
+      "ml": 307,
+      "requirement_display": "644K",
+      "per_kill": {
+        "shadow": 14.95,
+        "infernal": 21.35,
+        "elder": 25.62,
+        "glass": 28.82,
+        "drowned": 32.03,
+        "summit": 35.23,
+        "rift": 38.43,
+        "crown": 42.27
+      }
+    },
+    {
+      "file": "1000046202.jpg",
+      "ml": 400,
+      "requirement_display": "1.42M",
+      "per_kill": {
+        "shadow": 18.2,
+        "infernal": 26,
+        "elder": 31.2,
+        "glass": 35.1,
+        "drowned": 39,
+        "summit": 42.9,
+        "rift": 46.8,
+        "crown": 51.48
+      }
+    },
+    {
+      "file": "1000046201.png",
+      "ml": 317,
+      "requirement_display": "711.98K",
+      "per_kill": {
+        "shadow": 15.3,
+        "infernal": 21.85,
+        "elder": 26.22,
+        "glass": 29.5,
+        "drowned": 32.78,
+        "summit": 36.05,
+        "rift": 39.33,
+        "crown": 43.26
+      }
+    },
+    {
+      "file": "1000046200.png",
+      "ml": 304,
+      "requirement_display": "624.39K",
+      "per_kill": {
+        "shadow": 14.84,
+        "infernal": 21.2,
+        "elder": 25.44,
+        "glass": 28.62,
+        "drowned": 31.8,
+        "summit": 34.98,
+        "rift": 38.16,
+        "crown": 41.98
+      },
+      "duplicate_ml_requirement": true
+    },
+    {
+      "file": "1000046198.jpg",
+      "ml": 315,
+      "requirement_display": "698.07K",
+      "per_kill": {
+        "shadow": 15.23,
+        "infernal": 21.75,
+        "elder": 26.1,
+        "glass": 29.36,
+        "drowned": 32.63,
+        "summit": 35.89,
+        "rift": 39.15,
+        "crown": 43.07
+      }
+    },
+    {
+      "file": "1000046197.jpg",
+      "ml": 315,
+      "per_kill": {
+        "verdant": 4.35,
+        "scorched": 6.53,
+        "murky": 8.7,
+        "frozen": 10.88,
+        "shadow": 15.23,
+        "infernal": 21.75,
+        "elder": 26.1,
+        "glass": 29.36
+      },
+      "duplicate_ml_requirement": true
+    }
+  ],
+  "new_unique_requirements": [
+    216,
+    234,
+    307,
+    315,
+    317,
+    400,
+    559
+  ],
+  "duplicate_requirements": [
+    304
+  ],
+  "model_notes": [
+    "Reference fourth-degree polynomial: d=ml-290; -0.0000995216898*d^4 +0.00111538776*d^3 +20.2268284*d^2 +5910.91945*d +537671.59. Not game-verified.",
+    "ML559 shown as 3.19M; fourth-degree extrapolation predicts about 3.092M, so current XP requirement model cannot be extended beyond 482 without recalibration.",
+    "Observed XP/kill multiplier for ML210 = 0.7125, ML216 =0.75, ML234=0.8625, consistent with (ml-96)/160 from 210–234.",
+    "For ML240–500, observed multiplier is consistent with 1+(ml-280)/400; ML559 screenshot matches multiplier 1.55 (ML500).",
+    "Tier-1 modifiers and early ML behavior still require direct confirmation."
+  ]
+}
