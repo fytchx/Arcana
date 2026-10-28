@@ -116,3 +116,22 @@ One Railway workspace contains multiple distinct historical deployments; project
 **Runtime status update:** At later inspection on Oct 28, the production service was ONLINE with one running replica. The previously queued unlisted damage calculator commit `28fb1e0` became the active successful deployment. The newer practical-first guide commit `db3c465` failed its build tests and did **not** become live. Recent 1-hour Railway HTTP metrics showed 404 total requests, 0 server 5xx. Prior successful code remains active, so this is a release failure, not a confirmed public outage.
 
 **Next:** Resolve failing main CI by reviewing/publishing PR #69 only after backups and release safety gates. Run external dependency and bucket usage checks. Inventory unused domain routes, backups, and exact billing before proposing reversible shutdowns. Do not delete any resources as part of the audit.
+
+## Railway backup gating confirmed by owner screenshot (2026-10-28)
+The production **Arcana Stable App > Backups** view explicitly says **No Backups** and `Upgrade to Pro to create new backups, set up automated schedules, or enable point-in-time recovery`. This overrides earlier advice to enable Daily/Weekly snapshots from the current plan: those actions are **not available on this workspace plan**. Do not buy Pro solely to obtain backups.
+
+**Preferred low-cost, phone-friendly fallback:** Railway announced that its Console tab and in-dashboard service file browser became generally available in June 2026, even without the Priority Boarding feature flag. Open the actual production service and swipe the horizontal tab row to **Console** (if available on the account). Look for read-only navigation to `/data`, then confirm the persistent folders. Source: https://railway.com/changelog/2026-06-05-sandboxes
+
+Once available, use a shell to create **an encrypted archive written outside `/data`**, for example `/tmp`, using tools verified present (`tar` and `openssl`). Password must be chosen by the owner, retained securely, and **never sent in chat**. A typical shell pipeline (only after checking command availability and confirming paths) is:
+
+```bash
+command -v tar && command -v openssl
+tar -C /data -czf - . | openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -out /tmp/arcana-private-backup.tar.gz.enc
+```
+
+Download the encrypted file via **Console > file browser** (from `/tmp`). Copy the file to an owner-controlled offsite location (private cloud and second copy), record the decryption passphrase in an independent password manager or safely stored record, and test decryption/extraction to a **temporary directory on another machine/service**, never directly over the live volume. Note that creating a live file archive without pausing writes is not a point-in-time consistent snapshot; verify relevant JSON references and repeat during a quiet window if needed. Check that the live service stays responsive, and never expose `/data` through public web routes.
+
+**Alternative CLI path:** Railway supports recursive `railway volume files --volume <volume-name> download / <local-destination>` directly from its CLI, documented at https://docs.railway.com/cli/volume . That is a readable file transfer, *not* intrinsically encrypted: protect local copies and encrypt before storing them in the cloud. The CLI requires proper account authentication, and Android Termux compatibility has not been verified. Do not guess that Railway's AI connector can download volume contents; it cannot do so with its available calls.
+
+**Platform banner:** User screenshot also reports Railway incident **Deployments stuck in initializing**, attributed by Railway to its platform. Separately, the newest Season 2 practical-first commit failed our source tests. Those are different diagnoses. Latest checked production state was ONLINE with 1/1 replica, previous successful damage-calculator commit `28fb1e0`, and no 5xx in the sampled last hour. Do not assume the application is down solely due to the incident banner.
+
