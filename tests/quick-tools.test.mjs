@@ -67,7 +67,7 @@ test('Pathfinder uses verified recipes and the homepage has no calculator',async
  assert.match(app,/quickUpgradePanel\(recipeState.data,state.pathfinderRange/);
  assert.match(app,/quickUpgradeContent\(recipeState\.data,current/);
  assert.match(app,/initialQuickRange\(payload,state\.pathfinderRange\)/);
- assert.match(app,/case 'calculators\/damage':return isAppearanceAdmin\(\)\?calcDamage\(\):notFound\(\)/);
+ assert.match(app,/case 'calculators\/damage':return calcDamage\(\)/);
   assert.match(server,/requireCapability\(req,'site:manage'\)/);
  assert.match(app,/function pathfinderHub\(legacyView='range'\)/);
  assert.match(page,/arcana-site\.css/);assert.match(server,/quick-tools\.css/);
@@ -91,7 +91,7 @@ test('homepage navigation keeps wiki and guild recruitment accessible from globa
  const nav=await readFile(new URL('../src/launch-navigation.js',import.meta.url),'utf8');
  const css=await readFile(new URL('../home-three.css',import.meta.url),'utf8');
  for(const section of ["{id:'pathfinder'","{id:'tools'","{id:'social'"])assert.ok(nav.includes(section));
- assert.match(nav,/Damage Calculator/);
+ assert.doesNotMatch(nav,/link\('Damage Calculator'/);
  assert.match(app,/\['wiki','ArcanaWiki'/);
  assert.match(app,/\['lfg','Guild & Raid Finder'/);
  assert.match(app,/damageFormulaView/);

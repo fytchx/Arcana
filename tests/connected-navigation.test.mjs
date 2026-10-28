@@ -147,8 +147,7 @@ test('Damage Calculator is clearly standalone and does not link to Build Studio'
  const html=damageFormulaView();
  for(const mode of ['attack','retaliation','pet'])assert.ok(html.includes('data-formula-mode="'+mode+'"'));
  assert.doesNotMatch(html,/data-route="labs\/build"/);
- const menu=HOME_MENUS.tools.links.find(link=>link.route==='calculators/damage');
- assert.ok(menu);
- assert.match(menu.detail,/Attack, Retaliation, or Pet/);
- assert.doesNotMatch(menu.detail,/build upgrade analysis/i);
+ assert.ok(!HOME_MENUS.tools.links.some(link=>link.route==='calculators/damage'),'Unlisted calculator must not be linked in Tools navigation');
+ assert.match(code,/case 'calculators\/damage':return calcDamage\(\)/);
+ assert.doesNotMatch(code,/tile\('Damage Calculator','calculators\/damage'/);
 });

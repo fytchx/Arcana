@@ -55,7 +55,7 @@ test('app points to latest optimizer without changing damage calculator route',a
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
  assert.match(app,/upgradeOptimizerSliderView/);
  assert.match(app,/wireUpgradeOptimizerSliders/);
- assert.match(app,/case 'calculators\/damage':return isAppearanceAdmin\(\)\?calcDamage\(\):notFound\(\)/);
+ assert.match(app,/case 'calculators\/damage':return calcDamage\(\)/);
   assert.match(app,/import\('\.\/upgrade-optimizer-v2\.js'\)/);
  assert.doesNotMatch(app,/class="pathfinderOptimizerLink"/);
  assert.match(app,/case 'calculators\/optimizer':return isAppearanceAdmin\(\)\?/);
