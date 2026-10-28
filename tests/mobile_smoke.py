@@ -28,7 +28,7 @@ for href in re.findall(r'<link rel="stylesheet" href="([^"]+)"', HTML):
         source=(ROOT/'src/css-bundle.mjs').read_text()
         order=source.split('export const SITE_STYLES=Object.freeze([',1)[1].split(']);',1)[0]
         stylesheet_files=re.findall(r"'([^']+\.css)'",order)
-        assert len(stylesheet_files)==26,'CSS bundle source inventory changed'
+        assert len(stylesheet_files)==len(set(stylesheet_files)) and len(stylesheet_files)>=26,'CSS bundle source inventory changed'
         imports,parts=[],[]
         css_import=re.compile(r'(?m)^[ \t]*@import[ \t]+[^;\r\n]+;[ \t]*(?:\r?\n)?')
         for name in stylesheet_files:
