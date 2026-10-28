@@ -116,13 +116,24 @@ const lfgById=id=>lfgDynamic().find(e=>e.id===id);
 async function loadPublicLfg(force=false){if(lfgState.loading||(!force&&lfgState.updatedAt&&Date.now()-lfgState.updatedAt<30000))return; lfgState.loading=true; lfgState.error='';try{const r=await fetch('/api/lfg/public',{cache:'no-store',signal:AbortSignal.timeout(9500)});if(!r.ok)throw Error('HTTP '+r.status);const payload=await r.json(),data=normalizePublicFeed(payload);lfgState.error=(payload.issues?.length?('Some '+payload.issues.join(', ')+' are currently unavailable'):'');lfgState.listings=data.listings;lfgState.plans=data.plans;lfgState.loaded=true;lfgState.updatedAt=Date.now();}catch(e){lfgState.error='Live listings temporarily unavailable';console.warn('LFG feed',e.message)}finally{lfgState.updatedAt=Date.now();lfgState.loading=false;const route=parseRoute().route;if(route.startsWith('lfg/raids')||route==='lfg/listing')render();if(state.layer?.type==='search')refreshLiveSearch();}}
 const privateLabs={damage:null,optimizer:null,loading:false,error:''};
 async function loadPrivateLabs(){
- if(!isAppearanceAdmin()||privateLabs.loading||(privateLabs.damage&&privateLabs.optimizer))return;
+ const route=parseRoute().route;
+ const needDamage=route==='calculators/damage'&&!privateLabs.damage;
+ const needOptimizer=route==='calculators/optimizer'&&isAppearanceAdmin()&&!privateLabs.optimizer;
+ if(privateLabs.loading||(!needDamage&&!needOptimizer))return;
  privateLabs.loading=true;
- try{const [d,o]=await Promise.all([import('./damage-formula-ui.js'),import('./upgrade-optimizer-v2.js')]);
-  privateLabs.damage=d;privateLabs.optimizer=o;d.wireDamageFormula(render);o.wireUpgradeOptimizerSliders(()=>({snapshot:recipeState.data,catalog:verifiedState.entries}));privateLabs.error='';
- }catch(e){privateLabs.error='Unable to load private tools: '+String(e.message||e);console.warn(privateLabs.error)}finally{privateLabs.loading=false;render()}
+ try{
+  if(needDamage){
+   const d=await import('./damage-formula-ui.js');
+   privateLabs.damage=d;d.wireDamageFormula(render);
+  }
+  if(needOptimizer){
+   const o=await import('./upgrade-optimizer-v2.js');
+   privateLabs.optimizer=o;o.wireUpgradeOptimizerSliders(()=>({snapshot:recipeState.data,catalog:verifiedState.entries}));
+  }
+  privateLabs.error='';
+ }catch(e){privateLabs.error='Unable to load calculator: '+String(e.message||e);console.warn(privateLabs.error)}finally{privateLabs.loading=false;render()}
 }
-const privateLabNote=()=>'<section class="communityNotice">'+esc(privateLabs.error||'Loading the administrator-only lab…')+'</section>';
+const privateLabNote=()=>'<section class="communityNotice">'+esc(privateLabs.error||'Loading the calculator…')+'</section>';
 const LINKS=[['directory','Explore All','layers'],['wiki','ArcanaWiki','book'],['labs/build','Build Studio','shield'],['calculators/pathfinder','Pathfinder','layers'],['lfg','Guild & Raid Finder','users'],['community','Community','users'],['beta','Beta & Feedback','message-square']];
 const BUILD_SLOTS=LOADOUT_LAYOUT.map(x=>[x.key,x.label]);
 const item=value=>{
