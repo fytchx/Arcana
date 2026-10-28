@@ -26,7 +26,8 @@ test('all submenu and A-Z destinations are resolvable routes',()=>{
  assert.deepEqual([...DIRECTORY].map(x=>x.label).sort((a,b)=>a.localeCompare(b,'en',{sensitivity:'base'})),DIRECTORY.map(x=>x.label));
  assert.match(directoryView(),/Explore Arcana A–Z/);
   assert.doesNotMatch(directoryView(),/data-route="calculators\/(damage|optimizer)"/);
-  assert.doesNotMatch(directoryView(true),/data-route="calculators\/optimizer"/);
+  assert.doesNotMatch(directoryView(true),/data-route="calculators\/(damage|optimizer)"/);
+  assert.ok(!HOME_MENUS.tools.links.some(link=>link.route==='calculators/damage'));
 });
 test('topic shells are navigable, safely escaped and do not invent article content',()=>{
  for(const topic of WIKI_TOPICS){
