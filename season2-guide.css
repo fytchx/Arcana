@@ -140,3 +140,42 @@
  .arcGuideChapterName{font-size:13px}
 }
 @media(prefers-reduced-motion:reduce){.arcGuideChapterItem{transition:none}}
+
+/* Season 2 reading choices: practical entry first, full manual available on demand. */
+.wikiCompleteGuide .wikiGuideFastTrack{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:16px;
+ padding:clamp(14px,2.2vw,20px);margin:18px 0 20px;
+ border:1px solid var(--theme-highlight-border);
+ border-radius:16px;
+ background:linear-gradient(130deg,var(--theme-highlight-soft),var(--theme-card));
+}
+.wikiGuideFastTrackText{display:grid;gap:6px;min-width:0}
+.wikiGuideFastTrackText strong{font-size:clamp(15px,1.7vw,19px);line-height:1.25;color:var(--text)}
+.wikiGuideFastTrackText span{max-width:64ch;font-size:13px;line-height:1.55;color:var(--soft)}
+.wikiGuideFastTrackActions{display:grid;gap:8px;min-width:min(100%,240px)}
+.wikiGuideFastTrackActions button{
+ display:flex;align-items:center;justify-content:center;gap:7px;
+ min-height:42px;padding:10px 14px;border-radius:11px;font:inherit;font-size:12px;font-weight:750;
+ cursor:pointer;text-align:center;transition:filter .16s ease,border-color .16s ease;
+}
+.wikiGuideFastTrackActions button:hover,.wikiGuideFastTrackActions button:focus-visible{filter:brightness(1.14)}
+.wikiGuideFastPrimary{background:var(--theme-highlight);color:var(--theme-main);border:1px solid var(--theme-highlight)}
+.wikiGuideFastSecondary{background:var(--theme-card);color:var(--theme-accent-text);border:1px solid var(--theme-highlight-border)}
+.wikiGuideFastTrackActions button svg{flex:none}
+.wikiCompleteGuide #section-practical-quick-start-steps-and-tips{
+ padding:clamp(20px,3.2vw,32px);margin:22px -8px;
+ border:1px solid var(--theme-highlight-border);border-radius:16px;
+ background:linear-gradient(140deg,var(--theme-highlight-soft),var(--theme-card) 28%);
+ scroll-margin-top:100px;
+}
+.wikiCompleteGuide #section-practical-quick-start-steps-and-tips ul{display:grid;gap:11px;padding-left:25px}
+.wikiCompleteGuide #section-practical-quick-start-steps-and-tips li{line-height:1.65}
+@media(max-width:770px){
+ .wikiCompleteGuide .wikiGuideFastTrack{grid-template-columns:minmax(0,1fr)}
+ .wikiGuideFastTrackActions{grid-template-columns:repeat(2,minmax(0,1fr));min-width:0}
+}
+@media(max-width:480px){
+ .wikiGuideFastTrackActions{grid-template-columns:minmax(0,1fr)}
+ .wikiCompleteGuide #section-practical-quick-start-steps-and-tips{margin-inline:0;padding:16px}
+}
+@media(prefers-reduced-motion:reduce){.wikiGuideFastTrackActions button{transition:none}}

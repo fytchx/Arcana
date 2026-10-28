@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {wikiArticleView} from '../src/wiki-views.js';
+import {wikiArticleById} from '../src/wiki-data.js';
+test('practical route gives a jump before the long contents and preserves the full guide',()=>{
+ const guide=wikiArticleById('season-2-complete-zane');
+ const html=wikiArticleView(guide);
+ assert.equal(guide.sections.length,37);
+ assert.match(html,/class="wikiGuideFastTrack"/);
+ assert.match(html,/data-action="wikisection" data-arg="practical-quick-start-steps-and-tips"/);
+ assert.match(html,/data-action="wikisection" data-arg="guide-contents"/);
+ assert.match(html,/id="section-practical-quick-start-steps-and-tips"/);
+ assert.ok(html.indexOf('wikiGuideFastTrack')<html.indexOf('id="section-guide-contents"'));
+ assert.match(html,/data-action="wikichapters"/);
+ assert.equal((html.match(/data-action="wikichapters"/g)||[]).length,37);
+ const css=await readFile(new URL('../season2-guide.css',import.meta.url),'utf8');
+ assert.match(css,/\.wikiGuideFastTrackActions/);
+ assert.match(css,/@media\(max-width:480px\)/);
+});

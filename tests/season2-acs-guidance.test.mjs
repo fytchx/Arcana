@@ -46,3 +46,20 @@ test('rune families remain build-specific and runeword filler advice stays condi
  assert.match(words,/If completing a word weakens your build more than the word helps, skip it/);
  assert.doesNotMatch(runes,/a less impressive rune is worth using simply because its secondary fits the build perfectly/);
 });
+
+test('guide offers a practical route and respects BruTo review on early priorities',()=>{
+ const introduction=section('Introduction')?.body||'';
+ const classes=section('Choosing your class')?.body||'';
+ const survival=section('Surviving harder fights')?.body||'';
+ const fast=section('Practical quick start: steps and tips');
+ assert.match(introduction,/don't have to read every chapter in order/);
+ assert.match(classes,/Harmony is another option, mainly worth considering for Rogue and Archer/);
+ assert.match(classes,/Mage can also explore Harmony/);
+ assert.match(survival,/percentage Damage Reduction affix/);
+ assert.match(survival,/Helmet, Torch or Chest/);
+ assert.match(fast?.body||'',/Keep pushing Monster Level/);
+ assert.match(fast?.body||'',/ML 90 as a useful checkpoint for Conflux rare-material opportunities/);
+ assert.match(fast?.body||'',/doesn't refund its invested Pet Shards/);
+ assert.deepEqual(guide.connections.sectionLinks[fast.title],['pathfinder','farm','build']);
+ assert.match(section('Every important ML milestone').table.find(r=>r[0]==='90')[1],/Conflux rare-material farming/);
+});

@@ -6,19 +6,19 @@ export const SEASON2_COMPLETE_GUIDE=Object.freeze({
   "readTime": "35–45 min",
   "author": "Zane",
   "source": "player-authored",
-  "summary": "From choosing a class and one-shot farming to the Forge, pets, Runes, raids and Convergence. Practical advice, a full ML roadmap and shortcuts to Arcana tools.",
+  "summary": "Practical progression steps first, with optional deep dives on Monster Level, gear, pets, Runes and endgame.",
   "keywords": "season 2 complete zane beginners progression ml one shot harmony mage strength intelligence warrior retaliation double damage radiant raeik forge raid pet convergence",
-  "version": "Preview review draft · October 27, 2026",
+  "version": "Season 2 · revised October 28, 2026",
   "sections": [
     {
       "part": "Getting started",
       "title": "Introduction",
-      "body": "IdleArc looks pretty simple at first. Your character fights monsters, collects loot, levels up and gets stronger. Then you start exploring the Forge, pet system, Runes and everything else and realize there are a ridiculous number of ways to improve your character.\n\nI want this guide to explain the important systems, how they fit together and the decisions that actually matter while progressing through Season 2.\n\nThere's no single perfect route. Your drops, class and goals will all affect what makes sense. The point isn't to force everyone into the same build. It's to help you understand the game well enough to make your own decisions."
+      "body": "IdleArc has a lot of systems. You don't need to understand all of them before you can start making good progress.\n\nIf you just want to know what to do next, use the Practical quick start. It gives you a short set of priorities, milestones and mistakes to avoid. You can come back to the explanations whenever something actually matters for your character.\n\nThe rest of this guide is the deeper reference: how Monster Level, damage, equipment, pets, runes and later activities fit together. It isn't homework, and you don't have to read every chapter in order.\n\nMy approach is to keep improving kill speed, push Monster Level, and take short detours to farm what I need for the next upgrade. Your class and the items you find will change the details."
     },
     {
       "part": "Getting started",
       "title": "Choosing your class",
-      "body": "IdleArc has five classes, each with three Class Skill branches.\n\n- Warrior: Heavy melee attacks, shields, Defense, Block and Retaliation.\n- Rogue: Fast attacks, critical damage, Double Hit, dual-wielding and useful farming skills.\n- Archer: Ranged attacks, traps, critical scaling and pet-focused options through Beastmaster.\n- Mage: Spell-based attacks and strong offensive multipliers. Something worth knowing is that Attack Mages benefit from BOTH Strength and Intelligence, much like Attack Rogues. Don't automatically stack nothing but INT just because that's how Mages work in other games.\n- Druid: Several ways to combine offense, defense and pet bonuses, including builds where your pet does much of the damage.\n\nThere's also Harmony. It's less popular, and the Mage skill tree doesn't exactly point you toward it. But you can build around Harmony to make both Mage and Rogue stronger. Used properly, it offers ways to push Attack Damage much higher.\n\nMy advice is to pick the class you're interested in and let RNG influence the early build. Maybe you thought you were going one direction, then an amazing Radiant weapon drops for something else. That can be a perfectly good reason to switch things up. A great item you actually have is often more useful than the ideal item you're still hoping to find."
+      "body": "IdleArc has five classes, each with three Class Skill branches.\n\n- Warrior: Heavy melee attacks, shields, Defense, Block and Retaliation.\n- Rogue: Fast attacks, critical damage, Double Hit, dual-wielding and useful farming skills.\n- Archer: Ranged attacks, traps, critical scaling and pet-focused options through Beastmaster.\n- Mage: Spell-based attacks and strong offensive multipliers. Something worth knowing is that Attack Mages benefit from BOTH Strength and Intelligence, much like Attack Rogues. Don't automatically stack nothing but INT just because that's how Mages work in other games.\n- Druid: Several ways to combine offense, defense and pet bonuses, including builds where your pet does much of the damage.\n\nHarmony is another option, mainly worth considering for Rogue and Archer Attack builds. Mage can also explore Harmony in the right setup, but I wouldn't present it as the standard Mage path. Don't pick Harmony just because a guide mentions it: compare what it gives your actual build against the alternatives.\n\nMy advice is to pick the class you're interested in and let RNG influence the early build. Maybe you thought you were going one direction, then an amazing Radiant weapon drops for something else. That can be a perfectly good reason to switch things up. A great item you actually have is often more useful than the ideal item you're still hoping to find."
     },
     {
       "part": "Getting started",
@@ -84,7 +84,7 @@ export const SEASON2_COMPLETE_GUIDE=Object.freeze({
         ],
         [
           "90",
-          "Infernal Pits · early Epic drops · Rune Grid 6×4"
+          "Infernal Pits · early Epic drops · Conflux rare-material farming becomes relevant · Rune Grid 6×4"
         ],
         [
           "100",
@@ -142,7 +142,7 @@ export const SEASON2_COMPLETE_GUIDE=Object.freeze({
     {
       "part": "Builds and combat",
       "title": "Surviving harder fights",
-      "body": "Health, Defense, Block and Dodge matter, especially in activities like the Tower.\n\nYou don't need to turn your everyday farming build into a fortress if monsters already die before they threaten you. Losing too much damage can make ordinary farming far less efficient.\n\nRetaliation Warrior is a special case because Defense and Block can also help deal damage. That doesn't mean the same priorities apply to every other build.\n\nWhen you're stuck, decide whether the real problem is damage, survivability or both. Then upgrade for the problem you're having."
+      "body": "For most early farming builds, dealing enough damage to kill quickly matters more than stacking Defense. If the monsters barely get an attack in, piling up defensive stats usually doesn't help your farming speed.\n\nIf you do need some protection early, look for a useful percentage Damage Reduction affix, such as of Warding, on eligible Helmet, Torch or Chest equipment. It can solve a survival problem without turning your entire build into a defensive setup. Keep important bonuses like Sage's All Class Skills in mind before swapping gear just for survivability.\n\nDefense, Health, Block and Dodge become more relevant when the activity actually requires survival, especially in the Tower. Retaliation Warrior is also different: Defense and Block can contribute to its damage, so they're not simply defensive investments there.\n\nFirst figure out what's stopping you: not enough damage, not enough survival, or both. Spend resources on that problem instead of stacking stats out of habit."
     },
     {
       "part": "Progression and farming",
@@ -162,7 +162,7 @@ export const SEASON2_COMPLETE_GUIDE=Object.freeze({
     {
       "part": "Progression and farming",
       "title": "Progression: ML 1 to 65",
-      "body": "Early on, focus on learning your class and making the most of your drops. Get into a guild, spend skill points, start using the Forge and get familiar with your available activities.\n\nML 20 brings Gems, ML 30 opens Conflux and ML 50 is the Torch milestone. At ML 60, Runic Cores become available.\n\nA good early item might change what you build. Don't be stubborn about sticking to an original plan if RNG gives you something better.\n\nTry to keep progressing toward ML 65, with material-farming detours when your damage is falling behind. You don't have to perfect every Uncommon item along the way."
+      "body": "Early on, focus on learning your class and making the most of your drops. Get into a guild, spend skill points, start using the Forge and get familiar with your available activities.\n\nML 20 brings Gems, ML 30 opens Conflux and ML 50 is the Torch milestone. At ML 60, Runic Cores become available.\n\nA good early item might change what you build. Don't be stubborn about sticking to an original plan if RNG gives you something better.\n\nPrioritize damage that lets you kill quickly. Don't build around generic Defense early unless your build specifically uses it; if surviving becomes a problem, consider an appropriate Damage Reduction affix instead.\n\nTry to keep progressing toward ML 65, with material-farming detours when your damage is falling behind. You don't have to perfect every Uncommon item along the way."
     },
     {
       "part": "Progression and farming",
@@ -372,6 +372,11 @@ export const SEASON2_COMPLETE_GUIDE=Object.freeze({
     },
     {
       "part": "Making it easier",
+      "title": "Practical quick start: steps and tips",
+      "body": "If you don't want the full theory, this is the route I'd follow. Adjust it to your class and your actual drops.\n\n- 1. Pick how your build deals damage: Attack, Pet or Retaliation. Build around that instead of spreading every upgrade across unrelated bonuses. Harmony is an option mainly for Rogue and Archer Attack setups, not something every class needs.\n- 2. Join an active guild early. Ask experienced players about your class, and use your skill points and whatever useful equipment you already own.\n- 3. Keep pushing Monster Level. Aim to one-shot the monsters you normally farm. If kills slow down, temporarily lower Fighting Level to farm the materials for a useful upgrade, then return to pushing. Don't park your ML indefinitely.\n- 4. Prioritize damage over generic Defense in early farming. If you keep dying, an appropriate percentage Damage Reduction affix on eligible Helmet, Torch or Chest gear can be a better temporary fix. Don't casually give up Sage's ACS just to wear a defensive helmet.\n- 5. Watch the unlocks: Gems at ML 20, Conflux at ML 30, Torch and ACS at ML 50, Runic Cores at ML 60, more room and equipment at ML 65, and ML 90 as a useful checkpoint for Conflux rare-material opportunities. You don't have to optimize every system the moment it appears.\n- 6. Spend materials where they improve your actual build. Check Pathfinder for monster materials and pick the farm target you can kill efficiently. Don't upgrade random slots simply because they're ready.\n- 7. Plan your four long-term pets before spending heavily on evolved affixes. ACS Hatch Bonus Legendaries can be useful temporarily, but may be better kept as double-value Compound fodder. Sacrificing one doesn't refund its invested Pet Shards.\n- 8. Use Runes whose primary bonuses help your build. A Rune Word can justify a filler Rune if the overall formation is worthwhile; useful secondaries like Critical Damage or Double Hit help Attack setups, while EXP Gain can suit a farming preset.\n\nYour daily check is simple: Are kills still fast? What's the next meaningful upgrade? Which monster drops its materials? Are there guild or daily rewards you actually need? Complete the useful activities, set your farming preset and keep progressing.\n\nIf you want the reason behind any step, use Chapters to jump straight to its deeper explanation. You don't have to read the other chapters first."
+    },
+    {
+      "part": "Making it easier",
       "title": "Presets, Auto-Presets and accounts",
       "body": "By the middle and late game, I recommend separate presets for everyday farming, pushing ML, Boss Fights, Tower and special activities.\n\nAuto-Presets can help apply those setups automatically. Rift Raids now support your gear, Rune, skill-tree and pet presets without forcing you to change your normal equipped loadout.\n\nYou can also turn on Share my detailed stats publicly if you want other players to see your stats, Runes and Pets when they open your profile. That setting is OFF by default.\n\nWorld Selection now lets you tap a locked biome to preview its monsters and elemental weaknesses.\n\nCharacter Slots are now called Storage Slots. They're only purchased during the Keep Both step at season end, so don't mistake them for an early character-progression upgrade."
     },
@@ -504,6 +509,11 @@ export const SEASON2_COMPLETE_GUIDE=Object.freeze({
         "affixes",
         "compound",
         "petlab"
+      ],
+      "Practical quick start: steps and tips": [
+        "pathfinder",
+        "farm",
+        "build"
       ]
     }
   }
