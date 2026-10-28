@@ -1,0 +1,90 @@
+# Arcana operational audit and continuity runbook
+**Audit date:** 2026-10-28  
+**Status:** Preliminary read-only infrastructure audit; CI test repairs proposed separately in this branch. **Do not consider backup or restore verified.**
+
+## Canonical architecture (verified in Railway and GitHub)
+- Live domain: `https://arcanacompanion.xyz` and `www`.
+- Canonical source: `fytchx/Arcana`, `main`.
+- Actual live Railway service: project **Arcana Clean Staging**, environment **staging**, service **Arcana Stable App**. The historical names do *not* imply this is disposable staging.
+- Main production persistent volume: **arcana-wiki-articles**, mounted at **`/data`**, 500 MB provisioned. Service configuration uses `ARCANA_ACCOUNT_DATA_DIR` and `ARCANA_WIKI_DATA_DIR` variables. Do not change the mount path.
+- Actual isolated preview: **Arcana Preview** > **preview** > **Arcana Preview App** at `arcana-preview-app-preview.up.railway.app`; separate **Arcana Preview Data (isolated)** volume.
+- Other Railway projects host external art, historical functions, directory/listing utilities, and legacy gateways. Even when apparently redundant, their necessity has NOT been established. Do not delete or consolidate before mapping live requests, dependent URLs, and volumes.
+
+## Audit evidence and initial risk register
+| Priority | Item | Evidence | Status / next action |
+| --- | --- | --- | --- |
+| P0 | Restorable offsite user-data copy not verified | Production account/wiki state lives on attached `/data` volume; Git history does not contain user data; no backup operation proved | Enable snapshot schedule, export safely offsite, and perform an isolated restore drill |
+| P1 | Deployments can start with failing GitHub checks | Railway source config has `checkSuites: false`. `main` SHA `db3c465` failed Arcana Checks while Railway deployment queued | Require successful CI before production release; tighten ruleset/approval and check-suite behavior |
+| P1 | Pending/failed production deploys | At audit: two recent production deployments QUEUED and three failed on Oct 27; prior successful `b0aeda7` | Inspect actual latest settled version; follow build logs; do not claim new guide is live until release succeeds |
+| P1 | Legacy code and data dependencies | README documents proxy dependencies for catalog, guilds, LFG, artwork; multiple Railway Functions are not connected to `main` | Build dependency map and migrate carefully |
+| P2 | Old workflow triggers | `staging-smoke.yml`, `live-release-smoke.yml`, `journal-release.yml` use dated feature/release branches | Rationalize branches and workflows once canonical preview/release paths are proven |
+| P2 | Unclear account/auth verification | Main service contains Discord client credentials *names*; Google credentials listed on preview; real-provider sign-in not end-to-end audited | Verify sign-in, session, role boundaries and login redirects on the actual domain; never expose secrets |
+| P2 | Existing docs disagree with current rollout | Multiple older docs describe prelaunch staging and incomplete OAuth | Label historical docs; make this runbook the operational source of truth |
+| P2 | Branch and project proliferation | GitHub shows many archival feature/checkpoint branches; Railway lists multiple Arcana project generations | Audit reference usage and billing; archive only after safe export and owner approval |
+
+**Traffic observation:** Railway's production service reported 12,291 HTTP requests with 0 5xx and 88 4xx during the sampled 24h. Typical response time was low. This **does not** prove visual, login, or business-logic correctness.
+
+**Build observation:** On `db3c465` GitHub Actions source job failed (417 passed / 2 failed). `tests/season2-practical-entry.test.mjs` used `await` inside a non-async test. `tests/guide-chapter-navigator.test.mjs` still expected 36 guide sections and disallowed the new practical jump; the source now has 37 sections. Repairs are on this audit branch, pending GitHub PR validation. Live deployment status must be checked again before promotion.
+
+## Backup and recovery procedure
+The repository, Railway snapshots, and an independently stored **offsite data export** serve different purposes. GitHub is **only code/config version control**. Railway backups are snapshots tied to the **same Railway project and environment**, according to Railway docs. They are not a complete Railway-exit plan.
+
+### A. Immediate, lowest-risk protection (owner: Railway dashboard)
+1. Open Railway > **Arcana Clean Staging** > **staging** > **Arcana Stable App** > **Backups**.
+2. Verify a backup schedule is enabled on the **existing** production `/data` volume. Prefer Daily plus Weekly and a manual baseline. Review cost/limits in Railway before enabling.
+3. Record the most recent successful backup timestamp and **confirm restoration procedure using an isolated/non-production copy**. Never overwrite the production volume to rehearse a restore.
+4. Repeat later for the separate preview and any confirmed active volume-backed directory/design services.
+5. Do not delete or detach production volumes; do not wipe volumes (this also deletes their Railway backups).
+
+Railway backup reference: https://docs.railway.com/volumes/backups
+
+### B. Independent offsite copy (required before host migration)
+1. Export all needed `/data` content, including `accounts/`, account builds/community, wiki article JSON/images/history, and beta feedback, using Railway's **volume browser** or an authenticated Railway CLI. Sample commands *after selecting the correct project/service/environment*: `railway volume browse /` and `railway volume files list /`. Railway supports `railway volume files download <remote> <local>`.
+2. Store an encrypted archive in a separate location controlled by the owner, e.g., private Drive plus another independent storage. **Never** put sessions, profile data, auth tokens, key material, or private user data into the public GitHub repo or a public link.
+3. Create and retain a manifest with UTC timestamp, file counts, aggregate hashes, and required app commit. Preserve file ownership and paths.
+4. Verify restore **to a separate disposable service and volume**, including account identity, Wiki articles/images, and cloud builds; avoid invoking real OAuth writes in the drill.
+5. Document how application and secrets are restored separately. OAuth secrets must be re-entered only into secure provider/Railway settings, never into source files, messages, or backup docs.
+6. Repeat exports on a predictable schedule. A backup that has never been restored is only a hopeful collection of bytes.
+
+Railway volume management: https://docs.railway.com/volumes  
+Railway SSH/SFTP copy: https://docs.railway.com/cli/ssh
+
+### C. If Railway goes away
+1. Export **code** at a known tagged passing commit; export **data** and dependencies separately as above.
+2. Choose a Node.js 22+ hosting platform supporting a persistent data disk or migrate JSON data to a managed database/object store. Avoid hosts with ephemeral local file storage unless replacing persistence properly.
+3. Configure `npm start`, `/health`, service port, and **private** environment variables; attach persistent `/data`, not a fresh empty directory.
+4. Start on a temporary domain. Test login redirects/cookies, public Wiki, private saves, artwork proxy dependencies, user guides, and mobile navigation.
+5. Change Discord/Google OAuth redirect URIs and app base URL to the new domain **before** sending traffic; update DNS only after tests pass. Keep the old service intact for rollback and account reconciliation. Never run two independent writable stores for the same live accounts.
+6. Verify backup and rollback on the new host, then monitor errors and browser behavior.
+
+## Proposed release workflow (not yet enforced)
+1. Create a small feature branch from latest green `main`; avoid work on a stale unmerged branch.
+2. Make one coherent change, with Node tests and mobile browser checks; open PR.
+3. Require `Arcana Checks / source` and `Arcana Checks / mobile` to pass, with approved review. Do not merge failing changes, even if Railway can deploy them.
+4. Deploy **preview** from the candidate commit (not an unrelated old feature branch). Verify deployment SHA, `/health`, artwork, scripts, login, tools and Android.
+5. After a recent verified data backup, merge to `main` and have Railway deploy **only** after the approved green check. Confirm Railway status `SUCCESS` and commit SHA; run read-only live smoke; monitor 5xx, latency and visual regressions.
+6. Tag known-good production SHA and record deployment ID, changelog and backup timestamp.
+7. For a broken release, use a known-good **code** deployment/revert, and leave the persistent volume untouched. Do not overwrite active accounts with an old snapshot unless data restore is explicitly warranted and reconciled.
+
+## Test matrix for full signoff
+- Guest home, mobile/desktop nav, layered overlays, page scroll lock, PWA icon, all themes and texture editor.
+- Pathfinder: base/average/max materials, pity and refunds, 1–X quantity, biome ordering, gold at bottom. Compare with in-game sources.
+- Damage formula calculator: direct unlisted URL, no public nav, three modes, shorthand large numbers, storage/clear and outcome validation.
+- Upgrade optimizer, pet compound, affix calculator, rune/grid/tree tools, Guild and Build Studio; blank-start and saved-load fidelity.
+- Wiki/Journal: chapter navigator overlay, practical-first entry, internal links, accessibility/focus, contributor attribution, article publish/revise, image paths.
+- Real Discord/Google login on allowed callbacks, session expiry, guest access restrictions, creator/admin/editor authorization, private cloud save.
+- Search/SEO: sitemap/robots, route discovery, canonical redirects, link availability.
+- Production health, deployment/version consistency, and external service dependency checks.
+
+## Owner actions and blockers
+- **Required now:** In the Railway dashboard, inspect **Backups** for the production Arcana Stable App volume and report whether Daily/Weekly snapshots and manual baseline are enabled. Do not send credentials.
+- **Required after CI repair:** In GitHub Settings > Rules (or branch protection), require successful PR checks before merging to `main`. GitHub connector cannot verify existing branch-protection state (403).
+- **Required before migration:** Verify ownership/access to domain registrar, Railway, GitHub and provider OAuth apps; document renewal date and secure recovery options privately.
+- **Required for acceptance:** Android smoke of login, account saves, Wiki publish, Pathfinder, chapter selector, damage URL; send concrete failures/screenshots.
+- **Owner approval only:** any deletions, expensive backup plan changes, production routing/DNS changes, secret rotation, or volume restore.
+
+## Current audit limits
+- No restore test has been performed. Railway connector cannot inspect all snapshot settings or export volume contents itself.
+- Public web inspection could not load the domain from this runtime; infrastructure-level HTTP data is from Railway, not a real browser visual pass.
+- No secrets are included in this runbook. Service variable **names** alone do not establish functional OAuth.
+- Full source lint/security and functional QA across every interactive route is still pending; this runbook documents evidence and next actions rather than falsely marking the audit complete.
