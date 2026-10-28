@@ -181,8 +181,8 @@ const server=http.createServer(async(req,res)=>{
   }
   if(await handleJournalRequest(req,res,parsedUrl))return;
   if(req.method!=='GET'&&req.method!=='HEAD'){send(res,405,'Method not allowed');return;}
-  // Experimental calculator source files require a server-authenticated administrator.
-  if(/^\/src\/(?:damage-formula[\w-]*|upgrade-optimizer[\w-]*|upgrade-family)\.js$/.test(pathname)){
+  // Unlisted damage formula source is public. Upgrade optimizer source remains admin-only.
+  if(/^\/src\/(?:upgrade-optimizer[\w-]*|upgrade-family)\.js$/.test(pathname)){
    try{await requireCapability(req,'site:manage');}catch{json(res,403,{error:'Administrator session required.'},{'cache-control':'no-store'});return;}
   }
   if(pathname==='/health'||pathname==='/__health') {const art=await localArtAudit;const ok=!REQUIRE_LOCAL_ART||art.ready;json(res,ok?200:503,{ok,release:REVISION,commit:process.env.RAILWAY_GIT_COMMIT_SHA||null,source:'tracked frontend files',artwork:{local:art.ready,groups:art.groups,version:art.version||null},dependencyEndpoints:Object.keys(BASES)});return;}
