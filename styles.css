@@ -792,6 +792,32 @@ body,.shell{background:var(--theme-main)}
 @media(min-width:1000px){.wikiArticleToc>div{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 
+/* Experimental Monster Level XP & kills card. Theme-aware, phone-first. */
+.mlXpCalc{display:grid;gap:16px;max-width:810px;margin:0 auto 24px;padding:clamp(14px,3vw,23px);min-width:0;border:1px solid var(--theme-highlight-border,var(--line));border-radius:17px;background:linear-gradient(135deg,var(--theme-highlight-soft,var(--panel)),var(--theme-secondary,var(--panel)));box-shadow:0 12px 36px #0002}
+.mlXpHeading{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.mlXpHeading h2{font-size:clamp(19px,4vw,27px);line-height:1.2;margin:7px 0}
+.mlXpHeading p{font-size:12px;line-height:1.65;color:var(--soft);margin:0;max-width:530px}
+.mlXpTag{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--theme-highlight-border,var(--line));border-radius:999px;padding:6px 9px;color:var(--theme-accent-text,var(--accent))}
+.mlXpControls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mlXpField{display:grid;align-content:start;gap:6px;min-width:0;font-size:12px;font-weight:700;color:var(--text)}
+.mlXpField input,.mlXpField select{min-width:0;width:100%;height:46px;border-radius:10px;border:1px solid var(--theme-border,var(--line));padding:8px 11px;background:var(--theme-main,var(--bg));color:var(--text);font-size:16px;font-weight:600;font-family:inherit;font-variant-numeric:tabular-nums;max-width:100%}
+.mlXpField select{cursor:pointer}
+.mlXpField input:focus-visible,.mlXpField select:focus-visible{outline:2px solid var(--theme-highlight,var(--accent));outline-offset:2px}
+.mlXpField small{font-size:10px;line-height:1.45;font-weight:400;color:var(--soft)}
+.mlXpResults{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.mlXpResults>div{min-width:0;display:grid;align-content:start;gap:7px;padding:14px;border-radius:12px;background:var(--theme-main,var(--bg));border:1px solid var(--theme-border,var(--line))}
+.mlXpResults small{font-size:10px;font-weight:700;letter-spacing:.03em;color:var(--soft)}
+.mlXpResults strong{font-size:clamp(18px,4vw,25px);font-variant-numeric:tabular-nums;color:var(--text);overflow-wrap:anywhere;line-height:1.25}
+.mlXpResults span{font-size:10px;line-height:1.4;color:var(--soft)}
+.mlXpResults .mlXpHero{background:var(--theme-highlight-soft,var(--panel));border-color:var(--theme-highlight-border,var(--line))}
+.mlXpResults .mlXpHero strong{font-size:clamp(23px,5vw,32px);color:var(--theme-accent-text,var(--accent))}
+.mlXpActions{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.mlXpActions button{font-family:inherit;border:1px solid var(--theme-border,var(--line));background:var(--theme-secondary,var(--panel));color:var(--text);border-radius:10px;padding:10px 14px;min-height:44px;font-size:12px;font-weight:700;cursor:pointer}
+.mlXpActions span{font-size:10px;color:var(--soft)}
+.mlXpDisclaimer{margin:0;font-size:11px;line-height:1.7;padding:12px 13px;border-left:2px solid var(--theme-highlight,var(--accent));background:var(--theme-secondary,var(--panel));color:var(--soft);border-radius:0 9px 9px 0}
+.mlXpDisclaimer strong{color:var(--text)}
+@media(max-width:490px){.mlXpControls{grid-template-columns:1fr}.mlXpResults{gap:7px}.mlXpResults>div{padding:11px}.mlXpResults strong{font-size:18px}.mlXpResults .mlXpHero strong{font-size:24px}}
+
 /* Monster Level XP comparator: verified multipliers, user-entered timing. */
 .farmCompare{display:grid;gap:14px;max-width:810px;margin:0 auto;padding-bottom:20px;min-width:0}
 .farmIntro{padding:2px 0 0}.farmIntro h2{margin:7px 0;font-size:clamp(18px,4vw,23px)}
