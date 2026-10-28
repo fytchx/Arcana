@@ -1,3 +1,4 @@
+import {mlXpCalculatorView} from './ml-xp-calculator.js';
 import {esc,icon} from './ui.js';
 
 // Relative XP multipliers from the official Season 2 v1.3.1 patch.
@@ -41,9 +42,9 @@ export function saveFarmPlan(raw,store=null){
  return plan;
 }
 const format=n=>Number(n).toLocaleString('en-US',{maximumFractionDigits:3});
-export function farmCompareView(raw){
+export function farmCompareView(raw,mlXpPlan){
  const data=compareFarm(raw);
- return `<section class="farmCompare" aria-label="Monster Level farming comparator">
+ return `${mlXpCalculatorView(mlXpPlan)}<section class="farmCompare" aria-label="Monster Level farming comparator">
  <div class="farmIntro"><span class="eyebrow">BASED ON VERIFIED SEASON 2 MECHANICS</span>
  <h2>Find your fastest Monster Level farm</h2>
  <p>Enter your measured average seconds per <strong>ML XP-awarding kill</strong>. Arcana compares relative ML XP per second, not guessed monster health or absolute XP.</p><p><strong>Frenzy kills do not grant Monster Level XP.</strong> Exclude Frenzy kills when measuring your kill rate for this comparison.</p></div>
