@@ -1,9 +1,9 @@
 name: Arcana Checks
 on:
   pull_request:
-    branches: [main, feature/build-studio-preview-2026-10-22]
+    branches: [main, 'preview/**']
   push:
-    branches: [main, feature/build-studio-preview-2026-10-22]
+    branches: [main, 'preview/**']
   workflow_dispatch:
 concurrency:
   group: arcana-checks-${{ github.ref }}
