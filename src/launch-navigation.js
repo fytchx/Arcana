@@ -28,7 +28,7 @@ export const HOME_MENUS=Object.freeze({
  tools:{title:'Tools',detail:'Pet calculators, farming tools, guild planning and damage analysis.',links:[
   link('Pet Compound Calculator','Pet rarity, Compound level and bonus values.','calculators/pet','paw'),
   link('Pet Affix Calculator','Pet Shard costs and affix upgrade planning.','calculators/affixes','calculator'),
-  link('ML Farming Comparator','Compare Monster Level farming efficiency.','calculators/ml-farm','sword'),
+  link('ML XP & Kills Calculator','Estimate ML XP, kills to level and farming speed.','calculators/ml-farm','sword'),
   link('Guild Skill Planner','Allocate, compare and share guild skill points.','labs/guild-tree','shield'),
   link('Damage Calculator','Enter your Attack, Retaliation, or Pet breakdown and test changes.','calculators/damage','calculator')
  ]},
