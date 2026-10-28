@@ -24,7 +24,7 @@
 
 **Traffic observation:** Railway's production service reported 12,291 HTTP requests with 0 5xx and 88 4xx during the sampled 24h. Typical response time was low. This **does not** prove visual, login, or business-logic correctness.
 
-**Build observation:** On `db3c465` GitHub Actions source job failed (417 passed / 2 failed). `tests/season2-practical-entry.test.mjs` used `await` inside a non-async test. `tests/guide-chapter-navigator.test.mjs` still expected 36 guide sections and disallowed the new practical jump; the source now has 37 sections. Repairs are on this audit branch, pending GitHub PR validation. Live deployment status must be checked again before promotion.
+**Build observation:** On `db3c465` GitHub Actions source job failed (417 passed / 2 failed). `tests/season2-practical-entry.test.mjs` used `await` inside a non-async test. `tests/guide-chapter-navigator.test.mjs` still expected 36 guide sections and disallowed the new practical jump; the source now has 37 sections. Repairs are on this audit branch; GitHub Arcana Checks (source and mobile) passed for PR #69 SHA `057aab6` on 2026-10-28. The PR is still draft and has not been merged. Live deployment status must be checked again before promotion.
 
 ## Backup and recovery procedure
 The repository, Railway snapshots, and an independently stored **offsite data export** serve different purposes. GitHub is **only code/config version control**. Railway backups are snapshots tied to the **same Railway project and environment**, according to Railway docs. They are not a complete Railway-exit plan.
@@ -88,3 +88,31 @@ Railway SSH/SFTP copy: https://docs.railway.com/cli/ssh
 - Public web inspection could not load the domain from this runtime; infrastructure-level HTTP data is from Railway, not a real browser visual pass.
 - No secrets are included in this runbook. Service variable **names** alone do not establish functional OAuth.
 - Full source lint/security and functional QA across every interactive route is still pending; this runbook documents evidence and next actions rather than falsely marking the audit complete.
+
+
+## Full Railway project cleanup inventory (rechecked 2026-10-28)
+One Railway workspace contains multiple distinct historical deployments; project names and descriptions are **not authoritative**. A successful historical deployment is not proof that a service is depended upon today. Source-proxy references and custom domains must be verified before deletion.
+
+| Project | Environment inventory | Disposition |
+| --- | --- | --- |
+| Arcana Clean Staging | 1 production-domain app, 500 MB data volume | **PROTECT:** actual public Arcana home |
+| Arcana Preview | 3 services, 512 MB isolated preview data volume | **PROTECT** for testing; reduce redundant preview services later |
+| ArcanaLFG | 1 live service, 100 MB listings volume | **PROTECT** external LFG dependency |
+| Arcana Volume Production | 12 services, 3 data volumes (assets 100 MB, design 100 MB, guild listings 500 MB) | **INVESTIGATE** service-by-service; main app still references catalog/art |
+| Arcana V3 Production | 5 live/stale service resources, including art services | **INVESTIGATE** referenced art endpoints |
+| Arcana Restore | 6 historical recovered functions | **INVESTIGATE** before retirement |
+| Arcana (project 871fd2b7...) | 0 services, but **ArcanaAssets** bucket in sjc | **DO NOT DELETE** until bucket contents, uses and backup verified |
+| Arcana Final | 0 live services, volumes or buckets | cleanup candidate |
+| Arcana Production v2 | 0 live services, volumes or buckets | cleanup candidate |
+| Arcana Stable | 0 live services, volumes or buckets | cleanup candidate |
+| Arcana Production (project 1a0055b5...) | 0 live services, volumes or buckets | cleanup candidate |
+| Arcana Production (project 16c25d1b...) | 0 live services, volumes or buckets | cleanup candidate |
+| Arcana (project 0fa228b3...) | 0 live services, volumes or buckets | cleanup candidate |
+| IdleArc Companion | 0 live services, volumes or buckets | cleanup candidate |
+| IdleArc Discord Bot, community proposal, two idle game prototypes, abundant-freedom | Unrelated or separate projects; some have staged or historic resources | **OUTSIDE this Arcana cleanup**, preserve until separately reviewed |
+
+**Connector discrepancy caution:** `list_services` can include historical or staged service definitions not present in `describe_environment` live resource inventory (e.g. Arcana Stable and Arcana Production v2). Confirm in dashboard and reconcile historical metadata before deleting a project, even if its live environment appears empty.
+
+**Runtime status update:** At later inspection on Oct 28, the production service was ONLINE with one running replica. The previously queued unlisted damage calculator commit `28fb1e0` became the active successful deployment. The newer practical-first guide commit `db3c465` failed its build tests and did **not** become live. Recent 1-hour Railway HTTP metrics showed 404 total requests, 0 server 5xx. Prior successful code remains active, so this is a release failure, not a confirmed public outage.
+
+**Next:** Resolve failing main CI by reviewing/publishing PR #69 only after backups and release safety gates. Run external dependency and bucket usage checks. Inventory unused domain routes, backups, and exact billing before proposing reversible shutdowns. Do not delete any resources as part of the audit.
