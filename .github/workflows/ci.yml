@@ -1,13 +1,14 @@
 name: Arcana Checks
 on:
   pull_request:
-    branches: [main, feature/build-studio-preview-2026-10-22]
+    branches: [main, 'preview/**']
   push:
-    branches: [main, feature/build-studio-preview-2026-10-22]
+    branches: [main, 'preview/**']
   workflow_dispatch:
 concurrency:
   group: arcana-checks-${{ github.ref }}
-  cancel-in-progress: true
+  # Never cancel main's push checks; Railway Wait for CI relies on an actual result.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 permissions:
   contents: read
 jobs:
