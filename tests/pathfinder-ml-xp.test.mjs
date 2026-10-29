@@ -87,7 +87,7 @@ test('compact Pathfinder UI has only the ML and biome controls and three results
  assert.match(html,/data-path-ml-preset="500"/);
  assert.equal((html.match(/class="pathMlCard pathMlCard--/g)||[]).length,3);
  assert.doesNotMatch(html,/killsPerSecond|data-mlxp="measured"|data-mlxp="current"|Estimated farming time/);
- assert.match(html,/one-shotting/);
+ assert.match(html,/one-shot kills/);
  assert.match(html,/not a recovered game formula/);
  assert.match(html,/Estimate XP, one-shot kills and time to the next Monster Level/);
  assert.doesNotMatch(html,/Know the XP\. Know the kills/);
