@@ -18,9 +18,10 @@ export const HOME_MENUS=Object.freeze({
   link('Item Codex','Equipment descriptions and artwork.','wiki/items','shield'),
   link('All Topics','Complete wiki category index.','wiki/topics','layers')
  ]},
- pathfinder:{title:'Pathfinder',detail:'Item upgrading, materials, enhancement costs and equipment comparison.',links:[
+ pathfinder:{title:'Pathfinder',detail:'Upgrade materials, Monster Level XP and gear progression.',links:[
   link('Upgrade Costs','Total materials and Gold between two upgrade levels.','calculators/pathfinder','calculator',{view:'range'}),
   link('Upgrade Map','Browse all ranks, enhancements and materials.','calculators/pathfinder','layers',{view:'timeline'}),
+  link('ML XP & One-Shot Kills','XP to next Monster Level and three one-shot kill estimates.','calculators/pathfinder','sword',{view:'ml'}),
   link('Rarity Reference','Equipment rarities and upgrade information.','calculators/pathfinder','shield',{view:'upgrade'}),
   link('Compare Equipment','Compare equipment and item upgrades.','calculators/pathfinder','compare',{view:'compare'}),
   link('Material Reference','Materials and their wiki entries.','wiki/library','box',{kind:'material'})
