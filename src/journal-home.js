@@ -1,6 +1,25 @@
 // Home always features the latest published Journal article, with a static fallback.
 let cache=null,lastFetch=0;
+// In-game event help shows 16:00 Pacific cutoffs on Nov 4, 7 and 14 (PST, UTC-8).
+// The seasonal promotion retires itself after the final Halloween Shop deadline.
+export function seasonalFeatureState(now=Date.now()){
+ if(now<Date.parse('2026-11-05T00:00:00Z'))return {phase:'HALLOWED HARVEST · LIVE EVENT',deadline:'Earn until Nov 4 · Pumpkin Shop until Nov 7'};
+ if(now<Date.parse('2026-11-08T00:00:00Z'))return {phase:'PUMPKIN SHOP · FINAL DAYS',deadline:'Spend harvested pumpkins by Nov 7'};
+ if(now<Date.parse('2026-11-15T00:00:00Z'))return {phase:'HALLOWEEN SHOP · FINAL DAYS',deadline:'Arcstone Halloween Shop closes Nov 14'};
+ return null;
+}
 export async function hydrateJournalPreview(){
+ const seasonal=document.querySelector('[data-seasonal-feature]');
+ if(seasonal){
+  const state=seasonalFeatureState();
+  seasonal.hidden=!state;
+  if(state){
+   const phase=seasonal.querySelector('[data-seasonal-phase]');
+   const deadline=seasonal.querySelector('[data-seasonal-deadline]');
+   if(phase)phase.textContent=state.phase;
+   if(deadline)deadline.textContent=state.deadline;
+  }
+ }
  const link=document.querySelector('[data-journal-latest]');
  if(!link)return;
  try{
