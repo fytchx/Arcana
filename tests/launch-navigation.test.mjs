@@ -93,7 +93,9 @@ test('Atlas home leads with six tools, then a featured guide and dynamic Journal
  assert.match(html,/class="atlasHero atlasGuideHighlight"/);
  assert.match(html,/class="atlasTileGrid"/);
  assert.match(html,/class="atlasJournal"/);
- assert.match(html,/idlearc-1-3-7-the-timing-couldnt-be-better/);
+ assert.match(html,/hallowed-harvest-2026-guide/);
+  assert.match(html,/data-seasonal-feature/);
+  assert.doesNotMatch(html,/IdleArc 1\.3\.7: A Step Forward/);
  assert.ok(html.indexOf('atlasTileGrid')<html.indexOf('atlasHero'));
  assert.ok(html.indexOf('atlasTileGrid')<html.indexOf('atlasJournal'));
  assert.equal((html.match(/class="atlasTile"/g)||[]).length,6);
