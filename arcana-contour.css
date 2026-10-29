@@ -1037,3 +1037,10 @@ html[data-arcana-design-pattern="rune-dust"]{--arcana-texture:radial-gradient(ci
  .pathfinderHubTop .pathfinderHubTabs{grid-template-columns:repeat(2,minmax(0,1fr))}
  .pathfinderHubTop .pathfinderHubTabs button{flex-direction:row;min-height:35px;font-size:11px}
 }
+
+/* Five compact Pathfinder destinations, including one-shot ML XP. */
+@media(min-width:701px){.pathfinderHub .pathfinderHubTabs{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:700px){
+ .pathfinderHub .pathfinderHubTabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .pathfinderHub .pathfinderHubTabs>button:nth-child(5):last-child{grid-column:1/-1}
+}

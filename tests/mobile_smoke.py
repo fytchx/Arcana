@@ -406,6 +406,30 @@ with sync_playwright() as playwright:
     admin_page.wait_for_selector('.adminConsole',timeout=10000)
     assert 'Admin Control Center' in admin_page.locator('.adminConsole h1').inner_text()
     admin_page.close()
+    # Pathfinder ML XP is a contained, one-shot-only mobile experience.
+    # Its output must not depend on the mocked recipe endpoint or kill-speed inputs.
+    page.evaluate("location.hash='#/calculators/pathfinder?view=ml'")
+    page.wait_for_selector('#pathMlXpPanel',timeout=8000)
+    assert page.locator('.pathMlCard').count()==3, 'Three one-shot scenarios must be visible'
+    assert page.locator('[data-path-ml-range]').count()==1
+    assert page.locator('[data-path-ml-biome]').count()==1
+    assert page.locator('input[data-mlxp="killsPerSecond"]').count()==0, 'No kill-speed field in Pathfinder ML XP'
+    page.locator('[data-path-ml-level]').fill('332')
+    page.locator('[data-path-ml-level]').dispatch_event('change')
+    assert '821.38K' in page.locator('.pathMlRequiredValue').inner_text(), 'ML 332 screenshot fit'
+    page.locator('[data-path-ml-biome]').select_option('rift')
+    assert 'Umbral Rift' in page.locator('.pathMlCompareIntro').inner_text()
+    page.locator('[data-path-ml-step="1"]').click()
+    assert page.locator('[data-path-ml-level]').input_value()=='333'
+    page.locator('[data-path-ml-preset="500"]').click()
+    assert page.locator('[data-path-ml-level]').input_value()=='500'
+    assert page.locator('.pathMlCard').count()==3
+    body_width=page.evaluate('document.documentElement.scrollWidth')
+    viewport_width=page.evaluate('window.innerWidth')
+    assert body_width<=viewport_width+2, 'ML XP mobile horizontal overflow: '+repr((body_width,viewport_width))
+    page.screenshot(path=str(OUT/'pathfinder-ml-xp-phone.png'),full_page=True)
+    page.evaluate("location.hash='#/home'")
+    page.wait_for_selector('.atlasHero',timeout=8000)
     assert errors==[], 'Browser errors: '+repr(errors)
     print('PASS: current Atlas Home, Journal, Community, Directory, Featured, Build Studio, settings, responsive checks and themes.')
     browser.close()

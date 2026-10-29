@@ -311,3 +311,89 @@
  .quickCompareThree b{font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){.quickMaterialModes button{transition:none}}
+
+/* Pathfinder ML XP: one-shot leveling companion. All artwork is CSS and theme-token-based. */
+.pathMlXp{--ml-border:color-mix(in srgb,var(--theme-highlight) 24%,var(--line));--ml-raised:color-mix(in srgb,var(--theme-highlight) 6%,var(--theme-secondary));display:grid;gap:14px;min-width:0;width:min(100%,1160px);margin-inline:auto;color:var(--text)}
+.pathMlIntro{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:clamp(20px,3vw,32px);border:1px solid color-mix(in srgb,var(--theme-highlight) 40%,var(--line));border-radius:var(--arcana-card-radius,20px);background:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(--theme-highlight) 24%,transparent),transparent 65%),linear-gradient(140deg,var(--theme-secondary),color-mix(in srgb,var(--theme-main) 75%,var(--theme-secondary)))}
+.pathMlIntro::after{content:"";pointer-events:none;position:absolute;inset:0;z-index:-1;background:repeating-linear-gradient(125deg,transparent 0 26px,color-mix(in srgb,var(--theme-highlight) 8%,transparent) 26px 27px);mask-image:linear-gradient(90deg,transparent 12%,black)}
+.pathMlIntro>div{position:relative;z-index:1;min-width:0}
+.pathMlEyebrow,.pathMlOverline{display:block;font-size:10px;line-height:1.3;letter-spacing:.16em;font-weight:800;text-transform:uppercase;color:var(--theme-highlight)}
+.pathMlIntro h2{font-size:clamp(25px,5vw,39px);font-weight:850;letter-spacing:-.05em;line-height:1.08;margin:8px 0}
+.pathMlIntro p{font-size:13px;line-height:1.5;color:var(--muted);margin:0}
+.pathMlOneShot{flex:none;display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid color-mix(in srgb,var(--theme-highlight) 47%,var(--line));background:color-mix(in srgb,var(--theme-highlight) 12%,var(--theme-secondary));color:var(--text);border-radius:999px;font-size:10px;letter-spacing:.075em;font-weight:850;white-space:nowrap}
+.pathMlOneShot span{font-size:16px;color:var(--theme-highlight)}
+.pathMlControls{display:grid;gap:12px;padding:clamp(15px,2.5vw,24px);border:1px solid var(--ml-border);border-radius:var(--arcana-card-radius,18px);background:var(--ml-raised);min-width:0}
+.pathMlLevelTop{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.pathMlLevelTop label{font-size:13px;font-weight:800;letter-spacing:.01em}
+.pathMlLevelTop>span{display:inline-flex;align-items:baseline;gap:5px;font-size:13px;font-weight:800;color:var(--theme-highlight);font-variant-numeric:tabular-nums}
+.pathMlLevelTop>span strong{font-size:21px;letter-spacing:-.04em;color:var(--text)}
+.pathMlLevelTop>span small{font-size:12px;font-weight:600;color:var(--muted)}
+.pathMlLevelButtons{width:min(100%,320px);justify-self:center;display:grid;grid-template-columns:49px minmax(0,1fr) 49px;gap:9px;align-items:stretch}
+.pathMlLevelButtons button,.pathMlQuickJumps button{font:inherit;cursor:pointer;color:var(--text);background:var(--theme-secondary);border:1px solid var(--ml-border);border-radius:11px;transition:border-color .15s,background .15s,transform .15s}
+.pathMlLevelButtons button{font-size:25px;font-weight:450;min-height:52px;display:grid;place-items:center}
+.pathMlLevelButtons button:hover,.pathMlQuickJumps button:hover,.pathMlLevelButtons button:focus-visible,.pathMlQuickJumps button:focus-visible{border-color:var(--theme-highlight);background:color-mix(in srgb,var(--theme-highlight) 12%,var(--theme-secondary))}
+.pathMlLevelButtons input{width:100%;min-width:0;min-height:52px;border:1px solid color-mix(in srgb,var(--theme-highlight) 48%,var(--line));border-radius:11px;background:var(--theme-secondary);font:inherit;color:var(--text);font-weight:850;font-size:28px;letter-spacing:-.045em;text-align:center;font-variant-numeric:tabular-nums;appearance:textfield;-moz-appearance:textfield}
+.pathMlLevelButtons input::-webkit-inner-spin-button,.pathMlLevelButtons input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.pathMlSlider{width:100%;height:28px;accent-color:var(--theme-highlight);cursor:pointer;appearance:none;-webkit-appearance:none;background:transparent;margin:0}
+.pathMlSlider::-webkit-slider-runnable-track{height:7px;border-radius:999px;background:linear-gradient(90deg,var(--theme-highlight) 0 var(--path-ml-fill),color-mix(in srgb,var(--theme-highlight) 17%,var(--line)) var(--path-ml-fill) 100%);border:1px solid var(--ml-border)}
+.pathMlSlider::-moz-range-track{height:7px;border-radius:999px;background:color-mix(in srgb,var(--theme-highlight) 20%,var(--line))}
+.pathMlSlider::-moz-range-progress{height:7px;background:var(--theme-highlight);border-radius:999px}
+.pathMlSlider::-webkit-slider-thumb{-webkit-appearance:none;width:23px;height:23px;border-radius:50%;margin-top:-9px;background:var(--theme-highlight);border:4px solid var(--theme-secondary);box-shadow:0 0 0 2px var(--theme-highlight),0 0 18px color-mix(in srgb,var(--theme-highlight) 45%,transparent)}
+.pathMlSlider::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--theme-highlight);border:4px solid var(--theme-secondary);box-shadow:0 0 0 2px var(--theme-highlight)}
+.pathMlBounds{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:-8px}
+.pathMlQuickJumps{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.pathMlQuickJumps button{min-width:0;min-height:36px;padding:5px 2px;font-size:11px;font-weight:750;font-variant-numeric:tabular-nums}
+.pathMlQuickJumps button.active{background:color-mix(in srgb,var(--theme-highlight) 23%,var(--theme-secondary));color:var(--text);border-color:var(--theme-highlight)}
+.pathMlBiomeSelect{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,320px);align-items:center;gap:12px;padding-top:14px;border-top:1px solid var(--ml-border)}
+.pathMlBiomeSelect>div{min-width:0;display:grid;gap:3px}
+.pathMlBiomeSelect label{font-size:13px;font-weight:800}
+.pathMlBiomeSelect small{font-size:11px;color:var(--muted)}
+.pathMlBiomeSelect select{width:100%;min-width:0;min-height:44px;padding:9px 32px 9px 12px;border:1px solid var(--ml-border);border-radius:10px;background:var(--theme-secondary);color:var(--text);font:inherit;font-size:13px;cursor:pointer}
+.pathMlResultsBody{display:grid;gap:12px}
+.pathMlRequired{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:clamp(19px,3vw,28px);border:1px solid var(--ml-border);border-radius:var(--arcana-card-radius,18px);background:linear-gradient(115deg,color-mix(in srgb,var(--theme-highlight) 13%,var(--theme-secondary)),var(--theme-secondary))}
+.pathMlRequiredValue{font-weight:900;font-size:clamp(36px,7vw,60px);line-height:1.1;letter-spacing:-.055em;font-variant-numeric:tabular-nums;margin:8px 0 6px;overflow-wrap:anywhere}
+.pathMlRequired p{font-size:11px;margin:0;color:var(--muted);line-height:1.5}
+.pathMlRequiredSeal{display:grid;place-content:center;gap:2px;text-align:center;width:89px;height:89px;border:1px solid color-mix(in srgb,var(--theme-highlight) 65%,var(--line));box-shadow:inset 0 0 0 4px var(--theme-secondary),inset 0 0 0 5px var(--ml-border);border-radius:50%;flex:none;transform:rotate(-8deg);color:var(--theme-highlight)}
+.pathMlRequiredSeal span{font-size:12px;font-weight:800;letter-spacing:.16em}
+.pathMlRequiredSeal strong{font-size:24px;line-height:1.1;font-variant-numeric:tabular-nums}
+.pathMlCompareIntro{display:flex;justify-content:space-between;align-items:end;gap:10px;flex-wrap:wrap}
+.pathMlCompareIntro>div{display:grid;gap:3px}
+.pathMlCompareIntro strong{font-size:15px;font-weight:850}
+.pathMlCompareIntro span,.pathMlCompareIntro small{font-size:11px;color:var(--muted)}
+.pathMlCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.pathMlCard{min-width:0;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:6px;padding:clamp(11px,2vw,20px);border:1px solid var(--ml-border);border-radius:var(--arcana-card-radius,15px);background:var(--theme-secondary)}
+.pathMlCard--normal{background:linear-gradient(155deg,color-mix(in srgb,var(--theme-highlight) 15%,var(--theme-secondary)),var(--theme-secondary));border-color:color-mix(in srgb,var(--theme-highlight) 50%,var(--line));box-shadow:inset 0 2px 0 color-mix(in srgb,var(--theme-highlight) 45%,transparent)}
+.pathMlCardHead{display:flex;align-items:center;gap:9px;min-width:0}
+.pathMlCardHead>div{display:grid;gap:2px;min-width:0}
+.pathMlCardHead strong{font-size:clamp(11px,2vw,15px);font-weight:850;line-height:1.2}
+.pathMlCardHead small{font-size:10px;color:var(--muted)}
+.pathMlCardSymbol{display:grid;place-content:center;width:32px;height:32px;flex:none;border:1px solid var(--ml-border);border-radius:10px;font-size:15px;font-weight:900;color:var(--theme-highlight);background:color-mix(in srgb,var(--theme-highlight) 10%,var(--theme-secondary))}
+.pathMlKillValue{font-size:clamp(21px,3.8vw,39px);font-weight:900;letter-spacing:-.055em;line-height:1.14;white-space:nowrap;font-variant-numeric:tabular-nums;margin-top:15px}
+.pathMlKillLabel{font-size:11px;color:var(--muted);margin-bottom:13px}
+.pathMlCardFoot{border-top:1px solid var(--ml-border);padding-top:11px;display:flex;justify-content:space-between;align-items:baseline;gap:4px;margin-top:auto}
+.pathMlCardFoot span{font-size:10px;color:var(--muted)}
+.pathMlCardFoot strong{font-size:14px;font-variant-numeric:tabular-nums}
+.pathMlNote,.pathMlDisclaimer{margin:0;font-size:11px;line-height:1.65;color:var(--muted)}
+.pathMlNote{padding:10px 12px;border:1px solid var(--ml-border);border-radius:9px;background:var(--ml-raised)}
+.pathMlDisclaimer{padding:6px 2px 16px}
+@media(max-width:620px){
+ .pathMlXp{gap:10px}.pathMlIntro{padding:19px}.pathMlIntro h2{font-size:26px}
+ .pathMlOneShot{font-size:9px;padding:7px 10px}
+ .pathMlControls{padding:14px;gap:12px}
+ .pathMlBiomeSelect{grid-template-columns:1fr;gap:7px}
+ .pathMlRequired{padding:17px}.pathMlRequiredSeal{width:66px;height:66px}
+ .pathMlRequiredSeal strong{font-size:18px}.pathMlRequiredSeal span{font-size:9px}
+ .pathMlCards{gap:5px}
+ .pathMlCard{padding:10px 7px;gap:5px}
+ .pathMlCardSymbol{width:24px;height:24px;border-radius:8px;font-size:13px}
+ .pathMlCardHead{gap:5px}
+ .pathMlCardHead strong{font-size:11px}
+ .pathMlCardHead small{font-size:9px}
+ .pathMlKillValue{font-size:clamp(16px,5.1vw,25px);margin-top:10px}
+ .pathMlKillLabel{font-size:9px}
+ .pathMlCardFoot{display:grid;gap:4px}
+ .pathMlCardFoot span{font-size:9px}
+ .pathMlCardFoot strong{font-size:12px}
+}
+@media(max-width:350px){.pathMlOneShot{display:none}.pathMlQuickJumps button{font-size:10px}.pathMlKillValue{font-size:15px}.pathMlCardHead strong{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.pathMlLevelButtons button,.pathMlQuickJumps button{transition:none}}
