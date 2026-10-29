@@ -406,45 +406,51 @@ with sync_playwright() as playwright:
     admin_page.wait_for_selector('.adminConsole',timeout=10000)
     assert 'Admin Control Center' in admin_page.locator('.adminConsole h1').inner_text()
     admin_page.close()
-    # Pathfinder ML XP is a contained, one-shot-only mobile experience.
-    # Its output must not depend on the mocked recipe endpoint or kill-speed inputs.
+    # Human-first journey: current + target, optional partial progress, and auto zone unlocks.
     page.evaluate("location.hash='#/calculators/pathfinder?view=ml'")
     page.wait_for_selector('#pathMlXpPanel',timeout=8000)
-    assert page.locator('.pathMlCard').count()==3, 'Three one-shot scenarios must be visible'
-    assert page.locator('[data-path-ml-range]').count()==1
-    assert page.locator('[data-path-ml-biome]').count()==1
-    assert page.locator('input[data-mlxp="killsPerSecond"]').count()==0, 'No kill-speed field in Pathfinder ML XP'
-    page.locator('[data-path-ml-level]').fill('332')
-    page.locator('[data-path-ml-level]').dispatch_event('change')
-    assert '821.38K' in page.locator('.pathMlRequiredValue').inner_text(), 'ML 332 screenshot fit'
-    assert page.locator('.pathMlCardEta').count()==3, 'Each outcome needs an ideal ETA'
-    assert '5h 6m' in page.locator('.pathMlCard--normal .pathMlCardEta').inner_text()
-    # Biomes unlock at verified ML thresholds, and the selector reacts instantly.
-    page.locator('[data-path-ml-level]').fill('219')
-    page.locator('[data-path-ml-level]').dispatch_event('change')
-    assert page.locator('[data-path-ml-biome]').input_value()=='drowned', 'ML 219 cannot select Crown'
-    assert page.locator('[data-path-ml-biome] option[value="summit"]').is_disabled()
-    assert page.locator('[data-path-ml-biome] option[value="rift"]').is_disabled()
-    assert page.locator('[data-path-ml-biome] option[value="crown"]').is_disabled()
-    assert 'Shattered Summit at ML 220' in page.locator('.pathMlZoneContext').inner_text()
-    page.locator('[data-path-ml-step="1"]').click()
-    assert page.locator('[data-path-ml-biome] option[value="summit"]').is_enabled()
-    page.locator('[data-path-ml-preset="300"]').click()
-    assert page.locator('[data-path-ml-biome] option[value="crown"]').is_enabled()
-    page.locator('[data-path-ml-level]').fill('332')
-    page.locator('[data-path-ml-level]').dispatch_event('change')
-
-    page.locator('[data-path-ml-biome]').select_option('rift')
-    assert 'Umbral Rift' in page.locator('.pathMlCompareIntro').inner_text()
-    page.locator('[data-path-ml-step="1"]').click()
-    assert page.locator('[data-path-ml-level]').input_value()=='333'
-    page.locator('[data-path-ml-preset="500"]').click()
-    assert page.locator('[data-path-ml-level]').input_value()=='500'
+    assert page.locator('[data-path-ml-current]').count()==1
+    assert page.locator('[data-path-ml-target]').count()==1
     assert page.locator('.pathMlCard').count()==3
+    assert page.locator('[data-path-ml-progress-fold]').get_attribute('open') is None
+    assert page.locator('[data-path-ml-farming-fold]').get_attribute('open') is None
+    assert page.locator('input[data-mlxp="killsPerSecond"]').count()==0
+    page.locator('[data-path-ml-current]').fill('332')
+    page.locator('[data-path-ml-current]').dispatch_event('change')
+    page.locator('[data-path-ml-target]').fill('333')
+    page.locator('[data-path-ml-target]').dispatch_event('change')
+    assert '821.38K' in page.locator('#pathMlTotalXp').inner_text(), 'Single-level backward compatibility'
+    assert '5h 6m' in page.locator('#pathMlJourneyEta').inner_text()
+    page.locator('[data-path-ml-progress-fold] summary').click()
+    page.locator('[data-path-ml-progress]').evaluate("(el)=>{el.value='50';el.dispatchEvent(new Event('input',{bubbles:true}))}")
+    assert page.locator('#pathMlProgressValue').inner_text()=='50%'
+    assert '2h 33m' in page.locator('#pathMlJourneyEta').inner_text()
+    page.locator('[data-path-ml-target]').fill('350')
+    page.locator('[data-path-ml-target]').dispatch_event('change')
+    assert page.locator('#pathMlJourneyEta').inner_text()!='≈2h 33m'
+    assert '18 levels' in page.locator('.pathMlCompareIntro').inner_text()
+    # The selected ML is used to unlock zones and route through them automatically.
+    page.locator('[data-path-ml-current]').fill('219')
+    page.locator('[data-path-ml-current]').dispatch_event('change')
+    page.locator('[data-path-ml-target]').fill('310')
+    page.locator('[data-path-ml-target]').dispatch_event('change')
+    assert 'Shattered Summit' in page.locator('.pathMlJourneyRoute').inner_text()
+    assert 'Umbral Rift' in page.locator('.pathMlJourneyRoute').inner_text()
+    assert "Oblivion's Crown" in page.locator('.pathMlJourneyRoute').inner_text()
+    page.locator('[data-path-ml-farming-fold] summary').click()
+    page.locator('[data-path-ml-mode]').select_option('fixed')
+    assert page.locator('[data-path-ml-biome] option[value="summit"]').is_disabled()
+    assert page.locator('[data-path-ml-biome] option[value="crown"]').is_disabled()
+    page.locator('[data-path-ml-biome]').select_option('drowned')
+    assert 'Drowned Abyss (fixed)' in page.locator('.pathMlJourneyRoute').inner_text()
+    page.locator('[data-path-ml-target-add="10"]').click()
+    assert page.locator('[data-path-ml-target]').input_value()=='229'
+    page.locator('[data-path-ml-target-end="500"]').click()
+    assert page.locator('[data-path-ml-target]').input_value()=='500'
     body_width=page.evaluate('document.documentElement.scrollWidth')
     viewport_width=page.evaluate('window.innerWidth')
-    assert body_width<=viewport_width+2, 'ML XP mobile horizontal overflow: '+repr((body_width,viewport_width))
-    page.screenshot(path=str(OUT/'pathfinder-ml-xp-phone.png'),full_page=True)
+    assert body_width<=viewport_width+2, 'ML journey phone overflow: '+repr((body_width,viewport_width))
+    page.screenshot(path=str(OUT/'pathfinder-ml-journey-phone.png'),full_page=True)
     page.evaluate("location.hash='#/home'")
     page.wait_for_selector('.atlasHero',timeout=8000)
     assert errors==[], 'Browser errors: '+repr(errors)
