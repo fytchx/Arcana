@@ -13,6 +13,15 @@ function ensureRow(rows,level,stage){
  if(!row)throw Error('Pathfinder source missing '+stage+' enhancement '+level+'; refusing partial patch');
  return row;
 }
+// Direct Forge observations from IdleArc 1.3.9 (2026-10-28), four screenshots.
+// These override only the four observed awakening steps. Never extrapolate
+// them across A1-A30 without a verified full server recipe export.
+export const VERIFIED_FORGE_RARE_STEPS_20261028=Object.freeze([
+ {rank:5,level:26,ember:2,sigil:1},
+ {rank:5,level:27,ember:2,sigil:1},
+ {rank:6,level:3,ember:2,sigil:1},
+ {rank:6,level:7,ember:2,sigil:1}
+]);
 export const UPGRADE_SOURCE_VERSION=REF.v;
 export function applyVerifiedUpgradeCosts(cd,materialDefinitions=[]){
  if(!cd?.tiers?.['6']?.rows||!cd?.awaken?.rows?.['30'])throw Error('Pathfinder source is incomplete');
@@ -39,6 +48,18 @@ export function applyVerifiedUpgradeCosts(cd,materialDefinitions=[]){
    row.extra_materials=[...previous.filter(x=>!sourceControlled.has(String(x?.slug||''))),...toList(extras)];
    if(Array.isArray(row.materials))row.materials=row.materials.filter(x=>!sourceControlled.has(String(x?.slug||'')));
   }
+ }
+ // A small newer source of truth: verified Forge screens take precedence
+ // over the sparse 2026-10-17 enhancement-material overlay.
+ const rareSlugs=new Set(['abyssal-ember','eternal-sigil','primeval-core']);
+ for(const step of VERIFIED_FORGE_RARE_STEPS_20261028){
+  const row=ensureRow(cd.awaken.rows[String(step.rank)],step.level,'A'+step.rank);
+  const keep=x=>!rareSlugs.has(String(x?.slug||''));
+  const previous=Array.isArray(row.extra_materials)?row.extra_materials:[];
+  row.extra_materials=[...previous.filter(keep),
+   {slug:'abyssal-ember',quantity:step.ember},
+   {slug:'eternal-sigil',quantity:step.sigil}];
+  if(Array.isArray(row.materials))row.materials=row.materials.filter(keep);
  }
  for(const [fromTier,updated] of Object.entries(REF.t)){
   const row=cd.tier_upgrades?.find(x=>Number(x.from_tier)===Number(fromTier));
