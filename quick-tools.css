@@ -397,3 +397,15 @@
 }
 @media(max-width:350px){.pathMlOneShot{display:none}.pathMlQuickJumps button{font-size:10px}.pathMlKillValue{font-size:15px}.pathMlCardHead strong{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.pathMlLevelButtons button,.pathMlQuickJumps button{transition:none}}
+
+/* Pathfinder ML ETA and unlock status: small, legible, theme-aware. */
+.pathMlZoneContext{display:flex;align-items:center;justify-content:space-between;gap:7px 15px;flex-wrap:wrap;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--theme-highlight) 7%,var(--theme-secondary));border:1px solid var(--ml-border)}
+.pathMlZoneContext span{font-size:11px;line-height:1.4}
+.pathMlZoneReady{font-weight:800;color:var(--text)}
+.pathMlZoneNext{color:var(--muted)}
+.pathMlBiomeSelect option:disabled{color:var(--muted)}
+.pathMlCardEta{display:grid;gap:3px;margin:6px 0 8px;padding:9px 10px;border:1px solid var(--ml-border);border-radius:10px;background:color-mix(in srgb,var(--theme-highlight) 7%,var(--theme-secondary))}
+.pathMlCardEta span{font-size:10px;color:var(--muted)}
+.pathMlCardEta strong{font-size:clamp(15px,2.4vw,21px);font-weight:850;letter-spacing:-.025em;font-variant-numeric:tabular-nums;white-space:nowrap}
+@media(max-width:620px){.pathMlCardEta{padding:7px 5px}.pathMlCardEta span{font-size:9px}.pathMlCardEta strong{font-size:clamp(12px,3.45vw,17px)}}
+@media(max-width:350px){.pathMlCardEta strong{font-size:11px}}

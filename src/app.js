@@ -1086,7 +1086,17 @@ function updatePathfinderMlXp(next,{keepNumberFocus=false}={}){
  if(slider){slider.value=String(level);slider.style.setProperty('--path-ml-fill',((level-185)/315*100).toFixed(1)+'%');}
  const label=node('pathMlCurrentLabel');
  if(label){label.textContent=String(level);const nextLabel=label.parentElement?.querySelector('small');if(nextLabel)nextLabel.textContent='→ '+(level+1);}
- const biome=panel.querySelector('[data-path-ml-biome]');if(biome)biome.value=state.pathfinderMlXp.biome;
+ const biome=panel.querySelector('[data-path-ml-biome]');
+ if(biome){
+  for(const option of biome.options){
+   const unlock=Number(option.dataset.unlockMl||0);
+   option.disabled=unlock>level;
+   // Keep locked levels explicit, with stable option text as the slider moves.
+   const label=option.dataset.baseLabel||(option.dataset.baseLabel=option.textContent.split(' · Unlocks ML ')[0]);
+   option.textContent=label+(option.disabled?' · Unlocks ML '+unlock:'');
+  }
+  biome.value=state.pathfinderMlXp.biome;
+ }
  for(const jump of panel.querySelectorAll('[data-path-ml-preset]')){
   const active=Number(jump.dataset.pathMlPreset)===level;
   jump.classList.toggle('active',active);jump.setAttribute('aria-pressed',String(active));

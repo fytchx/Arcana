@@ -417,6 +417,23 @@ with sync_playwright() as playwright:
     page.locator('[data-path-ml-level]').fill('332')
     page.locator('[data-path-ml-level]').dispatch_event('change')
     assert '821.38K' in page.locator('.pathMlRequiredValue').inner_text(), 'ML 332 screenshot fit'
+    assert page.locator('.pathMlCardEta').count()==3, 'Each outcome needs an ideal ETA'
+    assert '5h 6m' in page.locator('.pathMlCard--normal .pathMlCardEta').inner_text()
+    # Biomes unlock at verified ML thresholds, and the selector reacts instantly.
+    page.locator('[data-path-ml-level]').fill('219')
+    page.locator('[data-path-ml-level]').dispatch_event('change')
+    assert page.locator('[data-path-ml-biome]').input_value()=='drowned', 'ML 219 cannot select Crown'
+    assert page.locator('[data-path-ml-biome] option[value="summit"]').is_disabled()
+    assert page.locator('[data-path-ml-biome] option[value="rift"]').is_disabled()
+    assert page.locator('[data-path-ml-biome] option[value="crown"]').is_disabled()
+    assert 'Shattered Summit at ML 220' in page.locator('.pathMlZoneContext').inner_text()
+    page.locator('[data-path-ml-step="1"]').click()
+    assert page.locator('[data-path-ml-biome] option[value="summit"]').is_enabled()
+    page.locator('[data-path-ml-preset="300"]').click()
+    assert page.locator('[data-path-ml-biome] option[value="crown"]').is_enabled()
+    page.locator('[data-path-ml-level]').fill('332')
+    page.locator('[data-path-ml-level]').dispatch_event('change')
+
     page.locator('[data-path-ml-biome]').select_option('rift')
     assert 'Umbral Rift' in page.locator('.pathMlCompareIntro').inner_text()
     page.locator('[data-path-ml-step="1"]').click()

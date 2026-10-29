@@ -6,13 +6,15 @@
 export const PATHFINDER_ML_MIN=185;
 export const PATHFINDER_ML_MAX=500;
 export const PATHFINDER_ML_BIOMES=Object.freeze([
- ['verdant','Verdant Woods',4],['scorched','Scorched Sands',6],
- ['murky','Murky Depths',8],['frozen','Frozen Peaks',10],
- ['shadow','Shadow Realm',14],['infernal','Infernal Pits',20],
- ['elder','Elderwood',24],['glass','Glasslands',27],
- ['drowned','Drowned Abyss',30],['summit','Shattered Summit',33],
- ['rift','Umbral Rift',36],['crown',"Oblivion's Crown",39.6]
-].map(([id,name,base],index)=>Object.freeze({id,name,base,order:index+1})));
+ // Ordered biome progression. Unlock MLs come directly from the game's
+ // 2026-10-28-005 live /api/config/game biomes[] records.
+ ['verdant','Verdant Woods',4,0],['scorched','Scorched Sands',6,10],
+ ['murky','Murky Depths',8,30],['frozen','Frozen Peaks',10,45],
+ ['shadow','Shadow Realm',14,65],['infernal','Infernal Pits',20,90],
+ ['elder','Elderwood',24,115],['glass','Glasslands',27,150],
+ ['drowned','Drowned Abyss',30,185],['summit','Shattered Summit',33,220],
+ ['rift','Umbral Rift',36,260],['crown',"Oblivion's Crown",39.6,300]
+].map(([id,name,base,unlockMl],index)=>Object.freeze({id,name,base,unlockMl,order:index+1})));
 export const PATHFINDER_ML_OBSERVED=Object.freeze({
  210:'189.52K',216:'207.52K',234:'268.89K',247:'320.47K',
  250:'333.27K',260:'378.44K',262:'387.94K',271:'432.65K',
@@ -29,8 +31,10 @@ const clampLevel=value=>{
  return Number.isFinite(n)?Math.min(PATHFINDER_ML_MAX,Math.max(PATHFINDER_ML_MIN,Math.trunc(n))):300;
 };
 export function normalizePathfinderMlXp(raw={}){
- return {level:clampLevel(raw?.level??300),
-  biome:PATHFINDER_ML_BIOMES.some(b=>b.id===raw?.biome)?raw.biome:'crown'};
+ const level=clampLevel(raw?.level??300);
+ const highest=[...PATHFINDER_ML_BIOMES].reverse().find(b=>b.unlockMl<=level);
+ const requested=PATHFINDER_ML_BIOMES.find(b=>b.id===raw?.biome&&b.unlockMl<=level);
+ return {level,biome:(requested||highest).id};
 }
 export function readPathfinderMlXp(store=globalThis.localStorage){
  try{return normalizePathfinderMlXp(JSON.parse(store?.getItem(STORE)||'null')||{})}
@@ -52,6 +56,15 @@ export function requiredMlXp(level){
 const round2=n=>Math.round((n+Number.EPSILON)*100)/100;
 const fmt=n=>n.toLocaleString('en-US',{maximumFractionDigits:0});
 const compact=n=>n>=1e6?(n/1e6).toFixed(2)+'M':(n/1e3).toFixed(2)+'K';
+// Idealized 1 ML XP-awarding kill/s; one-shot does not prove this is a
+// player's achieved rate. Deaths, respawns and Frenzy reduce actual pace.
+export const IDEAL_ML_KILLS_PER_SECOND=1;
+export function formatMlEta(seconds){
+ if(!Number.isFinite(seconds)||seconds<0)return 'Unknown';
+ const minutes=Math.ceil(seconds/60);
+ const days=Math.floor(minutes/1440),hours=Math.floor((minutes%1440)/60),mins=minutes%60;
+ return [days&&days+'d',hours&&hours+'h',(mins||(!hours&&!days))&&mins+'m'].filter(Boolean).join(' ');
+}
 export function calculatePathfinderMlXp(raw={}){
  const plan=normalizePathfinderMlXp(raw),{level}=plan;
  const biome=PATHFINDER_ML_BIOMES.find(b=>b.id===plan.biome);
@@ -63,11 +76,15 @@ export function calculatePathfinderMlXp(raw={}){
   {id:'strong',label:'Strongest',delta:'+10%',modifier:biome.order<=2?1:1.1}
  ].map(v=>{
   const xpPerKill=round2(base*v.modifier);
-  return {...v,xpPerKill,kills:Math.ceil(required/xpPerKill)};
+  const kills=Math.ceil(required/xpPerKill);
+  return {...v,xpPerKill,kills,etaSeconds:kills/IDEAL_ML_KILLS_PER_SECOND,
+   etaDisplay:formatMlEta(kills/IDEAL_ML_KILLS_PER_SECOND)};
  });
+ const nextBiome=PATHFINDER_ML_BIOMES.find(b=>b.unlockMl>level)||null;
+ const highestUnlocked=[...PATHFINDER_ML_BIOMES].reverse().find(b=>b.unlockMl<=level);
  return {plan,level,biome,required,requiredDisplay:compact(required),
   observed:PATHFINDER_ML_OBSERVED[level]||null,base,variants,
-  modifiersAvailable:biome.order>2};
+  modifiersAvailable:biome.order>2,nextBiome,highestUnlocked};
 }
 export function pathfinderMlXpResults(raw={}){
  const m=calculatePathfinderMlXp(raw);
@@ -78,6 +95,7 @@ export function pathfinderMlXpResults(raw={}){
     '<div><small>'+v.delta+'</small><strong>'+v.label+'</strong></div></div>'+
    '<div class="pathMlKillValue">≈'+fmt(Math.round(v.kills/10)*10)+'</div>'+
    '<div class="pathMlKillLabel">kills per level</div>'+
+   '<div class="pathMlCardEta"><span>Ideal ETA</span><strong>≈'+v.etaDisplay+'</strong></div>'+ 
    '<div class="pathMlCardFoot"><span>XP / kill</span><strong>'+v.xpPerKill.toFixed(2)+'</strong></div>'+
   '</article>').join('');
  return '<section class="pathMlResultsBody">'+
@@ -85,22 +103,24 @@ export function pathfinderMlXpResults(raw={}){
    '<div class="pathMlRequiredValue">≈'+m.requiredDisplay+'</div>'+
    '<p>'+(m.observed?'Matches a player screenshot ('+m.observed+').':'Estimated from the ML XP screenshot curve.')+'</p></div>'+
    '<div class="pathMlRequiredSeal" aria-hidden="true"><span>ML</span><strong>'+m.level+'</strong></div></div>'+
+  '<div class="pathMlZoneContext"><span class="pathMlZoneReady">'+m.biome.name+' · unlocked at ML '+m.biome.unlockMl+'</span>'+ 
+  (m.nextBiome?'<span class="pathMlZoneNext">Next: '+m.nextBiome.name+' at ML '+m.nextBiome.unlockMl+'</span>':'<span class="pathMlZoneNext">All standard biomes unlocked</span>')+'</div>'+ 
   '<div class="pathMlCompareIntro"><div><strong>One-shot kill comparison</strong>'+
   '<span>'+m.biome.name+' · fighting ML '+m.level+'</span></div>'+
   '<small>Fewer kills is better</small></div>'+
   '<div class="pathMlCards">'+cards+'</div>'+
   (!m.modifiersAvailable?'<p class="pathMlNote">Verdant Woods and Scorched Sands do not use the ±10% monster-position modifier. All three outcomes are therefore identical.</p>':'')+
-  '<p class="pathMlDisclaimer">Approximate full-level kills, starting at zero ML XP. Assumes one normal XP-awarding kill per monster, one-shotting, and fighting at the selected ML. Includes no extra-kill XP, time estimates, or player-specific bonuses. Based on observed screenshots, not a recovered game formula.</p>'+
+  '<p class="pathMlDisclaimer">Estimates assume a full level from zero XP, one-shot kills, and farming at the selected ML. Ideal ETA assumes one XP-awarding kill every second without downtime; actual time varies. Frenzy, deaths, and other interruptions are not counted. XP uses player screenshots, not a recovered game formula.</p>'+
  '</section>';
 }
 export function pathfinderMlXpView(raw={}){
  const m=calculatePathfinderMlXp(raw),level=m.level;
- const options=PATHFINDER_ML_BIOMES.map(b=>'<option value="'+b.id+'"'+(b.id===m.biome.id?' selected':'')+'>'+b.name+'</option>').join('');
+ const options=PATHFINDER_ML_BIOMES.map(b=>'<option value="'+b.id+'" data-unlock-ml="'+b.unlockMl+'"'+(b.id===m.biome.id?' selected':'')+(b.unlockMl>level?' disabled':'')+'>'+b.name+(b.unlockMl>level?' · Unlocks ML '+b.unlockMl:'')+'</option>').join('');
  const jumps=[200,250,300,350,400,450,500].map(n=>
   '<button type="button" data-path-ml-preset="'+n+'"'+(n===level?' class="active" aria-pressed="true"':' aria-pressed="false"')+'>'+n+'</button>').join('');
  return '<section class="pathMlXp" id="pathMlXpPanel" aria-label="Pathfinder ML XP estimates">'+
   '<div class="pathMlIntro"><div><span class="pathMlEyebrow">PATHFINDER / LEVELING</span>'+
-  '<h2>Monster Level XP</h2><p>Know the XP. Know the kills. Keep pushing.</p></div>'+
+  '<h2>Monster Level XP</h2><p>Estimate XP, one-shot kills and time to the next Monster Level.</p></div>'+
   '<span class="pathMlOneShot"><span aria-hidden="true">✦</span> ONE-SHOT MODE</span></div>'+
   '<div class="pathMlControls">'+
    '<div class="pathMlLevelTop"><label for="pathMlLevelNumber">Your Monster Level</label>'+
@@ -111,7 +131,7 @@ export function pathfinderMlXpView(raw={}){
    '<input class="pathMlSlider" data-path-ml-range type="range" min="185" max="500" step="1" value="'+level+'" aria-label="Choose Monster Level" style="--path-ml-fill:'+((level-185)/315*100).toFixed(1)+'%">'+
    '<div class="pathMlBounds"><span>ML 185</span><span>ML 500</span></div>'+
    '<div class="pathMlQuickJumps" aria-label="Jump to a Monster Level">'+jumps+'</div>'+
-   '<div class="pathMlBiomeSelect"><div><label for="pathMlBiome">Farming biome</label><small>XP per monster varies by biome</small></div>'+
+   '<div class="pathMlBiomeSelect"><div><label for="pathMlBiome">Farming biome</label><small>Only biomes unlocked at your selected ML are available</small></div>'+
     '<select id="pathMlBiome" data-path-ml-biome aria-label="Select farming biome">'+options+'</select></div>'+
   '</div>'+
   '<div id="pathMlXpResults" aria-live="polite">'+pathfinderMlXpResults(m.plan)+'</div>'+
