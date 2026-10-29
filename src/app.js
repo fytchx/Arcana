@@ -1076,52 +1076,67 @@ function renderPathfinderCosts(current=state.pathfinderRange){
  }
  const note=content.querySelector('details.quickAssumptions');if(note)note.open=assumptionsOpen;
 }
-function updatePathfinderMlXp(next,{keepNumberFocus=false}={}){
+function updatePathfinderMlXp(next,{keepFocus=false}={}){
  state.pathfinderMlXp=savePathfinderMlXp({...state.pathfinderMlXp,...next});
  const panel=node('pathMlXpPanel');if(!panel)return;
- const level=state.pathfinderMlXp.level;
- const numeric=panel.querySelector('[data-path-ml-level]');
- if(numeric&&(!keepNumberFocus||document.activeElement!==numeric))numeric.value=String(level);
- const slider=panel.querySelector('[data-path-ml-range]');
- if(slider){slider.value=String(level);slider.style.setProperty('--path-ml-fill',((level-185)/315*100).toFixed(1)+'%');}
- const label=node('pathMlCurrentLabel');
- if(label){label.textContent=String(level);const nextLabel=label.parentElement?.querySelector('small');if(nextLabel)nextLabel.textContent='→ '+(level+1);}
+ const p=state.pathfinderMlXp;
+ const current=panel.querySelector('[data-path-ml-current]');
+ const target=panel.querySelector('[data-path-ml-target]');
+ if(current&&(!keepFocus||document.activeElement!==current))current.value=String(p.level);
+ if(target){
+  if(!keepFocus||document.activeElement!==target)target.value=String(p.target);
+  target.min=String(p.level);
+ }
+ const progress=panel.querySelector('[data-path-ml-progress]');
+ if(progress){progress.value=String(p.progress);progress.style.setProperty('--path-ml-fill',p.progress+'%');}
+ const progressValue=node('pathMlProgressValue');if(progressValue)progressValue.textContent=p.progress+'%';
+ const progressSummary=node('pathMlProgressSummary');if(progressSummary)progressSummary.textContent=p.progress?p.progress+'%':'Optional';
+ const progressLabel=panel.querySelector('[data-path-ml-progress-fold] label');
+ if(progressLabel)progressLabel.textContent='Progress toward ML '+(p.level+1);
+ const mode=panel.querySelector('[data-path-ml-mode]');if(mode)mode.value=p.farmMode;
+ const modeSummary=node('pathMlFarmingSummary');if(modeSummary)modeSummary.textContent=p.farmMode==='auto'?'Auto zones':'Fixed biome';
+ const fixedWrap=panel.querySelector('[data-path-ml-fixed-wrap]');if(fixedWrap)fixedWrap.hidden=p.farmMode!=='fixed';
  const biome=panel.querySelector('[data-path-ml-biome]');
  if(biome){
   for(const option of biome.options){
    const unlock=Number(option.dataset.unlockMl||0);
-   option.disabled=unlock>level;
-   // Keep locked levels explicit, with stable option text as the slider moves.
+   option.disabled=unlock>p.level;
    const label=option.dataset.baseLabel||(option.dataset.baseLabel=option.textContent.split(' · Unlocks ML ')[0]);
    option.textContent=label+(option.disabled?' · Unlocks ML '+unlock:'');
   }
-  biome.value=state.pathfinderMlXp.biome;
+  biome.value=p.biome;
  }
- for(const jump of panel.querySelectorAll('[data-path-ml-preset]')){
-  const active=Number(jump.dataset.pathMlPreset)===level;
+ for(const jump of panel.querySelectorAll('[data-path-ml-target-add],[data-path-ml-target-end]')){
+  const destination=jump.dataset.pathMlTargetEnd?500:Math.min(500,p.level+Number(jump.dataset.pathMlTargetAdd));
+  const active=destination===p.target;
   jump.classList.toggle('active',active);jump.setAttribute('aria-pressed',String(active));
  }
  const results=node('pathMlXpResults');
- if(results)results.innerHTML=pathfinderMlXpResults(state.pathfinderMlXp);
+ if(results)results.innerHTML=pathfinderMlXpResults(p);
 }
 function wirePathfinderMlXp(){
  document.addEventListener('click',e=>{
-  const button=e.target.closest('[data-path-ml-step],[data-path-ml-preset]');
-  if(!button||parseRoute().route!=='calculators/pathfinder')return;
-  const target=button.dataset.pathMlPreset===undefined?state.pathfinderMlXp.level+Number(button.dataset.pathMlStep):Number(button.dataset.pathMlPreset);
-  if(Number.isInteger(target))updatePathfinderMlXp({level:target});
+  const jump=e.target.closest('[data-path-ml-target-add],[data-path-ml-target-end]');
+  if(!jump||parseRoute().route!=='calculators/pathfinder')return;
+  const level=jump.dataset.pathMlTargetEnd?500:Math.min(500,state.pathfinderMlXp.level+Number(jump.dataset.pathMlTargetAdd));
+  updatePathfinderMlXp({target:level});
  });
  document.addEventListener('input',e=>{
-  const slider=e.target.matches('[data-path-ml-range]');
-  const number=e.target.matches('[data-path-ml-level]');
-  if(!slider&&!number)return;
-  if(e.target.value.trim()==='')return;
-  const level=Number(e.target.value);
-  if(Number.isFinite(level))updatePathfinderMlXp({level},{keepNumberFocus:number});
+  const t=e.target;
+  if(t.matches('[data-path-ml-progress]')){updatePathfinderMlXp({progress:Number(t.value)});return;}
+  if(!t.matches('[data-path-ml-current],[data-path-ml-target]'))return;
+  if(t.value.trim()==='')return;
+  const n=Number(t.value);
+  if(!Number.isInteger(n)||n<185||n>500)return; // Allow normal phone typing.
+  if(t.matches('[data-path-ml-target]')&&n<state.pathfinderMlXp.level)return;
+  updatePathfinderMlXp(t.matches('[data-path-ml-current]')?{level:n}:{target:n},{keepFocus:true});
  });
  document.addEventListener('change',e=>{
-  if(e.target.matches('[data-path-ml-biome]'))updatePathfinderMlXp({biome:e.target.value});
-  if(e.target.matches('[data-path-ml-level]'))updatePathfinderMlXp({level:e.target.value});
+  const t=e.target;
+  if(t.matches('[data-path-ml-current]')){updatePathfinderMlXp({level:t.value});return;}
+  if(t.matches('[data-path-ml-target]')){updatePathfinderMlXp({target:t.value});return;}
+  if(t.matches('[data-path-ml-mode]')){updatePathfinderMlXp({farmMode:t.value});return;}
+  if(t.matches('[data-path-ml-biome]')){updatePathfinderMlXp({biome:t.value,farmMode:'fixed'});return;}
  });
 }
 function wirePathfinderQuick(){
