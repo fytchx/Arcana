@@ -222,3 +222,39 @@
  .atlasGuideHighlight .atlasHeroGo{width:29px;height:33px}
  .atlasSharing .atlasFeatureLinks{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* One time-limited, source-backed Halloween event spotlight replaces the stale patch ticker. */
+.atlasHome .atlasUpdate[data-seasonal-feature]{
+ position:relative;isolation:isolate;overflow:hidden;min-height:93px;
+ padding:14px clamp(14px,2vw,21px);gap:14px;
+ border-color:color-mix(in srgb,#d8874b 55%,var(--atlas-outline));
+ background:radial-gradient(circle at 91% 5%,rgb(236 142 61 / .19),transparent 46%),linear-gradient(108deg,color-mix(in srgb,var(--atlas-panel) 89%,#ac6239 11%),var(--atlas-panel));
+ box-shadow:inset 0 1px rgb(255 205 135 / .14),0 5px 22px rgb(24 11 33 / .07);
+ text-decoration:none;color:var(--atlas-copy);
+}
+.atlasHome .atlasUpdate[data-seasonal-feature]:hover{border-color:#d8874b}
+.atlasHome .atlasUpdate[data-seasonal-feature][hidden]{display:none!important}
+.atlasSeasonalEmblem{flex:none;display:grid;place-items:center;width:56px;height:56px;
+ background:color-mix(in srgb,var(--atlas-panel) 79%,#c77843 21%);
+ border:1px solid color-mix(in srgb,var(--atlas-outline) 40%,#b87b52 60%);
+ border-radius:17px;font-size:29px;line-height:1;
+ box-shadow:inset 0 1px rgb(255 229 171 / .12)}
+.atlasSeasonalCopy{min-width:0;flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.atlasSeasonalCopy .atlasUpdateTag{font-size:10px;color:color-mix(in srgb,var(--atlas-copy) 32%,#f6a96a 68%);letter-spacing:.12em}
+.atlasSeasonalCopy .atlasUpdateTitle{display:block;max-width:100%;font:650 clamp(20px,2.8vw,29px)/1.15 Georgia,'Times New Roman',serif;letter-spacing:-.022em;white-space:normal;overflow:visible;text-overflow:clip}
+.atlasSeasonalDeadline{color:var(--atlas-sub);font-size:clamp(11px,1.8vw,13px);line-height:1.45}
+.atlasHome .atlasSeasonalAction{flex:none;align-items:center;gap:7px;padding:10px 12px;border-radius:10px;
+ color:var(--atlas-copy);border:1px solid color-mix(in srgb,#cc854a 50%,var(--atlas-outline));
+ background:color-mix(in srgb,var(--atlas-panel) 79%,#bb743b 21%);
+ font-size:10px;font-weight:800;letter-spacing:.09em}
+@media(max-width:759px){
+ .atlasHome .atlasUpdate[data-seasonal-feature]{min-height:79px;padding:10px 11px;gap:10px;border-radius:13px}
+ .atlasSeasonalEmblem{width:44px;height:44px;border-radius:12px;font-size:24px}
+ .atlasSeasonalCopy{gap:3px}
+ .atlasSeasonalCopy .atlasUpdateTag{font-size:8px;letter-spacing:.075em}
+ .atlasSeasonalCopy .atlasUpdateTitle{font-size:clamp(18px,4.5vw,22px);line-height:1.13}
+ .atlasSeasonalDeadline{font-size:10px;line-height:1.25}
+ .atlasHome .atlasSeasonalAction{border:0;background:none;padding:5px 1px}
+ .atlasSeasonalAction span{display:none}
+}
+@media(prefers-reduced-motion:reduce){.atlasHome .atlasUpdate[data-seasonal-feature]{transition:none}}
