@@ -50,7 +50,9 @@ test('Unknown and draft content never appears as a live story',async()=>{
  assert.equal(list.status,200);
  const articles=JSON.parse(list.text).articles;
  assert.ok(articles.length>=4);
- assert.equal(articles[0].slug,'help-shape-arcana');
+ const latestPublishedSeed=[...JOURNAL_SEEDS].filter(x=>x.published).sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt))[0];
+ assert.equal(articles[0].slug,latestPublishedSeed.slug);
+ assert.ok(articles.some(x=>x.slug==='hallowed-harvest-2026-guide'));
  assert.ok(articles.find(x=>x.slug==='idlearc-1-3-7-the-timing-couldnt-be-better'));
 });
 test('Native Journal views use Arcana guide styling and navigate inside the app shell',async()=>{
