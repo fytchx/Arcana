@@ -11,7 +11,10 @@ export const PITY_MODEL=Object.freeze({
 });
 const SCALE=1000000000n;
 const netFailedCost=value=>(value*7n+5n)/10n; // Observed 135 fragments -> 95 on failure.
-const approxCeil=(value,failures)=>value+((netFailedCost(value)*BigInt(Math.round(failures*1e9))+SCALE-1n)/SCALE);
+// Preserve fractional expected costs across all steps before rounding to a farming quantity.
+// Per-step rounding can significantly overstate sparse rare materials.
+const expectedScaled=(value,failures)=>value*SCALE+netFailedCost(value)*BigInt(Math.round(failures*1e9));
+const ceilScaled=value=>(value+SCALE-1n)/SCALE;
 const clamp=(n,min,max)=>Number.isFinite(Number(n))?Math.max(min,Math.min(max,Number(n))):min;
 export const normalizeCostMode=value=>['min','expected','pity'].includes(value)?value:'min';
 export const normalizePityProgress=value=>Math.round(clamp(value,0,100)*100)/100;
@@ -36,6 +39,8 @@ export function pityStepModel(failureChance,startingPityCount=0){
 const mapOf=()=>new Map();
 const add=(map,m,qty)=>{if(!qty)return;const old=map.get(m.slug);map.set(m.slug,{slug:m.slug,name:m.name,quantity:(old?.quantity||0n)+qty});};
 const sorted=map=>[...map.values()].sort((a,b)=>a.name.localeCompare(b.name));
+const addExpected=(map,m,scaled)=>{if(!scaled)return;const old=map.get(m.slug);map.set(m.slug,{slug:m.slug,name:m.name,scaled:(old?.scaled||0n)+scaled});};
+const sortedExpected=map=>[...map.values()].map(m=>({slug:m.slug,name:m.name,quantity:ceilScaled(m.scaled)})).sort((a,b)=>a.name.localeCompare(b.name));
 const multiplied=(v,count)=>({...v,gold:v.gold*count,materials:v.materials.map(m=>({...m,quantity:m.quantity*count})),attempts:v.attempts*Number(count),failedAttempts:v.failedAttempts*Number(count)});
 /** Accepts the already-computed base quote; does not change source material math. */
 export function quoteFailureScenarios(snapshot,base){
@@ -44,7 +49,7 @@ export function quoteFailureScenarios(snapshot,base){
  const start=stages.findIndex(s=>s.id===range.fromStage),stop=stages.findIndex(s=>s.id===range.toStage);
  if(start<0||stop<start)return {available:false,reason:'Invalid upgrade range.'};
  const min={gold:base.perItem.gold,materials:base.perItem.materials,attempts:base.perItem.steps,failedAttempts:0};
- let expectedGold=0n,ceilingGold=0n,expectedSteps=0,ceilingSteps=0,expectedFails=0,ceilingFails=0;
+ let expectedGoldScaled=0n,ceilingGold=0n,expectedSteps=0,ceilingSteps=0,expectedFails=0,ceilingFails=0;
  const expectedMats=mapOf(),ceilingMats=mapOf(),perStep=[];
  let firstPaid=true;
  for(let i=start;i<=stop;i++){
@@ -60,19 +65,19 @@ export function quoteFailureScenarios(snapshot,base){
    const odds=pityStepModel(cost.failureChance,startingPity);
    if(!odds)return {available:false,reason:'Unsupported failure chance at '+stage.id+' +'+level+'.'};
    if(cost.failureChance>0)firstPaid=false;
-   expectedGold+=approxCeil(cost.gold,odds.expectedFailures);
+   expectedGoldScaled+=expectedScaled(cost.gold,odds.expectedFailures);
    ceilingGold+=cost.gold+netFailedCost(cost.gold)*BigInt(odds.maxFailures);
    expectedSteps+=odds.expectedAttempts;ceilingSteps+=odds.maxAttempts;
    expectedFails+=odds.expectedFailures;ceilingFails+=odds.maxFailures;
    for(const m of cost.materials){
-    add(expectedMats,m,approxCeil(m.quantity,odds.expectedFailures));
+    addExpected(expectedMats,m,expectedScaled(m.quantity,odds.expectedFailures));
     add(ceilingMats,m,m.quantity+netFailedCost(m.quantity)*BigInt(odds.maxFailures));
    }
    perStep.push({stage:stage.id,level,failChance:cost.failureChance,
     expectedAttempts:odds.expectedAttempts,maxAttempts:odds.maxAttempts,pityCap:odds.pityCap,pityCount:odds.startingPityCount,pityDelta:odds.pityDelta});
   }
  }
- const estimated={gold:expectedGold,materials:sorted(expectedMats),attempts:expectedSteps,failedAttempts:expectedFails};
+ const estimated={gold:ceilScaled(expectedGoldScaled),materials:sortedExpected(expectedMats),attempts:expectedSteps,failedAttempts:expectedFails};
  const pity={gold:ceilingGold,materials:sorted(ceilingMats),attempts:ceilingSteps,failedAttempts:ceilingFails};
  return {available:true,modeled:true,source:PITY_MODEL.source,note:PITY_MODEL.note,
   min:multiplied(min,count),expected:multiplied(estimated,count),pity:multiplied(pity,count),
