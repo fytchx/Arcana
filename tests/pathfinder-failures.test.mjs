@@ -58,6 +58,20 @@ test('failure refund matches observed 135 -> 95, and expected and modeled ceilin
  assert.equal(qty(r.pity,'grubs-eye'),17n); // 10 + round(7)
  assert.equal(r.pity.attempts,2);
 });
+test('expected rare material quantities round once per full route instead of each upgrade step',()=>{
+ const example=structuredClone(snapshot);
+ example.codex.awaken.rows['1']=[0,1].map(current=>({current,target:current+1,gold:'100',
+  extra_materials:[{slug:'abyssal-ember',quantity:1}],fail:.2,success:.8}));
+ const route={fromStage:'A1',fromLevel:0,toStage:'A1',toLevel:2};
+ const result=quoteFailureScenarios(example,quoteRange(example,route));
+ assert.equal(result.available,true);
+ assert.equal(qty(result.min,'abyssal-ember'),2n);
+ // Two expected costs of 1.2 produce 2.4 total: round once to 3, not twice to 4.
+ assert.equal(qty(result.expected,'abyssal-ember'),3n);
+ assert.equal(qty(result.pity,'abyssal-ember'),4n);
+ const double=quoteFailureScenarios(example,quoteRange(example,{...route,quantity:2}));
+ assert.equal(qty(double.expected,'abyssal-ember'),6n);
+});
 test('quantity multiplies each scenario independently without removing biome and forge costs',()=>{
  const one=quoteFailureScenarios(snapshot,quoteRange(snapshot,fromTo));
  const ten=quoteFailureScenarios(snapshot,quoteRange(snapshot,{...fromTo,quantity:10,costMode:'expected'}));
