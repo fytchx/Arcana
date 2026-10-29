@@ -18,7 +18,10 @@ export function atlasHomeScreen(icon,profile=null){
  const accountPrompt=profile?'<strong>Welcome back, '+escapeHTML(accountName)+'</strong>':'<strong>New to Arcana?</strong>';
  const accountButton=profile?'My Account':'Sign up / Log in';
  return '<div class="atlasHome" aria-label="Arcana homepage">'+
- '<a class="atlasUpdate" href="/#/journal/article?slug=idlearc-1-3-7-the-timing-couldnt-be-better"><span class="atlasUpdateTag">PATCH NOTES</span><span class="atlasUpdateTitle">IdleArc 1.3.7: A Step Forward</span><span class="atlasUpdateDate">OCT 18 '+icon('arrow',15)+'</span></a>'+
+ '<a class="atlasUpdate" data-seasonal-feature href="/#/journal/article?slug=hallowed-harvest-2026-guide" aria-label="Read the Hallowed Harvest 2026 event guide">'+
+ '<span class="atlasSeasonalEmblem" aria-hidden="true">🎃</span>'+
+ '<span class="atlasSeasonalCopy"><span class="atlasUpdateTag" data-seasonal-phase>HALLOWED HARVEST · LIVE EVENT</span><strong class="atlasUpdateTitle">Hallowed Harvest 2026</strong><small class="atlasSeasonalDeadline" data-seasonal-deadline>Earn until Nov 4 · Pumpkin Shop until Nov 7</small></span>'+
+ '<span class="atlasUpdateDate atlasSeasonalAction"><span>EVENT GUIDE</span> '+icon('arrow',16)+'</span></a>'+
  '<section class="atlasAccountEntry" aria-label="Arcana account"><div class="atlasAccountEntryCopy">'+accountPrompt+'</div><button type="button" class="atlasAccountEntryButton" data-route="account" aria-label="'+accountButton+'">'+accountButton+' '+icon('arrow',16)+'</button></section>'+ 
  
  '<section class="atlasTools" aria-labelledby="atlasToolsHeading"><div class="atlasSectionHead"><h2 id="atlasToolsHeading">EXPLORE ARCANA</h2><button type="button" data-route="directory">All tools '+icon('arrow',15)+'</button></div><div class="atlasTileGrid">'+tiles+'</div></section>'+
