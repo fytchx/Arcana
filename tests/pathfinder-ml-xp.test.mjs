@@ -48,6 +48,7 @@ test('biome-card floor matches new-character screenshot observations',()=>{
  assert.equal(thirty.segments[0].perLevel[1].xpPerKill,3);
  const two=calculatePathfinderMlXp({level:2,target:3});
  assert.equal(two.required,78);assert.equal(two.variants[1].kills,52);
+ assert.ok(pathfinderMlXpResults({level:2,target:3}).includes('≈52'),'small kill counts should be shown precisely');
  assert.equal(calculatePathfinderMlXp({level:42,target:43}).required,4200);
 });
 test('ML 1–185 route switches every standard biome when unlocked',()=>{
