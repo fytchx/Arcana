@@ -86,6 +86,7 @@ export function requiredMlXp(level){
 }
 const round2=n=>Math.round((n+Number.EPSILON)*100)/100;
 const fmt=n=>Math.round(n).toLocaleString('en-US');
+const displayKills=n=>fmt(n<1000?n:Math.round(n/10)*10);
 const compact=n=>n===0?'0':n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e3?(n/1e3).toFixed(2)+'K':fmt(n);
 export const IDEAL_ML_KILLS_PER_SECOND=1;
 export function formatMlEta(seconds){
@@ -148,7 +149,7 @@ export function pathfinderMlXpResults(raw={}){
   '<div class="pathMlCardHead"><span class="pathMlCardSymbol" aria-hidden="true">'+(v.id==='weak'?'−':v.id==='normal'?'◆':'+')+'</span>'+
   '<div><small>'+v.delta+'</small><strong>'+v.label+'</strong></div></div>'+
   '<div class="pathMlCardEta"><span>Ideal ETA</span><strong>≈'+v.etaDisplay+'</strong></div>'+
-  '<div class="pathMlJourneyKills">≈'+fmt(Math.round(v.kills/10)*10)+' <span>kills</span></div>'+
+  '<div class="pathMlJourneyKills">≈'+displayKills(v.kills)+' <span>kills</span></div>'+
   '</article>').join('');
  const route=m.plan.farmMode==='auto'?
   (m.zones.length?m.zones.map(x=>x.name).join(' → '):m.biome.name):
@@ -160,7 +161,7 @@ export function pathfinderMlXpResults(raw={}){
    '<div class="pathMlJourneyHeroTime" id="pathMlJourneyEta">≈'+regular.etaDisplay+'</div>'+
    '<span class="pathMlJourneyHeroContext">Regular monsters · one-shot assumption</span></div>'+
    '<div class="pathMlJourneyHeroStats"><div><small>Total ML XP</small><strong id="pathMlTotalXp">≈'+m.requiredDisplay+'</strong></div>'+
-   '<div><small>Estimated kills</small><strong id="pathMlTotalKills">≈'+fmt(Math.round(regular.kills/10)*10)+'</strong></div>'+
+   '<div><small>Estimated kills</small><strong id="pathMlTotalKills">≈'+displayKills(regular.kills)+'</strong></div>'+
    '</div></div></div>'+
   (m.earlyEstimated?'<p class="pathMlEstimateNotice"><strong>Early ML estimates.</strong> '+(m.sparseEstimated?
     'ML 43–183 is interpolated between limited player observations; results may differ from the game.':
