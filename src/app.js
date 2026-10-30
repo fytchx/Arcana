@@ -1127,7 +1127,7 @@ function wirePathfinderMlXp(){
   if(!t.matches('[data-path-ml-current],[data-path-ml-target]'))return;
   if(t.value.trim()==='')return;
   const n=Number(t.value);
-  if(!Number.isInteger(n)||n<185||n>500)return; // Allow normal phone typing.
+  if(!Number.isInteger(n)||n<1||n>500)return; // Allow normal phone typing.
   if(t.matches('[data-path-ml-target]')&&n<state.pathfinderMlXp.level)return;
   updatePathfinderMlXp(t.matches('[data-path-ml-current]')?{level:n}:{target:n},{keepFocus:true});
  });

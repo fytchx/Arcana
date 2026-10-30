@@ -3,7 +3,7 @@
  * equals selected progression ML; the user picks only ML and biome.
  * Source research: docs/ML-XP-SCREENSHOT-CALIBRATION-2026-10-28.md on preview.
  */
-export const PATHFINDER_ML_MIN=185;
+export const PATHFINDER_ML_MIN=1;
 export const PATHFINDER_ML_MAX=500;
 export const PATHFINDER_ML_BIOMES=Object.freeze([
  // Ordered biome progression. Unlock MLs come directly from the game's
@@ -15,7 +15,24 @@ export const PATHFINDER_ML_BIOMES=Object.freeze([
  ['drowned','Drowned Abyss',30,185],['summit','Shattered Summit',33,220],
  ['rift','Umbral Rift',36,260],['crown',"Oblivion's Crown",39.6,300]
 ].map(([id,name,base,unlockMl],index)=>Object.freeze({id,name,base,unlockMl,order:index+1})));
+/* Newly reset player reports (October 29). K-labelled values are rounded
+ * displays, not verified to the last XP. ML 4=140 is preserved even though
+ * the nearby linear pattern predicts 130.
+ */
+export const PATHFINDER_ML_EARLY_REPORTS=Object.freeze({
+ 2:78,4:140,5:156,6:182,7:208,8:234,9:260,
+ 10:400,11:437,12:473,13:510,14:546,
+ 15:584,16:626,17:671,18:720,19:771,21:886,22:949,
+ 23:1010,24:1080,25:1160,26:1240,27:1310,28:1400,29:1490,
+ 30:2250,42:4200
+});
+export const PATHFINDER_ML_EARLY_ROUNDED=Object.freeze([23,24,25,26,27,28,29,30,42]);
 export const PATHFINDER_ML_OBSERVED=Object.freeze({
+ 2:'78',4:'140',5:'156',6:'182',7:'208',8:'234',9:'260',
+ 10:'400',11:'437',12:'473',13:'510',14:'546',
+ 15:'584',16:'626',17:'671',18:'720',19:'771',21:'886',22:'949',
+ 23:'1.01K',24:'1.08K',25:'1.16K',26:'1.24K',27:'1.31K',
+ 28:'1.40K',29:'1.49K',30:'2.25K',42:'4.2K',184:'124.49K',
  210:'189.52K',216:'207.52K',234:'268.89K',247:'320.47K',
  250:'333.27K',260:'378.44K',262:'387.94K',271:'432.65K',
  284:'502.93K',285:'508.62K',290:'537.67K',291:'543.6K',
@@ -37,7 +54,7 @@ export function normalizePathfinderMlXp(raw={}){
  const progress=clamp(raw?.progress??0,0,99,0);
  const requested=PATHFINDER_ML_BIOMES.find(b=>b.id===raw?.biome&&b.unlockMl<=level);
  const biome=(requested||lastUnlocked(level)).id;
- // Prior saved one-level plans have no farmMode. Migrate them to Auto.
+ // Prior saved plans have no farmMode. Migrate them to Auto.
  const farmMode=raw?.farmMode==='fixed'?'fixed':'auto';
  return {level,target,progress,biome,farmMode};
 }
@@ -52,13 +69,24 @@ export function savePathfinderMlXp(raw,store=globalThis.localStorage){
 }
 export function requiredMlXp(level){
  if(!Number.isInteger(level)||level<PATHFINDER_ML_MIN||level>PATHFINDER_ML_MAX)return null;
+ // Exact or rounded reported values take precedence over fitted models.
+ if(Object.hasOwn(PATHFINDER_ML_EARLY_REPORTS,level))return PATHFINDER_ML_EARLY_REPORTS[level];
+ if(level<=9)return Math.round(26*(level+1)); // ML 1 and 3 extrapolated.
+ if(level<=14)return Math.round(26*(level+1)*1.4);
+ if(level<=29){const x=level-15;return Math.round(585+39*x+1.82*x*x);}
+ if(level<=184){
+  // Monotone power-law interpolation through ML 30 = 2.25K,
+  // ML 42 = 4.2K and ML 184 = 124.49K. ML 43–183 is PROVISIONAL.
+  return Math.round(0.04708457816641641*Math.pow(level+17.794012648560958,2.786338983223726));
+ }
  const z=(level-300)/100;
- // Weighted polynomial fitted to rounded 1.3.9 screenshots, not server math.
+ // Screenshot-calibrated ML 185–500 polynomial, not exact server math.
  return Math.round(Math.max(0,598801.760018+z*(631551.611753+z*(202096.479878+
    z*(-3048.16010589+z*(-10654.7857437+z*(58.3786439647+z*412.03319736)))))));
 }
 const round2=n=>Math.round((n+Number.EPSILON)*100)/100;
 const fmt=n=>Math.round(n).toLocaleString('en-US');
+const displayKills=n=>fmt(n<1000?n:Math.round(n/10)*10);
 const compact=n=>n===0?'0':n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e3?(n/1e3).toFixed(2)+'K':fmt(n);
 export const IDEAL_ML_KILLS_PER_SECOND=1;
 export function formatMlEta(seconds){
@@ -85,7 +113,9 @@ export function calculatePathfinderMlXp(raw={}){
   const needed=Math.ceil(requiredMlXp(ml)*(ml===level?(100-progress)/100:1));
   if(ml===level)firstRequired=needed;
   required+=needed;
-  const base=round2(biome.base*(1+(ml-280)/400));
+  // Low ML biome cards show a 0.375 multiplier at ML 10 and ML 30
+  // (Verdant 1.5, Scorched 2.25, Murky 3). Infer a floor, not server logic.
+  const base=round2(biome.base*Math.max(0.375,1+(ml-280)/400));
   const perLevel=[];
   for(const v of variants){
    const modifier=biome.order<=2?1:v.id==='weak'?.9:v.id==='strong'?1.1:1;
@@ -103,7 +133,10 @@ export function calculatePathfinderMlXp(raw={}){
  const highestUnlocked=lastUnlocked(level);
  const nextBiome=PATHFINDER_ML_BIOMES.find(b=>b.unlockMl>level)||null;
  const currentBiome=farmMode==='auto'?highestUnlocked:fixedBiome;
+ const earlyEstimated=segments.some(s=>s.level<185);
+ const sparseEstimated=segments.some(s=>s.level>=43&&s.level<=183);
  return {plan,level,target,progress,required,requiredDisplay:compact(required),
+  earlyEstimated,sparseEstimated,
   requiredFullLevel:requiredMlXp(level),firstRequired,variants,
   biome:currentBiome,highestUnlocked,nextBiome,zones,segments,
   levels:target-level,modifiersAvailable:zones.length?zones.some(z=>PATHFINDER_ML_BIOMES.find(b=>b.id===z.id).order>2):currentBiome.order>2,
@@ -116,7 +149,7 @@ export function pathfinderMlXpResults(raw={}){
   '<div class="pathMlCardHead"><span class="pathMlCardSymbol" aria-hidden="true">'+(v.id==='weak'?'−':v.id==='normal'?'◆':'+')+'</span>'+
   '<div><small>'+v.delta+'</small><strong>'+v.label+'</strong></div></div>'+
   '<div class="pathMlCardEta"><span>Ideal ETA</span><strong>≈'+v.etaDisplay+'</strong></div>'+
-  '<div class="pathMlJourneyKills">≈'+fmt(Math.round(v.kills/10)*10)+' <span>kills</span></div>'+
+  '<div class="pathMlJourneyKills">≈'+displayKills(v.kills)+' <span>kills</span></div>'+
   '</article>').join('');
  const route=m.plan.farmMode==='auto'?
   (m.zones.length?m.zones.map(x=>x.name).join(' → '):m.biome.name):
@@ -128,11 +161,15 @@ export function pathfinderMlXpResults(raw={}){
    '<div class="pathMlJourneyHeroTime" id="pathMlJourneyEta">≈'+regular.etaDisplay+'</div>'+
    '<span class="pathMlJourneyHeroContext">Regular monsters · one-shot assumption</span></div>'+
    '<div class="pathMlJourneyHeroStats"><div><small>Total ML XP</small><strong id="pathMlTotalXp">≈'+m.requiredDisplay+'</strong></div>'+
-   '<div><small>Estimated kills</small><strong id="pathMlTotalKills">≈'+fmt(Math.round(regular.kills/10)*10)+'</strong></div>'+
+   '<div><small>Estimated kills</small><strong id="pathMlTotalKills">≈'+displayKills(regular.kills)+'</strong></div>'+
    '</div></div></div>'+
+  (m.earlyEstimated?'<p class="pathMlEstimateNotice"><strong>Early ML estimates.</strong> '+(m.sparseEstimated?
+    'ML 43–183 is interpolated between limited player observations; results may differ from the game.':
+    'Low-level results use player reports and fitted values between observations.')+'</p>':'')+
   '<div class="pathMlCompareIntro"><div><strong>Monster comparison</strong><span>Full journey · '+m.levels+' levels</span></div><small>−10% / Normal / +10%</small></div>'+
   '<div class="pathMlCards">'+cards+'</div>'+
   '<div class="pathMlJourneyRoute"><span class="pathMlZoneReady">Farming route</span><span>'+route+'</span></div>'+
+
   (m.isComplete?'<p class="pathMlNote">You are already at the target Monster Level. Choose a higher target to estimate additional progress.</p>':'')+
   (!m.modifiersAvailable?'<p class="pathMlNote">The first two biomes do not receive the ±10% monster-position bonuses.</p>':'')+
   '<p class="pathMlDisclaimer">Estimates assume one-shotting at each selected ML, starting '+(m.progress?m.progress+'% through your current level':'at 0% progress')+'. Ideal ETA uses one ML XP-awarding kill per second without downtime. Automatic biome progression assumes you can one-shot in each newly unlocked biome. Actual times vary; Frenzy kills do not award ML XP. XP requirements are screenshot-based estimates, not an exact server formula.</p>'+
@@ -150,7 +187,7 @@ export function pathfinderMlXpView(raw={}){
   '<h2>Monster Level XP</h2><p>Estimate total XP, kills and time between two Monster Levels.</p></div></div>'+
   '<div class="pathMlControls pathMlJourneyControls">'+
    '<div class="pathMlJourneyLevels">'+
-   '<label class="pathMlJourneyLevelField" for="pathMlCurrent"><span>Current ML</span><input id="pathMlCurrent" type="number" data-path-ml-current min="185" max="500" step="1" inputmode="numeric" value="'+p.level+'"></label>'+
+   '<label class="pathMlJourneyLevelField" for="pathMlCurrent"><span>Current ML</span><input id="pathMlCurrent" type="number" data-path-ml-current min="1" max="500" step="1" inputmode="numeric" value="'+p.level+'"></label>'+
    '<span class="pathMlJourneyArrow" aria-hidden="true">→</span>'+
    '<label class="pathMlJourneyLevelField" for="pathMlTarget"><span>Target ML</span><input id="pathMlTarget" type="number" data-path-ml-target min="'+p.level+'" max="500" step="1" inputmode="numeric" value="'+p.target+'"></label></div>'+
    '<div class="pathMlJourneyQuick"><small>Quick target</small><div id="pathMlTargetPresets">'+quicks+'<button type="button" data-path-ml-target-end="'+PATHFINDER_ML_MAX+'"'+(p.target===500?' class="active" aria-pressed="true"':' aria-pressed="false"')+'>ML 500</button></div></div>'+

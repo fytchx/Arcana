@@ -6,14 +6,65 @@ import {PATHFINDER_ML_MIN,PATHFINDER_ML_MAX,PATHFINDER_ML_BIOMES,
  readPathfinderMlXp,savePathfinderMlXp,normalizePathfinderMlXp,
  formatMlEta,IDEAL_ML_KILLS_PER_SECOND} from '../src/pathfinder-ml-xp.js';
 
-test('XP requirement fit remains bounded and monotone ML 185–500',()=>{
- assert.equal(PATHFINDER_ML_MIN,185);assert.equal(PATHFINDER_ML_MAX,500);
- assert.equal(requiredMlXp(184),null);assert.equal(requiredMlXp(501),null);
+test('XP requirement model remains bounded and monotone ML 1–500',()=>{
+ assert.equal(PATHFINDER_ML_MIN,1);assert.equal(PATHFINDER_ML_MAX,500);
+ assert.equal(requiredMlXp(0),null);assert.equal(requiredMlXp(501),null);
  let prev=0;
- for(let ml=185;ml<=500;ml++){const value=requiredMlXp(ml);assert.ok(value>prev,'ML '+ml);prev=value;}
+ for(let ml=1;ml<=500;ml++){const value=requiredMlXp(ml);assert.ok(value>prev,'ML '+ml);prev=value;}
  for(const [ml,value] of [[216,207520],[290,537670],[332,821380],[400,1420000],[482,2300000]]){
   assert.ok(Math.abs(requiredMlXp(ml)-value)<=(value>=1e6?5000:6),'ML '+ml);
  }
+});
+test('early reports, including ML 4 outlier, remain preserved',()=>{
+ const reports={2:78,4:140,5:156,6:182,7:208,8:234,9:260,
+  10:400,11:437,12:473,13:510,14:546,
+  15:584,16:626,17:671,18:720,19:771,
+  21:886,22:949,23:1010,24:1080,25:1160,
+  26:1240,27:1310,28:1400,29:1490,30:2250,42:4200};
+ for(const [ml,xp] of Object.entries(reports))assert.equal(requiredMlXp(Number(ml)),xp,'ML '+ml);
+ assert.equal(requiredMlXp(1),52,'ML 1 extrapolated');
+ assert.equal(requiredMlXp(3),104,'ML 3 extrapolated');
+ assert.equal(requiredMlXp(20),826,'ML 20 estimated');
+ assert.equal(requiredMlXp(184),124490,'ML184 screenshot');
+ assert.ok(requiredMlXp(41)<4200&&requiredMlXp(43)>4200);
+ assert.ok(requiredMlXp(184)<requiredMlXp(185));
+ assert.ok(requiredMlXp(30)>1.4*requiredMlXp(29),'ML30 jump');
+ const warning=pathfinderMlXpResults({level:42,target:185});
+ assert.ok(warning.includes('ML 43–183 is interpolated'));
+ assert.ok(warning.includes('Early ML estimates'));
+ assert.ok(!pathfinderMlXpResults({level:185,target:190}).includes('ML 43–183 is interpolated'));
+});
+test('biome-card floor matches new-character screenshot observations',()=>{
+ const one=calculatePathfinderMlXp({level:1,target:2});
+ assert.equal(one.biome.id,'verdant');
+ assert.equal(one.segments[0].perLevel[1].xpPerKill,1.5);
+ assert.equal(one.variants[1].kills,35);
+ const ten=calculatePathfinderMlXp({level:10,target:11});
+ assert.equal(ten.biome.id,'scorched');
+ assert.equal(ten.segments[0].perLevel[1].xpPerKill,2.25);
+ assert.equal(ten.required,400);
+ const thirty=calculatePathfinderMlXp({level:30,target:31});
+ assert.equal(thirty.biome.id,'murky');
+ assert.equal(thirty.segments[0].perLevel[1].xpPerKill,3);
+ const two=calculatePathfinderMlXp({level:2,target:3});
+ assert.equal(two.required,78);assert.equal(two.variants[1].kills,52);
+ assert.ok(pathfinderMlXpResults({level:2,target:3}).includes('≈52'),'small kill counts should be shown precisely');
+ assert.equal(calculatePathfinderMlXp({level:42,target:43}).required,4200);
+});
+test('ML 1–185 route switches every standard biome when unlocked',()=>{
+ const model=calculatePathfinderMlXp({level:1,target:186});
+ assert.deepEqual(model.zones.map(x=>[x.id,x.start]),[
+  ['verdant',1],['scorched',10],['murky',30],['frozen',45],
+  ['shadow',65],['infernal',90],['elder',115],['glass',150],['drowned',185]
+ ]);
+ assert.equal(model.segments.length,185);
+ assert.ok(model.earlyEstimated&&model.sparseEstimated&&model.required>0);
+ const html=pathfinderMlXpView({level:1,target:11});
+ assert.ok(html.includes('min="1" max="500"'));
+ assert.ok(html.includes('Early ML estimates'));
+ assert.ok(html.includes('Low-level results use player reports'));
+ assert.ok(html.includes('Verdant Woods'));
+ assert.ok(html.includes('Scorched Sands'));
 });
 test('new plans default to +10, migrate old saves, clamp invalid ranges, persist fields',()=>{
  assert.deepEqual(normalizePathfinderMlXp(),{level:300,target:310,progress:0,biome:'crown',farmMode:'auto'});
@@ -68,8 +119,8 @@ test('auto route transitions at unlocked ML; fixed biome stays fixed',()=>{
  assert.ok(html.includes('<option value="summit" data-unlock-ml="220" disabled>'));
  assert.ok(html.includes('<option value="crown" data-unlock-ml="300" disabled>'));
 });
-test('journey variants stay ordered, positive, and bounded across all 316 starting MLs',()=>{
- for(let ml=185;ml<=500;ml++){
+test('journey variants stay ordered, positive, and bounded across all 500 starting MLs',()=>{
+ for(let ml=1;ml<=500;ml++){
   const m=calculatePathfinderMlXp({level:ml,target:Math.min(500,ml+25),progress:37});
   assert.equal(m.segments.length,m.levels);
   if(m.levels){
