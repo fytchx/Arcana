@@ -483,3 +483,7 @@
  .pathMlJourneyLevelField input{font-size:27px}
  .pathMlJourneyQuick button{font-size:11px;padding:6px 4px}
 }
+
+/* Early ML data quality note: visible but secondary to journey ETA. */
+.pathMlEstimateNotice{margin:0;padding:10px 12px;border-radius:10px;border:1px solid var(--ml-border);background:color-mix(in srgb,var(--theme-highlight) 6%,var(--theme-secondary));color:var(--muted);font-size:11px;line-height:1.6}
+.pathMlEstimateNotice strong{color:var(--text);font-weight:850}
