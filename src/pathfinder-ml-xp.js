@@ -162,12 +162,13 @@ export function pathfinderMlXpResults(raw={}){
    '<div class="pathMlJourneyHeroStats"><div><small>Total ML XP</small><strong id="pathMlTotalXp">≈'+m.requiredDisplay+'</strong></div>'+
    '<div><small>Estimated kills</small><strong id="pathMlTotalKills">≈'+fmt(Math.round(regular.kills/10)*10)+'</strong></div>'+
    '</div></div></div>'+
-  '<div class="pathMlCompareIntro"><div><strong>Monster comparison</strong><span>Full journey · '+m.levels+' levels</span></div><small>−10% / Normal / +10%</small></div>'+
-  '<div class="pathMlCards">'+cards+'</div>'+
-  '<div class="pathMlJourneyRoute"><span class="pathMlZoneReady">Farming route</span><span>'+route+'</span></div>'+
   (m.earlyEstimated?'<p class="pathMlEstimateNotice"><strong>Early ML estimates.</strong> '+(m.sparseEstimated?
     'ML 43–183 is interpolated between limited player observations; results may differ from the game.':
     'Low-level results use player reports and fitted values between observations.')+'</p>':'')+
+  '<div class="pathMlCompareIntro"><div><strong>Monster comparison</strong><span>Full journey · '+m.levels+' levels</span></div><small>−10% / Normal / +10%</small></div>'+
+  '<div class="pathMlCards">'+cards+'</div>'+
+  '<div class="pathMlJourneyRoute"><span class="pathMlZoneReady">Farming route</span><span>'+route+'</span></div>'+
+
   (m.isComplete?'<p class="pathMlNote">You are already at the target Monster Level. Choose a higher target to estimate additional progress.</p>':'')+
   (!m.modifiersAvailable?'<p class="pathMlNote">The first two biomes do not receive the ±10% monster-position bonuses.</p>':'')+
   '<p class="pathMlDisclaimer">Estimates assume one-shotting at each selected ML, starting '+(m.progress?m.progress+'% through your current level':'at 0% progress')+'. Ideal ETA uses one ML XP-awarding kill per second without downtime. Automatic biome progression assumes you can one-shot in each newly unlocked biome. Actual times vary; Frenzy kills do not award ML XP. XP requirements are screenshot-based estimates, not an exact server formula.</p>'+
