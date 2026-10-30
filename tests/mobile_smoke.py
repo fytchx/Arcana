@@ -415,6 +415,24 @@ with sync_playwright() as playwright:
     assert page.locator('[data-path-ml-progress-fold]').get_attribute('open') is None
     assert page.locator('[data-path-ml-farming-fold]').get_attribute('open') is None
     assert page.locator('input[data-mlxp="killsPerSecond"]').count()==0
+
+    # New-character MLs: reported XP, low-level minimum XP per kill,
+    # and honest warning when the interpolated ML 43-183 range is included.
+    page.locator('[data-path-ml-current]').fill('2')
+    page.locator('[data-path-ml-current]').dispatch_event('change')
+    page.locator('[data-path-ml-target]').fill('3')
+    page.locator('[data-path-ml-target]').dispatch_event('change')
+    assert page.locator('#pathMlTotalXp').inner_text()=='≈78'
+    assert '52' in page.locator('#pathMlTotalKills').inner_text()
+    assert page.locator('.pathMlEstimateNotice').count()==1
+    page.locator('[data-path-ml-current]').fill('42')
+    page.locator('[data-path-ml-current]').dispatch_event('change')
+    page.locator('[data-path-ml-target]').fill('185')
+    page.locator('[data-path-ml-target]').dispatch_event('change')
+    assert 'ML 43–183' in page.locator('.pathMlEstimateNotice').inner_text()
+    assert 'Frozen Peaks' in page.locator('.pathMlJourneyRoute').inner_text()
+    assert 'Drowned Abyss' not in page.locator('.pathMlJourneyRoute').inner_text()
+
     page.locator('[data-path-ml-current]').fill('332')
     page.locator('[data-path-ml-current]').dispatch_event('change')
     page.locator('[data-path-ml-target]').fill('333')
