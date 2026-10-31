@@ -598,8 +598,8 @@ let guideChapterReturnFocus=null;
 function closeLayer(){const wasChapters=state.layer?.type==='guide-chapters';node('layer').hidden=true;delete node('layer').dataset.type;state.layer=null;unlockLayerScroll();if(wasChapters){const trigger=guideChapterReturnFocus;guideChapterReturnFocus=null;if(trigger?.isConnected)trigger.focus({preventScroll:true});}}
 function openGuideChapters(trigger){
  const {route,query}=parseRoute();
- if(route!=='wiki/article'||query.get('id')!=='season-2-complete-zane')return;
- const article=wikiArticleById('season-2-complete-zane');
+ if(route!=='wiki/article'||!['season-2-complete-zane','ml-one-shot-milestone-guide-zane'].includes(query.get('id')))return;
+ const article=wikiArticleById(query.get('id'));
  const sections=[...document.querySelectorAll('.wikiCompleteGuide .wikiArticleSection')];
  if(!article?.sections?.length||sections.length!==article.sections.length)return;
  const marker=Math.max(110,Math.min(window.innerHeight*.32,260));
