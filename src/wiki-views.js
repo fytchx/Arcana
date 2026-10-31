@@ -102,12 +102,12 @@ export function wikiGuidesView(){
 const mlGuidePreviewSummary=()=>'<section class="mlGuideRoute" aria-label="ML progression strategy">'+
  '<div class="mlGuideRouteTop"><span>PREVIEW ONLY · WORKING DRAFT</span><strong>THE PROGRESSION LOOP</strong></div>'+
  '<div class="mlGuideRouteSteps">'+
- '<div><small>01 / PUSH</small><strong>Reach the next milestone</strong><span>Keep moving while one-shots are reliable.</span></div>'+
- '<div><small>02 / UPGRADE</small><strong>Fix the damage bottleneck</strong><span>Invest in impactful gear, not unfinished slots.</span></div>'+
+ '<div><small>01 / PUSH</small><strong>Reach the next ML milestone</strong><span>Keep moving while one-shots are reliable.</span></div>'+
+ '<div><small>02 / UPGRADE</small><strong>Upgrade what matters</strong><span>Invest in impactful gear, not unfinished slots.</span></div>'+
  '<div><small>03 / REPEAT</small><strong>Bank what can wait</strong><span>Save materials and move to the next milestone.</span></div>'+
  '</div><div class="mlGuideRouteActions">'+
- '<button type="button" data-action="wikisection" data-arg="the-progression-loop">Read the plan</button>'+
- '<button type="button" data-action="wikisection" data-arg="my-retaliation-warrior-priority">Upgrade priorities</button>'+
+ '<button type="button" data-action="wikisection" data-arg="how-i-approach-ml">Read the plan</button>'+
+ '<button type="button" data-action="wikisection" data-arg="retaliation-warrior-why-the-helm-comes-second">Retaliation setup</button>'+
  '<button type="button" data-route="calculators/pathfinder" data-params="view=ml">Plan ML XP</button>'+
  '</div></section>';
 export function wikiArticleView(article){if(!article)return `<div class="wikiEmpty">Guide unavailable. Return to the guide directory.</div>`;
