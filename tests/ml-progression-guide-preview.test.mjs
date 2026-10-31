@@ -13,30 +13,30 @@ test('draft stays an explicit, attributed player strategy with real sections',()
  assert.equal(guide.author,'Zane');
  assert.equal(guide.draft,true);
  assert.equal(guide.source,'player-authored');
- assert.equal(guide.sections.length,12);
+ assert.equal(guide.sections.length,10);
  assert.ok(guide.sections.every(s=>s.title&&s.part&&s.body));
  assert.equal(wikiArticleById(ID),guide);
  assert.equal(allWikiArticles().filter(x=>x.id===ID).length,1);
 });
 test('material exchange guidance preserves 5:1 source but does not invent unlimited exchange',()=>{
- const s=section('Why the Material Exchange changes the route').body;
+ const s=section('What the material exchange changes').body;
  assert.match(s,/five lower-biome monster materials for one chosen higher-biome material/);
  assert.match(s,/ML 260/);
- assert.match(s,/the conversion costs materials/i);
- assert.match(s,/not assuming a free conversion between distant biomes/);
+ assert.match(s,/check the exchange cost before using it/i);
+ assert.match(s,/save the rest/);
 });
 test('damage priorities are build-specific and never claim all gear slots must be maxed',()=>{
- const s=section('My Retaliation Warrior priority').body;
+ const s=section('Retaliation Warrior: why the helm comes second').body;
  for(const word of ['chest','gloves','boots','Defense','jewelry','belt'])assert.ok(s.includes(word),word);
  assert.match(s,/not a universal Warrior gearing rule/i);
- assert.match(section('Upgrade damage, not completion').body,/evenly upgraded character/);
- assert.equal(section('Find the equivalent upgrades for your build').table.length,4);
+ assert.match(section('How I approach ML').body,/evenly upgraded character/);
+ assert.equal(section('What about Pet Damage?').table.length,4);
 });
 test('one shot, +10% ML XP, Frenzy and ML290 example are present',()=>{
- assert.match(section('Pick the monster you can actually one-shot').body,/10% more/);
- assert.match(section('Frenzy is useful, but it doesn\'t level ML').body,/do not award Monster Level XP/);
- assert.match(section('The checkpoint that decides everything').body,/ML 290/);
- assert.match(section('Example: you\'re ML 290 and your gear isn\'t finished').body,/ML 300/);
+ assert.match(section('Choose the monster that keeps dying in one hit').body,/10% more/);
+ assert.match(section('Frenzy isn\'t ML XP').body,/do not award Monster Level XP/);
+ assert.match(section('When to push and when to upgrade').body,/ML 290/);
+ assert.match(section('ML 290 to 300, and how Arcana helps').body,/ML 300/);
 });
 test('wiki guide supports reader navigation, tool links and preview-only banner',()=>{
  const page=wikiArticleView(guide);
@@ -46,8 +46,8 @@ test('wiki guide supports reader navigation, tool links and preview-only banner'
  assert.match(page,/wikiCompleteToc/);
  assert.match(page,/data-action="wikichapters"/);
  assert.match(page,/data-action="wikisection"/);
- assert.match(page,/section-the-progression-loop/);
- assert.match(page,/section-my-retaliation-warrior-priority/);
+ assert.match(page,/section-how-i-approach-ml/);
+ assert.match(page,/section-retaliation-warrior-why-the-helm-comes-second/);
  assert.match(page,/view=ml/);
  assert.match(page,/data-arg="calculators\/affixes"/);
  assert.match(wikiGuidesView(),/Grinding Monster Level Efficiently/);
