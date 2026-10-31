@@ -336,7 +336,7 @@ with sync_playwright() as playwright:
     if page.locator('[data-mini-toggle]').get_attribute('aria-expanded')=='false':
         page.locator('[data-mini-toggle]').click()
     live=page.frame_locator('[data-mini-live-frame]')
-    live.locator('#content.homeFullscreen .atlasHero').wait_for(timeout=12000)
+    live.locator('#content.homeFullscreen [data-featured-primary]').wait_for(timeout=12000)
     assert live.locator('body').count()==1, 'Theme preview failed to load the current Arcana page'
     page.screenshot(path=str(OUT/'current-arcana-live-mini.png'),full_page=True)
     # Applying a curated look must update its selected state and stay browser-local.
