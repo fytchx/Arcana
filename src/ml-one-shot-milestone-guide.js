@@ -20,7 +20,7 @@ export const ML_ONE_SHOT_MILESTONE_GUIDE=Object.freeze({
     {
       "part": "The approach",
       "title": "When to push and when to upgrade",
-      "body": "If I'm reliably one-shotting my target, I keep pushing ML. Unfinished upgrades can wait, even if I'm ML 290 and half my gear is behind.\n\nIf my one-shots start failing, I switch to my stronger damage setup. Still struggling? That's when I farm materials for the upgrades that make the biggest difference. Sometimes lowering my fighting level briefly is the fastest way to get those mats.\n\nThe aim is to spend as little time as possible backtracking for upgrades that don't change my kill speed."
+      "body": "If I'm reliably one-shotting my target, I keep pushing ML. Unfinished upgrades can wait, even if I'm ML 290 and half my gear is behind.\n\nIf my one-shots start failing, I switch to my stronger damage setup. Still struggling? That's when I farm materials for the upgrades that make the biggest difference. Sometimes lowering my fighting level briefly is the fastest way to get those mats.\n\nThe aim is to spend as little time as possible backtracking for upgrades that don't change my kill speed.\n\nBefore spending materials, I check [[tool:upgrade|Pathfinder's upgrade costs]] to see whether the upgrade is worth the detour."
     },
     {
       "part": "The approach",
@@ -50,7 +50,7 @@ export const ML_ONE_SHOT_MILESTONE_GUIDE=Object.freeze({
     {
       "part": "Farming ML",
       "title": "Choose the monster that keeps dying in one hit",
-      "body": "From Murky Depths onward, the weakest monster gives 10% less ML XP and the strongest gives 10% more than the normal monster.\n\nIf I can one-shot the +10% monster consistently, that's my pick for pushing ML. If it takes two hits, the easier monster can give more XP per hour. I prioritize reliable one-shots over a bigger XP number on paper.\n\nI also keep an eye on whether those one-shots will last as ML rises, especially before leaving a character farming overnight."
+      "body": "From Murky Depths onward, the weakest monster gives 10% less ML XP and the strongest gives 10% more than the normal monster.\n\nIf I can one-shot the +10% monster consistently, that's my pick for pushing ML. If it takes two hits, the easier monster can give more XP per hour. I prioritize reliable one-shots over a bigger XP number on paper.\n\nI also keep an eye on whether those one-shots will last as ML rises, especially before leaving a character farming overnight.\n\nFor a rough plan, [[tool:mlxp|Pathfinder's ML XP calculator]] estimates how many kills my next milestone will take. It's a model, not exact server math."
     },
     {
       "part": "Farming ML",
@@ -59,32 +59,11 @@ export const ML_ONE_SHOT_MILESTONE_GUIDE=Object.freeze({
     },
     {
       "part": "Put it to work",
-      "title": "ML 290 to 300, and how Arcana helps",
-      "body": "If I'm ML 290 and still one-shotting, I'm pushing toward ML 300, not stopping to upgrade every neglected piece. When I unlock the next biome, I'll test my damage again and upgrade what actually needs attention.\n\nArcana makes planning that a lot easier:\n\n- Pathfinder ML XP: estimate XP, kills and an ideal ETA from current ML to target ML.\n- Pathfinder Upgrade Costs: see the materials and expected attempts before spending.\n- Pet Affix Calculator: check shard costs for the affixes I want.\n- Pet Compound Calculator: plan levels and hatch bonuses.\n\nSome of these results are estimates, not exact game formulas. They're still useful for deciding whether an upgrade is worth the detour.\n\nThat's basically the whole strategy: keep one-shotting, spend with a purpose, and don't let unfinished gear distract you from the next milestone."
+      "title": "ML 290 to 300: the actual decision",
+      "body": "If I'm ML 290 and still one-shotting, I'm pushing toward ML 300, not stopping to upgrade every neglected piece. When I unlock the next biome, I'll test my damage again and upgrade what actually needs attention.\n\nThat's basically the whole strategy: keep one-shotting, spend with a purpose, and don't let unfinished gear distract you from the next milestone."
     }
   ],
-  "actions": [
-    {
-      "label": "Plan ML XP and ETA",
-      "route": "calculators/pathfinder?view=ml",
-      "icon": "sword"
-    },
-    {
-      "label": "Calculate upgrade materials",
-      "route": "calculators/pathfinder?view=range",
-      "icon": "calculator"
-    },
-    {
-      "label": "Pet Affix costs",
-      "route": "calculators/affixes",
-      "icon": "paw"
-    },
-    {
-      "label": "Pet Compound",
-      "route": "calculators/pet",
-      "icon": "paw"
-    }
-  ],
+  "actions": [],
   "connections": {
     "articles": [
       "monster-level",
@@ -103,49 +82,6 @@ export const ML_ONE_SHOT_MILESTONE_GUIDE=Object.freeze({
       "affixes",
       "compound"
     ],
-    "sectionLinks": {
-      "How I approach ML": [
-        "mlxp",
-        "upgrade"
-      ],
-      "When to push and when to upgrade": [
-        "mlxp",
-        "upgrade"
-      ],
-      "What the material exchange changes": [
-        "upgrade",
-        "materials"
-      ],
-      "Attack Damage: my usual order": [
-        "upgrade",
-        "compare"
-      ],
-      "Harmony: my usual order": [
-        "upgrade",
-        "compare"
-      ],
-      "Retaliation Warrior: why the helm comes second": [
-        "upgrade",
-        "compare"
-      ],
-      "What about Pet Damage?": [
-        "affixes",
-        "compound",
-        "build"
-      ],
-      "Choose the monster that keeps dying in one hit": [
-        "mlxp",
-        "biomeRecords"
-      ],
-      "Frenzy isn't ML XP": [
-        "mlxp"
-      ],
-      "ML 290 to 300, and how Arcana helps": [
-        "mlxp",
-        "upgrade",
-        "affixes",
-        "compound"
-      ]
-    }
+    "sectionLinks": {}
   }
 });

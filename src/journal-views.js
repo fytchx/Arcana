@@ -46,10 +46,17 @@ function bodyMarkup(body){
 export function journalArticleView({article=null,articles=[],loading=false,error=''}){
  if(!article)return `<div class="journalNativePage"><nav class="wikiBreadcrumbs" aria-label="Page location"><button data-route="home">Home</button><span aria-hidden="true">›</span><button data-route="journal">Arcana Journal</button></nav>${loading?'<div class="wikiLoading">Loading story…</div>':`<div class="wikiEmpty"><strong>Story unavailable.</strong><p>${esc(error||'This story may have been unpublished.')}</p><button class="btn secondary" data-route="journal">Back to Journal</button></div>`}</div>`;
  const related=articles.filter(post=>post.slug!==article.slug).slice(0,2);
- return `<div class="journalNativePage journalNativeArticlePage"><nav class="wikiBreadcrumbs" aria-label="Page location"><button data-route="home">Home</button><span aria-hidden="true">›</span><button data-route="journal">Arcana Journal</button><span aria-hidden="true">›</span><span class="wikiCrumbCurrent">${esc(article.category)}</span></nav>
-  <article class="wikiArticle journalNativeArticle"><button class="wikiBack" data-route="journal">${icon('back',15)} All Journal stories</button><header class="wikiArticleIntro"><span class="wikiEyebrow">${esc(article.category||'JOURNAL').toUpperCase()} · ARCANACOMMUNITY</span><h1>${esc(article.title)}</h1><p>${esc(article.subtitle)}</p><div class="wikiArticleTags"><span>${icon('edit',14)} By ${esc(article.author||'Arcana')}</span><span>${icon('clock',14)} ${esc(dateLabel(article.publishedAt))}</span></div></header>
-  ${article.coverUrl?`<img class="journalNativeCover" src="${esc(article.coverUrl)}" alt="" loading="lazy">`:''}<div class="journalNativeBody">${bodyMarkup(article.body)}</div>
-  <section class="wikiConnections journalNativeEnd"><div class="wikiConnectionHeading"><span class="wikiEyebrow">KEEP EXPLORING</span><h2>Continue through Arcana</h2></div><div class="wikiConnectionRows"><button class="wikiConnectionRow" data-route="journal">${icon('book',18)}<span><strong>More Journal stories</strong><small>News, perspectives, and development notes.</small></span>${icon('arrow',15)}</button><button class="wikiConnectionRow" data-route="wiki/guides">${icon('book',18)}<span><strong>Player guides</strong><small>Practical help from the Arcana community.</small></span>${icon('arrow',15)}</button></div></section>
-  ${related.length?`<section class="journalRelatedNative"><div class="wikiFeaturedHead"><div><span class="wikiEyebrow">KEEP READING</span><h2>More from the Journal</h2></div></div><div class="journalStoryGrid">${related.map(post=>storyCard(post)).join('')}</div></section>`:''}
+ return `<div class="journalNativePage journalNativeArticlePage">
+ <nav class="wikiBreadcrumbs arcReadingCrumb" aria-label="Page location"><button data-route="journal">Journal</button><span aria-hidden="true">›</span><span class="wikiCrumbCurrent">${esc(article.category)}</span></nav>
+ <article class="wikiArticle arcReadingPage journalNativeArticle">
+  <header class="wikiArticleIntro arcReadingHead arcJournalHead">
+   <span class="wikiEyebrow arcReadingKicker">${esc(article.category||'JOURNAL').toUpperCase()}</span>
+   ${article.coverUrl?`<img class="arcReadingCover" src="${esc(article.coverUrl)}" alt="" loading="eager">`:''}
+   <h1>${esc(article.title)}</h1><p class="arcReadingDeck">${esc(article.subtitle)}</p>
+   <div class="arcReadingUtility"><span class="arcReadingByline">By ${esc(article.author||'Arcana')} · ${esc(dateLabel(article.publishedAt))}</span></div>
+  </header>
+  <div class="journalNativeBody">${bodyMarkup(article.body)}</div>
+  <nav class="arcReadingEnd" aria-label="Continue reading"><button type="button" class="wikiTextLink" data-route="journal">More Journal stories</button><button type="button" class="wikiTextLink" data-route="wiki/guides">Player guides</button></nav>
  </article></div>`;
+
 }
