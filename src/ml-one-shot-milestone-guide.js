@@ -1,5 +1,4 @@
-// REVIEW-ONLY Arcana Preview guide. Player strategy, not verified universal upgrade orders.
-// Not authorized for production until reviewed.
+// Community-authored Season 2 progression guide. Strategy reflects player experience, not universal upgrade orders.
 export const ML_ONE_SHOT_MILESTONE_GUIDE=Object.freeze({
   "id": "ml-one-shot-milestone-guide-zane",
   "title": "Grinding Monster Level Efficiently",
@@ -7,10 +6,10 @@ export const ML_ONE_SHOT_MILESTONE_GUIDE=Object.freeze({
   "readTime": "5–7 min",
   "author": "Zane",
   "source": "player-authored",
-  "draft": true,
+  "draft": false,
   "summary": "How I push Monster Level: save materials, upgrade the gear that actually improves damage, and keep one-shotting toward the next milestone.",
   "keywords": "IdleArc Season 2 ML XP monster level grind material exchange one shot Attack Harmony Retaliation Warrior Berserker Grips Symbiotic Handgrips Harmonic Cuirass Sage Diadem base helm Pathfinder",
-  "version": "Working draft · October 30, 2026",
+  "version": "Published · October 30, 2026",
   "sections": [
     {
       "part": "The approach",

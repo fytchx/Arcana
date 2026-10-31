@@ -224,6 +224,7 @@ function home(){return homeScreen(currentAccount());}
 function featuredView(){
  const items=[
   ['Help Shape Arcana','What is Arcana? What should change? Tell me what to build next.','journal/article','spark','slug=help-shape-arcana'],
+  ['Grinding Monster Level Efficiently','One-shot farming, smarter upgrades, and a practical path to your next ML milestone.','wiki/article','book','id=ml-one-shot-milestone-guide-zane'],
   ['Convergence: Complete Season 2 Guide','Master the tier loop, elite encounters, monster seats and all 37 Lattice nodes.','wiki/article','book','id=convergence-complete-guide'],
   ['Arcana Journal','Independent IdleArc news, meta analysis and community perspectives.','journal','book'],
   ['Class Balance: Top 250','See the ranked class data and the full Season 2 balance analysis.','journal-balance','shield'],

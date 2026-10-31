@@ -182,7 +182,10 @@ with sync_playwright() as playwright:
     assert page.locator('.atlasJournalStory').count()==1
     assert page.locator('.atlasJournalMore .atlasJournalExtra').count()==1
     assert page.locator('.atlasFeatureLink').count()==2, 'Create and Share destinations must render'
-    assert page.locator('.atlasGuideHighlight').count()==1, 'Convergence guide must be featured on Home'
+    assert page.locator('.atlasGuideHighlight').count()==2, 'ML and Convergence guides must both be featured on Home'
+    assert page.locator('.atlasGuidePrimary [data-params="id=ml-one-shot-milestone-guide-zane"]').count()==1
+    assert page.locator('.atlasGuideSecondary [data-params="id=convergence-complete-guide"]').count()==1
+    assert page.locator('.atlasGuidePrimary').first.evaluate('(el)=>el.getBoundingClientRect().top') < page.locator('.atlasGuideSecondary').first.evaluate('(el)=>el.getBoundingClientRect().top')
     # This offline harness has no Journal API: verify the static featured
     # article remains clickable, with a real slug and visible editorial text.
     featured=page.locator('[data-journal-latest]')
@@ -477,7 +480,7 @@ with sync_playwright() as playwright:
     assert page.locator('.wikiArticleSection').count()==10
     assert page.locator('.arcReadingHead [data-action="wikichapters"]').count()==1
     assert page.locator('.wikiCompleteToc, .mlGuideRoute, .wikiArticleActions, .wikiSectionActions').count()==0
-    assert 'PREVIEW DRAFT' in page.locator('.arcReadingHead').inner_text()
+    assert 'PREVIEW DRAFT' not in page.locator('.arcReadingHead').inner_text()
     assert page.locator('.arcReadingInlineLink').count()==2, 'No repeated tool promotion grids'
     page.evaluate('window.scrollTo(0,0)')
     first_top=page.locator('.wikiArticleSection').first.evaluate('(el)=>el.getBoundingClientRect().top')

@@ -8,10 +8,10 @@ import {NAV_DESTINATIONS} from '../src/context-nav.js';
 
 const ID='ml-one-shot-milestone-guide-zane';
 const section=title=>guide.sections.find(x=>x.title===title);
-test('draft stays an explicit, attributed player strategy with real sections',()=>{
+test('published guide remains attributed player strategy with real sections',()=>{
  assert.equal(guide.id,ID);
  assert.equal(guide.author,'Zane');
- assert.equal(guide.draft,true);
+ assert.equal(guide.draft,false);
  assert.equal(guide.source,'player-authored');
  assert.equal(guide.sections.length,10);
  assert.ok(guide.sections.every(s=>s.title&&s.part&&s.body));
@@ -41,7 +41,7 @@ test('one shot, +10% ML XP, Frenzy and ML290 example are present',()=>{
 test('one compact masthead replaces stacked preview cards and tool grids',()=>{
  const page=wikiArticleView(guide);
  assert.match(page,/arcReadingHead/);
- assert.match(page,/PREVIEW DRAFT/);
+ assert.doesNotMatch(page,/PREVIEW DRAFT/);
  assert.match(page,/arcReadingLoop/);
  assert.match(page,/01<\/b> Push ML/);
  assert.match(page,/02<\/b> Upgrade damage/);
