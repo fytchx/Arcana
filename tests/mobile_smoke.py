@@ -474,15 +474,15 @@ with sync_playwright() as playwright:
     page.wait_for_selector('.mlGuideRoute',timeout=8000)
     assert 'Grinding Monster Level Efficiently' in page.locator('.wikiArticleIntro h1').inner_text()
     assert page.locator('.mlGuideRouteSteps>div').count()==3
-    assert page.locator('.wikiArticleSection').count()==12
-    assert page.locator('.wikiCompleteToc .wikiGuideTocItems button').count()==12
+    assert page.locator('.wikiArticleSection').count()==10
+    assert page.locator('.wikiCompleteToc .wikiGuideTocItems button').count()==10
     assert 'PREVIEW ONLY' in page.locator('.mlGuideRouteTop').inner_text()
     assert page.locator('.wikiGuideFastTrack').count()==0, 'Season 2 quick start should not appear'
     page.locator('.wikiGuideSectionPager button[data-action="wikichapters"]').first.click()
     page.wait_for_selector('.arcGuideChapterPanel',timeout=3000)
-    assert page.locator('.arcGuideChapterItem').count()==12
-    page.locator('.arcGuideChapterItem[data-arg="my-retaliation-warrior-priority"]').click()
-    assert page.evaluate("document.getElementById('section-my-retaliation-warrior-priority')!==null")
+    assert page.locator('.arcGuideChapterItem').count()==10
+    page.locator('.arcGuideChapterItem[data-arg="retaliation-warrior-why-the-helm-comes-second"]').click()
+    assert page.evaluate("document.getElementById('section-retaliation-warrior-why-the-helm-comes-second')!==null")
     assert page.locator('#layer').is_hidden(), 'Chapter overlay must close on selection'
     viewport_width=page.evaluate("window.innerWidth")
     document_width=page.evaluate("document.documentElement.scrollWidth")
