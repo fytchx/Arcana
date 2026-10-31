@@ -15,8 +15,9 @@ test('Six additional source-backed Season 2 articles exist with honest internal 
   assert.ok(article.actions.length>=2,id);
   assert.ok(WIKI_CONNECTIONS[id],id);
   const html=wikiArticleView(article);
-  assert.match(html,/Related guides and game records/);
-  assert.match(html,/data-action="wikisection"/);
+  assert.match(html,/arcReadingHead/);
+  assert.match(html,/data-action="wikichapters"/);
+  assert.doesNotMatch(html,/wikiSectionActions|wikiActionGrid/);
   for(const section of article.sections)assert.ok(section.body||section.table,id+': '+section.title);
  }
  const ids=WIKI_ARTICLES.map(a=>a.id);

@@ -68,23 +68,19 @@ test('Tool journeys and home quick actions are rendered with real controls',()=>
  assert.equal(relatedDestinations('calculators/affixes').length,3);
 });
 
-test('Wiki articles link to inline tools and curated related guide pages',()=>{
+test('Wiki articles use compact mastheads without automatic related-tool card stacks',()=>{
  for(const article of WIKI_ARTICLES){
   const html=wikiArticleView(article);
-  if(article.id==='bruto-season-2-progression'){
-   assert.match(html,/USEFUL LINKS/);
-   assert.doesNotMatch(html,/Related guides and game records|wikiSectionActions/);
-  }else{
-   assert.match(html,/Continue in Arcana/);
-   assert.match(html,/Related guides and game records/);
-   assert.match(html,/data-route="wiki\/article"/);
-  }
+  assert.match(html,/arcReadingHead/);
+  assert.doesNotMatch(html,/wikiArticleActions|wikiSectionActions|Related guides and game records/);
+  assert.doesNotMatch(html,/class="wikiAction"/);
+  if(article.sections.length>=3)assert.match(html,/data-action="wikichapters"/);
  }
- const season=wikiArticleView(wikiArticleById('season-2'));
- assert.match(season,/wikiSectionActions/);
- assert.match(season,/data-route="labs\/guild-tree"/);
- const pet=wikiArticleView(wikiArticleById('pet-compound'));
- assert.match(pet,/Pet Affix Cost Calculator|Calculate pet affix costs/);
+ const ml=wikiArticleView(wikiArticleById('ml-one-shot-milestone-guide-zane'));
+ assert.match(ml,/arcReadingInlineLink/);
+ assert.match(ml,/data-route="calculators\/pathfinder"/);
+ const season=wikiArticleView(wikiArticleById('season-2-complete-zane'));
+ assert.match(season,/arcReadingPractical/);
 });
 
 test('Codex records connect to the correct calculators for different mechanics',()=>{

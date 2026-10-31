@@ -1,0 +1,148 @@
+/* Arcana Reading Standard v1: content within the first phone viewport.
+   Guides and Journal articles share a compact, accessible masthead. */
+.arcReadingPage{max-width:900px;margin-inline:auto}
+.arcReadingPage>.arcReadingCrumb,.journalNativeArticlePage>.arcReadingCrumb{margin:0 0 4px;gap:5px}
+.arcReadingPage .arcReadingHead,
+.wikiCompleteGuide .arcReadingHead,
+.journalNativeArticle .arcReadingHead{
+ position:relative;isolation:isolate;display:block;
+ margin:0 0 8px;padding:clamp(14px,2.4vw,22px);
+ border:1px solid var(--theme-border);border-radius:16px;
+ background:linear-gradient(114deg,color-mix(in srgb,var(--theme-highlight) 10%,var(--theme-card-raised)),var(--theme-card));
+ box-shadow:none;overflow:hidden
+}
+.arcReadingHead:before{content:"";pointer-events:none;position:absolute;inset:0 auto 0 0;width:3px;background:var(--theme-highlight);opacity:.9}
+.arcReadingHead .arcReadingKicker{display:block;font-size:10px;font-weight:780;letter-spacing:.1em;line-height:1.35;color:var(--theme-accent-text);margin-bottom:4px}
+.arcReadingHead h1,.wikiCompleteGuide .arcReadingHead h1,
+.journalNativeArticle .arcReadingHead h1{font-size:clamp(23px,4.5vw,35px);font-weight:800;line-height:1.13;letter-spacing:-.038em;max-width:32ch;margin:3px 0 6px;color:var(--text)}
+.arcReadingHead .arcReadingDeck,.wikiCompleteGuide .arcReadingHead .arcReadingDeck{
+ max-width:76ch;font-size:clamp(12px,1.55vw,14px);line-height:1.5;color:var(--soft);margin:0
+}
+.arcReadingUtility{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:7px 12px;margin-top:10px;padding-top:8px;border-top:1px solid var(--theme-border)}
+.arcReadingByline{font-size:11px;color:var(--soft);font-weight:650}
+.arcReadingTools{display:flex;align-items:center;flex-wrap:wrap;gap:5px}
+.arcReadingQuietAction,.arcReadingPractical{
+ appearance:none!important;display:inline-flex;align-items:center;justify-content:center;gap:5px;
+ min-height:32px;padding:5px 8px!important;border:1px solid transparent!important;
+ border-radius:7px;background:transparent!important;color:var(--theme-accent-text)!important;
+ font:inherit;font-size:11px!important;font-weight:720!important;line-height:1.25;text-align:center;cursor:pointer
+}
+.arcReadingQuietAction:hover,.arcReadingQuietAction:focus-visible,
+.arcReadingPractical:hover,.arcReadingPractical:focus-visible{background:var(--theme-highlight-soft)!important;border-color:var(--theme-highlight-border)!important;outline-offset:2px}
+.arcReadingQuietAction svg,.arcReadingPractical svg{flex:none;width:14px;height:14px}
+.arcReadingLoop{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:5px 9px;margin-top:9px;padding-top:9px;border-top:1px solid var(--theme-border)}
+.arcReadingLoop>span{font-size:9px;color:var(--soft);letter-spacing:.1em;font-weight:800;margin-right:3px}
+.arcReadingLoop>strong{display:inline-flex;align-items:center;gap:5px;color:var(--text);font-size:11px;font-weight:700;white-space:nowrap}
+.arcReadingLoop b{font-size:9px;color:var(--theme-accent-text)}
+.arcReadingLoop i{font-size:13px;font-style:normal;color:var(--theme-accent-text)}
+.arcReadingPractical{margin-top:6px;min-height:30px}
+.arcReadingPage .wikiArticleBody{padding:0}
+.arcReadingPage .wikiArticleSection{padding:17px 0 16px;scroll-margin-top:92px}
+.arcReadingPage .wikiArticleSection:first-child{padding-top:7px}
+.arcReadingPage .wikiArticleSection h2{font-size:clamp(19px,2.5vw,24px);margin:0 0 10px;line-height:1.2}
+.arcReadingPage .wikiArticleSection p,.arcReadingPage .wikiArticleSection li{font-size:clamp(13px,1.7vw,15px);line-height:1.65}
+.arcReadingPage .wikiArticleSection p+p{margin-top:12px}
+.arcReadingInlineLink{display:inline!important;border:0!important;padding:0!important;margin:0!important;min-height:0!important;
+ background:none!important;color:var(--theme-accent-text)!important;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;
+ font:inherit!important;line-height:inherit!important;font-weight:650!important;cursor:pointer}
+.arcReadingInlineLink:hover,.arcReadingInlineLink:focus-visible{text-decoration-thickness:2px;outline-offset:3px}
+.arcReadingSource{font-size:11px;line-height:1.6;color:var(--soft);margin:14px 0}
+.arcReadingEnd{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:12px;
+ padding:14px 0 18px;border-top:1px solid var(--theme-border);margin-top:18px}
+.arcReadingEnd button{background:transparent;border:0;color:var(--theme-accent-text);font-size:12px;font-weight:680;cursor:pointer;padding:5px}
+.arcJournalHead .arcReadingCover{width:108px;height:76px;object-fit:cover;float:right;margin:0 0 6px 14px;border-radius:9px}
+.journalNativeArticle .arcReadingHead{margin-bottom:8px}
+.journalNativeArticle .journalNativeBody{margin-top:0}
+@media(max-width:620px){
+ .arcReadingPage .arcReadingHead,.wikiCompleteGuide .arcReadingHead,.journalNativeArticle .arcReadingHead{padding:13px 14px;border-radius:12px}
+ .arcReadingHead h1,.wikiCompleteGuide .arcReadingHead h1,.journalNativeArticle .arcReadingHead h1{font-size:clamp(22px,6vw,28px);line-height:1.1;margin:3px 0 5px}
+ .arcReadingHead .arcReadingDeck{font-size:12px;line-height:1.43}
+ .arcReadingUtility{margin-top:8px;padding-top:6px}
+ .arcReadingByline{font-size:10.5px}
+ .arcReadingLoop{gap:4px 7px}
+ .arcReadingLoop>strong{font-size:10.5px}
+ .arcReadingPage .wikiArticleSection{padding:13px 0}
+ .arcReadingPage .wikiArticleSection:first-child{padding-top:5px}
+ .arcJournalHead .arcReadingCover{width:76px;height:62px;margin-left:8px}
+}
+@media(max-width:355px){.arcReadingLoop>span{width:100%}.arcReadingLoop>strong{font-size:10px}.arcReadingQuietAction{padding:5px!important}}
+@media(prefers-reduced-motion:reduce){.arcReadingQuietAction,.arcReadingInlineLink{scroll-behavior:auto}}
+
+
+/* Reading Standard v1.1: a little Arcana atmosphere without extra panels.
+   Theme tokens drive every accent. All detail stays within existing elements. */
+.arcReadingPage .arcReadingHead,
+.wikiCompleteGuide .arcReadingHead,
+.journalNativeArticle .arcReadingHead{
+ border-color:color-mix(in srgb,var(--theme-highlight) 36%,var(--theme-border));
+ background:
+  radial-gradient(ellipse 48% 95% at 98% -10%,color-mix(in srgb,var(--theme-highlight) 18%,transparent),transparent 95%),
+  linear-gradient(118deg,var(--theme-card-raised) 2%,color-mix(in srgb,var(--theme-card) 88%,var(--theme-highlight) 12%) 58%,var(--theme-card) 100%);
+ box-shadow:0 6px 20px color-mix(in srgb,var(--theme-main) 30%,transparent),inset 0 1px 0 color-mix(in srgb,var(--theme-highlight) 20%,transparent)
+}
+.arcReadingHead::before{
+ width:3px;background:linear-gradient(180deg,var(--theme-highlight),color-mix(in srgb,var(--theme-highlight) 25%,transparent));
+ box-shadow:2px 0 15px color-mix(in srgb,var(--theme-highlight) 32%,transparent)
+}
+.arcReadingHead::after{
+ content:"";position:absolute;pointer-events:none;z-index:0;
+ top:-44px;right:-29px;width:118px;height:145px;opacity:.58;
+ background:linear-gradient(155deg,color-mix(in srgb,var(--theme-highlight) 30%,transparent),color-mix(in srgb,var(--theme-highlight) 5%,transparent) 78%);
+ clip-path:polygon(50% 0,100% 79%,85% 100%,14% 100%,0 79%);
+ transform:rotate(18deg)
+}
+.arcReadingHead>*{position:relative;z-index:1}
+.arcReadingKicker{display:flex!important;align-items:center;gap:7px}
+.arcReadingKicker::before{
+ content:"";display:inline-block;flex:none;width:6px;height:6px;
+ transform:rotate(45deg);border-radius:1px;background:var(--theme-highlight);
+ box-shadow:0 0 8px color-mix(in srgb,var(--theme-highlight) 60%,transparent)
+}
+.arcReadingPage .arcReadingHead h1,.journalNativeArticle .arcReadingHead h1{
+ text-wrap:balance
+}
+.arcReadingLoop>span{color:var(--theme-accent-text)}
+.arcReadingLoop b{
+ display:inline-grid;place-items:center;min-width:20px;height:20px;
+ border:1px solid color-mix(in srgb,var(--theme-highlight) 36%,transparent);
+ border-radius:6px;background:color-mix(in srgb,var(--theme-highlight) 10%,transparent);
+ font-variant-numeric:tabular-nums
+}
+.arcReadingPage .wikiArticleBody{counter-reset:arcReadingSection}
+.arcReadingPage .wikiArticleSection{
+ position:relative;counter-increment:arcReadingSection;
+ border-bottom:1px solid color-mix(in srgb,var(--theme-border) 73%,transparent)
+}
+.arcReadingPage .wikiArticleSection:not(:first-child)::before{
+ content:"";position:absolute;left:0;top:0;width:min(35%,205px);height:1px;
+ background:linear-gradient(90deg,color-mix(in srgb,var(--theme-highlight) 42%,transparent),transparent)
+}
+.arcReadingPage .wikiArticleSection h2{
+ display:flex;align-items:baseline;gap:12px;text-wrap:balance;
+ color:var(--text);letter-spacing:-.025em
+}
+.arcReadingPage .wikiArticleSection h2::before{
+ content:counter(arcReadingSection,decimal-leading-zero);
+ display:inline-block;flex:none;width:21px;
+ color:var(--theme-accent-text);font:750 10px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;
+ font-variant-numeric:tabular-nums;letter-spacing:0
+}
+.arcReadingPage .wikiArticleSection:first-child h2::before{
+ text-shadow:0 0 13px color-mix(in srgb,var(--theme-highlight) 30%,transparent)
+}
+.arcReadingPage .wikiArticleSection p,.arcReadingPage .wikiArticleSection li{
+ color:var(--text);opacity:.91
+}
+.arcReadingPage .wikiArticleSection li::marker{color:var(--theme-accent-text)}
+.arcReadingInlineLink{text-decoration-color:color-mix(in srgb,var(--theme-highlight) 65%,transparent)!important}
+@media(max-width:620px){
+ .arcReadingHead::after{width:89px;height:111px;top:-38px;right:-34px;opacity:.34}
+ .arcReadingPage .wikiArticleSection h2{gap:9px}
+ .arcReadingPage .wikiArticleSection h2::before{width:18px;font-size:9px}
+ .arcReadingLoop b{min-width:18px;height:18px;padding:0}
+}
+@media(forced-colors:active){
+ .arcReadingHead::after{display:none}
+ .arcReadingKicker::before{box-shadow:none}
+ .arcReadingPage .wikiArticleSection h2::before{color:CanvasText}
+}

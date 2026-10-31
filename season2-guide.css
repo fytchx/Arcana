@@ -179,3 +179,30 @@
  .wikiCompleteGuide #section-practical-quick-start-steps-and-tips{margin-inline:0;padding:16px}
 }
 @media(prefers-reduced-motion:reduce){.wikiGuideFastTrackActions button{transition:none}}
+
+/* ML strategy preview: editorial three-step route, native Arcana palette. */
+.mlGuideRoute{max-width:1120px;margin:20px auto 12px;overflow:hidden;border:1px solid color-mix(in srgb,var(--theme-highlight) 38%,var(--theme-border));border-radius:20px;background:radial-gradient(ellipse at 88% -12%,color-mix(in srgb,var(--theme-highlight) 21%,transparent),transparent 56%),linear-gradient(135deg,var(--theme-card-raised),var(--theme-card));box-shadow:0 14px 38px #00000012}
+.mlGuideRouteTop{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;padding:19px clamp(16px,3vw,28px) 11px}
+.mlGuideRouteTop span{color:var(--theme-accent-text);font-size:10px;font-weight:850;letter-spacing:.14em}
+.mlGuideRouteTop strong{color:var(--soft);font-size:10px;font-weight:700;letter-spacing:.16em}
+.mlGuideRouteSteps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:8px clamp(16px,3vw,28px) 24px}
+.mlGuideRouteSteps>div{position:relative;display:grid;align-content:start;gap:8px;padding:15px 19px 14px;border-left:1px solid var(--theme-border)}
+.mlGuideRouteSteps>div:first-child{border-left:0;padding-left:0}
+.mlGuideRouteSteps>div:last-child{padding-right:0}
+.mlGuideRouteSteps small{font-size:10px;font-weight:850;letter-spacing:.12em;color:var(--theme-accent-text)}
+.mlGuideRouteSteps strong{font-size:clamp(15px,2vw,21px);line-height:1.2;letter-spacing:-.025em;color:var(--text)}
+.mlGuideRouteSteps span{font-size:12px;line-height:1.65;color:var(--soft)}
+.mlGuideRouteActions{border-top:1px solid var(--theme-border);padding:13px clamp(16px,3vw,28px);display:flex;gap:8px;flex-wrap:wrap;background:color-mix(in srgb,var(--theme-highlight) 5%,var(--theme-card))}
+.mlGuideRouteActions button{flex:1 1 145px;min-height:40px;padding:10px 13px;border-radius:10px;border:1px solid var(--theme-border);background:var(--theme-card-raised);color:var(--text);font-size:12px;font-weight:770;line-height:1.35;text-align:center;cursor:pointer}
+.mlGuideRouteActions button:first-child{background:color-mix(in srgb,var(--theme-highlight) 19%,var(--theme-card));border-color:color-mix(in srgb,var(--theme-highlight) 40%,var(--theme-border))}
+.mlGuideRouteActions button:hover,.mlGuideRouteActions button:focus-visible{border-color:var(--theme-highlight);background:var(--theme-highlight-soft);outline-offset:2px}
+@media(max-width:690px){
+ .mlGuideRoute{border-radius:15px;margin-top:14px}
+ .mlGuideRouteSteps{grid-template-columns:1fr;padding-bottom:13px}
+ .mlGuideRouteSteps>div{padding:12px 0 13px 18px;border-left:2px solid color-mix(in srgb,var(--theme-highlight) 26%,var(--theme-border));border-bottom:1px solid var(--theme-border)}
+ .mlGuideRouteSteps>div:first-child{border-left:2px solid var(--theme-highlight);padding-left:18px}
+ .mlGuideRouteSteps>div:last-child{padding-right:0;border-bottom:0}
+ .mlGuideRouteSteps strong{font-size:17px}
+ .mlGuideRouteActions button{flex-basis:100%}
+ .mlGuideRouteTop{padding-top:17px}
+}

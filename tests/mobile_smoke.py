@@ -176,13 +176,16 @@ with sync_playwright() as playwright:
     assert 'Directory' in page.locator('#arcanaDock').inner_text()
     assert 'Profile' not in page.locator('#arcanaDock').inner_text()
     assert 'Options' not in page.locator('#arcanaDock').inner_text()
-    assert page.locator('.atlasHeroGo[data-route="wiki/article"]').count()==1
+    assert page.locator('.atlasHeroGo[data-route="wiki/article"]').count()==2, 'Both featured guides must be clickable'
     assert page.locator('.atlasTile').count()==6, 'All six primary Home destinations must render'
     assert page.locator('.atlasJournal').count()==1
     assert page.locator('.atlasJournalStory').count()==1
     assert page.locator('.atlasJournalMore .atlasJournalExtra').count()==1
     assert page.locator('.atlasFeatureLink').count()==2, 'Create and Share destinations must render'
-    assert page.locator('.atlasGuideHighlight').count()==1, 'Convergence guide must be featured on Home'
+    assert page.locator('.atlasGuideHighlight').count()==2, 'ML and Convergence guides must both be featured on Home'
+    assert page.locator('[data-featured-primary] [data-params="id=ml-one-shot-milestone-guide-zane"]').count()==1
+    assert page.locator('.atlasGuideSecondary [data-params="id=convergence-complete-guide"]').count()==1
+    assert page.locator('[data-featured-primary]').first.evaluate('(el)=>el.getBoundingClientRect().top') < page.locator('.atlasGuideSecondary').first.evaluate('(el)=>el.getBoundingClientRect().top')
     # This offline harness has no Journal API: verify the static featured
     # article remains clickable, with a real slug and visible editorial text.
     featured=page.locator('[data-journal-latest]')
@@ -333,7 +336,7 @@ with sync_playwright() as playwright:
     if page.locator('[data-mini-toggle]').get_attribute('aria-expanded')=='false':
         page.locator('[data-mini-toggle]').click()
     live=page.frame_locator('[data-mini-live-frame]')
-    live.locator('#content.homeFullscreen .atlasHero').wait_for(timeout=12000)
+    live.locator('#content.homeFullscreen [data-featured-primary]').wait_for(timeout=12000)
     assert live.locator('body').count()==1, 'Theme preview failed to load the current Arcana page'
     page.screenshot(path=str(OUT/'current-arcana-live-mini.png'),full_page=True)
     # Applying a curated look must update its selected state and stay browser-local.
@@ -469,6 +472,29 @@ with sync_playwright() as playwright:
     viewport_width=page.evaluate('window.innerWidth')
     assert body_width<=viewport_width+2, 'ML journey phone overflow: '+repr((body_width,viewport_width))
     page.screenshot(path=str(OUT/'pathfinder-ml-journey-phone.png'),full_page=True)
+    # Compact preview guide: everything useful in one masthead; actual article starts onscreen.
+    page.evaluate("location.hash='#/wiki/article?id=ml-one-shot-milestone-guide-zane'")
+    page.wait_for_selector('.arcReadingHead',timeout=8000)
+    assert 'Grinding Monster Level Efficiently' in page.locator('.arcReadingHead h1').inner_text()
+    assert page.locator('.arcReadingLoop>strong').count()==3, 'Push / upgrade / repeat must share the masthead'
+    assert page.locator('.wikiArticleSection').count()==10
+    assert page.locator('.arcReadingHead [data-action="wikichapters"]').count()==1
+    assert page.locator('.wikiCompleteToc, .mlGuideRoute, .wikiArticleActions, .wikiSectionActions').count()==0
+    assert 'PREVIEW DRAFT' not in page.locator('.arcReadingHead').inner_text()
+    assert page.locator('.arcReadingInlineLink').count()==2, 'No repeated tool promotion grids'
+    page.evaluate('window.scrollTo(0,0)')
+    first_top=page.locator('.wikiArticleSection').first.evaluate('(el)=>el.getBoundingClientRect().top')
+    assert 0<=first_top<page.evaluate('window.innerHeight')-125, 'Guide body should begin above the phone dock: '+str(first_top)
+    page.locator('.arcReadingHead [data-action="wikichapters"]').click()
+    page.wait_for_selector('.arcGuideChapterPanel',timeout=3000)
+    assert page.locator('.arcGuideChapterItem').count()==10
+    page.locator('.arcGuideChapterItem[data-arg="retaliation-warrior-why-the-helm-comes-second"]').click()
+    assert page.evaluate("document.getElementById('section-retaliation-warrior-why-the-helm-comes-second')!==null")
+    assert page.locator('#layer').is_hidden(), 'Chapter overlay must close on selection'
+    viewport_width=page.evaluate("window.innerWidth")
+    document_width=page.evaluate("document.documentElement.scrollWidth")
+    assert document_width<=viewport_width+2, 'ML guide mobile overflow: '+repr((document_width,viewport_width))
+    page.screenshot(path=str(OUT/'ml-progress-guide-preview-phone.png'),full_page=True)
     page.evaluate("location.hash='#/home'")
     page.wait_for_selector('.atlasHero',timeout=8000)
     assert errors==[], 'Browser errors: '+repr(errors)

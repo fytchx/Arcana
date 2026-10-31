@@ -36,10 +36,10 @@ test('breadcrumb distinguishes location from actual history Back and does not du
  const article=wikiArticleView(WIKI_ARTICLES.find(a=>a.id==='forge'));
  assert.match(article,/aria-label="Wiki breadcrumbs"/);
  assert.match(article,/data-action="wiki-back"/);
- assert.match(article,/Home/);
  assert.match(article,/ArcanaWiki/);
  assert.match(article,/Equipment/);
  assert.match(article,/The Forge/);
+ assert.match(article,/arcReadingHead/);
  assert.doesNotMatch(article,/All guides<\/button>/);
 });
 test('only real player equipment uses large Codex artwork; other records use icons',()=>{

@@ -25,11 +25,10 @@ test('guide keeps core original strategy, math and links intact',()=>{
  for(const action of guide.actions){assert.ok(action.route);assert.ok(['calculators/pathfinder','calculators/ml-farm','labs/pets','labs/runes','labs/build'].includes(action.route));}
  assert.ok(NAV_DESTINATIONS.pathfinder);
  const markup=wikiArticleView(guide);
- assert.match(markup,/ON THIS PAGE/);
- assert.match(markup,/USEFUL LINKS/);
- assert.match(markup,/Keep these tools close/);
- assert.doesNotMatch(markup,/wikiSectionActions/,'Guide tools should live in one useful-links section, not recur between sections');
- assert.equal((markup.match(/class="wikiAction"/g)||[]).length,guide.actions.length);
- assert.match(markup,/Community strategy/);
+ assert.match(markup,/arcReadingHead/);
+ assert.match(markup,/By BruTo/);
+ assert.match(markup,/Published on Arcana by Zane with BruTo’s permission/);
+ assert.match(markup,/data-action="wikichapters"/);
+ assert.doesNotMatch(markup,/wikiArticleActions|wikiSectionActions|wikiActionGrid/);
  assert.doesNotMatch(markup,/Originally published at/);
 });

@@ -224,6 +224,7 @@ function home(){return homeScreen(currentAccount());}
 function featuredView(){
  const items=[
   ['Help Shape Arcana','What is Arcana? What should change? Tell me what to build next.','journal/article','spark','slug=help-shape-arcana'],
+  ['Grinding Monster Level Efficiently','One-shot farming, smarter upgrades, and a practical path to your next ML milestone.','wiki/article','book','id=ml-one-shot-milestone-guide-zane'],
   ['Convergence: Complete Season 2 Guide','Master the tier loop, elite encounters, monster seats and all 37 Lattice nodes.','wiki/article','book','id=convergence-complete-guide'],
   ['Arcana Journal','Independent IdleArc news, meta analysis and community perspectives.','journal','book'],
   ['Class Balance: Top 250','See the ranked class data and the full Season 2 balance analysis.','journal-balance','shield'],
@@ -598,10 +599,10 @@ let guideChapterReturnFocus=null;
 function closeLayer(){const wasChapters=state.layer?.type==='guide-chapters';node('layer').hidden=true;delete node('layer').dataset.type;state.layer=null;unlockLayerScroll();if(wasChapters){const trigger=guideChapterReturnFocus;guideChapterReturnFocus=null;if(trigger?.isConnected)trigger.focus({preventScroll:true});}}
 function openGuideChapters(trigger){
  const {route,query}=parseRoute();
- if(route!=='wiki/article'||query.get('id')!=='season-2-complete-zane')return;
- const article=wikiArticleById('season-2-complete-zane');
- const sections=[...document.querySelectorAll('.wikiCompleteGuide .wikiArticleSection')];
- if(!article?.sections?.length||sections.length!==article.sections.length)return;
+ if(route!=='wiki/article')return;
+ const article=wikiArticleById(query.get('id'));
+ const sections=[...document.querySelectorAll('.arcReadingPage .wikiArticleSection')];
+ if(!article?.sections||article.sections.length<3||sections.length!==article.sections.length)return;
  const marker=Math.max(110,Math.min(window.innerHeight*.32,260));
  let current=0;
  for(let i=0;i<sections.length;i++){
