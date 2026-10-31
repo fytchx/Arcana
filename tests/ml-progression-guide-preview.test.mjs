@@ -28,13 +28,13 @@ test('material exchange guidance preserves 5:1 source but does not invent unlimi
 test('damage priorities are build-specific and never claim all gear slots must be maxed',()=>{
  const s=section('Retaliation Warrior: why the helm comes second').body;
  for(const word of ['Chest','Base helm','Gloves and boots','Rings, belt and amulet','Weapon and shield','Torch'])assert.ok(s.includes(word),word);
- assert.match(s,/not a universal Warrior gearing rule/i);
- assert.match(section('How I approach ML').body,/evenly upgraded character/);
- assert.equal(section('What about Pet Damage?').table.length,4);
+ assert.match(s,/doesn't mean every base helm beats Sage/i);
+ assert.match(section('How I approach ML').body,/don't try to keep every forge slot equally upgraded/);
+ assert.match(section('What about Pet Damage?').body,/haven't tested a full Pet Damage build enough/);
 });
 test('one shot, +10% ML XP, Frenzy and ML290 example are present',()=>{
  assert.match(section('Choose the monster that keeps dying in one hit').body,/10% more/);
- assert.match(section('Frenzy isn\'t ML XP').body,/do not award Monster Level XP/);
+ assert.match(section('Frenzy isn\'t ML XP').body,/don't give Monster Level XP/);
  assert.match(section('When to push and when to upgrade').body,/ML 290/);
  assert.match(section('ML 290 to 300, and how Arcana helps').body,/ML 300/);
 });
