@@ -1,7 +1,7 @@
 import {esc,icon} from './ui.js';
 import {gameArt,codexOfficialArt,hasCodexOfficialArt} from './assets.js';
 import {WIKI_ARTICLES,allWikiArticles,WIKI_CATEGORY_LIST,wikiArticleById,matchingRecords,recordKindLabel,WIKI_CONNECTIONS} from './wiki-data.js';
-import {navDestination,routeLinkData} from './context-nav.js';
+import {navCards,navDestination,routeLinkData} from './context-nav.js';
 import {importLinkMarkup} from './fandom-import.js';
 import {wikiCategory,wikiCategoryForArticle,wikiCategoriesWithContent,wikiCategoryArticles} from './wiki-taxonomy.js';
 const linkParams=(id)=>'id='+encodeURIComponent(id);
@@ -128,16 +128,16 @@ export function wikiArticleView(article){if(!article)return `<div class="wikiEmp
  const loop=isMlGuide?'<div class="arcReadingLoop" aria-label="The progression loop"><span>THE LOOP</span><strong><b>01</b> Push ML</strong><i aria-hidden="true">›</i><strong><b>02</b> Upgrade damage</strong><i aria-hidden="true">›</i><strong><b>03</b> Repeat</strong></div>':'';
  const practical=article.id==='season-2-complete-zane'?'<button type="button" class="arcReadingPractical" data-action="wikisection" data-arg="practical-quick-start-steps-and-tips">Jump to practical steps '+icon('arrow',14)+'</button>':'';
  return `<article class="wikiArticle arcReadingPage ${isCompleteGuide?'wikiCompleteGuide':''}">
- <nav class="wikiBreadcrumbs arcReadingCrumb" aria-label="Wiki location"><button type="button" data-route="wiki">Wiki</button><span aria-hidden="true">›</span><button type="button" data-route="wiki/guides">Guides</button></nav>
+ <nav class="wikiBreadcrumbs arcReadingCrumb" aria-label="Wiki breadcrumbs"><button type="button" data-action="wiki-back" data-arg="wiki/guides">Back</button><span aria-hidden="true">›</span><button type="button" data-route="wiki">ArcanaWiki</button><span aria-hidden="true">›</span><span class="wikiCrumbCurrent">${literal(article.category)}</span></nav>
  <header class="wikiArticleIntro arcReadingHead">
   <span class="wikiEyebrow arcReadingKicker">${literal(article.category.toUpperCase())} · ${literal(article.readTime.toUpperCase())}${previewBadge}</span>
   <h1>${literal(article.title)}</h1>
   <p class="arcReadingDeck">${literal(article.summary)}</p>
-  <div class="arcReadingUtility"><span class="arcReadingByline">${literal(shortByline)}${article.source==='player-authored'&&article.publishedBy?' · Published on Arcana by '+literal(article.publishedBy)+' with the author’s permission':''}</span><div class="arcReadingTools">${chapterControl}<button type="button" class="arcReadingQuietAction" data-action="wikishare" data-arg="${esc(article.id)}">${icon('link',15)} Share</button></div></div>
+  <div class="arcReadingUtility"><span class="arcReadingByline">${literal(shortByline)}${article.source==='player-authored'&&article.publishedBy?' · Published on Arcana by '+literal(article.publishedBy)+' with '+literal(article.author||'the author')+'’s permission':''}</span><div class="arcReadingTools">${chapterControl}<button type="button" class="arcReadingQuietAction" data-action="wikishare" data-arg="${esc(article.id)}">${icon('link',15)} Share</button></div></div>
   ${loop}${practical}
  </header>
  <div class="wikiArticleBody">${rows}</div>
- ${article.attribution?.sourceUrl?`<p class="wikiSource arcReadingSource">Source: <a href="${esc(article.attribution.sourceUrl)}" target="_blank" rel="noopener noreferrer">Fandom: ${literal(article.attribution.sourceTitle)}</a>. Original contributor history is on Fandom.</p>`:''}
+ ${article.attribution?.sourceUrl?`<p class="wikiSource arcReadingSource">Originally published at <a href="${esc(article.attribution.sourceUrl)}" target="_blank" rel="noopener noreferrer">Fandom: ${literal(article.attribution.sourceTitle)}</a>. See the original history for attribution and licensing. ${article.attribution.contributors?.length?'Export contributor records: '+article.attribution.contributors.map(literal).join(', ')+'.':''}</p>`:''}
  ${article.sourceUrl?`<p class="wikiSource arcReadingSource">Reference: <a href="${esc(article.sourceUrl)}" target="_blank" rel="noopener noreferrer">${literal(article.sourceLabel||'Read source')}</a></p>`:''}
  <div class="wikiEnd arcReadingEnd"><button type="button" data-action="wikitop" class="wikiTextLink">${icon('back',15)} Back to top</button><button type="button" data-route="wiki/guides" class="wikiTextLink">Browse guides</button></div>
  </article>`;

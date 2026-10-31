@@ -45,7 +45,8 @@ test('Normalized article contents are plain text, with safe images and validated
  assert.equal(article.sections[0].imageId,'image-guide');
  assert.equal(article.images[0].alt,'Guild skill tree overview');
  assert.deepEqual(article.connections.collections,['pet']);
- assert.match(wikiArticleView(article),/wikiConnectionChip/);
+ assert.match(wikiArticleView(article),/arcReadingHead/);
+ assert.doesNotMatch(wikiArticleView(article),/wikiConnectionChip/);
  assert.deepEqual(article.connections.tools,['guildtree','raids']);
  assert.equal(article.actions[0].route,NAV_DESTINATIONS.guildtree.route);
  assert.match(wikiArticleView(article),/wikiArticleFigure/);
