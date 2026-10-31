@@ -483,7 +483,7 @@ with sync_playwright() as playwright:
     assert page.locator('.arcGuideChapterItem').count()==12
     page.locator('.arcGuideChapterItem[data-arg="my-retaliation-warrior-priority"]').click()
     assert page.evaluate("document.getElementById('section-my-retaliation-warrior-priority')!==null")
-    assert page.locator('.arcGuideChapterPanel').count()==0, 'Chapter overlay must close on selection'
+    assert page.locator('#layer').is_hidden(), 'Chapter overlay must close on selection'
     viewport_width=page.evaluate("window.innerWidth")
     document_width=page.evaluate("document.documentElement.scrollWidth")
     assert document_width<=viewport_width+2, 'ML guide mobile overflow: '+repr((document_width,viewport_width))
