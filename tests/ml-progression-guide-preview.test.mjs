@@ -27,7 +27,7 @@ test('material exchange guidance preserves 5:1 source but does not invent unlimi
 });
 test('damage priorities are build-specific and never claim all gear slots must be maxed',()=>{
  const s=section('Retaliation Warrior: why the helm comes second').body;
- for(const word of ['chest','gloves','boots','Defense','jewelry','belt'])assert.ok(s.includes(word),word);
+ for(const word of ['Chest','Base helm','Gloves and boots','Rings, belt and amulet','Weapon and shield','Torch'])assert.ok(s.includes(word),word);
  assert.match(s,/not a universal Warrior gearing rule/i);
  assert.match(section('How I approach ML').body,/evenly upgraded character/);
  assert.equal(section('What about Pet Damage?').table.length,4);
