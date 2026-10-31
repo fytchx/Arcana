@@ -260,7 +260,7 @@
 @media(prefers-reduced-motion:reduce){.atlasHome .atlasUpdate[data-seasonal-feature]{transition:none}}
 
 /* Featured reading: new ML guide first; keep Convergence close without doubling the visual weight. */
-.atlasHome .atlasGuidePrimary{margin-bottom:10px;border-color:color-mix(in srgb,var(--atlas-icon) 48%,var(--atlas-outline));background:radial-gradient(ellipse at 96% 0%,color-mix(in srgb,var(--atlas-icon) 14%,transparent),transparent 56%),linear-gradient(110deg,color-mix(in srgb,var(--atlas-panel) 85%,var(--atlas-icon) 15%),var(--atlas-panel))}
+.atlasHome [data-featured-primary]{margin-bottom:10px;border-color:color-mix(in srgb,var(--atlas-icon) 48%,var(--atlas-outline));background:radial-gradient(ellipse at 96% 0%,color-mix(in srgb,var(--atlas-icon) 14%,transparent),transparent 56%),linear-gradient(110deg,color-mix(in srgb,var(--atlas-panel) 85%,var(--atlas-icon) 15%),var(--atlas-panel))}
 .atlasHome .atlasGuideSecondary{min-height:90px;padding:12px 18px;border-radius:14px;gap:12px;box-shadow:none}
 .atlasHome .atlasGuideSecondary .atlasHeroIcon{width:43px;height:43px;border-radius:11px}
 .atlasHome .atlasGuideSecondary .atlasHeroIcon svg{width:21px;height:21px}
@@ -268,4 +268,4 @@
 .atlasHome .atlasGuideSecondary .atlasHeroText small{font-size:11px}
 .atlasHome .atlasGuideSecondary .atlasHeroEmblem{width:130px;top:-28px;right:-12px}
 .atlasHome .atlasGuideSecondary .atlasHeroGo{width:37px;height:37px}
-@media(max-width:520px){.atlasHome .atlasGuideSecondary{min-height:77px;padding:11px 12px;gap:9px}.atlasHome .atlasGuideSecondary .atlasHeroIcon{width:36px;height:36px}.atlasHome .atlasGuideSecondary .atlasHeroText strong{font-size:17px}.atlasHome .atlasGuidePrimary{margin-bottom:8px}}
+@media(max-width:520px){.atlasHome .atlasGuideSecondary{min-height:77px;padding:11px 12px;gap:9px}.atlasHome .atlasGuideSecondary .atlasHeroIcon{width:36px;height:36px}.atlasHome .atlasGuideSecondary .atlasHeroText strong{font-size:17px}.atlasHome [data-featured-primary]{margin-bottom:8px}}

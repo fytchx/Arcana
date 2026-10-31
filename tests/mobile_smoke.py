@@ -183,9 +183,9 @@ with sync_playwright() as playwright:
     assert page.locator('.atlasJournalMore .atlasJournalExtra').count()==1
     assert page.locator('.atlasFeatureLink').count()==2, 'Create and Share destinations must render'
     assert page.locator('.atlasGuideHighlight').count()==2, 'ML and Convergence guides must both be featured on Home'
-    assert page.locator('.atlasGuidePrimary [data-params="id=ml-one-shot-milestone-guide-zane"]').count()==1
+    assert page.locator('[data-featured-primary] [data-params="id=ml-one-shot-milestone-guide-zane"]').count()==1
     assert page.locator('.atlasGuideSecondary [data-params="id=convergence-complete-guide"]').count()==1
-    assert page.locator('.atlasGuidePrimary').first.evaluate('(el)=>el.getBoundingClientRect().top') < page.locator('.atlasGuideSecondary').first.evaluate('(el)=>el.getBoundingClientRect().top')
+    assert page.locator('[data-featured-primary]').first.evaluate('(el)=>el.getBoundingClientRect().top') < page.locator('.atlasGuideSecondary').first.evaluate('(el)=>el.getBoundingClientRect().top')
     # This offline harness has no Journal API: verify the static featured
     # article remains clickable, with a real slug and visible editorial text.
     featured=page.locator('[data-journal-latest]')
