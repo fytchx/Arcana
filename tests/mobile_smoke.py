@@ -469,6 +469,25 @@ with sync_playwright() as playwright:
     viewport_width=page.evaluate('window.innerWidth')
     assert body_width<=viewport_width+2, 'ML journey phone overflow: '+repr((body_width,viewport_width))
     page.screenshot(path=str(OUT/'pathfinder-ml-journey-phone.png'),full_page=True)
+    # Preview ML guide: route, 3-step editorial layout, chapters and tool actions.
+    page.evaluate("location.hash='#/wiki/article?id=ml-one-shot-milestone-guide-zane'")
+    page.wait_for_selector('.mlGuideRoute',timeout=8000)
+    assert 'Grinding Monster Level Efficiently' in page.locator('.wikiArticleIntro h1').inner_text()
+    assert page.locator('.mlGuideRouteSteps>div').count()==3
+    assert page.locator('.wikiArticleSection').count()==12
+    assert page.locator('.wikiCompleteToc .wikiGuideTocItems button').count()==12
+    assert 'PREVIEW ONLY' in page.locator('.mlGuideRouteTop').inner_text()
+    assert page.locator('.wikiGuideFastTrack').count()==0, 'Season 2 quick start should not appear'
+    page.locator('.wikiGuideSectionPager button[data-action="wikichapters"]').first.click()
+    page.wait_for_selector('.arcGuideChapterPanel',timeout=3000)
+    assert page.locator('.arcGuideChapterItem').count()==12
+    page.locator('.arcGuideChapterItem[data-arg="my-retaliation-warrior-priority"]').click()
+    assert page.evaluate("document.getElementById('section-my-retaliation-warrior-priority')!==null")
+    assert page.locator('.arcGuideChapterPanel').count()==0, 'Chapter overlay must close on selection'
+    viewport_width=page.evaluate("window.innerWidth")
+    document_width=page.evaluate("document.documentElement.scrollWidth")
+    assert document_width<=viewport_width+2, 'ML guide mobile overflow: '+repr((document_width,viewport_width))
+    page.screenshot(path=str(OUT/'ml-progress-guide-preview-phone.png'),full_page=True)
     page.evaluate("location.hash='#/home'")
     page.wait_for_selector('.atlasHero',timeout=8000)
     assert errors==[], 'Browser errors: '+repr(errors)
