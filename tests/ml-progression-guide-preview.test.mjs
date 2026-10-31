@@ -20,7 +20,7 @@ test('draft stays an explicit, attributed player strategy with real sections',()
 });
 test('material exchange guidance preserves 5:1 source but does not invent unlimited exchange',()=>{
  const s=section('What the material exchange changes').body;
- assert.match(s,/five lower-biome monster materials for one chosen higher-biome material/);
+ assert.match(s,/five lower-biome monster materials for one selected higher-biome material/);
  assert.match(s,/ML 260/);
  assert.match(s,/check the exchange cost before using it/i);
  assert.match(s,/save the rest/);
