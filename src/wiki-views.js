@@ -99,6 +99,17 @@ export function wikiGuidesView(){
  const groups=[...new Set(allWikiArticles().map(a=>a.category))];
  const sections=groups.map(category=>`<section class="wikiGuideGroup" aria-label="${esc(category)} guides"><h2>${esc(category)}</h2><div class="wikiGuideGrid">${allWikiArticles().filter(a=>a.category===category).map(wikiArticleCard).join('')}</div></section>`).join('');
  return `<div class="wikiGuidesPage"><div class="wikiPageHeading"><button class="wikiBack" data-route="wiki">${icon('back',15)} Wiki home</button><span class="wikiEyebrow">ARCANAWIKI / PLAYER GUIDES</span><h1>Learn the game. Use the tools.</h1><p>Guides organized by topic, with direct links to the Codex, Guild Planner, and build tools.</p></div><div class="wikiAuthorShortcut"><p>Want to share a guide with the community?</p><button type="button" class="btn primary" data-route="wiki/studio">${icon('edit',16)} Write a guide</button></div><div class="wikiGuideGroups">${sections}</div><div class="wikiGuideToBuild compactGuide"><span class="wikiGtbIcon">${icon('flask',22)}</span><div><span class="wikiEyebrow">PLAYER BUILD SHOWCASE</span><h3>Retaliation Warrior · Zane’s Season 2 Setup</h3><p>Read a real player’s stat priorities, pet and gem choices, and damage results, then inspect the matching build in Studio.</p><button class="btn primary" data-route="labs/build" data-params="build=warrior-retaliation-zane">Inspect linked player build ${icon('arrow',15)}</button><small>Actual player snapshot. Unprovided equipment details remain unset.</small></div></div></div>`}
+const mlGuidePreviewSummary=()=>'<section class="mlGuideRoute" aria-label="ML progression strategy">'+
+ '<div class="mlGuideRouteTop"><span>PREVIEW ONLY · WORKING DRAFT</span><strong>THE PROGRESSION LOOP</strong></div>'+
+ '<div class="mlGuideRouteSteps">'+
+ '<div><small>01 / PUSH</small><strong>Reach the next milestone</strong><span>Keep moving while one-shots are reliable.</span></div>'+
+ '<div><small>02 / UPGRADE</small><strong>Fix the damage bottleneck</strong><span>Invest in impactful gear, not unfinished slots.</span></div>'+
+ '<div><small>03 / REPEAT</small><strong>Bank what can wait</strong><span>Save materials and move to the next milestone.</span></div>'+
+ '</div><div class="mlGuideRouteActions">'+
+ '<button type="button" data-action="wikisection" data-arg="the-progression-loop">Read the plan</button>'+
+ '<button type="button" data-action="wikisection" data-arg="my-retaliation-warrior-priority">Upgrade priorities</button>'+
+ '<button type="button" data-route="calculators/pathfinder" data-params="view=ml">Plan ML XP</button>'+
+ '</div></section>';
 export function wikiArticleView(article){if(!article)return `<div class="wikiEmpty">Guide unavailable. Return to the guide directory.</div>`;
  const isBrutoGuide=article.id==='bruto-season-2-progression';
  const isMlGuide=article.id==='ml-one-shot-milestone-guide-zane';
