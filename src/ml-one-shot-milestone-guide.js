@@ -30,7 +30,7 @@ export const ML_ONE_SHOT_MILESTONE_GUIDE=Object.freeze({
     {
       "part": "Upgrade priorities",
       "title": "Attack Damage: my usual order",
-      "body": "- Weapon\n- Rings, amulet and belt\n- Berserker Grips\n- Harmonic Cuirass\n- Torch and Sage Diadem\n- Boots\n\nThis is where I'd normally start for an Attack Damage build, not a rule that overrides a particularly good item drop."
+      "body": "- Weapons\n- Rings, amulet and belt\n- Berserker Grips\n- Harmonic Cuirass\n- Torch and Sage Diadem\n- Boots\n\nThis is where I'd normally start for an Attack Damage build, not a rule that overrides a particularly good item drop."
     },
     {
       "part": "Upgrade priorities",
