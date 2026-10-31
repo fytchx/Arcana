@@ -20,7 +20,7 @@ export const ML_ONE_SHOT_MILESTONE_GUIDE=Object.freeze({
     {
       "part": "The approach",
       "title": "When to push and when to upgrade",
-      "body": "If I'm reliably one-shotting my target, I keep pushing ML. Unfinished upgrades can wait, even if I'm ML 290 and half my gear is behind.\n\nIf my one-shots start failing, I switch to my stronger damage setup. Still struggling? That's when I farm materials for the upgrades that make the biggest difference. Sometimes lowering my fighting level briefly is the fastest way to get those mats.\n\nThe aim is to spend as little time as possible backtracking for upgrades that don't change my kill speed.\n\nBefore spending materials, I check [[tool:upgrade|Pathfinder's upgrade costs]] to see whether the upgrade is worth the detour."
+      "body": "If I'm reliably one-shotting my target, I keep pushing ML. Unfinished upgrades can wait, even if I'm ML 290 and half my gear is behind.\n\nI also watch the tougher blue and yellow monsters. One-shotting the normal ones doesn't mean much if those stronger variants are already slowing me down.\n\nIf my one-shots start failing, I switch to my stronger damage setup. Still struggling? That's when I farm materials for the upgrades that make the biggest difference. Sometimes lowering my fighting level briefly is the fastest way to get those mats.\n\nThe aim is to spend as little time as possible backtracking for upgrades that don't change my kill speed.\n\nBefore spending materials, I check [[tool:upgrade|Pathfinder's upgrade costs]] to see whether the upgrade is worth the detour."
     },
     {
       "part": "The approach",
@@ -50,12 +50,12 @@ export const ML_ONE_SHOT_MILESTONE_GUIDE=Object.freeze({
     {
       "part": "Farming ML",
       "title": "Choose the monster that keeps dying in one hit",
-      "body": "From Murky Depths onward, the weakest monster gives 10% less ML XP and the strongest gives 10% more than the normal monster.\n\nIf I can one-shot the +10% monster consistently, that's my pick for pushing ML. If it takes two hits, the easier monster can give more XP per hour. I prioritize reliable one-shots over a bigger XP number on paper.\n\nI also keep an eye on whether those one-shots will last as ML rises, especially before leaving a character farming overnight.\n\nFor a rough plan, [[tool:mlxp|Pathfinder's ML XP calculator]] estimates how many kills my next milestone will take. It's a model, not exact server math."
+      "body": "From Murky Depths onward, the weakest monster gives 10% less ML XP and the strongest gives 10% more than the normal monster.\n\nIf I can one-shot the +10% monster consistently, that's my pick for pushing ML. If it takes two hits, the easier monster can give more XP per hour. I prioritize reliable one-shots over a bigger XP number on paper.\n\nFor an overnight ML push, I want some damage to spare. If I'm barely one-shotting when I go to sleep, there's a good chance that pace won't hold as ML rises.\n\nFor a rough plan, [[tool:mlxp|Pathfinder's ML XP calculator]] estimates how many kills my next milestone will take. It's a model, not exact server math."
     },
     {
       "part": "Farming ML",
       "title": "Frenzy isn't ML XP",
-      "body": "Frenzy's extra kills don't give Monster Level XP, even though they can be useful for farming loot.\n\nIf my Frenzy or drop-bonus gear can't one-shot the monster, I swap to my damage or boss setup for the ML push. If that still can't one-shot, I go back to farming materials and upgrading the most impactful pieces. There's no reason to force a slower ML grind just to keep my farming gear equipped."
+      "body": "Frenzy's extra kills don't give Monster Level XP, even though they can be useful for farming loot. Character EXP Gain is separate from ML XP too, so I don't treat EXP bonuses as a shortcut for pushing ML.\n\nI keep a damage preset for pushing and a farming preset for drops. If the farming gear can't one-shot my target, I switch to the stronger setup. Still too slow? I farm materials for the upgrades that actually help. There's no reason to force a slower ML grind just to keep my drop bonuses equipped."
     },
     {
       "part": "Put it to work",

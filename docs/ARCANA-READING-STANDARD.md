@@ -43,3 +43,11 @@ Use theme tokens (`--theme-card`, `--theme-highlight`, `--theme-border`, `--text
 - Never auto-promote an editorial draft to production. Preview branch first, then explicit owner approval.
 
 Implementation on preview: `src/wiki-views.js`, `src/journal-views.js`, `src/app.js`, `src/ml-one-shot-milestone-guide.js`, `reading-standard.css`, `src/css-bundle.mjs`.
+
+## Depth without clutter · visual refinement v1.1 (2026-10-30)
+
+The first compact version was fast to read but too flat. Improve it through **one theme-aware visual language**, not more containers: a softly lit angled masthead, a quiet Arcana geometry motif, tiny progression-number chips, chapter numbers and short accent rules, slightly stronger text contrast. All are CSS-only, with no image downloads, extra content panels, animations, or layout-growing tool buttons.
+
+The motifs must use the **active Theme Designer colors**. Test default, light and alternative palettes; check contrast, small phones and reduced-motion settings. Do not let decor cover titles, actions or opening paragraphs.
+
+The ML guide now incorporates BruTo cross-check lessons as **short additions inside existing chapters**: tougher monsters are a real one-shot check, overnight runs need damage headroom, keep damage/farming presets separate, and Character EXP does not equal ML XP. Do not copy unverified 12% enemy-health scaling, Conflux prescriptions or over-broad rune priority claims. Keep 10 sections, two inline tools and all player-specific gear priorities.

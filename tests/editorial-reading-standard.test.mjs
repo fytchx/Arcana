@@ -36,3 +36,29 @@ test('Global stylesheet and written standard are both loaded for future articles
  assert.match(docs,/No tool promotion grids/);
  assert.match(docs,/first chapter heading/);
 });
+
+test('BruTo cross-check adds practical caveats without bloating ML guide',()=>{
+ const guide=ML_ONE_SHOT_MILESTONE_GUIDE;
+ const paragraphs=guide.sections.map(s=>s.body).join(' ');
+ assert.equal(guide.sections.length,10);
+ assert.match(paragraphs,/blue and yellow monsters/);
+ assert.match(paragraphs,/overnight ML push/);
+ assert.match(paragraphs,/damage preset for pushing and a farming preset/);
+ assert.match(paragraphs,/Character EXP Gain is separate from ML XP/);
+ assert.doesNotMatch(paragraphs,/12%|Conflux daily|Fortune dungeon set/);
+ assert.equal((paragraphs.match(/\[\[tool:/g)||[]).length,2);
+ assert.deepEqual(guide.actions,[]);
+});
+test('Arcana details use theme color, chapter markers and no new stacked panels',async()=>{
+ const css=await readFile(new URL('../reading-standard.css',import.meta.url),'utf8');
+ assert.match(css,/counter-reset:arcReadingSection/);
+ assert.match(css,/counter\(arcReadingSection,decimal-leading-zero\)/);
+ assert.match(css,/\.arcReadingHead::after/);
+ assert.match(css,/var\(--theme-highlight\)/);
+ assert.match(css,/prefers-reduced-motion:reduce/);
+ assert.doesNotMatch(css,/https?:\/\//);
+ const html=wikiArticleView(ML_ONE_SHOT_MILESTONE_GUIDE);
+ assert.equal((html.match(/class="wikiArticleSection"/g)||[]).length,10);
+ assert.equal((html.match(/arcReadingHead/g)||[]).length,1);
+ assert.equal((html.match(/arcReadingInlineLink/g)||[]).length,2);
+});
