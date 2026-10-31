@@ -176,7 +176,7 @@ with sync_playwright() as playwright:
     assert 'Directory' in page.locator('#arcanaDock').inner_text()
     assert 'Profile' not in page.locator('#arcanaDock').inner_text()
     assert 'Options' not in page.locator('#arcanaDock').inner_text()
-    assert page.locator('.atlasHeroGo[data-route="wiki/article"]').count()==1
+    assert page.locator('.atlasHeroGo[data-route="wiki/article"]').count()==2, 'Both featured guides must be clickable'
     assert page.locator('.atlasTile').count()==6, 'All six primary Home destinations must render'
     assert page.locator('.atlasJournal').count()==1
     assert page.locator('.atlasJournalStory').count()==1
