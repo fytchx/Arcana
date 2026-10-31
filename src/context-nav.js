@@ -8,6 +8,7 @@ export const NAV_DESTINATIONS=Object.freeze({
  search:{label:'Search Arcana',detail:'Find items, tools and guides',action:'search',icon:'search'},
  upgrade:{label:'Calculate upgrade costs',detail:'Open the equipment calculator',route:'calculators/pathfinder',params:{view:'range'},icon:'calculator'},
  pathfinder:{label:'Arcana Pathfinder',detail:'Browse every upgrade recipe without setting up a character',route:'calculators/pathfinder',icon:'layers'},
+ mlxp:{label:'Plan ML XP and ETA',detail:'Current to target ML, one-shot kills and ideal ETA',route:'calculators/pathfinder',params:{view:'ml'},icon:'sword'},
  farm:{label:'Compare ML farming speed',detail:'Compare your actual ML XP per second',route:'calculators/ml-farm',icon:'sword'},
  compare:{label:'Compare equipment',detail:'Review two equipment bases',route:'calculators/pathfinder',params:{view:'compare'},icon:'compare'},
  build:{label:'Open Build Studio',detail:'Plan gear, pets, skills and runes',route:'labs/build',icon:'flask'},
