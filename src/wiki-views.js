@@ -133,7 +133,7 @@ export function wikiArticleView(article){if(!article)return `<div class="wikiEmp
   <span class="wikiEyebrow arcReadingKicker">${literal(article.category.toUpperCase())} · ${literal(article.readTime.toUpperCase())}${previewBadge}</span>
   <h1>${literal(article.title)}</h1>
   <p class="arcReadingDeck">${literal(article.summary)}</p>
-  <div class="arcReadingUtility"><span class="arcReadingByline">${literal(shortByline)}${article.source==='player-authored'&&article.publishedBy?' · Published by '+literal(article.publishedBy):''}</span><div class="arcReadingTools">${chapterControl}<button type="button" class="arcReadingQuietAction" data-action="wikishare" data-arg="${esc(article.id)}">${icon('link',15)} Share</button></div></div>
+  <div class="arcReadingUtility"><span class="arcReadingByline">${literal(shortByline)}${article.source==='player-authored'&&article.publishedBy?' · Published on Arcana by '+literal(article.publishedBy)+' with the author’s permission':''}</span><div class="arcReadingTools">${chapterControl}<button type="button" class="arcReadingQuietAction" data-action="wikishare" data-arg="${esc(article.id)}">${icon('link',15)} Share</button></div></div>
   ${loop}${practical}
  </header>
  <div class="wikiArticleBody">${rows}</div>

@@ -4,24 +4,23 @@ import {readFile} from 'node:fs/promises';
 import {wikiArticleView} from '../src/wiki-views.js';
 import {wikiArticleById} from '../src/wiki-data.js';
 
-test('all 37 guide chapter controls open the overlay instead of jumping to the contents',()=>{
+test('37-section guide has one chapter control, not 37 repeated pagers',()=>{
  const article=wikiArticleById('season-2-complete-zane');
- assert.equal(article.sections.length,37);
  const html=wikiArticleView(article);
- const pagerCount=(html.match(/data-action="wikichapters"/g)||[]).length;
- assert.equal(pagerCount,37);
- assert.match(html,/data-action="wikisection" data-arg="guide-contents"/,'Quick-start jump must keep the reading map accessible');
- assert.match(html,/id="section-guide-contents"/,'Keep the original contents page available');
- assert.match(html,/class="wikiArticleToc wikiCompleteToc"/,'Full guide must render grouped chapter contents');
- assert.match(html,/class="wikiGuideTocGroup"/,'Chapter groups should be visible in original reading map');
- assert.match(html,/Next: /,'Keep chapter-to-chapter paging');
+ assert.equal(article.sections.length,37);
+ assert.equal((html.match(/data-action="wikichapters"/g)||[]).length,1);
+ assert.match(html,/arcReadingHead/);
+ assert.match(html,/data-action="wikisection" data-arg="practical-quick-start-steps-and-tips"/);
+ assert.match(html,/id="section-practical-quick-start-steps-and-tips"/);
+ assert.doesNotMatch(html,/wikiCompleteToc|wikiGuideSectionPager|wikiArticleActions/);
 });
+
 test('chapter overlay lists source-controlled sections, highlights current, filters and restores scroll',async()=>{
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
  const css=await readFile(new URL('../season2-guide.css',import.meta.url),'utf8');
  assert.match(app,/function openGuideChapters\(trigger\)/);
  assert.match(app,/const article=wikiArticleById\(query\.get\('id'\)\)/);
- assert.match(app,/ml-one-shot-milestone-guide-zane/);
+ assert.match(app,/\.arcReadingPage \.wikiArticleSection/);
  assert.match(app,/getBoundingClientRect\(\)\.top<=marker/);
  assert.match(app,/aria-current="location"/);
  assert.match(app,/CURRENTLY READING/);

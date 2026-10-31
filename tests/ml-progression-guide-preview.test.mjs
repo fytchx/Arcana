@@ -36,33 +36,40 @@ test('one shot, +10% ML XP, Frenzy and ML290 example are present',()=>{
  assert.match(section('Choose the monster that keeps dying in one hit').body,/10% more/);
  assert.match(section('Frenzy isn\'t ML XP').body,/don't give Monster Level XP/);
  assert.match(section('When to push and when to upgrade').body,/ML 290/);
- assert.match(section('ML 290 to 300, and how Arcana helps').body,/ML 300/);
+ assert.match(section('ML 290 to 300: the actual decision').body,/ML 300/);
 });
-test('wiki guide supports reader navigation, tool links and preview-only banner',()=>{
+test('one compact masthead replaces stacked preview cards and tool grids',()=>{
  const page=wikiArticleView(guide);
- assert.match(page,/mlGuideRoute/);
- assert.match(page,/PREVIEW ONLY/);
- assert.match(page,/wikiCompleteGuide/);
- assert.match(page,/wikiCompleteToc/);
+ assert.match(page,/arcReadingHead/);
+ assert.match(page,/PREVIEW DRAFT/);
+ assert.match(page,/arcReadingLoop/);
+ assert.match(page,/01<\/b> Push ML/);
+ assert.match(page,/02<\/b> Upgrade damage/);
  assert.match(page,/data-action="wikichapters"/);
- assert.match(page,/data-action="wikisection"/);
+ assert.equal((page.match(/arcReadingHead/g)||[]).length,1);
+ assert.doesNotMatch(page,/mlGuideRoute|wikiCompleteToc|wikiArticleActions|wikiSectionActions|wikiActionGrid/);
  assert.match(page,/section-how-i-approach-ml/);
  assert.match(page,/section-retaliation-warrior-why-the-helm-comes-second/);
- assert.match(page,/view=ml/);
- assert.match(page,/data-arg="calculators\/affixes"/);
+ assert.match(page,/class="arcReadingInlineLink" data-route="calculators\/pathfinder"/);
+ assert.match(page,/data-params="view=ml"/);
+ assert.match(page,/data-params="view=range"/);
+ assert.equal((page.match(/class="arcReadingInlineLink"/g)||[]).length,2);
  assert.match(wikiGuidesView(),/Grinding Monster Level Efficiently/);
 });
-test('ML XP link is explicit and matches Pathfinder tab',()=>{
+
+test('tool links are source-curated and use valid Pathfinder routes',()=>{
  assert.equal(NAV_DESTINATIONS.mlxp.route,'calculators/pathfinder');
  assert.equal(NAV_DESTINATIONS.mlxp.params.view,'ml');
- const labels=new Set(guide.actions.map(x=>x.route));
- for(const key of ['calculators/pathfinder?view=ml','calculators/pathfinder?view=range','calculators/affixes','calculators/pet'])
-  assert.ok(labels.has(key),key);
+ assert.equal(NAV_DESTINATIONS.upgrade.params.view,'range');
+ assert.equal((guide.sections.map(s=>s.body).join(' ').match(/\[\[tool:/g)||[]).length,2);
+ assert.equal(guide.actions.length,0,'Do not render a second tool CTA grid');
 });
-test('guide exists on this preview feature branch without modifying live route mechanics',async()=>{
- const [app,views,styles]=await Promise.all(['../src/app.js','../src/wiki-views.js','../season2-guide.css'].map(p=>readFile(new URL(p,import.meta.url),'utf8')));
- assert.match(app,/ml-one-shot-milestone-guide-zane/);
- assert.match(views,/mlGuidePreviewSummary/);
- assert.match(styles,/\.mlGuideRouteSteps/);
- assert.match(styles,/@media\(max-width:690px\)/);
+
+test('preview holds the shared reading standard without touching the live release',async()=>{
+ const [app,views,styles]=await Promise.all(['../src/app.js','../src/wiki-views.js','../reading-standard.css'].map(p=>readFile(new URL(p,import.meta.url),'utf8')));
+ assert.match(app,/function openGuideChapters/);
+ assert.match(views,/arcReadingHead/);
+ assert.match(styles,/\.arcReadingLoop/);
+ assert.match(styles,/@media\(max-width:620px\)/);
+ assert.doesNotMatch(views,/mlGuidePreviewSummary/);
 });
