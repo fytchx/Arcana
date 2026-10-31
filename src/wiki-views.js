@@ -101,7 +101,8 @@ export function wikiGuidesView(){
  return `<div class="wikiGuidesPage"><div class="wikiPageHeading"><button class="wikiBack" data-route="wiki">${icon('back',15)} Wiki home</button><span class="wikiEyebrow">ARCANAWIKI / PLAYER GUIDES</span><h1>Learn the game. Use the tools.</h1><p>Guides organized by topic, with direct links to the Codex, Guild Planner, and build tools.</p></div><div class="wikiAuthorShortcut"><p>Want to share a guide with the community?</p><button type="button" class="btn primary" data-route="wiki/studio">${icon('edit',16)} Write a guide</button></div><div class="wikiGuideGroups">${sections}</div><div class="wikiGuideToBuild compactGuide"><span class="wikiGtbIcon">${icon('flask',22)}</span><div><span class="wikiEyebrow">PLAYER BUILD SHOWCASE</span><h3>Retaliation Warrior · Zane’s Season 2 Setup</h3><p>Read a real player’s stat priorities, pet and gem choices, and damage results, then inspect the matching build in Studio.</p><button class="btn primary" data-route="labs/build" data-params="build=warrior-retaliation-zane">Inspect linked player build ${icon('arrow',15)}</button><small>Actual player snapshot. Unprovided equipment details remain unset.</small></div></div></div>`}
 export function wikiArticleView(article){if(!article)return `<div class="wikiEmpty">Guide unavailable. Return to the guide directory.</div>`;
  const isBrutoGuide=article.id==='bruto-season-2-progression';
- const isCompleteGuide=article.id==='season-2-complete-zane';
+ const isMlGuide=article.id==='ml-one-shot-milestone-guide-zane';
+ const isCompleteGuide=article.id==='season-2-complete-zane'||isMlGuide;
  const sectionJumps=isBrutoGuide?{}:(article.connections||WIKI_CONNECTIONS[article.id]||{}).sectionLinks||{};
  const slug=title=>String(title).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
  const groupedToc=isCompleteGuide?(()=>{
