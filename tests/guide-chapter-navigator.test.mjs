@@ -20,7 +20,8 @@ test('chapter overlay lists source-controlled sections, highlights current, filt
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
  const css=await readFile(new URL('../season2-guide.css',import.meta.url),'utf8');
  assert.match(app,/function openGuideChapters\(trigger\)/);
- assert.match(app,/const article=wikiArticleById\('season-2-complete-zane'\)/);
+ assert.match(app,/const article=wikiArticleById\(query\.get\('id'\)\)/);
+ assert.match(app,/ml-one-shot-milestone-guide-zane/);
  assert.match(app,/getBoundingClientRect\(\)\.top<=marker/);
  assert.match(app,/aria-current="location"/);
  assert.match(app,/CURRENTLY READING/);
