@@ -469,16 +469,20 @@ with sync_playwright() as playwright:
     viewport_width=page.evaluate('window.innerWidth')
     assert body_width<=viewport_width+2, 'ML journey phone overflow: '+repr((body_width,viewport_width))
     page.screenshot(path=str(OUT/'pathfinder-ml-journey-phone.png'),full_page=True)
-    # Preview ML guide: route, 3-step editorial layout, chapters and tool actions.
+    # Compact preview guide: everything useful in one masthead; actual article starts onscreen.
     page.evaluate("location.hash='#/wiki/article?id=ml-one-shot-milestone-guide-zane'")
-    page.wait_for_selector('.mlGuideRoute',timeout=8000)
-    assert 'Grinding Monster Level Efficiently' in page.locator('.wikiArticleIntro h1').inner_text()
-    assert page.locator('.mlGuideRouteSteps>div').count()==3
+    page.wait_for_selector('.arcReadingHead',timeout=8000)
+    assert 'Grinding Monster Level Efficiently' in page.locator('.arcReadingHead h1').inner_text()
+    assert page.locator('.arcReadingLoop>strong').count()==3, 'Push / upgrade / repeat must share the masthead'
     assert page.locator('.wikiArticleSection').count()==10
-    assert page.locator('.wikiCompleteToc .wikiGuideTocItems button').count()==10
-    assert 'PREVIEW ONLY' in page.locator('.mlGuideRouteTop').inner_text()
-    assert page.locator('.wikiGuideFastTrack').count()==0, 'Season 2 quick start should not appear'
-    page.locator('.wikiGuideSectionPager button[data-action="wikichapters"]').first.click()
+    assert page.locator('.arcReadingHead [data-action="wikichapters"]').count()==1
+    assert page.locator('.wikiCompleteToc, .mlGuideRoute, .wikiArticleActions, .wikiSectionActions').count()==0
+    assert 'PREVIEW DRAFT' in page.locator('.arcReadingHead').inner_text()
+    assert page.locator('.arcReadingInlineLink').count()==2, 'No repeated tool promotion grids'
+    page.evaluate('window.scrollTo(0,0)')
+    first_top=page.locator('.wikiArticleSection').first.evaluate('(el)=>el.getBoundingClientRect().top')
+    assert 0<=first_top<page.evaluate('window.innerHeight')-125, 'Guide body should begin above the phone dock: '+str(first_top)
+    page.locator('.arcReadingHead [data-action="wikichapters"]').click()
     page.wait_for_selector('.arcGuideChapterPanel',timeout=3000)
     assert page.locator('.arcGuideChapterItem').count()==10
     page.locator('.arcGuideChapterItem[data-arg="retaliation-warrior-why-the-helm-comes-second"]').click()
