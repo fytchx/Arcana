@@ -59,6 +59,14 @@ const icon = (name, size = 22) => '<svg width="' + size + '" height="' + size + 
 // then the player's own Theme designer colors.
 let siteDesign = null;
 const DISPLAY_KEY = 'arcana-next-display-v1';
+// Same math as the classic site (src/theme.js): rotate the logo's violet facets to the accent's hue.
+function logoFilterForAccent(hex) {
+  const rgb = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255), hi = Math.max(...rgb), lo = Math.min(...rgb), d = hi - lo;
+  if (d < .055) return 'grayscale(1) brightness(1.15) contrast(1.07)';
+  let h = hi === rgb[0] ? ((rgb[1] - rgb[2]) / d) % 6 : hi === rgb[1] ? (rgb[2] - rgb[0]) / d + 2 : (rgb[0] - rgb[1]) / d + 4;
+  h = ((h * 60) % 360 + 360) % 360;
+  return 'hue-rotate(' + (((h - 273 + 540) % 360) - 180).toFixed(1) + 'deg) saturate(1.1) brightness(1.035)';
+}
 function activeDesign() { return readDraft() || siteDesign || DEFAULT_NEXT_DESIGN; }
 function applyTheme() {
   const d = activeDesign(), r = document.documentElement.style;
@@ -71,6 +79,7 @@ function applyTheme() {
   const t = themeVars({ bg: d.bg, card: d.card, accent: d.accent, accent2: d.accent });
   r.setProperty('--bg', t.bg); r.setProperty('--card', t.card); r.setProperty('--line', t.line);
   r.setProperty('--accent', t.accent); r.setProperty('--accent-ink', t.ink); r.setProperty('--on-accent', t.on);
+  r.setProperty('--logo-filter', logoFilterForAccent(t.accent));
   document.documentElement.dataset.display = read(DISPLAY_KEY) === 'simple' ? 'simple' : 'full';
   applyBackdrop(null);
   document.querySelector('meta[name=theme-color]')?.setAttribute('content', t.bg);
@@ -385,8 +394,8 @@ function render() {
   const tab = activeTab(section);
   const view = section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
-  // The triangle is drawn inline so its facets follow the site's accent color.
-  const logo = '<svg class="nx-tri" viewBox="0 0 130 112" width="36" height="31" aria-hidden="true"><polygon points="65 9 118 102 12 102" class="t0"/><polygon points="65 9 40 59 64 49" class="t1"/><polygon points="65 9 91 60 64 49" class="t2"/><polygon points="40 59 64 49 63 100 12 102" class="t3"/><polygon points="64 49 91 60 118 102 63 100" class="t4"/><polygon points="42 70 65 59 57 89 28 93" class="t5"/><polygon points="65 59 83 72 103 94 70 91" class="t5"/><polygon points="60 27 67 41 62 49 53 47" class="t6"/></svg>';
+  // The original triangle, recolored to the site accent the same way the classic theme designer did it.
+  const logo = '<img class="nx-logo" src="/assets/arcana-logo.webp" width="38" height="32" alt="">';
   const title = section === 'home' ? '<a class="nx-brand" href="#/home" aria-label="Arcana home">' + logo + '<span>ARCANA</span></a>'
     : '<a class="nx-brand nx-brand-sm" href="#/home" aria-label="Arcana home">' + logo + '</a><span class="nx-title">' + esc(TITLES[section]) + '</span>';
   $('nxTopL').innerHTML = title;

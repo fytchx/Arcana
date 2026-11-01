@@ -897,3 +897,5 @@ html[data-display=simple] .nx-bcard, html[data-display=simple] .pf-acc { backgro
 html[data-display=simple] .nx-btn-primary { background: var(--accent); box-shadow: none; }
 html[data-display=simple] .nx-brand span { background: none; color: var(--text); }
 html[data-display=simple] .nx-strip-event { background: var(--card); }
+.nx-brand .nx-logo { display: block; width: 38px; height: auto; filter: var(--logo-filter, none); }
+.nx-brand-sm .nx-logo { width: 30px; }
