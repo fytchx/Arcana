@@ -29,7 +29,6 @@ const BASES = Object.freeze({
   lfg: 'https://lfg.arcanacompanion.xyz',
   legacyArt: 'https://arcana.up.railway.app',
   officialArt: 'https://arcana-v4-official-art-production.up.railway.app',
-  codexArt: 'https://arcana-v3-preview-production.up.railway.app',
 });
 const LOCAL_ART = resolve(ROOT,'assets','official-art');
 const REQUIRE_LOCAL_ART=process.env.ARCANA_REQUIRE_LOCAL_ART==='1';
@@ -204,9 +203,6 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/game-assets/map'||pathname==='/game-assets/atlas'||pathname==='/game-assets/skill-tree'){
     const mapping={'/game-assets/map':'/assets/atlas-map.json','/game-assets/atlas':'/assets/atlas.webp','/game-assets/skill-tree':'/assets/skill-tree.json'};
     await pipe(res,BASES.legacyArt+mapping[pathname],{timeout:10000,cache:'public,max-age=180'});return;
-  }
-  if(/^\/codex-art\/(?:status|manifest\.json|skills\.webp|monsters\.webp|biomes\.webp|materials\.webp)$/.test(pathname)) {
-    await pipe(res,BASES.codexArt+pathname,{timeout:10000,cache:'public,max-age=180'});return;
   }
   if(/^\/official-art\/(?:manifest\.json|[a-z][a-z0-9-]*\.webp)$/.test(pathname)) {
     const art=await localArtAudit;
