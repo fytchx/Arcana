@@ -35,7 +35,7 @@ export const TABS = Object.freeze([
 
 // Tools that still live on the classic site. They open there until each is rebuilt.
 export const TOOLS = Object.freeze([
-  { group: 'Planning', id: 'pathfinder', name: 'Pathfinder', detail: 'Upgrade costs and the materials to farm, biome by biome', href: '/#/calculators/pathfinder', icon: 'path' },
+  { group: 'Planning', id: 'pathfinder', name: 'Pathfinder', detail: 'Upgrade costs and the materials to farm, biome by biome', href: '#/tools/pathfinder', icon: 'path', native: true },
   { group: 'Planning', id: 'studio', name: 'Build Studio', detail: 'Make a build and share it as a link', href: '#/studio', icon: 'shield', native: true },
   { group: 'Pets', id: 'pet', name: 'Compound level', detail: 'What a pet bonus reaches at each compound level', href: '#/tools/pet', icon: 'paw', native: true },
   { group: 'Pets', id: 'affix', name: 'Affix level cost', detail: 'Shards to level a pet affix from now to your target', href: '#/tools/affix', icon: 'paw', native: true },

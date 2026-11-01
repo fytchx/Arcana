@@ -53,7 +53,7 @@ test('next: codex data is complete, linked and matches verified numbers', async 
   for (const e of C.entries) {
     assert.ok(e.title && C.kinds.includes(e.kind), e.id);
     for (const r of e.related || []) assert.ok(ids.has(r), e.id + ' -> ' + r);
-    for (const l of e.links) assert.ok(/^#\/(studio(\/(gear|pets|runes|class|passive|stance))?|codex)$/.test(l.href) || (l.ext && /^\/#\/[a-z/-]+$/.test(l.href)), e.id + ' link ' + l.href);
+    for (const l of e.links) assert.ok(/^#\/(studio(\/(gear|pets|runes|class|passive|stance))?|codex|tools\/(pathfinder|pet|affix|ml))$/.test(l.href) || (l.ext && /^\/#\/[a-z/-]+$/.test(l.href)), e.id + ' link ' + l.href);
     for (const [k, v] of e.facts) assert.equal(typeof v, 'string', e.id + ' fact ' + k);
   }
   const count = k => C.entries.filter(e => e.kind === k).length;

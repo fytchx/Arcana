@@ -391,3 +391,30 @@ button { cursor: pointer; }
 .nx-help { padding: 12px 14px; border-radius: var(--r); background: var(--card); border: 1px solid var(--line); font-size: 14px; }
 .nx-help summary { cursor: pointer; font-weight: 600; min-height: 24px; }
 .nx-help p { margin: 8px 0 0; color: #C4C9D6; line-height: 1.5; }
+
+/* ---------- Pathfinder ---------- */
+.pf-ends { display: flex; align-items: center; gap: 8px; }
+.pf-ends fieldset { flex: 1; min-width: 0; margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px; }
+.pf-ends legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.pf-ends select { width: 100%; height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--text); padding: 0 8px; font: inherit; font-size: 15px; }
+.pf-qty { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pf-qty > span { display: flex; flex-direction: column; gap: 2px; }
+.pf-qty small { font-size: 12px; color: var(--muted); }
+.pf-zone { border-radius: var(--r); border: 1px solid var(--line); border-left: 4px solid var(--zone, var(--line)); background: var(--card); overflow: hidden; }
+.pf-zone summary { list-style: none; cursor: pointer; min-height: 56px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pf-zone summary::-webkit-details-marker { display: none; }
+.pf-zone summary > span:first-child { display: flex; flex-direction: column; gap: 2px; }
+.pf-zone summary small { font-size: 12px; color: var(--muted); }
+.pf-zone[open] summary > span:last-child { transform: rotate(180deg); }
+.pf-mats { display: flex; flex-direction: column; }
+.pf-zone .pf-mats { border-top: 1px solid var(--line); }
+.pf-card { border-radius: var(--r); border: 1px solid var(--line); background: var(--card); }
+.pf-mat { min-height: 52px; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--text); border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
+.pf-mat:last-child { border-bottom: 0; }
+.pf-mat > span:first-child { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.pf-mat small { font-size: 12px; color: var(--muted); }
+.pf-q { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pf-q b { font-size: 16px; }
+.pf-pity span { display: flex; align-items: center; gap: 8px; color: var(--text); }
+.pf-pity input { width: 90px; }
+section > .pf-zone + .pf-zone { margin-top: 0; }

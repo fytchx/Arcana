@@ -68,7 +68,7 @@ for (const it of C.items) {
       ...(dropRule(it.drop_note) ? [['How it drops', dropRule(it.drop_note)]] : [])
     ],
     table: { head: ['Tier', label, ...(secTop ? [human(it.secondary_implicit_stat)] : []), 'Affixes'], rows: tiers.map(k => [TIER[k] || 'Tier ' + k, range([t[k].min, t[k].max]), ...(secTop ? [sec[k] ? range([sec[k].min, sec[k].max]) : '—'] : []), String(t[k].affix_slots)]) },
-    links: [{ label: 'Put it in a build', href: '#/studio/gear' }, { label: 'Upgrade cost in Pathfinder', href: '/#/calculators/pathfinder', ext: true }],
+    links: [{ label: 'Put it in a build', href: '#/studio/gear' }, { label: 'Upgrade cost in Pathfinder', href: '#/tools/pathfinder' }],
     related: C.affixes.filter(a => a.applicable_to.includes('all') || a.applicable_to.includes(it.type)).map(a => 'affix:' + slug(a.name)),
     relatedTitle: 'Affixes it can roll'
   });
@@ -120,7 +120,7 @@ for (const p of D.pets) {
   add({ id: 'pet:' + p.id, kind: 'pet-bonus', title: p.n, subtitle: 'Pet Drop Bonus · from ' + rows[0][0],
     facts: [['Lowest rarity', rows[0][0]], ['Legendary at C10', (() => { const v = compound(D, 'legendary', p.id, 10); return v ? (v.pct ? '+' + v.v + '%' : '+' + v.v) : '—'; })()]],
     table: { head: ['Rarity', 'Base', 'At C10', 'Max compound', 'At max'], rows },
-    links: [{ label: 'Compound calculator', href: '/#/calculators/pet', ext: true }, { label: 'Pick it in Build Studio', href: '#/studio/pets' }] });
+    links: [{ label: 'Compound calculator', href: '#/tools/pet' }, { label: 'Pick it in Build Studio', href: '#/studio/pets' }] });
 }
 
 // ---------- talismans, stances, gems ----------
@@ -150,7 +150,7 @@ for (const b of C.biomes) {
     art: sheet('biomes', slug(b.name) + '-icon') || sheet('biomes', String(b.icon || '').split('/').pop().replace(/\.webp$/, '')),
     facts: [['Tier', String(b.tier)], ['Unlocks at level', String(b.unlock_level)], ['Monsters', String(mons.length)]],
     related: mons.map(m => 'monster:' + slug(m.name)), relatedTitle: 'Monsters',
-    links: [{ label: 'Farm planning in Pathfinder', href: '/#/calculators/pathfinder', ext: true }] });
+    links: [{ label: 'Farm planning in Pathfinder', href: '#/tools/pathfinder' }] });
 }
 for (const m of C.monsters) {
   const b = biomeById.get(m.biome_id), mat = matBySlug.get(m.material_slug);
@@ -159,7 +159,7 @@ for (const m of C.monsters) {
     facts: [['Level', String(m.level)], ['Biome', b?.name || '—'], ['Base HP', m.base_hp.toLocaleString('en-US')], ['Base damage', m.base_damage.toLocaleString('en-US')],
       ['Weak to', (m.weakness || []).map(w => w[0].toUpperCase() + w.slice(1)).join(', ') || 'Nothing'], ['Drops', mat ? mat.name : '—']],
     related: [b && 'biome:' + b.slug, mat && 'material:' + mat.slug].filter(Boolean), relatedTitle: 'Where and what',
-    links: [{ label: 'Compare ML farming', href: '/#/calculators/ml-farm', ext: true }] });
+    links: [{ label: 'Compare ML farming', href: '#/tools/ml' }] });
 }
 for (const m of C.materials) {
   const from = C.monsters.filter(x => x.material_slug === m.slug);
@@ -167,7 +167,7 @@ for (const m of C.materials) {
     art: sheet('materials', m.slug),
     facts: [['Type', human(m.type)], ['Tier', m.tier ? String(m.tier) : '—'], ['Dropped by', from.map(x => x.name).join(', ') || 'Biome drops']],
     related: from.map(x => 'monster:' + slug(x.name)), relatedTitle: 'Dropped by',
-    links: [{ label: 'What needs it (Pathfinder)', href: '/#/calculators/pathfinder', ext: true }] });
+    links: [{ label: 'What needs it (Pathfinder)', href: '#/tools/pathfinder' }] });
 }
 
 // ---------- mechanics ----------
@@ -178,7 +178,7 @@ if (GS?.enabled) add({ id: 'mechanic:gear-set-bonus', kind: 'mechanic', title: '
   });
 add({ id: 'mechanic:item-tiers', kind: 'mechanic', title: 'Item tiers', subtitle: 'Mechanic · from the config',
   table: { head: ['Tier', 'Max level', 'Affix slots'], rows: Object.entries(C.itemization.tiers).map(([k, t]) => [t.name, String(t.max_level), String(t.affix_slots)]) },
-  links: [{ label: 'Upgrade costs in Pathfinder', href: '/#/calculators/pathfinder', ext: true }] });
+  links: [{ label: 'Upgrade costs in Pathfinder', href: '#/tools/pathfinder' }] });
 
 const KINDS = ['item', 'skill', 'monster', 'material', 'biome', 'affix', 'drop-bonus', 'pet-bonus', 'rune', 'rune-word', 'gem', 'talisman', 'stance', 'mechanic'];
 entries.sort((a, b) => KINDS.indexOf(a.kind) - KINDS.indexOf(b.kind) || a.title.localeCompare(b.title));
