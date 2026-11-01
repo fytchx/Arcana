@@ -36,7 +36,7 @@ export const TABS = Object.freeze([
 // Tools that still live on the classic site. They open there until each is rebuilt.
 export const TOOLS = Object.freeze([
   { group: 'Planning', id: 'pathfinder', name: 'Pathfinder', detail: 'Upgrade costs and the materials to farm, biome by biome', href: '/#/calculators/pathfinder', icon: 'path' },
-  { group: 'Planning', id: 'studio', name: 'Build Studio', detail: 'Make a build and share it as a link', href: '/#/labs/build', icon: 'shield' },
+  { group: 'Planning', id: 'studio', name: 'Build Studio', detail: 'Make a build and share it as a link', href: '#/studio', icon: 'shield', native: true },
   { group: 'Pets', id: 'pet', name: 'Compound level', detail: 'What a pet bonus reaches at each compound level', href: '/#/calculators/pet', icon: 'paw' },
   { group: 'Pets', id: 'affix', name: 'Affix level cost', detail: 'Shards to level a pet affix from now to your target', href: '/#/calculators/affixes', icon: 'paw' },
   { group: 'Farming', id: 'ml', name: 'ML farming comparator', detail: 'Which monster gets you Monster Level fastest', href: '/#/calculators/ml-farm', icon: 'chart' },
@@ -55,14 +55,14 @@ export function parseHash(hash = '') {
   const raw = String(hash).replace(/^#\/?/, '');
   const [path, query = ''] = raw.split('?');
   const parts = path.split('/').filter(Boolean).map(p => { try { return decodeURIComponent(p); } catch { return p; } });
-  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile'];
+  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile', 'studio', 'build'];
   const section = known.includes(parts[0]) ? parts[0] : 'home';
   return { section, id: section === parts[0] ? parts.slice(1).join('/') : '', query: new URLSearchParams(query) };
 }
 export const hashFor = (section, id = '') => '#/' + section + (id ? '/' + encodeURIComponent(id) : '');
 
 // The bottom tab that should light up for a route (profile has no tab).
-export const activeTab = section => TABS.some(t => t.id === section) ? section : '';
+export const activeTab = section => section === 'studio' ? 'tools' : section === 'build' ? 'builds' : TABS.some(t => t.id === section) ? section : '';
 
 // Codex search over the verified game index. Title matches rank above keyword matches.
 export function searchIndex(entries, query, limit = 24) {

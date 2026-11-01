@@ -24,6 +24,9 @@ test('next: routes parse, round-trip, and unknown sections fall back to home', (
   assert.equal(parseHash('').section, 'home');
   assert.equal(activeTab('profile'), '');
   assert.equal(activeTab('builds'), 'builds');
+  assert.equal(activeTab('studio'), 'tools');
+  assert.equal(parseHash('#/build?d=abc').query.get('d'), 'abc');
+  assert.equal(parseHash('#/studio/runes').id, 'runes');
 });
 
 test('next: codex keeps only verified game entries and ranks exact titles first', () => {
@@ -71,7 +74,7 @@ test('next: events hide themselves after they end', () => {
 
 test('next: every tool link points at a real classic route', async () => {
   const app = await readFile(new URL('../src/app.js', import.meta.url), 'utf8');
-  for (const t of TOOLS) {
+  for (const t of TOOLS.filter(x => !x.native)) {
     const route = t.href.replace('/#/', '').split('?')[0];
     assert.ok(app.includes("case '" + route + "'"), t.name + ' -> ' + route);
   }

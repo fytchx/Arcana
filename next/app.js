@@ -4,6 +4,17 @@ import {
   parseHash, hashFor, activeTab, searchIndex, codexEntries, codexCategories, kindName,
   sortArticles, shortDate, articleHtml, liveEvents, esc
 } from './core.js';
+import { studioView, sharedView, initStudio, studioAfterRender } from './studio.js';
+import { emptyBuild, encodeShare } from './studio-core.js';
+import { demoBuilds } from '../src/catalog.js';
+
+// Zane's featured build, built only from facts he published (pets, stance, talismans, notes).
+// Gear rolls, runes and skill points were left open in his guide, so they stay out.
+const FEATURED = (() => {
+  const z = demoBuilds['warrior-retaliation-zane'];
+  const fb = { ...emptyBuild(), cls: 1, level: 196, pets: z.petSetup.map(p => p.hatchBonus), stance: 'bulwark', tal: { tal1: 'fury', tal2: 'iron' }, notes: { gear: z.notes } };
+  return '#/build?d=' + encodeShare(fb, ['gear', 'pets', 'stance'], { title: "Zane's Retaliation Warrior", by: 'Zane' });
+})();
 
 const $ = id => document.getElementById(id);
 const read = k => { try { return localStorage.getItem(k); } catch { return null; } };
@@ -102,12 +113,12 @@ function homeView() {
     '</div></section>';
 }
 const featuredCard = () =>
-  '<a class="nx-card nx-build" href="/#/labs/build?build=warrior-retaliation-zane"><span class="nx-tags"><span class="nx-tag nx-tag-warrior">Warrior</span><span class="nx-tag">Bulwark</span><span class="nx-tag nx-tag-accent">Featured</span></span>' +
-  '<strong>Zane\'s Retaliation Warrior</strong><small>Retaliation, Defense, Block Chance and Strength, with a four-pet setup.</small><span class="nx-by">by <b>Zane</b> · opens in Build Studio</span></a>';
+  '<a class="nx-card nx-build" href="' + esc(FEATURED) + '"><span class="nx-tags"><span class="nx-tag nx-tag-warrior">Warrior</span><span class="nx-tag">Bulwark</span><span class="nx-tag nx-tag-accent">Featured</span></span>' +
+  '<strong>Zane\'s Retaliation Warrior</strong><small>Retaliation, Defense, Block Chance and Strength, with a four-pet setup.</small><span class="nx-by">by <b>Zane</b> · Level 196</span></a>';
 
 function toolsView() {
   const groups = [...new Set(TOOLS.map(t => t.group))];
-  return groups.map(g => '<section>' + label(g) + '<div class="nx-list">' + TOOLS.filter(t => t.group === g).map(t => row(t.href, t.name, t.detail, t.icon, true)).join('') + '</div></section>').join('') + classicNote;
+  return groups.map(g => '<section>' + label(g) + '<div class="nx-list">' + TOOLS.filter(t => t.group === g).map(t => row(t.href, t.name, t.detail, t.icon, !t.native)).join('') + '</div></section>').join('') + classicNote;
 }
 
 let codexQuery = '', codexKind = '';
@@ -121,7 +132,7 @@ function codexView(id) {
     return '<a class="nx-back" href="#/codex">' + icon('back', 18) + 'Codex</a><header class="nx-page-head"><span class="nx-kicker">' + esc(kindName(e.kind).toUpperCase()) + '</span><h1>' + esc(e.title) + '</h1>' + (e.subtitle ? '<p>' + esc(e.subtitle) + '</p>' : '') + '</header>' +
       (e.description && e.description !== e.subtitle ? '<p class="nx-read">' + esc(e.description) + '</p>' : '') +
       (e.facts.length ? '<dl class="nx-facts">' + e.facts.map(([k, v]) => '<div><dt>' + esc(k) + '</dt><dd>' + esc(Array.isArray(v) ? v.join(', ') : v) + '</dd></div>').join('') + '</dl>' : '') +
-      '<section>' + label('Use it') + '<div class="nx-list">' + row('/#/labs/build', 'Put it in a build', 'Opens Build Studio', 'shield', true) + (e.kind === 'item' ? row('/#/calculators/pathfinder', 'Upgrade cost in Pathfinder', '', 'path', true) : '') + '</div></section>' +
+      '<section>' + label('Use it') + '<div class="nx-list">' + row('#/studio', 'Put it in a build', 'Opens Build Studio', 'shield') + (e.kind === 'item' ? row('/#/calculators/pathfinder', 'Upgrade cost in Pathfinder', '', 'path', true) : '') + '</div></section>' +
       '<p class="nx-fine">From the verified game index.</p>';
   }
   const body = c.state === 'error' ? failed('The Codex', 'codex') : c.state !== 'ready' ? loading('the Codex') : codexResults(c.value);
@@ -151,7 +162,7 @@ function buildsView() {
     const b = data.builds;
     body = b.state === 'error' ? failed('Community builds', 'builds') : b.state !== 'ready' ? loading('builds')
       : b.value.length ? '<div class="nx-list">' + b.value.map(p => '<a class="nx-card" href="/#/community/post?id=' + encodeURIComponent(p.id) + '"><strong>' + esc(p.title) + '</strong><small>' + esc(p.summary || p.excerpt || '') + '</small><span class="nx-by">' + esc(shortDate(p.createdAt)) + '</span></a>').join('') + '</div>'
-      : empty('No community builds yet', 'Be the first. Make your build in Build Studio and share it with the community.', '<a class="nx-btn" href="/#/labs/build">Open Build Studio</a>');
+      : empty('No community builds yet', 'Be the first. Make your build in Build Studio and share it with the community.', '<a class="nx-btn" href="#/studio">Open Build Studio</a>');
   }
   return tabs + body + '<section>' + label('How submitting works') + '<ol class="nx-steps"><li>Make your build in Build Studio. Fill in as much or as little as you like.</li><li>Submit it and choose the name to credit.</li><li>It goes live under Community. The best get Featured.</li></ol></section>';
 }
@@ -182,7 +193,7 @@ function profileView() {
     : '<div class="nx-card"><strong>Sign in to save builds</strong><small>Your builds follow you to any device.</small>' + (me?.enabled === false ? '<small>Sign-in is off on this test server.</small>' : '<a class="nx-btn nx-btn-primary" href="/api/account/login">Sign in with Discord</a>') + '</div>';
   const admin = u?.permissions?.manageSite ? '<a class="nx-row nx-row-admin" href="/#/admin"><span class="nx-row-text"><strong>Admin</strong><small>Opens the current admin console</small></span><span class="nx-row-end">' + icon('out', 18) + '</span></a>' : '';
   return who + admin +
-    (u ? '<section>' + label('My builds') + '<div class="nx-list">' + row('/#/account', 'Saved builds', 'Opens your account page', 'shield', true) + row('/#/labs/build', 'New build', '', 'shield', true) + '</div></section>' : '') +
+    (u ? '<section>' + label('My builds') + '<div class="nx-list">' + row('/#/account', 'Saved builds', 'Opens your account page', 'shield', true) + row('#/studio', 'Build Studio', 'Your draft is saved on this device', 'shield') + '</div></section>' : '') +
     '<section>' + label('Theme') + '<div class="nx-card nx-theme">' +
     '<span class="nx-sub">Background</span><div class="nx-grid2" role="radiogroup" aria-label="Background">' + SURFACES.map(x => '<button role="radio" aria-checked="' + (x.id === s.id) + '" data-act="surface" data-id="' + x.id + '" class="nx-swatch" style="background:' + x.bg + '"><span style="background:' + x.card + '"></span>' + esc(x.name) + '</button>').join('') + '</div>' +
     '<span class="nx-sub">Accent <em>· ' + esc(a.name) + '</em></span><div class="nx-dots" role="radiogroup" aria-label="Accent">' + ACCENTS.map(x => '<button role="radio" aria-checked="' + (x.id === a.id) + '" aria-label="' + esc(x.name) + '" data-act="accent" data-id="' + x.id + '" style="background:' + x.hex + '"></button>').join('') + '</div>' +
@@ -192,12 +203,12 @@ function profileView() {
 }
 
 // ---------- shell ----------
-const TITLES = { tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile' };
+const TITLES = { tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
 function render() {
-  const { section, id } = parseHash(location.hash);
+  const { section, id, query } = parseHash(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'tools' ? toolsView() : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView()
+  const view = section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView() : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView()
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   const title = section === 'home' ? '<a class="nx-word" href="#/home">ARCANA</a>' : '<span class="nx-title">' + esc(TITLES[section]) + '</span>';
   $('nxTopL').innerHTML = title;
@@ -210,6 +221,7 @@ function render() {
   const focusSearch = document.activeElement?.id === 'nxCodexQ';
   main.innerHTML = view;
   if (main.dataset.key !== key) { main.dataset.key = key; window.scrollTo(0, 0); }
+  if (section === 'studio') studioAfterRender();
   if (focusSearch) { const q = $('nxCodexQ'); q?.focus(); q?.setSelectionRange(q.value.length, q.value.length); }
   document.title = (section === 'home' ? 'Arcana' : (TITLES[section] || 'Arcana') + ' · Arcana');
 }
@@ -231,5 +243,6 @@ document.addEventListener('input', e => {
   if (body && data.codex.state === 'ready') body.innerHTML = codexResults(data.codex.value);
 });
 window.addEventListener('hashchange', render);
+initStudio(render);
 applyTheme();
 render();
