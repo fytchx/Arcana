@@ -38,7 +38,11 @@ import { arcanaIcon } from '../src/arcana-icons.js';
 const ICON_MAP = { 'token-pet-egg': 'currency-pet-egg', 'token-pet-shard': 'currency-pet-shard', 'token-gem': 'currency-gem', 'token-gem-dust': 'currency-material', 'token-arcstone': 'currency-arcstone', 'token-ruby': 'currency-ruby', 'token-runic-core': 'currency-rune-shard', 'token-upgrade-catalyst': 'currency-awakening', 'token-guildstone': 'currency-guildstone', 'token-gold': 'currency-gold',
   'feature-guild-raid': 'feature-guild-finder', 'feature-builds': 'feature-build-studio', 'feature-tools': 'feature-calculator', 'feature-feedback': 'help', 'feature-class-skills': 'feature-skill-tree', 'stat-attack-damage': 'stat-attack', 'stat-flat-damage': 'stat-flat-attack' };
 export const iconId = path => { const id = String(path).split('/').pop(); return ICON_MAP[id] || id; };
-export const ic = (path, size = 24) => arcanaIcon(iconId(path), size);
+import { glyph, hasGlyph } from './glyphs.js';
+// Icon style comes from the site design: solid glyphs (default) or the outline set.
+let ICON_STYLE = 'filled';
+export const setIconStyle = s => { ICON_STYLE = s === 'outline' ? 'outline' : 'filled'; };
+export const ic = (path, size = 24) => { const id = iconId(path); return ICON_STYLE === 'filled' && hasGlyph(id) ? glyph(id, size) : arcanaIcon(id, size); };
 export const art = path => path;
 
 // Tools that still live on the classic site. They open there until each is rebuilt.
@@ -173,6 +177,7 @@ export function recentTiles(list) {
 
 // Build cards: class and build type. Stances are named by what the build does.
 export const CLASS_NAMES = { 1: 'Warrior', 2: 'Archer', 3: 'Mage', 4: 'Rogue', 5: 'Druid' };
+export const classVar = name => 'var(--c-' + String(name).toLowerCase() + ')';
 export const BUILD_TYPES = Object.freeze({
   bulwark: { name: 'Retaliation', art: 'stats/stat-retaliation', color: '#FF6B6B' },
   aggressive: { name: 'Attack Damage', art: 'stats/stat-attack-damage', color: '#FFB547' },

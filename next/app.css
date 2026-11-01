@@ -742,3 +742,94 @@ a.nx-row:hover, a.nx-card:hover, a.nx-tile:hover, button.nx-tile:hover { border-
 .pf-otherhead { padding: 10px 12px 0; font-size: 14px; }
 .pf-art-gold { display: grid; place-items: center; color: #FFD97A; }
 .pf-table { border-radius: var(--r-lg); }
+
+/* ---------- Pass 3: driven by the site design (Admin › Design) ----------
+   --grad 0–100 gradient strength, --glowk 0–100 glow, --bw border width, --font-h heading font,
+   --c-<class> class colors, --gap/--pad density. Defaults match the in-game look. */
+:root { --grad: 35; --glowk: 15; --bw: 1px; --font-h: var(--sans); --wm: .42em; --gap: 20px; --pad: 14px;
+  --c-warrior: #E53935; --c-archer: #43A047; --c-mage: #A23AC4; --c-rogue: #6A3DE0; --c-druid: #C08A4E;
+  --glowc: color-mix(in srgb, var(--accent) calc(var(--glowk) * .6%), transparent); }
+body { background: radial-gradient(110% 45% at 50% -10%, color-mix(in srgb, var(--accent) calc(var(--grad) * .3%), transparent), transparent 70%), var(--bg); font-family: var(--sans); }
+.nx-main { gap: var(--gap); }
+h1, h2.nx-h, .nx-hero strong, .nx-bcard-body strong, .nx-event strong, .pf-acc > summary b, .th-preview strong, .dz-head h1 { font-family: var(--font-h); }
+.nx-card, .nx-row, .nx-tile, .nx-empty, .nx-tool, .nx-tool-card, .nx-search, .nx-hero, .nx-bcard, .nx-strip, .pf-table, .dz-card, .th-preview {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) calc(var(--grad) * .12%), var(--card)), var(--card) 75%); border-width: var(--bw); border-style: solid; }
+.nx-hero, .nx-bcard { border-left-width: 3px; }
+.nx-btn-primary { box-shadow: 0 4px calc(var(--glowk) * .3px) var(--glowc); background: linear-gradient(180deg, color-mix(in srgb, #fff calc(var(--grad) * .15%), var(--accent)), var(--accent)); }
+.nx-card, .nx-row, .nx-tool { padding: var(--pad) calc(var(--pad) + 2px); }
+
+/* Header */
+.nx-brand span { letter-spacing: var(--wm); margin-right: calc(-1 * var(--wm)); }
+html[data-header=left] body[data-section=home] .nx-top-l { justify-content: flex-start; padding-left: 0; }
+
+/* Icon tiles */
+.nx-ic { color: var(--accent-ink); background: color-mix(in srgb, var(--accent) 16%, var(--card)); }
+html[data-tile=circle] .nx-ic, html[data-tile=circle] .st-sticon { border-radius: 50%; }
+html[data-tile=none] .nx-ic, html[data-tile=none] .st-sticon { background: none; }
+.nx-glyph { display: block; }
+
+/* Class chips like the game: class-colored icon, class-colored ring when chosen */
+.st-cls { border-radius: 999px; padding: 6px 14px 6px 10px; gap: 8px; border: 1.5px solid color-mix(in srgb, var(--text) 25%, transparent); background: transparent; color: var(--text); }
+.st-cls svg { color: var(--cc); }
+.st-cls[aria-pressed=true] { border: 2px solid var(--cc); background: color-mix(in srgb, var(--cc) 14%, transparent); color: #fff; }
+
+/* Build cards: class emblem in class color, build type as the left rule */
+.nx-bcard-emblem { border-radius: 50%; color: var(--cc, var(--accent-ink)); background: color-mix(in srgb, var(--cc, var(--accent)) 20%, var(--card)); }
+
+/* Home strips: the live event and latest article, one line each */
+.nx-strips { gap: 8px; }
+.nx-strip { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: var(--r-lg); border-color: var(--line); color: var(--text); }
+.nx-strip > svg { flex: none; color: var(--accent-ink); }
+.nx-strip > span { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.nx-strip b { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nx-strip small { font-size: 12px; color: var(--muted); }
+.nx-strip-event { border-color: var(--game-event-line); background: linear-gradient(90deg, var(--game-event-bg), var(--card)); }
+.nx-strip-event > svg { color: var(--game-event); }
+.nx-chev { width: 8px; height: 8px; flex: none; border-right: 2px solid var(--faint); border-top: 2px solid var(--faint); transform: rotate(45deg); }
+
+/* Desktop: the tab bar moves into the header */
+@media (min-width: 900px) {
+  .nx-top { padding: 0 24px; }
+  .nx-nav { position: static; height: var(--top); padding: 0; background: none; border: 0; flex: 0 1 560px; margin: 0 auto; }
+  .nx-nav a { flex-direction: row; gap: 8px; font-size: 14px; }
+  .nx-top-l { flex: 0 0 auto; }
+  body[data-section=home] .nx-top-l { padding-left: 0; }
+  .nx-main { max-width: 860px; padding-bottom: 48px; }
+  .nx-grid3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .nx-tile { min-height: 110px; }
+}
+
+/* Design tool */
+.dz-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.dz-head h1 { margin: 2px 0 0; font-size: 26px; }
+.dz-status { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: var(--card); color: var(--muted); border: 1px solid var(--line); }
+.dz-draft { color: #FFD9A0; border-color: #7A5A20; background: #2A2210; }
+.dz-sample { display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: var(--r-lg); border: 1px dashed var(--line); }
+.dz-sample .nx-btn { pointer-events: none; }
+.dz-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.dz-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 8px; border-radius: 999px; border: 2px solid var(--cc); color: #fff; font-size: 13px; font-weight: 600; background: color-mix(in srgb, var(--cc) 14%, transparent); }
+.dz-chip svg { color: var(--cc); }
+.dz-presets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (min-width: 700px) { .dz-presets { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.dz-preset { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px; border-radius: var(--r); border: 1px solid var(--line); background: var(--card); text-align: left; }
+.dz-preset[aria-pressed=true] { border: 2px solid var(--accent); }
+.dz-preset small { font-size: 12px; color: var(--muted); }
+.dz-pv { display: flex; width: 100%; height: 28px; border-radius: 6px; overflow: hidden; background: var(--pb); padding: 5px; gap: 5px; }
+.dz-pv i { flex: 1; border-radius: 4px; background: var(--pc); } .dz-pv i:last-child { flex: .5; background: var(--pa); }
+.dz-card { display: flex; flex-direction: column; border-radius: var(--r-lg); border-color: var(--line); }
+.dz-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-top: 1px solid color-mix(in srgb, var(--line) 70%, transparent); }
+.dz-row:first-child { border-top: 0; }
+.dz-text { display: flex; flex-direction: column; min-width: 0; } .dz-text b { font-size: 14px; } .dz-text small { font-size: 12px; color: var(--muted); }
+.dz-ctl { flex: none; display: flex; }
+.dz-color { width: 52px; height: 36px; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: none; cursor: pointer; }
+.dz-clsname { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
+.dz-seg { display: inline-flex; padding: 3px; gap: 3px; border-radius: 10px; background: color-mix(in srgb, var(--bg) 60%, var(--card)); }
+.dz-seg button { height: 32px; padding: 0 10px; border: 0; border-radius: 7px; background: none; color: var(--muted); font-size: 13px; font-weight: 600; }
+.dz-seg button[aria-checked=true] { background: var(--accent); color: var(--on-accent); }
+.dz-slider { display: flex; align-items: center; gap: 6px; } .dz-slider small { font-size: 11px; color: var(--muted); }
+.dz-slider input { width: 120px; accent-color: var(--accent); }
+.dz-select { height: 36px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); padding: 0 8px; }
+.dz-bar { position: sticky; bottom: calc(var(--nav) + 8px + env(safe-area-inset-bottom)); z-index: 5; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 8px; border-radius: var(--r-lg); background: color-mix(in srgb, var(--raise) 94%, transparent); border: 1px solid var(--line); }
+.dz-bar .nx-btn { min-height: 40px; padding: 0 6px; font-size: 13px; }
+@media (min-width: 900px) { .dz-bar { bottom: 12px; } }
+@media (max-width: 420px) { .dz-row { flex-wrap: wrap; } .dz-slider input { width: 150px; } }

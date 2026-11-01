@@ -3,6 +3,7 @@ import {readdir} from 'node:fs/promises';
 import {dataRoot,readJSON,saveAtomic,sendJSON,accountUser,checkOrigin,parseJSON,publicProfile} from './account-server.mjs';
 import {can} from './account-policy.js';
 import {DEFAULT_DESIGN,DESIGN_FIELDS,validateDesignField} from './design-controls.js';
+import {normalizeNextDesign,safeNextDesign} from '../next/design-model.js';
 
 // Design publishing and member directory share the existing persistent Arcana data volume.
 // Access control always uses authenticated server identity, never submitted role claims.
@@ -16,10 +17,10 @@ const serialized=task=>{
  chain=work.catch(()=>{});
  return work;
 };
-const defaultConfig=()=>({revision:0,updatedAt:null,updatedBy:null,design:null,notice:{enabled:false,text:''}});
+const defaultConfig=()=>({revision:0,updatedAt:null,updatedBy:null,design:null,next:null,notice:{enabled:false,text:''}});
 function safeConfig(raw){
  if(!raw||typeof raw!=='object'||!Number.isSafeInteger(raw.revision)||raw.revision<0)return defaultConfig();
- return {...defaultConfig(),...raw,notice:normalizeNotice(raw.notice),design:raw.design?normalizeDesign({...DEFAULT_DESIGN,...raw.design}):null};
+ return {...defaultConfig(),...raw,notice:normalizeNotice(raw.notice),design:raw.design?normalizeDesign({...DEFAULT_DESIGN,...raw.design}):null,next:raw.next?safeNextDesign(raw.next):null};
 }
 export function normalizeDesign(value){
  if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('Invalid theme.');
@@ -61,7 +62,7 @@ export function safeFeatured(raw){
  return {revision:raw.revision,updatedAt:raw.updatedAt||null,items};
 }
 function publicData(config){
- return {revision:config.revision,updatedAt:config.updatedAt,design:config.design,notice:config.notice};
+ return {revision:config.revision,updatedAt:config.updatedAt,design:config.design,next:config.next||null,notice:config.notice};
 }
 async function requireAdmin(req,res,permission='site:manage'){
  const user=await accountUser(req);
@@ -86,10 +87,10 @@ export async function handleSiteAdminRequest(req,res,url){
    if(!await requireAdmin(req,res,'site:manage'))return true;
    try{checkOrigin(req);}catch{return fail(res,403,'Invalid request origin.');}
    const payload=await parseJSON(req,12000).catch(()=>null);
-   if(!payload||!Number.isInteger(payload.expectedRevision)||!['design','notice'].includes(payload.section))
+   if(!payload||!Number.isInteger(payload.expectedRevision)||!['design','notice','next'].includes(payload.section))
     return fail(res,422,'A current revision and valid section are required.');
    let proposed;
-   try{proposed=payload.section==='design'?normalizeDesign(payload.design):normalizeNotice(payload.notice);}
+   try{proposed=payload.section==='design'?normalizeDesign(payload.design):payload.section==='next'?normalizeNextDesign(payload.next):normalizeNotice(payload.notice);}
    catch(e){return fail(res,422,e.message);}
    return serialized(async()=>{
     const old=await current();
@@ -97,6 +98,7 @@ export async function handleSiteAdminRequest(req,res,url){
     const before={...old},now=new Date().toISOString();
     const next={...old,revision:old.revision+1,updatedAt:now,updatedBy:(await accountUser(req))?.id||'admin'};
     if(payload.section==='design')next.design=proposed;
+    else if(payload.section==='next')next.next=proposed;
     else next.notice=proposed;
     const history=Array.isArray(await readJSON(historyPath()))?await readJSON(historyPath()):[];
     await saveAtomic(historyPath(),[...history,{...before,reason:payload.section}].slice(-20));
@@ -119,7 +121,7 @@ export async function handleSiteAdminRequest(req,res,url){
    const target=history.find(v=>v.revision===payload.targetRevision);
    if(!target)return fail(res,404,'Selected previous version not found.');
    const copy=safeConfig(target);
-   const next={...now,revision:now.revision+1,updatedAt:new Date().toISOString(),updatedBy:(await accountUser(req))?.id||'admin',design:copy.design,notice:copy.notice};
+   const next={...now,revision:now.revision+1,updatedAt:new Date().toISOString(),updatedBy:(await accountUser(req))?.id||'admin',design:copy.design,next:copy.next,notice:copy.notice};
    await saveAtomic(historyPath(),[...history,{...now,reason:'rollback'}].slice(-20));
    await saveAtomic(configPath(),next);
    response(res,200,publicData(next));return true;

@@ -3,7 +3,7 @@ import {
   SURFACES, ACCENTS, SURFACE_KEY, ACCENT_KEY, surfaceById, accentById, TABS, TOOLS,
   parseHash, hashFor, activeTab, searchIndex, codexEntries, codexCategories, kindName, kindSingular,
   sortArticles, shortDate, articleHtml, liveEvents, esc, signInButtons, RETURN_KEY, RECENT_TOOLS_KEY, rememberTool, recentTiles,
-  ic, CLASS_NAMES, BUILD_TYPES, buildMeta,
+  ic, setIconStyle, classVar, CLASS_NAMES, BUILD_TYPES, buildMeta,
 } from './core.js';
 import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSection } from './studio.js';
 import { nextCode } from './studio-core.js';
@@ -15,6 +15,8 @@ import { guildsView, initGuilds } from './guilds.js';
 import { lfgView, recordsView, initCommunity } from './community.js';
 import { guildTreeView, initGuildTree } from './guild-tree.js';
 import { themeView, initTheme, readTheme, themeVars, saveTheme, applyBackdrop } from './theme.js';
+import { DEFAULT_NEXT_DESIGN, safeNextDesign, designVars, fontHref } from './design-model.js';
+import { designView, initDesign, readDraft } from './design-tool.js';
 import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 import { demoBuilds } from '../src/catalog.js';
@@ -53,16 +55,25 @@ const P = {
 const icon = (name, size = 22) => '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (P[name] || '') + '</svg>';
 
 // ---------- theme ----------
+// Layers: the published site design (Admin › Design), then an admin's unpublished draft on this device,
+// then the player's own Theme designer colors.
+let siteDesign = null;
+function activeDesign() { return readDraft() || siteDesign || DEFAULT_NEXT_DESIGN; }
 function applyTheme() {
-  const s = surfaceById(read(SURFACE_KEY)), a = accentById(read(ACCENT_KEY)), custom = readTheme();
-  const r = document.documentElement.style;
-  // A designed theme (Theme designer) wins over the quick swatches.
-  const v = custom ? themeVars(custom) : { bg: s.bg, card: s.card, line: s.line, accent: a.hex, ink: a.ink, on: a.on };
-  r.setProperty('--bg', v.bg); r.setProperty('--card', v.card); r.setProperty('--line', v.line);
-  r.setProperty('--accent', v.accent); r.setProperty('--accent-ink', v.ink); r.setProperty('--on-accent', v.on);
+  const d = activeDesign(), custom = readTheme(), r = document.documentElement.style;
+  for (const [k, v] of Object.entries(designVars(d))) r.setProperty(k, v);
+  setIconStyle(d.iconStyle);
+  document.documentElement.dataset.tile = d.iconTile; document.documentElement.dataset.header = d.headerAlign;
+  const href = fontHref(d), link = document.getElementById('nxFonts') || Object.assign(document.head.appendChild(document.createElement('link')), { id: 'nxFonts', rel: 'stylesheet' });
+  if (link.getAttribute('href') !== href) link.setAttribute('href', href);
+  const quick = read(SURFACE_KEY) || read(ACCENT_KEY), s = surfaceById(read(SURFACE_KEY)), a = accentById(read(ACCENT_KEY));
+  const v = custom ? themeVars(custom) : quick ? { bg: s.bg, card: s.card, accent: a.hex } : { bg: d.bg, card: d.card, accent: d.accent };
+  const t = themeVars({ ...v, accent2: v.accent });
+  r.setProperty('--bg', t.bg); r.setProperty('--card', t.card); r.setProperty('--line', t.line);
+  r.setProperty('--accent', t.accent); r.setProperty('--accent-ink', t.ink); r.setProperty('--on-accent', t.on);
   applyBackdrop(custom);
-  document.querySelector('meta[name=theme-color]')?.setAttribute('content', v.bg);
-  return { s: custom ? {} : s, a: custom ? { name: 'Custom' } : a, custom };
+  document.querySelector('meta[name=theme-color]')?.setAttribute('content', t.bg);
+  return { s: custom || !quick ? {} : s, a: custom ? { name: 'Custom' } : quick ? a : { name: 'Site default' }, custom };
 }
 
 // ---------- data (each loads once, and re-renders when it arrives) ----------
@@ -98,7 +109,7 @@ function loadCodex() {
 const loadNews = () => load('news', '/api/journal', j => sortArticles(j.articles));
 const loadBuilds = () => load('builds', '/api/community/posts?kind=build', j => Array.isArray(j.posts) ? j.posts : []);
 const loadGuides = () => load('guides', '/api/community/posts?kind=guide', j => Array.isArray(j.posts) ? j.posts : []);
-const loadNotice = () => load('notice', '/api/site/theme', j => j.notice?.enabled && j.notice.text ? j.notice.text : null);
+const loadNotice = () => load('notice', '/api/site/theme', j => { const d = safeNextDesign(j.next); if (d && JSON.stringify(d) !== JSON.stringify(siteDesign)) { siteDesign = d; applyTheme(); } return j.notice?.enabled && j.notice.text ? j.notice.text : null; });
 function loadArticle(slug) {
   if (data.article[slug]) return;
   data.article[slug] = { state: 'loading', value: null };
@@ -134,12 +145,14 @@ function homeView() {
   const latest = n.state === 'ready' && n.value[0]
     ? '<a class="nx-card nx-story" href="' + hashFor('news', n.value[0].slug) + '"><span class="nx-kicker">' + esc((n.value[0].category || 'News').toUpperCase()) + ' · ' + esc(shortDate(n.value[0].publishedAt)) + '</span><strong>' + esc(n.value[0].teaserTitle || n.value[0].title) + '</strong><small>' + esc(n.value[0].subtitle || '') + '</small></a>'
     : n.state === 'error' ? failed('News', 'news') : loading('news');
-  return '<a class="nx-search" href="#/codex">' + icon('search', 18) + '<span>Search items, skills, monsters</span></a>' + ev +
-    '<section>' + '<div class="nx-head">' + label('Latest news') + '<a href="#/news">All news</a></div>' + latest + '</section>' +
-    '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredList(3) + '</section>' +
-    '<section><div class="nx-head">' + label(recent().length ? 'Jump back in' : 'Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
-    recentTiles(recent()).map(t => '<a class="nx-tile" href="' + esc(t.href) + '">' + artImg(t.art || 'features/feature-codex', 40) + '<span>' + esc(t.short || t.name) + '</span></a>').join('') +
-    '</div></section>';
+  // Jump back in first; the event and the latest article are one compact line each.
+  const evRow = liveEvents().map(e => '<a class="nx-strip nx-strip-event" href="' + esc(e.href) + '">' + ic('event', 18) + '<span><b>' + esc(e.name) + '</b><small>' + esc(e.detail) + '</small></span><i class="nx-chev"></i></a>').join('');
+  const nw = n.state === 'ready' && n.value[0];
+  const newsRow = nw ? '<a class="nx-strip" href="' + hashFor('news', nw.slug) + '">' + ic('news', 18) + '<span><b>' + esc(nw.teaserTitle || nw.title) + '</b><small>' + esc((nw.category || 'News') + ' · ' + shortDate(nw.publishedAt)) + '</small></span><i class="nx-chev"></i></a>' : '';
+  return '<section><div class="nx-head">' + label(recent().length ? 'Jump back in' : 'Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
+    recentTiles(recent()).map(t => '<a class="nx-tile" href="' + esc(t.href) + '">' + artImg(t.art || 'features/feature-codex', 40) + '<span>' + esc(t.short || t.name) + '</span></a>').join('') + '</div></section>' +
+    (evRow || newsRow ? '<section class="nx-strips">' + evRow + newsRow + '</section>' : '') +
+    '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredList(3) + '</section>';
 }
 // Featured picks come from the owner's list (/api/featured); each build loads through the public
 // community route, so hidden or deleted builds simply don't appear. Empty list -> Zane's build.
@@ -157,7 +170,7 @@ function loadFeatured() {
 // One build card everywhere: class emblem, build type color and icon, then the words.
 function buildCard(href, { title, summary = '', note = '', by = '', date = '', meta = null, featured = false }) {
   const t = meta?.stance ? BUILD_TYPES[meta.stance] : null, cls = meta?.cls ? CLASS_NAMES[meta.cls] : '';
-  return '<a class="nx-bcard" href="' + esc(href) + '"' + (t ? ' style="--bt:' + t.color + '"' : '') + '>' +
+  return '<a class="nx-bcard" href="' + esc(href) + '" style="' + (t ? '--bt:' + t.color + ';' : '') + (cls ? '--cc:' + classVar(cls) : '') + '">' +
     '<span class="nx-bcard-emblem">' + ic(cls ? 'class-' + cls.toLowerCase() : 'feature-build-studio', 30) + '</span>' +
     '<span class="nx-bcard-body"><span class="nx-tags">' + (t ? '<span class="nx-btype">' + ic(t.art, 14) + esc(t.name) + '</span>' : '') +
     (cls ? '<span class="nx-tag">' + esc(cls) + '</span>' : '') + (featured ? '<span class="nx-tag nx-tag-accent">Featured</span>' : '') + '</span>' +
@@ -367,7 +380,7 @@ function render() {
   if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? adminView(user()) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? (id === 'theme' ? themeView() : profileView()) : homeView();
   const logo = '<img src="/assets/arcana-logo.webp" width="34" height="28" alt="">';
   const title = section === 'home' ? '<a class="nx-brand" href="#/home" aria-label="Arcana home">' + logo + '<span>ARCANA</span></a>'
@@ -375,7 +388,7 @@ function render() {
   $('nxTopL').innerHTML = title;
   $('nxTopR').innerHTML =
     '<a class="nx-avatar" href="#/profile" aria-label="Profile"' + (section === 'profile' ? ' aria-current="page"' : '') + '>' + (user() ? esc(initial()) : icon('user', 18)) + '</a>';
-  $('nxNav').innerHTML = TABS.map(t => '<a href="' + (t.href || hashFor(t.id)) + '"' + (t.id === 'search' ? ' class="nx-nav-search"' : '') + (t.id === tab ? ' aria-current="page"' : '') + '>' + (t.id === 'search' ? '<i>' + icon('search', 24) + '</i>' : icon(t.id, 22)) + '<span>' + t.label + '</span></a>').join('');
+  $('nxNav').innerHTML = TABS.map(t => '<a href="' + (t.href || hashFor(t.id)) + '"' + (t.id === 'search' ? ' class="nx-nav-search"' : '') + (t.id === tab ? ' aria-current="page"' : '') + '>' + (t.id === 'search' ? '<i>' + ic('search', 24) + '</i>' : ic(t.id === 'tools' ? 'tools' : t.id, 22)) + '<span>' + t.label + '</span></a>').join('');
   document.body.dataset.section = section;
   $('nxNotice').hidden = !data.notice.value;
   $('nxNotice').textContent = data.notice.value || '';
@@ -435,6 +448,7 @@ initGuilds(render);
 initCommunity(render);
 initGuildTree(render);
 initTheme(render, applyTheme);
+initDesign(render, applyTheme);
 window.addEventListener('arcana:news-changed', () => { data.news.state = 'idle'; data.article = {}; });
 window.addEventListener('arcana:featured-changed', () => { featuredState.state = 'idle'; data.builds.state = 'idle'; });
 applyTheme();

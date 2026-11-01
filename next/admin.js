@@ -1,6 +1,7 @@
 // Admin for Arcana Next: Inbox (community builds), Featured picks, Site announcement.
 // Every action goes through the existing server endpoints and their permission checks.
 import { esc, shortDate, articleHtml } from './core.js';
+import { ic } from './core.js';
 import { AWARD_LABELS, ROLE_NAMES } from '../src/account-policy.js';
 import { reportsTab } from './feedback.js';
 
@@ -174,6 +175,7 @@ export function adminView(user) {
   const tabs = [['inbox', 'Inbox'], ['featured', 'Featured'], ['reports', 'Reports'], ['news', 'News'], ['people', 'People'], ['traffic', 'Traffic'], ['site', 'Site']];
   const body = A.tab === 'featured' ? featured() : A.tab === 'site' ? site() + more() : A.tab === 'news' ? newsTab() : A.tab === 'people' ? peopleTab(user) : A.tab === 'traffic' ? trafficTab() : A.tab === 'reports' ? reportsTab() : inbox();
   return '<a class="nx-back" href="#/profile">‹ Profile</a><header class="nx-page-head"><span class="nx-kicker">OWNER</span><h1>Admin</h1></header>' +
+    '<a class="nx-row nx-row-design" href="#/admin/design"><span class="nx-ic">' + ic('theme', 22) + '</span><span class="nx-row-text"><strong>Site design</strong><small>Colors, corners, fonts and icons for everyone. Preview first, then publish.</small></span><span class="nx-row-end">›</span></a>' +
     '<div class="st-tabs adm-tabs nx-scrollx" role="tablist">' + tabs.map(([id, l]) => '<button role="tab" aria-selected="' + (A.tab === id) + '" data-adm="tab" data-v="' + id + '">' + l + (id === 'featured' && A.feat.dirty ? ' •' : '') + '</button>').join('') + '</div>' +
     body + (A.toast ? '<div class="st-toast" role="status">' + esc(A.toast) + '</div>' : '');
 }
