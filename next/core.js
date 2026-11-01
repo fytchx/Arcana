@@ -37,9 +37,10 @@ export const TABS = Object.freeze([
 export const TOOLS = Object.freeze([
   { group: 'Planning', id: 'pathfinder', name: 'Pathfinder', detail: 'Upgrade costs and the materials to farm, biome by biome', href: '#/tools/pathfinder', icon: 'path', native: true },
   { group: 'Planning', id: 'studio', name: 'Build Studio', detail: 'Make a build and share it as a link', href: '#/studio', icon: 'shield', native: true },
-  { group: 'Pets', id: 'pet', name: 'Compound level', detail: 'What a pet bonus reaches at each compound level', href: '#/tools/pet', icon: 'paw', native: true },
-  { group: 'Pets', id: 'affix', name: 'Affix level cost', detail: 'Shards to level a pet affix from now to your target', href: '#/tools/affix', icon: 'paw', native: true },
-  { group: 'Farming', id: 'ml', name: 'ML farming comparator', detail: 'Which monster gets you Monster Level fastest', href: '#/tools/ml', icon: 'chart', native: true },
+  { group: 'Pets', id: 'pet', name: 'Compound level', short: 'Compound', detail: 'What a pet bonus reaches at each compound level', href: '#/tools/pet', icon: 'paw', native: true },
+  { group: 'Pets', id: 'affix', name: 'Affix level cost', short: 'Affix cost', detail: 'Shards to level a pet affix from now to your target', href: '#/tools/affix', icon: 'paw', native: true },
+  { group: 'Farming', id: 'mlxp', name: 'ML XP planner', short: 'ML XP', detail: 'Total XP, kills and time to your next Monster Levels', href: '#/tools/mlxp', icon: 'chart', native: true },
+  { group: 'Farming', id: 'ml', name: 'ML farming comparator', short: 'ML farming', detail: 'Which monster gets you Monster Level fastest', href: '#/tools/ml', icon: 'chart', native: true },
   { group: 'Planning', id: 'skills', name: 'Skill trees', detail: 'Class and passive trees with the real point rules', href: '/#/labs/skills', icon: 'tree' }
 ]);
 
@@ -145,3 +146,17 @@ export function signInButtons(me) {
 // Sign-in finishes on the classic account page. This one-time note sends the player back here.
 export const RETURN_KEY = 'arcana-next-return';
 export const safeReturn = v => typeof v === 'string' && /^\/next(?:#\/[\w\-/?=&%.:]*)?$/.test(v) ? v : null;
+
+// Home's "Jump back in": the last three tools the player opened, newest first.
+// New visitors get sensible starting points instead. The Tools tab always lists everything.
+export const RECENT_TOOLS_KEY = 'arcana-next-recent-tools-v1';
+export const DEFAULT_RECENT = ['studio', 'pathfinder', 'codex'];
+export function rememberTool(list, id) {
+  const known = new Set([...TOOLS.map(t => t.id), 'codex']);
+  if (!known.has(id)) return Array.isArray(list) ? list.filter(x => known.has(x)).slice(0, 3) : [];
+  return [id, ...(Array.isArray(list) ? list : []).filter(x => x !== id && known.has(x))].slice(0, 3);
+}
+export function recentTiles(list) {
+  const ids = [...(Array.isArray(list) ? list : []), ...DEFAULT_RECENT].filter((x, i, a) => a.indexOf(x) === i);
+  return ids.map(id => id === 'codex' ? { id, short: 'Codex', href: '#/codex', icon: 'codex' } : TOOLS.find(t => t.id === id)).filter(Boolean).slice(0, 3);
+}

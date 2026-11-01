@@ -2,7 +2,7 @@
 import {
   SURFACES, ACCENTS, SURFACE_KEY, ACCENT_KEY, surfaceById, accentById, TABS, TOOLS,
   parseHash, hashFor, activeTab, searchIndex, codexEntries, codexCategories, kindName, kindSingular,
-  sortArticles, shortDate, articleHtml, liveEvents, esc, signInButtons, RETURN_KEY
+  sortArticles, shortDate, articleHtml, liveEvents, esc, signInButtons, RETURN_KEY, RECENT_TOOLS_KEY, rememberTool, recentTiles
 } from './core.js';
 import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSection } from './studio.js';
 import { nextCode } from './studio-core.js';
@@ -118,8 +118,8 @@ function homeView() {
   return '<a class="nx-search" href="#/codex">' + icon('search', 18) + '<span>Search items, skills, monsters</span></a>' + ev +
     '<section>' + '<div class="nx-head">' + label('Latest news') + '<a href="#/news">All news</a></div>' + latest + '</section>' +
     '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredCard() + '</section>' +
-    '<section>' + label('Jump back in') + '<div class="nx-grid3">' +
-    TOOLS.filter(t => ['pathfinder', 'studio', 'pet'].includes(t.id)).map(t => '<a class="nx-tile" href="' + esc(t.href) + '">' + icon(t.icon, 22) + '<span>' + esc(t.id === 'pet' ? 'Pet tools' : t.name) + '</span></a>').join('') +
+    '<section><div class="nx-head">' + label(recent().length ? 'Jump back in' : 'Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
+    recentTiles(recent()).map(t => '<a class="nx-tile" href="' + esc(t.href) + '">' + icon(t.icon, 22) + '<span>' + esc(t.short || t.name) + '</span></a>').join('') +
     '</div></section>';
 }
 const featuredCard = () =>
@@ -254,10 +254,20 @@ function profileView() {
     '<section>' + label('More') + '<div class="nx-list">' + row('/#/beta', 'Report a problem', '', '', true) + row('/', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
 }
 
+// ---------- recently used tools ----------
+const recent = () => { try { return JSON.parse(localStorage.getItem(RECENT_TOOLS_KEY)) || []; } catch { return []; } };
+function noteVisit(section, id) {
+  const tool = section === 'studio' ? 'studio' : section === 'codex' ? 'codex' : section === 'tools' && id ? id : null;
+  if (!tool) return;
+  const next = rememberTool(recent(), tool);
+  try { localStorage.setItem(RECENT_TOOLS_KEY, JSON.stringify(next)); } catch { /* private mode: defaults show */ }
+}
+
 // ---------- shell ----------
 const TITLES = { tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
 function render() {
   const { section, id, query } = parseHash(location.hash);
+  noteVisit(section, id);
   loadMe(); loadNotice();
   const tab = activeTab(section);
   const view = section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)

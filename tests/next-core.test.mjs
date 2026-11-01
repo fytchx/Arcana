@@ -128,3 +128,16 @@ test('next: sign-in return only goes back into /next and only once', async () =>
   assert.match(s, /sessionStorage\.removeItem\(k\)/);
   assert.match(s, /\/\^\\\/next/);
 });
+
+test('next: Home shows recently used tools, newest first, with sensible defaults', async () => {
+  const { rememberTool, recentTiles } = await import('../next/core.js');
+  assert.deepEqual(recentTiles([]).map(t => t.id), ['studio', 'pathfinder', 'codex']);
+  let list = rememberTool([], 'pet');
+  list = rememberTool(list, 'mlxp');
+  list = rememberTool(list, 'pet');
+  assert.deepEqual(list, ['pet', 'mlxp']);
+  assert.deepEqual(recentTiles(list).map(t => t.id), ['pet', 'mlxp', 'studio']);
+  assert.deepEqual(rememberTool(['a', 'b'], 'nope'), []);
+  assert.equal(rememberTool(['pet', 'ml', 'affix', 'studio'], 'codex').length, 3);
+  assert.ok(recentTiles(['pet']).every(t => t.href.startsWith('#/')));
+});
