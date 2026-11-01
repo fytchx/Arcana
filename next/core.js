@@ -56,7 +56,7 @@ export function parseHash(hash = '') {
   const raw = String(hash).replace(/^#\/?/, '');
   const [path, query = ''] = raw.split('?');
   const parts = path.split('/').filter(Boolean).map(p => { try { return decodeURIComponent(p); } catch { return p; } });
-  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile', 'studio', 'build', 'admin', 'feedback', 'checklist', 'guilds'];
+  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile', 'studio', 'build', 'admin', 'feedback', 'checklist', 'guilds', 'lfg', 'records'];
   const section = known.includes(parts[0]) ? parts[0] : 'home';
   return { section, id: section === parts[0] ? parts.slice(1).join('/') : '', query: new URLSearchParams(query) };
 }

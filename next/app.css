@@ -465,3 +465,10 @@ button.st-chip[aria-selected=true] { background: var(--soft); }
 .cl-del.danger { background: #4A1F27; border-color: #B04A58; color: #FFD0D7; }
 .gd-tag { color: var(--tag); font-weight: 800; text-shadow: 0 0 10px color-mix(in srgb, var(--tag) 45%, transparent); }
 .gd-bio { white-space: pre-wrap; }
+.lfg-filters { display: flex; gap: 8px; }
+.lfg-filters .nx-search { flex: 1; }
+.lfg-filters select { height: 48px; }
+.rec-card { flex-direction: row; align-items: flex-start; gap: 12px; }
+.rec-rank { font-size: 20px; font-weight: 800; color: var(--g-gold); min-width: 44px; }
+.rec-card > span:last-child { display: flex; flex-direction: column; gap: 4px; }
+.rec-card small { color: var(--muted); font-size: 13px; }
