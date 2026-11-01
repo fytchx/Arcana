@@ -439,3 +439,13 @@ section > .pf-zone + .pf-zone { margin-top: 0; }
 .pf-cmp { grid-template-columns: 1fr; }
 button.st-chip { background: transparent; }
 button.st-chip[aria-selected=true] { background: var(--soft); }
+
+.adm-tabs { overflow-x: auto; }
+.adm-tabs button { flex: none; padding: 0 14px; }
+.adm-row { width: 100%; text-align: left; }
+.adm-name { font-size: 18px; }
+.adm-preview { padding: 16px; border-radius: var(--r-lg); border: 1px dashed var(--line); }
+.adm-metrics small { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+.adm-bars { height: 120px; display: flex; align-items: flex-end; gap: 4px; padding: 10px; border-radius: var(--r); background: var(--card); border: 1px solid var(--line); }
+.adm-bars span { flex: 1; min-width: 6px; border-radius: 4px 4px 0 0; background: var(--accent); }
+.nx-field textarea { border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--text); padding: 10px 12px; font: inherit; font-size: 16px; line-height: 1.5; resize: vertical; }

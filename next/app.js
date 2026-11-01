@@ -336,6 +336,7 @@ initPathfinder(render);
 initMlXp(render);
 initPathfinderViews(render);
 initAdmin(render);
+window.addEventListener('arcana:news-changed', () => { data.news.state = 'idle'; data.article = {}; });
 window.addEventListener('arcana:featured-changed', () => { featuredState.state = 'idle'; data.builds.state = 'idle'; });
 applyTheme();
 render();
