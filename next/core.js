@@ -150,11 +150,12 @@ export function articleHtml(body, slug = '') {
 export const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 // Sign-in buttons for whichever providers this server has turned on.
+const DISCORD = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="12" rx="3" fill="currentColor"/><path d="M8 8.5c1.6-.8 2.9-1 4-.8 1.1-.2 2.4 0 4 .8l1 5c-1 .8-2 1.3-3 1.7l-.7-1.1c.7-.2 1.3-.6 1.8-1-1.7.8-3.2 1.2-4.1 1.2s-2.4-.4-4.1-1.2c.5.4 1.1.8 1.8 1l-.7 1.1c-1-.4-2-1-3-1.7l1-5zm1.8 3.2a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm4.4 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" fill="#5865F2"/></svg>';
 export function signInButtons(me) {
   const p = me?.providers || {}, out = [];
-  if (p.discord) out.push('<a class="nx-btn nx-btn-primary" data-signin href="/api/account/login">Sign in with Discord</a>');
-  if (p.google) out.push('<a class="nx-btn' + (out.length ? '' : ' nx-btn-primary') + '" data-signin href="/api/account/google/login">Sign in with Google</a>');
-  return out.length ? '<div class="nx-signin">' + out.join('') + '</div>' : '<p class="nx-fine">Sign-in is off on this server.</p>';
+  if (p.google) out.push('<a class="nx-sso nx-sso-google" data-signin href="/api/account/google/login"><span class="nx-sso-g" aria-hidden="true">G</span>Continue with Google</a>');
+  if (p.discord) out.push('<a class="nx-sso nx-sso-discord" data-signin href="/api/account/login">' + DISCORD + 'Continue with Discord</a>');
+  return out.length ? '<div class="nx-signin">' + out.join('') + '<small class="nx-fine">New here? The same buttons create your free account. No new password needed.</small></div>' : '<p class="nx-fine">Sign-in is off on this server.</p>';
 }
 
 // Sign-in finishes on the classic account page. This one-time note sends the player back here.

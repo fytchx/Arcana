@@ -839,3 +839,61 @@ html[data-tile=none] .nx-ic, html[data-tile=none] .st-sticon { background: none;
 .nx-badge, .nx-cglyph, .nx-bmark { display: block; flex: none; }
 .st-sticon:has(.nx-bmark) { background: color-mix(in srgb, var(--bt) 14%, var(--card)); }
 .nx-btype .nx-bmark { margin-left: 1px; }
+
+/* ---------- Pass 4 ---------- */
+/* Triangle logo: facets mixed from the accent, so it follows the site colors */
+.nx-tri { display: block; flex: none; }
+.nx-tri .t0 { fill: color-mix(in srgb, var(--accent) 45%, #12082A); }
+.nx-tri .t1 { fill: color-mix(in srgb, var(--accent) 70%, #fff); }
+.nx-tri .t2 { fill: color-mix(in srgb, var(--accent) 85%, #6A2FC0); }
+.nx-tri .t3 { fill: color-mix(in srgb, var(--accent) 75%, #2A0F55); }
+.nx-tri .t4 { fill: color-mix(in srgb, var(--accent) 92%, #fff); }
+.nx-tri .t5 { fill: color-mix(in srgb, var(--accent) 22%, #120A20); }
+.nx-tri .t6 { fill: color-mix(in srgb, var(--accent) 15%, #fff); }
+/* Wordmark: the original heavy, spaced caps with a soft brushed-metal sheen */
+.nx-brand span { font-family: var(--sans); font-size: 16px; font-weight: 800; letter-spacing: .2em; margin-right: -.2em;
+  background: linear-gradient(180deg, #FFFFFF 0%, #E4E6EE 38%, #9EA3B5 52%, #D9DCE6 64%, #F7F8FB 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.nx-brand-sm .nx-tri { width: 30px; height: 26px; }
+
+/* Signed out: a clear Sign in button where the avatar goes */
+.nx-signin-pill { height: 34px; padding: 0 14px; display: inline-flex; align-items: center; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: 14px; font-weight: 700; margin-right: 4px; }
+.nx-signin { display: flex; flex-direction: column; gap: 8px; }
+.nx-sso { height: 46px; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: var(--r); font-size: 15px; font-weight: 700; }
+.nx-sso-google { background: #fff; color: #1F1F1F; }
+.nx-sso-g { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 800 15px/1 Arial, sans-serif; color: #4285F4; border: 1.5px solid #DADCE0; }
+.nx-sso-discord { background: #5865F2; color: #fff; }
+.nx-sso-discord svg rect { fill: #fff; }
+
+/* Home: the three main tools with a line each, recently used tucked under */
+.nx-main-tile { min-height: 0; padding: 14px 8px 12px; gap: 6px; justify-content: flex-start; }
+.nx-main-tile strong { font-size: 14px; } .nx-main-tile small { font-size: 11.5px; color: var(--muted); line-height: 1.3; font-weight: 500; }
+.nx-recent summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); padding: 2px 0; }
+.nx-recent summary::-webkit-details-marker { display: none; }
+.nx-recent summary::after { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-2px); }
+.nx-recent[open] summary::after { transform: rotate(-135deg); }
+.nx-recent-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.nx-recent-list a { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--text); font-size: 13px; }
+.nx-recent-list svg { color: var(--accent-ink); }
+
+/* Icons: always dead center, no baseline drift while fonts load */
+.nx-ic, .nx-row-art, .st-sticon { display: grid; place-items: center; line-height: 0; }
+.nx-ic > svg, .nx-ic > img { display: block; margin: auto; }
+.nx-row-art { width: 40px; height: 40px; flex: none; }
+
+/* Admin News: one-tap feature toggle */
+.adm-newsrow { display: flex; gap: 6px; align-items: stretch; }
+.adm-newsrow .adm-row { flex: 1; min-width: 0; }
+.adm-star { flex: none; padding: 0 12px; border-radius: var(--r-lg); border: 1px solid var(--line); background: var(--card); color: var(--muted); font-size: 13px; font-weight: 700; }
+.adm-star[aria-pressed=true] { color: #FFD97A; border-color: #7A5A20; background: #2A2210; }
+
+/* Profile: Display choice */
+.nx-display .nx-seg button { height: auto; padding: 10px 8px; display: flex; flex-direction: column; gap: 2px; }
+.nx-display .nx-seg small { font-size: 11.5px; font-weight: 500; color: var(--muted); }
+
+/* Simplified display: flat, calm, no art or depth */
+html[data-display=simple] { --grad: 0; --glowk: 0; }
+html[data-display=simple] body { background: var(--bg); }
+html[data-display=simple] .nx-bcard, html[data-display=simple] .pf-acc { background: var(--card); }
+html[data-display=simple] .nx-btn-primary { background: var(--accent); box-shadow: none; }
+html[data-display=simple] .nx-brand span { background: none; color: var(--text); }
+html[data-display=simple] .nx-strip-event { background: var(--card); }

@@ -47,7 +47,9 @@ function newsTab() {
   if (A.news.state !== 'ready') return '<div class="nx-loading">Loading articles…</div>';
   const e = A.news.edit;
   if (!e) return btn('newArticle', '+ New article', '', 'nx-btn nx-btn-primary') + '<div class="nx-list">' + A.news.list.map((a, i) =>
-    '<button class="nx-row adm-row" data-adm="editArticle" data-i="' + i + '"><span class="nx-row-text"><strong>' + esc(a.title) + '</strong><small>' + esc([a.published ? 'Published' : 'Draft', a.category, a.featured ? 'Featured' : '', shortDate(a.updatedAt)].filter(Boolean).join(' · ')) + '</small></span><span class="nx-row-end">›</span></button>').join('') + '</div>';
+    '<div class="adm-newsrow"><button class="nx-row adm-row" data-adm="editArticle" data-i="' + i + '"><span class="nx-row-text"><strong>' + esc(a.title) + '</strong><small>' + esc([a.published ? 'Published' : 'Draft', a.category, shortDate(a.updatedAt)].filter(Boolean).join(' · ')) + '</small></span><span class="nx-row-end">›</span></button>' +
+    (a.published ? '<button class="adm-star" aria-pressed="' + !!a.featured + '" data-adm="featureArticle" data-i="' + i + '"' + (A.busy ? ' disabled' : '') + '>' + (a.featured ? '★ On Home' : '☆ Feature') + '</button>' : '') + '</div>').join('') + '</div>' +
+    '<p class="nx-fine">★ Featured articles show first on Home and at the top of News. Tap again to unfeature.</p>';
   const f = (k, l, max, ph = '') => '<label class="nx-field">' + l + '<input maxlength="' + max + '" value="' + esc(e[k] || '') + '" data-art="' + k + '" placeholder="' + esc(ph) + '"></label>';
   return '<div class="st-two">' + btn('closeArticle', '‹ All articles') + btn('previewArticle', A.news.preview ? 'Edit' : 'Preview') + '</div>' +
     (A.news.preview ? '<article class="nx-article adm-preview"><span class="nx-kicker">' + esc((e.category || '').toUpperCase()) + '</span><h1>' + esc(e.title || 'Untitled') + '</h1><p class="nx-deck">' + esc(e.subtitle || '') + '</p>' + articleHtml(e.body || '', e.slug) + '</article>'
@@ -59,6 +61,19 @@ function newsTab() {
         '<label class="st-consent"><input type="checkbox" data-art="featured"' + (e.featured ? ' checked' : '') + '><span>Pin to the top of News</span></label></section>') +
     '<div class="st-two">' + btn('saveArticle', 'Save draft', 'data-pub="0"') + btn('saveArticle', e.published ? 'Update published' : 'Publish', 'data-pub="1"', 'nx-btn nx-btn-primary') + '</div>' +
     '<p class="nx-fine">Same rules as Journal Studio: plain text with ## headings, - lists and **bold**. Articles post as Zane.</p>';
+}
+// One tap on the News list: feature or unfeature a published article (it shows first on Home).
+async function toggleFeatured(i) {
+  const a = A.news.list[i]; if (!a) return;
+  const article = { slug: a.slug, title: a.title || '', subtitle: a.subtitle || '', category: a.category || 'News', coverUrl: a.coverUrl || '', body: a.body || '', featured: !a.featured, published: !!a.published };
+  A.busy = true; rerender();
+  try {
+    const j = await api('/api/journal/admin', { method: 'PUT', body: JSON.stringify({ expectedRevision: A.news.revision, article }) });
+    A.news.revision = j.revision; A.news.list[i] = j.article;
+    window.dispatchEvent(new Event('arcana:news-changed'));
+    toast(j.article.featured ? 'Featured on Home.' : 'No longer featured.');
+  } catch (err) { toast(err.status === 409 ? 'Someone updated News. Reload, then try again.' : err.message); }
+  finally { A.busy = false; rerender(); }
 }
 async function saveArticle(publish) {
   const e = A.news.edit;
@@ -213,6 +228,7 @@ export function initAdmin(render) {
     if (a === 'remove') { A.feat.items = items.filter((_, k) => k !== i); A.feat.dirty = true; return rerender(); }
     if (a === 'saveFeat') return saveFeatured();
     if (a === 'newArticle') { A.news.edit = { category: 'News', published: false }; A.news.preview = false; return rerender(); }
+    if (a === 'featureArticle') return toggleFeatured(i);
     if (a === 'editArticle') { A.news.edit = { ...A.news.list[i], existing: true }; A.news.preview = false; return rerender(); }
     if (a === 'closeArticle') { A.news.edit = null; return rerender(); }
     if (a === 'previewArticle') { A.news.preview = !A.news.preview; return rerender(); }

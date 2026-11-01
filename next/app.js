@@ -58,22 +58,23 @@ const icon = (name, size = 22) => '<svg width="' + size + '" height="' + size + 
 // Layers: the published site design (Admin › Design), then an admin's unpublished draft on this device,
 // then the player's own Theme designer colors.
 let siteDesign = null;
+const DISPLAY_KEY = 'arcana-next-display-v1';
 function activeDesign() { return readDraft() || siteDesign || DEFAULT_NEXT_DESIGN; }
 function applyTheme() {
-  const d = activeDesign(), custom = readTheme(), r = document.documentElement.style;
+  const d = activeDesign(), r = document.documentElement.style;
   for (const [k, v] of Object.entries(designVars(d))) r.setProperty(k, v);
   setIconStyle(d.iconStyle);
   document.documentElement.dataset.tile = d.iconTile; document.documentElement.dataset.header = d.headerAlign;
   const href = fontHref(d), link = document.getElementById('nxFonts') || Object.assign(document.head.appendChild(document.createElement('link')), { id: 'nxFonts', rel: 'stylesheet' });
   if (link.getAttribute('href') !== href) link.setAttribute('href', href);
-  const quick = read(SURFACE_KEY) || read(ACCENT_KEY), s = surfaceById(read(SURFACE_KEY)), a = accentById(read(ACCENT_KEY));
-  const v = custom ? themeVars(custom) : quick ? { bg: s.bg, card: s.card, accent: a.hex } : { bg: d.bg, card: d.card, accent: d.accent };
-  const t = themeVars({ ...v, accent2: v.accent });
+  // Players don't restyle the site; they only choose the full design or a simplified one.
+  const t = themeVars({ bg: d.bg, card: d.card, accent: d.accent, accent2: d.accent });
   r.setProperty('--bg', t.bg); r.setProperty('--card', t.card); r.setProperty('--line', t.line);
   r.setProperty('--accent', t.accent); r.setProperty('--accent-ink', t.ink); r.setProperty('--on-accent', t.on);
-  applyBackdrop(custom);
+  document.documentElement.dataset.display = read(DISPLAY_KEY) === 'simple' ? 'simple' : 'full';
+  applyBackdrop(null);
   document.querySelector('meta[name=theme-color]')?.setAttribute('content', t.bg);
-  return { s: custom || !quick ? {} : s, a: custom ? { name: 'Custom' } : quick ? a : { name: 'Site default' }, custom };
+  return {};
 }
 
 // ---------- data (each loads once, and re-renders when it arrives) ----------
@@ -149,8 +150,12 @@ function homeView() {
   const evRow = liveEvents().map(e => '<a class="nx-strip nx-strip-event" href="' + esc(e.href) + '">' + ic('event', 18) + '<span><b>' + esc(e.name) + '</b><small>' + esc(e.detail) + '</small></span><i class="nx-chev"></i></a>').join('');
   const nw = n.state === 'ready' && n.value[0];
   const newsRow = nw ? '<a class="nx-strip" href="' + hashFor('news', nw.slug) + '">' + ic('news', 18) + '<span><b>' + esc(nw.teaserTitle || nw.title) + '</b><small>' + esc((nw.category || 'News') + ' · ' + shortDate(nw.publishedAt)) + '</small></span><i class="nx-chev"></i></a>' : '';
-  return '<section><div class="nx-head">' + label(recent().length ? 'Jump back in' : 'Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
-    recentTiles(recent()).map(t => '<a class="nx-tile" href="' + esc(t.href) + '">' + artImg(t.art || 'features/feature-codex', 40) + '<span>' + esc(t.short || t.name) + '</span></a>').join('') + '</div></section>' +
+  // The three main tools, always in the same place; recently used tools sit one tap away.
+  const main = [['#/tools/pathfinder', 'upgrade', 'Pathfinder', 'Upgrade costs and ML XP'], ['#/studio', 'studio', 'Build Studio', 'Make and share a build'], ['#/codex', 'codex', 'Codex', 'Items, skills, monsters']];
+  const rec = recent().map(id => id === 'codex' ? null : TOOLS.find(t => t.id === id)).filter(Boolean);
+  return '<section><div class="nx-head">' + label('Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
+    main.map(([h, i, l, dsc]) => '<a class="nx-tile nx-main-tile" href="' + h + '"><span class="nx-ic">' + ic(i, 24) + '</span><strong>' + l + '</strong><small>' + dsc + '</small></a>').join('') + '</div>' +
+    (rec.length ? '<details class="nx-recent"><summary>Recently used</summary><div class="nx-recent-list">' + rec.map(t => '<a href="' + esc(t.href) + '">' + ic(t.art || 'tools', 16) + esc(t.short || t.name) + '</a>').join('') + '</div></details>' : '') + '</section>' +
     (evRow || newsRow ? '<section class="nx-strips">' + evRow + newsRow + '</section>' : '') +
     '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredList(3) + '</section>';
 }
@@ -355,10 +360,8 @@ function profileView() {
   const admin = u?.permissions?.manageSite ? '<a class="nx-row nx-row-admin" href="#/admin"><span class="nx-row-text"><strong>Admin</strong><small>Community builds, Featured, announcement</small></span><span class="nx-row-end">' + icon('next', 18) + '</span></a>' : '';
   return who + admin +
     savedBuildsSection(!!u) + checklistsSection(!!u) +
-    '<section>' + label('Theme') + artRow('#/profile/theme', 'Theme designer', readTheme() ? 'Your custom theme is on. Tap to edit it.' : 'Presets, your own colors and vector backdrops', 'features/feature-rune-forge') + '<div class="nx-card nx-theme">' +
-    '<span class="nx-sub">Background</span><div class="nx-grid2" role="radiogroup" aria-label="Background">' + SURFACES.map(x => '<button role="radio" aria-checked="' + (x.id === s.id) + '" data-act="surface" data-id="' + x.id + '" class="nx-swatch" style="background:' + x.bg + '"><span style="background:' + x.card + '"></span>' + esc(x.name) + '</button>').join('') + '</div>' +
-    '<span class="nx-sub">Accent <em>· ' + esc(a.name) + '</em></span><div class="nx-dots" role="radiogroup" aria-label="Accent">' + ACCENTS.map(x => '<button role="radio" aria-checked="' + (x.id === a.id) + '" aria-label="' + esc(x.name) + '" data-act="accent" data-id="' + x.id + '" style="background:' + x.hex + '"></button>').join('') + '</div>' +
-    '<p class="nx-fine">Rarity, class and rune colors never change, so the accent can\'t be confused with game colors.</p></div></section>' +
+    '<section>' + label('Display') + '<div class="nx-card nx-display"><div class="nx-seg" role="radiogroup" aria-label="Display">' +
+      [['full', 'Full design', 'Colors, depth and art'], ['simple', 'Simplified', 'Flat, calm, fastest']].map(([k, l, dsc]) => '<button role="radio" aria-checked="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" aria-selected="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" data-act="display" data-id="' + k + '"><b>' + l + '</b><small>' + dsc + '</small></button>').join('') + '</div></div></section>' +
     '<section>' + label('Community') + '<div class="nx-list">' + row('#/guilds', 'Guilds', 'Find a guild and apply', '') + row('#/lfg', 'Looking for group', 'Raids, teams and planned runs', '') + row('#/records', 'Season records', 'Top players and guilds by season', '') + row('/#/community', 'Community posts', '', '', true) + '</div></section>' +
     '<section>' + label('More') + '<div class="nx-list">' + row('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', '') + row('/', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
 }
@@ -381,13 +384,15 @@ function render() {
   loadMe(); loadNotice();
   const tab = activeTab(section);
   const view = section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
-    : section === 'news' ? newsView(id) : section === 'profile' ? (id === 'theme' ? themeView() : profileView()) : homeView();
-  const logo = '<img src="/assets/arcana-logo.webp" width="34" height="28" alt="">';
+    : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
+  // The triangle is drawn inline so its facets follow the site's accent color.
+  const logo = '<svg class="nx-tri" viewBox="0 0 130 112" width="36" height="31" aria-hidden="true"><polygon points="65 9 118 102 12 102" class="t0"/><polygon points="65 9 40 59 64 49" class="t1"/><polygon points="65 9 91 60 64 49" class="t2"/><polygon points="40 59 64 49 63 100 12 102" class="t3"/><polygon points="64 49 91 60 118 102 63 100" class="t4"/><polygon points="42 70 65 59 57 89 28 93" class="t5"/><polygon points="65 59 83 72 103 94 70 91" class="t5"/><polygon points="60 27 67 41 62 49 53 47" class="t6"/></svg>';
   const title = section === 'home' ? '<a class="nx-brand" href="#/home" aria-label="Arcana home">' + logo + '<span>ARCANA</span></a>'
     : '<a class="nx-brand nx-brand-sm" href="#/home" aria-label="Arcana home">' + logo + '</a><span class="nx-title">' + esc(TITLES[section]) + '</span>';
   $('nxTopL').innerHTML = title;
   $('nxTopR').innerHTML =
-    '<a class="nx-avatar" href="#/profile" aria-label="Profile"' + (section === 'profile' ? ' aria-current="page"' : '') + '>' + (user() ? esc(initial()) : icon('user', 18)) + '</a>';
+    (user() ? '<a class="nx-avatar" href="#/profile" aria-label="Profile"' + (section === 'profile' ? ' aria-current="page"' : '') + '>' + esc(initial()) + '</a>'
+      : data.me.state === 'ready' ? '<a class="nx-signin-pill" href="#/profile">Sign in</a>' : '');
   $('nxNav').innerHTML = TABS.map(t => '<a href="' + (t.href || hashFor(t.id)) + '"' + (t.id === 'search' ? ' class="nx-nav-search"' : '') + (t.id === tab ? ' aria-current="page"' : '') + '>' + (t.id === 'search' ? '<i>' + ic('search', 24) + '</i>' : ic(t.id === 'tools' ? 'tools' : t.id, 22)) + '<span>' + t.label + '</span></a>').join('');
   document.body.dataset.section = section;
   $('nxNotice').hidden = !data.notice.value;
@@ -406,6 +411,7 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) return;
   const act = b.dataset.act;
+  if (act === 'display') { write(DISPLAY_KEY, b.dataset.id); applyTheme(); render(); }
   if (act === 'surface') { saveTheme(null); write(SURFACE_KEY, b.dataset.id); render(); }
   if (act === 'accent') { saveTheme(null); write(ACCENT_KEY, b.dataset.id); render(); }
   if (act === 'buildtab') { buildTab = b.dataset.tab; render(); }
