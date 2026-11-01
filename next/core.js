@@ -179,11 +179,16 @@ export function recentTiles(list) {
 export const CLASS_NAMES = { 1: 'Warrior', 2: 'Archer', 3: 'Mage', 4: 'Rogue', 5: 'Druid' };
 export const classVar = name => 'var(--c-' + String(name).toLowerCase() + ')';
 export const BUILD_TYPES = Object.freeze({
-  bulwark: { name: 'Retaliation', art: 'stats/stat-retaliation', color: '#FF6B6B' },
-  aggressive: { name: 'Attack Damage', art: 'stats/stat-attack-damage', color: '#FFB547' },
-  beastmaster: { name: 'Pet Damage', art: 'stats/stat-pet-damage', color: '#5FD68A' },
-  harmony: { name: 'Harmony', art: 'stats/stat-all-class-skills', color: '#7FB2FF' }
+  bulwark: { name: 'Retaliation', art: 'stats/stat-retaliation', img: 'retaliation', color: '#EF7F79' },
+  aggressive: { name: 'Attack Damage', art: 'stats/stat-attack-damage', img: 'attack-damage', color: '#F3B25A' },
+  beastmaster: { name: 'Pet Damage', art: 'stats/stat-pet-damage', img: 'pet-damage', color: '#55CDAA' },
+  harmony: { name: 'Harmony', art: 'stats/stat-all-class-skills', img: 'harmony', color: '#9D8AF2' }
 });
+// Two-tone pack art (assets/icons/arcana-pack): class badges, class glyphs and build-type marks.
+const PACK = '/assets/icons/arcana-pack/';
+export const classBadge = (name, size = 48) => '<img class="nx-badge" src="' + PACK + 'badges/' + String(name).toLowerCase() + '.svg" width="' + size + '" height="' + size + '" alt="">';
+export const classGlyph = (name, size = 20) => '<img class="nx-cglyph" src="' + PACK + 'classes/' + String(name).toLowerCase() + '.svg" width="' + size + '" height="' + size + '" alt="">';
+export const buildMark = (stance, size = 18) => BUILD_TYPES[stance] ? '<img class="nx-bmark" src="' + PACK + 'build-types/' + BUILD_TYPES[stance].img + '.svg" width="' + size + '" height="' + size + '" alt="">' : '';
 // Class, stance and level from a new-app share code. Anything unexpected comes back empty.
 export function buildMeta(code) {
   try {

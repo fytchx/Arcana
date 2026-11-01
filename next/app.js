@@ -3,7 +3,7 @@ import {
   SURFACES, ACCENTS, SURFACE_KEY, ACCENT_KEY, surfaceById, accentById, TABS, TOOLS,
   parseHash, hashFor, activeTab, searchIndex, codexEntries, codexCategories, kindName, kindSingular,
   sortArticles, shortDate, articleHtml, liveEvents, esc, signInButtons, RETURN_KEY, RECENT_TOOLS_KEY, rememberTool, recentTiles,
-  ic, setIconStyle, classVar, CLASS_NAMES, BUILD_TYPES, buildMeta,
+  ic, setIconStyle, classVar, classBadge, buildMark, CLASS_NAMES, BUILD_TYPES, buildMeta,
 } from './core.js';
 import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSection } from './studio.js';
 import { nextCode } from './studio-core.js';
@@ -171,8 +171,8 @@ function loadFeatured() {
 function buildCard(href, { title, summary = '', note = '', by = '', date = '', meta = null, featured = false }) {
   const t = meta?.stance ? BUILD_TYPES[meta.stance] : null, cls = meta?.cls ? CLASS_NAMES[meta.cls] : '';
   return '<a class="nx-bcard" href="' + esc(href) + '" style="' + (t ? '--bt:' + t.color + ';' : '') + (cls ? '--cc:' + classVar(cls) : '') + '">' +
-    '<span class="nx-bcard-emblem">' + ic(cls ? 'class-' + cls.toLowerCase() : 'feature-build-studio', 30) + '</span>' +
-    '<span class="nx-bcard-body"><span class="nx-tags">' + (t ? '<span class="nx-btype">' + ic(t.art, 14) + esc(t.name) + '</span>' : '') +
+    '<span class="nx-bcard-emblem">' + (cls ? classBadge(cls, 52) : ic('feature-build-studio', 30)) + '</span>' +
+    '<span class="nx-bcard-body"><span class="nx-tags">' + (t ? '<span class="nx-btype">' + buildMark(meta.stance, 15) + esc(t.name) + '</span>' : '') +
     (cls ? '<span class="nx-tag">' + esc(cls) + '</span>' : '') + (featured ? '<span class="nx-tag nx-tag-accent">Featured</span>' : '') + '</span>' +
     '<strong>' + esc(title) + '</strong>' + (note ? '<small class="nx-note">' + esc(note) + '</small>' : '') + (summary ? '<small>' + esc(summary) + '</small>' : '') +
     '<span class="nx-by">' + [by ? 'by <b>' + esc(by) + '</b>' : '', meta?.level ? 'Level ' + meta.level : '', date].filter(Boolean).join(' · ') + '</span></span></a>';

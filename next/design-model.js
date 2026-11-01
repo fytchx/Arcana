@@ -17,7 +17,7 @@ const RANGES = { corners: [0, 24], gradients: [0, 100], glow: [0, 100], wordmark
 // Game look: the in-game class colors, solid glyphs, round class chips.
 export const DEFAULT_NEXT_DESIGN = Object.freeze({
   bg: '#1B1C24', card: '#252733', accent: '#8B5CF6', text: '#ECEDF3',
-  classColors: Object.freeze({ warrior: '#E53935', archer: '#43A047', mage: '#A23AC4', rogue: '#6A3DE0', druid: '#C08A4E' }),
+  classColors: Object.freeze({ warrior: '#F04445', archer: '#48A950', mage: '#B32ACD', rogue: '#7A46D5', druid: '#D4A057' }),
   corners: 14, gradients: 35, glow: 15, border: 'hairline', headingFont: 'inter', bodyFont: 'inter',
   iconStyle: 'filled', iconTile: 'circle', headerAlign: 'center', wordmark: 42, density: 'comfortable'
 });

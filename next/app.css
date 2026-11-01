@@ -747,7 +747,7 @@ a.nx-row:hover, a.nx-card:hover, a.nx-tile:hover, button.nx-tile:hover { border-
    --grad 0–100 gradient strength, --glowk 0–100 glow, --bw border width, --font-h heading font,
    --c-<class> class colors, --gap/--pad density. Defaults match the in-game look. */
 :root { --grad: 35; --glowk: 15; --bw: 1px; --font-h: var(--sans); --wm: .42em; --gap: 20px; --pad: 14px;
-  --c-warrior: #E53935; --c-archer: #43A047; --c-mage: #A23AC4; --c-rogue: #6A3DE0; --c-druid: #C08A4E;
+  --c-warrior: #F04445; --c-archer: #48A950; --c-mage: #B32ACD; --c-rogue: #7A46D5; --c-druid: #D4A057;
   --glowc: color-mix(in srgb, var(--accent) calc(var(--glowk) * .6%), transparent); }
 body { background: radial-gradient(110% 45% at 50% -10%, color-mix(in srgb, var(--accent) calc(var(--grad) * .3%), transparent), transparent 70%), var(--bg); font-family: var(--sans); }
 .nx-main { gap: var(--gap); }
@@ -833,3 +833,9 @@ html[data-tile=none] .nx-ic, html[data-tile=none] .st-sticon { background: none;
 .dz-bar .nx-btn { min-height: 40px; padding: 0 6px; font-size: 13px; }
 @media (min-width: 900px) { .dz-bar { bottom: 12px; } }
 @media (max-width: 420px) { .dz-row { flex-wrap: wrap; } .dz-slider input { width: 150px; } }
+
+/* Two-tone pack art: badges carry their own ring and fill, so no tile behind them */
+.nx-bcard-emblem:has(.nx-badge) { background: none; width: auto; height: auto; }
+.nx-badge, .nx-cglyph, .nx-bmark { display: block; flex: none; }
+.st-sticon:has(.nx-bmark) { background: color-mix(in srgb, var(--bt) 14%, var(--card)); }
+.nx-btype .nx-bmark { margin-left: 1px; }

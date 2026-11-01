@@ -14,5 +14,5 @@ test('bad input is refused, never half-applied', () => {
 });
 test('design maps to CSS variables', () => {
   const v = designVars(DEFAULT_NEXT_DESIGN);
-  assert.equal(v['--c-warrior'], '#E53935'); assert.equal(v['--r-lg'], '14px'); assert.match(v['--sans'], /Inter/);
+  assert.equal(v['--c-warrior'], '#F04445'); assert.equal(v['--r-lg'], '14px'); assert.match(v['--sans'], /Inter/);
 });

@@ -1,6 +1,6 @@
 // Admin › Design: the owner's site design tool. Every change previews instantly across the whole app
 // on this device only (a draft). "Publish" makes it the look everyone gets.
-import { esc, ic, CLASS_NAMES } from './core.js';
+import { esc, ic, CLASS_NAMES, classGlyph } from './core.js';
 import { DEFAULT_NEXT_DESIGN, DESIGN_PRESETS, FONTS, CLASS_KEYS, normalizeNextDesign, safeNextDesign } from './design-model.js';
 
 const KEY = 'arcana-next-design-draft-v1';
@@ -39,7 +39,7 @@ export function designView(user) {
   const d = current(), draft = readDraft(), live = S.published || DEFAULT_NEXT_DESIGN, dirty = !!draft && !same(draft, live);
   const status = dirty ? '<span class="dz-status dz-draft">Draft · only you see this</span>' : '<span class="dz-status">Matches what everyone sees</span>';
   const presets = DESIGN_PRESETS.map(p => '<button class="dz-preset" aria-pressed="' + same(normalizeNextDesign(p.design), d) + '" data-dz="preset" data-id="' + p.id + '" style="--pb:' + p.design.bg + ';--pc:' + p.design.card + ';--pa:' + p.design.accent + '"><span class="dz-pv"><i></i><i></i><i></i></span><b>' + esc(p.name) + '</b><small>' + esc(p.note) + '</small></button>').join('');
-  const sample = '<div class="dz-sample" aria-label="Preview"><div class="dz-chips">' + CLASS_KEYS.map(k => '<span class="dz-chip" style="--cc:var(--c-' + k + ')">' + ic('class-' + k, 16) + CLASS_NAMES[CLASS_KEYS.indexOf(k) + 1] + '</span>').join('') + '</div>' +
+  const sample = '<div class="dz-sample" aria-label="Preview"><div class="dz-chips">' + CLASS_KEYS.map(k => '<span class="dz-chip" style="--cc:var(--c-' + k + ')">' + classGlyph(k, 18) + CLASS_NAMES[CLASS_KEYS.indexOf(k) + 1] + '</span>').join('') + '</div>' +
     '<div class="nx-grid3">' + [['upgrade', 'Pathfinder'], ['studio', 'Build Studio'], ['codex', 'Codex']].map(([i, l]) => '<span class="nx-tile">' + '<span class="nx-ic">' + ic(i, 22) + '</span><span>' + l + '</span></span>').join('') + '</div>' +
     '<span class="nx-btn nx-btn-primary">Primary button</span></div>';
   return '<a class="nx-back" href="#/admin">‹ Admin</a><header class="dz-head"><span><span class="nx-kicker">ADMIN · SITE DESIGN</span><h1>Design Arcana</h1></span>' + status + '</header>' +
@@ -49,7 +49,7 @@ export function designView(user) {
     '<section><h2 class="nx-label">2 · Colors</h2><div class="dz-card">' +
       row('Background', 'Behind everything', color('bg', d.bg)) + row('Cards', 'Panels, rows and tiles', color('card', d.card)) +
       row('Accent', 'Buttons, links, highlights', color('accent', d.accent)) + row('Text', 'Main text color', color('text', d.text)) + '</div></section>' +
-    '<section><h2 class="nx-label">3 · Class colors</h2><div class="dz-card">' + CLASS_KEYS.map(k => row('<span class="dz-clsname" style="color:var(--c-' + k + ')">' + ic('class-' + k, 18) + CLASS_NAMES[CLASS_KEYS.indexOf(k) + 1] + '</span>', '', color('cls', d.classColors[k], k))).join('') + '</div></section>' +
+    '<section><h2 class="nx-label">3 · Class colors</h2><div class="dz-card">' + CLASS_KEYS.map(k => row('<span class="dz-clsname" style="color:var(--c-' + k + ')">' + classGlyph(k, 20) + CLASS_NAMES[CLASS_KEYS.indexOf(k) + 1] + '</span>', '', color('cls', d.classColors[k], k))).join('') + '</div></section>' +
     '<section><h2 class="nx-label">4 · Shape and depth</h2><div class="dz-card">' +
       row('Corners', d.corners + ' px', slider('corners', d.corners, 0, 24, 'Sharp', 'Round')) +
       row('Gradients', d.gradients ? d.gradients + '%' : 'Off', slider('gradients', d.gradients, 0, 100, 'Flat', 'Rich')) +
