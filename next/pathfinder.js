@@ -33,7 +33,7 @@ const label = t => '<h2 class="nx-label">' + esc(t) + '</h2>';
 const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
 const attemptsFmt = n => new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 }).format(n);
 const pct = v => (v * 100).toLocaleString('en-US', { maximumFractionDigits: 2 }) + '%';
-const CLASSIC = [['timeline', 'Upgrade Map', 'Every step of every rank, one at a time'], ['ml', 'ML XP', 'Time to your next Monster Levels'], ['upgrade', 'Rarity Reference', 'Rarity stats side by side'], ['compare', 'Compare Items', 'Two items, stat by stat']];
+const CLASSIC = [['timeline', 'Upgrade Map', 'Every step of every rank, one at a time'], ['upgrade', 'Rarity Reference', 'Rarity stats side by side'], ['compare', 'Compare Items', 'Two items, stat by stat']];
 
 function selectStage(attr, value, stages, aria) {
   return '<select ' + attr + ' aria-label="' + aria + '">' + stages.map(s => '<option value="' + esc(s.id) + '"' + (s.id === value ? ' selected' : '') + '>' + esc(s.id + (s.name && s.id.startsWith('T') ? ' · ' + s.name : '')) + '</option>').join('') + '</select>';
@@ -45,7 +45,7 @@ function selectLevel(attr, stage, value, aria) {
 export function pathfinderView() {
   load();
   const head = '<a class="nx-back" href="#/tools">‹ Tools</a><header class="nx-page-head"><span class="nx-kicker">PATHFINDER</span><h1>Upgrade costs</h1><p>Pick where your gear is and where you want it. See every material to farm, grouped by biome.</p></header>';
-  const more = '<section>' + label('More in Pathfinder') + '<div class="nx-list">' + CLASSIC.map(([v, t, d]) => '<a class="nx-row" href="/#/calculators/pathfinder?view=' + v + '"><span class="nx-row-text"><strong>' + esc(t) + '</strong><small>' + esc(d) + ' · classic site</small></span><span class="nx-row-end">↗</span></a>').join('') + '</div></section>';
+  const more = '<section>' + label('More in Pathfinder') + '<div class="nx-list"><a class="nx-row" href="#/tools/mlxp"><span class="nx-row-text"><strong>ML XP</strong><small>Total XP, kills and time to your next Monster Levels</small></span><span class="nx-row-end">›</span></a>' + CLASSIC.map(([v, t, d]) => '<a class="nx-row" href="/#/calculators/pathfinder?view=' + v + '"><span class="nx-row-text"><strong>' + esc(t) + '</strong><small>' + esc(d) + ' · classic site</small></span><span class="nx-row-end">↗</span></a>').join('') + '</div></section>';
   if (st.state === 'error') return head + '<div class="nx-empty"><strong>Upgrade recipes didn’t load</strong><p>Costs are hidden rather than guessed. Try again in a moment.</p><button class="nx-btn" data-pf="retry">Try again</button></div>' + more;
   if (st.state !== 'ready') return head + '<div class="nx-loading" role="status">Loading the game’s upgrade recipes…</div>' + more;
 
@@ -121,4 +121,49 @@ export function pathfinderNumbers(snapshot, raw) {
   const range = initialQuickRange(snapshot, raw), quote = quoteRange(snapshot, range, { stage: range.fromStage }), sc = quoteFailureScenarios(snapshot, quote);
   const mode = sc.available && ['min', 'expected', 'pity'].includes(range.costMode) ? range.costMode : 'expected';
   return sc.available ? { gold: sc[mode].gold, materials: sc[mode].materials } : { gold: quote.gold, materials: quote.materials };
+}
+
+// ---------- Pathfinder · ML XP ----------
+// Numbers from the classic calculatePathfinderMlXp (screenshot-calibrated estimates, same saved plan).
+import { PATHFINDER_ML_BIOMES, PATHFINDER_ML_MAX, calculatePathfinderMlXp, readPathfinderMlXp, savePathfinderMlXp } from '../src/pathfinder-ml-xp.js';
+// Same display rules as the classic view: kills over 1,000 round to the nearest 10.
+export const displayKills = n => Math.round(n < 1000 ? n : Math.round(n / 10) * 10).toLocaleString('en-US');
+export function mlXpView() {
+  const m = calculatePathfinderMlXp(readPathfinderMlXp()), p = m.plan, reg = m.variants[1];
+  const quick = [1, 5, 10, 25, 50].map(d => '<button data-ml="add" data-v="' + d + '" aria-pressed="' + (p.target === Math.min(p.level + d, PATHFINDER_ML_MAX)) + '">+' + d + '</button>').join('') + '<button data-ml="end" aria-pressed="' + (p.target === PATHFINDER_ML_MAX) + '">ML ' + PATHFINDER_ML_MAX + '</button>';
+  const route = p.farmMode === 'auto' ? (m.zones.length ? m.zones.map(z => z.name).join(' → ') : m.biome.name) : m.biome.name + ' (fixed)';
+  return '<a class="nx-back" href="#/tools/pathfinder">‹ Pathfinder</a><header class="nx-page-head"><span class="nx-kicker">PATHFINDER</span><h1>ML XP</h1><p>Total XP, kills and time between two Monster Levels.</p></header>' +
+    '<section class="nx-tool"><div class="st-two"><label class="nx-field">Current ML<input type="number" min="1" max="' + PATHFINDER_ML_MAX + '" inputmode="numeric" value="' + p.level + '" data-ml-in="level"></label>' +
+    '<label class="nx-field">Target ML<input type="number" min="' + p.level + '" max="' + PATHFINDER_ML_MAX + '" inputmode="numeric" value="' + p.target + '" data-ml-in="target"></label></div>' +
+    '<div class="nx-steps-row" role="group" aria-label="Quick target">' + quick + '</div>' +
+    '<label class="nx-field">Progress toward ML ' + (p.level + 1) + ' <small>' + p.progress + '%</small><input type="range" min="0" max="99" value="' + p.progress + '" data-ml-in="progress" class="pf-range"></label>' +
+    '<label class="nx-field">Biome progression<select data-ml-in="farmMode"><option value="auto"' + (p.farmMode === 'auto' ? ' selected' : '') + '>Auto · highest unlocked each level</option><option value="fixed"' + (p.farmMode === 'fixed' ? ' selected' : '') + '>Farm one biome throughout</option></select></label>' +
+    (p.farmMode === 'fixed' ? '<label class="nx-field">Farming biome<select data-ml-in="biome">' + PATHFINDER_ML_BIOMES.map(b => '<option value="' + b.id + '"' + (b.id === p.biome ? ' selected' : '') + (b.unlockMl > p.level ? ' disabled' : '') + '>' + esc(b.name) + (b.unlockMl > p.level ? ' · unlocks ML ' + b.unlockMl : '') + '</option>').join('') + '</select></label>' : '') +
+    '</section>' +
+    '<div class="nx-result" role="status"><small>ML ' + m.level + ' → ' + m.target + ' · REGULAR MONSTERS · 1 KILL/SEC</small><b class="big">≈' + esc(reg.etaDisplay) + '</b><span>≈' + esc(m.requiredDisplay) + ' ML XP · ≈' + displayKills(reg.kills) + ' kills</span></div>' +
+    (m.earlyEstimated ? '<p class="nx-callout"><strong>Early ML estimates.</strong> ' + (m.sparseEstimated ? 'ML 43–183 is interpolated between limited player observations; results may differ from the game.' : 'Low-level results use player reports and fitted values between observations.') + '</p>' : '') +
+    '<section>' + label('Monster comparison · ' + m.levels + ' levels') + '<div class="nx-tablewrap"><table class="nx-table"><thead><tr><th scope="col">Monster</th><th scope="col">XP</th><th scope="col">Kills</th><th scope="col">Ideal time</th></tr></thead><tbody>' +
+    m.variants.map(v => '<tr><th scope="row">' + esc(v.label) + '</th><td>' + esc(v.delta) + '</td><td>≈' + displayKills(v.kills) + '</td><td>≈' + esc(v.etaDisplay) + '</td></tr>').join('') + '</tbody></table></div></section>' +
+    '<p class="nx-fine"><b>Farming route:</b> ' + esc(route) + '</p>' +
+    (m.isComplete ? '<p class="nx-callout">You’re already at the target Monster Level. Pick a higher target.</p>' : '') +
+    (!m.modifiersAvailable ? '<p class="nx-fine">The first two biomes don’t get the ±10% monster-position bonuses.</p>' : '') +
+    '<p class="nx-fine">Estimates assume one-shotting at each ML, starting ' + (m.progress ? m.progress + '% through your current level' : 'at 0% progress') + ', at one ML XP-awarding kill per second. Auto progression assumes you can one-shot each newly unlocked biome. Frenzy kills don’t award ML XP. XP requirements are screenshot-based estimates.</p>';
+}
+export function initMlXp(render) {
+  const save = patch => { savePathfinderMlXp({ ...readPathfinderMlXp(), ...patch }); render(); };
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-ml]');
+    if (!b) return;
+    const p = readPathfinderMlXp();
+    if (b.dataset.ml === 'add') save({ target: Math.min(p.level + +b.dataset.v, PATHFINDER_ML_MAX) });
+    if (b.dataset.ml === 'end') save({ target: PATHFINDER_ML_MAX });
+  });
+  document.addEventListener('change', e => {
+    const k = e.target.dataset?.mlIn;
+    if (!k) return;
+    const v = e.target.value;
+    if (k === 'level') { const p = readPathfinderMlXp(); return save({ level: v, target: Math.max(+v || 1, p.target) }); }
+    save({ [k]: k === 'farmMode' || k === 'biome' ? v : +v });
+  });
+  document.addEventListener('input', e => { if (e.target.dataset?.mlIn === 'progress') { const s = e.target.previousElementSibling; if (s && s.tagName === 'SMALL') s.textContent = e.target.value + '%'; } });
 }

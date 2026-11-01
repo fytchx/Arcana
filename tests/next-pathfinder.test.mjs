@@ -25,3 +25,16 @@ test('pathfinder: defaults to the Average scenario like the classic tool', () =>
   const avg = pathfinderNumbers(fixture, { ...range, costMode: 'expected' });
   assert.deepEqual(pathfinderNumbers(fixture, range).gold, avg.gold);
 });
+
+test('pathfinder: ML XP shows the same time, XP and kills as the classic planner', async () => {
+  const { displayKills } = await import('../next/pathfinder.js');
+  const { calculatePathfinderMlXp, pathfinderMlXpResults } = await import('../src/pathfinder-ml-xp.js');
+  const plans = [{ level: 1, target: 30 }, { level: 120, target: 200, progress: 40 }, { level: 300, target: 310 }, { level: 250, target: 500, farmMode: 'fixed', biome: 'glass' }, { level: 499, target: 500 }];
+  for (const p of plans) {
+    const m = calculatePathfinderMlXp(p), html = pathfinderMlXpResults(p), reg = m.variants[1];
+    assert.match(html, new RegExp('id="pathMlTotalKills">≈' + displayKills(reg.kills).replace(/,/g, ',') + '<'), JSON.stringify(p));
+    assert.ok(html.includes('id="pathMlTotalXp">≈' + m.requiredDisplay + '<'), JSON.stringify(p));
+    assert.ok(html.includes('≈' + reg.etaDisplay), JSON.stringify(p));
+    for (const v of m.variants) assert.ok(html.includes('≈' + displayKills(v.kills) + ' <span>kills'), v.id + ' ' + JSON.stringify(p));
+  }
+});

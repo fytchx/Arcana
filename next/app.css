@@ -418,3 +418,5 @@ button { cursor: pointer; }
 .pf-pity span { display: flex; align-items: center; gap: 8px; color: var(--text); }
 .pf-pity input { width: 90px; }
 section > .pf-zone + .pf-zone { margin-top: 0; }
+.pf-range { height: 32px !important; padding: 0 !important; border: 0 !important; background: none !important; accent-color: var(--accent); }
+.nx-steps-row button[aria-pressed=true] { border-color: var(--accent); background: var(--soft); }

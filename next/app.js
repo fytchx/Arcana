@@ -7,7 +7,7 @@ import {
 import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSection } from './studio.js';
 import { nextCode } from './studio-core.js';
 import { toolView, initTools, NATIVE_TOOLS } from './tools.js';
-import { pathfinderView, initPathfinder } from './pathfinder.js';
+import { pathfinderView, initPathfinder, mlXpView, initMlXp } from './pathfinder.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 import { demoBuilds } from '../src/catalog.js';
 
@@ -128,6 +128,7 @@ const featuredCard = () =>
 
 function toolsView(id) {
   if (id === 'pathfinder') return pathfinderView();
+  if (id === 'mlxp') return mlXpView();
   if (NATIVE_TOOLS.includes(id)) return toolView(id);
   const groups = [...new Set(TOOLS.map(t => t.group))];
   return groups.map(g => '<section>' + label(g) + '<div class="nx-list">' + TOOLS.filter(t => t.group === g).map(t => row(t.href, t.name, t.detail, t.icon, !t.native)).join('') + '</div></section>').join('') + classicNote;
@@ -302,5 +303,6 @@ window.addEventListener('hashchange', render);
 initStudio(render);
 initTools(render);
 initPathfinder(render);
+initMlXp(render);
 applyTheme();
 render();
