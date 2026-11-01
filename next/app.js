@@ -63,6 +63,7 @@ const data = {
   news: { state: 'idle', value: [] },
   article: {},
   builds: { state: 'idle', value: [] },
+  guides: { state: 'idle', value: [] },
   notice: { state: 'idle', value: null }
 };
 async function getJSON(url, ms = 10000) {
@@ -87,6 +88,7 @@ function loadCodex() {
 }
 const loadNews = () => load('news', '/api/journal', j => sortArticles(j.articles));
 const loadBuilds = () => load('builds', '/api/community/posts?kind=build', j => Array.isArray(j.posts) ? j.posts : []);
+const loadGuides = () => load('guides', '/api/community/posts?kind=guide', j => Array.isArray(j.posts) ? j.posts : []);
 const loadNotice = () => load('notice', '/api/site/theme', j => j.notice?.enabled && j.notice.text ? j.notice.text : null);
 function loadArticle(slug) {
   if (data.article[slug]) return;
@@ -217,6 +219,9 @@ function postView(id) {
   const p = posts[id];
   if (p.state === 'loading') return back + loading('the build');
   if (p.state === 'error') return back + empty('Build not found', 'It may have been removed by its author or a moderator.');
+  if (p.post.kind === 'guide') return back + '<article class="nx-article"><span class="nx-kicker">COMMUNITY GUIDE · ' + esc(shortDate(p.post.createdAt).toUpperCase()) + '</span><h1>' + esc(p.post.title) + '</h1>' +
+    (p.post.summary ? '<p class="nx-deck">' + esc(p.post.summary) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(p.author?.displayName || 'Arcana player') + '</b></p>' + articleHtml(p.post.body || '') + '</article>' +
+    '<p class="nx-fine">Written by a player. Spot something wrong? <a href="#/feedback">Tell me</a>.</p>';
   const code = nextCode(p.post.build);
   const intro = (p.post.summary ? '<p class="nx-read">' + esc(p.post.summary) + '</p>' : '') + (p.post.body ? '<div class="nx-article">' + articleHtml(p.post.body) + '</div>' : '');
   if (!code) return back + '<header class="nx-page-head"><span class="nx-kicker">COMMUNITY BUILD</span><h1>' + esc(p.post.title) + '</h1><p>by ' + esc(p.author?.displayName || 'Arcana player') + '</p></header>' + intro +
@@ -226,13 +231,35 @@ function postView(id) {
 }
 
 let buildTab = 'featured';
+// Write a community guide (same /api/community/posts rules: title 6+, summary 20+, body 80+ characters).
+const G = { title: '', summary: '', body: '', ok: false, busy: false, error: '' };
+function guideForm() {
+  const u = user(), back = '<a class="nx-back" href="#/builds">' + icon('back', 18) + 'Builds</a>';
+  if (!u) return back + '<div class="nx-card"><strong>Sign in to write a guide</strong><small>Guides are published under your Arcana name.</small>' + signInButtons(data.me.value) + '</div>';
+  return back + '<header class="nx-page-head"><span class="nx-kicker">COMMUNITY GUIDE</span><h1>Write a guide</h1><p>Explain how to play something well. Builds go in Build Studio; guides are the why and how.</p></header>' +
+    '<section class="nx-tool"><label class="nx-field">Title<input maxlength="110" value="' + esc(G.title) + '" data-g="title" placeholder="At least 6 characters"></label>' +
+    '<label class="nx-field">Summary<textarea rows="2" maxlength="300" data-g="summary" placeholder="One or two sentences (at least 20 characters)">' + esc(G.summary) + '</textarea></label>' +
+    '<label class="nx-field">Guide<textarea rows="12" maxlength="12000" data-g="body" placeholder="At least 80 characters. Blank line between paragraphs, ## for headings, - for lists, **bold**.">' + esc(G.body) + '</textarea></label>' +
+    '<label class="st-consent"><input type="checkbox" data-g="ok"' + (G.ok ? ' checked' : '') + '><span>Publish this guide publicly, credited as <b>' + esc(u.displayName) + '</b>.</span></label>' +
+    (G.error ? '<p class="st-err" role="alert">' + esc(G.error) + '</p>' : '') +
+    '<button class="nx-btn nx-btn-primary" data-act="publishGuide"' + (G.busy ? ' disabled' : '') + '>' + (G.busy ? 'Publishing…' : 'Publish guide') + '</button></section>';
+}
+
 function buildsView(id) {
+  if (id === 'new-guide') return guideForm();
   if (id) return postView(id);
   loadBuilds();
-  const tabs = '<div class="nx-seg" role="tablist" aria-label="Source">' + [['featured', 'Featured'], ['community', 'Community']].map(([id, l]) => '<button role="tab" aria-selected="' + (buildTab === id) + '" data-act="buildtab" data-tab="' + id + '">' + l + '</button>').join('') + '</div>';
+  if (buildTab === 'guides') loadGuides();
+  const tabs = '<div class="nx-seg" role="tablist" aria-label="Source">' + [['featured', 'Featured'], ['community', 'Community'], ['guides', 'Guides']].map(([id, l]) => '<button role="tab" aria-selected="' + (buildTab === id) + '" data-act="buildtab" data-tab="' + id + '">' + l + '</button>').join('') + '</div>';
   let body;
   if (buildTab === 'featured') body = featuredList();
-  else {
+  else if (buildTab === 'guides') {
+    const g = data.guides;
+    body = '<a class="nx-btn nx-btn-primary" href="#/builds/new-guide">Write a guide</a>' + (g.state === 'error' ? failed('Guides', 'guides') : g.state !== 'ready' ? loading('guides')
+      : g.value.length ? '<div class="nx-list">' + g.value.map(p => '<a class="nx-card" href="#/builds/' + encodeURIComponent(p.id) + '"><strong>' + esc(p.title) + '</strong><small>' + esc(p.summary || p.excerpt || '') + '</small><span class="nx-by">' + esc(shortDate(p.createdAt)) + '</span></a>').join('') + '</div>'
+      : empty('No guides yet', 'Know something other players should? Write the first one.'));
+    return tabs + body;
+  } else {
     const b = data.builds;
     body = b.state === 'error' ? failed('Community builds', 'builds') : b.state !== 'ready' ? loading('builds')
       : b.value.length ? '<div class="nx-list">' + b.value.map(p => '<a class="nx-card" href="#/builds/' + encodeURIComponent(p.id) + '"><strong>' + esc(p.title) + '</strong><small>' + esc(p.summary || p.excerpt || '') + '</small><span class="nx-by">' + esc(shortDate(p.createdAt)) + '</span></a>').join('') + '</div>'
@@ -311,6 +338,7 @@ function render() {
   document.title = (section === 'home' ? 'Arcana' : (TITLES[section] || 'Arcana') + ' · Arcana');
 }
 
+document.addEventListener('change', e => { if (e.target.dataset?.g === 'ok') G.ok = e.target.checked; });
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) return;
@@ -319,7 +347,17 @@ document.addEventListener('click', e => {
   if (act === 'accent') { write(ACCENT_KEY, b.dataset.id); render(); }
   if (act === 'buildtab') { buildTab = b.dataset.tab; render(); }
   if (act === 'kind') { codexKind = b.dataset.kind; codexQuery = ''; render(); }
-  if (act === 'retry') { const slot = { news: 'news', codex: 'codex', builds: 'builds' }[b.dataset.slot]; if (slot) { data[slot].state = 'idle'; render(); } }
+  if (act === 'publishGuide') {
+    const t = G.title.trim(), su = G.summary.trim(), bo = G.body.trim();
+    G.error = t.length < 6 ? 'Give it a title of at least 6 characters.' : su.length < 20 ? 'Add a summary of at least 20 characters.' : bo.length < 80 ? 'The guide needs at least 80 characters.' : !G.ok ? 'Tick the box to agree to publishing under your name.' : '';
+    if (G.error) return render();
+    G.busy = true; render();
+    fetch('/api/community/posts', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'guide', title: t, summary: su, body: bo }) })
+      .then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw Error(r.status === 429 ? 'You’ve hit today’s publishing limit (10).' : j.error || 'Couldn’t publish.'); Object.assign(G, { title: '', summary: '', body: '', ok: false }); data.guides.state = 'idle'; location.hash = '#/builds/' + j.post.id; })
+      .catch(err => { G.error = err.message; }).finally(() => { G.busy = false; render(); });
+    return;
+  }
+  if (act === 'retry') { const slot = { news: 'news', codex: 'codex', builds: 'builds', guides: 'guides' }[b.dataset.slot]; if (slot) { data[slot].state = 'idle'; render(); } }
 });
 // Remember where the player was, so the classic account page can send them back after sign-in.
 document.addEventListener('click', e => {
@@ -327,6 +365,8 @@ document.addEventListener('click', e => {
   try { sessionStorage.setItem(RETURN_KEY, '/next' + (location.hash || '#/home')); } catch { /* private mode: they land on the classic account page */ }
 }, true);
 document.addEventListener('input', e => {
+  const gk = e.target.dataset?.g;
+  if (gk) { G[gk] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; return; }
   if (e.target.id !== 'nxCodexQ') return;
   codexQuery = e.target.value;
   const body = $('nxCodexBody');
