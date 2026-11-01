@@ -463,3 +463,5 @@ button.st-chip[aria-selected=true] { background: var(--soft); }
 .cl-check input { width: 22px; height: 22px; accent-color: var(--g-spent); flex: none; }
 .cl-item.done b { text-decoration: line-through; color: var(--muted); }
 .cl-del.danger { background: #4A1F27; border-color: #B04A58; color: #FFD0D7; }
+.gd-tag { color: var(--tag); font-weight: 800; text-shadow: 0 0 10px color-mix(in srgb, var(--tag) 45%, transparent); }
+.gd-bio { white-space: pre-wrap; }

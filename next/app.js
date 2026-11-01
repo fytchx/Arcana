@@ -10,6 +10,7 @@ import { toolView, initTools, NATIVE_TOOLS } from './tools.js';
 import { pathfinderView, initPathfinder, mlXpView, initMlXp, upgradeMapView, rarityView, compareView, initPathfinderViews } from './pathfinder.js';
 import { adminView, initAdmin } from './admin.js';
 import { feedbackView, initFeedback, notePage } from './feedback.js';
+import { guildsView, initGuilds } from './guilds.js';
 import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 import { demoBuilds } from '../src/catalog.js';
@@ -299,7 +300,7 @@ function profileView() {
     '<span class="nx-sub">Background</span><div class="nx-grid2" role="radiogroup" aria-label="Background">' + SURFACES.map(x => '<button role="radio" aria-checked="' + (x.id === s.id) + '" data-act="surface" data-id="' + x.id + '" class="nx-swatch" style="background:' + x.bg + '"><span style="background:' + x.card + '"></span>' + esc(x.name) + '</button>').join('') + '</div>' +
     '<span class="nx-sub">Accent <em>· ' + esc(a.name) + '</em></span><div class="nx-dots" role="radiogroup" aria-label="Accent">' + ACCENTS.map(x => '<button role="radio" aria-checked="' + (x.id === a.id) + '" aria-label="' + esc(x.name) + '" data-act="accent" data-id="' + x.id + '" style="background:' + x.hex + '"></button>').join('') + '</div>' +
     '<p class="nx-fine">Rarity, class and rune colors never change, so the accent can\'t be confused with game colors.</p></div></section>' +
-    '<section>' + label('Community') + '<div class="nx-list">' + row('/#/guilds', 'Guilds', '', '', true) + row('/#/lfg/raids', 'Looking for group', '', '', true) + row('/#/community', 'Community posts', '', '', true) + '</div></section>' +
+    '<section>' + label('Community') + '<div class="nx-list">' + row('#/guilds', 'Guilds', 'Find a guild and apply', '') + row('/#/lfg/raids', 'Looking for group', '', '', true) + row('/#/community', 'Community posts', '', '', true) + '</div></section>' +
     '<section>' + label('More') + '<div class="nx-list">' + row('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', '') + row('/', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
 }
 
@@ -313,14 +314,14 @@ function noteVisit(section, id) {
 }
 
 // ---------- shell ----------
-const TITLES = { checklist: 'Checklist', feedback: 'Feedback', admin: 'Admin', tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
+const TITLES = { guilds: 'Guilds', checklist: 'Checklist', feedback: 'Feedback', admin: 'Admin', tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
 function render() {
   const { section, id, query } = parseHash(location.hash);
   noteVisit(section, id);
   if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? adminView(user()) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? adminView(user()) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   const title = section === 'home' ? '<a class="nx-word" href="#/home">ARCANA</a>' : '<span class="nx-title">' + esc(TITLES[section]) + '</span>';
   $('nxTopL').innerHTML = title;
@@ -381,6 +382,7 @@ initPathfinderViews(render);
 initAdmin(render);
 initFeedback(render);
 initChecklists(render);
+initGuilds(render);
 window.addEventListener('arcana:news-changed', () => { data.news.state = 'idle'; data.article = {}; });
 window.addEventListener('arcana:featured-changed', () => { featuredState.state = 'idle'; data.builds.state = 'idle'; });
 applyTheme();
