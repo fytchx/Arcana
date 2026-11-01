@@ -41,7 +41,7 @@ export const TOOLS = Object.freeze([
   { group: 'Pets', id: 'affix', name: 'Affix level cost', short: 'Affix cost', detail: 'Shards to level a pet affix from now to your target', href: '#/tools/affix', icon: 'paw', native: true },
   { group: 'Farming', id: 'mlxp', name: 'ML XP planner', short: 'ML XP', detail: 'Total XP, kills and time to your next Monster Levels', href: '#/tools/mlxp', icon: 'chart', native: true },
   { group: 'Farming', id: 'ml', name: 'ML farming comparator', short: 'ML farming', detail: 'Which monster gets you Monster Level fastest', href: '#/tools/ml', icon: 'chart', native: true },
-  { group: 'Planning', id: 'skills', name: 'Skill trees', detail: 'Class and passive trees with the real point rules', href: '/#/labs/skills', icon: 'tree' }
+  { group: 'Planning', id: 'skills', name: 'Skill trees', detail: 'Class and passive trees with the real point rules, in Build Studio', href: '#/studio/class', icon: 'tree', native: true }
 ]);
 
 // Live events for the Home card. Each hides itself after `until`.

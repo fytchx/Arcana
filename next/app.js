@@ -106,7 +106,7 @@ const row = (href, title, detail, ic, external = false) =>
   '<a class="nx-row" href="' + esc(href) + '">' + (ic ? '<span class="nx-row-icon">' + icon(ic, 22) + '</span>' : '') +
   '<span class="nx-row-text"><strong>' + esc(title) + '</strong>' + (detail ? '<small>' + esc(detail) + '</small>' : '') + '</span>' +
   '<span class="nx-row-end">' + icon(external ? 'out' : 'next', 18) + '</span></a>';
-const classicNote = '<p class="nx-fine">Tools marked ↗ still open on the classic site while they are rebuilt.</p>';
+const classicNote = '';
 
 // ---------- views ----------
 function homeView() {
