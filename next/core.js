@@ -127,3 +127,15 @@ export function articleHtml(body, slug = '') {
 
 // Escape text for HTML. The app builds markup from strings, so every value goes through this.
 export const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+
+// Sign-in buttons for whichever providers this server has turned on.
+export function signInButtons(me) {
+  const p = me?.providers || {}, out = [];
+  if (p.discord) out.push('<a class="nx-btn nx-btn-primary" data-signin href="/api/account/login">Sign in with Discord</a>');
+  if (p.google) out.push('<a class="nx-btn' + (out.length ? '' : ' nx-btn-primary') + '" data-signin href="/api/account/google/login">Sign in with Google</a>');
+  return out.length ? '<div class="nx-signin">' + out.join('') + '</div>' : '<p class="nx-fine">Sign-in is off on this server.</p>';
+}
+
+// Sign-in finishes on the classic account page. This one-time note sends the player back here.
+export const RETURN_KEY = 'arcana-next-return';
+export const safeReturn = v => typeof v === 'string' && /^\/next(?:#\/[\w\-/?=&%.:]*)?$/.test(v) ? v : null;

@@ -86,3 +86,25 @@ test('next: the server serves the new app without exposing other files', async (
   assert.match(server, /\^\\\/next\\\/\[a-z\]\[a-z0-9-\]\*\\\.\(\?:js\|css\)\$/);
   assert.match(server, /'x-robots-tag':'noindex, nofollow'/);
 });
+
+test('next: sign-in offers only the providers the server has turned on', async () => {
+  const { signInButtons } = await import('../next/core.js');
+  assert.match(signInButtons({ providers: { google: true } }), /google\/login/);
+  assert.doesNotMatch(signInButtons({ providers: { google: true } }), /Discord/);
+  assert.match(signInButtons({ providers: { discord: true, google: true } }), /Discord[\s\S]*Google/);
+  assert.match(signInButtons({}), /off on this server/);
+});
+
+test('next: sign-in return only goes back into /next and only once', async () => {
+  const { safeReturn } = await import('../next/core.js');
+  assert.equal(safeReturn('/next#/studio/gear'), '/next#/studio/gear');
+  assert.equal(safeReturn('/next'), '/next');
+  assert.equal(safeReturn('https://evil.example/next'), null);
+  assert.equal(safeReturn('//evil.example'), null);
+  assert.equal(safeReturn('/next#/x"><script>'), null);
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  const s = html.slice(html.indexOf('<script id="arcana-next-return">'), html.indexOf('<script id="arcana-boot-control">'));
+  assert.match(s, /indexOf\('#\/account'\)!==0\)return/);
+  assert.match(s, /sessionStorage\.removeItem\(k\)/);
+  assert.match(s, /\/\^\\\/next/);
+});

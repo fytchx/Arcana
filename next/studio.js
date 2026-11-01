@@ -6,7 +6,7 @@ import {
   parts, encodeShare, decodeShare, restoreDraft, PART_IDS, GRID_W, GRID_H, MAX_LEVEL,
   classicEnvelope, nextCode, validSaved
 } from './studio-core.js';
-import { esc } from './core.js';
+import { esc, signInButtons } from './core.js';
 
 const DRAFT_KEY = 'arcana-next-studio-draft-v1';
 const CELL = 50;
@@ -31,14 +31,14 @@ async function api(url, opts = {}) {
 function loadMe() {
   if (acct.me !== 'idle') return;
   acct.me = 'loading';
-  api('/api/account/me').then(j => { acct.user = j.user || null; acct.me = 'ready'; }).catch(() => { acct.me = 'error'; }).finally(rerender);
+  api('/api/account/me').then(j => { acct.user = j.user || null; acct.info = j; acct.me = 'ready'; }).catch(() => { acct.me = 'error'; }).finally(rerender);
 }
 function loadSaves(force = false) {
   if (!force && acct.saves !== 'idle') return;
   acct.saves = 'loading';
   api('/api/account/builds').then(j => { acct.list = Array.isArray(j.builds) ? j.builds : []; acct.saves = 'ready'; }).catch(() => { acct.saves = 'error'; }).finally(rerender);
 }
-const signIn = '<a class="nx-btn nx-btn-primary" href="/api/account/login">Sign in with Discord</a>';
+const signIn = () => signInButtons(acct.info);
 
 const STEPS = D.steps;
 const sumOf = o => Object.values(o || {}).reduce((t, n) => t + n, 0);
@@ -270,7 +270,7 @@ function renderSheet() {
   if (s.kind === 'publish') {
     loadMe();
     if (acct.me !== 'ready') return sheet('Publish to Community', '', acct.me === 'error' ? '<p class="nx-fine">Couldn’t check your account. Try again in a moment.</p>' : '<p class="nx-fine">Checking your account…</p>');
-    if (!acct.user) return sheet('Publish to Community', 'Sign in so your build is credited to you.', '<p class="nx-fine">Builds are published under your Arcana name, so you need to be signed in.</p>', signIn);
+    if (!acct.user) return sheet('Publish to Community', 'Sign in so your build is credited to you.', '<p class="nx-fine">Builds are published under your Arcana name, so you need to be signed in.</p>' + signIn());
     const include = shareParts();
     return sheet('Publish to Community', include.length + (include.length === 1 ? ' part' : ' parts') + ' · ' + include.map(id => STEPS.find(x => x.id === id).label).join(', '),
       '<label class="st-namefield">Title<input id="stPubTitle" maxlength="100" value="' + esc(pub().title) + '" placeholder="At least 6 characters"></label>' +

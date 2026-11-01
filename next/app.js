@@ -2,7 +2,7 @@
 import {
   SURFACES, ACCENTS, SURFACE_KEY, ACCENT_KEY, surfaceById, accentById, TABS, TOOLS,
   parseHash, hashFor, activeTab, searchIndex, codexEntries, codexCategories, kindName,
-  sortArticles, shortDate, articleHtml, liveEvents, esc
+  sortArticles, shortDate, articleHtml, liveEvents, esc, signInButtons, RETURN_KEY
 } from './core.js';
 import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSection } from './studio.js';
 import { nextCode } from './studio-core.js';
@@ -215,7 +215,7 @@ function profileView() {
   const u = user(), me = data.me.value;
   const who = u
     ? '<div class="nx-me"><span class="nx-avatar nx-avatar-lg">' + esc(initial()) + '</span><span><strong>' + esc(u.displayName) + '</strong><small>' + esc([u.inGameName, u.guild].filter(Boolean).join(' · ') || 'Arcana member') + '</small></span></div>'
-    : '<div class="nx-card"><strong>Sign in to save builds</strong><small>Your builds follow you to any device.</small>' + (me?.enabled === false ? '<small>Sign-in is off on this test server.</small>' : '<a class="nx-btn nx-btn-primary" href="/api/account/login">Sign in with Discord</a>') + '</div>';
+    : '<div class="nx-card"><strong>Sign in to save builds</strong><small>Your builds follow you to any device.</small>' + signInButtons(me) + '</div>';
   const admin = u?.permissions?.manageSite ? '<a class="nx-row nx-row-admin" href="/#/admin"><span class="nx-row-text"><strong>Admin</strong><small>Opens the current admin console</small></span><span class="nx-row-end">' + icon('out', 18) + '</span></a>' : '';
   return who + admin +
     savedBuildsSection(!!u) +
@@ -261,6 +261,11 @@ document.addEventListener('click', e => {
   if (act === 'kind') { codexKind = b.dataset.kind; codexQuery = ''; render(); }
   if (act === 'retry') { const slot = { news: 'news', codex: 'codex', builds: 'builds' }[b.dataset.slot]; if (slot) { data[slot].state = 'idle'; render(); } }
 });
+// Remember where the player was, so the classic account page can send them back after sign-in.
+document.addEventListener('click', e => {
+  if (!e.target.closest('[data-signin]')) return;
+  try { sessionStorage.setItem(RETURN_KEY, '/next' + (location.hash || '#/home')); } catch { /* private mode: they land on the classic account page */ }
+}, true);
 document.addEventListener('input', e => {
   if (e.target.id !== 'nxCodexQ') return;
   codexQuery = e.target.value;

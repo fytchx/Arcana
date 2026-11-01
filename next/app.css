@@ -342,3 +342,4 @@ button { cursor: pointer; }
 .st-consent input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--accent); flex: none; }
 .st-namefield small { font-weight: 400; }
 .st-saverow { width: 100%; text-align: left; }
+.nx-signin { display: flex; flex-wrap: wrap; gap: 8px; }

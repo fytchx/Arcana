@@ -18,7 +18,10 @@
 @keyframes arcanaAura{50%{opacity:.6;transform:scale(1.14)}}
 @keyframes arcanaBreath{50%{transform:scale(1.065);filter:drop-shadow(0 0 18px #ab83ffcc)}}
 @media(prefers-reduced-motion:reduce){#arcanaBoot *,#arcanaBoot *:before,#arcanaBoot *:after{animation:none!important}#arcanaBoot{transition:none}}
-</style><script id="arcana-boot-control">
+</style><script id="arcana-next-return">
+// Players who sign in from Arcana Next land here first; send them back. Only acts on that one-time note.
+(function(){try{var k='arcana-next-return',v=sessionStorage.getItem(k),h=location.hash||'';if(!v||h.indexOf('#/account')!==0)return;sessionStorage.removeItem(k);if(h.indexOf('error=')>-1)return;if(/^\/next(?:#\/[\w\-\/?=&%.:]*)?$/.test(v))location.replace(v);}catch(e){}})();
+</script><script id="arcana-boot-control">
 (function(){
  var appReady=false,themeReady=false,closing=false,released=false,pointersDown=0,fadeStarted=0;
  var launchHome=(location.hash||'#/home').split('?')[0]==='#/home';
