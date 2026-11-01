@@ -432,3 +432,10 @@ section > .pf-zone + .pf-zone { margin-top: 0; }
 .nx-note { color: var(--accent-ink) !important; font-weight: 600; }
 .st-tabs + * { margin-top: 0; }
 .nx-btn:disabled, .nx-btn[disabled] { opacity: .45; cursor: default; }
+.pf-rail { padding-bottom: 2px; }
+.pf-step { flex-direction: column; height: 52px; gap: 0; padding: 4px 12px; border-radius: 12px; }
+.pf-step small { font-size: 11px; color: var(--muted); font-weight: 500; }
+.pf-cmpgrid { align-items: stretch; }
+.pf-cmp { grid-template-columns: 1fr; }
+button.st-chip { background: transparent; }
+button.st-chip[aria-selected=true] { background: var(--soft); }

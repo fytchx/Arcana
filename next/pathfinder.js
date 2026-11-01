@@ -33,7 +33,7 @@ const label = t => '<h2 class="nx-label">' + esc(t) + '</h2>';
 const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
 const attemptsFmt = n => new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 }).format(n);
 const pct = v => (v * 100).toLocaleString('en-US', { maximumFractionDigits: 2 }) + '%';
-const CLASSIC = [['timeline', 'Upgrade Map', 'Every step of every rank, one at a time'], ['upgrade', 'Rarity Reference', 'Rarity stats side by side'], ['compare', 'Compare Items', 'Two items, stat by stat']];
+const MORE = [['#/tools/mlxp', 'ML XP', 'Total XP, kills and time to your next Monster Levels'], ['#/tools/upgrade-map', 'Upgrade map', 'Every step of every rank, one at a time'], ['#/tools/compare', 'Compare items', 'Two items’ base ranges at the same rarity'], ['#/tools/rarity', 'Rarity reference', 'Base cost of each rarity upgrade']];
 
 function selectStage(attr, value, stages, aria) {
   return '<select ' + attr + ' aria-label="' + aria + '">' + stages.map(s => '<option value="' + esc(s.id) + '"' + (s.id === value ? ' selected' : '') + '>' + esc(s.id + (s.name && s.id.startsWith('T') ? ' · ' + s.name : '')) + '</option>').join('') + '</select>';
@@ -45,7 +45,7 @@ function selectLevel(attr, stage, value, aria) {
 export function pathfinderView() {
   load();
   const head = '<a class="nx-back" href="#/tools">‹ Tools</a><header class="nx-page-head"><span class="nx-kicker">PATHFINDER</span><h1>Upgrade costs</h1><p>Pick where your gear is and where you want it. See every material to farm, grouped by biome.</p></header>';
-  const more = '<section>' + label('More in Pathfinder') + '<div class="nx-list"><a class="nx-row" href="#/tools/mlxp"><span class="nx-row-text"><strong>ML XP</strong><small>Total XP, kills and time to your next Monster Levels</small></span><span class="nx-row-end">›</span></a>' + CLASSIC.map(([v, t, d]) => '<a class="nx-row" href="/#/calculators/pathfinder?view=' + v + '"><span class="nx-row-text"><strong>' + esc(t) + '</strong><small>' + esc(d) + ' · classic site</small></span><span class="nx-row-end">↗</span></a>').join('') + '</div></section>';
+  const more = '<section>' + label('More in Pathfinder') + '<div class="nx-list">' + MORE.map(([h, t, d]) => '<a class="nx-row" href="' + h + '"><span class="nx-row-text"><strong>' + esc(t) + '</strong><small>' + esc(d) + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div></section>';
   if (st.state === 'error') return head + '<div class="nx-empty"><strong>Upgrade recipes didn’t load</strong><p>Costs are hidden rather than guessed. Try again in a moment.</p><button class="nx-btn" data-pf="retry">Try again</button></div>' + more;
   if (st.state !== 'ready') return head + '<div class="nx-loading" role="status">Loading the game’s upgrade recipes…</div>' + more;
 
@@ -166,4 +166,84 @@ export function initMlXp(render) {
     save({ [k]: k === 'farmMode' || k === 'biome' ? v : +v });
   });
   document.addEventListener('input', e => { if (e.target.dataset?.mlIn === 'progress') { const s = e.target.previousElementSibling; if (s && s.tagName === 'SMALL') s.textContent = e.target.value + '%'; } });
+}
+
+// ---------- Pathfinder · Upgrade Map, Rarity Reference, Compare Items ----------
+// Upgrade Map uses the classic timelineModel and saved view; Rarity Reference and Compare use the
+// classic verified item snapshot (checked equal to the current config for all 40 items x 6 tiers).
+import { PATHFINDER_SLOTS, MODE_LABELS, readQuickView, saveQuickView, timelineModel, stageStepLabel } from '../src/pathfinder-timeline.js';
+import { VERIFIED_ITEM_SNAPSHOT, verifiedCompare, verifiedTierUpgrade } from '../src/verified-item-snapshot.js';
+const pfBack = '<a class="nx-back" href="#/tools/pathfinder">‹ Pathfinder</a>';
+const pfHead = (t, p) => pfBack + '<header class="nx-page-head"><span class="nx-kicker">PATHFINDER</span><h1>' + esc(t) + '</h1><p>' + p + '</p></header>';
+const matList = mats => '<div class="pf-mats pf-card">' + mats.map(m => '<a class="pf-mat" href="#/codex/material:' + esc(encodeURIComponent(m.slug)) + '"><span><b>' + esc(m.name) + '</b></span><span class="pf-q"><b>' + money(m.quantity) + '</b></span></a>').join('') + '</div>';
+
+export function upgradeMapView() {
+  load();
+  if (st.state === 'error') return pfHead('Upgrade map', '') + '<div class="nx-empty"><strong>Upgrade recipes didn’t load</strong><button class="nx-btn" data-pf="retry">Try again</button></div>';
+  if (st.state !== 'ready') return pfHead('Upgrade map', '') + '<div class="nx-loading">Loading the game’s upgrade recipes…</div>';
+  const model = timelineModel(st.data, readQuickView());
+  if (!model) return pfHead('Upgrade map', '') + '<p class="nx-callout">No verified upgrade recipes are available.</p>';
+  const { view, stages, active, steps, step, chapter } = model;
+  const gold = n => shortGold(n);
+  return pfHead('Upgrade map', 'Pick a slot, then step through each upgrade to see exactly what it costs.') +
+    '<section class="nx-tool"><label class="nx-field">Equipment slot<select data-map-in="slot">' + PATHFINDER_SLOTS.map(s => '<option value="' + s.id + '"' + (s.id === view.slot ? ' selected' : '') + '>' + esc(s.label) + '</option>').join('') + '</select></label>' +
+    '<div class="nx-seg" role="radiogroup" aria-label="Upgrade path">' + Object.entries(MODE_LABELS).map(([id, n]) => '<button role="radio" aria-checked="' + (id === view.mode) + '" aria-selected="' + (id === view.mode) + '" data-map="mode" data-v="' + id + '">' + esc(n) + '</button>').join('') + '</div></section>' +
+    '<section>' + label((view.mode === 'awakened' ? 'Awakening ranks' : 'Rarity tiers') + ' · ' + stages.length) + '<div class="st-chips nx-scrollx pf-rail" role="group" aria-label="Stages">' + stages.map(s => '<button class="st-chip" aria-selected="' + (s.id === active.id) + '" data-map="stage" data-v="' + esc(s.id) + '">' + esc(s.id) + '</button>').join('') + '</div></section>' +
+    '<section>' + label(active.tier ? active.name : active.id + ' · Awakened') + '<div class="st-chips nx-scrollx pf-rail" role="group" aria-label="Upgrade steps">' + steps.map((x, i) => '<button class="st-chip pf-step" aria-selected="' + (i === view.level) + '" data-map="step" data-v="' + i + '"><b>' + (i === 0 ? 'Start' : '+' + i) + '</b><small>' + (i === 0 ? 'transition' : x ? gold(x.gold) : '—') + '</small></button>').join('') + '</div></section>' +
+    '<div class="nx-result" role="status"><small>' + esc(stageStepLabel(active, view.level).toUpperCase()) + (step && step.failureChance > 0 ? ' · ' + pct(step.failureChance) + ' FAILURE' : '') + '</small>' +
+    (!step ? '<b class="big">No verified recipe</b><span>No estimated cost is shown for this step.</span>' : step.free ? '<b class="big">Free</b><span>Pick an enhancement to see its costs.</span>' : '<b class="big">' + gold(step.gold) + ' gold</b><span>' + plural(step.materials.length, 'material') + '</span>') + '</div>' +
+    (step && !step.free && step.materials.length ? matList(step.materials) : '') +
+    '<details class="nx-help"><summary>Full ' + esc(active.id) + ' cost · ' + (chapter.complete ? gold(chapter.gold) + ' gold' : 'incomplete') + '</summary>' +
+    (chapter.complete ? '<p>Transition plus every enhancement in ' + esc(active.id) + ', before failed attempts.</p>' + matList(chapter.materials) : '<p>Some source recipes are missing, so this total is incomplete.</p>') + '</details>' +
+    '<p class="nx-fine">Base gold and material amounts per upgrade, before failed attempts. For whole ranges with failure odds, use Upgrade costs.</p>';
+}
+
+export function rarityView() {
+  const S = VERIFIED_ITEM_SNAPSHOT, rows = Object.keys(S.tierUpgradeCosts).map(id => verifiedTierUpgrade(Number(id))).filter(Boolean);
+  return pfHead('Rarity reference', 'Base cost to move an item up one rarity, before other requirements or modifiers.') +
+    '<div class="nx-tablewrap"><table class="nx-table"><thead><tr><th scope="col">Upgrade</th><th scope="col">Base gold</th><th scope="col">Material</th><th scope="col">Failure</th></tr></thead><tbody>' +
+    rows.map(x => '<tr><th scope="row">' + esc(S.tierNames[x.from] + ' → ' + S.tierNames[x.to]) + '</th><td>' + x.cost.toLocaleString('en-US') + '</td><td>' + x.material.quantity + ' × ' + esc(x.material.slug.replaceAll('-', ' ')) + '</td><td>' + Math.round(x.failureChance * 100) + '%</td></tr>').join('') +
+    '</tbody></table></div><p class="nx-fine">Configured base tier-change values. Not a total-cost or expected-attempt estimate. For full totals, use Upgrade costs.</p>';
+}
+
+const CMP_KEY = 'arcana-next-compare-v1';
+const cmpRead = () => { try { return JSON.parse(localStorage.getItem(CMP_KEY)) || {}; } catch { return {}; } };
+const STAT = { melee_physical_damage: 'Melee physical damage', physical_damage: 'Physical damage', magic_damage: 'Magic damage', defense: 'Defense', flat_damage_reduction: 'Flat damage reduction', pet_mastery_level: 'Pet Mastery level', all_skills: 'All Class Skills', block_chance: 'Block chance', crit_damage: 'Critical damage', strength: 'Strength', dexterity: 'Dexterity', intelligence: 'Intelligence', life_on_hit: 'Life on hit', life_on_kill: 'Life on kill' };
+const statName = s => STAT[s] || String(s || '').replaceAll('_', ' ').replace(/^\w/, c => c.toUpperCase());
+const rng = p => !p ? '—' : p.min === p.max ? String(p.min) : p.min + '–' + p.max;
+export function compareView() {
+  const S = VERIFIED_ITEM_SNAPSHOT, names = S.equipment.map(e => e.name).sort((a, b) => a.localeCompare(b));
+  const c = { a: 'Wardplate', b: 'Rags', tier: 3, ...cmpRead() };
+  const r = verifiedCompare(c.a, c.b, c.tier);
+  const pick = (k, v) => '<label class="nx-field">' + (k === 'a' ? 'Item A' : 'Item B') + '<select data-cmp-in="' + k + '">' + names.map(n => '<option' + (n === v ? ' selected' : '') + '>' + esc(n) + '</option>').join('') + '</select></label>';
+  const card = (x, side) => !x ? '<div class="nx-card"><strong>' + side + '</strong><small>No verified range for this item.</small></div>' :
+    '<div class="nx-card"><span class="nx-kicker">' + side + ' · ' + esc(x.slot.replaceAll('_', ' ').toUpperCase()) + '</span><strong>' + esc(x.name) + '</strong><dl class="nx-facts pf-cmp"><div><dt>' + esc(statName(x.primary.stat)) + '</dt><dd>' + rng(x.primary) + '</dd></div>' +
+    (x.secondary ? '<div><dt>' + esc(statName(x.secondary.stat)) + '</dt><dd>' + rng(x.secondary) + '</dd></div>' : '') + '<div><dt>Affix slots</dt><dd>' + x.affixSlots + '</dd></div></dl></div>';
+  const diff = r.left && r.right ? (r.comparable
+    ? '<p class="nx-callout"><strong>Same main stat: ' + esc(statName(r.left.primary.stat)) + '.</strong> B vs A: ' + (r.delta.min >= 0 ? '+' : '') + r.delta.min + ' minimum, ' + (r.delta.max >= 0 ? '+' : '') + r.delta.max + ' maximum. This compares ranges, not whole items or builds.</p>'
+    : '<p class="nx-callout"><strong>Different main stats.</strong> These can’t be ranked by one range. Compare them in a full build instead.</p>') : '';
+  return pfHead('Compare items', 'Two items’ base ranges at the same rarity.') +
+    '<section class="nx-tool"><div class="st-two">' + pick('a', c.a) + pick('b', c.b) + '</div><div class="st-wrapchips" role="group" aria-label="Rarity">' +
+    Object.entries(S.tierNames).map(([id, n]) => '<button aria-pressed="' + (+id === +c.tier) + '" data-cmp="tier" data-v="' + id + '">' + esc(n) + '</button>').join('') + '</div></section>' +
+    '<div class="st-two pf-cmpgrid">' + card(r.left, 'A') + card(r.right, 'B') + '</div>' + diff +
+    '<p class="nx-fine">Base implicit ranges from the game config, not a character’s rolled stats, awakenings or upgrade bonuses.</p>';
+}
+
+export function initPathfinderViews(render) {
+  document.addEventListener('click', e => {
+    const m = e.target.closest('[data-map]'), c = e.target.closest('[data-cmp]');
+    if (m && st.data) {
+      const v = readQuickView(), a = m.dataset.map, val = m.dataset.v;
+      if (a === 'mode') saveQuickView({ ...v, mode: val, stage: '', level: 0 });
+      if (a === 'stage') saveQuickView({ ...v, stage: val, level: 0 });
+      if (a === 'step') saveQuickView({ ...v, level: +val });
+      return render();
+    }
+    if (c) { try { localStorage.setItem(CMP_KEY, JSON.stringify({ ...cmpRead(), tier: +c.dataset.v })); } catch { /* ok */ } render(); }
+  });
+  document.addEventListener('change', e => {
+    const k = e.target.dataset?.mapIn, ck = e.target.dataset?.cmpIn;
+    if (k === 'slot') { saveQuickView({ ...readQuickView(), slot: e.target.value }); render(); }
+    if (ck) { try { localStorage.setItem(CMP_KEY, JSON.stringify({ ...cmpRead(), [ck]: e.target.value })); } catch { /* ok */ } render(); }
+  });
 }
