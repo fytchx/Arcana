@@ -343,3 +343,23 @@ button { cursor: pointer; }
 .st-namefield small { font-weight: 400; }
 .st-saverow { width: 100%; text-align: left; }
 .nx-signin { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---------- Codex ---------- */
+.nx-art { display: block; flex: none; background-repeat: no-repeat; font-style: normal; }
+.nx-art.round { border-radius: 50%; }
+.nx-swatchdot { display: block; flex: none; border-radius: 50%; border: 2px solid rgba(255,255,255,.3); font-style: normal; }
+.nx-thumb { width: 44px; height: 44px; flex: none; border-radius: 10px; background: color-mix(in srgb, var(--card) 50%, var(--bg)); display: grid; place-items: center; overflow: hidden; }
+.nx-crow { min-height: 60px; }
+.nx-codexhead { flex-direction: row; align-items: center; gap: 14px; }
+.nx-codexhead > span:last-child { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.nx-bigart { width: 80px; height: 80px; flex: none; border-radius: 16px; background: var(--card); border: 1px solid var(--line); display: grid; place-items: center; overflow: hidden; }
+.nx-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.nx-chips span { padding: 6px 12px; border-radius: 999px; color: #fff; font-size: 13px; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,.6); }
+.nx-tablewrap { overflow-x: auto; border-radius: var(--r); border: 1px solid var(--line); }
+.nx-table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+.nx-table th, .nx-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.nx-table thead th { font-size: 12px; font-weight: 700; color: var(--muted); background: var(--card); white-space: nowrap; }
+.nx-table tbody th { font-weight: 600; white-space: nowrap; }
+.nx-table td { white-space: nowrap; }
+.nx-table td:only-of-type, .nx-table td:last-child:nth-child(2) { white-space: normal; min-width: 180px; }
+.nx-table tbody tr:last-child > * { border-bottom: 0; }

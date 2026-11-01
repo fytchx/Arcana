@@ -29,22 +29,42 @@ test('next: routes parse, round-trip, and unknown sections fall back to home', (
   assert.equal(parseHash('#/studio/runes').id, 'runes');
 });
 
-test('next: codex keeps only verified game entries and ranks exact titles first', () => {
+test('next: codex search ranks exact titles first and categories follow the data order', () => {
   const entries = codexEntries({ entries: [
-    { id: 'game:item:wardplate', kind: 'item', title: 'Wardplate', facts: [['Slot', 'Chest'], 'bad'] },
-    { id: 'game:item:ward-ring', kind: 'item', title: 'Ward Ring' },
-    { id: 'game:skill:ward', kind: 'skill', title: 'Ward' },
-    { id: 'arcana-tool:x', kind: 'tool', title: 'Ward tool' },
-    { id: 'game:item:nameless', kind: 'item' }
+    { id: 'item:wardplate', kind: 'item', title: 'Wardplate', facts: [] },
+    { id: 'item:ward-ring', kind: 'item', title: 'Ward Ring', facts: [] },
+    { id: 'skill:1', kind: 'skill', title: 'Ward', facts: [] },
+    { id: 'x', kind: 'item' }
   ] });
   assert.equal(entries.length, 3);
-  assert.deepEqual(entries[0].facts, [['Slot', 'Chest']]);
   const hits = searchIndex(entries, 'ward').map(e => e.title);
   assert.equal(hits[0], 'Ward');
   assert.deepEqual([...hits].sort(), ['Ward', 'Ward Ring', 'Wardplate']);
   assert.deepEqual(searchIndex(entries, 'ring ward').map(e => e.title), ['Ward Ring']);
   assert.deepEqual(searchIndex(entries, '   '), []);
-  assert.deepEqual(codexCategories(entries).map(c => [c.kind, c.count]), [['item', 2], ['skill', 1]]);
+  assert.deepEqual(codexCategories(entries, ['skill', 'item']).map(c => [c.kind, c.count]), [['skill', 1], ['item', 2]]);
+});
+
+test('next: codex data is complete, linked and matches verified numbers', async () => {
+  const { default: C } = await import('../next/codex-data.js');
+  const { kindName, kindSingular } = await import('../next/core.js');
+  const ids = new Set(C.entries.map(e => e.id));
+  assert.equal(ids.size, C.entries.length, 'ids are unique');
+  for (const e of C.entries) {
+    assert.ok(e.title && C.kinds.includes(e.kind), e.id);
+    for (const r of e.related || []) assert.ok(ids.has(r), e.id + ' -> ' + r);
+    for (const l of e.links) assert.ok(/^#\/(studio(\/(gear|pets|runes|class|passive|stance))?|codex)$/.test(l.href) || (l.ext && /^\/#\/[a-z/-]+$/.test(l.href)), e.id + ' link ' + l.href);
+    for (const [k, v] of e.facts) assert.equal(typeof v, 'string', e.id + ' fact ' + k);
+  }
+  const count = k => C.entries.filter(e => e.kind === k).length;
+  assert.equal(count('item'), 40); assert.equal(count('skill'), 90); assert.equal(count('affix'), 26);
+  assert.equal(count('drop-bonus'), 21); assert.equal(count('rune-word'), 24); assert.equal(count('rune'), 7);
+  const ward = C.entries.find(e => e.id === 'item:wardplate');
+  assert.deepEqual(ward.facts.find(f => f[0].startsWith('Defense')), ['Defense (Infernal)', '1006–1749']);
+  assert.ok(ward.related.includes('affix:of-the-bulwark'));
+  assert.ok(!ward.related.includes('affix:blazing'));
+  assert.equal(C.entries.find(e => e.id === 'pet:retaliation').facts.find(f => f[0] === 'Legendary at C10')[1], '+84%');
+  assert.equal(kindName('rune-word'), 'Rune words'); assert.equal(kindSingular('affix'), 'Affix');
 });
 
 test('next: news sorts featured first, then newest', () => {

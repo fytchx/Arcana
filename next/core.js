@@ -81,18 +81,24 @@ export function searchIndex(entries, query, limit = 24) {
   return scored.slice(0, limit).map(x => x[2]);
 }
 
-// Game index entries -> Codex entries. Keeps only verified game data.
-export const codexEntries = payload => (Array.isArray(payload?.entries) ? payload.entries : [])
-  .filter(e => typeof e?.id === 'string' && e.id.startsWith('game:') && e.title)
-  .map(e => ({ id: e.id, kind: e.kind || '', title: e.title, subtitle: e.subtitle || '', description: e.description || '', keywords: e.keywords || '', facts: Array.isArray(e.facts) ? e.facts.filter(f => Array.isArray(f) && f.length >= 2) : [] }));
+// Codex entries come from next/codex-data.js (generated from the game config).
+export const codexEntries = data => (Array.isArray(data?.entries) ? data.entries : []).filter(e => e && typeof e.id === 'string' && e.title);
 
-// Category counts for the Codex browse grid, largest first.
-export function codexCategories(entries) {
+const KIND = {
+  item: ['Items', 'Item'], skill: ['Skills', 'Skill'], monster: ['Monsters', 'Monster'], material: ['Materials', 'Material'], biome: ['Biomes', 'Biome'],
+  affix: ['Affixes', 'Affix'], 'drop-bonus': ['Drop bonuses', 'Drop bonus'], 'pet-bonus': ['Pet bonuses', 'Pet bonus'], rune: ['Runes', 'Rune'],
+  'rune-word': ['Rune words', 'Rune word'], gem: ['Gems', 'Gem'], talisman: ['Talismans', 'Talisman'], stance: ['Stances', 'Stance'], mechanic: ['Mechanics', 'Mechanic']
+};
+export const kindName = kind => KIND[kind]?.[0] || (kind ? kind[0].toUpperCase() + kind.slice(1) : 'Other');
+export const kindSingular = kind => KIND[kind]?.[1] || kindName(kind);
+
+// Category counts for the Codex browse grid, in the order the data lists them.
+export function codexCategories(entries, order = []) {
   const counts = new Map();
   for (const e of entries) counts.set(e.kind, (counts.get(e.kind) || 0) + 1);
-  return [...counts].filter(([k]) => k).sort((a, b) => b[1] - a[1]).map(([kind, count]) => ({ kind, count, name: kindName(kind) }));
+  const rank = k => { const i = order.indexOf(k); return i < 0 ? 999 : i; };
+  return [...counts].filter(([k]) => k).sort((a, b) => rank(a[0]) - rank(b[0]) || b[1] - a[1]).map(([kind, count]) => ({ kind, count, name: kindName(kind) }));
 }
-export const kindName = kind => ({ item: 'Items', skill: 'Skills', material: 'Materials', monster: 'Monsters', biome: 'Biomes', pet: 'Pets', currency: 'Currencies', rune: 'Runes', affix: 'Affixes' })[kind] || (kind ? kind[0].toUpperCase() + kind.slice(1) + 's' : 'Other');
 
 // News: newest first; featured pinned to the top.
 export function sortArticles(articles) {

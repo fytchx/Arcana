@@ -1,7 +1,7 @@
 // Arcana Next: the new app shell. Runs beside the classic site and uses the same APIs.
 import {
   SURFACES, ACCENTS, SURFACE_KEY, ACCENT_KEY, surfaceById, accentById, TABS, TOOLS,
-  parseHash, hashFor, activeTab, searchIndex, codexEntries, codexCategories, kindName,
+  parseHash, hashFor, activeTab, searchIndex, codexEntries, codexCategories, kindName, kindSingular,
   sortArticles, shortDate, articleHtml, liveEvents, esc, signInButtons, RETURN_KEY
 } from './core.js';
 import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSection } from './studio.js';
@@ -72,7 +72,14 @@ function load(slot, url, pick) {
   getJSON(url).then(j => { d.value = pick(j); d.state = 'ready'; }).catch(() => { d.state = 'error'; }).finally(render);
 }
 const loadMe = () => load('me', '/api/account/me', j => j);
-const loadCodex = () => load('codex', '/api/search/catalog', codexEntries);
+// The Codex ships with the app (generated from the game config), so it works even when other servers are down.
+function loadCodex() {
+  const d = data.codex;
+  if (d.state !== 'idle') return;
+  d.state = 'loading';
+  import('./codex-data.js').then(m => { d.value = codexEntries(m.default); d.order = m.default.kinds; d.version = m.default.version; d.byId = new Map(d.value.map(e => [e.id, e])); d.state = 'ready'; })
+    .catch(() => { d.state = 'error'; }).finally(render);
+}
 const loadNews = () => load('news', '/api/journal', j => sortArticles(j.articles));
 const loadBuilds = () => load('builds', '/api/community/posts?kind=build', j => Array.isArray(j.posts) ? j.posts : []);
 const loadNotice = () => load('notice', '/api/site/theme', j => j.notice?.enabled && j.notice.text ? j.notice.text : null);
@@ -123,6 +130,16 @@ function toolsView() {
 }
 
 let codexQuery = '', codexKind = '';
+// Codex art: one sprite from the official sheets, or a color swatch for runes, gems and talismans.
+function art(e, size) {
+  if (e.art) return '<i class="nx-art' + (e.art.round ? ' round' : '') + '" aria-hidden="true" style="width:' + size + 'px;height:' + size + 'px;background-image:url(' + esc(e.art.url) + ');background-size:' + esc(e.art.size) + ';background-position:' + esc(e.art.pos) + '"></i>';
+  if (e.swatch) return '<i class="nx-swatchdot" aria-hidden="true" style="width:' + Math.round(size * .6) + 'px;height:' + Math.round(size * .6) + 'px;background:' + esc(e.swatch) + '"></i>';
+  return '';
+}
+// Row subtitle with the kind in front, without saying it twice ("Biome · Biome · Tier 1").
+const withKind = e => { const k = kindSingular(e.kind); return e.subtitle && e.subtitle.toLowerCase().startsWith(k.toLowerCase()) ? e.subtitle : k + (e.subtitle ? ' · ' + e.subtitle : ''); };
+const codexRow = (e, sub) => '<a class="nx-row nx-crow" href="' + hashFor('codex', e.id) + '">' + (e.art || e.swatch ? '<span class="nx-thumb">' + art(e, 40) + '</span>' : '') +
+  '<span class="nx-row-text"><strong>' + esc(e.title) + '</strong><small>' + esc(sub ?? e.subtitle) + '</small></span><span class="nx-row-end">' + icon('next', 18) + '</span></a>';
 function codexView(id) {
   loadCodex();
   const c = data.codex;
@@ -130,27 +147,32 @@ function codexView(id) {
     if (c.state !== 'ready') return c.state === 'error' ? failed('The Codex', 'codex') : loading('the Codex');
     const e = c.value.find(x => x.id === id);
     if (!e) return empty('Not in the Codex', 'This page may have been renamed after a patch.', '<a class="nx-btn" href="#/codex">Back to the Codex</a>');
-    return '<a class="nx-back" href="#/codex">' + icon('back', 18) + 'Codex</a><header class="nx-page-head"><span class="nx-kicker">' + esc(kindName(e.kind).toUpperCase()) + '</span><h1>' + esc(e.title) + '</h1>' + (e.subtitle ? '<p>' + esc(e.subtitle) + '</p>' : '') + '</header>' +
-      (e.description && e.description !== e.subtitle ? '<p class="nx-read">' + esc(e.description) + '</p>' : '') +
-      (e.facts.length ? '<dl class="nx-facts">' + e.facts.map(([k, v]) => '<div><dt>' + esc(k) + '</dt><dd>' + esc(Array.isArray(v) ? v.join(', ') : v) + '</dd></div>').join('') + '</dl>' : '') +
-      '<section>' + label('Use it') + '<div class="nx-list">' + row('#/studio', 'Put it in a build', 'Opens Build Studio', 'shield') + (e.kind === 'item' ? row('/#/calculators/pathfinder', 'Upgrade cost in Pathfinder', '', 'path', true) : '') + '</div></section>' +
-      '<p class="nx-fine">From the verified game index.</p>';
+    const byId = c.byId, rel = (e.related || []).map(r => byId.get(r)).filter(Boolean);
+    return '<a class="nx-back" href="#/codex">' + icon('back', 18) + 'Codex</a>' +
+      '<header class="nx-page-head nx-codexhead">' + (e.art || e.swatch ? '<span class="nx-bigart">' + art(e, 72) + '</span>' : '') + '<span><span class="nx-kicker">' + esc(kindSingular(e.kind).toUpperCase()) + '</span><h1>' + esc(e.title) + '</h1>' + (e.subtitle ? '<p>' + esc(e.subtitle) + '</p>' : '') + '</span></header>' +
+      (e.description ? '<p class="nx-read">' + esc(e.description) + '</p>' : '') +
+      (e.chips ? '<div class="nx-chips">' + e.chips.map(x => '<span style="background:' + esc(x.color) + '">' + esc(x.label) + '</span>').join('') + '</div>' : '') +
+      (e.facts.length ? '<dl class="nx-facts">' + e.facts.map(([k, v]) => '<div><dt>' + esc(k) + '</dt><dd>' + esc(v) + '</dd></div>').join('') + '</dl>' : '') +
+      (e.table ? '<div class="nx-tablewrap"><table class="nx-table"><thead><tr>' + e.table.head.map(h => '<th scope="col">' + esc(h) + '</th>').join('') + '</tr></thead><tbody>' + e.table.rows.map(r => '<tr>' + r.map((v, i) => i ? '<td>' + esc(v) + '</td>' : '<th scope="row">' + esc(v) + '</th>').join('') + '</tr>').join('') + '</tbody></table></div>' : '') +
+      (e.note ? '<p class="nx-callout">' + esc(e.note) + '</p>' : '') +
+      (e.links.length ? '<section>' + label('Use it') + '<div class="nx-list">' + e.links.map(l => row(l.href, l.label, '', '', !!l.ext)).join('') + '</div></section>' : '') +
+      (rel.length ? '<section>' + label(e.relatedTitle || 'Related') + '<div class="nx-list">' + rel.map(r => codexRow(r, withKind(r))).join('') + '</div></section>' : '') +
+      '<p class="nx-fine">From the game config' + (c.version ? ' (' + esc(c.version) + ')' : '') + '.</p>';
   }
   const body = c.state === 'error' ? failed('The Codex', 'codex') : c.state !== 'ready' ? loading('the Codex') : codexResults(c.value);
-  return '<label class="nx-search nx-search-input">' + icon('search', 18) + '<input id="nxCodexQ" type="search" autocomplete="off" placeholder="Search items, skills, monsters" aria-label="Search the Codex" value="' + esc(codexQuery) + '"></label><div id="nxCodexBody">' + body + '</div>';
+  return '<label class="nx-search nx-search-input">' + icon('search', 18) + '<input id="nxCodexQ" type="search" autocomplete="off" placeholder="Search items, skills, monsters, runes" aria-label="Search the Codex" value="' + esc(codexQuery) + '"></label><div id="nxCodexBody">' + body + '</div>';
 }
 function codexResults(entries) {
   if (codexKind && !codexQuery.trim()) {
-    const list = entries.filter(e => e.kind === codexKind).sort((a, b) => a.title.localeCompare(b.title));
-    return '<div class="nx-head">' + label(kindName(codexKind)) + '<button class="nx-link" data-act="kind" data-kind="">All categories</button></div><div class="nx-list">' +
-      list.slice(0, 200).map(e => row(hashFor('codex', e.id), e.title, e.subtitle, '')).join('') + '</div>' + (list.length > 200 ? '<p class="nx-fine">Showing 200 of ' + list.length + '. Search to narrow it down.</p>' : '');
+    const list = entries.filter(e => e.kind === codexKind);
+    return '<div class="nx-head">' + label(kindName(codexKind)) + '<button class="nx-link" data-act="kind" data-kind="">All categories</button></div><div class="nx-list">' + list.map(e => codexRow(e)).join('') + '</div>';
   }
   if (codexQuery.trim()) {
-    const hits = searchIndex(entries, codexQuery);
-    if (!hits.length) return empty('Nothing found', 'Try a shorter word, like an item or monster name.');
-    return '<div class="nx-list">' + hits.map(e => row(hashFor('codex', e.id), e.title, kindName(e.kind).replace(/s$/, '') + (e.subtitle ? ' · ' + e.subtitle : ''), '')).join('') + '</div>';
+    const hits = searchIndex(entries, codexQuery, 40);
+    if (!hits.length) return empty('Nothing found', 'Try a shorter word, like an item, skill or monster name.');
+    return '<div class="nx-list">' + hits.map(e => codexRow(e, withKind(e))).join('') + '</div>';
   }
-  return '<section>' + label('Browse') + '<div class="nx-grid2">' + codexCategories(entries).map(k => '<button class="nx-tile nx-tile-left" data-act="kind" data-kind="' + esc(k.kind) + '"><strong>' + esc(k.name) + '</strong><small>' + k.count + ' entries</small></button>').join('') + '</div></section>';
+  return '<section>' + label('Browse') + '<div class="nx-grid2">' + codexCategories(entries, data.codex.order).map(k => '<button class="nx-tile nx-tile-left" data-act="kind" data-kind="' + esc(k.kind) + '"><strong>' + esc(k.name) + '</strong><small>' + k.count + ' entries</small></button>').join('') + '</div></section>';
 }
 
 const posts = {};
