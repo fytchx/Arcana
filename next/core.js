@@ -37,9 +37,9 @@ export const TABS = Object.freeze([
 export const TOOLS = Object.freeze([
   { group: 'Planning', id: 'pathfinder', name: 'Pathfinder', detail: 'Upgrade costs and the materials to farm, biome by biome', href: '/#/calculators/pathfinder', icon: 'path' },
   { group: 'Planning', id: 'studio', name: 'Build Studio', detail: 'Make a build and share it as a link', href: '#/studio', icon: 'shield', native: true },
-  { group: 'Pets', id: 'pet', name: 'Compound level', detail: 'What a pet bonus reaches at each compound level', href: '/#/calculators/pet', icon: 'paw' },
-  { group: 'Pets', id: 'affix', name: 'Affix level cost', detail: 'Shards to level a pet affix from now to your target', href: '/#/calculators/affixes', icon: 'paw' },
-  { group: 'Farming', id: 'ml', name: 'ML farming comparator', detail: 'Which monster gets you Monster Level fastest', href: '/#/calculators/ml-farm', icon: 'chart' },
+  { group: 'Pets', id: 'pet', name: 'Compound level', detail: 'What a pet bonus reaches at each compound level', href: '#/tools/pet', icon: 'paw', native: true },
+  { group: 'Pets', id: 'affix', name: 'Affix level cost', detail: 'Shards to level a pet affix from now to your target', href: '#/tools/affix', icon: 'paw', native: true },
+  { group: 'Farming', id: 'ml', name: 'ML farming comparator', detail: 'Which monster gets you Monster Level fastest', href: '#/tools/ml', icon: 'chart', native: true },
   { group: 'Planning', id: 'skills', name: 'Skill trees', detail: 'Class and passive trees with the real point rules', href: '/#/labs/skills', icon: 'tree' }
 ]);
 

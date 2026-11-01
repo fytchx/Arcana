@@ -6,6 +6,7 @@ import {
 } from './core.js';
 import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSection } from './studio.js';
 import { nextCode } from './studio-core.js';
+import { toolView, initTools, NATIVE_TOOLS } from './tools.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 import { demoBuilds } from '../src/catalog.js';
 
@@ -103,7 +104,7 @@ const row = (href, title, detail, ic, external = false) =>
   '<a class="nx-row" href="' + esc(href) + '">' + (ic ? '<span class="nx-row-icon">' + icon(ic, 22) + '</span>' : '') +
   '<span class="nx-row-text"><strong>' + esc(title) + '</strong>' + (detail ? '<small>' + esc(detail) + '</small>' : '') + '</span>' +
   '<span class="nx-row-end">' + icon(external ? 'out' : 'next', 18) + '</span></a>';
-const classicNote = '<p class="nx-fine">Some tools still open on the classic site while they are rebuilt.</p>';
+const classicNote = '<p class="nx-fine">Tools marked ↗ still open on the classic site while they are rebuilt.</p>';
 
 // ---------- views ----------
 function homeView() {
@@ -124,7 +125,8 @@ const featuredCard = () =>
   '<a class="nx-card nx-build" href="' + esc(FEATURED) + '"><span class="nx-tags"><span class="nx-tag nx-tag-warrior">Warrior</span><span class="nx-tag">Bulwark</span><span class="nx-tag nx-tag-accent">Featured</span></span>' +
   '<strong>Zane\'s Retaliation Warrior</strong><small>Retaliation, Defense, Block Chance and Strength, with a four-pet setup.</small><span class="nx-by">by <b>Zane</b> · Level 196</span></a>';
 
-function toolsView() {
+function toolsView(id) {
+  if (NATIVE_TOOLS.includes(id)) return toolView(id);
   const groups = [...new Set(TOOLS.map(t => t.group))];
   return groups.map(g => '<section>' + label(g) + '<div class="nx-list">' + TOOLS.filter(t => t.group === g).map(t => row(t.href, t.name, t.detail, t.icon, !t.native)).join('') + '</div></section>').join('') + classicNote;
 }
@@ -255,7 +257,7 @@ function render() {
   const { section, id, query } = parseHash(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView() : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   const title = section === 'home' ? '<a class="nx-word" href="#/home">ARCANA</a>' : '<span class="nx-title">' + esc(TITLES[section]) + '</span>';
   $('nxTopL').innerHTML = title;
@@ -296,5 +298,6 @@ document.addEventListener('input', e => {
 });
 window.addEventListener('hashchange', render);
 initStudio(render);
+initTools(render);
 applyTheme();
 render();

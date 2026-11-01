@@ -363,3 +363,31 @@ button { cursor: pointer; }
 .nx-table td { white-space: nowrap; }
 .nx-table td:only-of-type, .nx-table td:last-child:nth-child(2) { white-space: normal; min-width: 180px; }
 .nx-table tbody tr:last-child > * { border-bottom: 0; }
+
+/* ---------- tools ---------- */
+.nx-tool { display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: var(--r-lg); background: var(--card); border: 1px solid var(--line); }
+.nx-field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.nx-field small { font-weight: 400; }
+.nx-field select, .nx-field input { height: 48px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--text); padding: 0 12px; font: inherit; font-size: 16px; }
+.nx-steps-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.nx-steps-row button { min-height: 40px; min-width: 52px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-size: 14px; font-weight: 700; }
+.nx-result { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 14px; background: var(--soft); border: 1px solid var(--accent); }
+.nx-result > small { font-size: 12px; font-weight: 700; letter-spacing: .06em; color: var(--muted); }
+.nx-result b.big { font-size: 26px; line-height: 1.15; }
+.nx-result b.big small { font-size: 14px; font-weight: 600; color: var(--muted); }
+.nx-result-row { display: flex; align-items: flex-end; gap: 14px; }
+.nx-result-row span { display: flex; flex-direction: column; gap: 2px; }
+.nx-result-row small { font-size: 12px; color: var(--muted); }
+.nx-result-row b { font-size: 18px; }
+.nx-arrow { font-size: 20px; color: var(--muted); padding-bottom: 4px; }
+.nx-result-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--muted); }
+.nx-farmrow { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; color: var(--text); }
+.nx-farmrow > span:first-child { display: flex; flex-direction: column; gap: 2px; }
+.nx-farmrow > span:first-child b { font-size: 15px; }
+.nx-farmrow > span:first-child small { color: var(--muted); font-size: 12px; }
+.nx-farmin { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.nx-farmin input { width: 120px; text-align: right; }
+.nx-farmin small { color: var(--muted); }
+.nx-help { padding: 12px 14px; border-radius: var(--r); background: var(--card); border: 1px solid var(--line); font-size: 14px; }
+.nx-help summary { cursor: pointer; font-weight: 600; min-height: 24px; }
+.nx-help p { margin: 8px 0 0; color: #C4C9D6; line-height: 1.5; }

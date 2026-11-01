@@ -167,3 +167,28 @@ test('studio: account saves and community posts fit the classic server rules unc
   assert.equal(restoreDraft(D, { ...b, saved: { id: '0f8fad5b-d9cb-469f-a165-70867728950e', at: 'x' } }).saved.id, '0f8fad5b-d9cb-469f-a165-70867728950e');
   assert.equal(restoreDraft(D, { ...b, saved: { id: 'nope', at: 'x' } }).saved, undefined);
 });
+
+test('studio: pet math matches the classic Compound and Affix tools exactly', async () => {
+  const classic = await import('../src/pet-simple-math.js');
+  const { PET_AFFIX_SNAPSHOT } = await import('../src/verified-pet-affixes.js');
+  let checked = 0;
+  for (const rarity of classic.PET_HATCH_RARITIES) {
+    const max = { uncommon: 10, rare: 20, epic: 30, legendary: 300 }[rarity];
+    for (const { type } of classic.petBonusEntries(rarity)) {
+      for (let level = 0; level <= max; level++) {
+        const want = classic.compoundBonus({ rarity, bonus: type, level });
+        const got = compound(D, rarity, type, level);
+        assert.equal(got?.v, want?.amount, rarity + ' ' + type + ' C' + level);
+        checked++;
+      }
+    }
+  }
+  for (const a of PET_AFFIX_SNAPSHOT.affixes) {
+    const top = Math.min(a.max_level || 200, 200);
+    for (const [cur, tgt] of [[1, 1], [1, 10], [5, 40], [1, top]]) {
+      if (!D.pcalc.pa.some(x => x[0] === a.name)) continue;
+      assert.equal(affixCost(D, a.name, cur, Math.min(tgt, top)), classic.affixCost({ affix: a.name, currentLevel: cur, targetLevel: Math.min(tgt, top) }).shards, a.name + ' ' + cur + '->' + tgt);
+    }
+  }
+  assert.ok(checked > 3000);
+});

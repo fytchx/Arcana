@@ -130,7 +130,7 @@ function petSheet(i) {
     '<h3 class="st-h3">Affix level cost</h3><div class="st-wrapchips">' + P.pa.map(x => '<button aria-pressed="' + (x[0] === c.affix) + '" data-st="affix" data-i="' + i + '" data-a="' + x[0] + '">' + esc(x[1]) + '</button>').join('') + '</div>' +
     '<div class="st-two">' + stepper('Now', cur, 'cur-', 'cur+', 'data-i="' + i + '"') + stepper('Target', tgt, 'tgt-', 'tgt+', 'data-i="' + i + '"') + '</div>' +
     '<div class="st-result"><span>' + esc(a[1] + ' ' + valAt(cur) + ' → ' + valAt(tgt)) + '</span><b>' + affixCost(D, c.affix, cur, tgt).toLocaleString() + ' shards</b></div>' +
-    '<p class="nx-fine">' + (nextCost ? 'Next level costs ' + nextCost.toLocaleString() + ' shards. ' : 'Max level. ') + 'Adding or rerolling an affix costs ' + P.addCost + ' shards. The full tools are under Tools.</p>');
+    '<p class="nx-fine">' + (nextCost ? 'Next level costs ' + nextCost.toLocaleString() + ' shards. ' : 'Max level. ') + 'Adding or rerolling an affix costs ' + P.addCost + ' shards.</p><div class="st-two"><a class="nx-btn" href="#/tools/pet">Full compound tool</a><a class="nx-btn" href="#/tools/affix">Full affix tool</a></div>');
 }
 
 // ---------- runes ----------
