@@ -5,9 +5,9 @@ import { allStages, quoteRange, normalizeRange, readRange, saveRange, normalizeI
 import { quoteFailureScenarios } from '../src/pathfinder-failures.js';
 import { timelineStages, money } from '../src/pathfinder-timeline.js';
 import { sourceMaterialGroups } from '../src/pathfinder-material-groups.js';
-import { pathfinderZone } from '../src/pathfinder-zones.js';
+import { pathfinderZone, pathfinderZoneIcon } from '../src/pathfinder-zones.js';
 import { initialQuickRange, shortGold } from '../src/quick-tools-view.js';
-import { esc } from './core.js';
+import { esc, ic } from './core.js';
 
 let rerender = () => {};
 const st = { data: null, state: 'idle', catalog: [], range: readRange(), view: 'slot', codex: null };
@@ -48,7 +48,7 @@ function selectLevel(attr, stage, value, aria) {
 
 export function pathfinderView() {
   load();
-  const head = '<a class="nx-back" href="#/tools">‹ Tools</a>' + pfSwitch('up') + '<header class="nx-page-head"><span class="nx-kicker">PATHFINDER</span><h1>Upgrade costs</h1><p>Pick where your gear is and where you want it. See every material to farm, grouped by biome.</p></header>';
+  const head = '<a class="nx-back" href="#/tools">‹ Tools</a>' + pfSwitch('up');
   const more = '<section>' + label('More in Pathfinder') + '<div class="nx-list">' + MORE.map(([h, t, d]) => '<a class="nx-row" href="' + h + '"><span class="nx-row-text"><strong>' + esc(t) + '</strong><small>' + esc(d) + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div></section>';
   if (st.state === 'error') return head + '<div class="nx-empty"><strong>Upgrade recipes didn’t load</strong><p>Costs are hidden rather than guessed. Try again in a moment.</p><button class="nx-btn" data-pf="retry">Try again</button></div>' + more;
   if (st.state !== 'ready') return head + '<div class="nx-loading" role="status">Loading the game’s upgrade recipes…</div>' + more;
@@ -79,30 +79,23 @@ export function pathfinderView() {
   const heads = '<div class="pf-cols" aria-hidden="true"><span></span>' + (sc.available ? '<b>Min</b><b>Avg</b><b>Max</b>' : '<b>Base</b>') + '</div>';
   const matArt = slug => { const e = st.codex?.get('material:' + slug); return e?.art ? '<i class="pf-art" style="background-image:url(' + esc(e.art.url) + ');background-size:' + esc(e.art.size) + ';background-position:' + esc(e.art.pos) + '"></i>' : '<i class="pf-art pf-art-none"></i>'; };
   const matRow = m => '<a class="pf-row" href="#/codex/material:' + esc(encodeURIComponent(m.slug)) + '">' + matArt(m.slug) + '<span class="pf-name"><b>' + esc(m.name) + '</b>' + (m.sourceMonster ? '<small>' + esc(m.sourceMonster) + '</small>' : '') + '</span>' + cells(m.slug) + '</a>';
-  const biomeHead = g => { const z = pathfinderZone(g.name); return '<div class="pf-biome"' + (z ? ' style="--zone:' + esc(z.color) + '"' : '') + '>' + (z ? '<i class="pf-biome-art" style="background-position:' + z.atlasX + '% ' + z.atlasY + '%"></i>' : '') + '<span><b>' + esc(g.name) + '</b><small>' + (z ? 'Tier ' + z.tier : g.kind === 'special' ? 'Forge and special' : 'Source not verified') + '</small></span></div>'; };
-  const list = groups.map(g => '<div class="pf-group"' + (pathfinderZone(g.name) ? ' style="--zone:' + esc(pathfinderZone(g.name).color) + '"' : '') + '>' + biomeHead(g) + g.materials.map(matRow).join('') + '</div>').join('');
-  const zoneCount = groups.filter(g => g.kind === 'biome').length;
-  const summary = '<div class="nx-result pf-summary" role="status"><small>' + esc(range.fromStage + ' +' + range.fromLevel + ' → ' + range.toStage + ' +' + range.toLevel) + (count > 1 ? ' · ' + count + ' SLOTS' : '') + '</small>' +
-    '<div class="pf-sumgrid">' + modes.map(m => '<span class="pf-sum-' + m + '"><small>' + ({ min: 'Minimum', expected: 'Average', pity: 'Maximum', base: 'Base cost' })[m] + '</small><b>' + shortGold(gold[m]) + '</b><small>gold' + (perSlot && count > 1 ? ' per slot' : '') + '</small></span>').join('') + '</div>' +
-    '<span>' + plural(all.length, 'material') + ' from ' + plural(zoneCount, 'biome') + '</span></div>';
-  const legend = sc.available ? '<p class="nx-fine pf-legend"><b>Min</b> no failed attempts. <b>Avg</b> what you will most likely spend. <b>Max</b> every attempt fails until pity.</p>' : '';
+  // Monster materials first, one collapsible biome at a time, lowest biome first. Gold and forge materials after.
+  const zoneGroups = groups.filter(g => g.kind !== 'special'), extra = groups.filter(g => g.kind === 'special').flatMap(g => g.materials);
+  const emblem = z => z ? '<i class="pf-emb" style="background-position:' + z.atlasX + '% ' + z.atlasY + '%"><span>' + pathfinderZoneIcon(z.name) + '</span></i>' : '<i class="pf-emb"></i>';
+  const biome = (g, i) => { const z = pathfinderZone(g.name);
+    return '<details class="pf-acc"' + (i === 0 ? ' open' : '') + (z ? ' style="--zone:' + esc(z.color) + '"' : '') + '><summary>' + emblem(z) + '<span><b>' + esc(g.name) + '</b><small>' + (z ? 'Tier ' + z.tier + ' · ' : '') + plural(g.materials.length, 'material') + '</small></span><i class="pf-chev" aria-hidden="true"></i></summary>' +
+      '<div class="pf-acc-body">' + heads + g.materials.map(matRow).join('') + '</div></details>'; };
+  const zoneCount = zoneGroups.length;
+  const summary = '<div class="pf-summary" role="status"><span class="pf-route">' + esc(range.fromStage + ' +' + range.fromLevel + ' → ' + range.toStage + ' +' + range.toLevel) + '</span><span>' + plural(all.length - extra.length, 'monster material') + ' · ' + plural(zoneCount, 'biome') + (count > 1 ? ' · ' + count + ' slots' : '') + '</span>' +
+    '<button class="pf-savebtn" data-pf="saveopen">Save checklist</button></div>';
+  const legend = sc.available ? '<p class="nx-fine pf-legend"><b class="pf-n-min">Min</b> no failed attempts · <b>Avg</b> what you will most likely spend · <b class="pf-n-pity">Max</b> every attempt fails until pity</p>' : '';
   const scope = count > 1 ? '<div class="nx-seg" role="tablist" aria-label="Amounts for">' + [['slot', 'Per slot'], ['all', 'All ' + count + ' slots']].map(([k, l]) => '<button role="tab" aria-selected="' + ((k === 'all') === !perSlot) + '" data-pf="view" data-v="' + k + '">' + l + '</button>').join('') + '</div>' : '';
-  const mats = '<section>' + label('Materials in farming order') + scope + legend + '<div class="pf-table">' + heads +
-    '<div class="pf-row pf-gold"><i class="pf-art pf-art-gold"></i><span class="pf-name"><b>Gold</b></span>' + cells(null, shortGold) + '</div>' + list + '</div></section>';
+  const goldRow = '<div class="pf-row pf-gold"><i class="pf-art pf-art-gold">' + ic('currency-gold', 22) + '</i><span class="pf-name"><b>Gold</b></span>' + cells(null, shortGold) + '</div>';
+  const mats = '<section class="pf-mats-sec">' + scope + legend + (zoneGroups.length ? zoneGroups.map(biome).join('') : '<p class="nx-fine">No monster drops on this route.</p>') +
+    '<div class="pf-table pf-other"><div class="pf-otherhead"><b>Gold and other materials</b></div>' + heads + goldRow + extra.map(matRow).join('') + '</div></section>';
+  const pop = st.saveOpen ? '<div class="st-backdrop" data-pf="saveclose"></div><div class="st-sheet" role="dialog" aria-modal="true" aria-label="Save a farming checklist"><div class="st-sheethead"><span><b>Save a farming checklist</b><small>' + esc(range.fromStage + ' +' + range.fromLevel + ' → ' + range.toStage + ' +' + range.toLevel) + '</small></span><button class="nx-iconbtn" data-pf="saveclose" aria-label="Close">✕</button></div><div class="st-sheetbody"><!--pf-save--></div></div>' : '';
 
-  let odds = '';
-  if (sc.available && sc.perStep.length) {
-    const first = sc.perStep.find(s => s.failChance > 0) || sc.perStep[0], cap = first?.pityCap || 1;
-    const done = Math.max(0, Math.min(cap - 1, Math.trunc(Number(range.pityCount) || 0)));
-    odds = '<details class="nx-help"><summary>Success chances and pity</summary>' +
-      '<label class="nx-field pf-pity">Failed attempts already counted on your first upgrade<span><input type="number" min="0" max="' + Math.max(0, cap - 1) + '" step="1" inputmode="numeric" value="' + done + '" data-pf-in="pityCount" aria-label="Pity attempts already counted"> / ' + cap + '</span></label>' +
-      '<p>Attempts: minimum ' + attemptsFmt(sc.min.attempts) + ' · average ' + attemptsFmt(sc.expected.attempts) + ' · pity max ' + attemptsFmt(sc.pity.attempts) + '</p>' +
-      '<div class="nx-tablewrap"><table class="nx-table"><thead><tr><th scope="col">Step</th><th scope="col">Success</th><th scope="col">Average tries</th><th scope="col">Pity</th></tr></thead><tbody>' +
-      sc.perStep.map(s => '<tr><th scope="row">' + esc(s.stage + (s.level ? ' +' + s.level : ' transition')) + '</th><td>' + pct(1 - s.failChance) + '</td><td>' + (s.failChance === 0 ? '1' : attemptsFmt(s.expectedAttempts)) + '</td><td>' + (s.failChance === 0 ? '—' : s.pityCap + (s.pityCount ? ' (' + s.pityCount + ' counted)' : '')) + '</td></tr>').join('') +
-      '</tbody></table></div><p>Minimum assumes no failures. Average accounts for listed success odds, a 30% failure refund and the modeled pity limit. Pity maximum assumes each upgrade reaches its modeled limit. Pity carry-over between different upgrades is not independently verified.</p></details>';
-  } else if (!sc.available) odds = '<p class="nx-fine">Failure and pity scenarios unavailable: ' + esc(String(sc.reason || 'verified failure odds missing').replace(/\.+$/, '')) + '. Base recipe costs are shown.</p>';
-
-  return head + form + summary + '<!--pf-save-->' + mats + odds + more;
+  return head + form + summary + mats + more + pop;
 }
 
 function update(patch) { st.range = saveRange({ ...initialQuickRange(st.data, st.range), ...patch }); rerender(); }
@@ -117,6 +110,8 @@ export function initPathfinder(render) {
     if (a === 'qty') return update({ quantity: normalizeItemQuantity(normalizeItemQuantity(initialQuickRange(st.data, st.range).quantity) + +b.dataset.v) });
     if (a === 'mode') return update({ costMode: b.dataset.v });
     if (a === 'view') { st.view = b.dataset.v; return rerender(); }
+    if (a === 'saveopen') { st.saveOpen = true; return rerender(); }
+    if (a === 'saveclose') { st.saveOpen = false; return rerender(); }
   });
   document.addEventListener('change', e => {
     const k = e.target.dataset?.pfIn;

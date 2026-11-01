@@ -33,8 +33,13 @@ export const TABS = Object.freeze([
   { id: 'directory', label: 'Directory' }
 ]);
 
-// The hand-drawn Arcana vector set (assets/icons/idlearc-refined). Gem highlights follow the accent.
-export const art = path => '/assets/icons/idlearc-refined/' + path + '.svg';
+// Arcana Minimal icons (assets/icons/arcana-minimal): inline SVG, so they follow the theme colors.
+import { arcanaIcon } from '../src/arcana-icons.js';
+const ICON_MAP = { 'token-pet-egg': 'currency-pet-egg', 'token-pet-shard': 'currency-pet-shard', 'token-gem': 'currency-gem', 'token-gem-dust': 'currency-material', 'token-arcstone': 'currency-arcstone', 'token-ruby': 'currency-ruby', 'token-runic-core': 'currency-rune-shard', 'token-upgrade-catalyst': 'currency-awakening', 'token-guildstone': 'currency-guildstone', 'token-gold': 'currency-gold',
+  'feature-guild-raid': 'feature-guild-finder', 'feature-builds': 'feature-build-studio', 'feature-tools': 'feature-calculator', 'feature-feedback': 'help', 'feature-class-skills': 'feature-skill-tree', 'stat-attack-damage': 'stat-attack', 'stat-flat-damage': 'stat-flat-attack' };
+export const iconId = path => { const id = String(path).split('/').pop(); return ICON_MAP[id] || id; };
+export const ic = (path, size = 24) => arcanaIcon(iconId(path), size);
+export const art = path => path;
 
 // Tools that still live on the classic site. They open there until each is rebuilt.
 export const TOOLS = Object.freeze([

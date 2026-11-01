@@ -3,7 +3,7 @@ import {
   SURFACES, ACCENTS, SURFACE_KEY, ACCENT_KEY, surfaceById, accentById, TABS, TOOLS,
   parseHash, hashFor, activeTab, searchIndex, codexEntries, codexCategories, kindName, kindSingular,
   sortArticles, shortDate, articleHtml, liveEvents, esc, signInButtons, RETURN_KEY, RECENT_TOOLS_KEY, rememberTool, recentTiles,
-  art as artPath, CLASS_NAMES, BUILD_TYPES, buildMeta,
+  ic, CLASS_NAMES, BUILD_TYPES, buildMeta,
 } from './core.js';
 import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSection } from './studio.js';
 import { nextCode } from './studio-core.js';
@@ -120,7 +120,7 @@ const row = (href, title, detail, ic, external = false) =>
   '<span class="nx-row-text"><strong>' + esc(title) + '</strong>' + (detail ? '<small>' + esc(detail) + '</small>' : '') + '</span>' +
   '<span class="nx-row-end">' + icon(external ? 'out' : 'next', 18) + '</span></a>';
 const classicNote = '';
-const artImg = (path, size = 40) => '<img class="nx-artimg" src="' + artPath(path) + '" width="' + size + '" height="' + size + '" alt="" loading="lazy">';
+const artImg = (path, size = 40) => '<span class="nx-ic">' + ic(path, Math.round(size * .6)) + '</span>';
 const artRow = (href, title, detail, path) => '<a class="nx-row" href="' + esc(href) + '"><span class="nx-row-art">' + artImg(path, 36) + '</span>' +
   '<span class="nx-row-text"><strong>' + esc(title) + '</strong>' + (detail ? '<small>' + esc(detail) + '</small>' : '') + '</span><span class="nx-row-end">' + icon('next', 18) + '</span></a>';
 const KIND_ART = { item: 'equipment/equipment-weapon', skill: 'features/feature-class-skills', monster: 'stats/stat-boss-damage', material: 'tokens/token-gem-dust', biome: 'tokens/token-arcstone', affix: 'stats/stat-crit-damage', 'drop-bonus': 'stats/stat-drop-bonus', 'pet-bonus': 'tokens/token-pet-egg', rune: 'tokens/token-runic-core', 'rune-word': 'features/feature-rune-forge', gem: 'tokens/token-gem', talisman: 'equipment/equipment-charm', stance: 'stats/stat-retaliation', mechanic: 'features/feature-codex' };
@@ -158,8 +158,8 @@ function loadFeatured() {
 function buildCard(href, { title, summary = '', note = '', by = '', date = '', meta = null, featured = false }) {
   const t = meta?.stance ? BUILD_TYPES[meta.stance] : null, cls = meta?.cls ? CLASS_NAMES[meta.cls] : '';
   return '<a class="nx-bcard" href="' + esc(href) + '"' + (t ? ' style="--bt:' + t.color + '"' : '') + '>' +
-    '<span class="nx-bcard-emblem">' + (cls ? '<img src="' + artPath('classes/class-' + cls.toLowerCase()) + '" width="56" height="56" alt="">' : '<img src="' + artPath('features/feature-builds') + '" width="48" height="48" alt="">') + '</span>' +
-    '<span class="nx-bcard-body"><span class="nx-tags">' + (t ? '<span class="nx-btype"><img src="' + artPath(t.art) + '" width="18" height="18" alt="">' + esc(t.name) + '</span>' : '') +
+    '<span class="nx-bcard-emblem">' + ic(cls ? 'class-' + cls.toLowerCase() : 'feature-build-studio', 30) + '</span>' +
+    '<span class="nx-bcard-body"><span class="nx-tags">' + (t ? '<span class="nx-btype">' + ic(t.art, 14) + esc(t.name) + '</span>' : '') +
     (cls ? '<span class="nx-tag">' + esc(cls) + '</span>' : '') + (featured ? '<span class="nx-tag nx-tag-accent">Featured</span>' : '') + '</span>' +
     '<strong>' + esc(title) + '</strong>' + (note ? '<small class="nx-note">' + esc(note) + '</small>' : '') + (summary ? '<small>' + esc(summary) + '</small>' : '') +
     '<span class="nx-by">' + [by ? 'by <b>' + esc(by) + '</b>' : '', meta?.level ? 'Level ' + meta.level : '', date].filter(Boolean).join(' · ') + '</span></span></a>';

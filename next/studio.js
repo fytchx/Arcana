@@ -6,7 +6,7 @@ import {
   parts, encodeShare, decodeShare, restoreDraft, PART_IDS, GRID_W, GRID_H, MAX_LEVEL,
   classicEnvelope, nextCode, validSaved
 } from './studio-core.js';
-import { esc, signInButtons, BUILD_TYPES } from './core.js';
+import { esc, signInButtons, BUILD_TYPES, ic } from './core.js';
 
 const DRAFT_KEY = 'arcana-next-studio-draft-v1';
 const CELL = 50;
@@ -59,7 +59,7 @@ function header(step) {
   const showLvl = step === 'class' || step === 'passive';
   return '<div class="st-head"><div class="st-row"><div class="st-chips nx-scrollx" role="tablist" aria-label="Build parts">' + chips + '</div>' +
     '<button class="nx-btn nx-btn-primary st-share" data-st="share">Share</button></div>' +
-    (showCls ? '<div class="st-chips nx-scrollx" role="group" aria-label="Class">' + D.classes.map(c => '<button class="st-cls" aria-pressed="' + (c.id === b.cls) + '" data-st="cls" data-id="' + c.id + '"><img src="/assets/icons/idlearc-refined/classes/class-' + esc(c.name.toLowerCase()) + '.svg" width="30" height="30" alt="">' + esc(c.name) + '</button>').join('') + '</div>' : '') +
+    (showCls ? '<div class="st-chips nx-scrollx" role="group" aria-label="Class">' + D.classes.map(c => '<button class="st-cls" aria-pressed="' + (c.id === b.cls) + '" data-st="cls" data-id="' + c.id + '">' + ic('class-' + c.name.toLowerCase(), 20) + esc(c.name) + '</button>').join('') + '</div>' : '') +
     (showLvl ? '<label class="st-level"><span>Level <b id="stLvl">' + b.level + '</b></span><input type="range" min="1" max="' + MAX_LEVEL + '" value="' + b.level + '" data-st="level" aria-label="Character level"></label>' : '') +
     '</div>';
 }
@@ -202,7 +202,7 @@ function passiveStep() {
 
 // ---------- stance ----------
 function stanceStep() {
-  return '<div class="nx-list">' + D.stances.map(s => '<button class="st-stance' + (b.stance === s.id ? ' on' : '') + '" style="--bt:' + BUILD_TYPES[s.id].color + '" aria-pressed="' + (b.stance === s.id) + '" data-st="stance" data-id="' + s.id + '"><img src="/assets/icons/idlearc-refined/' + BUILD_TYPES[s.id].art + '.svg" width="40" height="40" alt=""><span><b>' + esc(BUILD_TYPES[s.id].name) + (BUILD_TYPES[s.id].name === s.n ? '' : ' <em>' + esc(s.n) + ' stance</em>') + '</b><small>' + esc(s.d) + '</small></button>').join('') + '</div>' +
+  return '<div class="nx-list">' + D.stances.map(s => '<button class="st-stance' + (b.stance === s.id ? ' on' : '') + '" style="--bt:' + BUILD_TYPES[s.id].color + '" aria-pressed="' + (b.stance === s.id) + '" data-st="stance" data-id="' + s.id + '"><span class="st-sticon">' + ic(BUILD_TYPES[s.id].art, 22) + '</span><span><b>' + esc(BUILD_TYPES[s.id].name) + (BUILD_TYPES[s.id].name === s.n ? '' : ' <em>' + esc(s.n) + ' stance</em>') + '</b><small>' + esc(s.d) + '</small></button>').join('') + '</div>' +
     stepFoot('stance', b.stance ? D.stances.find(s => s.id === b.stance).n : 'No stance picked');
 }
 

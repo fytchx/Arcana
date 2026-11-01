@@ -619,7 +619,7 @@ a.nx-row:active, a.nx-card:active, a.nx-tile:active, button.nx-tile:active { tra
 .pf-n-min { color: #7FE0A6; } .pf-n-pity { color: #FF9C8A; }
 .pf-art { width: 36px; height: 36px; border-radius: 9px; background-repeat: no-repeat; background-color: color-mix(in srgb, var(--bg) 60%, transparent); }
 .pf-art-none { background: color-mix(in srgb, var(--zone, var(--accent)) 25%, transparent); }
-.pf-art-gold { background: url(/assets/icons/idlearc-refined/tokens/token-gold.svg) center / 30px no-repeat, color-mix(in srgb, #FFD97A 15%, transparent); }
+.pf-art-gold { background: color-mix(in srgb, #FFD97A 15%, transparent); }
 .pf-gold .pf-name b { color: #FFE2A8; }
 .pf-group { --zone: var(--accent); }
 .pf-biome { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-top: 1px solid color-mix(in srgb, var(--zone) 50%, var(--line));
@@ -660,3 +660,85 @@ body::after { z-index: -2; }
 .th-range { display: flex; flex-direction: column; gap: 6px; } .th-range span { display: flex; justify-content: space-between; } .th-range small { color: var(--muted); }
 .th-range input { accent-color: var(--accent); }
 body { isolation: isolate; } /* keeps the backdrop layers above the body's own gradient */
+
+/* ---------- Owner review pass 2: toned down ----------
+   Square-ish corners, flat surfaces with a hairline edge, color used as a signal (a left rule, a chip),
+   no glows, no drop shadows, no radial blobs. Icons are Arcana Minimal, inline and theme-colored. */
+:root { --r-sm: 6px; --r: 8px; --r-lg: 10px; }
+body { background: radial-gradient(100% 40% at 50% -8%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%), var(--bg); }
+body::after { display: none; }
+html[style*="--backdrop:"] body::after { display: block; }
+.nx-card, .nx-row, .nx-tile, .nx-empty, .nx-tool, .pf-card, .nx-search, .nx-tool-card, .th-preview { background: var(--card); border-color: var(--line); box-shadow: none; }
+a.nx-row:hover, a.nx-card:hover, a.nx-tile:hover, button.nx-tile:hover { border-color: var(--edge); }
+.nx-tag, .nx-btype { border-radius: 4px; }
+.nx-label { font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: .14em; color: var(--muted); }
+.nx-hero strong, .nx-bcard-body strong, .nx-event strong { font-family: var(--sans); font-weight: 700; letter-spacing: -.01em; }
+
+/* Header: the original wordmark */
+.nx-brand { gap: 14px; }
+.nx-brand img { width: 40px; filter: none; }
+.nx-brand span { font-size: 18px; font-weight: 500; letter-spacing: .42em; margin-right: -.42em; }
+.nx-brand-sm img { width: 28px; }
+
+/* Icons */
+.nx-ic { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: var(--r-sm); color: var(--accent-ink); background: color-mix(in srgb, var(--accent) 12%, transparent); --arcana-icon-detail: color-mix(in srgb, var(--accent-ink) 60%, #fff); }
+.nx-row-art { background: none; width: auto; height: auto; }
+.nx-ktile .nx-ic, .nx-tile .nx-ic { width: 36px; height: 36px; }
+
+/* Tools hub */
+.nx-hero { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--t); box-shadow: none; padding: 14px; }
+.nx-hero .nx-ic { width: 52px; height: 52px; color: color-mix(in srgb, var(--t) 70%, #fff); background: color-mix(in srgb, var(--t) 14%, transparent); }
+.nx-hero strong { font-size: 18px; }
+.nx-hero .nx-kicker { color: color-mix(in srgb, var(--t) 70%, #fff); }
+
+/* Build cards: color is the left rule and the type chip */
+.nx-bcard { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--bt); box-shadow: none; padding: 12px; }
+.nx-bcard-emblem { width: 48px; height: 48px; border-radius: var(--r-sm); border: 0; color: color-mix(in srgb, var(--bt) 65%, #fff); background: color-mix(in srgb, var(--bt) 14%, transparent); --arcana-icon-detail: currentColor; }
+.nx-bcard-body strong { font-size: 16px; }
+.nx-btype { padding: 2px 7px 2px 5px; }
+
+/* Tab bar: Search is an ordinary tab */
+.nx-nav { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--raise); }
+.nx-nav-search i { width: auto; height: auto; margin: 0; background: none; box-shadow: none; color: inherit; border-radius: 0; }
+.nx-nav-search[aria-current=page] i { box-shadow: none; }
+.nx-nav a[aria-current=page]:not(.nx-nav-search) svg { filter: none; }
+
+/* Studio */
+.st-cls { background: var(--card); border-color: var(--line); border-radius: var(--r-sm); padding: 6px 12px 6px 8px; color: var(--muted); }
+.st-cls svg { color: var(--accent-ink); }
+.st-cls[aria-pressed=true] { background: var(--soft); border-color: var(--accent); box-shadow: none; color: var(--text); }
+.st-stance, .st-stance.on { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--bt); }
+.st-stance.on { background: color-mix(in srgb, var(--bt) 10%, var(--card)); border-color: var(--bt); }
+.st-sticon { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: var(--r-sm); color: color-mix(in srgb, var(--bt) 70%, #fff); background: color-mix(in srgb, var(--bt) 14%, transparent); }
+.pf-switch { border-radius: var(--r); }
+.pf-switch a { border-radius: var(--r-sm); }
+.pf-switch a[aria-current=page] { background: var(--accent); box-shadow: none; }
+
+/* Pathfinder pass 2: compact form, one line summary, biome accordions (owner's reference), gold and forge last */
+.pf-switch + .nx-tool { margin-top: -6px; }
+.nx-tool:has(.pf-ends) { padding: 12px; gap: 10px; }
+.pf-ends legend { font-size: 11px; letter-spacing: .1em; }
+.pf-qty b { font-size: 14px; } .pf-qty small { display: none; }
+.pf-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 2px 2px 0; font-size: 13px; color: var(--muted); }
+.pf-route { font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+.pf-savebtn { margin-left: auto; height: 32px; padding: 0 12px; border-radius: var(--r-sm); border: 1px solid var(--line); background: transparent; color: var(--accent-ink); font-size: 13px; font-weight: 600; }
+.pf-mats-sec { gap: 8px; }
+.pf-legend { margin: 0; font-size: 12px; }
+.pf-acc { --zone: var(--accent); border: 1px solid color-mix(in srgb, var(--zone) 35%, var(--line)); border-left: 3px solid var(--zone); border-radius: var(--r-lg); background: linear-gradient(180deg, color-mix(in srgb, var(--zone) 9%, var(--card)), var(--card) 90px); overflow: hidden; }
+.pf-acc > summary { list-style: none; display: flex; align-items: center; gap: 12px; padding: 10px 12px; cursor: pointer; }
+.pf-acc > summary::-webkit-details-marker { display: none; }
+.pf-acc > summary > span { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.pf-acc > summary b { font-size: 17px; font-weight: 600; color: color-mix(in srgb, var(--zone) 55%, #fff); }
+.pf-acc > summary small { font-size: 13px; color: var(--text); opacity: .85; }
+.pf-emb { position: relative; width: 48px; height: 48px; flex: none; border-radius: var(--r); background: url(/official-art/biomes.webp) 0 0 / 800% 300% no-repeat; border: 1px solid color-mix(in srgb, var(--zone) 60%, transparent); display: grid; place-items: center; overflow: hidden; }
+.pf-emb::before { content: ''; position: absolute; inset: 0; background: rgba(5, 8, 16, .35); }
+.pf-emb span { position: relative; width: 26px; height: 26px; color: #fff; filter: drop-shadow(0 1px 2px rgba(0,0,0,.8)); }
+.pf-emb svg { width: 26px; height: 26px; }
+.pf-chev { width: 10px; height: 10px; border-right: 2px solid var(--zone); border-bottom: 2px solid var(--zone); transform: rotate(45deg); margin: 0 6px 4px; transition: transform .15s; }
+.pf-acc[open] .pf-chev { transform: rotate(-135deg); margin-bottom: -4px; }
+.pf-acc-body { border-top: 1px solid color-mix(in srgb, var(--zone) 30%, var(--line)); }
+.pf-acc .pf-row { box-shadow: none; }
+.pf-other { background: var(--card); border-color: var(--line); }
+.pf-otherhead { padding: 10px 12px 0; font-size: 14px; }
+.pf-art-gold { display: grid; place-items: center; color: #FFD97A; }
+.pf-table { border-radius: var(--r-lg); }

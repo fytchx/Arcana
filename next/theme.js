@@ -63,23 +63,27 @@ export function applyBackdrop(t) {
 }
 
 // ---------- designer view ----------
-const D = { all: false, ready: false, confirm: false };
+const D = { fam: 'Atelier / 2026', ready: false, confirm: false };
 let rerender = () => {}, apply = () => {};
 const DEFAULT = { bg: '#0D1019', card: '#191E2B', accent: '#A98BFF', accent2: '#38BDF8', art: null, strength: 55, match: true, preset: 'arcana' };
-const FEATURED_PRESETS = ['astral-veil', 'chromatic-chapel', 'midnight-codex', 'runic-tide', 'royal-sigil', 'emerald-signal', 'bloodmoon-rite', 'frost-sanctum', 'forged-gold', 'moonwater', 'velvet-dusk', 'neon-rift', 'black-ink', 'solar-ritual', 'jade-circuit', 'sapphire-fold'];
+// Only the latest designer collections (owner's list). Older presets and art stay out.
+export const THEME_FAMILIES = ['Atelier / 2026', 'Arcana Core', 'Neon / Signal', 'Monochrome', 'Ribbon / Veil', 'Relics / Elements'];
+const familyOf = p => p.tagline;
+const allowed = () => Object.entries(PR.STUDIO_V2_PRESETS).filter(([, p]) => THEME_FAMILIES.includes(familyOf(p)));
 
 export function themeView() {
   if (!D.ready) { Promise.all([loadArt(), loadPresets()]).then(() => { D.ready = true; rerender(); }); return '<a class="nx-back" href="#/profile">‹ Profile</a><div class="nx-loading">Loading the theme designer…</div>'; }
   const t = readTheme() || DEFAULT, v = themeVars(t);
-  const P = PR.STUDIO_V2_PRESETS, ids = D.all ? PR.STUDIO_V2_PRESET_IDS : FEATURED_PRESETS.filter(id => P[id]);
+  const P = PR.STUDIO_V2_PRESETS, ok = allowed(), ids = ok.filter(([, p]) => familyOf(p) === D.fam).map(([id]) => id);
+  const artIds = new Set(ok.map(([, p]) => p.pattern).filter(Boolean));
   const presets = ids.map(id => { const p = P[id]; return '<button class="th-preset" aria-pressed="' + (t.preset === id) + '" data-th="preset" data-id="' + esc(id) + '"><span class="th-dots">' + [p.main, p.card, p.action, p.secondaryAccent].map(c => '<i style="background:' + esc(c) + '"></i>').join('') + '</span><b>' + esc(p.name) + '</b></button>'; }).join('');
   const color = (k, l, note) => '<label class="th-color"><input type="color" value="' + esc(t[k].toLowerCase()) + '" data-th-color="' + k + '" id="th-' + k + '"><span><b>' + l + '</b><small>' + esc(note || t[k]) + '</small></span></label>';
   const low = contrast(v.ink, t.card) < 4.5;
-  const arts = [{ id: '', name: 'None' }, ...VA.VISUAL_ART].map(a => '<button class="th-art" aria-pressed="' + ((t.art || '') === a.id) + '" data-th="art" data-id="' + esc(a.id) + '"' +
+  const arts = [{ id: '', name: 'None' }, ...VA.VISUAL_ART.filter(a => artIds.has(a.id))].map(a => '<button class="th-art" aria-pressed="' + ((t.art || '') === a.id) + '" data-th="art" data-id="' + esc(a.id) + '"' +
     (a.id ? ' style="background-image:url(' + artBlob(a.id, { ...artValues(t, a.id), artDetail: 40 }) + ')"' : '') + '><span>' + esc(a.name) + '</span></button>').join('');
   return '<a class="nx-back" href="#/profile">‹ Profile</a><header class="nx-page-head"><span class="nx-kicker">THEME DESIGNER</span><h1>Make Arcana yours</h1><p>Start from a preset, then tune the colors and backdrop. Changes show across the whole app and stay on this device.</p></header>' +
     '<div class="th-preview"><span class="nx-kicker">PREVIEW</span><strong>Your theme</strong><small>Cards, buttons and links use these colors.</small><span class="th-prow"><a class="nx-btn nx-btn-primary" tabindex="-1">Button</a><a tabindex="-1">A link</a><span class="nx-tag nx-tag-accent">Tag</span></span></div>' +
-    '<section><div class="nx-head"><h2 class="nx-label">Presets</h2><button class="nx-link" data-th="all">' + (D.all ? 'Show fewer' : 'Show all ' + PR.STUDIO_V2_PRESET_IDS.length) + '</button></div><div class="th-presets">' + presets + '</div></section>' +
+    '<section><h2 class="nx-label">Presets</h2><div class="st-chips nx-scrollx" role="tablist">' + THEME_FAMILIES.map(f => '<button class="st-chip" role="tab" aria-selected="' + (f === D.fam) + '" aria-pressed="' + (f === D.fam) + '" data-th="fam" data-id="' + esc(f) + '">' + esc(f.replace(' / 2026', '')) + '</button>').join('') + '</div><div class="th-presets">' + presets + '</div></section>' +
     '<section><h2 class="nx-label">Colors</h2><div class="nx-card th-colors">' + color('bg', 'Background') + color('card', 'Cards') + color('accent', 'Accent') + color('accent2', 'Second accent', 'Used in the backdrop art') +
     (low ? '<p class="nx-fine th-warn">Accent text is hard to read on these cards, so Arcana lightens it for you.</p>' : '') +
     '<p class="nx-fine">Rarity, class and rune colors never change, so they always mean the same thing.</p></div></section>' +
@@ -96,7 +100,7 @@ export function initTheme(render, applyAll) {
     const b = e.target.closest('[data-th]'); if (!b) return;
     const a = b.dataset.th;
     if (a !== 'reset') D.confirm = false;
-    if (a === 'all') { D.all = !D.all; return rerender(); }
+    if (a === 'fam') { D.fam = b.dataset.id; return rerender(); }
     if (a === 'preset') {
       const p = PR.STUDIO_V2_PRESETS[b.dataset.id]; if (!p) return;
       return set({ preset: b.dataset.id, bg: p.main, card: p.card, accent: p.action, accent2: p.secondaryAccent, art: p.pattern || null, artColors: [p.artBase, p.artPrimary, p.artSecondary, p.artGlow], match: false, strength: 55 });
