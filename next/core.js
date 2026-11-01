@@ -41,6 +41,7 @@ export const TOOLS = Object.freeze([
   { group: 'Pets', id: 'affix', name: 'Affix level cost', short: 'Affix cost', detail: 'Shards to level a pet affix from now to your target', href: '#/tools/affix', icon: 'paw', native: true },
   { group: 'Farming', id: 'mlxp', name: 'ML XP planner', short: 'ML XP', detail: 'Total XP, kills and time to your next Monster Levels', href: '#/tools/mlxp', icon: 'chart', native: true },
   { group: 'Farming', id: 'ml', name: 'ML farming comparator', short: 'ML farming', detail: 'Which monster gets you Monster Level fastest', href: '#/tools/ml', icon: 'chart', native: true },
+  { group: 'Planning', id: 'guild-tree', name: 'Guild skill tree', short: 'Guild tree', detail: 'Plan guild points, compare plans and share them', href: '#/tools/guild-tree', icon: 'tree', native: true },
   { group: 'Planning', id: 'skills', name: 'Skill trees', detail: 'Class and passive trees with the real point rules, in Build Studio', href: '#/studio/class', icon: 'tree', native: true }
 ]);
 

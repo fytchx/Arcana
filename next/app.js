@@ -12,6 +12,7 @@ import { adminView, initAdmin } from './admin.js';
 import { feedbackView, initFeedback, notePage } from './feedback.js';
 import { guildsView, initGuilds } from './guilds.js';
 import { lfgView, recordsView, initCommunity } from './community.js';
+import { guildTreeView, initGuildTree } from './guild-tree.js';
 import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 import { demoBuilds } from '../src/catalog.js';
@@ -149,7 +150,8 @@ const featuredCard = () =>
   '<a class="nx-card nx-build" href="' + esc(FEATURED) + '"><span class="nx-tags"><span class="nx-tag nx-tag-warrior">Warrior</span><span class="nx-tag">Bulwark</span><span class="nx-tag nx-tag-accent">Featured</span></span>' +
   '<strong>Zane\'s Retaliation Warrior</strong><small>Retaliation, Defense, Block Chance and Strength, with a four-pet setup.</small><span class="nx-by">by <b>Zane</b> · Level 196</span></a>';
 
-function toolsView(id) {
+function toolsView(id, query) {
+  if (id === 'guild-tree') return guildTreeView(query);
   if (id === 'pathfinder') { const v = pathfinderView(); return v.replace('<!--pf-save-->', saveChecklistBlock(data.me.value)); }
   if (id === 'mlxp') return mlXpView();
   if (id === 'upgrade-map') return upgradeMapView();
@@ -322,7 +324,7 @@ function render() {
   if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? adminView(user()) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? adminView(user()) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   const title = section === 'home' ? '<a class="nx-word" href="#/home">ARCANA</a>' : '<span class="nx-title">' + esc(TITLES[section]) + '</span>';
   $('nxTopL').innerHTML = title;
@@ -385,6 +387,7 @@ initFeedback(render);
 initChecklists(render);
 initGuilds(render);
 initCommunity(render);
+initGuildTree(render);
 window.addEventListener('arcana:news-changed', () => { data.news.state = 'idle'; data.article = {}; });
 window.addEventListener('arcana:featured-changed', () => { featuredState.state = 'idle'; data.builds.state = 'idle'; });
 applyTheme();

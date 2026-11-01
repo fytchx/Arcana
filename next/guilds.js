@@ -35,6 +35,7 @@ export function guildsView(id, me) {
     '<label class="st-switch"><input type="checkbox" data-gd-open' + (G.open ? ' checked' : '') + '><span></span>Only guilds open to applicants</label>' +
     (list.length ? '<div class="nx-list">' + list.map(g => '<a class="nx-row" href="#/guilds/' + esc(g.id) + '"><span class="nx-row-text"><strong>' + tag(g) + ' ' + esc(g.name) + '</strong><small>' + g.memberCount + (g.memberCount === 1 ? ' member' : ' members') + (g.recruitmentOpen ? ' · Recruiting' : '') + (g.amMember ? ' · Your guild' : '') + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div>'
       : '<div class="nx-empty"><strong>No guilds match</strong><p>Try another name, or turn off the filter.</p></div>') +
+    '<a class="nx-row" href="#/tools/guild-tree"><span class="nx-row-text"><strong>Guild skill tree</strong><small>Plan your guild\u2019s points</small></span><span class="nx-row-end">›</span></a>' +
     '<a class="nx-row" href="/#/guilds/register"><span class="nx-row-text"><strong>Register your guild</strong><small>Classic site</small></span><span class="nx-row-end">↗</span></a>';
 }
 function guildView(id, me) {
