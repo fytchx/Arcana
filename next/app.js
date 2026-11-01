@@ -8,6 +8,7 @@ import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSecti
 import { nextCode } from './studio-core.js';
 import { toolView, initTools, NATIVE_TOOLS } from './tools.js';
 import { pathfinderView, initPathfinder, mlXpView, initMlXp } from './pathfinder.js';
+import { adminView, initAdmin } from './admin.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 import { demoBuilds } from '../src/catalog.js';
 
@@ -117,11 +118,27 @@ function homeView() {
     : n.state === 'error' ? failed('News', 'news') : loading('news');
   return '<a class="nx-search" href="#/codex">' + icon('search', 18) + '<span>Search items, skills, monsters</span></a>' + ev +
     '<section>' + '<div class="nx-head">' + label('Latest news') + '<a href="#/news">All news</a></div>' + latest + '</section>' +
-    '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredCard() + '</section>' +
+    '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredList(3) + '</section>' +
     '<section><div class="nx-head">' + label(recent().length ? 'Jump back in' : 'Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
     recentTiles(recent()).map(t => '<a class="nx-tile" href="' + esc(t.href) + '">' + icon(t.icon, 22) + '<span>' + esc(t.short || t.name) + '</span></a>').join('') +
     '</div></section>';
 }
+// Featured picks come from the owner's list (/api/featured); each build loads through the public
+// community route, so hidden or deleted builds simply don't appear. Empty list -> Zane's build.
+const featuredState = { state: 'idle', cards: [] };
+function loadFeatured() {
+  if (featuredState.state !== 'idle') return;
+  featuredState.state = 'loading';
+  getJSON('/api/featured').then(async f => {
+    const items = (f.items || []).slice(0, 12);
+    const got = await Promise.all(items.map(x => getJSON('/api/community/posts/' + encodeURIComponent(x.postId)).then(j => ({ ...j, note: x.note })).catch(() => null)));
+    featuredState.cards = got.filter(Boolean);
+    featuredState.state = 'ready';
+  }).catch(() => { featuredState.state = 'error'; }).finally(render);
+}
+const featuredPick = c => '<a class="nx-card nx-build" href="#/builds/' + esc(c.post.id) + '"><span class="nx-tags"><span class="nx-tag nx-tag-accent">Featured</span></span><strong>' + esc(c.post.title) + '</strong>' +
+  (c.note ? '<small class="nx-note">' + esc(c.note) + '</small>' : '') + '<small>' + esc(c.post.summary || '') + '</small><span class="nx-by">by <b>' + esc(c.author?.displayName || 'Arcana player') + '</b></span></a>';
+const featuredList = (limit = 12) => { loadFeatured(); return featuredState.cards.length ? '<div class="nx-list">' + featuredState.cards.slice(0, limit).map(featuredPick).join('') + '</div>' : featuredCard(); };
 const featuredCard = () =>
   '<a class="nx-card nx-build" href="' + esc(FEATURED) + '"><span class="nx-tags"><span class="nx-tag nx-tag-warrior">Warrior</span><span class="nx-tag">Bulwark</span><span class="nx-tag nx-tag-accent">Featured</span></span>' +
   '<strong>Zane\'s Retaliation Warrior</strong><small>Retaliation, Defense, Block Chance and Strength, with a four-pet setup.</small><span class="nx-by">by <b>Zane</b> · Level 196</span></a>';
@@ -209,7 +226,7 @@ function buildsView(id) {
   loadBuilds();
   const tabs = '<div class="nx-seg" role="tablist" aria-label="Source">' + [['featured', 'Featured'], ['community', 'Community']].map(([id, l]) => '<button role="tab" aria-selected="' + (buildTab === id) + '" data-act="buildtab" data-tab="' + id + '">' + l + '</button>').join('') + '</div>';
   let body;
-  if (buildTab === 'featured') body = featuredCard();
+  if (buildTab === 'featured') body = featuredList();
   else {
     const b = data.builds;
     body = b.state === 'error' ? failed('Community builds', 'builds') : b.state !== 'ready' ? loading('builds')
@@ -243,7 +260,7 @@ function profileView() {
   const who = u
     ? '<div class="nx-me"><span class="nx-avatar nx-avatar-lg">' + esc(initial()) + '</span><span><strong>' + esc(u.displayName) + '</strong><small>' + esc([u.inGameName, u.guild].filter(Boolean).join(' · ') || 'Arcana member') + '</small></span></div>'
     : '<div class="nx-card"><strong>Sign in to save builds</strong><small>Your builds follow you to any device.</small>' + signInButtons(me) + '</div>';
-  const admin = u?.permissions?.manageSite ? '<a class="nx-row nx-row-admin" href="/#/admin"><span class="nx-row-text"><strong>Admin</strong><small>Opens the current admin console</small></span><span class="nx-row-end">' + icon('out', 18) + '</span></a>' : '';
+  const admin = u?.permissions?.manageSite ? '<a class="nx-row nx-row-admin" href="#/admin"><span class="nx-row-text"><strong>Admin</strong><small>Community builds, Featured, announcement</small></span><span class="nx-row-end">' + icon('next', 18) + '</span></a>' : '';
   return who + admin +
     savedBuildsSection(!!u) +
     '<section>' + label('Theme') + '<div class="nx-card nx-theme">' +
@@ -264,13 +281,13 @@ function noteVisit(section, id) {
 }
 
 // ---------- shell ----------
-const TITLES = { tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
+const TITLES = { admin: 'Admin', tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
 function render() {
   const { section, id, query } = parseHash(location.hash);
   noteVisit(section, id);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'admin' ? adminView(user()) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   const title = section === 'home' ? '<a class="nx-word" href="#/home">ARCANA</a>' : '<span class="nx-title">' + esc(TITLES[section]) + '</span>';
   $('nxTopL').innerHTML = title;
@@ -314,5 +331,7 @@ initStudio(render);
 initTools(render);
 initPathfinder(render);
 initMlXp(render);
+initAdmin(render);
+window.addEventListener('arcana:featured-changed', () => { featuredState.state = 'idle'; data.builds.state = 'idle'; });
 applyTheme();
 render();

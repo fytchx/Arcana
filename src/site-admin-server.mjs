@@ -39,6 +39,27 @@ export function normalizeNotice(raw){
  return {enabled:raw.enabled===true&&text.length>0,text};
 }
 async function current(){return safeConfig(await readJSON(configPath()));}
+const featuredPath=()=>resolve(dataRoot(),'admin','featured-builds.json');
+const POST_ID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+export function normalizeFeaturedItems(raw){
+ if(!Array.isArray(raw))throw new Error('Featured builds must be a list.');
+ if(raw.length>12)throw new Error('Feature at most 12 builds.');
+ const seen=new Set(),items=[];
+ for(const x of raw){
+  const postId=String(x?.postId||'').toLowerCase();
+  if(!POST_ID.test(postId))throw new Error('Invalid build id.');
+  if(seen.has(postId))continue;seen.add(postId);
+  const note=String(x?.note||'').trim();
+  if(note.length>140||/[\u0000-\u001f\u007f]/.test(note))throw new Error('Notes must be plain text under 140 characters.');
+  items.push({postId,note});
+ }
+ return items;
+}
+export function safeFeatured(raw){
+ if(!raw||typeof raw!=='object'||!Number.isSafeInteger(raw.revision)||raw.revision<0)return {revision:0,updatedAt:null,items:[]};
+ let items=[];try{items=normalizeFeaturedItems(raw.items||[]);}catch{items=[];}
+ return {revision:raw.revision,updatedAt:raw.updatedAt||null,items};
+}
 function publicData(config){
  return {revision:config.revision,updatedAt:config.updatedAt,design:config.design,notice:config.notice};
 }
@@ -102,6 +123,29 @@ export async function handleSiteAdminRequest(req,res,url){
    await saveAtomic(historyPath(),[...history,{...now,reason:'rollback'}].slice(-20));
    await saveAtomic(configPath(),next);
    response(res,200,publicData(next));return true;
+  });
+ }
+ // Featured builds (Arcana Next). Stores only community post ids and a short note; visitors load
+ // the posts through the public community route, so hidden or deleted posts never show.
+ if(pathname==='/api/featured'){
+  if(req.method!=='GET')return fail(res,405,'Method not allowed.');
+  const f=safeFeatured(await readJSON(featuredPath()));
+  res.writeHead(200,{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'});
+  res.end(JSON.stringify(f));return true;
+ }
+ if(pathname==='/api/admin/featured'){
+  if(req.method!=='PUT')return fail(res,405,'Method not allowed.');
+  if(!await requireAdmin(req,res,'site:manage'))return true;
+  try{checkOrigin(req);}catch{return fail(res,403,'Invalid request origin.');}
+  const payload=await parseJSON(req,8000).catch(()=>null);
+  if(!payload||!Number.isInteger(payload.expectedRevision))return fail(res,422,'A current revision is required.');
+  let items;try{items=normalizeFeaturedItems(payload.items);}catch(e){return fail(res,422,e.message);}
+  return serialized(async()=>{
+   const old=safeFeatured(await readJSON(featuredPath()));
+   if(old.revision!==payload.expectedRevision)return fail(res,409,'Featured builds changed. Reload before saving.');
+   const next={revision:old.revision+1,updatedAt:new Date().toISOString(),items};
+   await saveAtomic(featuredPath(),next);
+   response(res,200,next);return true;
   });
  }
  if(pathname==='/api/admin/members'){

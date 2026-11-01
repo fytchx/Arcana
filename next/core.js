@@ -56,14 +56,14 @@ export function parseHash(hash = '') {
   const raw = String(hash).replace(/^#\/?/, '');
   const [path, query = ''] = raw.split('?');
   const parts = path.split('/').filter(Boolean).map(p => { try { return decodeURIComponent(p); } catch { return p; } });
-  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile', 'studio', 'build'];
+  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile', 'studio', 'build', 'admin'];
   const section = known.includes(parts[0]) ? parts[0] : 'home';
   return { section, id: section === parts[0] ? parts.slice(1).join('/') : '', query: new URLSearchParams(query) };
 }
 export const hashFor = (section, id = '') => '#/' + section + (id ? '/' + encodeURIComponent(id) : '');
 
 // The bottom tab that should light up for a route (profile has no tab).
-export const activeTab = section => section === 'studio' ? 'tools' : section === 'build' ? 'builds' : TABS.some(t => t.id === section) ? section : '';
+export const activeTab = section => section === 'admin' ? '' : section === 'studio' ? 'tools' : section === 'build' ? 'builds' : TABS.some(t => t.id === section) ? section : '';
 
 // Codex search over the verified game index. Title matches rank above keyword matches.
 export function searchIndex(entries, query, limit = 24) {
