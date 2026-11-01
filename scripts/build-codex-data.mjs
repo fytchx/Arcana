@@ -115,13 +115,11 @@ for (const w of D.words) add({ id: 'word:' + slug(w.n), kind: 'rune-word', title
 // ---------- pets ----------
 const RAR = ['uncommon', 'rare', 'epic', 'legendary'];
 for (const p of D.pets) {
-  // Values at compound 0 and 10 only. Past that the formula keeps compounding and the game's real caps
-  // aren't in the config, so bigger numbers would be guesses.
-  const rows = RAR.map(r => { const a = compound(D, r, p.id, 0); if (!a) return null; const b = compound(D, r, p.id, Math.min(10, D.pcalc.max[r])), f = v => a.pct ? '+' + v + '%' : '+' + v; return [r[0].toUpperCase() + r.slice(1), f(a.v), f(b.v), String(D.pcalc.max[r])]; }).filter(Boolean);
+  // Compounding has no cap (confirmed by the owner, 2026-11-01), so the table runs to each rarity's max compound level.
+  const rows = RAR.map(r => { const a = compound(D, r, p.id, 0); if (!a) return null; const f = v => (a.pct ? '+' + v.toLocaleString('en-US') + '%' : '+' + v.toLocaleString('en-US')); return [r[0].toUpperCase() + r.slice(1), f(a.v), f(compound(D, r, p.id, Math.min(10, D.pcalc.max[r])).v), String(D.pcalc.max[r]), f(compound(D, r, p.id, D.pcalc.max[r]).v)]; }).filter(Boolean);
   add({ id: 'pet:' + p.id, kind: 'pet-bonus', title: p.n, subtitle: 'Pet Drop Bonus · from ' + rows[0][0],
     facts: [['Lowest rarity', rows[0][0]], ['Legendary at C10', (() => { const v = compound(D, 'legendary', p.id, 10); return v ? (v.pct ? '+' + v.v + '%' : '+' + v.v) : '—'; })()]],
-    table: { head: ['Rarity', 'Base', 'At C10', 'Max compound'], rows },
-    note: 'For other compound levels, use the compound calculator.',
+    table: { head: ['Rarity', 'Base', 'At C10', 'Max compound', 'At max'], rows },
     links: [{ label: 'Compound calculator', href: '/#/calculators/pet', ext: true }, { label: 'Pick it in Build Studio', href: '#/studio/pets' }] });
 }
 
@@ -175,9 +173,9 @@ for (const m of C.materials) {
 // ---------- mechanics ----------
 const GS = C.gear_set_bonuses;
 if (GS?.enabled) add({ id: 'mechanic:gear-set-bonus', kind: 'mechanic', title: 'Gear set bonus', subtitle: 'Mechanic · from the config',
-  description: 'Bonuses unlock in steps as your equipped gear reaches higher tiers. Required slots: ' + Object.entries(GS.required_slots).map(([k, n]) => (n > 1 ? n + ' ' : '') + (TYPE[k] || k) + (n > 1 ? 's' : '')).join(', ') + '.',
+  description: 'Bonuses unlock when every required slot reaches the same tier. Required slots: ' + Object.entries(GS.required_slots).map(([k, n]) => (n > 1 ? n + ' ' : '') + (TYPE[k] || k) + (n > 1 ? 's' : '')).join(', ') + '.',
   table: { head: ['Tier reached', 'Bonuses'], rows: GS.tier_thresholds.map(t => [TIER[t.threshold] || 'Tier ' + t.threshold, Object.entries(t.bonuses).map(([k, v]) => human(k) + ' +' + v + (/pct/.test(k) ? '%' : '')).join(', ')]) },
-  note: 'Exactly how the game counts “reached” (every slot, or most slots) isn’t spelled out in the config. Check it in game before relying on it.' });
+  });
 add({ id: 'mechanic:item-tiers', kind: 'mechanic', title: 'Item tiers', subtitle: 'Mechanic · from the config',
   table: { head: ['Tier', 'Max level', 'Affix slots'], rows: Object.entries(C.itemization.tiers).map(([k, t]) => [t.name, String(t.max_level), String(t.affix_slots)]) },
   links: [{ label: 'Upgrade costs in Pathfinder', href: '/#/calculators/pathfinder', ext: true }] });
