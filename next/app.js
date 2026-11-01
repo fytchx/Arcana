@@ -59,6 +59,20 @@ const icon = (name, size = 22) => '<svg width="' + size + '" height="' + size + 
 // then the player's own Theme designer colors.
 let siteDesign = null;
 const DISPLAY_KEY = 'arcana-next-display-v1';
+// Install as an app: Chrome/Edge/Android fire beforeinstallprompt; iPhone needs Share → Add to Home Screen.
+let installEvt = null;
+const INSTALL_HIDE = 'arcana-next-install-hidden-v1';
+const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) && !/crios|fxios/i.test(navigator.userAgent);
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; render(); });
+window.addEventListener('appinstalled', () => { installEvt = null; render(); });
+function installBanner(where) {
+  if (standalone()) return '';
+  if (where === 'home' && read(INSTALL_HIDE)) return '';
+  if (installEvt) return '<div class="nx-install"><img src="/assets/arcana-app-192.png" width="40" height="40" alt=""><span><b>Get the Arcana app</b><small>Opens full screen from your home screen.</small></span><button class="nx-btn nx-btn-primary" data-act="install">Install</button>' + (where === 'home' ? '<button class="nx-install-x" data-act="installhide" aria-label="Hide">✕</button>' : '') + '</div>';
+  if (isIOS()) return '<div class="nx-install"><img src="/assets/arcana-app-192.png" width="40" height="40" alt=""><span><b>Get the Arcana app</b><small>Tap Share, then Add to Home Screen.</small></span>' + (where === 'home' ? '<button class="nx-install-x" data-act="installhide" aria-label="Hide">✕</button>' : '') + '</div>';
+  return '';
+}
 // Same math as the classic site (src/theme.js): rotate the logo's violet facets to the accent's hue.
 function logoFilterForAccent(hex) {
   const rgb = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255), hi = Math.max(...rgb), lo = Math.min(...rgb), d = hi - lo;
@@ -164,7 +178,7 @@ function homeView() {
   // The three main tools, always in the same place; recently used tools sit one tap away.
   const main = [['#/tools/pathfinder', 'upgrade', 'Pathfinder', 'Upgrade costs and ML XP'], ['#/studio', 'studio', 'Build Studio', 'Make and share a build'], ['#/codex', 'codex', 'Codex', 'Items, skills, monsters']];
   const rec = recent().map(id => id === 'codex' ? null : TOOLS.find(t => t.id === id)).filter(Boolean);
-  return '<section><div class="nx-head">' + label('Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
+  return installBanner('home') + '<section><div class="nx-head">' + label('Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
     main.map(([h, i, l, dsc]) => '<a class="nx-tile nx-main-tile" href="' + h + '"><span class="nx-ic">' + ic(i, 24) + '</span><strong>' + l + '</strong><small>' + dsc + '</small></a>').join('') + '</div>' +
     (rec.length ? '<details class="nx-recent"><summary>Recently used</summary><div class="nx-recent-list">' + rec.map(t => '<a href="' + esc(t.href) + '">' + ic(t.art || 'tools', 16) + esc(t.short || t.name) + '</a>').join('') + '</div></details>' : '') + '</section>' +
     (evRow || newsRow ? '<section class="nx-strips">' + evRow + newsRow + '</section>' : '') +
@@ -371,7 +385,7 @@ function profileView() {
   const admin = u?.permissions?.manageSite ? '<a class="nx-row nx-row-admin" href="#/admin"><span class="nx-row-text"><strong>Admin</strong><small>Community builds, Featured, announcement</small></span><span class="nx-row-end">' + icon('next', 18) + '</span></a>' : '';
   return who + admin +
     savedBuildsSection(!!u) + checklistsSection(!!u) +
-    '<section>' + label('Display') + '<div class="nx-card nx-display"><div class="nx-seg" role="radiogroup" aria-label="Display">' +
+    installBanner('profile') + '<section>' + label('Display') + '<div class="nx-card nx-display"><div class="nx-seg" role="radiogroup" aria-label="Display">' +
       [['full', 'Full design', 'Colors, depth and art'], ['simple', 'Simplified', 'Flat, calm, fastest']].map(([k, l, dsc]) => '<button role="radio" aria-checked="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" aria-selected="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" data-act="display" data-id="' + k + '"><b>' + l + '</b><small>' + dsc + '</small></button>').join('') + '</div></div></section>' +
     '<section>' + label('Community') + '<div class="nx-list">' + row('#/guilds', 'Guilds', 'Find a guild and apply', '') + row('#/lfg', 'Looking for group', 'Raids, teams and planned runs', '') + row('#/records', 'Season records', 'Top players and guilds by season', '') + row('/classic#/community', 'Community posts', '', '', true) + '</div></section>' +
     '<section>' + label('More') + '<div class="nx-list">' + row('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', '') + row('/classic', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
@@ -422,6 +436,8 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) return;
   const act = b.dataset.act;
+  if (act === 'install' && installEvt) { const e = installEvt; e.prompt(); e.userChoice.finally(() => { installEvt = null; render(); }); }
+  if (act === 'installhide') { write(INSTALL_HIDE, '1'); render(); }
   if (act === 'display') { write(DISPLAY_KEY, b.dataset.id); applyTheme(); render(); }
   if (act === 'surface') { saveTheme(null); write(SURFACE_KEY, b.dataset.id); render(); }
   if (act === 'accent') { saveTheme(null); write(ACCENT_KEY, b.dataset.id); render(); }

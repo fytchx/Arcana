@@ -899,3 +899,11 @@ html[data-display=simple] .nx-brand span { background: none; color: var(--text);
 html[data-display=simple] .nx-strip-event { background: var(--card); }
 .nx-brand .nx-logo { display: block; width: 38px; height: auto; filter: var(--logo-filter, none); }
 .nx-brand-sm .nx-logo { width: 30px; }
+
+/* Install the app */
+.nx-install { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--r-lg); border: var(--bw) solid var(--edge); background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 16%, var(--card)), var(--card)); }
+.nx-install img { border-radius: 10px; flex: none; }
+.nx-install > span { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.nx-install b { font-size: 14px; } .nx-install small { font-size: 12px; color: var(--muted); }
+.nx-install .nx-btn { min-height: 36px; padding: 0 14px; font-size: 14px; }
+.nx-install-x { flex: none; width: 32px; height: 32px; border: 0; background: none; color: var(--faint); font-size: 14px; }
