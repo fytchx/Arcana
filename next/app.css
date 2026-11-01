@@ -337,3 +337,8 @@ button { cursor: pointer; }
 .st-rolist span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 4px; border-radius: 999px; background: color-mix(in srgb, var(--card) 50%, var(--bg)); border: 1px solid var(--line); font-size: 13px; }
 .st-rolist b { color: var(--g-spent); }
 .st-ro details summary { cursor: pointer; font-size: 14px; font-weight: 600; padding: 6px 0; }
+
+.st-consent { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border-radius: 12px; border: 1px solid var(--line); font-size: 14px; line-height: 1.45; cursor: pointer; }
+.st-consent input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--accent); flex: none; }
+.st-namefield small { font-weight: 400; }
+.st-saverow { width: 100%; text-align: left; }

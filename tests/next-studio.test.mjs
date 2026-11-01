@@ -137,3 +137,33 @@ test('studio: drafts restore safely and keep every class tree', () => {
   assert.equal(parts(D, r).find(p => p.id === 'class').n, 1);
   assert.deepEqual(PART_IDS, ['gear', 'pets', 'runes', 'class', 'passive', 'stance']);
 });
+
+test('studio: account saves and community posts fit the classic server rules unchanged', async () => {
+  const { classicEnvelope, nextCode, validSaved, NEXT_NOTE } = await import('../next/studio-core.js');
+  const { readFile } = await import('node:fs/promises');
+  let b = equip(D, emptyBuild(), 'chest', D.items.find(i => i.name === 'Wardplate').id);
+  b.stance = 'bulwark';
+  const env = classicEnvelope(D, b, ['gear', 'stance'], { title: 'Retaliation Warrior', summary: 'Stack Defense and let them hit you.' });
+  // Same checks as normalizedBuild() in src/account-builds.mjs and inputPost() in src/community-server.mjs.
+  assert.ok(env.equipment && typeof env.equipment === 'object' && !Array.isArray(env.equipment));
+  assert.ok(Array.isArray(env.runes) && Array.isArray(env.runeBoard));
+  assert.ok(JSON.stringify(env).length < 68000);
+  assert.equal(env.notes, NEXT_NOTE);
+  assert.equal(env.className, 'Warrior');
+  const back = decodeShare(D, nextCode(env));
+  assert.deepEqual(back.include, ['gear', 'stance']);
+  assert.equal(back.title, 'Retaliation Warrior');
+  assert.equal(nextCode({ equipment: {}, runes: [] }), null);
+  assert.equal(nextCode({ arcanaNext: { v: 2, code: 'x' } }), null);
+  assert.equal(validSaved({ id: '../../etc', at: 'x' }), null);
+  assert.deepEqual(validSaved({ id: '0f8fad5b-d9cb-469f-a165-70867728950e', at: '2026-11-01T08:00:00Z' }).id, '0f8fad5b-d9cb-469f-a165-70867728950e');
+  // If the classic validators change shape, this test should fail so the envelope gets updated too.
+  const acct = await readFile(new URL('../src/account-builds.mjs', import.meta.url), 'utf8');
+  const comm = await readFile(new URL('../src/community-server.mjs', import.meta.url), 'utf8');
+  assert.match(acct, /!raw\.equipment\|\|typeof raw\.equipment!=='object'\|\|Array\.isArray\(raw\.equipment\)\|\|!Array\.isArray\(raw\.runes\)/);
+  assert.match(acct, /size>68000/);
+  assert.match(comm, /!build\.equipment\|\|typeof build\.equipment!=='object'\|\|Array\.isArray\(build\.equipment\)\|\|!Array\.isArray\(build\.runes\)/);
+  // Saved-build ids survive a draft restore; junk ids don't.
+  assert.equal(restoreDraft(D, { ...b, saved: { id: '0f8fad5b-d9cb-469f-a165-70867728950e', at: 'x' } }).saved.id, '0f8fad5b-d9cb-469f-a165-70867728950e');
+  assert.equal(restoreDraft(D, { ...b, saved: { id: 'nope', at: 'x' } }).saved, undefined);
+});

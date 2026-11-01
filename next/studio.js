@@ -3,7 +3,8 @@ import D from './studio-data.js';
 import {
   emptyBuild, classBudget, passBudget, slotDef, itemById, itemsFor, twoHanded, affixesFor, equip, setClass,
   classData, changeSkill, rowPts, tierSpend, tierLocked, tapNode, shapeById, fits, runeWords, compound, affixCost,
-  parts, encodeShare, decodeShare, restoreDraft, PART_IDS, GRID_W, GRID_H, MAX_LEVEL
+  parts, encodeShare, decodeShare, restoreDraft, PART_IDS, GRID_W, GRID_H, MAX_LEVEL,
+  classicEnvelope, nextCode, validSaved
 } from './studio-core.js';
 import { esc } from './core.js';
 
@@ -18,6 +19,26 @@ function save() { try { localStorage.setItem(DRAFT_KEY, JSON.stringify(b)); } ca
 function set(next) { b = next; save(); rerender(); }
 let toastTimer;
 function toast(msg) { ui.toast = msg; clearTimeout(toastTimer); toastTimer = setTimeout(() => { ui.toast = ''; rerender(); }, 2600); rerender(); }
+
+// ---------- account ----------
+const acct = { me: 'idle', user: null, saves: 'idle', list: [], busy: false };
+async function api(url, opts = {}) {
+  const r = await fetch(url, { credentials: 'same-origin', cache: 'no-store', signal: AbortSignal.timeout(12000), ...opts, headers: { 'content-type': 'application/json', ...(opts.headers || {}) } });
+  let j = {}; try { j = await r.json(); } catch { /* empty body */ }
+  if (!r.ok) throw Object.assign(Error(j.error || 'Request failed (' + r.status + ').'), { status: r.status });
+  return j;
+}
+function loadMe() {
+  if (acct.me !== 'idle') return;
+  acct.me = 'loading';
+  api('/api/account/me').then(j => { acct.user = j.user || null; acct.me = 'ready'; }).catch(() => { acct.me = 'error'; }).finally(rerender);
+}
+function loadSaves(force = false) {
+  if (!force && acct.saves !== 'idle') return;
+  acct.saves = 'loading';
+  api('/api/account/builds').then(j => { acct.list = Array.isArray(j.builds) ? j.builds : []; acct.saves = 'ready'; }).catch(() => { acct.saves = 'error'; }).finally(rerender);
+}
+const signIn = '<a class="nx-btn nx-btn-primary" href="/api/account/login">Sign in with Discord</a>';
 
 const STEPS = D.steps;
 const sumOf = o => Object.values(o || {}).reduce((t, n) => t + n, 0);
@@ -239,10 +260,33 @@ function renderSheet() {
     const link = s.link ? '<label class="st-linkbox">Your link<input readonly value="' + esc(s.link) + '" id="stLink"></label>' : '';
     return sheet('Share', 'Only filled parts go in the link. Untick any you want to leave out.',
       '<label class="st-namefield">Build name<input id="stTitle" maxlength="80" placeholder="e.g. Retaliation Warrior" value="' + esc(b.title || '') + '"></label>' +
-      optList(ps.map(p => opt('shareToggle', p.label, p.sum, { on: !!p.n && !off[p.id], off: !p.n, tag: p.n ? '' : 'Empty', data: 'data-id="' + p.id + '"' }))) + link,
+      optList(ps.map(p => opt('shareToggle', p.label, p.sum, { on: !!p.n && !off[p.id], off: !p.n, tag: p.n ? '' : 'Empty', data: 'data-id="' + p.id + '"' }))) + link +
+      '<h3 class="st-h3">Keep it or publish it</h3><div class="st-two">' +
+      '<button class="nx-btn" data-st="saveacct" ' + (on.length && !acct.busy ? '' : 'disabled') + '>' + (b.saved ? 'Update saved build' : 'Save to my account') + '</button>' +
+      '<button class="nx-btn" data-st="sheet" data-kind="publish" ' + (on.length ? '' : 'disabled') + '>Publish to Community</button></div>' +
+      '<p class="nx-fine">Saves follow you to any device. Up to 20 per account.</p>',
       '<button class="nx-btn nx-btn-primary" data-st="copylink" ' + (on.length ? '' : 'disabled') + '>' + (on.length ? (ui.copied ? 'Copied' : 'Copy link · ' + on.length + (on.length === 1 ? ' part' : ' parts')) : 'Nothing to share yet') + '</button>');
   }
+  if (s.kind === 'publish') {
+    loadMe();
+    if (acct.me !== 'ready') return sheet('Publish to Community', '', acct.me === 'error' ? '<p class="nx-fine">Couldn’t check your account. Try again in a moment.</p>' : '<p class="nx-fine">Checking your account…</p>');
+    if (!acct.user) return sheet('Publish to Community', 'Sign in so your build is credited to you.', '<p class="nx-fine">Builds are published under your Arcana name, so you need to be signed in.</p>', signIn);
+    const include = shareParts();
+    return sheet('Publish to Community', include.length + (include.length === 1 ? ' part' : ' parts') + ' · ' + include.map(id => STEPS.find(x => x.id === id).label).join(', '),
+      '<label class="st-namefield">Title<input id="stPubTitle" maxlength="100" value="' + esc(pub().title) + '" placeholder="At least 6 characters"></label>' +
+      '<label class="st-namefield">Summary<textarea id="stPubSum" rows="3" maxlength="300" placeholder="One or two sentences: what it does and who it’s for (at least 20 characters)">' + esc(pub().summary) + '</textarea></label>' +
+      '<label class="st-namefield">Guide <small>optional</small><textarea id="stPubBody" rows="5" maxlength="12000" placeholder="How to play it, what to upgrade first. Your step and slot notes are already included.">' + esc(pub().body) + '</textarea></label>' +
+      '<label class="st-consent"><input type="checkbox" id="stPubOk"' + (pub().ok ? ' checked' : '') + '><span>Publish this build publicly, credited as <b>' + esc(acct.user.displayName) + '</b>. Arcana may feature it.</span></label>',
+      '<button class="nx-btn nx-btn-primary" data-st="dopublish" ' + (acct.busy ? 'disabled' : '') + '>' + (acct.busy ? 'Publishing…' : 'Publish') + '</button>');
+  }
   return '';
+}
+// The publish form lives in memory while it's open, so a redraw (like an error message) never clears it.
+function pub() { if (!ui.pub) ui.pub = { title: b.title || '', summary: '', body: '', ok: false }; return ui.pub; }
+const PUB_FIELDS = { stPubTitle: 'title', stPubSum: 'summary', stPubBody: 'body' };
+function shareParts() {
+  const off = (ui.sheet && ui.sheet.off) || ui.lastOff || {};
+  return parts(D, b).filter(p => p.n && !off[p.id]).map(p => p.id);
 }
 function noteLabel(k) {
   if (k.startsWith('gear:')) { const def = slotDef(D, k.slice(5)), g = b.gear[k.slice(5)], it = g && itemById(D, g.item), t = b.tal[k.slice(5)]; return def.label + (it ? ' · ' + it.name : t ? ' · ' + D.tals.find(x => x.id === t).name : ''); }
@@ -258,14 +302,16 @@ export function studioView(sub) {
 }
 
 // Read-only view of a shared link.
-export function sharedView(code) {
+export function sharedView(code, over = {}) {
   const got = decodeShare(D, code);
+  if (got && over.title) got.title = over.title;
+  if (got && over.by !== undefined) got.by = over.by;
   if (!got) return '<div class="nx-empty"><strong>This build link is broken</strong><p>It may have been cut off when it was copied. Ask for the link again.</p><a class="nx-btn" href="#/studio">Open Build Studio</a></div>';
   const sb = got.build, inc = new Set(got.include), names = { gear: 'gear', pets: 'pets', runes: 'runes', class: 'class skills', passive: 'passives', stance: 'stance' };
   const missing = PART_IDS.filter(id => !inc.has(id)).map(id => names[id]);
   const n = k => String(sb.notes[k] || '').trim() ? '<p class="st-notetext">' + esc(sb.notes[k]) + '</p>' : '';
   const sec = (title, body, meta = '') => '<section class="nx-card st-ro"><div class="nx-head"><h2 class="nx-label">' + esc(title) + '</h2><small>' + esc(meta) + '</small></div>' + body + '</section>';
-  let out = '<header class="nx-page-head"><span class="nx-kicker">SHARED BUILD · READ ONLY</span><h1>' + esc(got.title || clsName(sb.cls) + ' build') + '</h1><p>' + esc([clsName(sb.cls), 'Level ' + sb.level, got.by ? 'by ' + got.by : ''].filter(Boolean).join(' · ')) + '</p></header>';
+  let out = (over.back || '') + '<header class="nx-page-head"><span class="nx-kicker">' + esc(over.kicker || 'SHARED BUILD · READ ONLY') + '</span><h1>' + esc(got.title || clsName(sb.cls) + ' build') + '</h1><p>' + esc([clsName(sb.cls), 'Level ' + sb.level, got.by ? 'by ' + got.by : ''].filter(Boolean).join(' · ')) + '</p></header>' + (over.intro || '');
   if (inc.has('gear')) {
     const rows = D.layout.flat().filter(d => sb.gear[d.k] || sb.tal[d.k]).map(d => {
       if (d.slot === 'talisman') { const t = D.tals.find(x => x.id === sb.tal[d.k]); return '<div class="st-rorow"><i class="st-tal sm" aria-hidden="true" style="color:' + t.color + '">⛨</i><span><b>' + esc(t.name) + '</b><small>' + esc(t.sub) + '</small>' + n('gear:' + d.k) + '</span></div>'; }
@@ -302,8 +348,9 @@ function act(el) {
   const gear = (key, patch) => set({ ...b, gear: { ...b.gear, [key]: { ...b.gear[key], ...patch } } });
   const pc = (idx, patch) => set({ ...b, petCalc: b.petCalc.map((c, j) => j === idx ? { ...c, ...patch } : c) });
   switch (a) {
+    case 'reloadSaves': return loadSaves(true);
     case 'close': ui.sheet = null; ui.skillMsg = ''; ui.copied = ''; return rerender();
-    case 'sheet': ui.sheet = { kind: d.kind, k, i }; return rerender();
+    case 'sheet': if (ui.sheet?.kind === 'share') ui.lastOff = ui.sheet.off || {}; ui.sheet = { kind: d.kind, k, i }; return rerender();
     case 'cls': { const id = +d.id; if (id !== b.cls) { ui.br = 0; set(setClass(D, b, id)); } return; }
     case 'slot': {
       const def = slotDef(D, k);
@@ -388,6 +435,47 @@ function act(el) {
       if (navigator.clipboard?.writeText) navigator.clipboard.writeText(link).then(() => done(true), () => done(false)); else done(false);
       return;
     }
+    case 'saveacct': {
+      loadMe();
+      if (acct.me === 'ready' && !acct.user) { ui.sheet = { kind: 'publish' }; return rerender(); }
+      const env = classicEnvelope(D, b, shareParts(), { title: b.title });
+      acct.busy = true; rerender();
+      const req = b.saved ? api('/api/account/builds/' + b.saved.id, { method: 'PUT', body: JSON.stringify({ build: env, baseUpdatedAt: b.saved.at }) })
+        : api('/api/account/builds', { method: 'POST', body: JSON.stringify({ build: env }) });
+      req.then(j => { b = { ...b, saved: validSaved({ id: j.build.id, at: j.build.updatedAt }) }; save(); acct.saves = 'idle'; toast(b.saved ? 'Saved to your account.' : 'Saved.'); })
+        .catch(err => {
+          if (err.status === 401) { acct.user = null; acct.me = 'ready'; ui.sheet = { kind: 'publish' }; return toast('Sign in to save to your account.'); }
+          if (err.status === 404 || err.status === 409) { b = { ...b, saved: undefined }; save(); return toast(err.status === 409 ? 'That save changed on another device. Tap Save again to keep this as a new copy.' : 'That save was deleted. Tap Save again to make a new one.'); }
+          toast(err.message);
+        })
+        .finally(() => { acct.busy = false; rerender(); });
+      return;
+    }
+    case 'dopublish': {
+      const f = pub(), title = f.title.trim(), summary = f.summary.trim(), body = f.body.trim();
+      if (title.length < 6) return toast('Give it a title of at least 6 characters.');
+      if (summary.length < 20) return toast('Add a summary of at least 20 characters.');
+      if (!f.ok) return toast('Tick the box to agree to publishing under your name.');
+      const env = classicEnvelope(D, { ...b, title }, shareParts(), { title, summary });
+      acct.busy = true; rerender();
+      api('/api/community/posts', { method: 'POST', body: JSON.stringify({ kind: 'build', title, summary, body, build: env }) })
+        .then(j => { ui.sheet = null; ui.pub = null; b = { ...b, title }; save(); location.hash = '#/builds/' + j.post.id; toast('Published to Community.'); })
+        .catch(err => toast(err.status === 429 ? 'You’ve hit today’s publishing limit (10). Try again tomorrow.' : err.message))
+        .finally(() => { acct.busy = false; rerender(); });
+      return;
+    }
+    case 'openSaved': {
+      const hasDraft = parts(D, b).some(p => p.n);
+      if (hasDraft && ui.confirmOpen !== d.id) { ui.confirmOpen = d.id; setTimeout(() => { ui.confirmOpen = null; rerender(); }, 3500); return rerender(); }
+      ui.confirmOpen = null;
+      api('/api/account/builds/' + d.id).then(j => {
+        const code = nextCode(j.build), got = code && decodeShare(D, code);
+        if (!got) return toast('This save was made in the classic Build Studio. Open it there.');
+        b = { ...got.build, title: got.title || j.build.title || '', saved: validSaved({ id: d.id, at: j.record.updatedAt }) };
+        save(); location.hash = '#/studio/gear'; toast('Opened ' + (b.title || 'your build') + '.');
+      }).catch(err => toast(err.message));
+      return;
+    }
     case 'adopt': {
       const hasDraft = parts(D, b).some(p => p.n);
       if (hasDraft && !ui.confirmAdopt) { ui.confirmAdopt = true; setTimeout(() => { ui.confirmAdopt = false; rerender(); }, 3500); return rerender(); }
@@ -441,11 +529,13 @@ export function initStudio(render) {
   document.addEventListener('change', e => {
     const el = e.target;
     if (el.dataset?.st === 'quick') act(el);
+    if (el.id === 'stPubOk') pub().ok = el.checked;
     if (el.dataset?.st === 'level') set({ ...b, level: Math.max(1, Math.min(MAX_LEVEL, +el.value || 1)) });
   });
   document.addEventListener('input', e => {
     // Keep the build name as it's typed, so re-drawing the share sheet never loses it.
     if (e.target.id === 'stTitle') { b = { ...b, title: e.target.value.slice(0, 80) }; save(); return; }
+    if (PUB_FIELDS[e.target.id]) { pub()[PUB_FIELDS[e.target.id]] = e.target.value; return; }
     if (e.target.dataset?.st === 'level') { const o = document.getElementById('stLvl'); if (o) o.textContent = e.target.value; } });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && ui.sheet) { ui.sheet = null; rerender(); } });
   document.addEventListener('pointerdown', onDown);
@@ -463,6 +553,18 @@ export function initStudio(render) {
   });
 }
 export const studioHasSheet = () => !!ui.sheet;
+
+// Profile: the signed-in player's saved builds. New-studio saves open here; classic ones open on the classic site.
+export function savedBuildsSection(signedIn) {
+  if (!signedIn) return '';
+  loadSaves();
+  const head = '<div class="nx-head"><h2 class="nx-label">My saved builds</h2><a href="#/studio">Build Studio</a></div>';
+  if (acct.saves === 'loading' || acct.saves === 'idle') return '<section>' + head + '<div class="nx-loading">Loading your builds…</div></section>';
+  if (acct.saves === 'error') return '<section>' + head + '<div class="nx-empty"><strong>Couldn’t load your builds</strong><p>Check your connection and try again.</p><button class="nx-btn" data-st="reloadSaves">Try again</button></div></section>';
+  if (!acct.list.length) return '<section>' + head + '<div class="nx-empty"><strong>No saved builds yet</strong><p>In Build Studio, tap Share, then Save to my account.</p></div></section>';
+  return '<section>' + head + '<div class="nx-list">' + acct.list.map(x => '<button class="nx-row st-saverow" data-st="openSaved" data-id="' + esc(x.id) + '"><span class="nx-row-text"><strong>' + esc(x.title) + '</strong><small>' +
+    esc(ui.confirmOpen === x.id ? 'Tap again to replace your current draft' : [x.className, 'saved ' + new Date(x.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })].filter(Boolean).join(' · ')) + '</small></span><span class="nx-row-end">›</span></button>').join('') + '</div><p class="nx-fine">' + acct.list.length + ' of 20 saves used.</p></section>';
+}
 // After each draw: keep the current step chip in view without moving the page.
 export function studioAfterRender() {
   const c = document.querySelector('.st-chip[aria-selected=true]');

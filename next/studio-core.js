@@ -301,6 +301,8 @@ export function restoreDraft(D, raw) {
     }
   }
   if (typeof raw.title === 'string') b.title = raw.title.slice(0, 80);
+  const saved = validSaved(raw.saved);
+  if (saved) b.saved = saved;
   if (Array.isArray(raw.petCalc)) b.petCalc = b.petCalc.map((d, i) => {
     const p = raw.petCalc[i] || {};
     return {
@@ -311,3 +313,22 @@ export function restoreDraft(D, raw) {
   });
   return b;
 }
+
+// ---------- account saves and community posts ----------
+// The classic account and community APIs accept any build object with an `equipment` object and a
+// `runes` list. New builds ride inside that shape, so no server or data changes are needed, and the
+// classic site still lists them (with a note that they open in the new Build Studio).
+export const NEXT_NOTE = 'Made in the new Arcana Build Studio. Open it at arcanacompanion.xyz/next.';
+export function classicEnvelope(D, b, include, { title = '', summary = '' } = {}) {
+  return {
+    title: String(title || b.title || '').slice(0, 100) || 'My build',
+    className: D.classes.find(c => c.id === b.cls)?.name || '',
+    summary: String(summary || '').slice(0, 350),
+    notes: NEXT_NOTE, monsterLevel: 1,
+    equipment: {}, runes: [], runeBoard: [],
+    arcanaNext: { v: 1, code: encodeShare(b, include, { title }) }
+  };
+}
+export const nextCode = snapshot => snapshot && snapshot.arcanaNext && snapshot.arcanaNext.v === 1 && typeof snapshot.arcanaNext.code === 'string' && snapshot.arcanaNext.code.length < 60000 ? snapshot.arcanaNext.code : null;
+const UUIDISH = /^[0-9a-f]{8}-[0-9a-f-]{27,36}$/;
+export const validSaved = s => s && typeof s === 'object' && UUIDISH.test(String(s.id)) && typeof s.at === 'string' && s.at.length < 40 ? { id: s.id, at: s.at } : null;
