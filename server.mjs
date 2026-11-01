@@ -29,7 +29,6 @@ const BASES = Object.freeze({
   lfg: 'https://lfg.arcanacompanion.xyz',
   legacyArt: 'https://arcana.up.railway.app',
   officialArt: 'https://arcana-v4-official-art-production.up.railway.app',
-  codexArt: 'https://arcana-v3-preview-production.up.railway.app',
 });
 const LOCAL_ART = resolve(ROOT,'assets','official-art');
 const REQUIRE_LOCAL_ART=process.env.ARCANA_REQUIRE_LOCAL_ART==='1';
@@ -205,9 +204,6 @@ const server=http.createServer(async(req,res)=>{
     const mapping={'/game-assets/map':'/assets/atlas-map.json','/game-assets/atlas':'/assets/atlas.webp','/game-assets/skill-tree':'/assets/skill-tree.json'};
     await pipe(res,BASES.legacyArt+mapping[pathname],{timeout:10000,cache:'public,max-age=180'});return;
   }
-  if(/^\/codex-art\/(?:status|manifest\.json|skills\.webp|monsters\.webp|biomes\.webp|materials\.webp)$/.test(pathname)) {
-    await pipe(res,BASES.codexArt+pathname,{timeout:10000,cache:'public,max-age=180'});return;
-  }
   if(/^\/official-art\/(?:manifest\.json|[a-z][a-z0-9-]*\.webp)$/.test(pathname)) {
     const art=await localArtAudit;
     if(art.ready){
@@ -217,6 +213,18 @@ const server=http.createServer(async(req,res)=>{
     }
     if(REQUIRE_LOCAL_ART){json(res,503,{error:'Validated artwork bundle unavailable'});return;}
     await pipe(res,BASES.officialArt+pathname.slice('/official-art'.length),{timeout:14000,cache:'public,max-age=180'});return;
+  }
+  // Arcana Next: the new app, served beside the classic site until it replaces it.
+  if(pathname==='/next'||pathname==='/next/'||/^\/next\/[a-z][a-z0-9-]*\.(?:js|css)$/.test(pathname)){
+   const file=pathname.endsWith('.js')||pathname.endsWith('.css')?pathname.slice('/next/'.length):'index.html';
+   try{
+    const bytes=await readFile(resolve(ROOT,'next',file));
+    const etag='"'+createHash('sha256').update(bytes).digest('hex').slice(0,22)+'"';
+    const headers={'content-type':TYPES[extname(file)]||'application/octet-stream','cache-control':file==='index.html'?'no-store':'no-cache, must-revalidate','etag':etag,'x-robots-tag':'noindex, nofollow'};
+    if(file!=='index.html'&&req.headers['if-none-match']===etag){send(res,304,null,headers);return;}
+    send(res,200,req.method==='HEAD'?null:bytes,headers);
+   }catch{send(res,404,'Not found');}
+   return;
   }
   const normalized=pathname==='/'?'/index.html':pathname;
   // Serve only public frontend assets. Never expose account/session files or local Wiki data.

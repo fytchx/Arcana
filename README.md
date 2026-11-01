@@ -37,7 +37,6 @@ Until a fully self-contained art catalog is imported, the server forwards these 
 
 - `/api/search/catalog`, `/api/guilds` to the existing Arcana Guild Directory Beta service.
 - `/api/lfg/public` to ArcanaLFG public listings and plans.
-- `/codex-art/*` to the current Arcana V3 art endpoints. This is a *temporary dependency*.
 - `/official-art/*` to the official artwork CDN hosted from the existing `Arcana-codex-art` repo.
 - `/game-assets/*` to the existing legacy Arcana art source.
 

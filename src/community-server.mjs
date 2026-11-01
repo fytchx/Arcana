@@ -6,6 +6,16 @@ import {can} from './account-policy.js';
 const UUID=/^[0-9a-f]{8}-[0-9a-f-]{27,36}$/;
 const BASE=()=>resolve(dataRoot(),'community','posts');
 const file=id=>resolve(BASE(),id+'.json');
+// Light card facts for build lists (class, build type, level), read from a new-app share code.
+const CARD_STANCES=new Set(['bulwark','aggressive','beastmaster','harmony']);
+export function buildCard(build){
+ const code=build?.arcanaNext?.code;
+ if(typeof code!=='string'||!code||code.length>20000)return null;
+ try{
+  const o=JSON.parse(Buffer.from(code.replace(/-/g,'+').replace(/_/g,'/'),'base64').toString('utf8'));
+  return {cls:Number.isInteger(o.c)&&o.c>=1&&o.c<=5?o.c:null,stance:CARD_STANCES.has(o.s)?o.s:null,level:Number.isInteger(o.l)?Math.max(1,Math.min(1000,o.l)):null};
+ }catch{return null}
+}
 const clean=(value,n)=>String(value||'').trim().replace(/[\u0000-\u001f\u007f]/g,' ').slice(0,n);
 const failure=(status,message)=>Object.assign(Error(message),{status});
 const revision=post=>createHash('sha256').update(JSON.stringify(post)).digest('hex');
@@ -50,7 +60,7 @@ export async function handleCommunityRequest(req,res,url){
   const showHidden=url.searchParams.get('includeHidden')==='true'&&canModerate;
   let posts=(await recentPosts()).filter(p=>(p.status==='public'||showHidden)&&(!url.searchParams.get('kind')||p.kind===url.searchParams.get('kind'))&&(!url.searchParams.get('authorId')||p.authorId===url.searchParams.get('authorId')));
   posts.sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
-  const page=posts.slice(0,100).map(p=>{const {build,body,...light}=publicPost(p);return {...light,excerpt:clean(body,170)};});
+  const page=posts.slice(0,100).map(p=>{const {build,body,...light}=publicPost(p);return {...light,excerpt:clean(body,170),card:buildCard(build)};});
   sendJSON(res,200,{posts:page,total:posts.length});return true;
  }
  if(path==='/api/community/posts'&&method==='POST'){
