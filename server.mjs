@@ -214,6 +214,18 @@ const server=http.createServer(async(req,res)=>{
     if(REQUIRE_LOCAL_ART){json(res,503,{error:'Validated artwork bundle unavailable'});return;}
     await pipe(res,BASES.officialArt+pathname.slice('/official-art'.length),{timeout:14000,cache:'public,max-age=180'});return;
   }
+  // Arcana Next: the new app, served beside the classic site until it replaces it.
+  if(pathname==='/next'||pathname==='/next/'||/^\/next\/[a-z][a-z0-9-]*\.(?:js|css)$/.test(pathname)){
+   const file=pathname.endsWith('.js')||pathname.endsWith('.css')?pathname.slice('/next/'.length):'index.html';
+   try{
+    const bytes=await readFile(resolve(ROOT,'next',file));
+    const etag='"'+createHash('sha256').update(bytes).digest('hex').slice(0,22)+'"';
+    const headers={'content-type':TYPES[extname(file)]||'application/octet-stream','cache-control':file==='index.html'?'no-store':'no-cache, must-revalidate','etag':etag,'x-robots-tag':'noindex, nofollow'};
+    if(file!=='index.html'&&req.headers['if-none-match']===etag){send(res,304,null,headers);return;}
+    send(res,200,req.method==='HEAD'?null:bytes,headers);
+   }catch{send(res,404,'Not found');}
+   return;
+  }
   const normalized=pathname==='/'?'/index.html':pathname;
   // Serve only public frontend assets. Never expose account/session files or local Wiki data.
   const publicPage=new Set(['/index.html','/manifest.webmanifest','/privacy.html','/beta-rules.html','/styles.css','/wiki-studio.css','/community.css','/community-archive.css','/guild-hub.css','/beta.css','/launch-navigation.css','/pathfinder-timeline.css','/quick-tools.css','/damage-formula.css','/home-three.css','/arcana-contour.css','/theme-studio-finishes.css','/signature-themes.css','/theme-seamless.css','/psychedelic-themes.css','/desktop-home-refinement.css','/arcana-connected-ux.css','/home-atlas.css','/atlas-atelier-textures.css','/visual-art.css','/studio-v2.css','/studio-layers.css','/visual-polish.css','/traffic.css','/admin.css','/journal.css','/journal-widgets.css','/journal-studio.js','/googledcf6cfe1a260efea.html']).has(normalized);

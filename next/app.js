@@ -1,0 +1,235 @@
+// Arcana Next: the new app shell. Runs beside the classic site and uses the same APIs.
+import {
+  SURFACES, ACCENTS, SURFACE_KEY, ACCENT_KEY, surfaceById, accentById, TABS, TOOLS,
+  parseHash, hashFor, activeTab, searchIndex, codexEntries, codexCategories, kindName,
+  sortArticles, shortDate, articleHtml, liveEvents, esc
+} from './core.js';
+
+const $ = id => document.getElementById(id);
+const read = k => { try { return localStorage.getItem(k); } catch { return null; } };
+const write = (k, v) => { try { localStorage.setItem(k, v); } catch { /* private mode: choice lasts this visit */ } };
+
+// ---------- icons ----------
+const P = {
+  home: '<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  tools: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>',
+  codex: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+  builds: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  news: '<path d="M4 4h13v16H6a2 2 0 0 1-2-2z"/><path d="M17 8h3v10a2 2 0 0 1-2 2"/><path d="M8 8h5M8 12h5M8 16h3"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  back: '<path d="m15 6-6 6 6 6"/>',
+  next: '<path d="m9 6 6 6-6 6"/>',
+  path: '<circle cx="12" cy="5" r="2"/><path d="M12 7v10"/><path d="m8 13 4 4 4-4"/><path d="M6 21h12"/>',
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  paw: '<circle cx="7" cy="7" r="2.2"/><circle cx="17" cy="7" r="2.2"/><circle cx="4.5" cy="13" r="2"/><circle cx="19.5" cy="13" r="2"/><path d="M12 13c-3 0-5 3-5 5.5 0 1.7 1.6 2.5 5 2.5s5-.8 5-2.5C17 16 15 13 12 13z"/>',
+  chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  tree: '<circle cx="12" cy="4" r="2"/><circle cx="6" cy="13" r="2"/><circle cx="18" cy="13" r="2"/><circle cx="12" cy="20" r="2"/><path d="M12 6v12M12 9l-5 3M12 9l5 3"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+  out: '<path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/>'
+};
+const icon = (name, size = 22) => '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (P[name] || '') + '</svg>';
+
+// ---------- theme ----------
+function applyTheme() {
+  const s = surfaceById(read(SURFACE_KEY)), a = accentById(read(ACCENT_KEY));
+  const r = document.documentElement.style;
+  r.setProperty('--bg', s.bg); r.setProperty('--card', s.card); r.setProperty('--line', s.line);
+  r.setProperty('--accent', a.hex); r.setProperty('--accent-ink', a.ink); r.setProperty('--on-accent', a.on);
+  document.querySelector('meta[name=theme-color]')?.setAttribute('content', s.bg);
+  return { s, a };
+}
+
+// ---------- data (each loads once, and re-renders when it arrives) ----------
+const data = {
+  me: { state: 'idle', value: null },
+  codex: { state: 'idle', value: [] },
+  news: { state: 'idle', value: [] },
+  article: {},
+  builds: { state: 'idle', value: [] },
+  notice: { state: 'idle', value: null }
+};
+async function getJSON(url, ms = 10000) {
+  const r = await fetch(url, { credentials: 'same-origin', cache: 'no-store', signal: AbortSignal.timeout(ms) });
+  if (!r.ok) throw Error(url + ' ' + r.status);
+  return r.json();
+}
+function load(slot, url, pick) {
+  const d = data[slot];
+  if (d.state !== 'idle') return;
+  d.state = 'loading';
+  getJSON(url).then(j => { d.value = pick(j); d.state = 'ready'; }).catch(() => { d.state = 'error'; }).finally(render);
+}
+const loadMe = () => load('me', '/api/account/me', j => j);
+const loadCodex = () => load('codex', '/api/search/catalog', codexEntries);
+const loadNews = () => load('news', '/api/journal', j => sortArticles(j.articles));
+const loadBuilds = () => load('builds', '/api/community/posts?kind=build', j => Array.isArray(j.posts) ? j.posts : []);
+const loadNotice = () => load('notice', '/api/site/theme', j => j.notice?.enabled && j.notice.text ? j.notice.text : null);
+function loadArticle(slug) {
+  if (data.article[slug]) return;
+  data.article[slug] = { state: 'loading', value: null };
+  getJSON('/api/journal?slug=' + encodeURIComponent(slug))
+    .then(j => { data.article[slug] = { state: 'ready', value: j }; })
+    .catch(() => { data.article[slug] = { state: 'error', value: null }; })
+    .finally(render);
+}
+
+// ---------- shared pieces ----------
+const user = () => data.me.value?.user || null;
+const initial = () => (user()?.displayName || '?').trim().charAt(0).toUpperCase() || '?';
+const label = t => '<h2 class="nx-label">' + esc(t) + '</h2>';
+const empty = (title, body, action = '') => '<div class="nx-empty"><strong>' + esc(title) + '</strong><p>' + esc(body) + '</p>' + action + '</div>';
+const loading = what => '<div class="nx-loading" role="status">Loading ' + esc(what) + '…</div>';
+const failed = (what, retry) => '<div class="nx-empty"><strong>' + esc(what) + ' didn\'t load</strong><p>Check your connection and try again.</p><button class="nx-btn" data-act="retry" data-slot="' + retry + '">Try again</button></div>';
+const row = (href, title, detail, ic, external = false) =>
+  '<a class="nx-row" href="' + esc(href) + '">' + (ic ? '<span class="nx-row-icon">' + icon(ic, 22) + '</span>' : '') +
+  '<span class="nx-row-text"><strong>' + esc(title) + '</strong>' + (detail ? '<small>' + esc(detail) + '</small>' : '') + '</span>' +
+  '<span class="nx-row-end">' + icon(external ? 'out' : 'next', 18) + '</span></a>';
+const classicNote = '<p class="nx-fine">Some tools still open on the classic site while they are rebuilt.</p>';
+
+// ---------- views ----------
+function homeView() {
+  loadNews(); loadBuilds();
+  const ev = liveEvents().map(e => '<a class="nx-event" href="' + esc(e.href) + '"><span class="nx-kicker">LIVE EVENT</span><strong>' + esc(e.name) + '</strong><small>' + esc(e.detail) + '</small></a>').join('');
+  const n = data.news;
+  const latest = n.state === 'ready' && n.value[0]
+    ? '<a class="nx-card nx-story" href="' + hashFor('news', n.value[0].slug) + '"><span class="nx-kicker">' + esc((n.value[0].category || 'News').toUpperCase()) + ' · ' + esc(shortDate(n.value[0].publishedAt)) + '</span><strong>' + esc(n.value[0].teaserTitle || n.value[0].title) + '</strong><small>' + esc(n.value[0].subtitle || '') + '</small></a>'
+    : n.state === 'error' ? failed('News', 'news') : loading('news');
+  return '<a class="nx-search" href="#/codex">' + icon('search', 18) + '<span>Search items, skills, monsters</span></a>' + ev +
+    '<section>' + '<div class="nx-head">' + label('Latest news') + '<a href="#/news">All news</a></div>' + latest + '</section>' +
+    '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredCard() + '</section>' +
+    '<section>' + label('Jump back in') + '<div class="nx-grid3">' +
+    TOOLS.filter(t => ['pathfinder', 'studio', 'pet'].includes(t.id)).map(t => '<a class="nx-tile" href="' + esc(t.href) + '">' + icon(t.icon, 22) + '<span>' + esc(t.id === 'pet' ? 'Pet tools' : t.name) + '</span></a>').join('') +
+    '</div></section>';
+}
+const featuredCard = () =>
+  '<a class="nx-card nx-build" href="/#/labs/build?build=warrior-retaliation-zane"><span class="nx-tags"><span class="nx-tag nx-tag-warrior">Warrior</span><span class="nx-tag">Bulwark</span><span class="nx-tag nx-tag-accent">Featured</span></span>' +
+  '<strong>Zane\'s Retaliation Warrior</strong><small>Retaliation, Defense, Block Chance and Strength, with a four-pet setup.</small><span class="nx-by">by <b>Zane</b> · opens in Build Studio</span></a>';
+
+function toolsView() {
+  const groups = [...new Set(TOOLS.map(t => t.group))];
+  return groups.map(g => '<section>' + label(g) + '<div class="nx-list">' + TOOLS.filter(t => t.group === g).map(t => row(t.href, t.name, t.detail, t.icon, true)).join('') + '</div></section>').join('') + classicNote;
+}
+
+let codexQuery = '', codexKind = '';
+function codexView(id) {
+  loadCodex();
+  const c = data.codex;
+  if (id) {
+    if (c.state !== 'ready') return c.state === 'error' ? failed('The Codex', 'codex') : loading('the Codex');
+    const e = c.value.find(x => x.id === id);
+    if (!e) return empty('Not in the Codex', 'This page may have been renamed after a patch.', '<a class="nx-btn" href="#/codex">Back to the Codex</a>');
+    return '<a class="nx-back" href="#/codex">' + icon('back', 18) + 'Codex</a><header class="nx-page-head"><span class="nx-kicker">' + esc(kindName(e.kind).toUpperCase()) + '</span><h1>' + esc(e.title) + '</h1>' + (e.subtitle ? '<p>' + esc(e.subtitle) + '</p>' : '') + '</header>' +
+      (e.description && e.description !== e.subtitle ? '<p class="nx-read">' + esc(e.description) + '</p>' : '') +
+      (e.facts.length ? '<dl class="nx-facts">' + e.facts.map(([k, v]) => '<div><dt>' + esc(k) + '</dt><dd>' + esc(Array.isArray(v) ? v.join(', ') : v) + '</dd></div>').join('') + '</dl>' : '') +
+      '<section>' + label('Use it') + '<div class="nx-list">' + row('/#/labs/build', 'Put it in a build', 'Opens Build Studio', 'shield', true) + (e.kind === 'item' ? row('/#/calculators/pathfinder', 'Upgrade cost in Pathfinder', '', 'path', true) : '') + '</div></section>' +
+      '<p class="nx-fine">From the verified game index.</p>';
+  }
+  const body = c.state === 'error' ? failed('The Codex', 'codex') : c.state !== 'ready' ? loading('the Codex') : codexResults(c.value);
+  return '<label class="nx-search nx-search-input">' + icon('search', 18) + '<input id="nxCodexQ" type="search" autocomplete="off" placeholder="Search items, skills, monsters" aria-label="Search the Codex" value="' + esc(codexQuery) + '"></label><div id="nxCodexBody">' + body + '</div>';
+}
+function codexResults(entries) {
+  if (codexKind && !codexQuery.trim()) {
+    const list = entries.filter(e => e.kind === codexKind).sort((a, b) => a.title.localeCompare(b.title));
+    return '<div class="nx-head">' + label(kindName(codexKind)) + '<button class="nx-link" data-act="kind" data-kind="">All categories</button></div><div class="nx-list">' +
+      list.slice(0, 200).map(e => row(hashFor('codex', e.id), e.title, e.subtitle, '')).join('') + '</div>' + (list.length > 200 ? '<p class="nx-fine">Showing 200 of ' + list.length + '. Search to narrow it down.</p>' : '');
+  }
+  if (codexQuery.trim()) {
+    const hits = searchIndex(entries, codexQuery);
+    if (!hits.length) return empty('Nothing found', 'Try a shorter word, like an item or monster name.');
+    return '<div class="nx-list">' + hits.map(e => row(hashFor('codex', e.id), e.title, kindName(e.kind).replace(/s$/, '') + (e.subtitle ? ' · ' + e.subtitle : ''), '')).join('') + '</div>';
+  }
+  return '<section>' + label('Browse') + '<div class="nx-grid2">' + codexCategories(entries).map(k => '<button class="nx-tile nx-tile-left" data-act="kind" data-kind="' + esc(k.kind) + '"><strong>' + esc(k.name) + '</strong><small>' + k.count + ' entries</small></button>').join('') + '</div></section>';
+}
+
+let buildTab = 'featured';
+function buildsView() {
+  loadBuilds();
+  const tabs = '<div class="nx-seg" role="tablist" aria-label="Source">' + [['featured', 'Featured'], ['community', 'Community']].map(([id, l]) => '<button role="tab" aria-selected="' + (buildTab === id) + '" data-act="buildtab" data-tab="' + id + '">' + l + '</button>').join('') + '</div>';
+  let body;
+  if (buildTab === 'featured') body = featuredCard();
+  else {
+    const b = data.builds;
+    body = b.state === 'error' ? failed('Community builds', 'builds') : b.state !== 'ready' ? loading('builds')
+      : b.value.length ? '<div class="nx-list">' + b.value.map(p => '<a class="nx-card" href="/#/community/post?id=' + encodeURIComponent(p.id) + '"><strong>' + esc(p.title) + '</strong><small>' + esc(p.summary || p.excerpt || '') + '</small><span class="nx-by">' + esc(shortDate(p.createdAt)) + '</span></a>').join('') + '</div>'
+      : empty('No community builds yet', 'Be the first. Make your build in Build Studio and share it with the community.', '<a class="nx-btn" href="/#/labs/build">Open Build Studio</a>');
+  }
+  return tabs + body + '<section>' + label('How submitting works') + '<ol class="nx-steps"><li>Make your build in Build Studio. Fill in as much or as little as you like.</li><li>Submit it and choose the name to credit.</li><li>It goes live under Community. The best get Featured.</li></ol></section>';
+}
+
+function newsView(slug) {
+  if (slug) {
+    loadArticle(slug);
+    const a = data.article[slug];
+    if (!a || a.state === 'loading') return '<a class="nx-back" href="#/news">' + icon('back', 18) + 'News</a>' + loading('the article');
+    if (a.state === 'error') return '<a class="nx-back" href="#/news">' + icon('back', 18) + 'News</a>' + empty('Article not found', 'It may have been moved or unpublished.');
+    const v = a.value;
+    return '<a class="nx-back" href="#/news">' + icon('back', 18) + 'News</a><article class="nx-article"><span class="nx-kicker">' + esc((v.category || 'News').toUpperCase()) + ' · ' + esc(shortDate(v.publishedAt)) + '</span><h1>' + esc(v.title) + '</h1>' +
+      (v.subtitle ? '<p class="nx-deck">' + esc(v.subtitle) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(v.author || 'Arcana') + '</b></p>' + articleHtml(v.body, slug) + '</article>';
+  }
+  loadNews();
+  const n = data.news;
+  if (n.state === 'error') return failed('News', 'news');
+  if (n.state !== 'ready') return loading('news');
+  if (!n.value.length) return empty('No news yet', 'Patch notes and events show up here.');
+  return '<div class="nx-list">' + n.value.map(a => '<a class="nx-card nx-story" href="' + hashFor('news', a.slug) + '"><span class="nx-kicker">' + esc((a.category || 'News').toUpperCase()) + ' · ' + esc(shortDate(a.publishedAt)) + '</span><strong>' + esc(a.teaserTitle || a.title) + '</strong>' + (a.subtitle ? '<small>' + esc(a.subtitle) + '</small>' : '') + '</a>').join('') + '</div>';
+}
+
+function profileView() {
+  const { s, a } = applyTheme();
+  const u = user(), me = data.me.value;
+  const who = u
+    ? '<div class="nx-me"><span class="nx-avatar nx-avatar-lg">' + esc(initial()) + '</span><span><strong>' + esc(u.displayName) + '</strong><small>' + esc([u.inGameName, u.guild].filter(Boolean).join(' · ') || 'Arcana member') + '</small></span></div>'
+    : '<div class="nx-card"><strong>Sign in to save builds</strong><small>Your builds follow you to any device.</small>' + (me?.enabled === false ? '<small>Sign-in is off on this test server.</small>' : '<a class="nx-btn nx-btn-primary" href="/api/account/login">Sign in with Discord</a>') + '</div>';
+  const admin = u?.permissions?.manageSite ? '<a class="nx-row nx-row-admin" href="/#/admin"><span class="nx-row-text"><strong>Admin</strong><small>Opens the current admin console</small></span><span class="nx-row-end">' + icon('out', 18) + '</span></a>' : '';
+  return who + admin +
+    (u ? '<section>' + label('My builds') + '<div class="nx-list">' + row('/#/account', 'Saved builds', 'Opens your account page', 'shield', true) + row('/#/labs/build', 'New build', '', 'shield', true) + '</div></section>' : '') +
+    '<section>' + label('Theme') + '<div class="nx-card nx-theme">' +
+    '<span class="nx-sub">Background</span><div class="nx-grid2" role="radiogroup" aria-label="Background">' + SURFACES.map(x => '<button role="radio" aria-checked="' + (x.id === s.id) + '" data-act="surface" data-id="' + x.id + '" class="nx-swatch" style="background:' + x.bg + '"><span style="background:' + x.card + '"></span>' + esc(x.name) + '</button>').join('') + '</div>' +
+    '<span class="nx-sub">Accent <em>· ' + esc(a.name) + '</em></span><div class="nx-dots" role="radiogroup" aria-label="Accent">' + ACCENTS.map(x => '<button role="radio" aria-checked="' + (x.id === a.id) + '" aria-label="' + esc(x.name) + '" data-act="accent" data-id="' + x.id + '" style="background:' + x.hex + '"></button>').join('') + '</div>' +
+    '<p class="nx-fine">Rarity, class and rune colors never change, so the accent can\'t be confused with game colors.</p></div></section>' +
+    '<section>' + label('Community') + '<div class="nx-list">' + row('/#/guilds', 'Guilds', '', '', true) + row('/#/lfg/raids', 'Looking for group', '', '', true) + row('/#/community', 'Community posts', '', '', true) + '</div></section>' +
+    '<section>' + label('More') + '<div class="nx-list">' + row('/#/beta', 'Report a problem', '', '', true) + row('/', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
+}
+
+// ---------- shell ----------
+const TITLES = { tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile' };
+function render() {
+  const { section, id } = parseHash(location.hash);
+  loadMe(); loadNotice();
+  const tab = activeTab(section);
+  const view = section === 'tools' ? toolsView() : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView()
+    : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
+  const title = section === 'home' ? '<a class="nx-word" href="#/home">ARCANA</a>' : '<span class="nx-title">' + esc(TITLES[section]) + '</span>';
+  $('nxTopL').innerHTML = title;
+  $('nxTopR').innerHTML = (section !== 'codex' ? '<a class="nx-iconbtn" href="#/codex" aria-label="Search">' + icon('search', 21) + '</a>' : '') +
+    '<a class="nx-avatar" href="#/profile" aria-label="Profile"' + (section === 'profile' ? ' aria-current="page"' : '') + '>' + (user() ? esc(initial()) : icon('user', 18)) + '</a>';
+  $('nxNav').innerHTML = TABS.map(t => '<a href="' + hashFor(t.id) + '"' + (t.id === tab ? ' aria-current="page"' : '') + '>' + icon(t.id, 22) + '<span>' + t.label + '</span></a>').join('');
+  $('nxNotice').hidden = !data.notice.value;
+  $('nxNotice').textContent = data.notice.value || '';
+  const main = $('nxMain'), key = section + '/' + id;
+  const focusSearch = document.activeElement?.id === 'nxCodexQ';
+  main.innerHTML = view;
+  if (main.dataset.key !== key) { main.dataset.key = key; window.scrollTo(0, 0); }
+  if (focusSearch) { const q = $('nxCodexQ'); q?.focus(); q?.setSelectionRange(q.value.length, q.value.length); }
+  document.title = (section === 'home' ? 'Arcana' : (TITLES[section] || 'Arcana') + ' · Arcana');
+}
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const act = b.dataset.act;
+  if (act === 'surface') { write(SURFACE_KEY, b.dataset.id); render(); }
+  if (act === 'accent') { write(ACCENT_KEY, b.dataset.id); render(); }
+  if (act === 'buildtab') { buildTab = b.dataset.tab; render(); }
+  if (act === 'kind') { codexKind = b.dataset.kind; codexQuery = ''; render(); }
+  if (act === 'retry') { const slot = { news: 'news', codex: 'codex', builds: 'builds' }[b.dataset.slot]; if (slot) { data[slot].state = 'idle'; render(); } }
+});
+document.addEventListener('input', e => {
+  if (e.target.id !== 'nxCodexQ') return;
+  codexQuery = e.target.value;
+  const body = $('nxCodexBody');
+  if (body && data.codex.state === 'ready') body.innerHTML = codexResults(data.codex.value);
+});
+window.addEventListener('hashchange', render);
+applyTheme();
+render();
