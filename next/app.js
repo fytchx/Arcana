@@ -83,6 +83,8 @@ function applyTheme() {
   document.documentElement.dataset.display = read(DISPLAY_KEY) === 'simple' ? 'simple' : 'full';
   applyBackdrop(null);
   document.querySelector('meta[name=theme-color]')?.setAttribute('content', t.bg);
+  // Remember the look, so the next visit's loading screen and first paint already match.
+  try { const keep = {}; for (const k of ['--bg', '--card', '--line', '--accent', '--accent-ink', '--on-accent', '--text', '--logo-filter', '--r-sm', '--r', '--r-lg', '--grad', '--glowk', '--bw', '--font-h', '--sans', '--wm', '--gap', '--pad', '--c-warrior', '--c-archer', '--c-mage', '--c-rogue', '--c-druid']) keep[k] = r.getPropertyValue(k); localStorage.setItem('arcana-next-vars-v1', JSON.stringify(keep)); } catch { /* private mode */ }
   return {};
 }
 
@@ -466,5 +468,16 @@ initTheme(render, applyTheme);
 initDesign(render, applyTheme);
 window.addEventListener('arcana:news-changed', () => { data.news.state = 'idle'; data.article = {}; });
 window.addEventListener('arcana:featured-changed', () => { featuredState.state = 'idle'; data.builds.state = 'idle'; });
+// Boot: hold the loading screen until the published design, fonts and account are in (2.5 s at most),
+// so the site never changes its look in front of the player.
 applyTheme();
-render();
+(async () => {
+  const cap = new Promise(r => setTimeout(r, 2500));
+  const design = getJSON('/api/site/theme', 2500).then(j => { const d = safeNextDesign(j.next); if (d) siteDesign = d; data.notice.value = j.notice?.enabled && j.notice.text ? j.notice.text : null; data.notice.state = 'ready'; }).catch(() => {});
+  const me = getJSON('/api/account/me', 2500).then(j => { data.me.value = j; data.me.state = 'ready'; }).catch(() => {});
+  await Promise.race([Promise.all([design, me]), cap]);
+  applyTheme();
+  await Promise.race([document.fonts?.ready || Promise.resolve(), new Promise(r => setTimeout(r, 800))]);
+  render();
+  requestAnimationFrame(() => document.getElementById('nxSplash')?.classList.add('done'));
+})();

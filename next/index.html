@@ -12,12 +12,27 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/next/app.css">
+<style>
+/* Loading screen: painted before anything else, in the last design this device saw. */
+#nxSplash{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:var(--bg,#1B1C24);transition:opacity .35s ease,visibility .35s}
+#nxSplash.done{opacity:0;visibility:hidden}
+#nxSplash .sp{display:flex;flex-direction:column;align-items:center;gap:18px}
+#nxSplash .mark{display:flex;align-items:center;gap:14px}
+#nxSplash img{width:52px;height:auto;filter:var(--logo-filter,none);animation:spPulse 1.6s ease-in-out infinite}
+#nxSplash b{font:800 20px/1 Inter,system-ui,sans-serif;letter-spacing:.2em;margin-right:-.2em;background:linear-gradient(180deg,#fff 0%,#E4E6EE 38%,#9EA3B5 52%,#D9DCE6 64%,#F7F8FB 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+#nxSplash i{display:block;width:120px;height:3px;border-radius:3px;background:color-mix(in srgb,var(--accent,#8B5CF6) 20%,transparent);overflow:hidden}
+#nxSplash i::after{content:'';display:block;width:40%;height:100%;border-radius:3px;background:var(--accent,#8B5CF6);animation:spBar 1.1s ease-in-out infinite}
+@keyframes spBar{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+@keyframes spPulse{50%{opacity:.75;transform:scale(.97)}}
+@media (prefers-reduced-motion:reduce){#nxSplash img,#nxSplash i::after{animation:none}}
+</style>
 <script>
-// Paint the saved background before the app loads, so there is no flash.
-try{var s={slate:'#0D1019',midnight:'#080E19',obsidian:'#0B0C10',dusk:'#16111E'}[localStorage.getItem('arcana-site-surface-v1')];if(s)document.documentElement.style.setProperty('--bg',s)}catch(e){}
+// Apply the design this device saw last, before the first paint, so nothing changes in front of the player.
+try{var v=JSON.parse(localStorage.getItem('arcana-next-vars-v1')||'{}');for(var k in v)if(/^--[a-z0-9-]+$/.test(k))document.documentElement.style.setProperty(k,String(v[k]).slice(0,200))}catch(e){}
 </script>
 </head>
 <body>
+<div id="nxSplash" role="status" aria-label="Loading Arcana"><div class="sp"><div class="mark"><img src="/assets/arcana-logo.webp" alt=""><b>ARCANA</b></div><i></i></div></div>
 <a class="nx-skip" href="#nxMain">Skip to content</a>
 <header class="nx-top">
   <div id="nxTopL" class="nx-top-l"><span class="nx-word">ARCANA</span></div>
