@@ -430,7 +430,7 @@ function act(el) {
       const title = document.getElementById('stTitle')?.value.trim().slice(0, 80) || '';
       if (title !== (b.title || '')) b = { ...b, title }; save();
       const include = parts(D, b).filter(p => p.n && !(ui.sheet.off || {})[p.id]).map(p => p.id);
-      const link = location.origin + '/next#/build?d=' + encodeShare(b, include, { title });
+      const link = location.origin + '/#/build?d=' + encodeShare(b, include, { title });
       ui.sheet = { ...ui.sheet, link };
       const done = ok => { ui.copied = ok ? 'yes' : ''; if (!ok) toast('Copy the link below.'); rerender(); };
       if (navigator.clipboard?.writeText) navigator.clipboard.writeText(link).then(() => done(true), () => done(false)); else done(false);

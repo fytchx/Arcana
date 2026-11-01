@@ -27,6 +27,23 @@
 @media (prefers-reduced-motion:reduce){#nxSplash img,#nxSplash i::after{animation:none}}
 </style>
 <script>
+// Old classic links (arcanacompanion.xyz/#/...) land here now. Send each to its new page,
+// or to the classic site at /classic when there is no new equivalent yet.
+(function(){try{
+ var h=location.hash||'',m=h.match(/^#\/([^?]*)(?:\?(.*))?$/);if(!m)return;
+ var path=m[1].replace(/\/$/,''),q=new URLSearchParams(m[2]||''),first=path.split('/')[0];
+ var NEXT=['home','tools','codex','builds','news','profile','studio','build','admin','feedback','checklist','guilds','lfg','records','directory'];
+ if(path==='account'){var k='arcana-next-return',v=sessionStorage.getItem(k);sessionStorage.removeItem(k);
+  if(!q.get('error')&&v&&/^\/next(?:#\/[\w\-\/?=&%.:]*)?$/.test(v)){location.replace(v.replace(/^\/next/,'/'));return;}
+  history.replaceState(null,'','/#/profile');return;}
+ var MAP={'calculators/pathfinder':'tools/pathfinder','calculators':'tools','labs/build':'studio','labs/guild-tree':'tools/guild-tree','labs/skills':'studio/class','labs/passives':'studio/passive','labs':'tools','journal':'news','community':'builds/community','lfg/raids':'lfg','lfg/guilds':'guilds','recent':'home','beta':'feedback'};
+ if(path==='journal/article'&&q.get('slug')){history.replaceState(null,'','/#/news/'+encodeURIComponent(q.get('slug')));return;}
+ if(path==='community/post'&&q.get('id')){history.replaceState(null,'','/#/builds/'+encodeURIComponent(q.get('id')));return;}
+ var shared=q.has('share')||q.has('id')||q.has('l');
+ if(MAP[path]&&!shared){history.replaceState(null,'','/#/'+MAP[path]);return;}
+ if(NEXT.indexOf(first)>-1&&!/^guilds\/(register|manage)/.test(path)&&!(first==='lfg'&&path!=='lfg'))return;
+ location.replace('/classic'+h);
+}catch(e){}})();
 // Apply the design this device saw last, before the first paint, so nothing changes in front of the player.
 try{var v=JSON.parse(localStorage.getItem('arcana-next-vars-v1')||'{}');for(var k in v)if(/^--[a-z0-9-]+$/.test(k))document.documentElement.style.setProperty(k,String(v[k]).slice(0,200))}catch(e){}
 </script>

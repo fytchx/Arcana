@@ -8,7 +8,7 @@ test('guild tree share link round-trips through the classic link reader', () => 
   for (const k of ['attack_damage', 'pet_damage', 'gold_gain', 'exp_gain', 'critical_strike_chance', 'dodge_chance']) plan = maxGuildPoints(plan, k).plan;
   plan = allocateGuildPoint(plan, 'defense_percent').plan;
   const url = guildLink(plan, 'https://arcanacompanion.xyz');
-  assert.match(url, /^https:\/\/arcanacompanion\.xyz\/next#\/tools\/guild-tree\?l=80&p=/);
+  assert.match(url, /^https:\/\/arcanacompanion\.xyz\/#\/tools\/guild-tree\?l=80&p=/);
   const back = guildTreeFromLink(new URLSearchParams(url.split('?')[1]));
   assert.equal(back.level, 80);
   assert.equal(back.events, plan.events);

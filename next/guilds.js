@@ -36,7 +36,7 @@ export function guildsView(id, me) {
     (list.length ? '<div class="nx-list">' + list.map(g => '<a class="nx-row" href="#/guilds/' + esc(g.id) + '"><span class="nx-row-text"><strong>' + tag(g) + ' ' + esc(g.name) + '</strong><small>' + g.memberCount + (g.memberCount === 1 ? ' member' : ' members') + (g.recruitmentOpen ? ' · Recruiting' : '') + (g.amMember ? ' · Your guild' : '') + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div>'
       : '<div class="nx-empty"><strong>No guilds match</strong><p>Try another name, or turn off the filter.</p></div>') +
     '<a class="nx-row" href="#/tools/guild-tree"><span class="nx-row-text"><strong>Guild skill tree</strong><small>Plan your guild\u2019s points</small></span><span class="nx-row-end">›</span></a>' +
-    '<a class="nx-row" href="/#/guilds/register"><span class="nx-row-text"><strong>Register your guild</strong><small>Classic site</small></span><span class="nx-row-end">↗</span></a>';
+    '<a class="nx-row" href="/classic#/guilds/register"><span class="nx-row-text"><strong>Register your guild</strong><small>Classic site</small></span><span class="nx-row-end">↗</span></a>';
 }
 function guildView(id, me) {
   loadGuild(id);
@@ -46,7 +46,7 @@ function guildView(id, me) {
   const g = d.g, u = me?.user;
   const ROLE = { owner: 'Leader', officer: 'Officer', member: 'Member' };
   let action = '';
-  if (g.canManage) action = '<a class="nx-btn nx-btn-primary" href="/#/guilds/manage?id=' + encodeURIComponent(g.id) + '">Manage guild ↗</a>';
+  if (g.canManage) action = '<a class="nx-btn nx-btn-primary" href="/classic#/guilds/manage?id=' + encodeURIComponent(g.id) + '">Manage guild ↗</a>';
   else if (g.amMember) action = '<p class="nx-callout">You’re in this guild.</p>';
   else if (g.myApplication) action = '<p class="nx-callout">Your application is waiting for the guild to review it.</p>';
   else if (!g.recruitmentOpen) action = '<p class="nx-fine">This guild isn’t taking applications right now.</p>';
