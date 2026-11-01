@@ -14,6 +14,7 @@ import { feedbackView, initFeedback, notePage } from './feedback.js';
 import { guildsView, initGuilds } from './guilds.js';
 import { lfgView, recordsView, initCommunity } from './community.js';
 import { guildTreeView, initGuildTree } from './guild-tree.js';
+import { themeView, initTheme, readTheme, themeVars, saveTheme, applyBackdrop } from './theme.js';
 import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 import { demoBuilds } from '../src/catalog.js';
@@ -53,12 +54,15 @@ const icon = (name, size = 22) => '<svg width="' + size + '" height="' + size + 
 
 // ---------- theme ----------
 function applyTheme() {
-  const s = surfaceById(read(SURFACE_KEY)), a = accentById(read(ACCENT_KEY));
+  const s = surfaceById(read(SURFACE_KEY)), a = accentById(read(ACCENT_KEY)), custom = readTheme();
   const r = document.documentElement.style;
-  r.setProperty('--bg', s.bg); r.setProperty('--card', s.card); r.setProperty('--line', s.line);
-  r.setProperty('--accent', a.hex); r.setProperty('--accent-ink', a.ink); r.setProperty('--on-accent', a.on);
-  document.querySelector('meta[name=theme-color]')?.setAttribute('content', s.bg);
-  return { s, a };
+  // A designed theme (Theme designer) wins over the quick swatches.
+  const v = custom ? themeVars(custom) : { bg: s.bg, card: s.card, line: s.line, accent: a.hex, ink: a.ink, on: a.on };
+  r.setProperty('--bg', v.bg); r.setProperty('--card', v.card); r.setProperty('--line', v.line);
+  r.setProperty('--accent', v.accent); r.setProperty('--accent-ink', v.ink); r.setProperty('--on-accent', v.on);
+  applyBackdrop(custom);
+  document.querySelector('meta[name=theme-color]')?.setAttribute('content', v.bg);
+  return { s: custom ? {} : s, a: custom ? { name: 'Custom' } : a, custom };
 }
 
 // ---------- data (each loads once, and re-renders when it arrives) ----------
@@ -338,7 +342,7 @@ function profileView() {
   const admin = u?.permissions?.manageSite ? '<a class="nx-row nx-row-admin" href="#/admin"><span class="nx-row-text"><strong>Admin</strong><small>Community builds, Featured, announcement</small></span><span class="nx-row-end">' + icon('next', 18) + '</span></a>' : '';
   return who + admin +
     savedBuildsSection(!!u) + checklistsSection(!!u) +
-    '<section>' + label('Theme') + '<div class="nx-card nx-theme">' +
+    '<section>' + label('Theme') + artRow('#/profile/theme', 'Theme designer', readTheme() ? 'Your custom theme is on. Tap to edit it.' : 'Presets, your own colors and vector backdrops', 'features/feature-rune-forge') + '<div class="nx-card nx-theme">' +
     '<span class="nx-sub">Background</span><div class="nx-grid2" role="radiogroup" aria-label="Background">' + SURFACES.map(x => '<button role="radio" aria-checked="' + (x.id === s.id) + '" data-act="surface" data-id="' + x.id + '" class="nx-swatch" style="background:' + x.bg + '"><span style="background:' + x.card + '"></span>' + esc(x.name) + '</button>').join('') + '</div>' +
     '<span class="nx-sub">Accent <em>· ' + esc(a.name) + '</em></span><div class="nx-dots" role="radiogroup" aria-label="Accent">' + ACCENTS.map(x => '<button role="radio" aria-checked="' + (x.id === a.id) + '" aria-label="' + esc(x.name) + '" data-act="accent" data-id="' + x.id + '" style="background:' + x.hex + '"></button>').join('') + '</div>' +
     '<p class="nx-fine">Rarity, class and rune colors never change, so the accent can\'t be confused with game colors.</p></div></section>' +
@@ -364,7 +368,7 @@ function render() {
   loadMe(); loadNotice();
   const tab = activeTab(section);
   const view = section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? adminView(user()) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
-    : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
+    : section === 'news' ? newsView(id) : section === 'profile' ? (id === 'theme' ? themeView() : profileView()) : homeView();
   const logo = '<img src="/assets/arcana-logo.webp" width="34" height="28" alt="">';
   const title = section === 'home' ? '<a class="nx-brand" href="#/home" aria-label="Arcana home">' + logo + '<span>ARCANA</span></a>'
     : '<a class="nx-brand nx-brand-sm" href="#/home" aria-label="Arcana home">' + logo + '</a><span class="nx-title">' + esc(TITLES[section]) + '</span>';
@@ -389,8 +393,8 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) return;
   const act = b.dataset.act;
-  if (act === 'surface') { write(SURFACE_KEY, b.dataset.id); render(); }
-  if (act === 'accent') { write(ACCENT_KEY, b.dataset.id); render(); }
+  if (act === 'surface') { saveTheme(null); write(SURFACE_KEY, b.dataset.id); render(); }
+  if (act === 'accent') { saveTheme(null); write(ACCENT_KEY, b.dataset.id); render(); }
   if (act === 'buildtab') { buildTab = b.dataset.tab; render(); }
   if (act === 'kind') { codexKind = b.dataset.kind; codexQuery = ''; render(); }
   if (act === 'publishGuide') {
@@ -430,6 +434,7 @@ initChecklists(render);
 initGuilds(render);
 initCommunity(render);
 initGuildTree(render);
+initTheme(render, applyTheme);
 window.addEventListener('arcana:news-changed', () => { data.news.state = 'idle'; data.article = {}; });
 window.addEventListener('arcana:featured-changed', () => { featuredState.state = 'idle'; data.builds.state = 'idle'; });
 applyTheme();

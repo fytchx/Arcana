@@ -520,7 +520,7 @@ body { background:
   radial-gradient(90% 50% at 100% 70%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%),
   var(--bg); background-attachment: fixed; }
 body::after { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: url(/assets/arcana-contour-waves.svg) center 30% / 1100px auto no-repeat; opacity: .07; }
-.nx-top { background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.nx-top { background: color-mix(in srgb, var(--bg) 94%, transparent); } /* no backdrop-filter: it would trap the fixed tab bar inside the header */
 .nx-brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); }
 .nx-brand img { width: 34px; height: auto; filter: drop-shadow(0 2px 8px var(--glow)); }
 .nx-brand span { font-size: 15px; font-weight: 800; letter-spacing: .32em; }
@@ -629,3 +629,34 @@ a.nx-row:active, a.nx-card:active, a.nx-tile:active, button.nx-tile:active { tra
 .pf-biome small { font-size: 11px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
 .pf-biome-art { width: 36px; height: 36px; border-radius: 9px; background: url(/official-art/biomes.webp) 0 0 / 800% 300% no-repeat; box-shadow: 0 0 0 2px color-mix(in srgb, var(--zone) 60%, transparent); }
 .pf-group .pf-row { box-shadow: inset 3px 0 0 color-mix(in srgb, var(--zone) 70%, transparent); }
+
+/* Theme designer backdrop: vector art from the player's theme replaces the contour lines */
+html[style*="--backdrop:"] body::after { background: var(--backdrop) center / cover no-repeat; opacity: var(--backdrop-op, .55); }
+html[style*="--backdrop:"] body::before { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 30%, transparent), color-mix(in srgb, var(--bg) 75%, transparent)); }
+body::after { z-index: -2; }
+
+.th-preview { display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: var(--r-lg); border: 1px solid var(--edge); background: linear-gradient(165deg, var(--tint), var(--card) 70%); }
+.th-preview strong { font-family: var(--serif); font-size: 20px; }
+.th-preview small { color: var(--muted); font-size: 13px; }
+.th-prow { display: flex; align-items: center; gap: 14px; margin-top: 6px; }
+.th-prow .nx-btn { pointer-events: none; }
+.th-presets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (min-width: 620px) { .th-presets { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.th-preset { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); text-align: left; }
+.th-preset b { font-size: 13px; }
+.th-preset[aria-pressed=true] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+.th-dots { display: flex; } .th-dots i { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--card); margin-right: -6px; }
+.th-colors { gap: 12px; }
+.th-color { display: flex; align-items: center; gap: 12px; }
+.th-color input { width: 48px; height: 40px; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: none; cursor: pointer; }
+.th-color span { display: flex; flex-direction: column; } .th-color small { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.th-warn { color: #FFD9A0; }
+.th-arts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+@media (min-width: 620px) { .th-arts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.th-art { aspect-ratio: 16 / 10; display: flex; align-items: flex-end; padding: 0; border-radius: 12px; border: 1px solid var(--line); background: var(--bg) center / cover no-repeat; overflow: hidden; }
+.th-art span { width: 100%; padding: 4px 6px; font-size: 11px; font-weight: 600; text-align: left; background: linear-gradient(0deg, rgba(0,0,0,.7), transparent); }
+.th-art[aria-pressed=true] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent) inset; }
+.th-artctl { gap: 10px; margin-top: 8px; }
+.th-range { display: flex; flex-direction: column; gap: 6px; } .th-range span { display: flex; justify-content: space-between; } .th-range small { color: var(--muted); }
+.th-range input { accent-color: var(--accent); }
+body { isolation: isolate; } /* keeps the backdrop layers above the body's own gradient */
