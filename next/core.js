@@ -136,7 +136,7 @@ export function articleHtml(body, slug = '') {
     const t = block.trim();
     if (/^\[\[[a-z-]+\]\]$/.test(t)) {
       if (t === '[[arcana-feedback-cta]]') return '<p class="nx-callout">Got feedback? <a href="#/feedback">Tell me what to fix or build next</a>.</p>';
-      return '<p class="nx-callout">This part has an interactive chart. <a href="/#/journal/article?slug=' + encodeURIComponent(slug) + '">See it on the classic page</a>.</p>';
+      return '<p class="nx-callout">This part has an interactive chart. <a href="/classic#/journal/article?slug=' + encodeURIComponent(slug) + '">See it on the classic page</a>.</p>';
     }
     if (t.startsWith('## ')) return '<h2>' + inline(t.slice(3)) + '</h2>';
     if (t.startsWith('### ')) return '<h3>' + inline(t.slice(4)) + '</h3>';

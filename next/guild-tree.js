@@ -23,7 +23,7 @@ const TABS = [...GUILD_GROUPS.map(g => [g.id, g.title]), ['ascension', 'Ascensio
 export function guildLink(plan, origin = '') {
   const p = guildTreeLinkParams(plan), q = new URLSearchParams();
   for (const [k, v] of Object.entries(p)) if (v !== '' && v !== undefined) q.set(k, String(v));
-  return origin + '/next#/tools/guild-tree?' + q.toString();
+  return origin + '/#/tools/guild-tree?' + q.toString();
 }
 function ensure(query) {
   if (query && query.has('l')) {

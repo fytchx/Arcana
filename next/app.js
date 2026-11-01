@@ -287,7 +287,7 @@ function postView(id) {
   const code = nextCode(p.post.build);
   const intro = (p.post.summary ? '<p class="nx-read">' + esc(p.post.summary) + '</p>' : '') + (p.post.body ? '<div class="nx-article">' + articleHtml(p.post.body) + '</div>' : '');
   if (!code) return back + '<header class="nx-page-head"><span class="nx-kicker">COMMUNITY BUILD</span><h1>' + esc(p.post.title) + '</h1><p>by ' + esc(p.author?.displayName || 'Arcana player') + '</p></header>' + intro +
-    '<a class="nx-btn nx-btn-primary" href="/#/community/post?id=' + encodeURIComponent(id) + '">Open in the classic Build Studio</a>';
+    '<a class="nx-btn nx-btn-primary" href="/classic#/community/post?id=' + encodeURIComponent(id) + '">Open in the classic Build Studio</a>';
   // Credit comes from the server's author record, never from the link itself.
   return sharedView(code, { title: p.post.title, by: p.author?.displayName || 'Arcana player', kicker: 'COMMUNITY BUILD · ' + shortDate(p.post.createdAt).toUpperCase(), intro, back });
 }
@@ -373,8 +373,8 @@ function profileView() {
     savedBuildsSection(!!u) + checklistsSection(!!u) +
     '<section>' + label('Display') + '<div class="nx-card nx-display"><div class="nx-seg" role="radiogroup" aria-label="Display">' +
       [['full', 'Full design', 'Colors, depth and art'], ['simple', 'Simplified', 'Flat, calm, fastest']].map(([k, l, dsc]) => '<button role="radio" aria-checked="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" aria-selected="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" data-act="display" data-id="' + k + '"><b>' + l + '</b><small>' + dsc + '</small></button>').join('') + '</div></div></section>' +
-    '<section>' + label('Community') + '<div class="nx-list">' + row('#/guilds', 'Guilds', 'Find a guild and apply', '') + row('#/lfg', 'Looking for group', 'Raids, teams and planned runs', '') + row('#/records', 'Season records', 'Top players and guilds by season', '') + row('/#/community', 'Community posts', '', '', true) + '</div></section>' +
-    '<section>' + label('More') + '<div class="nx-list">' + row('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', '') + row('/', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
+    '<section>' + label('Community') + '<div class="nx-list">' + row('#/guilds', 'Guilds', 'Find a guild and apply', '') + row('#/lfg', 'Looking for group', 'Raids, teams and planned runs', '') + row('#/records', 'Season records', 'Top players and guilds by season', '') + row('/classic#/community', 'Community posts', '', '', true) + '</div></section>' +
+    '<section>' + label('More') + '<div class="nx-list">' + row('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', '') + row('/classic', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
 }
 
 // ---------- recently used tools ----------

@@ -214,13 +214,19 @@ const server=http.createServer(async(req,res)=>{
     if(REQUIRE_LOCAL_ART){json(res,503,{error:'Validated artwork bundle unavailable'});return;}
     await pipe(res,BASES.officialArt+pathname.slice('/official-art'.length),{timeout:14000,cache:'public,max-age=180'});return;
   }
-  // Arcana Next: the new app, served beside the classic site until it replaces it.
-  if(pathname==='/next'||pathname==='/next/'||/^\/next\/[a-z][a-z0-9-]*\.(?:js|css)$/.test(pathname)){
+  // The classic site stays available at /classic (same files, same hash routes).
+  if((pathname==='/classic'||pathname==='/classic/')){
+   const page=await readFile(resolve(ROOT,'index.html'));
+   send(res,200,req.method==='HEAD'?null:page,{'content-type':'text/html; charset=utf-8','cache-control':'no-store','x-robots-tag':'noindex, nofollow'});return;
+  }
+  // Arcana Next: the new app.
+  // The new app is the home page; /next stays as an alias for links already shared.
+  if(pathname==='/'||pathname==='/index.html'||pathname==='/next'||pathname==='/next/'||/^\/next\/[a-z][a-z0-9-]*\.(?:js|css)$/.test(pathname)){
    const file=pathname.endsWith('.js')||pathname.endsWith('.css')?pathname.slice('/next/'.length):'index.html';
    try{
     const bytes=await readFile(resolve(ROOT,'next',file));
     const etag='"'+createHash('sha256').update(bytes).digest('hex').slice(0,22)+'"';
-    const headers={'content-type':TYPES[extname(file)]||'application/octet-stream','cache-control':file==='index.html'?'no-store':'no-cache, must-revalidate','etag':etag,'x-robots-tag':'noindex, nofollow'};
+    const headers={'content-type':TYPES[extname(file)]||'application/octet-stream','cache-control':file==='index.html'?'no-store':'no-cache, must-revalidate','etag':etag,...(pathname.startsWith('/next')&&file==='index.html'?{'x-robots-tag':'noindex, nofollow'}:{})};
     if(file!=='index.html'&&req.headers['if-none-match']===etag){send(res,304,null,headers);return;}
     send(res,200,req.method==='HEAD'?null:bytes,headers);
    }catch{send(res,404,'Not found');}

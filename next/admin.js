@@ -182,7 +182,7 @@ function site() {
 }
 function more() {
   const r = (h, t, d) => '<a class="nx-row" href="' + h + '"><span class="nx-row-text"><strong>' + t + '</strong><small>' + d + ' · classic admin</small></span><span class="nx-row-end">↗</span></a>';
-  return '<section><h2 class="nx-label">Classic tools</h2><div class="nx-list">' + r('/#/admin?tab=appearance', 'Theme and history', 'Default theme and rollback') + r('/#/wiki/studio', 'Wiki Studio', 'Classic wiki articles') + '</div></section>';
+  return '<section><h2 class="nx-label">Classic tools</h2><div class="nx-list">' + r('/classic#/admin?tab=appearance', 'Theme and history', 'Default theme and rollback') + r('/classic#/wiki/studio', 'Wiki Studio', 'Classic wiki articles') + '</div></section>';
 }
 
 export function adminView(user) {
