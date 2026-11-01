@@ -111,7 +111,7 @@ test('next: sign-in offers only the providers the server has turned on', async (
   const { signInButtons } = await import('../next/core.js');
   assert.match(signInButtons({ providers: { google: true } }), /google\/login/);
   assert.doesNotMatch(signInButtons({ providers: { google: true } }), /Discord/);
-  assert.match(signInButtons({ providers: { discord: true, google: true } }), /Discord[\s\S]*Google/);
+  assert.match(signInButtons({ providers: { discord: true, google: true } }), /Google[\s\S]*Discord/);
   assert.match(signInButtons({}), /off on this server/);
 });
 
