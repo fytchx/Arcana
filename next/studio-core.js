@@ -2,7 +2,7 @@
 // Strict rules apply only to the skill trees. Gear, runes and pets stay loose on purpose.
 
 export const GRID_W = 6, GRID_H = 7;
-export const MAX_LEVEL = 1000, DEFAULT_LEVEL = 300;
+export const MAX_LEVEL = 550, DEFAULT_LEVEL = 300;
 export const PART_IDS = ['gear', 'pets', 'runes', 'class', 'passive', 'stance'];
 
 export const emptyBuild = () => ({

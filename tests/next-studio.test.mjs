@@ -117,7 +117,7 @@ test('studio: share links carry only chosen parts and survive tampering', () => 
   const evil = btoa(JSON.stringify({ v: 1, c: 99, l: 1e9, i: ['gear', 'x'], g: { chest: { item: 1 }, tal1: { item: 1 }, head: { item: 3, aw: 999, aff: [1, 1, 2, 3, 4, 5, 6], gems: ['garnet', 'nope'] } }, ca: { 7: 99 }, n: { '<img>': 'x', gear: 5 } })).replace(/=+$/, '');
   const e = decodeShare(D, evil);
   assert.equal(e.build.cls, 1);
-  assert.equal(e.build.level, 1000);
+  assert.equal(e.build.level, 550); // owner: level never needs to pass 550
   assert.deepEqual(e.include, ['gear']);
   assert.equal(e.build.gear.chest, undefined); // Broken Sword is not a chest
   assert.equal(e.build.gear.head.aw, 30);

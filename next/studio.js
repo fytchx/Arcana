@@ -6,7 +6,7 @@ import {
   parts, encodeShare, decodeShare, restoreDraft, PART_IDS, GRID_W, GRID_H, MAX_LEVEL,
   classicEnvelope, nextCode, validSaved
 } from './studio-core.js';
-import { esc, signInButtons } from './core.js';
+import { esc, signInButtons, BUILD_TYPES } from './core.js';
 
 const DRAFT_KEY = 'arcana-next-studio-draft-v1';
 const CELL = 50;
@@ -59,7 +59,7 @@ function header(step) {
   const showLvl = step === 'class' || step === 'passive';
   return '<div class="st-head"><div class="st-row"><div class="st-chips nx-scrollx" role="tablist" aria-label="Build parts">' + chips + '</div>' +
     '<button class="nx-btn nx-btn-primary st-share" data-st="share">Share</button></div>' +
-    (showCls ? '<div class="st-chips nx-scrollx" role="group" aria-label="Class">' + D.classes.map(c => '<button class="st-cls" aria-pressed="' + (c.id === b.cls) + '" data-st="cls" data-id="' + c.id + '">' + esc(c.name) + '</button>').join('') + '</div>' : '') +
+    (showCls ? '<div class="st-chips nx-scrollx" role="group" aria-label="Class">' + D.classes.map(c => '<button class="st-cls" aria-pressed="' + (c.id === b.cls) + '" data-st="cls" data-id="' + c.id + '"><img src="/assets/icons/idlearc-refined/classes/class-' + esc(c.name.toLowerCase()) + '.svg" width="30" height="30" alt="">' + esc(c.name) + '</button>').join('') + '</div>' : '') +
     (showLvl ? '<label class="st-level"><span>Level <b id="stLvl">' + b.level + '</b></span><input type="range" min="1" max="' + MAX_LEVEL + '" value="' + b.level + '" data-st="level" aria-label="Character level"></label>' : '') +
     '</div>';
 }
@@ -169,7 +169,8 @@ function classStep() {
   const tiers = [0, 5, 10].map((unl, ti) => {
     const locked = bSpend < unl;
     return '<div class="st-tier' + (locked ? ' locked' : '') + '"><span class="st-tiern">' + (ti + 1) + (unl ? '<small>' + unl + '</small>' : '') + '</span><div>' +
-      br.s.filter(s => s.unl === unl).map(s => { const r = a[s.id] || 0; return '<button class="st-skill' + (r ? ' on' : '') + '" data-st="skill" data-id="' + s.id + '" aria-label="' + esc(s.n + ', ' + r + ' of ' + s.max) + '">' + skillSprite(s.pos, 44) + '<b>' + r + '/' + s.max + '</b><small>' + esc(s.n) + '</small></button>'; }).join('') + '</div></div>';
+      br.s.filter(s => s.unl === unl).map(s => { const r = a[s.id] || 0; return '<div class="st-skill' + (r ? ' on' : '') + '"><button class="st-skinfo" data-st="skill" data-id="' + s.id + '" aria-label="' + esc('About ' + s.n) + '">' + skillSprite(s.pos, 44) + '<small>' + esc(s.n) + '</small></button>' +
+        '<div class="st-skctl"><button data-st="sk-" data-id="' + s.id + '" aria-label="' + esc('Remove a point from ' + s.n) + '"' + (r ? '' : ' disabled') + '>−</button><b>' + r + '/' + s.max + '</b><button data-st="sk+" data-id="' + s.id + '" aria-label="' + esc('Add a point to ' + s.n) + '"' + (r >= s.max ? ' disabled' : '') + '>+</button></div></div>'; }).join('') + '</div></div>';
   }).join('');
   return '<p class="st-budget' + (spent > budget ? ' over' : '') + '">' + spent + ' / ' + budget + ' class points</p>' + tabs + '<div class="st-tree">' + tiers + '</div>' +
     stepFoot('class', clsName(b.cls) + ' · ' + spent + ' / ' + budget + ' points');
@@ -179,7 +180,7 @@ function skillSheet(id) {
   c.br.forEach(br => br.s.forEach(x => { if (x.id === id) { s = x; where = c.name + ' · ' + br.n + ' · Tier ' + ([0, 5, 10].indexOf(x.unl) + 1); } }));
   const r = (b.ca[b.cls] || {})[id] || 0;
   return sheet(s.n, where, '<div class="st-skillhead">' + skillSprite(s.pos, 56) + '<p>' + esc(s.d) + '</p></div>' +
-    stepper('Rank', r + ' / ' + s.max, 'sk-', 'sk+', 'data-id="' + id + '"') + (ui.skillMsg ? '<p class="st-err" role="alert">' + esc(ui.skillMsg) + '</p>' : ''));
+    '<p class="nx-fine">Rank ' + r + ' of ' + s.max + '. Use − and + on the tree to change it.</p>');
 }
 
 // ---------- passives ----------
@@ -201,7 +202,7 @@ function passiveStep() {
 
 // ---------- stance ----------
 function stanceStep() {
-  return '<div class="nx-list">' + D.stances.map(s => '<button class="st-stance' + (b.stance === s.id ? ' on' : '') + '" aria-pressed="' + (b.stance === s.id) + '" data-st="stance" data-id="' + s.id + '"><b>' + esc(s.n) + '</b><small>' + esc(s.d) + '</small></button>').join('') + '</div>' +
+  return '<div class="nx-list">' + D.stances.map(s => '<button class="st-stance' + (b.stance === s.id ? ' on' : '') + '" style="--bt:' + BUILD_TYPES[s.id].color + '" aria-pressed="' + (b.stance === s.id) + '" data-st="stance" data-id="' + s.id + '"><img src="/assets/icons/idlearc-refined/' + BUILD_TYPES[s.id].art + '.svg" width="40" height="40" alt=""><span><b>' + esc(BUILD_TYPES[s.id].name) + (BUILD_TYPES[s.id].name === s.n ? '' : ' <em>' + esc(s.n) + ' stance</em>') + '</b><small>' + esc(s.d) + '</small></button>').join('') + '</div>' +
     stepFoot('stance', b.stance ? D.stances.find(s => s.id === b.stance).n : 'No stance picked');
 }
 
@@ -335,7 +336,7 @@ export function sharedView(code, over = {}) {
     const a = sb.pa, tiers = D.tiers.map((t, k) => [k, tierSpend(D, a, k)]).filter(x => x[1]);
     out += sec('Passives', tiers.map(([k, sp]) => { const nodes = []; for (let r = D.tiers[k][0]; r <= D.tiers[k][1]; r++) D.rows[r][1].forEach((nd, i) => { const p = a[r + ':' + i]; if (p) nodes.push((D.rows[r][0] ? '★ ' : '') + D.stats[nd[0]][0] + ' ' + p); }); return '<details><summary>Tier ' + (k + 1) + ' · ' + sp + ' points</summary><p class="nx-fine">' + esc(nodes.join(' · ')) + '</p></details>'; }).join('') + n('passive'), sumOf(a) + ' points');
   }
-  if (inc.has('stance') && sb.stance) { const s = D.stances.find(x => x.id === sb.stance); out += sec('Stance', '<p><b>' + esc(s.n) + '</b> · ' + esc(s.d) + '</p>' + n('stance')); }
+  if (inc.has('stance') && sb.stance) { const s = D.stances.find(x => x.id === sb.stance); out += sec('Build type', '<p><b>' + esc(BUILD_TYPES[s.id].name) + '</b> (' + esc(s.n) + ' stance) · ' + esc(s.d) + '</p>' + n('stance')); }
   if (missing.length) out += '<p class="nx-fine">Not included in this link: ' + esc(missing.join(', ')) + '.</p>';
   out += '<button class="nx-btn nx-btn-primary st-next" data-st="adopt" data-code="' + esc(code) + '">' + (ui.confirmAdopt ? 'Tap again to replace your current draft' : 'Copy to my Build Studio') + '</button>';
   return out + (ui.toast ? '<div class="st-toast" role="status">' + esc(ui.toast) + '</div>' : '');
@@ -413,7 +414,7 @@ function act(el) {
     case 'sk-': case 'sk+': {
       const s = classData(D, b.cls).br.flatMap(x => x.s).find(x => x.id === +d.id);
       const r = changeSkill(D, b.cls, b.ca[b.cls] || {}, s, a === 'sk+' ? 1 : -1, b.level);
-      ui.skillMsg = r.error || '';
+      if (r.error) toast(r.error);
       return r.alloc ? set({ ...b, ca: { ...b.ca, [b.cls]: r.alloc } }) : rerender();
     }
     case 'ptier': ui.ptier = i; return rerender();

@@ -510,3 +510,122 @@ button.st-chip[aria-selected=true] { background: var(--soft); }
 .gt-cmphead { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .gt-cmphead span { display: flex; flex-direction: column; padding: 12px; border-radius: var(--r-sm); background: var(--card); border: 1px solid var(--line); }
 .gt-cmphead small { font-size: 12px; color: var(--muted); }
+
+/* ---------- Life and color pass (owner review, Nov 1) ----------
+   One atmosphere behind everything, accent-tinted surfaces, and the hand-drawn vector set.
+   Everything derives from --accent, so the player's theme still drives it. */
+:root { --glow: color-mix(in srgb, var(--accent) 34%, transparent); --tint: color-mix(in srgb, var(--accent) 10%, var(--card)); --edge: color-mix(in srgb, var(--accent) 26%, var(--line)); }
+body { background:
+  radial-gradient(120% 60% at 50% -10%, color-mix(in srgb, var(--accent) 30%, transparent), transparent 60%),
+  radial-gradient(90% 50% at 100% 70%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%),
+  var(--bg); background-attachment: fixed; }
+body::after { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: url(/assets/arcana-contour-waves.svg) center 30% / 1100px auto no-repeat; opacity: .07; }
+.nx-top { background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.nx-brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); }
+.nx-brand img { width: 34px; height: auto; filter: drop-shadow(0 2px 8px var(--glow)); }
+.nx-brand span { font-size: 15px; font-weight: 800; letter-spacing: .32em; }
+body[data-section=home] .nx-top-l { justify-content: center; padding-left: 44px; }
+.nx-brand-sm img { width: 28px; }
+.nx-brand-sm + .nx-title { margin-left: 10px; }
+
+.nx-label { font-family: var(--serif); font-size: 13px; font-weight: 600; letter-spacing: .22em; color: color-mix(in srgb, var(--accent-ink) 70%, var(--muted)); }
+.nx-card, .nx-row, .nx-tile, .nx-empty, .nx-tool, .pf-card { background: linear-gradient(165deg, var(--tint), var(--card) 65%); border-color: var(--edge); box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 6%, transparent), 0 6px 18px -12px rgba(0,0,0,.7); }
+a.nx-row, a.nx-card, a.nx-tile, button.nx-tile { transition: transform .12s ease, border-color .12s ease; }
+a.nx-row:hover, a.nx-card:hover, a.nx-tile:hover, button.nx-tile:hover { border-color: var(--accent); }
+a.nx-row:active, a.nx-card:active, a.nx-tile:active, button.nx-tile:active { transform: scale(.985); }
+.nx-search { background: linear-gradient(165deg, var(--tint), var(--card)); border-color: var(--edge); }
+
+/* Vector art */
+.nx-artimg { display: block; flex: none; filter: drop-shadow(0 3px 6px rgba(0,0,0,.45)); }
+.nx-row-art { width: 44px; height: 44px; flex: none; border-radius: 12px; display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 70%); }
+
+/* Tools hub */
+.nx-heroes { display: grid; gap: 10px; }
+@media (min-width: 620px) { .nx-heroes { grid-template-columns: 1fr 1fr; } }
+.nx-hero { --t: var(--accent); position: relative; overflow: hidden; display: flex; align-items: center; gap: 14px; padding: 18px 16px; border-radius: var(--r-lg); color: var(--text);
+  background: radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--t) 34%, transparent), transparent 60%), linear-gradient(165deg, color-mix(in srgb, var(--t) 14%, var(--card)), var(--card));
+  border: 1px solid color-mix(in srgb, var(--t) 45%, var(--line)); box-shadow: 0 10px 28px -16px color-mix(in srgb, var(--t) 60%, #000); }
+.nx-hero > span { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.nx-hero .nx-kicker { color: color-mix(in srgb, var(--t) 60%, #fff); }
+.nx-hero strong { font-family: var(--serif); font-size: 22px; line-height: 1.15; }
+.nx-hero small { font-size: 13px; color: var(--muted); }
+.nx-tone-teal { --t: #3FD8C8; }
+.nx-tool-card { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: var(--r-lg); color: var(--text); border: 1px solid var(--edge); background: linear-gradient(165deg, var(--tint), var(--card) 70%); }
+.nx-tool-card strong { font-size: 15px; } .nx-tool-card small { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+
+/* Tab bar: search sits in the middle as the one raised control */
+.nx-nav { background: color-mix(in srgb, var(--raise) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.nx-nav a[aria-current=page] { color: var(--accent-ink); }
+.nx-nav a[aria-current=page]:not(.nx-nav-search) svg { filter: drop-shadow(0 0 8px var(--glow)); }
+.nx-nav-search i { width: 50px; height: 50px; margin-top: -22px; border-radius: 50%; display: grid; place-items: center; color: var(--on-accent);
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, #fff 30%, var(--accent)), var(--accent) 60%, color-mix(in srgb, var(--accent) 70%, #000));
+  box-shadow: 0 6px 18px -4px var(--glow), 0 0 0 4px var(--bg); }
+.nx-nav-search[aria-current=page] i { box-shadow: 0 6px 22px 0 var(--glow), 0 0 0 4px var(--bg); }
+
+/* Build cards: the whole card carries the build type's color */
+.nx-bcard { --bt: var(--accent); position: relative; display: flex; gap: 14px; align-items: flex-start; padding: 14px; border-radius: var(--r-lg); color: var(--text); overflow: hidden;
+  background: radial-gradient(130% 120% at 0% 0%, color-mix(in srgb, var(--bt) 24%, transparent), transparent 55%), linear-gradient(165deg, color-mix(in srgb, var(--bt) 10%, var(--card)), var(--card) 70%);
+  border: 1px solid color-mix(in srgb, var(--bt) 40%, var(--line)); box-shadow: 0 8px 22px -16px color-mix(in srgb, var(--bt) 70%, #000); transition: transform .12s ease; }
+.nx-bcard:active { transform: scale(.985); }
+.nx-bcard-emblem { width: 64px; height: 64px; flex: none; border-radius: 18px; display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--bt) 30%, transparent), color-mix(in srgb, var(--bg) 70%, transparent) 75%); border: 1px solid color-mix(in srgb, var(--bt) 35%, transparent); }
+.nx-bcard-emblem img { filter: drop-shadow(0 3px 6px rgba(0,0,0,.5)); }
+.nx-bcard-body { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.nx-bcard-body strong { font-family: var(--serif); font-size: 18px; line-height: 1.2; }
+.nx-bcard-body small { font-size: 13px; color: var(--muted); line-height: 1.4; }
+.nx-btype { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px 2px 4px; border-radius: 999px; font-size: 12px; font-weight: 700;
+  color: color-mix(in srgb, var(--bt) 65%, #fff); background: color-mix(in srgb, var(--bt) 18%, transparent); border: 1px solid color-mix(in srgb, var(--bt) 45%, transparent); }
+
+/* Studio: class emblems, inline skill ranks, build-type stances */
+.st-cls { height: auto; min-height: 44px; padding: 6px 12px 6px 6px; display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(165deg, var(--tint), var(--card)); border-color: var(--edge); }
+.st-cls img { filter: drop-shadow(0 2px 4px rgba(0,0,0,.5)); }
+.st-cls[aria-pressed=true] { background: radial-gradient(circle at 20% 50%, color-mix(in srgb, var(--accent) 35%, transparent), var(--soft) 70%); color: var(--text); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+.st-skill { gap: 6px; padding: 8px 4px 6px; }
+.st-skinfo { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: 0; padding: 0; }
+.st-skctl { display: flex; align-items: center; justify-content: space-between; gap: 2px; width: 100%; }
+.st-skctl button { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 50%, transparent); font-size: 17px; font-weight: 700; line-height: 1; }
+.st-skctl button:disabled { opacity: .3; }
+.st-skctl b { font-size: 12px; font-variant-numeric: tabular-nums; }
+.st-stance { --bt: var(--accent); flex-direction: row; align-items: center; gap: 12px; background: linear-gradient(165deg, color-mix(in srgb, var(--bt) 8%, var(--card)), var(--card)); border-color: color-mix(in srgb, var(--bt) 30%, var(--line)); }
+.st-stance > span { display: flex; flex-direction: column; gap: 3px; }
+.st-stance em { font-style: normal; font-weight: 500; font-size: 12px; color: var(--muted); margin-left: 4px; }
+.st-stance.on { border: 2px solid var(--bt); background: radial-gradient(120% 140% at 0% 50%, color-mix(in srgb, var(--bt) 26%, transparent), transparent 60%), var(--card); }
+.nx-ktile { flex-direction: row; align-items: center; gap: 10px; }
+.nx-ktile > span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.nx-ktile small { font-size: 12px; color: var(--muted); }
+.nx-tile { min-height: 92px; }
+
+/* Pathfinder: the two main tools, then one material table with Min / Avg / Max */
+.pf-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 14px; background: color-mix(in srgb, var(--bg) 60%, var(--card)); border: 1px solid var(--edge); }
+.pf-switch a { height: 40px; display: grid; place-items: center; border-radius: 10px; color: var(--muted); font-weight: 700; font-size: 14px; }
+.pf-switch a[aria-current=page] { color: var(--on-accent); background: linear-gradient(180deg, color-mix(in srgb, #fff 18%, var(--accent)), var(--accent)); box-shadow: 0 4px 14px -6px var(--glow); }
+.pf-sumgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px; margin: 8px 0; }
+.pf-sumgrid > span { display: flex; flex-direction: column; align-items: center; padding: 8px 4px; border-radius: 10px; background: color-mix(in srgb, var(--bg) 45%, transparent); }
+.pf-sumgrid b { font-size: 20px; font-variant-numeric: tabular-nums; }
+.pf-sumgrid small { font-size: 11px; color: var(--muted); }
+.pf-sum-min b { color: #7FE0A6; } .pf-sum-expected b { color: var(--text); } .pf-sum-pity b { color: #FF9C8A; }
+.pf-legend b { color: var(--text); }
+.pf-table { display: flex; flex-direction: column; border-radius: var(--r-lg); border: 1px solid var(--edge); background: linear-gradient(165deg, var(--tint), var(--card) 60%); overflow: hidden; }
+.pf-cols, .pf-row { display: grid; grid-template-columns: 36px minmax(0, 1fr) repeat(var(--cols, 3), 56px); align-items: center; gap: 8px; padding: 8px 12px; }
+.pf-table:has(.pf-n-base) { --cols: 1; }
+.pf-cols { padding-block: 8px 4px; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.pf-cols span { grid-column: 1 / 3; }
+.pf-cols b { text-align: right; }
+.pf-row { color: var(--text); border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
+.pf-name { display: flex; flex-direction: column; min-width: 0; }
+.pf-name b { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.pf-name small { font-size: 12px; color: var(--muted); }
+.pf-n { text-align: right; font-size: 14px; font-variant-numeric: tabular-nums; }
+.pf-n-min { color: #7FE0A6; } .pf-n-pity { color: #FF9C8A; }
+.pf-art { width: 36px; height: 36px; border-radius: 9px; background-repeat: no-repeat; background-color: color-mix(in srgb, var(--bg) 60%, transparent); }
+.pf-art-none { background: color-mix(in srgb, var(--zone, var(--accent)) 25%, transparent); }
+.pf-art-gold { background: url(/assets/icons/idlearc-refined/tokens/token-gold.svg) center / 30px no-repeat, color-mix(in srgb, #FFD97A 15%, transparent); }
+.pf-gold .pf-name b { color: #FFE2A8; }
+.pf-group { --zone: var(--accent); }
+.pf-biome { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-top: 1px solid color-mix(in srgb, var(--zone) 50%, var(--line));
+  background: linear-gradient(90deg, color-mix(in srgb, var(--zone) 24%, transparent), transparent 80%); }
+.pf-biome span { display: flex; flex-direction: column; }
+.pf-biome b { font-size: 14px; color: color-mix(in srgb, var(--zone) 55%, #fff); }
+.pf-biome small { font-size: 11px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+.pf-biome-art { width: 36px; height: 36px; border-radius: 9px; background: url(/official-art/biomes.webp) 0 0 / 800% 300% no-repeat; box-shadow: 0 0 0 2px color-mix(in srgb, var(--zone) 60%, transparent); }
+.pf-group .pf-row { box-shadow: inset 3px 0 0 color-mix(in srgb, var(--zone) 70%, transparent); }

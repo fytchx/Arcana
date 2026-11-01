@@ -2,7 +2,8 @@
 import {
   SURFACES, ACCENTS, SURFACE_KEY, ACCENT_KEY, surfaceById, accentById, TABS, TOOLS,
   parseHash, hashFor, activeTab, searchIndex, codexEntries, codexCategories, kindName, kindSingular,
-  sortArticles, shortDate, articleHtml, liveEvents, esc, signInButtons, RETURN_KEY, RECENT_TOOLS_KEY, rememberTool, recentTiles
+  sortArticles, shortDate, articleHtml, liveEvents, esc, signInButtons, RETURN_KEY, RECENT_TOOLS_KEY, rememberTool, recentTiles,
+  art as artPath, CLASS_NAMES, BUILD_TYPES, buildMeta,
 } from './core.js';
 import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSection } from './studio.js';
 import { nextCode } from './studio-core.js';
@@ -36,6 +37,7 @@ const P = {
   codex: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
   builds: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
   news: '<path d="M4 4h13v16H6a2 2 0 0 1-2-2z"/><path d="M17 8h3v10a2 2 0 0 1-2 2"/><path d="M8 8h5M8 12h5M8 16h3"/>',
+  directory: '<path d="M4 6h16M4 12h16M4 18h16"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
   back: '<path d="m15 6-6 6 6 6"/>',
   next: '<path d="m9 6 6 6-6 6"/>',
@@ -114,6 +116,11 @@ const row = (href, title, detail, ic, external = false) =>
   '<span class="nx-row-text"><strong>' + esc(title) + '</strong>' + (detail ? '<small>' + esc(detail) + '</small>' : '') + '</span>' +
   '<span class="nx-row-end">' + icon(external ? 'out' : 'next', 18) + '</span></a>';
 const classicNote = '';
+const artImg = (path, size = 40) => '<img class="nx-artimg" src="' + artPath(path) + '" width="' + size + '" height="' + size + '" alt="" loading="lazy">';
+const artRow = (href, title, detail, path) => '<a class="nx-row" href="' + esc(href) + '"><span class="nx-row-art">' + artImg(path, 36) + '</span>' +
+  '<span class="nx-row-text"><strong>' + esc(title) + '</strong>' + (detail ? '<small>' + esc(detail) + '</small>' : '') + '</span><span class="nx-row-end">' + icon('next', 18) + '</span></a>';
+const KIND_ART = { item: 'equipment/equipment-weapon', skill: 'features/feature-class-skills', monster: 'stats/stat-boss-damage', material: 'tokens/token-gem-dust', biome: 'tokens/token-arcstone', affix: 'stats/stat-crit-damage', 'drop-bonus': 'stats/stat-drop-bonus', 'pet-bonus': 'tokens/token-pet-egg', rune: 'tokens/token-runic-core', 'rune-word': 'features/feature-rune-forge', gem: 'tokens/token-gem', talisman: 'equipment/equipment-charm', stance: 'stats/stat-retaliation', mechanic: 'features/feature-codex' };
+const toolById = id => TOOLS.find(t => t.id === id);
 
 // ---------- views ----------
 function homeView() {
@@ -127,7 +134,7 @@ function homeView() {
     '<section>' + '<div class="nx-head">' + label('Latest news') + '<a href="#/news">All news</a></div>' + latest + '</section>' +
     '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredList(3) + '</section>' +
     '<section><div class="nx-head">' + label(recent().length ? 'Jump back in' : 'Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
-    recentTiles(recent()).map(t => '<a class="nx-tile" href="' + esc(t.href) + '">' + icon(t.icon, 22) + '<span>' + esc(t.short || t.name) + '</span></a>').join('') +
+    recentTiles(recent()).map(t => '<a class="nx-tile" href="' + esc(t.href) + '">' + artImg(t.art || 'features/feature-codex', 40) + '<span>' + esc(t.short || t.name) + '</span></a>').join('') +
     '</div></section>';
 }
 // Featured picks come from the owner's list (/api/featured); each build loads through the public
@@ -143,12 +150,19 @@ function loadFeatured() {
     featuredState.state = 'ready';
   }).catch(() => { featuredState.state = 'error'; }).finally(render);
 }
-const featuredPick = c => '<a class="nx-card nx-build" href="#/builds/' + esc(c.post.id) + '"><span class="nx-tags"><span class="nx-tag nx-tag-accent">Featured</span></span><strong>' + esc(c.post.title) + '</strong>' +
-  (c.note ? '<small class="nx-note">' + esc(c.note) + '</small>' : '') + '<small>' + esc(c.post.summary || '') + '</small><span class="nx-by">by <b>' + esc(c.author?.displayName || 'Arcana player') + '</b></span></a>';
+// One build card everywhere: class emblem, build type color and icon, then the words.
+function buildCard(href, { title, summary = '', note = '', by = '', date = '', meta = null, featured = false }) {
+  const t = meta?.stance ? BUILD_TYPES[meta.stance] : null, cls = meta?.cls ? CLASS_NAMES[meta.cls] : '';
+  return '<a class="nx-bcard" href="' + esc(href) + '"' + (t ? ' style="--bt:' + t.color + '"' : '') + '>' +
+    '<span class="nx-bcard-emblem">' + (cls ? '<img src="' + artPath('classes/class-' + cls.toLowerCase()) + '" width="56" height="56" alt="">' : '<img src="' + artPath('features/feature-builds') + '" width="48" height="48" alt="">') + '</span>' +
+    '<span class="nx-bcard-body"><span class="nx-tags">' + (t ? '<span class="nx-btype"><img src="' + artPath(t.art) + '" width="18" height="18" alt="">' + esc(t.name) + '</span>' : '') +
+    (cls ? '<span class="nx-tag">' + esc(cls) + '</span>' : '') + (featured ? '<span class="nx-tag nx-tag-accent">Featured</span>' : '') + '</span>' +
+    '<strong>' + esc(title) + '</strong>' + (note ? '<small class="nx-note">' + esc(note) + '</small>' : '') + (summary ? '<small>' + esc(summary) + '</small>' : '') +
+    '<span class="nx-by">' + [by ? 'by <b>' + esc(by) + '</b>' : '', meta?.level ? 'Level ' + meta.level : '', date].filter(Boolean).join(' · ') + '</span></span></a>';
+}
+const featuredPick = c => buildCard('#/builds/' + c.post.id, { title: c.post.title, summary: c.post.summary, note: c.note, by: c.author?.displayName || 'Arcana player', meta: nextCode(c.post.build) ? buildMeta(nextCode(c.post.build)) : null, featured: true });
 const featuredList = (limit = 12) => { loadFeatured(); return featuredState.cards.length ? '<div class="nx-list">' + featuredState.cards.slice(0, limit).map(featuredPick).join('') + '</div>' : featuredCard(); };
-const featuredCard = () =>
-  '<a class="nx-card nx-build" href="' + esc(FEATURED) + '"><span class="nx-tags"><span class="nx-tag nx-tag-warrior">Warrior</span><span class="nx-tag">Bulwark</span><span class="nx-tag nx-tag-accent">Featured</span></span>' +
-  '<strong>Zane\'s Retaliation Warrior</strong><small>Retaliation, Defense, Block Chance and Strength, with a four-pet setup.</small><span class="nx-by">by <b>Zane</b> · Level 196</span></a>';
+const featuredCard = () => buildCard(FEATURED, { title: "Zane's Retaliation Warrior", summary: 'Retaliation, Defense, Block Chance and Strength, with a four-pet setup.', by: 'Zane', meta: { cls: 1, stance: 'bulwark', level: 196 }, featured: true });
 
 function toolsView(id, query) {
   if (id === 'guild-tree') return guildTreeView(query);
@@ -158,8 +172,19 @@ function toolsView(id, query) {
   if (id === 'rarity') return rarityView();
   if (id === 'compare') return compareView();
   if (NATIVE_TOOLS.includes(id)) return toolView(id);
-  const groups = [...new Set(TOOLS.map(t => t.group))];
-  return groups.map(g => '<section>' + label(g) + '<div class="nx-list">' + TOOLS.filter(t => t.group === g).map(t => row(t.href, t.name, t.detail, t.icon, !t.native)).join('') + '</div></section>').join('') + classicNote;
+  // Most used first: Upgrade costs and ML XP, then the pet calculators, then everything else.
+  const hero = (href, kicker, title, detail, path, tone) => '<a class="nx-hero nx-tone-' + tone + '" href="' + href + '">' + artImg(path, 64) + '<span><span class="nx-kicker">' + kicker + '</span><strong>' + esc(title) + '</strong><small>' + esc(detail) + '</small></span></a>';
+  const mid = t => '<a class="nx-tool-card" href="' + t.href + '">' + artImg(t.art, 48) + '<strong>' + esc(t.name) + '</strong><small>' + esc(t.detail) + '</small></a>';
+  return '<section>' + label('Most used') + '<div class="nx-heroes">' +
+      hero('#/tools/pathfinder', 'PATHFINDER', 'Upgrade costs', 'Materials and gold from any rank to any rank, per slot', 'features/feature-upgrade', 'violet') +
+      hero('#/tools/mlxp', 'PATHFINDER', 'ML XP planner', 'XP, kills and time to your next Monster Levels', 'stats/stat-exp-gain', 'teal') + '</div></section>' +
+    '<section>' + label('Pets') + '<div class="nx-grid2">' + mid(toolById('pet')) + mid(toolById('affix')) + '</div></section>' +
+    '<section>' + label('Planning') + '<div class="nx-list">' + ['studio', 'guild-tree', 'skills'].map(k => { const t = toolById(k); return artRow(t.href, t.name, t.detail, t.art); }).join('') + '</div></section>' +
+    '<section>' + label('More Pathfinder') + '<div class="nx-list">' +
+      artRow('#/tools/upgrade-map', 'Upgrade map', 'Every step of every rank, one at a time', 'tokens/token-upgrade-catalyst') +
+      artRow('#/tools/compare', 'Compare items', 'Two items’ base ranges at the same rarity', 'equipment/equipment-weapon') +
+      artRow('#/tools/rarity', 'Rarity reference', 'Base cost of each rarity upgrade', 'tokens/token-gem') + '</div></section>' +
+    '<section>' + label('Farming') + '<div class="nx-list">' + (t => artRow(t.href, t.name, t.detail, t.art))(toolById('ml')) + '</div></section>';
 }
 
 let codexQuery = '', codexKind = '';
@@ -205,7 +230,7 @@ function codexResults(entries) {
     if (!hits.length) return empty('Nothing found', 'Try a shorter word, like an item, skill or monster name.');
     return '<div class="nx-list">' + hits.map(e => codexRow(e, withKind(e))).join('') + '</div>';
   }
-  return '<section>' + label('Browse') + '<div class="nx-grid2">' + codexCategories(entries, data.codex.order).map(k => '<button class="nx-tile nx-tile-left" data-act="kind" data-kind="' + esc(k.kind) + '"><strong>' + esc(k.name) + '</strong><small>' + k.count + ' entries</small></button>').join('') + '</div></section>';
+  return '<section>' + label('Browse') + '<div class="nx-grid2">' + codexCategories(entries, data.codex.order).map(k => '<button class="nx-tile nx-tile-left nx-ktile" data-act="kind" data-kind="' + esc(k.kind) + '">' + artImg(KIND_ART[k.kind] || 'features/feature-codex', 40) + '<span><strong>' + esc(k.name) + '</strong><small>' + k.count + ' entries</small></span></button>').join('') + '</div></section>';
 }
 
 const posts = {};
@@ -251,7 +276,8 @@ function guideForm() {
 
 function buildsView(id) {
   if (id === 'new-guide') return guideForm();
-  if (id) return postView(id);
+  if (id === 'community' || id === 'guides' || id === 'featured') { buildTab = id; history.replaceState(null, '', '#/builds'); }
+  else if (id) return postView(id);
   loadBuilds();
   if (buildTab === 'guides') loadGuides();
   const tabs = '<div class="nx-seg" role="tablist" aria-label="Source">' + [['featured', 'Featured'], ['community', 'Community'], ['guides', 'Guides']].map(([id, l]) => '<button role="tab" aria-selected="' + (buildTab === id) + '" data-act="buildtab" data-tab="' + id + '">' + l + '</button>').join('') + '</div>';
@@ -266,7 +292,7 @@ function buildsView(id) {
   } else {
     const b = data.builds;
     body = b.state === 'error' ? failed('Community builds', 'builds') : b.state !== 'ready' ? loading('builds')
-      : b.value.length ? '<div class="nx-list">' + b.value.map(p => '<a class="nx-card" href="#/builds/' + encodeURIComponent(p.id) + '"><strong>' + esc(p.title) + '</strong><small>' + esc(p.summary || p.excerpt || '') + '</small><span class="nx-by">' + esc(shortDate(p.createdAt)) + '</span></a>').join('') + '</div>'
+      : b.value.length ? '<div class="nx-list">' + b.value.map(p => buildCard('#/builds/' + encodeURIComponent(p.id), { title: p.title, summary: p.summary || p.excerpt || '', date: shortDate(p.createdAt), meta: p.card })).join('') + '</div>'
       : empty('No community builds yet', 'Be the first. Make your build in Build Studio and share it with the community.', '<a class="nx-btn" href="#/studio">Open Build Studio</a>');
   }
   return tabs + body + '<section>' + label('How submitting works') + '<ol class="nx-steps"><li>Make your build in Build Studio. Fill in as much or as little as you like.</li><li>Tap Share, then Publish to Community. Pick the parts, add a summary, and agree to be credited.</li><li>It goes live under Community right away. The best get Featured.</li></ol></section>';
@@ -288,6 +314,19 @@ function newsView(slug) {
   if (n.state !== 'ready') return loading('news');
   if (!n.value.length) return empty('No news yet', 'Patch notes and events show up here.');
   return '<div class="nx-list">' + n.value.map(a => '<a class="nx-card nx-story" href="' + hashFor('news', a.slug) + '"><span class="nx-kicker">' + esc((a.category || 'News').toUpperCase()) + ' · ' + esc(shortDate(a.publishedAt)) + '</span><strong>' + esc(a.teaserTitle || a.title) + '</strong>' + (a.subtitle ? '<small>' + esc(a.subtitle) + '</small>' : '') + '</a>').join('') + '</div>';
+}
+
+function directoryView() {
+  const u = user();
+  const ev = liveEvents()[0];
+  const sec = (t, rows) => '<section>' + label(t) + '<div class="nx-list">' + rows.join('') + '</div></section>';
+  return '<header class="nx-page-head"><span class="nx-kicker">ALL OF ARCANA</span><h1>Directory</h1><p>Every page in one place.</p></header>' +
+    sec('Tools', [artRow('#/tools', 'All tools', 'Pathfinder, pet calculators, planners', 'features/feature-tools'), ...TOOLS.filter(t => t.art).map(t => artRow(t.href, t.name, t.detail, t.art))]) +
+    sec('Game reference', [artRow('#/codex', 'Codex', 'Items, skills, monsters, materials, biomes and more', 'features/feature-codex')]) +
+    sec('Builds and guides', [artRow('#/builds', 'Featured builds', 'Picked by Zane', 'features/feature-builds'), artRow('#/builds/community', 'Community builds', 'Shared by players', 'features/feature-community'), artRow('#/builds/guides', 'Guides', 'Written by players', 'features/feature-guides'), artRow('#/studio', 'Build Studio', 'Make your own and share it', 'features/feature-build-studio')]) +
+    sec('News and events', [artRow('#/news', 'News', 'Patch notes, events and articles', 'features/feature-wiki'), ...(ev ? [artRow(ev.href, ev.name, ev.detail, 'tokens/token-ruby')] : [])]) +
+    sec('Community', [artRow('#/guilds', 'Guilds', 'Find a guild and apply', 'features/feature-guild-raid'), artRow('#/lfg', 'Looking for group', 'Raids, teams and planned runs', 'features/feature-community'), artRow('#/records', 'Season records', 'Top players and guilds by season', 'stats/stat-boss-damage')]) +
+    sec('You', [artRow('#/profile', 'Profile and theme', u ? 'Saved builds, checklists, colors' : 'Sign in, colors', 'tokens/token-guildstone'), artRow('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', 'features/feature-feedback'), ...(u?.permissions?.manageSite ? [artRow('#/admin', 'Admin', 'Featured, news, people, traffic', 'tokens/token-runic-core')] : [])]);
 }
 
 function profileView() {
@@ -317,20 +356,23 @@ function noteVisit(section, id) {
 }
 
 // ---------- shell ----------
-const TITLES = { lfg: 'LFG', records: 'Records', guilds: 'Guilds', checklist: 'Checklist', feedback: 'Feedback', admin: 'Admin', tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
+const TITLES = { directory: 'Directory', lfg: 'LFG', records: 'Records', guilds: 'Guilds', checklist: 'Checklist', feedback: 'Feedback', admin: 'Admin', tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
 function render() {
   const { section, id, query } = parseHash(location.hash);
   noteVisit(section, id);
   if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? adminView(user()) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? adminView(user()) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
-  const title = section === 'home' ? '<a class="nx-word" href="#/home">ARCANA</a>' : '<span class="nx-title">' + esc(TITLES[section]) + '</span>';
+  const logo = '<img src="/assets/arcana-logo.webp" width="34" height="28" alt="">';
+  const title = section === 'home' ? '<a class="nx-brand" href="#/home" aria-label="Arcana home">' + logo + '<span>ARCANA</span></a>'
+    : '<a class="nx-brand nx-brand-sm" href="#/home" aria-label="Arcana home">' + logo + '</a><span class="nx-title">' + esc(TITLES[section]) + '</span>';
   $('nxTopL').innerHTML = title;
-  $('nxTopR').innerHTML = (section !== 'codex' ? '<a class="nx-iconbtn" href="#/codex" aria-label="Search">' + icon('search', 21) + '</a>' : '') +
+  $('nxTopR').innerHTML =
     '<a class="nx-avatar" href="#/profile" aria-label="Profile"' + (section === 'profile' ? ' aria-current="page"' : '') + '>' + (user() ? esc(initial()) : icon('user', 18)) + '</a>';
-  $('nxNav').innerHTML = TABS.map(t => '<a href="' + hashFor(t.id) + '"' + (t.id === tab ? ' aria-current="page"' : '') + '>' + icon(t.id, 22) + '<span>' + t.label + '</span></a>').join('');
+  $('nxNav').innerHTML = TABS.map(t => '<a href="' + (t.href || hashFor(t.id)) + '"' + (t.id === 'search' ? ' class="nx-nav-search"' : '') + (t.id === tab ? ' aria-current="page"' : '') + '>' + (t.id === 'search' ? '<i>' + icon('search', 24) + '</i>' : icon(t.id, 22)) + '<span>' + t.label + '</span></a>').join('');
+  document.body.dataset.section = section;
   $('nxNotice').hidden = !data.notice.value;
   $('nxNotice').textContent = data.notice.value || '';
   const main = $('nxMain'), key = section + '/' + id;

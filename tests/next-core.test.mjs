@@ -22,7 +22,7 @@ test('next: routes parse, round-trip, and unknown sections fall back to home', (
   assert.equal(parseHash(hashFor('news', 'hallowed-harvest-2026-guide')).id, 'hallowed-harvest-2026-guide');
   assert.equal(parseHash('#/labs/build').section, 'home');
   assert.equal(parseHash('').section, 'home');
-  assert.equal(activeTab('profile'), '');
+  assert.equal(activeTab('profile'), ''); assert.equal(activeTab('codex'), 'search'); assert.equal(activeTab('news'), 'directory');
   assert.equal(activeTab('builds'), 'builds');
   assert.equal(activeTab('studio'), 'tools');
   assert.equal(parseHash('#/build?d=abc').query.get('d'), 'abc');

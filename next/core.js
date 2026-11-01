@@ -28,21 +28,24 @@ export const accentById = id => ACCENTS.find(a => a.id === id) || ACCENTS[0];
 export const TABS = Object.freeze([
   { id: 'home', label: 'Home' },
   { id: 'tools', label: 'Tools' },
-  { id: 'codex', label: 'Codex' },
+  { id: 'search', label: 'Search', href: '#/codex' },
   { id: 'builds', label: 'Builds' },
-  { id: 'news', label: 'News' }
+  { id: 'directory', label: 'Directory' }
 ]);
+
+// The hand-drawn Arcana vector set (assets/icons/idlearc-refined). Gem highlights follow the accent.
+export const art = path => '/assets/icons/idlearc-refined/' + path + '.svg';
 
 // Tools that still live on the classic site. They open there until each is rebuilt.
 export const TOOLS = Object.freeze([
-  { group: 'Planning', id: 'pathfinder', name: 'Pathfinder', detail: 'Upgrade costs and the materials to farm, biome by biome', href: '#/tools/pathfinder', icon: 'path', native: true },
-  { group: 'Planning', id: 'studio', name: 'Build Studio', detail: 'Make a build and share it as a link', href: '#/studio', icon: 'shield', native: true },
-  { group: 'Pets', id: 'pet', name: 'Compound level', short: 'Compound', detail: 'What a pet bonus reaches at each compound level', href: '#/tools/pet', icon: 'paw', native: true },
-  { group: 'Pets', id: 'affix', name: 'Affix level cost', short: 'Affix cost', detail: 'Shards to level a pet affix from now to your target', href: '#/tools/affix', icon: 'paw', native: true },
-  { group: 'Farming', id: 'mlxp', name: 'ML XP planner', short: 'ML XP', detail: 'Total XP, kills and time to your next Monster Levels', href: '#/tools/mlxp', icon: 'chart', native: true },
-  { group: 'Farming', id: 'ml', name: 'ML farming comparator', short: 'ML farming', detail: 'Which monster gets you Monster Level fastest', href: '#/tools/ml', icon: 'chart', native: true },
-  { group: 'Planning', id: 'guild-tree', name: 'Guild skill tree', short: 'Guild tree', detail: 'Plan guild points, compare plans and share them', href: '#/tools/guild-tree', icon: 'tree', native: true },
-  { group: 'Planning', id: 'skills', name: 'Skill trees', detail: 'Class and passive trees with the real point rules, in Build Studio', href: '#/studio/class', icon: 'tree', native: true }
+  { group: 'Planning', id: 'pathfinder', name: 'Pathfinder', detail: 'Upgrade costs and the materials to farm, biome by biome', href: '#/tools/pathfinder', icon: 'path', native: true, art: 'features/feature-upgrade' },
+  { group: 'Planning', id: 'studio', name: 'Build Studio', detail: 'Make a build and share it as a link', href: '#/studio', icon: 'shield', native: true, art: 'features/feature-build-studio' },
+  { group: 'Pets', id: 'pet', name: 'Compound level', short: 'Compound', detail: 'What a pet bonus reaches at each compound level', href: '#/tools/pet', icon: 'paw', native: true, art: 'tokens/token-pet-egg' },
+  { group: 'Pets', id: 'affix', name: 'Affix level cost', short: 'Affix cost', detail: 'Shards to level a pet affix from now to your target', href: '#/tools/affix', icon: 'paw', native: true, art: 'tokens/token-pet-shard' },
+  { group: 'Farming', id: 'mlxp', name: 'ML XP planner', short: 'ML XP', detail: 'Total XP, kills and time to your next Monster Levels', href: '#/tools/mlxp', icon: 'chart', native: true, art: 'stats/stat-exp-gain' },
+  { group: 'Farming', id: 'ml', name: 'ML farming comparator', short: 'ML farming', detail: 'Which monster gets you Monster Level fastest', href: '#/tools/ml', icon: 'chart', native: true, art: 'stats/stat-extra-kill' },
+  { group: 'Planning', id: 'guild-tree', name: 'Guild skill tree', short: 'Guild tree', detail: 'Plan guild points, compare plans and share them', href: '#/tools/guild-tree', icon: 'tree', native: true, art: 'features/feature-guild-raid' },
+  { group: 'Planning', id: 'skills', name: 'Skill trees', detail: 'Class and passive trees with the real point rules, in Build Studio', href: '#/studio/class', icon: 'tree', native: true, art: 'features/feature-passive-tree' }
 ]);
 
 // Live events for the Home card. Each hides itself after `until`.
@@ -57,14 +60,15 @@ export function parseHash(hash = '') {
   const raw = String(hash).replace(/^#\/?/, '');
   const [path, query = ''] = raw.split('?');
   const parts = path.split('/').filter(Boolean).map(p => { try { return decodeURIComponent(p); } catch { return p; } });
-  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile', 'studio', 'build', 'admin', 'feedback', 'checklist', 'guilds', 'lfg', 'records'];
+  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile', 'studio', 'build', 'admin', 'feedback', 'checklist', 'guilds', 'lfg', 'records', 'directory'];
   const section = known.includes(parts[0]) ? parts[0] : 'home';
   return { section, id: section === parts[0] ? parts.slice(1).join('/') : '', query: new URLSearchParams(query) };
 }
 export const hashFor = (section, id = '') => '#/' + section + (id ? '/' + encodeURIComponent(id) : '');
 
 // The bottom tab that should light up for a route (profile has no tab).
-export const activeTab = section => section === 'admin' ? '' : section === 'studio' ? 'tools' : section === 'build' ? 'builds' : TABS.some(t => t.id === section) ? section : '';
+const TAB_OF = { studio: 'tools', build: 'builds', codex: 'search', news: 'directory', guilds: 'directory', lfg: 'directory', records: 'directory', feedback: 'directory', checklist: 'directory' };
+export const activeTab = section => TAB_OF[section] || (TABS.some(t => t.id === section) ? section : '');
 
 // Codex search over the verified game index. Title matches rank above keyword matches.
 export function searchIndex(entries, query, limit = 24) {
@@ -160,4 +164,20 @@ export function rememberTool(list, id) {
 export function recentTiles(list) {
   const ids = [...(Array.isArray(list) ? list : []), ...DEFAULT_RECENT].filter((x, i, a) => a.indexOf(x) === i);
   return ids.map(id => id === 'codex' ? { id, short: 'Codex', href: '#/codex', icon: 'codex' } : TOOLS.find(t => t.id === id)).filter(Boolean).slice(0, 3);
+}
+
+// Build cards: class and build type. Stances are named by what the build does.
+export const CLASS_NAMES = { 1: 'Warrior', 2: 'Archer', 3: 'Mage', 4: 'Rogue', 5: 'Druid' };
+export const BUILD_TYPES = Object.freeze({
+  bulwark: { name: 'Retaliation', art: 'stats/stat-retaliation', color: '#FF6B6B' },
+  aggressive: { name: 'Attack Damage', art: 'stats/stat-attack-damage', color: '#FFB547' },
+  beastmaster: { name: 'Pet Damage', art: 'stats/stat-pet-damage', color: '#5FD68A' },
+  harmony: { name: 'Harmony', art: 'stats/stat-all-class-skills', color: '#7FB2FF' }
+});
+// Class, stance and level from a new-app share code. Anything unexpected comes back empty.
+export function buildMeta(code) {
+  try {
+    const o = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(String(code).replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0))));
+    return { cls: CLASS_NAMES[o.c] ? o.c : null, stance: BUILD_TYPES[o.s] ? o.s : null, level: Number.isInteger(o.l) ? o.l : null };
+  } catch { return null; }
 }
