@@ -2,6 +2,7 @@
 // Every action goes through the existing server endpoints and their permission checks.
 import { esc, shortDate, articleHtml } from './core.js';
 import { AWARD_LABELS, ROLE_NAMES } from '../src/account-policy.js';
+import { reportsTab } from './feedback.js';
 
 let rerender = () => {};
 const A = { news: { state: 'idle', revision: 0, list: [], edit: null, preview: false }, people: { state: 'idle', page: 1, pages: 1, total: 0, list: [], q: '', sel: null }, traffic: { state: 'idle', d: null }, tab: 'inbox', posts: { state: 'idle', list: [] }, feat: { state: 'idle', revision: 0, items: [], dirty: false }, site: { state: 'idle', revision: 0, notice: { enabled: false, text: '' } }, busy: false, toast: '' };
@@ -165,13 +166,13 @@ function site() {
 }
 function more() {
   const r = (h, t, d) => '<a class="nx-row" href="' + h + '"><span class="nx-row-text"><strong>' + t + '</strong><small>' + d + ' · classic admin</small></span><span class="nx-row-end">↗</span></a>';
-  return '<section><h2 class="nx-label">Classic tools</h2><div class="nx-list">' + r('/#/admin?tab=appearance', 'Theme and history', 'Default theme and rollback') + r('/#/beta/reports', 'Beta reports', 'Suggestions and bug reports') + r('/#/wiki/studio', 'Wiki Studio', 'Classic wiki articles') + '</div></section>';
+  return '<section><h2 class="nx-label">Classic tools</h2><div class="nx-list">' + r('/#/admin?tab=appearance', 'Theme and history', 'Default theme and rollback') + r('/#/wiki/studio', 'Wiki Studio', 'Classic wiki articles') + '</div></section>';
 }
 
 export function adminView(user) {
   if (!user?.permissions?.manageSite) return '<div class="nx-empty"><strong>Admins only</strong><p>This page is for Arcana admins.</p><a class="nx-btn" href="#/profile">Back to Profile</a></div>';
-  const tabs = [['inbox', 'Inbox'], ['featured', 'Featured'], ['news', 'News'], ['people', 'People'], ['traffic', 'Traffic'], ['site', 'Site']];
-  const body = A.tab === 'featured' ? featured() : A.tab === 'site' ? site() + more() : A.tab === 'news' ? newsTab() : A.tab === 'people' ? peopleTab(user) : A.tab === 'traffic' ? trafficTab() : inbox();
+  const tabs = [['inbox', 'Inbox'], ['featured', 'Featured'], ['reports', 'Reports'], ['news', 'News'], ['people', 'People'], ['traffic', 'Traffic'], ['site', 'Site']];
+  const body = A.tab === 'featured' ? featured() : A.tab === 'site' ? site() + more() : A.tab === 'news' ? newsTab() : A.tab === 'people' ? peopleTab(user) : A.tab === 'traffic' ? trafficTab() : A.tab === 'reports' ? reportsTab() : inbox();
   return '<a class="nx-back" href="#/profile">‹ Profile</a><header class="nx-page-head"><span class="nx-kicker">OWNER</span><h1>Admin</h1></header>' +
     '<div class="st-tabs adm-tabs nx-scrollx" role="tablist">' + tabs.map(([id, l]) => '<button role="tab" aria-selected="' + (A.tab === id) + '" data-adm="tab" data-v="' + id + '">' + l + (id === 'featured' && A.feat.dirty ? ' •' : '') + '</button>').join('') + '</div>' +
     body + (A.toast ? '<div class="st-toast" role="status">' + esc(A.toast) + '</div>' : '');

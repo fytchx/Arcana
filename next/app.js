@@ -9,6 +9,8 @@ import { nextCode } from './studio-core.js';
 import { toolView, initTools, NATIVE_TOOLS } from './tools.js';
 import { pathfinderView, initPathfinder, mlXpView, initMlXp, upgradeMapView, rarityView, compareView, initPathfinderViews } from './pathfinder.js';
 import { adminView, initAdmin } from './admin.js';
+import { feedbackView, initFeedback, notePage } from './feedback.js';
+import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 import { demoBuilds } from '../src/catalog.js';
 
@@ -144,7 +146,7 @@ const featuredCard = () =>
   '<strong>Zane\'s Retaliation Warrior</strong><small>Retaliation, Defense, Block Chance and Strength, with a four-pet setup.</small><span class="nx-by">by <b>Zane</b> · Level 196</span></a>';
 
 function toolsView(id) {
-  if (id === 'pathfinder') return pathfinderView();
+  if (id === 'pathfinder') { const v = pathfinderView(); return v.replace('<!--pf-save-->', saveChecklistBlock(data.me.value)); }
   if (id === 'mlxp') return mlXpView();
   if (id === 'upgrade-map') return upgradeMapView();
   if (id === 'rarity') return rarityView();
@@ -265,13 +267,13 @@ function profileView() {
     : '<div class="nx-card"><strong>Sign in to save builds</strong><small>Your builds follow you to any device.</small>' + signInButtons(me) + '</div>';
   const admin = u?.permissions?.manageSite ? '<a class="nx-row nx-row-admin" href="#/admin"><span class="nx-row-text"><strong>Admin</strong><small>Community builds, Featured, announcement</small></span><span class="nx-row-end">' + icon('next', 18) + '</span></a>' : '';
   return who + admin +
-    savedBuildsSection(!!u) +
+    savedBuildsSection(!!u) + checklistsSection(!!u) +
     '<section>' + label('Theme') + '<div class="nx-card nx-theme">' +
     '<span class="nx-sub">Background</span><div class="nx-grid2" role="radiogroup" aria-label="Background">' + SURFACES.map(x => '<button role="radio" aria-checked="' + (x.id === s.id) + '" data-act="surface" data-id="' + x.id + '" class="nx-swatch" style="background:' + x.bg + '"><span style="background:' + x.card + '"></span>' + esc(x.name) + '</button>').join('') + '</div>' +
     '<span class="nx-sub">Accent <em>· ' + esc(a.name) + '</em></span><div class="nx-dots" role="radiogroup" aria-label="Accent">' + ACCENTS.map(x => '<button role="radio" aria-checked="' + (x.id === a.id) + '" aria-label="' + esc(x.name) + '" data-act="accent" data-id="' + x.id + '" style="background:' + x.hex + '"></button>').join('') + '</div>' +
     '<p class="nx-fine">Rarity, class and rune colors never change, so the accent can\'t be confused with game colors.</p></div></section>' +
     '<section>' + label('Community') + '<div class="nx-list">' + row('/#/guilds', 'Guilds', '', '', true) + row('/#/lfg/raids', 'Looking for group', '', '', true) + row('/#/community', 'Community posts', '', '', true) + '</div></section>' +
-    '<section>' + label('More') + '<div class="nx-list">' + row('/#/beta', 'Report a problem', '', '', true) + row('/', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
+    '<section>' + label('More') + '<div class="nx-list">' + row('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', '') + row('/', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
 }
 
 // ---------- recently used tools ----------
@@ -284,13 +286,14 @@ function noteVisit(section, id) {
 }
 
 // ---------- shell ----------
-const TITLES = { admin: 'Admin', tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
+const TITLES = { checklist: 'Checklist', feedback: 'Feedback', admin: 'Admin', tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
 function render() {
   const { section, id, query } = parseHash(location.hash);
   noteVisit(section, id);
+  if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'admin' ? adminView(user()) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? adminView(user()) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   const title = section === 'home' ? '<a class="nx-word" href="#/home">ARCANA</a>' : '<span class="nx-title">' + esc(TITLES[section]) + '</span>';
   $('nxTopL').innerHTML = title;
@@ -336,6 +339,8 @@ initPathfinder(render);
 initMlXp(render);
 initPathfinderViews(render);
 initAdmin(render);
+initFeedback(render);
+initChecklists(render);
 window.addEventListener('arcana:news-changed', () => { data.news.state = 'idle'; data.article = {}; });
 window.addEventListener('arcana:featured-changed', () => { featuredState.state = 'idle'; data.builds.state = 'idle'; });
 applyTheme();

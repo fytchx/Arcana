@@ -56,7 +56,7 @@ export function parseHash(hash = '') {
   const raw = String(hash).replace(/^#\/?/, '');
   const [path, query = ''] = raw.split('?');
   const parts = path.split('/').filter(Boolean).map(p => { try { return decodeURIComponent(p); } catch { return p; } });
-  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile', 'studio', 'build', 'admin'];
+  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile', 'studio', 'build', 'admin', 'feedback', 'checklist'];
   const section = known.includes(parts[0]) ? parts[0] : 'home';
   return { section, id: section === parts[0] ? parts.slice(1).join('/') : '', query: new URLSearchParams(query) };
 }
@@ -121,7 +121,7 @@ export function articleHtml(body, slug = '') {
   return String(body || '').trim().split(/\n\s*\n/g).filter(Boolean).map(block => {
     const t = block.trim();
     if (/^\[\[[a-z-]+\]\]$/.test(t)) {
-      if (t === '[[arcana-feedback-cta]]') return '<p class="nx-callout">Got feedback? <a href="/#/beta">Tell me what to fix or build next</a>.</p>';
+      if (t === '[[arcana-feedback-cta]]') return '<p class="nx-callout">Got feedback? <a href="#/feedback">Tell me what to fix or build next</a>.</p>';
       return '<p class="nx-callout">This part has an interactive chart. <a href="/#/journal/article?slug=' + encodeURIComponent(slug) + '">See it on the classic page</a>.</p>';
     }
     if (t.startsWith('## ')) return '<h2>' + inline(t.slice(3)) + '</h2>';

@@ -38,3 +38,16 @@ test('pathfinder: ML XP shows the same time, XP and kills as the classic planner
     for (const v of m.variants) assert.ok(html.includes('≈' + displayKills(v.kills) + ' <span>kills'), v.id + ' ' + JSON.stringify(p));
   }
 });
+
+test('pathfinder: saved farming checklists always pass the server checklist rules', async () => {
+  const { checklistFrom } = await import('../next/pathfinder.js');
+  const { normalizeSavedFarmingList } = await import('../src/farming-lists-server.mjs');
+  for (const quantity of [1, 4]) {
+    const p = checklistFrom(fixture, { fromStage: 'A3', fromLevel: 0, toStage: 'A7', toLevel: 1, quantity }, [], 'chest');
+    const saved = normalizeSavedFarmingList(p.list);
+    assert.equal(saved.slot, 'chest');
+    const total = saved.groups.flatMap(g => g.items).find(i => i.slug === 'alpha');
+    assert.ok(Number(total.quantity) > 0);
+  }
+  assert.ok(checklistFrom(fixture, { fromStage: 'A7', fromLevel: 1, toStage: 'A3', toLevel: 0 }, [], 'chest').error);
+});

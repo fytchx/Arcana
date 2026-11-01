@@ -449,3 +449,17 @@ button.st-chip[aria-selected=true] { background: var(--soft); }
 .adm-bars { height: 120px; display: flex; align-items: flex-end; gap: 4px; padding: 10px; border-radius: var(--r); background: var(--card); border: 1px solid var(--line); }
 .adm-bars span { flex: 1; min-width: 6px; border-radius: 4px 4px 0 0; background: var(--accent); }
 .nx-field textarea { border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--text); padding: 10px 12px; font: inherit; font-size: 16px; line-height: 1.5; resize: vertical; }
+.nx-trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.fb-details { white-space: pre-wrap; color: #C4C9D6 !important; }
+
+.pf-save { display: flex; align-items: flex-end; gap: 8px; }
+.pf-save .nx-field { flex: 1; }
+.pf-save .nx-btn { margin: 0; height: 48px; }
+.cl-bar { display: block; height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; margin-top: 6px; }
+.cl-bar.big { height: 10px; margin: 0; }
+.cl-bar i { display: block; height: 100%; background: var(--g-spent); }
+.cl-item { cursor: pointer; }
+.cl-check { flex-direction: row !important; align-items: center; gap: 12px !important; }
+.cl-check input { width: 22px; height: 22px; accent-color: var(--g-spent); flex: none; }
+.cl-item.done b { text-decoration: line-through; color: var(--muted); }
+.cl-del.danger { background: #4A1F27; border-color: #B04A58; color: #FFD0D7; }

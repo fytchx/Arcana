@@ -91,7 +91,7 @@ export function pathfinderView() {
       '</tbody></table></div><p>Minimum assumes no failures. Average accounts for listed success odds, a 30% failure refund and the modeled pity limit. Pity maximum assumes each upgrade reaches its modeled limit. Pity carry-over between different upgrades is not independently verified.</p></details>';
   } else if (!sc.available) odds = '<p class="nx-fine">Failure and pity scenarios unavailable: ' + esc(String(sc.reason || 'verified failure odds missing').replace(/\.+$/, '')) + '. Base recipe costs are shown.</p>';
 
-  return head + form + summary + '<section>' + label('Monster materials') + (zones.length ? zoneHtml : '<p class="nx-fine">No monster drops required.</p>') + '</section>' + otherHtml + gold + odds + more;
+  return head + form + summary + '<!--pf-save-->' + '<section>' + label('Monster materials') + (zones.length ? zoneHtml : '<p class="nx-fine">No monster drops required.</p>') + '</section>' + otherHtml + gold + odds + more;
 }
 
 function update(patch) { st.range = saveRange({ ...initialQuickRange(st.data, st.range), ...patch }); rerender(); }
@@ -247,3 +247,21 @@ export function initPathfinderViews(render) {
     if (ck) { try { localStorage.setItem(CMP_KEY, JSON.stringify({ ...cmpRead(), [ck]: e.target.value })); } catch { /* ok */ } render(); }
   });
 }
+
+// ---------- farming checklist payload (same as the classic "Save farming checklist") ----------
+export function checklistPayload(slot) {
+  if (!st.data) return { error: 'Upgrade recipes aren’t loaded yet.' };
+  return checklistFrom(st.data, st.range, st.catalog, slot);
+}
+// Pure: the checklist for a recipe snapshot and saved range (tested against the server validator).
+export function checklistFrom(snapshot, raw, catalog, slot) {
+  const range = initialQuickRange(snapshot, raw), quote = quoteRange(snapshot, range, { stage: range.fromStage });
+  if (!quote.complete || quote.error || !quote.materials.length) return { error: 'Pick a valid, complete upgrade route first.' };
+  const sc = quoteFailureScenarios(snapshot, quote), mode = ['min', 'expected', 'pity'].includes(range.costMode) ? range.costMode : 'expected';
+  const sel = sc.available ? sc[mode] : quote;
+  const groups = sourceMaterialGroups(sel.materials, snapshot.materials, catalog).map(g => ({ name: g.name, tier: g.tier, items: g.materials.map(m => ({ slug: m.slug, name: m.name, quantity: String(m.quantity) })) }));
+  const lab = sc.available ? { min: 'Minimum', expected: 'Average', pity: 'Pity maximum' }[mode] : 'Base';
+  return { list: { title: lab + ' · Upgrade ' + (quote.itemCount > 1 ? quote.itemCount + ' items · ' : '') + range.fromStage + ' +' + range.fromLevel + ' → ' + range.toStage + ' +' + range.toLevel,
+    slot, from: range.fromStage + ' +' + range.fromLevel, to: range.toStage + ' +' + range.toLevel, gold: String(sel.gold), sourceVersion: String(snapshot.sourceVersion || snapshot.source || ''), groups } };
+}
+export const SAVE_SLOTS = PATHFINDER_SLOTS;
