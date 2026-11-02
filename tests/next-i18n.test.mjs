@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { SUPPORTED_LANGUAGES, normalizeLocale, translateEnglish } from '../next/i18n.js';
+import { SUPPORTED_LANGUAGES, normalizeLocale, translateEnglish, getLocale, LANGUAGE_KEY } from '../next/i18n.js';
 import { TRANSLATIONS } from '../next/i18n-dictionary.js';
 
 test('all 12 game client locales are represented with unique native names', () => {
@@ -50,4 +50,17 @@ test('all languages translate expanded tool labels, Handbook navigation and feat
   assert.equal(translateEnglish('CHAPTER 3 · COMBAT AND STATS', 'ja'), '章 3 · 戦闘とステータス');
   assert.equal(translateEnglish('Arcstone × 22.9', 'de'), 'Arcstone × 22.9');
   assert.equal(translateEnglish('Pathfinder', 'zh'), 'Pathfinder');
+});
+
+test('English is always the unselected first-visit default', () => {
+  const original = globalThis.localStorage;
+  try {
+    globalThis.localStorage = { getItem: () => null, setItem: () => {} };
+    assert.equal(getLocale(), 'en');
+    globalThis.localStorage = { getItem: key => key === LANGUAGE_KEY ? 'de' : null };
+    assert.equal(getLocale(), 'de');
+  } finally {
+    if (original === undefined) delete globalThis.localStorage;
+    else globalThis.localStorage = original;
+  }
 });
