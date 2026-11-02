@@ -3,6 +3,7 @@
 import { SUPPORTED_LANGUAGES, TRANSLATIONS } from './i18n-dictionary.js';
 import { EXTRA_TRANSLATIONS } from './i18n-extra.js';
 import { HANDBOOK_TRANSLATIONS } from './i18n-handbook.js';
+import { translatedGameTerm, loadGameTermPack, termPack } from './i18n-game.js';
 
 export { SUPPORTED_LANGUAGES };
 export const LANGUAGE_KEY = 'arcana-language-v1';
@@ -57,6 +58,9 @@ export function translateEnglish(input, language = getLocale()) {
     const title = label === label.toUpperCase() && !['ja','ko','zh'].includes(lang) ? translated.toLocaleUpperCase(lang) : translated;
     return before + (dict.Chapter || 'Chapter') + ' ' + chapter[1] + (label ? ' · ' + title : '') + after;
   }
+  // Game's original proper names survive unless an explicit curated locale term exists.
+  const term = translatedGameTerm(phrase, lang);
+  if (term !== phrase) return before + term + after;
   // Fallback is always English. No network translation or paid provider.
   return str;
 }
@@ -142,15 +146,21 @@ export function languageSettingsField() {
 
 export function initLocalization(render) {
   document.documentElement.lang = getLocale();
+  const warm = code => {
+    if (code === 'en' || termPack(code)) return;
+    loadGameTermPack(code).then(p => { if (p && getLocale() === code) render(); });
+  };
+  warm(getLocale());
   document.addEventListener('click', event => {
     const toggle = event.target.closest('[data-language-toggle]');
     if (toggle) { event.preventDefault(); menuOpen = !menuOpen; render(); return; }
     const choice = event.target.closest('[data-language-choose]');
     if (choice) {
       event.preventDefault();
-      setLocale(choice.dataset.languageChoose);
+      const chosen = setLocale(choice.dataset.languageChoose);
       menuOpen = false;
       render();
+      warm(chosen);
       return;
     }
     if (menuOpen && !event.target.closest('[data-language-ui]')) { menuOpen = false; render(); }
@@ -158,9 +168,10 @@ export function initLocalization(render) {
   document.addEventListener('change', event => {
     const picker = event.target.closest('[data-language-select]');
     if (!picker) return;
-    setLocale(picker.value);
+    const chosen = setLocale(picker.value);
     menuOpen = false;
     render();
+    warm(chosen);
   });
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape' || !menuOpen) return;
