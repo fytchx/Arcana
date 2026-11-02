@@ -20,6 +20,13 @@ jobs:
         with:
           node-version: '22'
       - run: npm run check
+      - name: Audit offline translations when generated
+        run: |
+          if [ -d next/generated-locales ]; then
+            node scripts/audit-i18n.mjs --strict
+          else
+            echo 'Editorial translation packs not generated yet (feature remains draft)'
+          fi
   mobile:
     runs-on: ubuntu-latest
     timeout-minutes: 15
