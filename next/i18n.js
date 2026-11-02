@@ -13,6 +13,13 @@ const translations = Object.freeze(Object.fromEntries(
     Object.freeze({ ...TRANSLATIONS[x.code], ...EXTRA_TRANSLATIONS[x.code], ...HANDBOOK_TRANSLATIONS[x.code], ...STATUS_TRANSLATIONS[x.code] })])
 ));
 const supported = new Set(SUPPORTED_LANGUAGES.map(x => x.code));
+const offlineUI = new Map();
+export function setOfflineUIDictionary(locale, phrases) {
+  if (!supported.has(locale) || !phrases || typeof phrases !== 'object' || Array.isArray(phrases)) return;
+  const safe = Object.fromEntries(Object.entries(phrases).filter(([k,v]) =>
+    k.length >= 3 && k.length < 180 && typeof v === 'string' && v.length < 300 && !/[<>]/.test(v)));
+  offlineUI.set(locale, Object.freeze(safe));
+}
 
 export function normalizeLocale(input) {
   const code = String(input || '').toLowerCase().replace('_', '-').split('-')[0];
@@ -62,6 +69,10 @@ export function translateEnglish(input, language = getLocale()) {
   // Game's original proper names survive unless an explicit curated locale term exists.
   const term = translatedGameTerm(phrase, lang);
   if (term !== phrase) return before + term + after;
+  // Known game proper names are never guessed by generic machine translation.
+  if (termPack(lang)?.[phrase]) return str;
+  const machine = offlineUI.get(lang)?.[phrase];
+  if (machine) return before + machine + after;
   // Fallback is always English. No network translation or paid provider.
   return str;
 }
