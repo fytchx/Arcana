@@ -3,6 +3,7 @@
 import { esc, shortDate, articleHtml } from './core.js';
 import { ic } from './core.js';
 import { AWARD_LABELS, ROLE_NAMES } from '../src/account-policy.js';
+import { adminHandbookTab } from './handbook-editor.js';
 import { reportsTab } from './feedback.js';
 
 let rerender = () => {};
@@ -106,7 +107,7 @@ function peopleTab(me) {
   const sel = P.list.find(u => u.id === P.sel);
   if (sel) {
     const has = new Set((sel.roles || []).map(r => r.id || r)), aw = new Set((sel.awards || []).map(a => a.id || a));
-    const roles = ['wiki-editor', 'moderator', ...(me?.isOwner ? ['admin', 'developer'] : [])];
+    const roles = ['wiki-editor', 'game-developer', 'moderator', ...(me?.isOwner ? ['admin', 'developer'] : [])];
     return btn('closeMember', '‹ All members') + '<section class="nx-tool"><strong class="adm-name">' + esc(sel.displayName) + '</strong><small class="nx-fine">' + esc([sel.inGameName, sel.guild, 'joined ' + shortDate(sel.joinedAt)].filter(Boolean).join(' · ')) + '</small>' +
       (has.has('creator') ? '<p class="nx-callout">The Creator’s roles can’t be changed.</p>' :
       '<h3 class="st-h3">Roles</h3><div class="st-wrapchips">' + roles.map(r => '<button aria-pressed="' + has.has(r) + '" data-adm="toggleRole" data-v="' + r + '">' + esc(ROLE_NAMES[r] || r) + '</button>').join('') + '</div>' +
@@ -144,6 +145,29 @@ function trafficTab() {
 const title = id => A.posts.list.find(p => p.id === id)?.title || 'Community build';
 const isFeatured = id => A.feat.items.some(x => x.postId === id);
 const btn = (act, text, data = '', cls = 'nx-btn') => '<button class="' + cls + '" data-adm="' + act + '" ' + data + (A.busy ? ' disabled' : '') + '>' + text + '</button>';
+
+// ---------- Roles (Creator only): which roles can do what ----------
+const R = { state: 'idle', revision: 0, grid: [], roles: [], dirty: false };
+function loadRoles() {
+  if (R.state !== 'idle') return;
+  R.state = 'loading';
+  api('/api/admin/permissions').then(j => { R.revision = j.revision; R.grid = j.grid; R.roles = j.roles; R.dirty = false; R.state = 'ready'; }).catch(() => { R.state = 'error'; }).finally(rerender);
+}
+function rolesTab() {
+  loadRoles();
+  if (R.state === 'error') return '<div class="nx-empty"><strong>Couldn’t load permissions</strong><p>Only the Creator can change these.</p></div>';
+  if (R.state !== 'ready') return '<div class="nx-loading">Loading permissions…</div>';
+  return '<p class="nx-fine">Tick what each role can do. The Creator can always do everything; who can grant roles and change site settings never changes here.</p>' +
+    '<div class="nx-tablewrap"><table class="nx-table adm-grid"><thead><tr><th scope="col">Can…</th>' + R.roles.map(r => '<th scope="col">' + esc(r.label) + '</th>').join('') + '</tr></thead><tbody>' +
+    R.grid.map(c => '<tr><th scope="row">' + esc(c.label) + '</th>' + R.roles.map(r => '<td><input type="checkbox" aria-label="' + esc(r.label + ': ' + c.label) + '" data-adm-cap="' + c.id + '" data-role="' + r.id + '"' + (c.roles.includes(r.id) ? ' checked' : '') + '></td>').join('') + '</tr>').join('') +
+    '</tbody></table></div>' + btn('saveRoles', R.dirty ? 'Save permissions' : 'Saved', '', 'nx-btn nx-btn-primary');
+}
+async function saveRoles() {
+  const overrides = Object.fromEntries(R.grid.map(c => [c.id, c.roles]));
+  A.busy = true; rerender();
+  try { const j = await api('/api/admin/permissions', { method: 'PUT', body: JSON.stringify({ expectedRevision: R.revision, overrides }) }); R.revision = j.revision; R.grid = j.grid; R.dirty = false; toast('Permissions saved.'); }
+  catch (e) { toast(e.status === 409 ? 'Changed somewhere else. Reload, then save again.' : e.message); } finally { A.busy = false; rerender(); }
+}
 
 function inbox() {
   loadPosts(); loadFeatured();
@@ -187,8 +211,8 @@ function more() {
 
 export function adminView(user) {
   if (!user?.permissions?.manageSite) return '<div class="nx-empty"><strong>Admins only</strong><p>This page is for Arcana admins.</p><a class="nx-btn" href="#/profile">Back to Profile</a></div>';
-  const tabs = [['inbox', 'Inbox'], ['featured', 'Featured'], ['reports', 'Reports'], ['news', 'News'], ['people', 'People'], ['traffic', 'Traffic'], ['site', 'Site']];
-  const body = A.tab === 'featured' ? featured() : A.tab === 'site' ? site() + more() : A.tab === 'news' ? newsTab() : A.tab === 'people' ? peopleTab(user) : A.tab === 'traffic' ? trafficTab() : A.tab === 'reports' ? reportsTab() : inbox();
+  const tabs = [['inbox', 'Inbox'], ['featured', 'Featured'], ['reports', 'Reports'], ['news', 'News'], ['handbook', 'Handbook'], ['people', 'People'], ...(user?.isOwner ? [['roles', 'Roles']] : []), ['traffic', 'Traffic'], ['site', 'Site']];
+  const body = A.tab === 'handbook' ? adminHandbookTab() : A.tab === 'roles' ? rolesTab() : A.tab === 'featured' ? featured() : A.tab === 'site' ? site() + more() : A.tab === 'news' ? newsTab() : A.tab === 'people' ? peopleTab(user) : A.tab === 'traffic' ? trafficTab() : A.tab === 'reports' ? reportsTab() : inbox();
   return '<a class="nx-back" href="#/profile">‹ Profile</a><header class="nx-page-head"><span class="nx-kicker">OWNER</span><h1>Admin</h1></header>' +
     '<a class="nx-row nx-row-design" href="#/admin/design"><span class="nx-ic">' + ic('theme', 22) + '</span><span class="nx-row-text"><strong>Site design</strong><small>Colors, corners, fonts and icons for everyone. Preview first, then publish.</small></span><span class="nx-row-end">›</span></a>' +
     '<div class="st-tabs adm-tabs nx-scrollx" role="tablist">' + tabs.map(([id, l]) => '<button role="tab" aria-selected="' + (A.tab === id) + '" data-adm="tab" data-v="' + id + '">' + l + (id === 'featured' && A.feat.dirty ? ' •' : '') + '</button>').join('') + '</div>' +
@@ -214,6 +238,7 @@ async function setVisibility(id, status) {
 }
 export function initAdmin(render) {
   rerender = render;
+  document.addEventListener('change', e => { const cap = e.target.dataset?.admCap; if (cap) { const c = R.grid.find(x => x.id === cap), role = e.target.dataset.role; c.roles = e.target.checked ? [...new Set([...c.roles, role])] : c.roles.filter(r => r !== role); R.dirty = true; return rerender(); } });
   document.addEventListener('change', e => { const k = e.target.dataset?.art; if (k && A.news.edit && (e.target.tagName === 'SELECT' || e.target.type === 'checkbox')) A.news.edit[k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; });
   document.addEventListener('click', e => {
     const b = e.target.closest('[data-adm]');
@@ -229,6 +254,7 @@ export function initAdmin(render) {
     if (a === 'saveFeat') return saveFeatured();
     if (a === 'newArticle') { A.news.edit = { category: 'News', published: false }; A.news.preview = false; return rerender(); }
     if (a === 'featureArticle') return toggleFeatured(i);
+    if (a === 'saveRoles') return R.dirty && saveRoles();
     if (a === 'editArticle') { A.news.edit = { ...A.news.list[i], existing: true }; A.news.preview = false; return rerender(); }
     if (a === 'closeArticle') { A.news.edit = null; return rerender(); }
     if (a === 'previewArticle') { A.news.preview = !A.news.preview; return rerender(); }
@@ -238,7 +264,7 @@ export function initAdmin(render) {
       if (!e2.slug) e2.slug = slugify(e2.title);
       return saveArticle(b.dataset.pub === '1');
     }
-    if (a === 'member') { A.people.sel = id; const u = A.people.list.find(x => x.id === id); A.people.draft = { roles: (u.roles || []).map(r => r.id || r).filter(r => ['wiki-editor', 'moderator', 'admin', 'developer'].includes(r)), awards: (u.awards || []).map(x => x.id || x) }; return rerender(); }
+    if (a === 'member') { A.people.sel = id; const u = A.people.list.find(x => x.id === id); A.people.draft = { roles: (u.roles || []).map(r => r.id || r).filter(r => ['wiki-editor', 'game-developer', 'moderator', 'admin', 'developer'].includes(r)), awards: (u.awards || []).map(x => x.id || x) }; return rerender(); }
     if (a === 'closeMember') { A.people.sel = null; return rerender(); }
     if (a === 'toggleRole' || a === 'toggleAward') {
       const k = a === 'toggleRole' ? 'roles' : 'awards', d = A.people.draft, v = b.dataset.v;

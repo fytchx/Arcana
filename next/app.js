@@ -17,17 +17,15 @@ import { guildTreeView, initGuildTree } from './guild-tree.js';
 import { themeView, initTheme, readTheme, themeVars, saveTheme, applyBackdrop } from './theme.js';
 import { DEFAULT_NEXT_DESIGN, safeNextDesign, designVars, fontHref } from './design-model.js';
 import { designView, initDesign, readDraft } from './design-tool.js';
+import { handbookView, handbookHomeSection, handbookPopup, initHandbook, handbookPages, hbText } from './handbook.js';
+import { FEATURED_GUIDES, featuredGuide } from './guides-content.js';
+import { retaliationView, initRetaliation } from './retaliation.js';
+import { editorView, initHandbookEditor } from './handbook-editor.js';
 import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
-import { demoBuilds } from '../src/catalog.js';
 
-// Zane's featured build, built only from facts he published (pets, stance, talismans, notes).
-// Gear rolls, runes and skill points were left open in his guide, so they stay out.
-const FEATURED = (() => {
-  const z = demoBuilds['warrior-retaliation-zane'];
-  const fb = { ...emptyBuild(), cls: 1, level: 196, pets: z.petSetup.map(p => p.hatchBonus), stance: 'bulwark', tal: { tal1: 'fury', tal2: 'iron' }, notes: { gear: z.notes } };
-  return '#/build?d=' + encodeShare(fb, ['gear', 'pets', 'stance'], { title: "Zane's Retaliation Warrior", by: 'Zane' });
-})();
+// Zane's featured build is his own Build Studio setup, stored with his guide.
+const FEATURED = '#/build?d=' + FEATURED_GUIDES[0].build;
 
 const $ = id => document.getElementById(id);
 const read = k => { try { return localStorage.getItem(k); } catch { return null; } };
@@ -176,7 +174,7 @@ function homeView() {
   const nw = n.state === 'ready' && n.value[0];
   const newsRow = nw ? '<a class="nx-strip" href="' + hashFor('news', nw.slug) + '">' + ic('news', 18) + '<span><b>' + esc(nw.teaserTitle || nw.title) + '</b><small>' + esc((nw.category || 'News') + ' · ' + shortDate(nw.publishedAt)) + '</small></span><i class="nx-chev"></i></a>' : '';
   // The three main tools, always in the same place; recently used tools sit one tap away.
-  const main = [['#/tools/pathfinder', 'upgrade', 'Pathfinder', 'Upgrade costs and ML XP'], ['#/studio', 'studio', 'Build Studio', 'Make and share a build'], ['#/codex', 'codex', 'Codex', 'Items, skills, monsters']];
+  const main = [['#/tools/pathfinder', 'upgrade', 'Pathfinder', 'Upgrade costs and ML XP'], ['#/studio', 'studio', 'Build Studio', 'Make and share a build'], ['#/codex', 'codex', 'Handbook', 'Everything IdleArc']];
   const rec = recent().map(id => id === 'codex' ? null : TOOLS.find(t => t.id === id)).filter(Boolean);
   return installBanner('home') + '<section><div class="nx-head">' + label('Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
     main.map(([h, i, l, dsc]) => '<a class="nx-tile nx-main-tile" href="' + h + '"><span class="nx-ic">' + ic(i, 24) + '</span><strong>' + l + '</strong><small>' + dsc + '</small></a>').join('') + '</div>' +
@@ -209,7 +207,36 @@ function buildCard(href, { title, summary = '', note = '', by = '', date = '', m
 }
 const featuredPick = c => buildCard('#/builds/' + c.post.id, { title: c.post.title, summary: c.post.summary, note: c.note, by: c.author?.displayName || 'Arcana player', meta: nextCode(c.post.build) ? buildMeta(nextCode(c.post.build)) : null, featured: true });
 const featuredList = (limit = 12) => { loadFeatured(); return featuredState.cards.length ? '<div class="nx-list">' + featuredState.cards.slice(0, limit).map(featuredPick).join('') + '</div>' : featuredCard(); };
-const featuredCard = () => buildCard(FEATURED, { title: "Zane's Retaliation Warrior", summary: 'Retaliation, Defense, Block Chance and Strength, with a four-pet setup.', by: 'Zane', meta: { cls: 1, stance: 'bulwark', level: 196 }, featured: true });
+const featuredCard = () => buildCard(FEATURED, { title: "Zane's Retaliation Warrior", summary: 'Endgame retaliation at ML 300+: Reflecting, Strength and Defense gems, one Increased Strength pet and three Retaliation pets.', by: 'Zane', meta: { cls: 1, stance: 'bulwark', level: 404 }, featured: true });
+
+// A shared build always has a way back: to the guide it was opened from, or to Builds.
+function buildView(query) {
+  const g = featuredGuide(query.get('from') || '');
+  const back = g ? '<a class="nx-back" href="#/guides/' + g.id + '">' + icon('back', 18) + esc(g.title) + '</a>'
+    : '<a class="nx-back" href="#/builds" data-back>' + icon('back', 18) + 'Back</a>';
+  const guideLink = !g && query.get('d') === FEATURED_GUIDES[0].build ? '<p class="nx-read"><a href="#/guides/' + FEATURED_GUIDES[0].id + '">Read the guide behind this build ›</a></p>' : '';
+  return sharedView(query.get('d') || '', { back, intro: guideLink });
+}
+
+// ---------- featured guides ----------
+// Same text standard as the Handbook (tables, topic links, tool links), plus a short contents list.
+const guideCard = g => '<a class="nx-bcard gd-card" href="#/guides/' + g.id + '" style="--bt:' + (BUILD_TYPES[g.stance]?.color || 'var(--accent)') + ';--cc:' + classVar(CLASS_NAMES[1]) + '">' +
+  '<span class="nx-bcard-emblem">' + classBadge(CLASS_NAMES[1], 52) + '</span><span class="nx-bcard-body"><span class="nx-tags"><span class="nx-tag nx-tag-accent">Featured guide</span><span class="nx-tag">' + esc(g.level) + '</span></span>' +
+  '<strong>' + esc(g.title) + '</strong><small>' + esc(g.summary) + '</small><span class="nx-by">by <b>' + esc(g.author) + '</b> · ' + esc(g.readTime) + ' read · updated ' + esc(shortDate(g.updated)) + '</span></span></a>';
+const slug = t => String(t).toLowerCase().replace(/<[^>]+>/g, '').replace(/&[a-z#0-9]+;/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+function guideView(id) {
+  const g = featuredGuide(id);
+  const back = '<a class="nx-back" href="#/builds/guides">' + icon('back', 18) + 'Guides</a>';
+  if (!g) return back + empty('Guide not found', 'It may have moved.');
+  const heads = [];
+  const html = hbText(g.body).replace(/<h2>(.*?)<\/h2>/g, (_, t) => { const id = 'g-' + slug(t); heads.push([id, t]); return '<h2 id="' + id + '">' + t + '</h2>'; });
+  return back + '<article class="nx-article gd-article" style="--cc:' + classVar(CLASS_NAMES[1]) + '"><span class="nx-kicker">FEATURED GUIDE · WARRIOR · ' + esc(g.level.toUpperCase()) + '</span><h1>' + esc(g.title) + '</h1>' +
+    '<p class="nx-deck">' + esc(g.summary) + '</p><p class="nx-by">by <b>' + esc(g.author) + '</b> · updated ' + esc(shortDate(g.updated)) + ' · IdleArc ' + esc(g.gameVersion) + '</p>' +
+    '<div class="gd-actions"><a class="nx-btn nx-btn-primary" href="#/tools/retaliation">Try your numbers</a><a class="nx-btn" href="#/build?d=' + g.build + '&from=' + g.id + '">Open the build</a></div>' +
+    '<details class="gd-toc"><summary>In this guide</summary><ol>' + heads.map(([id, t]) => '<li><a href="#/guides/' + g.id + '" data-jump="' + id + '">' + t + '</a></li>').join('') + '</ol></details>' +
+    '<div class="hb-page gd-body">' + html + '</div></article>' +
+    '<p class="nx-fine">Written by ' + esc(g.author) + '. Spot something wrong? <a href="#/feedback">Tell me</a>.</p>';
+}
 
 function toolsView(id, query) {
   if (id === 'guild-tree') return guildTreeView(query);
@@ -218,6 +245,7 @@ function toolsView(id, query) {
   if (id === 'upgrade-map') return upgradeMapView();
   if (id === 'rarity') return rarityView();
   if (id === 'compare') return compareView();
+  if (id === 'retaliation') return retaliationView();
   if (NATIVE_TOOLS.includes(id)) return toolView(id);
   // Most used first: Upgrade costs and ML XP, then the pet calculators, then everything else.
   const hero = (href, kicker, title, detail, path, tone) => '<a class="nx-hero nx-tone-' + tone + '" href="' + href + '">' + artImg(path, 64) + '<span><span class="nx-kicker">' + kicker + '</span><strong>' + esc(title) + '</strong><small>' + esc(detail) + '</small></span></a>';
@@ -225,6 +253,7 @@ function toolsView(id, query) {
   return '<section>' + label('Most used') + '<div class="nx-heroes">' +
       hero('#/tools/pathfinder', 'PATHFINDER', 'Upgrade costs', 'Materials and gold from any rank to any rank, per slot', 'features/feature-upgrade', 'violet') +
       hero('#/tools/mlxp', 'PATHFINDER', 'ML XP planner', 'XP, kills and time to your next Monster Levels', 'stats/stat-exp-gain', 'teal') + '</div></section>' +
+    '<section>' + label('Combat') + '<div class="nx-list">' + (t => artRow(t.href, t.name, t.detail, t.art))(toolById('retaliation')) + '</div></section>' +
     '<section>' + label('Pets') + '<div class="nx-grid2">' + mid(toolById('pet')) + mid(toolById('affix')) + '</div></section>' +
     '<section>' + label('Planning') + '<div class="nx-list">' + ['studio', 'guild-tree', 'skills'].map(k => { const t = toolById(k); return artRow(t.href, t.name, t.detail, t.art); }).join('') + '</div></section>' +
     '<section>' + label('More Pathfinder') + '<div class="nx-list">' +
@@ -265,7 +294,7 @@ function codexView(id) {
       '<p class="nx-fine">From the game config' + (c.version ? ' (' + esc(c.version) + ')' : '') + '.</p>';
   }
   const body = c.state === 'error' ? failed('The Codex', 'codex') : c.state !== 'ready' ? loading('the Codex') : codexResults(c.value);
-  return '<label class="nx-search nx-search-input">' + icon('search', 18) + '<input id="nxCodexQ" type="search" autocomplete="off" placeholder="Search items, skills, monsters, runes" aria-label="Search the Codex" value="' + esc(codexQuery) + '"></label><div id="nxCodexBody">' + body + '</div>';
+  return '<label class="nx-search nx-search-input">' + icon('search', 18) + '<input id="nxCodexQ" type="search" autocomplete="off" placeholder="Search guides, tools, the Handbook, items, skills, monsters" aria-label="Search the Handbook" value="' + esc(codexQuery) + '"></label><div id="nxCodexBody">' + body + '</div>';
 }
 function codexResults(entries) {
   if (codexKind && !codexQuery.trim()) {
@@ -274,10 +303,18 @@ function codexResults(entries) {
   }
   if (codexQuery.trim()) {
     const hits = searchIndex(entries, codexQuery, 40);
-    if (!hits.length) return empty('Nothing found', 'Try a shorter word, like an item, skill or monster name.');
-    return '<div class="nx-list">' + hits.map(e => codexRow(e, withKind(e))).join('') + '</div>';
+    const words = codexQuery.trim().toLowerCase().split(/\s+/);
+    const pages = handbookPages().filter(p => words.every(w => (p.title + ' ' + p.answer + ' ' + p.body).toLowerCase().includes(w))).slice(0, 6);
+    const match = t => words.every(w => t.toLowerCase().includes(w));
+    const guides = FEATURED_GUIDES.filter(g => match(g.title + ' ' + g.summary + ' ' + g.body)).slice(0, 3);
+    const tools = TOOLS.filter(t => match(t.name + ' ' + t.detail + ' ' + t.id)).slice(0, 4);
+    if (!hits.length && !pages.length && !guides.length && !tools.length) return empty('Nothing found', 'Try a shorter word, like an item, skill or monster name.');
+    return (guides.length ? '<section>' + label('Guides') + '<div class="nx-list">' + guides.map(g => '<a class="nx-row" href="#/guides/' + g.id + '"><span class="nx-row-text"><strong>' + esc(g.title) + '</strong><small>by ' + esc(g.author) + ' · ' + esc(g.readTime) + ' read</small></span><span class="nx-row-end">›</span></a>').join('') + '</div></section>' : '') +
+      (tools.length ? '<section>' + label('Tools') + '<div class="nx-list">' + tools.map(t => '<a class="nx-row" href="' + t.href + '"><span class="nx-row-text"><strong>' + esc(t.name) + '</strong><small>' + esc(t.detail) + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div></section>' : '') +
+      (pages.length ? '<section>' + label('Handbook') + '<div class="nx-list">' + pages.map(p => '<a class="nx-row" href="#/handbook/' + p.id + '"><span class="nx-row-text"><strong>' + esc(p.title) + '</strong><small>' + esc(p.answer.replace(/\[\[[^|\]]*\|?([^\]]*)\]\]/g, '$1')) + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div></section>' : '') +
+      (hits.length ? '<section>' + (pages.length ? label('Look it up') : '') + '<div class="nx-list">' + hits.map(e => codexRow(e, withKind(e))).join('') + '</div></section>' : '');
   }
-  return '<section>' + label('Browse') + '<div class="nx-grid2">' + codexCategories(entries, data.codex.order).map(k => '<button class="nx-tile nx-tile-left nx-ktile" data-act="kind" data-kind="' + esc(k.kind) + '">' + artImg(KIND_ART[k.kind] || 'features/feature-codex', 40) + '<span><strong>' + esc(k.name) + '</strong><small>' + k.count + ' entries</small></span></button>').join('') + '</div></section>';
+  return handbookHomeSection() + '<section>' + label('Look it up') + '<div class="nx-grid2">' + codexCategories(entries, data.codex.order).map(k => '<button class="nx-tile nx-tile-left nx-ktile" data-act="kind" data-kind="' + esc(k.kind) + '">' + artImg(KIND_ART[k.kind] || 'features/feature-codex', 40) + '<span><strong>' + esc(k.name) + '</strong><small>' + k.count + ' entries</small></span></button>').join('') + '</div></section>';
 }
 
 const posts = {};
@@ -296,7 +333,7 @@ function postView(id) {
   if (p.state === 'loading') return back + loading('the build');
   if (p.state === 'error') return back + empty('Build not found', 'It may have been removed by its author or a moderator.');
   if (p.post.kind === 'guide') return back + '<article class="nx-article"><span class="nx-kicker">COMMUNITY GUIDE · ' + esc(shortDate(p.post.createdAt).toUpperCase()) + '</span><h1>' + esc(p.post.title) + '</h1>' +
-    (p.post.summary ? '<p class="nx-deck">' + esc(p.post.summary) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(p.author?.displayName || 'Arcana player') + '</b></p>' + articleHtml(p.post.body || '') + '</article>' +
+    (p.post.summary ? '<p class="nx-deck">' + esc(p.post.summary) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(p.author?.displayName || 'Arcana player') + '</b></p><div class="hb-page gd-body">' + hbText(p.post.body || '') + '</div></article>' +
     '<p class="nx-fine">Written by a player. Spot something wrong? <a href="#/feedback">Tell me</a>.</p>';
   const code = nextCode(p.post.build);
   const intro = (p.post.summary ? '<p class="nx-read">' + esc(p.post.summary) + '</p>' : '') + (p.post.body ? '<div class="nx-article">' + articleHtml(p.post.body) + '</div>' : '');
@@ -315,7 +352,7 @@ function guideForm() {
   return back + '<header class="nx-page-head"><span class="nx-kicker">COMMUNITY GUIDE</span><h1>Write a guide</h1><p>Explain how to play something well. Builds go in Build Studio; guides are the why and how.</p></header>' +
     '<section class="nx-tool"><label class="nx-field">Title<input maxlength="110" value="' + esc(G.title) + '" data-g="title" placeholder="At least 6 characters"></label>' +
     '<label class="nx-field">Summary<textarea rows="2" maxlength="300" data-g="summary" placeholder="One or two sentences (at least 20 characters)">' + esc(G.summary) + '</textarea></label>' +
-    '<label class="nx-field">Guide<textarea rows="12" maxlength="12000" data-g="body" placeholder="At least 80 characters. Blank line between paragraphs, ## for headings, - for lists, **bold**.">' + esc(G.body) + '</textarea></label>' +
+    '<label class="nx-field">Guide<textarea rows="12" maxlength="12000" data-g="body" placeholder="At least 80 characters. Blank line between blocks. ## and ### headings, - lists, 1. steps, | tables |, > notes, **bold**, [[tool:retaliation|tool links]].">' + esc(G.body) + '</textarea></label>' +
     '<label class="st-consent"><input type="checkbox" data-g="ok"' + (G.ok ? ' checked' : '') + '><span>Publish this guide publicly, credited as <b>' + esc(u.displayName) + '</b>.</span></label>' +
     (G.error ? '<p class="st-err" role="alert">' + esc(G.error) + '</p>' : '') +
     '<button class="nx-btn nx-btn-primary" data-act="publishGuide"' + (G.busy ? ' disabled' : '') + '>' + (G.busy ? 'Publishing…' : 'Publish guide') + '</button></section>';
@@ -332,9 +369,9 @@ function buildsView(id) {
   if (buildTab === 'featured') body = featuredList();
   else if (buildTab === 'guides') {
     const g = data.guides;
-    body = '<a class="nx-btn nx-btn-primary" href="#/builds/new-guide">Write a guide</a>' + (g.state === 'error' ? failed('Guides', 'guides') : g.state !== 'ready' ? loading('guides')
+    body = '<div class="nx-list">' + FEATURED_GUIDES.map(guideCard).join('') + '</div><a class="nx-btn nx-btn-primary" href="#/builds/new-guide">Write a guide</a>' + (g.state === 'error' ? failed('Guides', 'guides') : g.state !== 'ready' ? loading('guides')
       : g.value.length ? '<div class="nx-list">' + g.value.map(p => '<a class="nx-card" href="#/builds/' + encodeURIComponent(p.id) + '"><strong>' + esc(p.title) + '</strong><small>' + esc(p.summary || p.excerpt || '') + '</small><span class="nx-by">' + esc(shortDate(p.createdAt)) + '</span></a>').join('') + '</div>'
-      : empty('No guides yet', 'Know something other players should? Write the first one.'));
+      : empty('No community guides yet', 'Know something other players should? Write the first one.'));
     return tabs + body;
   } else {
     const b = data.builds;
@@ -369,7 +406,7 @@ function directoryView() {
   const sec = (t, rows) => '<section>' + label(t) + '<div class="nx-list">' + rows.join('') + '</div></section>';
   return '<header class="nx-page-head"><span class="nx-kicker">ALL OF ARCANA</span><h1>Directory</h1><p>Every page in one place.</p></header>' +
     sec('Tools', [artRow('#/tools', 'All tools', 'Pathfinder, pet calculators, planners', 'features/feature-tools'), ...TOOLS.filter(t => t.art).map(t => artRow(t.href, t.name, t.detail, t.art))]) +
-    sec('Game reference', [artRow('#/codex', 'Codex', 'Items, skills, monsters, materials, biomes and more', 'features/feature-codex')]) +
+    sec('Game reference', [artRow('#/codex', 'Handbook', 'Everything IdleArc', 'features/feature-codex')]) +
     sec('Builds and guides', [artRow('#/builds', 'Featured builds', 'Picked by Zane', 'features/feature-builds'), artRow('#/builds/community', 'Community builds', 'Shared by players', 'features/feature-community'), artRow('#/builds/guides', 'Guides', 'Written by players', 'features/feature-guides'), artRow('#/studio', 'Build Studio', 'Make your own and share it', 'features/feature-build-studio')]) +
     sec('News and events', [artRow('#/news', 'News', 'Patch notes, events and articles', 'features/feature-wiki'), ...(ev ? [artRow(ev.href, ev.name, ev.detail, 'tokens/token-ruby')] : [])]) +
     sec('Community', [artRow('#/guilds', 'Guilds', 'Find a guild and apply', 'features/feature-guild-raid'), artRow('#/lfg', 'Looking for group', 'Raids, teams and planned runs', 'features/feature-community'), artRow('#/records', 'Season records', 'Top players and guilds by season', 'stats/stat-boss-damage')]) +
@@ -401,14 +438,15 @@ function noteVisit(section, id) {
 }
 
 // ---------- shell ----------
-const TITLES = { directory: 'Directory', lfg: 'LFG', records: 'Records', guilds: 'Guilds', checklist: 'Checklist', feedback: 'Feedback', admin: 'Admin', tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
+const TITLES = { handbook: 'Handbook', directory: 'Directory', lfg: 'LFG', records: 'Records', guilds: 'Guilds', checklist: 'Checklist', feedback: 'Feedback', admin: 'Admin', tools: 'Tools', codex: 'Handbook', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
 function render() {
   const { section, id, query } = parseHash(location.hash);
+  if (section === 'codex' && !id && query.get('kind')) { codexKind = query.get('kind'); codexQuery = ''; history.replaceState(null, '', '#/codex'); }
   noteVisit(section, id);
   if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'guides' ? guideView(id) : section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? buildView(query) : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   // The original triangle, recolored to the site accent the same way the classic theme designer did it.
   const logo = '<img class="nx-logo" src="/assets/arcana-logo.webp" width="38" height="32" alt="">';
@@ -424,7 +462,7 @@ function render() {
   $('nxNotice').textContent = data.notice.value || '';
   const main = $('nxMain'), key = section + '/' + id;
   const focusSearch = document.activeElement?.id === 'nxCodexQ';
-  main.innerHTML = view;
+  main.innerHTML = view + handbookPopup();
   if (main.dataset.key !== key) { main.dataset.key = key; window.scrollTo(0, 0); }
   if (section === 'studio') studioAfterRender();
   if (focusSearch) { const q = $('nxCodexQ'); q?.focus(); q?.setSelectionRange(q.value.length, q.value.length); }
@@ -471,6 +509,11 @@ document.addEventListener('input', e => {
 window.addEventListener('hashchange', render);
 initStudio(render);
 initTools(render);
+// A generic Back goes to the previous page when there is one in this tab.
+document.addEventListener('click', e => { const a = e.target.closest('[data-back]'); if (!a || history.length < 2 || !document.referrer.startsWith(location.origin)) return; e.preventDefault(); history.back(); });
+// "In this guide" links scroll within the page instead of changing the route.
+document.addEventListener('click', e => { const a = e.target.closest('[data-jump]'); if (!a) return; e.preventDefault(); document.getElementById(a.dataset.jump)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+initRetaliation(render);
 initPathfinder(render);
 initMlXp(render);
 initPathfinderViews(render);
@@ -482,6 +525,8 @@ initCommunity(render);
 initGuildTree(render);
 initTheme(render, applyTheme);
 initDesign(render, applyTheme);
+initHandbook(render, () => data.me.value?.user || null);
+initHandbookEditor(render);
 window.addEventListener('arcana:news-changed', () => { data.news.state = 'idle'; data.article = {}; });
 window.addEventListener('arcana:featured-changed', () => { featuredState.state = 'idle'; data.builds.state = 'idle'; });
 // Boot: hold the loading screen until the published design, fonts and account are in (2.5 s at most),

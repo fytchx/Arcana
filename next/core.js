@@ -54,6 +54,7 @@ export const TOOLS = Object.freeze([
   { group: 'Farming', id: 'mlxp', name: 'ML XP planner', short: 'ML XP', detail: 'Total XP, kills and time to your next Monster Levels', href: '#/tools/mlxp', icon: 'chart', native: true, art: 'stats/stat-exp-gain' },
   { group: 'Farming', id: 'ml', name: 'ML farming comparator', short: 'ML farming', detail: 'Which monster gets you Monster Level fastest', href: '#/tools/ml', icon: 'chart', native: true, art: 'stats/stat-extra-kill' },
   { group: 'Planning', id: 'guild-tree', name: 'Guild skill tree', short: 'Guild tree', detail: 'Plan guild points, compare plans and share them', href: '#/tools/guild-tree', icon: 'tree', native: true, art: 'features/feature-guild-raid' },
+  { group: 'Combat', id: 'retaliation', name: 'Retaliation planner', short: 'Retaliation', detail: 'Your real damage per enemy attack, and what each upgrade is worth', href: '#/tools/retaliation', icon: 'shield', native: true, art: 'stats/stat-retaliation' },
   { group: 'Planning', id: 'skills', name: 'Skill trees', detail: 'Class and passive trees with the real point rules, in Build Studio', href: '#/studio/class', icon: 'tree', native: true, art: 'features/feature-passive-tree' }
 ]);
 
@@ -69,14 +70,14 @@ export function parseHash(hash = '') {
   const raw = String(hash).replace(/^#\/?/, '');
   const [path, query = ''] = raw.split('?');
   const parts = path.split('/').filter(Boolean).map(p => { try { return decodeURIComponent(p); } catch { return p; } });
-  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile', 'studio', 'build', 'admin', 'feedback', 'checklist', 'guilds', 'lfg', 'records', 'directory'];
+  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile', 'studio', 'build', 'admin', 'feedback', 'checklist', 'guilds', 'lfg', 'records', 'directory', 'handbook', 'guides'];
   const section = known.includes(parts[0]) ? parts[0] : 'home';
   return { section, id: section === parts[0] ? parts.slice(1).join('/') : '', query: new URLSearchParams(query) };
 }
 export const hashFor = (section, id = '') => '#/' + section + (id ? '/' + encodeURIComponent(id) : '');
 
 // The bottom tab that should light up for a route (profile has no tab).
-const TAB_OF = { studio: 'tools', build: 'builds', codex: 'search', news: 'directory', guilds: 'directory', lfg: 'directory', records: 'directory', feedback: 'directory', checklist: 'directory' };
+const TAB_OF = { guides: 'builds', studio: 'tools', build: 'builds', codex: 'search', handbook: 'search', news: 'directory', guilds: 'directory', lfg: 'directory', records: 'directory', feedback: 'directory', checklist: 'directory' };
 export const activeTab = section => TAB_OF[section] || (TABS.some(t => t.id === section) ? section : '');
 
 // Codex search over the verified game index. Title matches rank above keyword matches.
