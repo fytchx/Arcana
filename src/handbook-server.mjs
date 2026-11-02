@@ -33,7 +33,12 @@ export function normalizePage(raw){
 }
 async function load(){
  const saved=await readJSON(file());
- if(saved&&saved.pages)return saved;
+ if(saved&&saved.pages){
+  // New pages added to the seed file appear for readers even after the Handbook has been edited.
+  // A page an editor removed is remembered and never comes back.
+  SEED.forEach((p,i)=>{if(!saved.pages[p.id]&&!(saved.removed||[]).includes(p.id))saved.pages[p.id]={published:{...p,order:i},draft:null,review:false,hidden:false,history:[]};});
+  return saved;
+ }
  const pages={};SEED.forEach((p,i)=>{pages[p.id]={published:{...p,order:i},draft:null,review:false,hidden:false,history:[]};});
  return {revision:0,pages};
 }
@@ -79,7 +84,7 @@ export async function handleHandbookRequest(req,res,url){
    if(!h){sendJSON(res,404,{error:'That version is gone.'});return true;}
    e.history=[{at:now,by:byline(user),page:e.published},...e.history.filter(x=>x!==h)].slice(0,25);e.published=h.page;
   }
-  if(!e.published&&!e.draft)delete s.pages[id];
+  if(!e.published&&!e.draft){delete s.pages[id];s.removed=[...new Set([...(s.removed||[]),id])];}
   s.revision++;
   await saveAtomic(file(),s);
   sendJSON(res,200,{revision:s.revision});return true;

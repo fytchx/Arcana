@@ -66,5 +66,28 @@ export const PAGES = [
     answer: 'Your stance sets your build type. There are four.',
     body: '| Build type | Stance | What it does |\n| --- | --- | --- |\n| Harmony | Harmony | The default. A balanced bonus that grows with Monster Level. |\n| Attack Damage | Aggressive | +25% attack damage |\n| Pet Damage | Beastmaster | +25% pet damage |\n| Retaliation | Bulwark | +25% retaliation and 15% base reflect. Turns off dodge. |\n\n## Choosing one\n\nMatch the build type to what your gear, skills and pets add the most of. Community builds in [[tool:builds|Builds]] show each one in use.',
     next: null
+  },  {
+    id: 'two-levels', chapter: 'progression', title: 'Character level and Monster Level', trust: 'config', icon: 'xp',
+    answer: 'You have two levels. Character level gives you skill points; Monster Level opens up the world.',
+    body: '| | Character level | Monster Level |\n| --- | --- | --- |\n| Grows from | EXP | Monster Level XP from kills |\n| Gives you | Class points and passive points | New biomes, dungeons, a bigger rune grid, harder daily missions |\n| Boosted by EXP Gain | Yes | No |\n\n## Points from character level\n\n- **Passive points:** one per character level. Spend them in the [[passive-tree|passive tree]].\n- **Class points:** one at level 1, then one more every 3 levels, up to 100. Spend them in your [[classes-overview|class tree]].\n\n## Why Monster Level matters more over time\n\nMonster Level decides where you can farm and what you can run. See [[ml-unlocks|what each Monster Level unlocks]] and how to [[monster-level|raise it efficiently]].',
+    next: 'monster-level'
+  },
+  {
+    id: 'monster-level', chapter: 'progression', title: 'Raising Monster Level', trust: 'config', icon: 'xp',
+    answer: 'Monster Level rises with Monster Level XP per second, so kill speed matters as much as XP per kill.',
+    body: '## What counts\n\n- Only normal kills award Monster Level XP. **Frenzy kills award none.**\n- **EXP Gain does not multiply Monster Level XP.** It only speeds up character level.\n\n## Picking a monster\n\nFrom Murky Depths onward, the weakest monster in a biome gives 10% less Monster Level XP than the biome normal, and the strongest gives 10% more. So the lowest-health monster is not always the best farm.\n\nCompare monsters by XP per second: a weaker monster can still win if it dies fast enough.\n\n[[tool:mlxp|ML XP planner]] shows the XP, kills and time to your next levels.',
+    next: 'ml-unlocks'
+  },
+  {
+    id: 'ml-unlocks', chapter: 'progression', title: 'What Monster Level unlocks', trust: 'config', icon: 'map',
+    answer: 'Biomes, dungeons, rune grid space and daily mission tiers all open at set Monster Levels.',
+    body: '## Biomes\n\n| Monster Level | Biome | Tier |\n| --- | --- | --- |\n| Start | Verdant Woods | 1 |\n| 10 | Scorched Sands | 1 |\n| 30 | Murky Depths | 2 |\n| 30 | The Elemental Conflux | 3 |\n| 45 | Frozen Peaks | 3 |\n| 65 | Shadow Realm | 4 |\n| 90 | Infernal Pits | 5 |\n| 115 | Elderwood | 6 |\n| 150 | Glasslands | 7 |\n| 185 | Drowned Abyss | 8 |\n| 220 | Shattered Summit | 9 |\n| 260 | Umbral Rift | 10 |\n| 300 | Oblivion\'s Crown | 11 |\n| 350 | The Convergence | 12 |\n\n## Rune grid\n\nThe [[chapter:runes|rune grid]] grows on its own as Monster Level rises.\n\n| Monster Level | Grid |\n| --- | --- |\n| Start | 2 × 2 |\n| 10 | 3 × 3 |\n| 30 | 4 × 3 |\n| 45 | 5 × 3 |\n| 65 | 6 × 3 |\n| 90 | 6 × 4 |\n| 150 | 6 × 5 |\n| 220 | 6 × 6 |\n| 300 | 6 × 7 |\n\n## Dungeons and daily missions\n\n| Monster Level | Unlocks |\n| --- | --- |\n| 1 | Crypt dungeon, easy daily missions |\n| 12 | Hoard dungeon |\n| 15 | Den dungeon |\n| 18 | Vault dungeon |\n| 25 | Mine dungeon |\n| 50 | Medium daily missions |\n| 100 | Hard daily missions |',
+    next: 'passive-tree'
+  },
+  {
+    id: 'passive-tree', chapter: 'progression', title: 'The passive tree', trust: 'config', icon: 'skills',
+    answer: 'The passive tree has 20 tiers of 10 rows. You open each new tier by spending 20 points in the tier before it.',
+    body: '## How points work\n\n- You get one passive point per character level.\n- Each node raises one stat a little per point, up to its maximum.\n- Within a tier, a row opens once you have a point in the row above it.\n- Some rows are milestones: you pick one node from them.\n\n## Planning\n\nThe tree is long, so plan the tiers you are aiming for before spending. [[tool:studio|Build Studio]] has the full tree with the same rules, so you can try a layout first.',
+    next: null
   }
 ];
