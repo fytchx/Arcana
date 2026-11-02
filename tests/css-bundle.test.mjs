@@ -23,7 +23,8 @@ test('homepage loads exactly one CSS entry, which includes every existing theme 
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  const cssLinks=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="(\/[^"?]+)/g)].map(match=>match[1]);
  assert.deepEqual(cssLinks,['/arcana-site.css']);
- assert.equal(SITE_STYLES.length,30);
+ assert.equal(SITE_STYLES.length,31);
+ assert.ok(SITE_STYLES.includes('src/legacy-i18n.css'),'Classic locale styles share the single stylesheet bundle');
  assert.ok(SITE_STYLES.includes('community-archive.css'),'Account styles must load with the site, not after account navigation');
  assert.ok(SITE_STYLES.includes('desktop-responsive.css'),'Desktop overrides must be part of the critical stylesheet');
  assert.equal(SITE_STYLES.at(-1),'reading-standard.css','Editorial reading rules must come after desktop overrides');
