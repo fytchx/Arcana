@@ -11,7 +11,7 @@ permissions:
   contents: write
 concurrency:
   group: arcana-editorial-localization-feature
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   translate:
     if: github.ref == 'refs/heads/feature/localization-12-languages-20261102'
