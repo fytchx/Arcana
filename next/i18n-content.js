@@ -10,6 +10,19 @@ const sourceFields = (kind, doc) => kind === 'guides'
   ? { title:doc.title, summary:doc.summary, body:doc.body }
   : { title:doc.title, answer:doc.answer, body:doc.body };
 const marker = (lang, kind, id) => lang+':'+kind+':'+id;
+const comparable = (text, pattern) => [...String(text || '').matchAll(pattern)].map(x => x[1] || x[0]);
+function contentStructureSafe(source, translated) {
+  const original = String(source.body || ''), candidate = String(translated.body || '');
+  const numbers = /(?<![A-Za-z])(?:[+\\-−]?\\d[\\d.,]*%?|[Aa]\\d+)(?![A-Za-z])/g;
+  const wiki = /\\[\\[([^\\]]+)\\]\\]/g;
+  const urls = /\\]\\((#[^)]*|https:\\/\\/[^)]*)\\)/g;
+  const tableWidth = text => text.split('\\n').filter(x => x.trim().startsWith('|')).map(x => (x.match(/\\|/g) || []).length);
+  const equal = (a,b) => JSON.stringify(a)===JSON.stringify(b);
+  return equal(comparable(original,numbers).sort(), comparable(candidate,numbers).sort())
+    && equal(comparable(original,wiki).map(x=>x.split('|')[0]), comparable(candidate,wiki).map(x=>x.split('|')[0]))
+    && equal(comparable(original,urls),comparable(candidate,urls))
+    && equal(tableWidth(original),tableWidth(candidate));
+}
 
 async function sha256(data) {
   // SHA matches export-i18n-content.mjs JSON.stringify key order and UTF-8 bytes.
@@ -53,7 +66,7 @@ export function editorialTranslation(kind, doc) {
     }).catch(() => { verified.set(key,false); });
     return {doc,translated:false};
   }
-  if (verified.get(key)!==true) return {doc,translated:false};
+  if (verified.get(key)!==true || !contentStructureSafe(original,translation)) return {doc,translated:false};
   const translated={...doc};
   for (const name of Object.keys(original)) if (typeof translation[name]==='string') translated[name]=translation[name];
   return {doc:translated,translated:true};
