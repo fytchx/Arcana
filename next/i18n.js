@@ -3,13 +3,14 @@
 import { SUPPORTED_LANGUAGES, TRANSLATIONS } from './i18n-dictionary.js';
 import { EXTRA_TRANSLATIONS } from './i18n-extra.js';
 import { HANDBOOK_TRANSLATIONS } from './i18n-handbook.js';
+import { STATUS_TRANSLATIONS } from './i18n-status.js';
 import { translatedGameTerm, loadGameTermPack, termPack } from './i18n-game.js';
 
 export { SUPPORTED_LANGUAGES };
 export const LANGUAGE_KEY = 'arcana-language-v1';
 const translations = Object.freeze(Object.fromEntries(
   SUPPORTED_LANGUAGES.filter(x => x.code !== 'en').map(x => [x.code,
-    Object.freeze({ ...TRANSLATIONS[x.code], ...EXTRA_TRANSLATIONS[x.code], ...HANDBOOK_TRANSLATIONS[x.code] })])
+    Object.freeze({ ...TRANSLATIONS[x.code], ...EXTRA_TRANSLATIONS[x.code], ...HANDBOOK_TRANSLATIONS[x.code], ...STATUS_TRANSLATIONS[x.code] })])
 ));
 const supported = new Set(SUPPORTED_LANGUAGES.map(x => x.code));
 
