@@ -50,7 +50,13 @@ export function translateEnglish(input, language = getLocale()) {
     if (key) return before + (['ja','ko','zh'].includes(lang) ? dict[key] : dict[key].toLocaleUpperCase(lang)) + after;
   }
   const chapter = phrase.match(/^CHAPTER (\d+)(?: · (.*))?$/);
-  if (chapter) return before + (dict.Chapter || 'Chapter') + ' ' + chapter[1] + (chapter[2] ? ' · ' + (dict[chapter[2]] || chapter[2]) : '') + after;
+  if (chapter) {
+    const label = chapter[2] || '';
+    const originalKey = Object.keys(dict).find(k => k.toUpperCase() === label.toUpperCase());
+    const translated = originalKey ? dict[originalKey] : label;
+    const title = label === label.toUpperCase() && !['ja','ko','zh'].includes(lang) ? translated.toLocaleUpperCase(lang) : translated;
+    return before + (dict.Chapter || 'Chapter') + ' ' + chapter[1] + (label ? ' · ' + title : '') + after;
+  }
   // Fallback is always English. No network translation or paid provider.
   return str;
 }
