@@ -17,17 +17,18 @@ import { guildTreeView, initGuildTree } from './guild-tree.js';
 import { themeView, initTheme, readTheme, themeVars, saveTheme, applyBackdrop } from './theme.js';
 import { DEFAULT_NEXT_DESIGN, safeNextDesign, designVars, fontHref } from './design-model.js';
 import { designView, initDesign, readDraft } from './design-tool.js';
-import { handbookView, handbookHomeSection, handbookPopup, initHandbook, handbookPages } from './handbook.js';
+import { handbookView, handbookHomeSection, handbookPopup, initHandbook, handbookPages, hbText } from './handbook.js';
+import { FEATURED_GUIDES, featuredGuide } from './guides-content.js';
+import { retaliationView, initRetaliation } from './retaliation.js';
 import { editorView, initHandbookEditor } from './handbook-editor.js';
 import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
-import { demoBuilds } from '../src/catalog.js';
 
-// Zane's featured build, built only from facts he published (pets, stance, talismans, notes).
-// Gear rolls, runes and skill points were left open in his guide, so they stay out.
+// Zane's featured build: the endgame Retaliation Warrior from his guide (Nov 2026). Only what the
+// guide states goes in: class, level, pets, stance and talismans. Gear rolls and points stay his.
 const FEATURED = (() => {
-  const z = demoBuilds['warrior-retaliation-zane'];
-  const fb = { ...emptyBuild(), cls: 1, level: 196, pets: z.petSetup.map(p => p.hatchBonus), stance: 'bulwark', tal: { tal1: 'fury', tal2: 'iron' }, notes: { gear: z.notes } };
+  const fb = { ...emptyBuild(), cls: 1, level: 404, pets: ['increased_strength', 'retaliation', 'retaliation', 'retaliation'], stance: 'bulwark', tal: { tal1: 'fury', tal2: 'iron' },
+    notes: { gear: 'Reflecting drop bonuses first, then Strength, Double Hit and Double Damage affixes. Defense Garnets in armor slots, Strength Garnets in jewelry, Lapis in the weapon. Full reasoning in the Retaliation Warrior guide.' } };
   return '#/build?d=' + encodeShare(fb, ['gear', 'pets', 'stance'], { title: "Zane's Retaliation Warrior", by: 'Zane' });
 })();
 
@@ -211,7 +212,27 @@ function buildCard(href, { title, summary = '', note = '', by = '', date = '', m
 }
 const featuredPick = c => buildCard('#/builds/' + c.post.id, { title: c.post.title, summary: c.post.summary, note: c.note, by: c.author?.displayName || 'Arcana player', meta: nextCode(c.post.build) ? buildMeta(nextCode(c.post.build)) : null, featured: true });
 const featuredList = (limit = 12) => { loadFeatured(); return featuredState.cards.length ? '<div class="nx-list">' + featuredState.cards.slice(0, limit).map(featuredPick).join('') + '</div>' : featuredCard(); };
-const featuredCard = () => buildCard(FEATURED, { title: "Zane's Retaliation Warrior", summary: 'Retaliation, Defense, Block Chance and Strength, with a four-pet setup.', by: 'Zane', meta: { cls: 1, stance: 'bulwark', level: 196 }, featured: true });
+const featuredCard = () => buildCard(FEATURED, { title: "Zane's Retaliation Warrior", summary: 'Endgame retaliation at ML 300+: Reflecting, Strength and Defense gems, one Increased Strength pet and three Retaliation pets.', by: 'Zane', meta: { cls: 1, stance: 'bulwark', level: 404 }, featured: true });
+
+// ---------- featured guides ----------
+// Same text standard as the Handbook (tables, topic links, tool links), plus a short contents list.
+const guideCard = g => '<a class="nx-bcard gd-card" href="#/guides/' + g.id + '" style="--bt:' + (BUILD_TYPES[g.stance]?.color || 'var(--accent)') + ';--cc:' + classVar(CLASS_NAMES[1]) + '">' +
+  '<span class="nx-bcard-emblem">' + classBadge(CLASS_NAMES[1], 52) + '</span><span class="nx-bcard-body"><span class="nx-tags"><span class="nx-tag nx-tag-accent">Featured guide</span><span class="nx-tag">' + esc(g.level) + '</span></span>' +
+  '<strong>' + esc(g.title) + '</strong><small>' + esc(g.summary) + '</small><span class="nx-by">by <b>' + esc(g.author) + '</b> · ' + esc(g.readTime) + ' read · updated ' + esc(shortDate(g.updated)) + '</span></span></a>';
+const slug = t => String(t).toLowerCase().replace(/<[^>]+>/g, '').replace(/&[a-z#0-9]+;/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+function guideView(id) {
+  const g = featuredGuide(id);
+  const back = '<a class="nx-back" href="#/builds/guides">' + icon('back', 18) + 'Guides</a>';
+  if (!g) return back + empty('Guide not found', 'It may have moved.');
+  const heads = [];
+  const html = hbText(g.body).replace(/<h2>(.*?)<\/h2>/g, (_, t) => { const id = 'g-' + slug(t); heads.push([id, t]); return '<h2 id="' + id + '">' + t + '</h2>'; });
+  return back + '<article class="nx-article gd-article" style="--cc:' + classVar(CLASS_NAMES[1]) + '"><span class="nx-kicker">FEATURED GUIDE · WARRIOR · ' + esc(g.level.toUpperCase()) + '</span><h1>' + esc(g.title) + '</h1>' +
+    '<p class="nx-deck">' + esc(g.summary) + '</p><p class="nx-by">by <b>' + esc(g.author) + '</b> · updated ' + esc(shortDate(g.updated)) + ' · IdleArc ' + esc(g.gameVersion) + '</p>' +
+    '<div class="gd-actions"><a class="nx-btn nx-btn-primary" href="#/tools/retaliation">Try your numbers</a><a class="nx-btn" href="' + FEATURED + '">Open the build</a></div>' +
+    '<details class="gd-toc"><summary>In this guide</summary><ol>' + heads.map(([id, t]) => '<li><a href="#/guides/' + g.id + '" data-jump="' + id + '">' + t + '</a></li>').join('') + '</ol></details>' +
+    '<div class="hb-page gd-body">' + html + '</div></article>' +
+    '<p class="nx-fine">Written by ' + esc(g.author) + '. Spot something wrong? <a href="#/feedback">Tell me</a>.</p>';
+}
 
 function toolsView(id, query) {
   if (id === 'guild-tree') return guildTreeView(query);
@@ -220,6 +241,7 @@ function toolsView(id, query) {
   if (id === 'upgrade-map') return upgradeMapView();
   if (id === 'rarity') return rarityView();
   if (id === 'compare') return compareView();
+  if (id === 'retaliation') return retaliationView();
   if (NATIVE_TOOLS.includes(id)) return toolView(id);
   // Most used first: Upgrade costs and ML XP, then the pet calculators, then everything else.
   const hero = (href, kicker, title, detail, path, tone) => '<a class="nx-hero nx-tone-' + tone + '" href="' + href + '">' + artImg(path, 64) + '<span><span class="nx-kicker">' + kicker + '</span><strong>' + esc(title) + '</strong><small>' + esc(detail) + '</small></span></a>';
@@ -227,6 +249,7 @@ function toolsView(id, query) {
   return '<section>' + label('Most used') + '<div class="nx-heroes">' +
       hero('#/tools/pathfinder', 'PATHFINDER', 'Upgrade costs', 'Materials and gold from any rank to any rank, per slot', 'features/feature-upgrade', 'violet') +
       hero('#/tools/mlxp', 'PATHFINDER', 'ML XP planner', 'XP, kills and time to your next Monster Levels', 'stats/stat-exp-gain', 'teal') + '</div></section>' +
+    '<section>' + label('Combat') + '<div class="nx-list">' + (t => artRow(t.href, t.name, t.detail, t.art))(toolById('retaliation')) + '</div></section>' +
     '<section>' + label('Pets') + '<div class="nx-grid2">' + mid(toolById('pet')) + mid(toolById('affix')) + '</div></section>' +
     '<section>' + label('Planning') + '<div class="nx-list">' + ['studio', 'guild-tree', 'skills'].map(k => { const t = toolById(k); return artRow(t.href, t.name, t.detail, t.art); }).join('') + '</div></section>' +
     '<section>' + label('More Pathfinder') + '<div class="nx-list">' +
@@ -301,7 +324,7 @@ function postView(id) {
   if (p.state === 'loading') return back + loading('the build');
   if (p.state === 'error') return back + empty('Build not found', 'It may have been removed by its author or a moderator.');
   if (p.post.kind === 'guide') return back + '<article class="nx-article"><span class="nx-kicker">COMMUNITY GUIDE · ' + esc(shortDate(p.post.createdAt).toUpperCase()) + '</span><h1>' + esc(p.post.title) + '</h1>' +
-    (p.post.summary ? '<p class="nx-deck">' + esc(p.post.summary) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(p.author?.displayName || 'Arcana player') + '</b></p>' + articleHtml(p.post.body || '') + '</article>' +
+    (p.post.summary ? '<p class="nx-deck">' + esc(p.post.summary) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(p.author?.displayName || 'Arcana player') + '</b></p><div class="hb-page gd-body">' + hbText(p.post.body || '') + '</div></article>' +
     '<p class="nx-fine">Written by a player. Spot something wrong? <a href="#/feedback">Tell me</a>.</p>';
   const code = nextCode(p.post.build);
   const intro = (p.post.summary ? '<p class="nx-read">' + esc(p.post.summary) + '</p>' : '') + (p.post.body ? '<div class="nx-article">' + articleHtml(p.post.body) + '</div>' : '');
@@ -320,7 +343,7 @@ function guideForm() {
   return back + '<header class="nx-page-head"><span class="nx-kicker">COMMUNITY GUIDE</span><h1>Write a guide</h1><p>Explain how to play something well. Builds go in Build Studio; guides are the why and how.</p></header>' +
     '<section class="nx-tool"><label class="nx-field">Title<input maxlength="110" value="' + esc(G.title) + '" data-g="title" placeholder="At least 6 characters"></label>' +
     '<label class="nx-field">Summary<textarea rows="2" maxlength="300" data-g="summary" placeholder="One or two sentences (at least 20 characters)">' + esc(G.summary) + '</textarea></label>' +
-    '<label class="nx-field">Guide<textarea rows="12" maxlength="12000" data-g="body" placeholder="At least 80 characters. Blank line between paragraphs, ## for headings, - for lists, **bold**.">' + esc(G.body) + '</textarea></label>' +
+    '<label class="nx-field">Guide<textarea rows="12" maxlength="12000" data-g="body" placeholder="At least 80 characters. Blank line between blocks. ## and ### headings, - lists, 1. steps, | tables |, > notes, **bold**, [[tool:retaliation|tool links]].">' + esc(G.body) + '</textarea></label>' +
     '<label class="st-consent"><input type="checkbox" data-g="ok"' + (G.ok ? ' checked' : '') + '><span>Publish this guide publicly, credited as <b>' + esc(u.displayName) + '</b>.</span></label>' +
     (G.error ? '<p class="st-err" role="alert">' + esc(G.error) + '</p>' : '') +
     '<button class="nx-btn nx-btn-primary" data-act="publishGuide"' + (G.busy ? ' disabled' : '') + '>' + (G.busy ? 'Publishing…' : 'Publish guide') + '</button></section>';
@@ -337,9 +360,9 @@ function buildsView(id) {
   if (buildTab === 'featured') body = featuredList();
   else if (buildTab === 'guides') {
     const g = data.guides;
-    body = '<a class="nx-btn nx-btn-primary" href="#/builds/new-guide">Write a guide</a>' + (g.state === 'error' ? failed('Guides', 'guides') : g.state !== 'ready' ? loading('guides')
+    body = '<div class="nx-list">' + FEATURED_GUIDES.map(guideCard).join('') + '</div><a class="nx-btn nx-btn-primary" href="#/builds/new-guide">Write a guide</a>' + (g.state === 'error' ? failed('Guides', 'guides') : g.state !== 'ready' ? loading('guides')
       : g.value.length ? '<div class="nx-list">' + g.value.map(p => '<a class="nx-card" href="#/builds/' + encodeURIComponent(p.id) + '"><strong>' + esc(p.title) + '</strong><small>' + esc(p.summary || p.excerpt || '') + '</small><span class="nx-by">' + esc(shortDate(p.createdAt)) + '</span></a>').join('') + '</div>'
-      : empty('No guides yet', 'Know something other players should? Write the first one.'));
+      : empty('No community guides yet', 'Know something other players should? Write the first one.'));
     return tabs + body;
   } else {
     const b = data.builds;
@@ -414,7 +437,7 @@ function render() {
   if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'guides' ? guideView(id) : section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   // The original triangle, recolored to the site accent the same way the classic theme designer did it.
   const logo = '<img class="nx-logo" src="/assets/arcana-logo.webp" width="38" height="32" alt="">';
@@ -477,6 +500,9 @@ document.addEventListener('input', e => {
 window.addEventListener('hashchange', render);
 initStudio(render);
 initTools(render);
+// "In this guide" links scroll within the page instead of changing the route.
+document.addEventListener('click', e => { const a = e.target.closest('[data-jump]'); if (!a) return; e.preventDefault(); document.getElementById(a.dataset.jump)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+initRetaliation(render);
 initPathfinder(render);
 initMlXp(render);
 initPathfinderViews(render);

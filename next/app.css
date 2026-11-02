@@ -963,3 +963,47 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
 .hb-editbtn { align-self: flex-start; }
 .adm-grid td { text-align: center; } .adm-grid input { width: 20px; height: 20px; accent-color: var(--accent); }
 .he-linkers .nx-field, .he-meta .nx-field { min-width: 0; } .he-linkers select, .he-meta select { width: 100%; min-width: 0; }
+
+/* ---------- rich text additions: h3, notes, plain links (Handbook + guides share one text standard) ---------- */
+.hb-page h3 { font-size: 16px; margin: 14px 0 2px; }
+.hb-note { padding: 12px 14px; border-radius: var(--r); background: color-mix(in srgb, var(--accent) 9%, var(--card)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); border-left-width: 3px; font-size: 14.5px; }
+.hb-page p a:not(.hb-link):not(.hb-tool), .hb-page li a:not(.hb-link):not(.hb-tool), .hb-table a:not(.hb-link):not(.hb-tool) { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 3px; }
+.hb-table td:first-child { font-weight: 600; }
+
+/* ---------- featured guides ---------- */
+.gd-article { gap: 12px; }
+.gd-article h1 { color: var(--text); }
+.gd-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.gd-actions .nx-btn { flex: 1 1 160px; }
+.gd-toc { border: 1px solid var(--line); border-radius: var(--r); background: var(--card); padding: 0 14px; }
+.gd-toc summary { padding: 12px 0; font-weight: 700; font-size: 14px; cursor: pointer; }
+.gd-toc ol { margin: 0 0 12px; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+/* Wide tables scroll sideways on phones instead of squeezing the last column into a word per line. */
+.gd-body .hb-table th:last-child, .gd-body .hb-table td:last-child { min-width: 13em; }
+.gd-body .hb-table td { white-space: normal; }
+.gd-body h2 { scroll-margin-top: calc(var(--top) + 12px); padding-top: 10px; border-top: 1px solid color-mix(in srgb, var(--line) 70%, transparent); color: var(--text); }
+.gd-body h2::before { content: ''; display: inline-block; width: 4px; height: .9em; margin-right: 8px; border-radius: 2px; background: var(--cc, var(--accent)); vertical-align: -1px; }
+.gd-body strong { color: var(--text); }
+@media (min-width: 900px) { .gd-body { font-size: 16px; } .gd-actions .nx-btn { flex: 0 0 auto; } }
+
+/* ---------- Retaliation planner ---------- */
+.rp-real { display: flex; flex-direction: column; gap: 4px; padding: 14px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
+.rp-real > small { font-size: 12px; font-weight: 700; letter-spacing: .06em; color: var(--muted); }
+.rp-real > b { font-size: 22px; }
+#rpOut { display: flex; flex-direction: column; gap: 10px; }
+.rp-rank { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; counter-reset: rp; }
+.rp-rank li { display: grid; grid-template-columns: 1fr auto; grid-template-areas: 'name gain' 'bar bar'; gap: 4px 10px; align-items: baseline; padding: 10px 12px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); }
+.rp-name { grid-area: name; display: flex; flex-direction: column; } .rp-name b { font-size: 14.5px; } .rp-name small { font-size: 12px; color: var(--muted); }
+.rp-gain { grid-area: gain; font-size: 16px; font-variant-numeric: tabular-nums; }
+.rp-bar { grid-area: bar; height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--line) 80%, transparent); overflow: hidden; }
+.rp-bar i { display: block; height: 100%; border-radius: 3px; background: var(--game-warrior, var(--accent)); }
+.rp-group { border-top: 1px solid var(--line); padding-top: 4px; } .rp-group:first-child { border-top: 0; padding-top: 0; }
+.rp-group summary { display: flex; flex-direction: column; gap: 2px; padding: 8px 0; cursor: pointer; }
+.rp-group summary small { font-size: 12.5px; color: var(--muted); font-weight: 400; }
+.rp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 10px; }
+.rp-field > span:first-child { display: flex; flex-direction: column; min-height: 2.6em; justify-content: flex-end; }
+.rp-in { position: relative; display: block; }
+.rp-in input { width: 100%; padding-right: 30px !important; font-variant-numeric: tabular-nums; }
+.rp-in i { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-style: normal; color: var(--faint); font-size: 14px; pointer-events: none; }
+.rp-link { background: none; border: 0; padding: 0; color: var(--accent-ink); text-decoration: underline; font-weight: 600; }
+@media (min-width: 900px) { .rp-grid { grid-template-columns: repeat(3, 1fr); } }

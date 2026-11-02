@@ -18,7 +18,7 @@ export const handbookPages = () => LIVE;
 export const pageById = id => byId.get(id);
 export { chapterOf, inline as hbInline };
 export const handbookChapters = () => CHAPTERS;
-const TOOLS = { studio: '#/studio', builds: '#/builds', pathfinder: '#/tools/pathfinder', mlxp: '#/tools/mlxp', pets: '#/tools/pet', guildtree: '#/tools/guild-tree', lfg: '#/lfg' };
+const TOOLS = { studio: '#/studio', builds: '#/builds', pathfinder: '#/tools/pathfinder', mlxp: '#/tools/mlxp', pets: '#/tools/pet', guildtree: '#/tools/guild-tree', lfg: '#/lfg', retaliation: '#/tools/retaliation', petaffix: '#/tools/affix', guides: '#/builds/guides' };
 const TRUST = { verified: ['Verified', 'ok'], config: ['Game data', 'cfg'], estimated: ['Estimated', 'est'], legacy: ['Legacy', 'old'] };
 
 let rerender = () => {}, currentUser = () => null;
@@ -33,12 +33,16 @@ function inline(t) {
     if (kind === 'chapter') { const c = chapterOf(id); return c ? '<a class="hb-link" data-hb="chapter:' + id + '" href="#/handbook/chapter/' + id + '">' + (words || esc(c.title)) + '</a>' : (words || id); }
     const p = byId.get(id);
     return p ? '<a class="hb-link" data-hb="' + id + '" href="#/handbook/' + id + '">' + (words || esc(p.title)) + '</a>' : (words || id);
-  });
+  }).replace(/\[([^\[\]]+)\]\(((?:#\/|https:\/\/)[^\s()<>"]+)\)/g, (_, words, href) =>
+    // Plain links: inside the site (#/...) or to https pages only, which open in a new tab.
+    '<a href="' + href + '"' + (href.startsWith('#') ? '' : ' target="_blank" rel="noopener noreferrer"') + '>' + words + '</a>');
 }
 export function hbText(src) {
   return String(src || '').trim().split(/\n\s*\n/).map(block => {
     const t = block.trim(), lines = t.split('\n');
     if (t.startsWith('## ')) return '<h2>' + inline(t.slice(3)) + '</h2>';
+    if (t.startsWith('### ')) return '<h3>' + inline(t.slice(4)) + '</h3>';
+    if (lines.every(l => l.startsWith('>'))) return '<p class="hb-note">' + lines.map(l => inline(l.replace(/^>\s?/, ''))).join('<br>') + '</p>';
     if (lines.every(l => /^\|.*\|$/.test(l.trim())) && lines.length > 1) {
       const rows = lines.filter(l => !/^\|\s*-/.test(l.trim())).map(l => l.trim().replace(/\[\[[^\]]*\]\]/g, m => m.replace('|', '\u0001')).slice(1, -1).split('|').map(c => c.trim()));
       return '<div class="hb-tablewrap"><table class="hb-table"><thead><tr>' + rows[0].map(c => '<th>' + inline(c) + '</th>').join('') + '</tr></thead><tbody>' +
