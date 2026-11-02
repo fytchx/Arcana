@@ -26,19 +26,15 @@ export function normalizeLocale(input) {
   return supported.has(code) ? code : 'en';
 }
 export function getLocale() {
+  // Strict English baseline: never silently change language based on browser settings.
+  // Any non-English locale requires the visitor's explicit choice.
   try {
     const saved = localStorage.getItem(LANGUAGE_KEY);
     if (saved) return normalizeLocale(saved);
-  } catch { /* Private mode: use browser language. */ }
-  if (typeof navigator !== 'undefined') {
-    const choices = navigator.languages || [navigator.language];
-    for (const candidate of choices) {
-      const language = String(candidate || '').split(/[-_]/)[0].toLowerCase();
-      if (supported.has(language)) return language;
-    }
-  }
+  } catch { /* Browser storage can be disabled. */ }
   return 'en';
 }
+
 export function translateEnglish(input, language = getLocale()) {
   const str = String(input ?? '');
   const lang = normalizeLocale(language);
