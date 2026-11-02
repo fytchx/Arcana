@@ -62,6 +62,20 @@ try:
         page.reload(wait_until='domcontentloaded')
         page.locator('[data-language-toggle]').wait_for(timeout=10000)
         assert page.evaluate('document.documentElement.lang') == 'zh', 'selected language not persisted'
+        page.evaluate("location.hash='#/profile'")
+        page.locator('#nxLanguageSelect').wait_for(timeout=5000)
+        assert page.locator('#nxLanguageSelect').input_value() == 'zh', 'Account selector not synced to header'
+        page.locator('#nxLanguageSelect').select_option('de')
+        assert page.evaluate('document.documentElement.lang') == 'de', 'Account locale switch failed'
+        assert 'Startseite' in page.locator('#nxNav').inner_text()
+        page.evaluate("location.hash='#/codex'")
+        page.locator('.hb-ch').first.wait_for(timeout=5000)
+        assert 'Erste Schritte' in page.locator('.hb-ch').first.inner_text(), 'Handbook chapter not translated'
+        page.evaluate("location.hash='#/guides/retaliation-warrior'")
+        page.locator('.gd-article').wait_for(timeout=5000)
+        assert 'Vergeltungskrieger' in page.locator('.gd-article h1').inner_text()
+        assert page.locator('.gd-article .nx-language-note').count() == 1, 'English guide notice missing'
+        page.evaluate("location.hash='#/home'")
         page.set_viewport_size({'width': 360, 'height': 740})
         assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth + 1'), '360px overflow'
         assert errors == [], 'Unexpected JS errors: ' + repr(errors)
