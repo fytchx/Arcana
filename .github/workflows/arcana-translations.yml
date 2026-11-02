@@ -49,5 +49,7 @@ jobs:
             echo "No changed translations"
           else
             git commit -m "Generate offline translated Handbook and featured guides for 11 languages"
+            git fetch origin feature/localization-12-languages-20261102
+            git rebase origin/feature/localization-12-languages-20261102
             git push origin HEAD:feature/localization-12-languages-20261102
           fi
