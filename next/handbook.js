@@ -3,6 +3,7 @@
 // or open the page and come straight back to where you were.
 import { esc, ic } from './core.js';
 import { CHAPTERS, PAGES, HANDBOOK_VERSION } from './handbook-content.js';
+import { editorialTranslation, editorialControl } from './i18n-content.js';
 import { getLocale, translateEnglish } from './i18n.js';
 
 // Pages come from the server (edited in the site); the seed file is the fallback until they load.
@@ -77,18 +78,19 @@ export function handbookView(id) {
     if (!c) return '<div class="nx-empty"><strong>Chapter not found</strong><a class="nx-btn" href="#/codex">Handbook</a></div>';
     const pages = pagesIn(c.id);
     return backChip() + '<a class="nx-back" href="#/codex">‹ Handbook</a><header class="hb-head"><span class="nx-kicker">CHAPTER ' + c.n + '</span><h1>' + esc(translateEnglish(c.title)) + '</h1><p>' + esc(translateEnglish(c.ask)) + '</p></header>' +
-      (pages.length ? '<div class="nx-list">' + pages.map((p, i) => '<a class="nx-row" href="#/handbook/' + p.id + '"><span class="hb-num">' + (i + 1) + '</span><span class="nx-row-text"><strong>' + esc(p.title) + '</strong><small>' + esc(p.answer.replace(/^In game: /, '')) + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div>'
+      (pages.length ? '<div class="nx-list">' + pages.map((p, i) => '<a class="nx-row" href="#/handbook/' + p.id + '"><span class="hb-num">' + (i + 1) + '</span><span class="nx-row-text"><strong>' + esc(editorialTranslation('handbook',p).doc.title) + '</strong><small>' + esc(editorialTranslation('handbook',p).doc.answer.replace(/^In game: /, '')) + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div>'
         : '<div class="nx-empty"><strong>Being written</strong><p>This chapter is next on the list.</p></div>') +
       (currentUser()?.permissions?.editHandbook ? '<a class="nx-btn" href="#/handbook/new/' + c.id + '">+ Add a page to this chapter</a>' : '') +
       (c.lists ? '<section><h2 class="nx-label">Look it up</h2><div class="nx-chips">' + c.lists.map(k => '<a class="nx-chip" href="#/codex?kind=' + k + '">' + esc(k.replace(/-/g, ' ')) + '</a>').join('') + '</div></section>' : '');
   }
-  const p = byId.get(id);
-  if (!p) return '<div class="nx-empty"><strong>Page not found</strong><p>It may have moved.</p><a class="nx-btn" href="#/codex">Handbook</a></div>';
-  const c = chapterOf(p.chapter), list = pagesIn(p.chapter), i = list.indexOf(p), nx = p.next ? byId.get(p.next) : list[i + 1];
+  const original = byId.get(id);
+  if (!original) return '<div class="nx-empty"><strong>Page not found</strong><p>It may have moved.</p><a class="nx-btn" href="#/codex">Handbook</a></div>';
+  const {doc:p, translated} = editorialTranslation('handbook', original);
+  const c = chapterOf(p.chapter), list = pagesIn(p.chapter), i = list.indexOf(original), nx = p.next ? byId.get(p.next) : list[i + 1];
   return backChip() + '<a class="nx-back" href="#/handbook/chapter/' + c.id + '">‹ ' + esc(c.title) + '</a>' +
     '<article class="hb-page"' + (p.cls ? ' style="--cc:var(--c-' + p.cls + ')"' : '') + '><header class="hb-head"><span class="nx-kicker">' + esc(translateEnglish('CHAPTER ' + c.n + ' · ' + c.title.toUpperCase())) + '</span><h1>' + esc(p.title) + '</h1>' + trustChip(p) + '</header>' +
-    (getLocale() !== 'en' ? '<p class="nx-language-note" data-no-translate>' + esc(translateEnglish('The article is currently available in English.')) + '</p>' : '') +
-    '<p class="hb-answer">' + inline(p.answer) + '</p><div lang="en">' + hbText(p.body) + '</div></article>' +
+    editorialControl('handbook', p.id, translated) +
+    '<p class="hb-answer">' + inline(p.answer) + '</p><div lang="' + (translated ? getLocale() : 'en') + '">' + hbText(p.body) + '</div></article>' +
     (currentUser()?.permissions?.editHandbook ? '<a class="nx-btn hb-editbtn" href="#/handbook/edit/' + p.id + '">Edit this page</a>' : '') +
     (nx ? '<a class="hb-next" href="#/handbook/' + nx.id + '"><small>Next</small><b>' + esc(nx.title) + '</b><span>›</span></a>' : '') +
     '<p class="nx-fine">Something wrong on this page? <a href="#/feedback">Tell us</a>.</p>';
