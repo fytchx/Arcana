@@ -1,7 +1,7 @@
 import {resolve} from 'node:path';
 import {readdir} from 'node:fs/promises';
 import {dataRoot,readJSON,saveAtomic,sendJSON,accountUser,checkOrigin,parseJSON,publicProfile} from './account-server.mjs';
-import {can} from './account-policy.js';
+import {can,capabilityGrid,setCapabilityOverrides,normalizeCapabilityOverrides,EDITABLE_CAPS,GRID_ROLES,ROLE_NAMES} from './account-policy.js';
 import {DEFAULT_DESIGN,DESIGN_FIELDS,validateDesignField} from './design-controls.js';
 import {normalizeNextDesign,safeNextDesign} from '../next/design-model.js';
 
@@ -10,6 +10,10 @@ import {normalizeNextDesign,safeNextDesign} from '../next/design-model.js';
 const configPath=()=>resolve(dataRoot(),'admin','site-config.json');
 const historyPath=()=>resolve(dataRoot(),'admin','site-history.json');
 const response=(res,status,payload)=>sendJSON(res,status,payload);
+// Role permissions the Creator can adjust (Admin › Roles). Loaded once at start, replaced on save.
+const permissionsPath=()=>resolve(dataRoot(),'admin','permissions.json');
+let permissionsRevision=0;
+readJSON(permissionsPath()).then(saved=>{if(saved){permissionsRevision=Number(saved.revision)||0;setCapabilityOverrides(saved.overrides);}}).catch(()=>{});
 const fail=(res,status,error)=>{response(res,status,{error});return true;};
 let chain=Promise.resolve();
 const serialized=task=>{
@@ -149,6 +153,23 @@ export async function handleSiteAdminRequest(req,res,url){
    await saveAtomic(featuredPath(),next);
    response(res,200,next);return true;
   });
+ }
+ if(pathname==='/api/admin/permissions'){
+  if(!await requireAdmin(req,res,'roles:privileged'))return true;
+  if(req.method==='GET'){response(res,200,{revision:permissionsRevision,grid:capabilityGrid(),roles:GRID_ROLES.map(id=>({id,label:ROLE_NAMES[id]}))});return true;}
+  if(req.method==='PUT'){
+   try{checkOrigin(req);}catch{return fail(res,403,'Invalid request origin.');}
+   const payload=await parseJSON(req,6000).catch(()=>null);
+   if(!payload||payload.expectedRevision!==permissionsRevision)return fail(res,409,'Permissions changed. Reload, then save again.');
+   const overrides=normalizeCapabilityOverrides(payload.overrides);
+   return serialized(async()=>{
+    permissionsRevision++;
+    await saveAtomic(permissionsPath(),{revision:permissionsRevision,updatedAt:new Date().toISOString(),overrides});
+    setCapabilityOverrides(overrides);
+    response(res,200,{revision:permissionsRevision,grid:capabilityGrid()});return true;
+   });
+  }
+  return fail(res,405,'Method not allowed.');
  }
  if(pathname==='/api/admin/members'){
   if(req.method!=='GET')return fail(res,405,'Method not allowed.');

@@ -4,15 +4,24 @@
 import { esc, ic } from './core.js';
 import { CHAPTERS, PAGES, HANDBOOK_VERSION } from './handbook-content.js';
 
-const byId = new Map(PAGES.map(p => [p.id, p]));
+// Pages come from the server (edited in the site); the seed file is the fallback until they load.
+let LIVE = PAGES, byId = new Map(LIVE.map(p => [p.id, p])), loadState = 'idle';
+export function setHandbookPages(list) { LIVE = Array.isArray(list) && list.length ? list : PAGES; byId = new Map(LIVE.map(p => [p.id, p])); }
+export function loadHandbook(force) {
+  if (!force && loadState !== 'idle') return;
+  loadState = 'loading';
+  fetch('/api/handbook', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => { if (j?.pages) setHandbookPages(j.pages); loadState = 'ready'; rerender(); }).catch(() => { loadState = 'idle'; });
+}
 const chapterOf = id => CHAPTERS.find(c => c.id === id);
-const pagesIn = ch => PAGES.filter(p => p.chapter === ch);
-export const handbookPages = () => PAGES;
+const pagesIn = ch => LIVE.filter(p => p.chapter === ch);
+export const handbookPages = () => LIVE;
+export const pageById = id => byId.get(id);
+export { chapterOf, inline as hbInline };
 export const handbookChapters = () => CHAPTERS;
 const TOOLS = { studio: '#/studio', builds: '#/builds', pathfinder: '#/tools/pathfinder', mlxp: '#/tools/mlxp', pets: '#/tools/pet', guildtree: '#/tools/guild-tree', lfg: '#/lfg' };
 const TRUST = { verified: ['Verified', 'ok'], config: ['Game data', 'cfg'], estimated: ['Estimated', 'est'], legacy: ['Legacy', 'old'] };
 
-let rerender = () => {};
+let rerender = () => {}, currentUser = () => null;
 const H = { pop: null, big: false };
 const BACK = 'arcana-hb-back-v1';
 
@@ -52,6 +61,7 @@ function backChip() {
   return b && b.hash !== location.hash ? '<button class="hb-back" data-hbact="back">‹ Back to ' + esc(b.title || 'where you were') + '</button>' : '';
 }
 export function handbookView(id) {
+  loadHandbook();
   if (!id) return '<a class="nx-back" href="#/codex">‹ Search</a>' + handbookHomeSection();
   if (id.startsWith('chapter/')) {
     const c = chapterOf(id.slice(8));
@@ -60,6 +70,7 @@ export function handbookView(id) {
     return backChip() + '<a class="nx-back" href="#/codex">‹ Handbook</a><header class="hb-head"><span class="nx-kicker">CHAPTER ' + c.n + '</span><h1>' + esc(c.title) + '</h1><p>' + esc(c.ask) + '</p></header>' +
       (pages.length ? '<div class="nx-list">' + pages.map((p, i) => '<a class="nx-row" href="#/handbook/' + p.id + '"><span class="hb-num">' + (i + 1) + '</span><span class="nx-row-text"><strong>' + esc(p.title) + '</strong><small>' + esc(p.answer.replace(/^In game: /, '')) + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div>'
         : '<div class="nx-empty"><strong>Being written</strong><p>This chapter is next on the list.</p></div>') +
+      (currentUser()?.permissions?.editHandbook ? '<a class="nx-btn" href="#/handbook/new/' + c.id + '">+ Add a page to this chapter</a>' : '') +
       (c.lists ? '<section><h2 class="nx-label">Look it up</h2><div class="nx-chips">' + c.lists.map(k => '<a class="nx-chip" href="#/codex?kind=' + k + '">' + esc(k.replace(/-/g, ' ')) + '</a>').join('') + '</div></section>' : '');
   }
   const p = byId.get(id);
@@ -68,6 +79,7 @@ export function handbookView(id) {
   return backChip() + '<a class="nx-back" href="#/handbook/chapter/' + c.id + '">‹ ' + esc(c.title) + '</a>' +
     '<article class="hb-page"' + (p.cls ? ' style="--cc:var(--c-' + p.cls + ')"' : '') + '><header class="hb-head"><span class="nx-kicker">CHAPTER ' + c.n + ' · ' + esc(c.title.toUpperCase()) + '</span><h1>' + esc(p.title) + '</h1>' + trustChip(p) + '</header>' +
     '<p class="hb-answer">' + inline(p.answer) + '</p>' + hbText(p.body) + '</article>' +
+    (currentUser()?.permissions?.editHandbook ? '<a class="nx-btn hb-editbtn" href="#/handbook/edit/' + p.id + '">Edit this page</a>' : '') +
     (nx ? '<a class="hb-next" href="#/handbook/' + nx.id + '"><small>Next</small><b>' + esc(nx.title) + '</b><span>›</span></a>' : '') +
     '<p class="nx-fine">Something wrong on this page? <a href="#/feedback">Tell us</a>.</p>';
 }
@@ -85,8 +97,8 @@ export function handbookPopup() {
     '<div class="hb-popfoot">' + (H.big ? '' : '<button class="hb-popbtn" data-hbact="big">Read more</button>') + '<a class="hb-popbtn hb-go" data-hbact="go" href="' + href + '">Open page ›</a></div></div>';
 }
 
-export function initHandbook(render) {
-  rerender = render;
+export function initHandbook(render, getUser) {
+  rerender = render; if (getUser) currentUser = getUser;
   document.addEventListener('click', e => {
     const link = e.target.closest('.hb-link');
     if (link && !e.target.closest('.hb-pop.big')) { e.preventDefault(); H.pop = link.dataset.hb; H.big = false; return render(); }

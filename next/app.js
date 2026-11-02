@@ -18,6 +18,7 @@ import { themeView, initTheme, readTheme, themeVars, saveTheme, applyBackdrop } 
 import { DEFAULT_NEXT_DESIGN, safeNextDesign, designVars, fontHref } from './design-model.js';
 import { designView, initDesign, readDraft } from './design-tool.js';
 import { handbookView, handbookHomeSection, handbookPopup, initHandbook, handbookPages } from './handbook.js';
+import { editorView, initHandbookEditor } from './handbook-editor.js';
 import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 import { demoBuilds } from '../src/catalog.js';
@@ -413,7 +414,7 @@ function render() {
   if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'handbook' ? handbookView(id) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   // The original triangle, recolored to the site accent the same way the classic theme designer did it.
   const logo = '<img class="nx-logo" src="/assets/arcana-logo.webp" width="38" height="32" alt="">';
@@ -487,7 +488,8 @@ initCommunity(render);
 initGuildTree(render);
 initTheme(render, applyTheme);
 initDesign(render, applyTheme);
-initHandbook(render);
+initHandbook(render, () => data.me.value?.user || null);
+initHandbookEditor(render);
 window.addEventListener('arcana:news-changed', () => { data.news.state = 'idle'; data.article = {}; });
 window.addEventListener('arcana:featured-changed', () => { featuredState.state = 'idle'; data.builds.state = 'idle'; });
 // Boot: hold the loading screen until the published design, fonts and account are in (2.5 s at most),

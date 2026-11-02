@@ -947,3 +947,19 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
 .hb-popbtn { height: 34px; padding: 0 12px; display: inline-flex; align-items: center; border-radius: var(--r-sm); border: 1px solid var(--line); background: transparent; color: var(--text); font-size: 13px; font-weight: 600; }
 .hb-go { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 @media (min-width: 900px) { .hb-pop { bottom: 24px; } .hb-pop.big { top: 80px; bottom: 24px; } }
+
+/* Handbook editor */
+.he-form { gap: 12px; }
+.he-form textarea { font: 14px/1.5 ui-monospace, Menlo, Consolas, monospace; }
+.he-toolbar { display: flex; flex-wrap: wrap; gap: 6px; }
+.he-toolbar button { height: 34px; padding: 0 12px; border-radius: var(--r-sm); border: 1px solid var(--line); background: var(--card); color: var(--text); font-size: 13px; font-weight: 600; }
+.he-linkers { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.he-meta { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; }
+@media (max-width: 480px) { .he-linkers, .he-meta { grid-template-columns: 1fr; } }
+.he-bar { grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); }
+.he-hist { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; font-size: 13px; }
+.he-hist .nx-btn { min-height: 32px; padding: 0 10px; }
+.he-preview { padding: 12px; border: 1px dashed var(--line); border-radius: var(--r-lg); }
+.hb-editbtn { align-self: flex-start; }
+.adm-grid td { text-align: center; } .adm-grid input { width: 20px; height: 20px; accent-color: var(--accent); }
+.he-linkers .nx-field, .he-meta .nx-field { min-width: 0; } .he-linkers select, .he-meta select { width: 100%; min-width: 0; }

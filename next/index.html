@@ -32,7 +32,7 @@
 (function(){try{
  var h=location.hash||'',m=h.match(/^#\/([^?]*)(?:\?(.*))?$/);if(!m)return;
  var path=m[1].replace(/\/$/,''),q=new URLSearchParams(m[2]||''),first=path.split('/')[0];
- var NEXT=['home','tools','codex','builds','news','profile','studio','build','admin','feedback','checklist','guilds','lfg','records','directory'];
+ var NEXT=['home','tools','codex','builds','news','profile','studio','build','admin','feedback','checklist','guilds','lfg','records','directory','handbook'];
  if(path==='account'){var k='arcana-next-return',v=sessionStorage.getItem(k);sessionStorage.removeItem(k);
   if(!q.get('error')&&v&&/^\/next(?:#\/[\w\-\/?=&%.:]*)?$/.test(v)){location.replace(v.replace(/^\/next/,'/'));return;}
   history.replaceState(null,'','/#/profile');return;}
