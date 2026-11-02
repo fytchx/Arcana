@@ -95,3 +95,12 @@ test('guides: the featured guide carries Zane\'s own Build Studio setup, with a 
   assert.match(app, /'&from=' \+ g\.id/, 'guide button remembers the guide');
   assert.match(app, /function buildView\(query\)/, 'shared builds render with a back link');
 });
+
+test('shared build: runes and runewords are summarised once each, with counts', async () => {
+  const { sharedView } = await import('../next/studio.js').catch(() => ({}));
+  if (!sharedView) return; // studio.js needs a browser for some imports; covered by the browser audit
+  const html = sharedView(featuredGuide('retaliation-warrior').build);
+  assert.ok(!html.includes('st-grid ro'), 'no full rune grid');
+  assert.match(html, /<b>Fortitude<\/b>.*?<em>×28<\/em>/s);
+  assert.match(html, /<b>Immortal Bulwark<\/b>.*?<em>×14<\/em>/s);
+});

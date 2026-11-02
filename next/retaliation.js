@@ -16,7 +16,7 @@ export const RET_GROUPS = [
   { id: 'base', title: 'Base pool', note: 'Top of the Retaliation Breakdown.', fields: [
     f('reflecting', 'Reflecting bonuses (gear)', '%'), f('deflection', 'Deflection (class skill)', '%'), f('bulwark', 'Bulwark Stance', '%'),
     f('defense', 'Defense', 'num', 'Type it like the game: 780.28M'), f('ratio', 'Level ratio', '×', '0.60 from ML 300 on')] },
-  { id: 'layers', title: 'Multiplicative layers', note: 'Copy the % value, or the × value with its × (×22.60 is more precise).', fields: [
+  { id: 'layers', title: 'Multiplicative layers', note: 'Copy the % value. When the game shortens it (like +2.16K%), type the × value instead, with its ×.', fields: [
     f('strength', 'Strength', '%'), f('petStrength', 'Pet increased strength', '%'), f('petRet', 'Pet Retaliation bonus', '%'),
     f('inscription', 'Talisman Inscription', '%'), f('runes', 'Runes', '%'), f('guild', 'Guild Skill Tree', '%'),
     f('echo', 'Echo Blessings', '%'), f('sets', 'Gear Sets', '%'), f('gems', 'Gems', '%'), f('time', 'Time boost', '%')] },
@@ -36,7 +36,7 @@ const REQUIRED = ['reflecting', 'defense', 'ratio', 'stance'];
 // Zane's boss preset, November 2, 2026: reproduces his sheet (13.86qa – 19.8qa, average 16.83qa).
 export const RET_EXAMPLE = Object.freeze({
   reflecting: '323.4', deflection: '40', bulwark: '15', defense: '780.28M', ratio: '0.60',
-  strength: '×22.60', petStrength: '×23.46', petRet: '×44.14', inscription: '×5.96', runes: '×10.10', guild: '×1.78', echo: '×1.18', sets: '×1.40', gems: '×1.16', time: '×1.86',
+  strength: '×22.60', petStrength: '×23.46', petRet: '4314', inscription: '496', runes: '909.8', guild: '77.8', echo: '18', sets: '40', gems: '16.2', time: '86',
   blocked: '1.75', stance: '1.25', block: '96',
   critChance: '682.1', critDamage: '2421', doubleHit: '534', doubleDamage: '959', titanic: '80', relentless: '100', defGems: '95'
 });

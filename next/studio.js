@@ -324,9 +324,19 @@ export function sharedView(code, over = {}) {
   }
   if (inc.has('pets')) out += sec('Pet Drop Bonuses', '<div class="st-wrapchips ro">' + sb.pets.map((p, i) => p ? '<span>' + esc(D.pets.find(x => x.id === p).n) + '</span>' : '').join('') + '</div>' + sb.pets.map((p, i) => n('pets:' + i)).join('') + n('pets'));
   if (inc.has('runes')) {
-    const rw = runeWords(D, sb.runes), S = 30;
-    out += sec('Runes', '<div class="st-gridwrap"><div class="st-grid ro" style="width:' + GRID_W * S + 'px;height:' + GRID_H * S + 'px;--cell:' + S + 'px">' + sb.runes.map(r => { const sh = shapeById(D, r.shape), ty = D.rt.find(t => t.id === r.t); return '<span class="st-rune' + (rw.used[r.id] ? ' word' : '') + '" style="left:' + r.x * S + 'px;top:' + r.y * S + 'px;width:' + (sh.w * S - 3) + 'px;height:' + (sh.h * S - 3) + 'px;background:' + ty.c + '"><b>' + esc(ty.n[0]) + '</b></span>'; }).join('') + '</div></div>' +
-      (rw.formed.length ? '<div class="st-words">' + rw.formed.map(w => '<span><b>' + esc(w.n) + '</b> ' + esc(w.b) + '</span>').join('') + '</div>' : '') + n('runes'), sb.runes.length + ' runes');
+    // One row per kind of rune (family + secondary + shape) and one per runeword, with counts.
+    const rw = runeWords(D, sb.runes), kinds = new Map(), words = new Map();
+    for (const r of sb.runes) {
+      const k = r.t + '|' + (r.sec || '') + '|' + r.shape, cur = kinds.get(k);
+      kinds.set(k, cur ? { ...cur, n: cur.n + 1 } : { r, n: 1 });
+    }
+    for (const w of rw.formed) { const cur = words.get(w.n); words.set(w.n, cur ? { ...cur, c: cur.c + 1 } : { ...w, c: 1 }); }
+    const kindRows = [...kinds.values()].sort((a, b) => b.n - a.n).map(({ r, n: c }) => {
+      const ty = D.rt.find(t => t.id === r.t), sec = D.secs.find(x => x.id === r.sec), sh = shapeById(D, r.shape);
+      return '<div class="st-runekind"><span class="st-runechip" style="background:' + ty.c + '"><b>' + esc(ty.n[0]) + '</b></span><span><b>' + esc(ty.n) + '</b><small>' + esc([ty.p, sec ? sec.n + ' secondary' : '', sh && sh.id !== 'small' ? sh.n : ''].filter(Boolean).join(' · ')) + '</small></span><em>×' + c + '</em></div>';
+    }).join('');
+    const wordRows = [...words.values()].map(w => '<div class="st-runekind"><span class="st-runechip word" aria-hidden="true">✦</span><span><b>' + esc(w.n) + '</b><small>' + esc(w.b) + '</small></span><em>×' + w.c + '</em></div>').join('');
+    out += sec('Runes', '<div class="st-runekinds">' + kindRows + '</div>' + (wordRows ? '<h3 class="st-subhead">Runewords</h3><div class="st-runekinds">' + wordRows + '</div>' : '') + n('runes'), sb.runes.length + ' runes');
   }
   if (inc.has('class')) {
     const c = classData(D, sb.cls), a = sb.ca[sb.cls] || {};

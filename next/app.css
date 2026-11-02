@@ -1020,3 +1020,15 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
 .hb-fold[open] > summary .hb-fold-n { visibility: hidden; }
 .hb-fold .hb-tablewrap { margin: 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: var(--card); }
 @media (prefers-reduced-motion: reduce) { .hb-fold > summary::before { transition: none; } }
+
+/* Shared build: one row per kind of rune and per runeword, with counts. */
+.st-runekinds { display: flex; flex-direction: column; gap: 8px; }
+.st-runekind { display: flex; align-items: center; gap: 12px; }
+.st-runekind > span:nth-child(2) { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.st-runekind small { color: var(--muted); font-size: 12.5px; }
+.st-runekind em { font-style: normal; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--muted); }
+.st-runechip { flex: none; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; color: #fff; font-size: 15px; }
+.st-runechip.word { background: var(--soft); color: var(--accent-ink); border: 1px solid var(--accent); }
+.st-subhead { margin: 14px 0 8px; font-size: 13px; color: var(--muted); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+
+#nxCodexBody > section + section { margin-top: 16px; }
