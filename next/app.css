@@ -1032,3 +1032,18 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
 .st-subhead { margin: 14px 0 8px; font-size: 13px; color: var(--muted); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 
 #nxCodexBody > section + section { margin-top: 16px; }
+
+
+/* Built-in localization: discreet, touch-friendly, no extra header row. */
+.nx-top-l .nx-title { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.nx-language { position:relative; z-index:35; flex:none; }
+.nx-language-trigger { display:inline-flex; align-items:center; justify-content:center; gap:4px; min-width:49px; min-height:40px; padding:6px 7px; border:1px solid transparent; border-radius:var(--r-sm,10px); background:transparent; color:var(--muted,#a3a9bb); font-size:11px; font-weight:700; letter-spacing:.02em; }
+.nx-language-trigger:hover, .nx-language-trigger:focus-visible, .nx-language-trigger[aria-expanded=true] { color:var(--text,#e8eaf2); border-color:var(--line,#2a3042); background:var(--card,#191e2b); }
+.nx-language-trigger svg { width:18px; height:18px; flex:none; }
+.nx-language-menu { position:absolute; right:0; top:calc(100% + 7px); width:204px; max-height:min(450px,65dvh); overflow-y:auto; overscroll-behavior:contain; background:var(--card,#191e2b); border:1px solid var(--line,#2a3042); box-shadow:0 16px 36px #0008; border-radius:var(--r,14px); padding:6px; z-index:60; }
+.nx-language-heading { display:block; color:var(--muted,#a3a9bb); font-size:11px; font-weight:700; padding:7px 9px 8px; }
+.nx-language-option { display:flex; align-items:center; justify-content:space-between; width:100%; min-height:38px; text-align:left; border:0; background:transparent; border-radius:8px; padding:8px 10px; font-size:13px; color:var(--text,#e8eaf2); }
+.nx-language-option:hover,.nx-language-option:focus-visible,.nx-language-option[aria-selected=true] { background:color-mix(in srgb,var(--accent,#a98bff) 13%,transparent); }
+.nx-language-option[aria-selected=true] { font-weight:700; }
+.nx-language-option[aria-selected=true] span:last-child { color:var(--accent-ink,#c8b8ff); }
+@media(max-width:380px) { .nx-language-trigger { min-width:42px; padding:5px; } .nx-language-trigger svg{width:16px;height:16px;} }
