@@ -1,10 +1,14 @@
 // Arcana Next localization. No translation API, requests, or runtime service.
 // Exact translations protect item names, formulas, links and player-authored content.
 import { SUPPORTED_LANGUAGES, TRANSLATIONS } from './i18n-dictionary.js';
+import { EXTRA_TRANSLATIONS } from './i18n-extra.js';
 
 export { SUPPORTED_LANGUAGES };
 export const LANGUAGE_KEY = 'arcana-language-v1';
-const translations = Object.freeze(TRANSLATIONS);
+const translations = Object.freeze(Object.fromEntries(
+  SUPPORTED_LANGUAGES.filter(x => x.code !== 'en').map(x => [x.code,
+    Object.freeze({ ...TRANSLATIONS[x.code], ...EXTRA_TRANSLATIONS[x.code] })])
+));
 const supported = new Set(SUPPORTED_LANGUAGES.map(x => x.code));
 
 export function normalizeLocale(input) {
@@ -37,6 +41,9 @@ export function translateEnglish(input, language = getLocale()) {
   if (!phrase) return str;
   const direct = dict[phrase];
   if (direct !== undefined) return before + direct + after;
+  // Navigation arrows are decoration, not part of the content or game term.
+  const arrow = phrase.match(/^([‹←]\s+)(.+)$/);
+  if (arrow && dict[arrow[2]]) return before + arrow[1] + dict[arrow[2]] + after;
   if (/^[A-Z][A-Z ]{2,}$/.test(phrase)) {
     const key = Object.keys(dict).find(k => k.toUpperCase() === phrase);
     if (key) return before + (['ja','ko','zh'].includes(lang) ? dict[key] : dict[key].toLocaleUpperCase(lang)) + after;
@@ -93,6 +100,13 @@ export function translateTree(root = document.body, locale = getLocale()) {
   }
 }
 
+export function setLocale(locale) {
+  const next = normalizeLocale(locale);
+  try { localStorage.setItem(LANGUAGE_KEY, next); } catch {}
+  if (typeof document !== 'undefined') document.documentElement.lang = next;
+  return next;
+}
+
 let menuOpen = false;
 const escapeText = text => String(text).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function languageControl() {
@@ -110,6 +124,15 @@ export function languageControl() {
     '"><span class="nx-language-heading">' + escapeText(title) + '</span>' + options + '</div>' : '') + '</div>';
 }
 
+export function languageSettingsField() {
+  const current = getLocale();
+  const options = SUPPORTED_LANGUAGES.map(x => '<option value="' + x.code + '"' +
+    (current === x.code ? ' selected' : '') + ' lang="' + x.code + '">' + escapeText(x.name) + '</option>').join('');
+  return '<section class="nx-language-settings"><label class="nx-field" for="nxLanguageSelect">' +
+    escapeText(translateEnglish('Language', current)) + '</label><select id="nxLanguageSelect" data-language-select aria-label="' +
+    escapeText(translateEnglish('Select language', current)) + '">' + options + '</select></section>';
+}
+
 export function initLocalization(render) {
   document.documentElement.lang = getLocale();
   document.addEventListener('click', event => {
@@ -118,14 +141,19 @@ export function initLocalization(render) {
     const choice = event.target.closest('[data-language-choose]');
     if (choice) {
       event.preventDefault();
-      const locale = normalizeLocale(choice.dataset.languageChoose);
-      try { localStorage.setItem(LANGUAGE_KEY, locale); } catch {}
-      document.documentElement.lang = locale;
+      setLocale(choice.dataset.languageChoose);
       menuOpen = false;
       render();
       return;
     }
     if (menuOpen && !event.target.closest('[data-language-ui]')) { menuOpen = false; render(); }
+  });
+  document.addEventListener('change', event => {
+    const picker = event.target.closest('[data-language-select]');
+    if (!picker) return;
+    setLocale(picker.value);
+    menuOpen = false;
+    render();
   });
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape' || !menuOpen) return;
