@@ -13,6 +13,9 @@ test('rich text: h3, notes, tables, steps and safe links', () => {
   assert.match(html, /<p class="hb-note"><strong>Base<\/strong> = 0.60 × Defense<br>line two<\/p>/);
   assert.match(html, /<table class="hb-table">/);
   assert.match(html, /<ol><li>one<\/li><li>two<\/li><\/ol>/);
+  const fold = hbText('Table: See the ranking\n| A | B |\n| --- | --- |\n| 1 | 2 |\n| 3 | 4 |');
+  assert.match(fold, /^<details class="hb-fold"><summary><span class="hb-fold-t">See the ranking<\/span><span class="hb-fold-n">2 rows<\/span><\/summary><div class="hb-tablewrap">/);
+  assert.ok(!/<details[^>]* open/.test(fold), 'folded tables start closed');
   assert.match(html, /<a href="#\/guides\/x">guide<\/a>/);
   assert.match(html, /<a href="https:\/\/example.com" target="_blank" rel="noopener noreferrer">site<\/a>/);
   assert.ok(!html.includes('href="javascript'), 'only #/ and https links become links');
@@ -26,10 +29,11 @@ test('guides: featured guide routes, renders every table, links only to real too
   const g = featuredGuide('retaliation-warrior');
   assert.ok(g && FEATURED_GUIDES.length >= 1);
   const html = hbText(g.body);
-  const tables = g.body.split(/\n\s*\n/).filter(b => b.trim().startsWith('|')).length;
-  assert.equal((html.match(/<table/g) || []).length, tables, 'every table block renders as a table');
-  for (const b of g.body.split(/\n\s*\n/).filter(b => b.trim().startsWith('|'))) {
-    const widths = b.trim().split('\n').map(l => l.trim().slice(1, -1).split('|').length);
+  const blocks = g.body.split(/\n\s*\n/).filter(b => /^(Table: |\|)/.test(b.trim()));
+  assert.equal((html.match(/<table/g) || []).length, blocks.length, 'every table block renders as a table');
+  assert.equal((html.match(/<details class="hb-fold">/g) || []).length, blocks.length, 'every guide table starts folded');
+  for (const b of blocks) {
+    const widths = b.trim().split('\n').filter(l => l.startsWith('|')).map(l => l.trim().slice(1, -1).split('|').length);
     assert.ok(widths.every(w => w === widths[0]), 'table rows have equal columns: ' + b.slice(0, 40));
   }
   assert.ok(!/Zane:/.test(g.body), 'no author placeholders on the site');

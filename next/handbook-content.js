@@ -1,5 +1,5 @@
 // Arcana Handbook: seed content. Admins will edit pages in the site (Phase 2); this file is the
-// starting set. Body syntax: "## Heading", "### Subheading", "- list", "1. steps", "**bold**", "| table |", "> note",
+// starting set. Body syntax: "## Heading", "### Subheading", "- list", "1. steps", "**bold**", "| table |" (first line "Table: caption" folds it), "> note",
 // [words](#/route or https://…) plain links, blank line between blocks,
 // [[page-id]] or [[page-id|words]] for a linked topic (tap = preview popup), [[list:kind|words]] for a Codex list.
 // trust: verified | config (read from the dated game config) | estimated | legacy
