@@ -86,7 +86,7 @@ export function handbookView(id) {
   if (!p) return '<div class="nx-empty"><strong>Page not found</strong><p>It may have moved.</p><a class="nx-btn" href="#/codex">Handbook</a></div>';
   const c = chapterOf(p.chapter), list = pagesIn(p.chapter), i = list.indexOf(p), nx = p.next ? byId.get(p.next) : list[i + 1];
   return backChip() + '<a class="nx-back" href="#/handbook/chapter/' + c.id + '">‹ ' + esc(c.title) + '</a>' +
-    '<article class="hb-page"' + (p.cls ? ' style="--cc:var(--c-' + p.cls + ')"' : '') + '><header class="hb-head"><span class="nx-kicker">CHAPTER ' + c.n + ' · ' + esc(c.title.toUpperCase()) + '</span><h1>' + esc(p.title) + '</h1>' + trustChip(p) + '</header>' +
+    '<article class="hb-page"' + (p.cls ? ' style="--cc:var(--c-' + p.cls + ')"' : '') + '><header class="hb-head"><span class="nx-kicker">' + esc(translateEnglish('CHAPTER ' + c.n + ' · ' + c.title.toUpperCase())) + '</span><h1>' + esc(p.title) + '</h1>' + trustChip(p) + '</header>' +
     (getLocale() !== 'en' ? '<p class="nx-language-note" data-no-translate>' + esc(translateEnglish('The article is currently available in English.')) + '</p>' : '') +
     '<p class="hb-answer">' + inline(p.answer) + '</p><div lang="en">' + hbText(p.body) + '</div></article>' +
     (currentUser()?.permissions?.editHandbook ? '<a class="nx-btn hb-editbtn" href="#/handbook/edit/' + p.id + '">Edit this page</a>' : '') +
