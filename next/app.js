@@ -7,6 +7,7 @@ import {
 } from './core.js';
 import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSection } from './studio.js';
 import { nextCode } from './studio-core.js';
+import { languageControl, initLocalization, translateTree, translateEnglish, getLocale } from './i18n.js';
 import { toolView, initTools, NATIVE_TOOLS } from './tools.js';
 import { pathfinderView, initPathfinder, mlXpView, initMlXp, upgradeMapView, rarityView, compareView, initPathfinderViews } from './pathfinder.js';
 import { adminView, initAdmin } from './admin.js';
@@ -453,7 +454,7 @@ function render() {
   const title = section === 'home' ? '<a class="nx-brand" href="#/home" aria-label="Arcana home">' + logo + '<span>ARCANA</span></a>'
     : '<a class="nx-brand nx-brand-sm" href="#/home" aria-label="Arcana home">' + logo + '</a><span class="nx-title">' + esc(TITLES[section]) + '</span>';
   $('nxTopL').innerHTML = title;
-  $('nxTopR').innerHTML =
+  $('nxTopR').innerHTML = languageControl() +
     (user() ? '<a class="nx-avatar" href="#/profile" aria-label="Profile"' + (section === 'profile' ? ' aria-current="page"' : '') + '>' + esc(initial()) + '</a>'
       : data.me.state === 'ready' ? '<a class="nx-signin-pill" href="#/profile">Sign in</a>' : '');
   $('nxNav').innerHTML = TABS.map(t => '<a href="' + (t.href || hashFor(t.id)) + '"' + (t.id === 'search' ? ' class="nx-nav-search"' : '') + (t.id === tab ? ' aria-current="page"' : '') + '>' + (t.id === 'search' ? '<i>' + ic('search', 24) + '</i>' : ic(t.id === 'tools' ? 'tools' : t.id, 22)) + '<span>' + t.label + '</span></a>').join('');
@@ -466,7 +467,8 @@ function render() {
   if (main.dataset.key !== key) { main.dataset.key = key; window.scrollTo(0, 0); }
   if (section === 'studio') studioAfterRender();
   if (focusSearch) { const q = $('nxCodexQ'); q?.focus(); q?.setSelectionRange(q.value.length, q.value.length); }
-  document.title = (section === 'home' ? 'Arcana' : (TITLES[section] || 'Arcana') + ' · Arcana');
+  document.title = (section === 'home' ? 'Arcana' : translateEnglish(TITLES[section] || 'Arcana', getLocale()) + ' · Arcana');
+  translateTree(document.body);
 }
 
 document.addEventListener('change', e => { if (e.target.dataset?.g === 'ok') G.ok = e.target.checked; });
@@ -504,9 +506,10 @@ document.addEventListener('input', e => {
   if (e.target.id !== 'nxCodexQ') return;
   codexQuery = e.target.value;
   const body = $('nxCodexBody');
-  if (body && data.codex.state === 'ready') body.innerHTML = codexResults(data.codex.value);
+  if (body && data.codex.state === 'ready') { body.innerHTML = codexResults(data.codex.value); translateTree(body); }
 });
 window.addEventListener('hashchange', render);
+initLocalization(render);
 initStudio(render);
 initTools(render);
 // A generic Back goes to the previous page when there is one in this tab.
