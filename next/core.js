@@ -125,7 +125,7 @@ export function sortArticles(articles) {
 export function shortDate(iso) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+  return d.toLocaleDateString(typeof navigator !== 'undefined' ? (navigator.language || 'en-US') : 'en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 }
 
 // News article body: the same plain format the classic Journal uses
