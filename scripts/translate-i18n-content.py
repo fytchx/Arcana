@@ -64,6 +64,8 @@ def strings_in(source):
             for field in ("title","answer","summary","body"):
                 if isinstance(doc.get(field),str):
                     for line in doc[field].split("\n"): visit(parse_line(line))
+    for value in source.get('uiStrings',[]):
+        if re.search('[A-Za-z]',value): found.add(value)
     return sorted(found)
 
 def render(seg,translations):
@@ -113,6 +115,7 @@ def main(codes,limit):
             for name,doc in source[kind].items():
                 fields={k:translated_field(v,translated) for k,v in doc.items() if k in ("title","answer","summary","body")}
                 result[kind][name]={"sourceHash":doc["sourceHash"],**fields}
+        result['ui'] = {value:translated.get(value,value) for value in source.get('uiStrings',[]) if translated.get(value,value) != value}
         dest=OUTPUT/(code+".json")
         dest.write_text(json.dumps(result,indent=2,ensure_ascii=False)+"\n",encoding="utf8")
         changed=sum(1 for original,proposal in translated.items() if original!=proposal)
