@@ -1047,3 +1047,10 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
 .nx-language-option[aria-selected=true] { font-weight:700; }
 .nx-language-option[aria-selected=true] span:last-child { color:var(--accent-ink,#c8b8ff); }
 @media(max-width:380px) { .nx-language-trigger { min-width:42px; padding:5px; } .nx-language-trigger svg{width:16px;height:16px;} }
+
+
+/* Secondary language control in Account; the header remains the primary shortcut. */
+.nx-language-settings { padding: 2px 0 12px; }
+.nx-language-settings .nx-field { display:block; margin-bottom:7px; font-weight:700; color:var(--text); }
+.nx-language-settings select { display:block; width:100%; max-width:360px; min-height:44px; background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:var(--r-sm); padding:8px 12px; }
+.nx-language-note { margin:12px 0 14px; color:var(--muted); font-size:12px; line-height:1.5; }
