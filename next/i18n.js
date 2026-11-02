@@ -122,7 +122,10 @@ export function translateTree(root = document.body, locale = getLocale()) {
 export function setLocale(locale) {
   const next = normalizeLocale(locale);
   try { localStorage.setItem(LANGUAGE_KEY, next); } catch {}
-  if (typeof document !== 'undefined') document.documentElement.lang = next;
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = next;
+    document.dispatchEvent(new CustomEvent('arcana:language-changed', { detail: {language:next} }));
+  }
   return next;
 }
 
