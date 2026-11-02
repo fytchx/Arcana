@@ -63,7 +63,7 @@ const trustChip = p => { const [l, k] = TRUST[p.trust] || TRUST.config; return '
 // ---------- views ----------
 export function handbookHomeSection() {
   return '<section><div class="nx-head"><h2 class="nx-label">Handbook</h2><span class="nx-fine">IdleArc ' + HANDBOOK_VERSION + '</span></div><div class="hb-chapters">' +
-    CHAPTERS.map(c => { const n = pagesIn(c.id).length; return '<a class="hb-ch' + (n ? '' : ' hb-soon') + '" href="#/handbook/chapter/' + c.id + '"><span class="nx-ic">' + ic(c.icon, 20) + '</span><span><b>' + c.n + ' · ' + esc(c.title) + '</b><small>' + esc(c.ask) + '</small></span></a>'; }).join('') + '</div></section>';
+    CHAPTERS.map(c => { const n = pagesIn(c.id).length; return '<a class="hb-ch' + (n ? '' : ' hb-soon') + '" href="#/handbook/chapter/' + c.id + '"><span class="nx-ic">' + ic(c.icon, 20) + '</span><span><b>' + c.n + ' · ' + esc(translateEnglish(c.title)) + '</b><small>' + esc(translateEnglish(c.ask)) + '</small></span></a>'; }).join('') + '</div></section>';
 }
 function backChip() {
   let b; try { b = JSON.parse(sessionStorage.getItem(BACK)); } catch { b = null; }
@@ -76,7 +76,7 @@ export function handbookView(id) {
     const c = chapterOf(id.slice(8));
     if (!c) return '<div class="nx-empty"><strong>Chapter not found</strong><a class="nx-btn" href="#/codex">Handbook</a></div>';
     const pages = pagesIn(c.id);
-    return backChip() + '<a class="nx-back" href="#/codex">‹ Handbook</a><header class="hb-head"><span class="nx-kicker">CHAPTER ' + c.n + '</span><h1>' + esc(c.title) + '</h1><p>' + esc(c.ask) + '</p></header>' +
+    return backChip() + '<a class="nx-back" href="#/codex">‹ Handbook</a><header class="hb-head"><span class="nx-kicker">CHAPTER ' + c.n + '</span><h1>' + esc(translateEnglish(c.title)) + '</h1><p>' + esc(translateEnglish(c.ask)) + '</p></header>' +
       (pages.length ? '<div class="nx-list">' + pages.map((p, i) => '<a class="nx-row" href="#/handbook/' + p.id + '"><span class="hb-num">' + (i + 1) + '</span><span class="nx-row-text"><strong>' + esc(p.title) + '</strong><small>' + esc(p.answer.replace(/^In game: /, '')) + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div>'
         : '<div class="nx-empty"><strong>Being written</strong><p>This chapter is next on the list.</p></div>') +
       (currentUser()?.permissions?.editHandbook ? '<a class="nx-btn" href="#/handbook/new/' + c.id + '">+ Add a page to this chapter</a>' : '') +
