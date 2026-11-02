@@ -1,4 +1,4 @@
-// Arcana pt IdleArc terminology add-on. 250 entries.
+// Arcana pt IdleArc terminology add-on. 264 entries.
 // source-name means deliberately retained English proper name, NOT a verified official localized name.
 // editorial-* means proposed Arcana translation, NOT verified against game 1.3.13 translation tables.
 // This pack can be replaced term-by-term after native-speaker review.
@@ -256,6 +256,10 @@ export const GAME_TERM_ADDON = Object.freeze({
     "value": "Double Nock",
     "source": "source-name"
   },
+  "Drowned Abyss": {
+    "value": "Drowned Abyss",
+    "source": "source-name"
+  },
   "Druid": {
     "value": "Druida",
     "source": "editorial-class-label"
@@ -278,6 +282,10 @@ export const GAME_TERM_ADDON = Object.freeze({
   },
   "Egg Hunter": {
     "value": "Egg Hunter",
+    "source": "source-name"
+  },
+  "Elderwood": {
+    "value": "Elderwood",
     "source": "source-name"
   },
   "Enlightenment": {
@@ -336,12 +344,20 @@ export const GAME_TERM_ADDON = Object.freeze({
     "value": "Frenzy",
     "source": "source-name"
   },
+  "Frozen Peaks": {
+    "value": "Frozen Peaks",
+    "source": "source-name"
+  },
   "Fury": {
     "value": "Fury",
     "source": "source-name"
   },
   "Garnet": {
     "value": "Garnet",
+    "source": "source-name"
+  },
+  "Glasslands": {
+    "value": "Glasslands",
     "source": "source-name"
   },
   "Gnarled Stick": {
@@ -430,6 +446,10 @@ export const GAME_TERM_ADDON = Object.freeze({
   },
   "Infernal": {
     "value": "Infernal",
+    "source": "source-name"
+  },
+  "Infernal Pits": {
+    "value": "Infernal Pits",
     "source": "source-name"
   },
   "Inferno": {
@@ -551,6 +571,14 @@ export const GAME_TERM_ADDON = Object.freeze({
   "Monster Level": {
     "value": "Nível de monstro",
     "source": "editorial-dictionary"
+  },
+  "Murky Depths": {
+    "value": "Murky Depths",
+    "source": "source-name"
+  },
+  "Oblivion's Crown": {
+    "value": "Oblivion's Crown",
+    "source": "source-name"
   },
   "Old Book": {
     "value": "Old Book",
@@ -704,8 +732,16 @@ export const GAME_TERM_ADDON = Object.freeze({
     "value": "Scholar's Ring",
     "source": "source-name"
   },
+  "Scorched Sands": {
+    "value": "Scorched Sands",
+    "source": "source-name"
+  },
   "Shadow Echo": {
     "value": "Shadow Echo",
+    "source": "source-name"
+  },
+  "Shadow Realm": {
+    "value": "Shadow Realm",
     "source": "source-name"
   },
   "Shadowwalker": {
@@ -718,6 +754,10 @@ export const GAME_TERM_ADDON = Object.freeze({
   },
   "Sharpened Blades": {
     "value": "Sharpened Blades",
+    "source": "source-name"
+  },
+  "Shattered Summit": {
+    "value": "Shattered Summit",
     "source": "source-name"
   },
   "Slayer Gauntlets": {
@@ -776,6 +816,14 @@ export const GAME_TERM_ADDON = Object.freeze({
     "value": "Tail Slap",
     "source": "source-name"
   },
+  "The Convergence": {
+    "value": "The Convergence",
+    "source": "source-name"
+  },
+  "The Elemental Conflux": {
+    "value": "The Elemental Conflux",
+    "source": "source-name"
+  },
   "Thick Pelt": {
     "value": "Thick Pelt",
     "source": "source-name"
@@ -832,6 +880,10 @@ export const GAME_TERM_ADDON = Object.freeze({
     "value": "Umbral Cascade",
     "source": "source-name"
   },
+  "Umbral Rift": {
+    "value": "Umbral Rift",
+    "source": "source-name"
+  },
   "Uncommon": {
     "value": "Uncommon",
     "source": "source-name"
@@ -854,6 +906,10 @@ export const GAME_TERM_ADDON = Object.freeze({
   },
   "Verdant": {
     "value": "Verdant",
+    "source": "source-name"
+  },
+  "Verdant Woods": {
+    "value": "Verdant Woods",
     "source": "source-name"
   },
   "Visionary Hood": {
