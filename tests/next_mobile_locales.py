@@ -54,7 +54,7 @@ try:
             page.locator('[data-language-toggle]').click()
             assert page.locator('[data-language-choose]').count() == 12
             page.locator(f'[data-language-choose="{code}"]').click()
-            page.wait_for_function('(code) => document.documentElement.lang === code', code)
+            page.wait_for_function('(code) => document.documentElement.lang === code', arg=code)
             assert expected in page.locator('#nxNav').inner_text(), f'{code} nav not translated: {page.locator("#nxNav").inner_text()}'
             assert page.locator('[data-language-toggle]').inner_text().strip() == code.upper()
             assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth + 1'), f'{code} overflowed 390px'
