@@ -1,6 +1,6 @@
 // Source-hash-bound, lazy, fully static editorial translations.
 // English always returns the original reference. A source edit invalidates translations.
-import { getLocale } from './i18n.js';
+import { getLocale, translateEnglish } from './i18n.js';
 
 const cache = new Map(), pending = new Map(), verified = new Map(), originalView = new Set();
 let rerender = () => {};
@@ -87,7 +87,7 @@ export function editorialControl(kind,id,translated) {
   const lang=getLocale();
   if (lang==='en') return '';
   const key=marker(lang,kind,id), showingOriginal=originalView.has(key);
-  if (!translated && !showingOriginal) return '<p class="nx-language-note" data-no-translate>Content is still available in English while translation is being prepared.</p>';
-  if (!translated && showingOriginal) return '<button type="button" class="nx-language-note nx-language-original" data-original-content="'+key+'">Show translated version</button>';
-  return '<button type="button" class="nx-language-note nx-language-original" data-original-content="'+key+'">Machine translated · View English original</button>';
+  if (!translated && !showingOriginal) return '<p class="nx-language-note" data-no-translate>'+translateEnglish('The article is currently available in English.')+'</p>';
+  if (!translated && showingOriginal) return '<button type="button" class="nx-language-note nx-language-original" data-original-content="'+key+'">'+translateEnglish('Show translation')+'</button>';
+  return '<button type="button" class="nx-language-note nx-language-original" data-original-content="'+key+'">'+translateEnglish('Machine translated')+' · '+translateEnglish('View English original')+'</button>';
 }
