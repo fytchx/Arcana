@@ -41,11 +41,33 @@ def parts(line):
             result.append(("plain",token))
     return result
 
+def table_cells(line):
+    """Split Markdown columns, but never split the | inside [[page|label]] links."""
+    cells, buf, depth, i = [], [], 0, 0
+    while i < len(line):
+        if line.startswith("[[",i):
+            depth += 1
+            buf.append("[[")
+            i += 2
+        elif line.startswith("]]",i):
+            depth = max(0,depth-1)
+            buf.append("]]")
+            i += 2
+        elif line[i] == "|" and depth == 0:
+            cells.append("".join(buf))
+            buf = []
+            i += 1
+        else:
+            buf.append(line[i])
+            i += 1
+    cells.append("".join(buf))
+    return cells
+
 def parse_line(line):
     if re.match(r'^\s*\|\s*:?-{2,}',line):
         return ("literal",line)
     if line.lstrip().startswith("|") and line.rstrip().endswith("|"):
-        return ("table",[parse_line(c) for c in line.split("|")])
+        return ("table",[parse_line(c) for c in table_cells(line)])
     prefix = re.match(r'^(\s*(?:#{1,4}\s+|[-*]\s+|\d+\.\s+|>\s+|Table:\s+))',line)
     head=prefix.group(0) if prefix else ""
     return ("line",head,parts(line[len(head):]))
