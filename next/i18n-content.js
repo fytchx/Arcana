@@ -44,7 +44,7 @@ export function editorialTranslation(kind, doc) {
   const translation=pack[kind]?.[doc.id];
   if (!translation?.sourceHash) return {doc,translated:false};
   const original = sourceFields(kind,doc);
-  const key=marker(lang,kind,doc.id)+':'+translation.sourceHash;
+  const key=marker(lang,kind,doc.id)+':'+translation.sourceHash+':'+JSON.stringify(original);
   if (!verified.has(key)) {
     verified.set(key,false);
     sha256(original).then(h => {
