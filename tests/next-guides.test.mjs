@@ -78,3 +78,20 @@ test('guides: shared guide links open in the new app, old guide links redirect',
   assert.match(html, /var NEXT=\[[^\]]*'guides'/);
   assert.match(html, /retaliation-warrior-zane'\)\{history\.replaceState\(null,'','\/#\/guides\/retaliation-warrior'\)/);
 });
+
+test('guides: the featured guide carries Zane\'s own Build Studio setup, with a way back', async () => {
+  const { default: D } = await import('../next/studio-data.js');
+  const { decodeShare } = await import('../next/studio-core.js');
+  const { readFile } = await import('node:fs/promises');
+  const g = featuredGuide('retaliation-warrior');
+  const got = decodeShare(D, g.build);
+  assert.ok(got, 'build code decodes');
+  assert.equal(got.by, 'Zane');
+  assert.equal(got.build.level, 404);
+  assert.equal(got.build.stance, 'bulwark');
+  assert.deepEqual(got.build.pets, ['increased_strength', 'retaliation', 'retaliation', 'retaliation']);
+  assert.ok(got.build.runes.length > 0 && Object.keys(got.build.gear).length > 0);
+  const app = await readFile(new URL('../next/app.js', import.meta.url), 'utf8');
+  assert.match(app, /'&from=' \+ g\.id/, 'guide button remembers the guide');
+  assert.match(app, /function buildView\(query\)/, 'shared builds render with a back link');
+});

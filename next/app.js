@@ -24,13 +24,8 @@ import { editorView, initHandbookEditor } from './handbook-editor.js';
 import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 
-// Zane's featured build: the endgame Retaliation Warrior from his guide (Nov 2026). Only what the
-// guide states goes in: class, level, pets, stance and talismans. Gear rolls and points stay his.
-const FEATURED = (() => {
-  const fb = { ...emptyBuild(), cls: 1, level: 404, pets: ['increased_strength', 'retaliation', 'retaliation', 'retaliation'], stance: 'bulwark', tal: { tal1: 'fury', tal2: 'iron' },
-    notes: { gear: 'Reflecting drop bonuses first, then Strength, Double Hit and Double Damage affixes. Defense Garnets in armor slots, Strength Garnets in jewelry, Lapis in the weapon. Full reasoning in the Retaliation Warrior guide.' } };
-  return '#/build?d=' + encodeShare(fb, ['gear', 'pets', 'stance'], { title: "Zane's Retaliation Warrior", by: 'Zane' });
-})();
+// Zane's featured build is his own Build Studio setup, stored with his guide.
+const FEATURED = '#/build?d=' + FEATURED_GUIDES[0].build;
 
 const $ = id => document.getElementById(id);
 const read = k => { try { return localStorage.getItem(k); } catch { return null; } };
@@ -214,6 +209,15 @@ const featuredPick = c => buildCard('#/builds/' + c.post.id, { title: c.post.tit
 const featuredList = (limit = 12) => { loadFeatured(); return featuredState.cards.length ? '<div class="nx-list">' + featuredState.cards.slice(0, limit).map(featuredPick).join('') + '</div>' : featuredCard(); };
 const featuredCard = () => buildCard(FEATURED, { title: "Zane's Retaliation Warrior", summary: 'Endgame retaliation at ML 300+: Reflecting, Strength and Defense gems, one Increased Strength pet and three Retaliation pets.', by: 'Zane', meta: { cls: 1, stance: 'bulwark', level: 404 }, featured: true });
 
+// A shared build always has a way back: to the guide it was opened from, or to Builds.
+function buildView(query) {
+  const g = featuredGuide(query.get('from') || '');
+  const back = g ? '<a class="nx-back" href="#/guides/' + g.id + '">' + icon('back', 18) + esc(g.title) + '</a>'
+    : '<a class="nx-back" href="#/builds" data-back>' + icon('back', 18) + 'Back</a>';
+  const guideLink = !g && query.get('d') === FEATURED_GUIDES[0].build ? '<p class="nx-read"><a href="#/guides/' + FEATURED_GUIDES[0].id + '">Read the guide behind this build ›</a></p>' : '';
+  return sharedView(query.get('d') || '', { back, intro: guideLink });
+}
+
 // ---------- featured guides ----------
 // Same text standard as the Handbook (tables, topic links, tool links), plus a short contents list.
 const guideCard = g => '<a class="nx-bcard gd-card" href="#/guides/' + g.id + '" style="--bt:' + (BUILD_TYPES[g.stance]?.color || 'var(--accent)') + ';--cc:' + classVar(CLASS_NAMES[1]) + '">' +
@@ -228,7 +232,7 @@ function guideView(id) {
   const html = hbText(g.body).replace(/<h2>(.*?)<\/h2>/g, (_, t) => { const id = 'g-' + slug(t); heads.push([id, t]); return '<h2 id="' + id + '">' + t + '</h2>'; });
   return back + '<article class="nx-article gd-article" style="--cc:' + classVar(CLASS_NAMES[1]) + '"><span class="nx-kicker">FEATURED GUIDE · WARRIOR · ' + esc(g.level.toUpperCase()) + '</span><h1>' + esc(g.title) + '</h1>' +
     '<p class="nx-deck">' + esc(g.summary) + '</p><p class="nx-by">by <b>' + esc(g.author) + '</b> · updated ' + esc(shortDate(g.updated)) + ' · IdleArc ' + esc(g.gameVersion) + '</p>' +
-    '<div class="gd-actions"><a class="nx-btn nx-btn-primary" href="#/tools/retaliation">Try your numbers</a><a class="nx-btn" href="' + FEATURED + '">Open the build</a></div>' +
+    '<div class="gd-actions"><a class="nx-btn nx-btn-primary" href="#/tools/retaliation">Try your numbers</a><a class="nx-btn" href="#/build?d=' + g.build + '&from=' + g.id + '">Open the build</a></div>' +
     '<details class="gd-toc"><summary>In this guide</summary><ol>' + heads.map(([id, t]) => '<li><a href="#/guides/' + g.id + '" data-jump="' + id + '">' + t + '</a></li>').join('') + '</ol></details>' +
     '<div class="hb-page gd-body">' + html + '</div></article>' +
     '<p class="nx-fine">Written by ' + esc(g.author) + '. Spot something wrong? <a href="#/feedback">Tell me</a>.</p>';
@@ -437,7 +441,7 @@ function render() {
   if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'guides' ? guideView(id) : section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'guides' ? guideView(id) : section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? buildView(query) : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   // The original triangle, recolored to the site accent the same way the classic theme designer did it.
   const logo = '<img class="nx-logo" src="/assets/arcana-logo.webp" width="38" height="32" alt="">';
@@ -500,6 +504,8 @@ document.addEventListener('input', e => {
 window.addEventListener('hashchange', render);
 initStudio(render);
 initTools(render);
+// A generic Back goes to the previous page when there is one in this tab.
+document.addEventListener('click', e => { const a = e.target.closest('[data-back]'); if (!a || history.length < 2 || !document.referrer.startsWith(location.origin)) return; e.preventDefault(); history.back(); });
 // "In this guide" links scroll within the page instead of changing the route.
 document.addEventListener('click', e => { const a = e.target.closest('[data-jump]'); if (!a) return; e.preventDefault(); document.getElementById(a.dataset.jump)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 initRetaliation(render);
