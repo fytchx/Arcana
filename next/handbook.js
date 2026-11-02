@@ -3,6 +3,7 @@
 // or open the page and come straight back to where you were.
 import { esc, ic } from './core.js';
 import { CHAPTERS, PAGES, HANDBOOK_VERSION } from './handbook-content.js';
+import { getLocale, translateEnglish } from './i18n.js';
 
 // Pages come from the server (edited in the site); the seed file is the fallback until they load.
 let LIVE = PAGES, byId = new Map(LIVE.map(p => [p.id, p])), loadState = 'idle';
@@ -86,7 +87,8 @@ export function handbookView(id) {
   const c = chapterOf(p.chapter), list = pagesIn(p.chapter), i = list.indexOf(p), nx = p.next ? byId.get(p.next) : list[i + 1];
   return backChip() + '<a class="nx-back" href="#/handbook/chapter/' + c.id + '">‹ ' + esc(c.title) + '</a>' +
     '<article class="hb-page"' + (p.cls ? ' style="--cc:var(--c-' + p.cls + ')"' : '') + '><header class="hb-head"><span class="nx-kicker">CHAPTER ' + c.n + ' · ' + esc(c.title.toUpperCase()) + '</span><h1>' + esc(p.title) + '</h1>' + trustChip(p) + '</header>' +
-    '<p class="hb-answer">' + inline(p.answer) + '</p>' + hbText(p.body) + '</article>' +
+    (getLocale() !== 'en' ? '<p class="nx-language-note" data-no-translate>' + esc(translateEnglish('The article is currently available in English.')) + '</p>' : '') +
+    '<p class="hb-answer">' + inline(p.answer) + '</p><div lang="en">' + hbText(p.body) + '</div></article>' +
     (currentUser()?.permissions?.editHandbook ? '<a class="nx-btn hb-editbtn" href="#/handbook/edit/' + p.id + '">Edit this page</a>' : '') +
     (nx ? '<a class="hb-next" href="#/handbook/' + nx.id + '"><small>Next</small><b>' + esc(nx.title) + '</b><span>›</span></a>' : '') +
     '<p class="nx-fine">Something wrong on this page? <a href="#/feedback">Tell us</a>.</p>';
