@@ -69,14 +69,14 @@ export function parseHash(hash = '') {
   const raw = String(hash).replace(/^#\/?/, '');
   const [path, query = ''] = raw.split('?');
   const parts = path.split('/').filter(Boolean).map(p => { try { return decodeURIComponent(p); } catch { return p; } });
-  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile', 'studio', 'build', 'admin', 'feedback', 'checklist', 'guilds', 'lfg', 'records', 'directory'];
+  const known = ['home', 'tools', 'codex', 'builds', 'news', 'profile', 'studio', 'build', 'admin', 'feedback', 'checklist', 'guilds', 'lfg', 'records', 'directory', 'handbook'];
   const section = known.includes(parts[0]) ? parts[0] : 'home';
   return { section, id: section === parts[0] ? parts.slice(1).join('/') : '', query: new URLSearchParams(query) };
 }
 export const hashFor = (section, id = '') => '#/' + section + (id ? '/' + encodeURIComponent(id) : '');
 
 // The bottom tab that should light up for a route (profile has no tab).
-const TAB_OF = { studio: 'tools', build: 'builds', codex: 'search', news: 'directory', guilds: 'directory', lfg: 'directory', records: 'directory', feedback: 'directory', checklist: 'directory' };
+const TAB_OF = { studio: 'tools', build: 'builds', codex: 'search', handbook: 'search', news: 'directory', guilds: 'directory', lfg: 'directory', records: 'directory', feedback: 'directory', checklist: 'directory' };
 export const activeTab = section => TAB_OF[section] || (TABS.some(t => t.id === section) ? section : '');
 
 // Codex search over the verified game index. Title matches rank above keyword matches.

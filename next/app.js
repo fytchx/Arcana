@@ -17,6 +17,7 @@ import { guildTreeView, initGuildTree } from './guild-tree.js';
 import { themeView, initTheme, readTheme, themeVars, saveTheme, applyBackdrop } from './theme.js';
 import { DEFAULT_NEXT_DESIGN, safeNextDesign, designVars, fontHref } from './design-model.js';
 import { designView, initDesign, readDraft } from './design-tool.js';
+import { handbookView, handbookHomeSection, handbookPopup, initHandbook, handbookPages } from './handbook.js';
 import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 import { demoBuilds } from '../src/catalog.js';
@@ -176,7 +177,7 @@ function homeView() {
   const nw = n.state === 'ready' && n.value[0];
   const newsRow = nw ? '<a class="nx-strip" href="' + hashFor('news', nw.slug) + '">' + ic('news', 18) + '<span><b>' + esc(nw.teaserTitle || nw.title) + '</b><small>' + esc((nw.category || 'News') + ' · ' + shortDate(nw.publishedAt)) + '</small></span><i class="nx-chev"></i></a>' : '';
   // The three main tools, always in the same place; recently used tools sit one tap away.
-  const main = [['#/tools/pathfinder', 'upgrade', 'Pathfinder', 'Upgrade costs and ML XP'], ['#/studio', 'studio', 'Build Studio', 'Make and share a build'], ['#/codex', 'codex', 'Codex', 'Items, skills, monsters']];
+  const main = [['#/tools/pathfinder', 'upgrade', 'Pathfinder', 'Upgrade costs and ML XP'], ['#/studio', 'studio', 'Build Studio', 'Make and share a build'], ['#/codex', 'codex', 'Handbook', 'How IdleArc works']];
   const rec = recent().map(id => id === 'codex' ? null : TOOLS.find(t => t.id === id)).filter(Boolean);
   return installBanner('home') + '<section><div class="nx-head">' + label('Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
     main.map(([h, i, l, dsc]) => '<a class="nx-tile nx-main-tile" href="' + h + '"><span class="nx-ic">' + ic(i, 24) + '</span><strong>' + l + '</strong><small>' + dsc + '</small></a>').join('') + '</div>' +
@@ -265,7 +266,7 @@ function codexView(id) {
       '<p class="nx-fine">From the game config' + (c.version ? ' (' + esc(c.version) + ')' : '') + '.</p>';
   }
   const body = c.state === 'error' ? failed('The Codex', 'codex') : c.state !== 'ready' ? loading('the Codex') : codexResults(c.value);
-  return '<label class="nx-search nx-search-input">' + icon('search', 18) + '<input id="nxCodexQ" type="search" autocomplete="off" placeholder="Search items, skills, monsters, runes" aria-label="Search the Codex" value="' + esc(codexQuery) + '"></label><div id="nxCodexBody">' + body + '</div>';
+  return '<label class="nx-search nx-search-input">' + icon('search', 18) + '<input id="nxCodexQ" type="search" autocomplete="off" placeholder="Search the Handbook, items, skills, monsters" aria-label="Search the Handbook" value="' + esc(codexQuery) + '"></label><div id="nxCodexBody">' + body + '</div>';
 }
 function codexResults(entries) {
   if (codexKind && !codexQuery.trim()) {
@@ -274,10 +275,13 @@ function codexResults(entries) {
   }
   if (codexQuery.trim()) {
     const hits = searchIndex(entries, codexQuery, 40);
-    if (!hits.length) return empty('Nothing found', 'Try a shorter word, like an item, skill or monster name.');
-    return '<div class="nx-list">' + hits.map(e => codexRow(e, withKind(e))).join('') + '</div>';
+    const words = codexQuery.trim().toLowerCase().split(/\s+/);
+    const pages = handbookPages().filter(p => words.every(w => (p.title + ' ' + p.answer + ' ' + p.body).toLowerCase().includes(w))).slice(0, 6);
+    if (!hits.length && !pages.length) return empty('Nothing found', 'Try a shorter word, like an item, skill or monster name.');
+    return (pages.length ? '<section>' + label('Handbook') + '<div class="nx-list">' + pages.map(p => '<a class="nx-row" href="#/handbook/' + p.id + '"><span class="nx-row-text"><strong>' + esc(p.title) + '</strong><small>' + esc(p.answer.replace(/\[\[[^|\]]*\|?([^\]]*)\]\]/g, '$1')) + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div></section>' : '') +
+      (hits.length ? '<section>' + (pages.length ? label('Look it up') : '') + '<div class="nx-list">' + hits.map(e => codexRow(e, withKind(e))).join('') + '</div></section>' : '');
   }
-  return '<section>' + label('Browse') + '<div class="nx-grid2">' + codexCategories(entries, data.codex.order).map(k => '<button class="nx-tile nx-tile-left nx-ktile" data-act="kind" data-kind="' + esc(k.kind) + '">' + artImg(KIND_ART[k.kind] || 'features/feature-codex', 40) + '<span><strong>' + esc(k.name) + '</strong><small>' + k.count + ' entries</small></span></button>').join('') + '</div></section>';
+  return handbookHomeSection() + '<section>' + label('Look it up') + '<div class="nx-grid2">' + codexCategories(entries, data.codex.order).map(k => '<button class="nx-tile nx-tile-left nx-ktile" data-act="kind" data-kind="' + esc(k.kind) + '">' + artImg(KIND_ART[k.kind] || 'features/feature-codex', 40) + '<span><strong>' + esc(k.name) + '</strong><small>' + k.count + ' entries</small></span></button>').join('') + '</div></section>';
 }
 
 const posts = {};
@@ -369,7 +373,7 @@ function directoryView() {
   const sec = (t, rows) => '<section>' + label(t) + '<div class="nx-list">' + rows.join('') + '</div></section>';
   return '<header class="nx-page-head"><span class="nx-kicker">ALL OF ARCANA</span><h1>Directory</h1><p>Every page in one place.</p></header>' +
     sec('Tools', [artRow('#/tools', 'All tools', 'Pathfinder, pet calculators, planners', 'features/feature-tools'), ...TOOLS.filter(t => t.art).map(t => artRow(t.href, t.name, t.detail, t.art))]) +
-    sec('Game reference', [artRow('#/codex', 'Codex', 'Items, skills, monsters, materials, biomes and more', 'features/feature-codex')]) +
+    sec('Game reference', [artRow('#/codex', 'Handbook', 'How IdleArc works, plus every item, skill and monster', 'features/feature-codex')]) +
     sec('Builds and guides', [artRow('#/builds', 'Featured builds', 'Picked by Zane', 'features/feature-builds'), artRow('#/builds/community', 'Community builds', 'Shared by players', 'features/feature-community'), artRow('#/builds/guides', 'Guides', 'Written by players', 'features/feature-guides'), artRow('#/studio', 'Build Studio', 'Make your own and share it', 'features/feature-build-studio')]) +
     sec('News and events', [artRow('#/news', 'News', 'Patch notes, events and articles', 'features/feature-wiki'), ...(ev ? [artRow(ev.href, ev.name, ev.detail, 'tokens/token-ruby')] : [])]) +
     sec('Community', [artRow('#/guilds', 'Guilds', 'Find a guild and apply', 'features/feature-guild-raid'), artRow('#/lfg', 'Looking for group', 'Raids, teams and planned runs', 'features/feature-community'), artRow('#/records', 'Season records', 'Top players and guilds by season', 'stats/stat-boss-damage')]) +
@@ -401,14 +405,15 @@ function noteVisit(section, id) {
 }
 
 // ---------- shell ----------
-const TITLES = { directory: 'Directory', lfg: 'LFG', records: 'Records', guilds: 'Guilds', checklist: 'Checklist', feedback: 'Feedback', admin: 'Admin', tools: 'Tools', codex: 'Codex', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
+const TITLES = { handbook: 'Handbook', directory: 'Directory', lfg: 'LFG', records: 'Records', guilds: 'Guilds', checklist: 'Checklist', feedback: 'Feedback', admin: 'Admin', tools: 'Tools', codex: 'Handbook', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
 function render() {
   const { section, id, query } = parseHash(location.hash);
+  if (section === 'codex' && !id && query.get('kind')) { codexKind = query.get('kind'); codexQuery = ''; history.replaceState(null, '', '#/codex'); }
   noteVisit(section, id);
   if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'handbook' ? handbookView(id) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? sharedView(query.get('d') || '') : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   // The original triangle, recolored to the site accent the same way the classic theme designer did it.
   const logo = '<img class="nx-logo" src="/assets/arcana-logo.webp" width="38" height="32" alt="">';
@@ -424,7 +429,7 @@ function render() {
   $('nxNotice').textContent = data.notice.value || '';
   const main = $('nxMain'), key = section + '/' + id;
   const focusSearch = document.activeElement?.id === 'nxCodexQ';
-  main.innerHTML = view;
+  main.innerHTML = view + handbookPopup();
   if (main.dataset.key !== key) { main.dataset.key = key; window.scrollTo(0, 0); }
   if (section === 'studio') studioAfterRender();
   if (focusSearch) { const q = $('nxCodexQ'); q?.focus(); q?.setSelectionRange(q.value.length, q.value.length); }
@@ -482,6 +487,7 @@ initCommunity(render);
 initGuildTree(render);
 initTheme(render, applyTheme);
 initDesign(render, applyTheme);
+initHandbook(render);
 window.addEventListener('arcana:news-changed', () => { data.news.state = 'idle'; data.article = {}; });
 window.addEventListener('arcana:featured-changed', () => { featuredState.state = 'idle'; data.builds.state = 'idle'; });
 // Boot: hold the loading screen until the published design, fonts and account are in (2.5 s at most),
