@@ -90,7 +90,7 @@ export function handbookView(id) {
   return backChip() + '<a class="nx-back" href="#/handbook/chapter/' + c.id + '">‹ ' + esc(c.title) + '</a>' +
     '<article class="hb-page"' + (p.cls ? ' style="--cc:var(--c-' + p.cls + ')"' : '') + '><header class="hb-head"><span class="nx-kicker">' + esc(translateEnglish('CHAPTER ' + c.n + ' · ' + c.title.toUpperCase())) + '</span><h1>' + esc(p.title) + '</h1>' + trustChip(p) + '</header>' +
     editorialControl('handbook', p.id, translated) +
-    '<p class="hb-answer">' + inline(p.answer) + '</p><div lang="' + (translated ? getLocale() : 'en') + '">' + hbText(p.body) + '</div></article>' +
+    '<p class="hb-answer">' + inline(p.answer) + '</p>' + (translated ? '<div lang="' + getLocale() + '">' + hbText(p.body) + '</div>' : hbText(p.body)) + '</article>' +
     (currentUser()?.permissions?.editHandbook ? '<a class="nx-btn hb-editbtn" href="#/handbook/edit/' + p.id + '">Edit this page</a>' : '') +
     (nx ? '<a class="hb-next" href="#/handbook/' + nx.id + '"><small>Next</small><b>' + esc(nx.title) + '</b><span>›</span></a>' : '') +
     '<p class="nx-fine">Something wrong on this page? <a href="#/feedback">Tell us</a>.</p>';
