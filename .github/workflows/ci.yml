@@ -39,6 +39,7 @@ jobs:
       - run: python -m playwright install --with-deps chromium
       - run: python tests/mobile_smoke.py
       - run: python tests/next_mobile_locales.py
+      - run: python tests/classic_mobile_locales.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
