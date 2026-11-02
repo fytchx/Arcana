@@ -32,7 +32,7 @@ test('guides: featured guide routes, renders every table, links only to real too
     const widths = b.trim().split('\n').map(l => l.trim().slice(1, -1).split('|').length);
     assert.ok(widths.every(w => w === widths[0]), 'table rows have equal columns: ' + b.slice(0, 40));
   }
-  assert.ok(!/\[Zane:/.test(g.body), 'no author placeholders on the site');
+  assert.ok(!/Zane:/.test(g.body), 'no author placeholders on the site');
   for (const [, id] of g.body.matchAll(/\[\[tool:([a-z]+)/g)) assert.match(html, new RegExp('href="#/tools|href="#/studio|href="#/builds'), id);
   assert.ok(!html.includes('href="#/tools"'), 'every tool link resolves to a specific tool');
 });
@@ -66,4 +66,11 @@ test('retaliation planner: ranks upgrades and handles missing input', () => {
   assert.ok(empty.missing.includes('Defense'));
   assert.deepEqual(cleanPlanner({ defense: '1M', evil: 'x', overflowShown: 'yes' }), { defense: '1M' });
   assert.ok(TOOLS.some(t => t.id === 'retaliation' && t.href === '#/tools/retaliation'));
+});
+
+test('guides: shared guide links open in the new app, old guide links redirect', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const html = await readFile(new URL('../next/index.html', import.meta.url), 'utf8');
+  assert.match(html, /var NEXT=\[[^\]]*'guides'/);
+  assert.match(html, /retaliation-warrior-zane'\)\{history\.replaceState\(null,'','\/#\/guides\/retaliation-warrior'\)/);
 });

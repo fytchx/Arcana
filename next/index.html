@@ -32,12 +32,14 @@
 (function(){try{
  var h=location.hash||'',m=h.match(/^#\/([^?]*)(?:\?(.*))?$/);if(!m)return;
  var path=m[1].replace(/\/$/,''),q=new URLSearchParams(m[2]||''),first=path.split('/')[0];
- var NEXT=['home','tools','codex','builds','news','profile','studio','build','admin','feedback','checklist','guilds','lfg','records','directory','handbook'];
+ var NEXT=['home','tools','codex','builds','news','profile','studio','build','admin','feedback','checklist','guilds','lfg','records','directory','handbook','guides'];
  if(path==='account'){var k='arcana-next-return',v=sessionStorage.getItem(k);sessionStorage.removeItem(k);
   if(!q.get('error')&&v&&/^\/next(?:#\/[\w\-\/?=&%.:]*)?$/.test(v)){location.replace(v.replace(/^\/next/,'/'));return;}
   history.replaceState(null,'','/#/profile');return;}
  var MAP={'calculators/pathfinder':'tools/pathfinder','calculators':'tools','labs/build':'studio','labs/guild-tree':'tools/guild-tree','labs/skills':'studio/class','labs/passives':'studio/passive','labs':'tools','journal':'news','community':'builds/community','lfg/raids':'lfg','lfg/guilds':'guilds','recent':'home','beta':'feedback'};
  if(path==='journal/article'&&q.get('slug')){history.replaceState(null,'','/#/news/'+encodeURIComponent(q.get('slug')));return;}
+ // The old Season 2 retaliation guide was replaced by the featured guide.
+ if(path==='wiki/article'&&q.get('id')==='retaliation-warrior-zane'){history.replaceState(null,'','/#/guides/retaliation-warrior');return;}
  if(path==='community/post'&&q.get('id')){history.replaceState(null,'','/#/builds/'+encodeURIComponent(q.get('id')));return;}
  var shared=q.has('share')||q.has('id')||q.has('l');
  if(MAP[path]&&!shared){history.replaceState(null,'','/#/'+MAP[path]);return;}
