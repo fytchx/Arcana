@@ -75,6 +75,29 @@ try:
         page.locator('.gd-article').wait_for(timeout=5000)
         assert 'Vergeltungskrieger' in page.locator('.gd-article h1').inner_text()
         assert page.locator('.gd-article .nx-language-note').count() == 1, 'English guide notice missing'
+        # English remains the exact original after switching away and back.
+        page.locator('[data-language-toggle]').click()
+        page.locator('[data-language-choose="en"]').click()
+        page.evaluate("location.hash='#/guides/retaliation-warrior'")
+        page.locator('.gd-article').wait_for(timeout=5000)
+        english_guide = page.locator('.gd-article').inner_text()
+        english_anchors = page.locator('.gd-article h2').evaluate_all('(nodes) => nodes.map(n=>n.id)')
+        assert "I'm a washed-out Retaliation Warrior" in english_guide
+        page.locator('[data-language-toggle]').click()
+        page.locator('[data-language-choose="de"]').click()
+        page.locator('[data-language-toggle]').click()
+        page.locator('[data-language-choose="en"]').click()
+        assert page.locator('.gd-article').inner_text() == english_guide, 'English guide changed after language roundtrip'
+        assert page.locator('.gd-article h2').evaluate_all('(nodes) => nodes.map(n=>n.id)') == english_anchors
+        assert page.locator('.gd-article .nx-language-note').count() == 0, 'English guide should have no translated-content notice'
+        page.evaluate("location.hash='#/handbook/what-is-idlearc'")
+        page.locator('.hb-page').wait_for(timeout=5000)
+        english_handbook = page.locator('.hb-page').inner_text()
+        page.locator('[data-language-toggle]').click()
+        page.locator('[data-language-choose="fr"]').click()
+        page.locator('[data-language-toggle]').click()
+        page.locator('[data-language-choose="en"]').click()
+        assert page.locator('.hb-page').inner_text() == english_handbook, 'English Handbook changed after language roundtrip'
         page.evaluate("location.hash='#/home'")
         page.set_viewport_size({'width': 360, 'height': 740})
         assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth + 1'), '360px overflow'
