@@ -1,6 +1,6 @@
 // Source-hash-bound, lazy, fully static editorial translations.
 // English always returns the original reference. A source edit invalidates translations.
-import { getLocale, translateEnglish } from './i18n.js';
+import { getLocale, translateEnglish, setOfflineUIDictionary } from './i18n.js';
 
 const cache = new Map(), pending = new Map(), verified = new Map(), originalView = new Set();
 let rerender = () => {};
@@ -40,6 +40,7 @@ export function loadEditorialLocale(lang) {
     .then(result => {
       if (result?.language===lang && result?.schema===1 && result.handbook && result.guides) {
         cache.set(lang,result);
+        if (result.ui) setOfflineUIDictionary(lang,result.ui);
         rerender();
         return result;
       }
