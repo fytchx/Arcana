@@ -75,6 +75,10 @@ export function editorialTranslation(kind, doc) {
 export function initEditorialLocalization(render) {
   rerender=render;
   const lang=getLocale(); if (lang!=='en') loadEditorialLocale(lang);
+  document.addEventListener('arcana:language-changed', event => {
+    const chosen = event.detail?.language;
+    if (chosen && chosen!=='en') loadEditorialLocale(chosen);
+  });
   document.addEventListener('click',e=>{
     const b=e.target.closest('[data-original-content]');
     if (!b) return;
