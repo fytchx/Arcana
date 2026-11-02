@@ -36,3 +36,18 @@ test('translations preserve whitespace and do not modify unknown game data or ma
 test('unknown language falls back to English', () => {
   assert.equal(translateEnglish('Tools', 'xx'), 'Tools');
 });
+
+test('all languages translate expanded tool labels, Handbook navigation and featured guide title', () => {
+  for (const { code } of SUPPORTED_LANGUAGES.filter(x => x.code !== 'en')) {
+    for (const value of ['Display', 'Upgrade costs', 'Rarity reference', 'Getting started', 'How do runes and rune words work?', 'Retaliation Warrior: the journey to endgame']) {
+      const text = translateEnglish(value, code);
+      assert.ok(text && text !== value || ['it', 'en'].includes(code) && text === value, code + ': ' + value);
+    }
+    assert.ok(translateEnglish('The article is currently available in English.', code).length);
+  }
+  assert.equal(translateEnglish('‹ Tools', 'de'), '‹ Werkzeuge');
+  assert.equal(translateEnglish('CHAPTER 1 · GETTING STARTED', 'de'), 'Kapitel 1 · ERSTE SCHRITTE');
+  assert.equal(translateEnglish('CHAPTER 3 · COMBAT AND STATS', 'ja'), '章 3 · 戦闘とステータス');
+  assert.equal(translateEnglish('Arcstone × 22.9', 'de'), 'Arcstone × 22.9');
+  assert.equal(translateEnglish('Pathfinder', 'zh'), 'Pathfinder');
+});
