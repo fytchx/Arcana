@@ -107,7 +107,7 @@ test('next: the server serves the new app without exposing other files', async (
   const rule = server.match(/\/\^\\\/next\\\/\(\?:[^\n]*?\$\//)?.[0];
   assert.ok(rule, 'the /next static rule is present');
   const re = new RegExp(rule.slice(1, -1));
-  for (const ok of ['/next/app.js', '/next/app.css', '/next/game-locales/de.js', '/next/generated-locales/zh.json']) assert.ok(re.test(ok), ok);
+  for (const ok of ['/next/app.js', '/next/app.css', '/next/game-locales/de.js', '/next/generated-locales/zh.json', '/next/ui-locales/pl.json']) assert.ok(re.test(ok), ok);
   for (const bad of ['/next/../server.mjs', '/next/game-locales/../x.js', '/next/generated-locales/de.js', '/next/data/pages.json', '/next/game-locales/deu.js']) assert.ok(!re.test(bad), bad);
   assert.match(server, /'x-robots-tag':'noindex, nofollow'/);
 });
