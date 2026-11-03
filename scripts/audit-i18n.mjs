@@ -15,7 +15,7 @@ const sha = o=>createHash('sha256').update(JSON.stringify(o)).digest('hex');
 const fields = (kind,d)=>kind==='guides'?{title:d.title,summary:d.summary,body:d.body}:{title:d.title,answer:d.answer,body:d.body};
 const normalizedNames = body => [...body.matchAll(/\[\[([^\]]+)\]\]/g)].map(x=>x[1].split('|')[0]);
 const links = body => [...body.matchAll(/\]\((#[^)]*|https:\/\/[^)]*)\)/g)].map(x=>x[1]);
-const nums = body => [...body.matchAll(/(?<![A-Za-z])(?:[+\-−]?\d[\d.,]*%?|[Aa]\d+)(?![A-Za-z])/g)].map(x=>x[0]).sort();
+const nums = body => [...body.matchAll(/(?<![A-Za-z])(?:[+\-−]?\d(?:[\d.,]*\d)?%?|[Aa]\d+)(?![A-Za-z])/g)].map(x=>x[0]).sort();
 const layout = body => body.split('\n').filter(x=>x.trim().startsWith('|')).map(x=>(x.match(/\|/g)||[]).length);
 const reports = [];
 let bad=0;
