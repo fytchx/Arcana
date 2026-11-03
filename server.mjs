@@ -223,8 +223,9 @@ const server=http.createServer(async(req,res)=>{
   }
   // Arcana Next: the new app.
   // The new app is the home page; /next stays as an alias for links already shared.
-  if(pathname==='/'||pathname==='/index.html'||pathname==='/next'||pathname==='/next/'||/^\/next\/[a-z][a-z0-9-]*\.(?:js|css)$/.test(pathname)){
-   const file=pathname.endsWith('.js')||pathname.endsWith('.css')?pathname.slice('/next/'.length):'index.html';
+  if(pathname==='/'||pathname==='/index.html'||pathname==='/next'||pathname==='/next/'||/^\/next\/(?:[a-z][a-z0-9-]*\.(?:js|css)|game-locales\/[a-z]{2}\.js|generated-locales\/[a-z]{2}\.json)$/.test(pathname)){
+   // Language packs live one folder down: game terms (.js) and pre-translated Handbook pages (.json).
+   const file=/\.(?:js|css|json)$/.test(pathname)?pathname.slice('/next/'.length):'index.html';
    try{
     const bytes=await readFile(resolve(ROOT,'next',file));
     const etag='"'+createHash('sha256').update(bytes).digest('hex').slice(0,22)+'"';

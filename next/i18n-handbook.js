@@ -24,7 +24,8 @@ export const HANDBOOK_TRANSLATIONS = Object.freeze({
     "How do quests, raids, dungeons and boss fights work?": "Wie funktionieren Quests, Raids, Dungeons und Bosse?",
     "What is happening right now?": "Was passiert gerade?",
     "Retaliation Warrior: the journey to endgame": "Vergeltungskrieger: Der Weg ins Endgame",
-    "Any stage": "Jede Phase"
+    "Any stage": "Jede Phase",
+    "Unreviewed translation": "Ungeprüfte Übersetzung"
   },
   "es": {
     "Getting started": "Primeros pasos",
@@ -49,7 +50,8 @@ export const HANDBOOK_TRANSLATIONS = Object.freeze({
     "How do quests, raids, dungeons and boss fights work?": "¿Cómo funcionan las misiones, incursiones, mazmorras y jefes?",
     "What is happening right now?": "¿Qué está pasando ahora?",
     "Retaliation Warrior: the journey to endgame": "Guerrero de represalia: camino al endgame",
-    "Any stage": "Cualquier etapa"
+    "Any stage": "Cualquier etapa",
+    "Unreviewed translation": "Traducción sin revisar"
   },
   "fr": {
     "Getting started": "Bien débuter",
@@ -74,7 +76,8 @@ export const HANDBOOK_TRANSLATIONS = Object.freeze({
     "How do quests, raids, dungeons and boss fights work?": "Comment fonctionnent quêtes, raids, donjons et boss ?",
     "What is happening right now?": "Que se passe-t-il en ce moment ?",
     "Retaliation Warrior: the journey to endgame": "Guerrier riposte : vers l'endgame",
-    "Any stage": "Tous niveaux"
+    "Any stage": "Tous niveaux",
+    "Unreviewed translation": "Traduction non relue"
   },
   "it": {
     "Getting started": "Per iniziare",
@@ -99,7 +102,8 @@ export const HANDBOOK_TRANSLATIONS = Object.freeze({
     "How do quests, raids, dungeons and boss fights work?": "Come funzionano missioni, raid, dungeon e boss?",
     "What is happening right now?": "Cosa succede adesso?",
     "Retaliation Warrior: the journey to endgame": "Guerriero ritorsione: verso l'endgame",
-    "Any stage": "Ogni fase"
+    "Any stage": "Ogni fase",
+    "Unreviewed translation": "Traduzione non revisionata"
   },
   "ja": {
     "Getting started": "はじめに",
@@ -124,7 +128,8 @@ export const HANDBOOK_TRANSLATIONS = Object.freeze({
     "How do quests, raids, dungeons and boss fights work?": "クエスト、レイド、ダンジョン、ボス戦は？",
     "What is happening right now?": "今のイベントは？",
     "Retaliation Warrior: the journey to endgame": "反撃ウォリアー：エンドゲームまで",
-    "Any stage": "全段階"
+    "Any stage": "全段階",
+    "Unreviewed translation": "未確認の翻訳"
   },
   "ko": {
     "Getting started": "시작하기",
@@ -149,7 +154,8 @@ export const HANDBOOK_TRANSLATIONS = Object.freeze({
     "How do quests, raids, dungeons and boss fights work?": "퀘스트, 레이드, 던전, 보스전은 어떻게 작동하나요?",
     "What is happening right now?": "지금 어떤 일이 진행 중인가요?",
     "Retaliation Warrior: the journey to endgame": "반격 전사: 최종 콘텐츠까지",
-    "Any stage": "모든 단계"
+    "Any stage": "모든 단계",
+    "Unreviewed translation": "검토되지 않은 번역"
   },
   "pl": {
     "Getting started": "Pierwsze kroki",
@@ -174,7 +180,8 @@ export const HANDBOOK_TRANSLATIONS = Object.freeze({
     "How do quests, raids, dungeons and boss fights work?": "Jak działają zadania, rajdy, lochy i bossowie?",
     "What is happening right now?": "Co dzieje się teraz?",
     "Retaliation Warrior: the journey to endgame": "Wojownik odwetu: droga do endgame'u",
-    "Any stage": "Każdy etap"
+    "Any stage": "Każdy etap",
+    "Unreviewed translation": "Niesprawdzone tłumaczenie"
   },
   "pt": {
     "Getting started": "Primeiros passos",
@@ -199,7 +206,8 @@ export const HANDBOOK_TRANSLATIONS = Object.freeze({
     "How do quests, raids, dungeons and boss fights work?": "Como funcionam missões, raides, masmorras e chefes?",
     "What is happening right now?": "O que está acontecendo agora?",
     "Retaliation Warrior: the journey to endgame": "Guerreiro de retaliação: rumo ao endgame",
-    "Any stage": "Qualquer fase"
+    "Any stage": "Qualquer fase",
+    "Unreviewed translation": "Tradução não revisada"
   },
   "ru": {
     "Getting started": "Начало игры",
@@ -224,7 +232,8 @@ export const HANDBOOK_TRANSLATIONS = Object.freeze({
     "How do quests, raids, dungeons and boss fights work?": "Как работают задания, рейды, подземелья и боссы?",
     "What is happening right now?": "Что происходит сейчас?",
     "Retaliation Warrior: the journey to endgame": "Воин ответного удара: путь в эндгейм",
-    "Any stage": "Любой этап"
+    "Any stage": "Любой этап",
+    "Unreviewed translation": "Непроверенный перевод"
   },
   "tr": {
     "Getting started": "Başlangıç",
@@ -249,7 +258,8 @@ export const HANDBOOK_TRANSLATIONS = Object.freeze({
     "How do quests, raids, dungeons and boss fights work?": "Görevler, baskınlar, zindanlar ve bosslar nasıl işler?",
     "What is happening right now?": "Şu anda neler oluyor?",
     "Retaliation Warrior: the journey to endgame": "Misilleme savaşçısı: oyun sonuna yolculuk",
-    "Any stage": "Her aşama"
+    "Any stage": "Her aşama",
+    "Unreviewed translation": "İncelenmemiş çeviri"
   },
   "zh": {
     "Getting started": "入门指南",
@@ -274,6 +284,7 @@ export const HANDBOOK_TRANSLATIONS = Object.freeze({
     "How do quests, raids, dungeons and boss fights work?": "任务、团本、副本和首领战怎么玩？",
     "What is happening right now?": "当前有什么活动？",
     "Retaliation Warrior: the journey to endgame": "反击战士：通往终局之路",
-    "Any stage": "任何阶段"
+    "Any stage": "任何阶段",
+    "Unreviewed translation": "未经审核的翻译"
   }
 });
