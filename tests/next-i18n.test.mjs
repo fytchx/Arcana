@@ -65,8 +65,12 @@ test('English is always the unselected first-visit default', () => {
   }
 });
 
-test('i18n: machine translations stay off until a language is reviewed', async () => {
+test('i18n: German editorial translations are reviewed and other machine packs stay gated', async () => {
+  const { readFileSync } = await import('node:fs');
   const m = await import('../next/i18n-content.js');
-  assert.equal(m.REVIEWED_LANGUAGES.size, 0);
-  assert.equal(await m.loadEditorialLocale('de'), null);
+  const pack = JSON.parse(readFileSync(new URL('../next/generated-locales/de.json', import.meta.url), 'utf8'));
+  assert.deepEqual([...m.REVIEWED_LANGUAGES], ['de']);
+  assert.deepEqual(pack.engine, { id: 'chatgpt-translation', mode: 'editorial' });
+  assert.deepEqual(pack.ui, {});
+  assert.equal(await m.loadEditorialLocale('es'), null);
 });
