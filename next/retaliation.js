@@ -15,7 +15,7 @@ const f = (key, label, unit, hint = '') => ({ key, label, unit, hint });
 export const RET_GROUPS = [
   { id: 'base', title: 'Base pool', note: 'Top of the Retaliation Breakdown.', fields: [
     f('reflecting', 'Reflecting bonuses (gear)', '%'), f('deflection', 'Deflection (class skill)', '%'), f('bulwark', 'Bulwark Stance', '%'),
-    f('defense', 'Defense', 'num', 'Type it like the game: 780.28M'), f('ratio', 'Level ratio', '×', '0.60 from ML 300 on')] },
+    f('defense', 'Defense', 'num', 'Type it like the game: 780.28M'), f('ratio', 'Level ratio', '×', '0.60 for almost everyone (1.50 at ML 1, floors fast)')] },
   { id: 'layers', title: 'Multiplicative layers', note: 'Copy the % value. When the game shortens it (like +2.16K%), type the × value instead, with its ×.', fields: [
     f('strength', 'Strength', '%'), f('petStrength', 'Pet increased strength', '%'), f('petRet', 'Pet Retaliation bonus', '%'),
     f('inscription', 'Talisman Inscription', '%'), f('runes', 'Runes', '%'), f('guild', 'Guild Skill Tree', '%'),
