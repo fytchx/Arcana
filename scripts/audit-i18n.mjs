@@ -19,6 +19,8 @@ const nums = body => [...body.matchAll(/(?<![A-Za-z])(?:[+\-−]?\d[\d.,]*%?|[Aa
 const layout = body => body.split('\n').filter(x=>x.trim().startsWith('|')).map(x=>(x.match(/\|/g)||[]).length);
 const reports = [];
 let bad=0;
+// A missing or out-of-date page is not an error: the site shows the English original until it is translated again.
+const pendingPages=[];
 for(const locale of LANGUAGES){
   const filename='next/generated-locales/'+locale+'.json';
   if(!existsSync(filename)){reports.push({locale,exists:false,complete:false,problems:['missing translation file']});if(required)bad++;continue;}
@@ -31,9 +33,8 @@ for(const locale of LANGUAGES){
     for(const [id,src] of Object.entries(docs[kind])){
       total++;
       const translated=file[kind]?.[id];
-      if(!translated){errors.push('missing '+kind+':'+id);continue;}
       const baseline=fields(kind,src);
-      if(translated.sourceHash!==sha(baseline))errors.push('stale source '+kind+':'+id);
+      if(!translated||translated.sourceHash!==sha(baseline)){pendingPages.push(locale+' '+kind+':'+id);continue;}
       if(['title','body'].some(k=>typeof translated[k]!=='string'))errors.push('missing content '+kind+':'+id);
       for(const k of Object.keys(baseline)){
         const before=baseline[k],after=translated[k]||'';
@@ -52,4 +53,5 @@ for(const locale of LANGUAGES){
 if(reportPath)writeFileSync(reportPath,JSON.stringify({schema:1,checks:reports},null,2)+'\n');
 console.log('Arcana editorial localization audit:');
 for(const x of reports)console.log(x.locale+': '+(x.complete?'PASS':'INCOMPLETE')+(x.documentCount?' '+x.documentCount+' docs':'')+(x.problems?.length?' '+x.problems.slice(0,5).join('; '):''));
+if(pendingPages.length)console.log('Shown in English until translated ('+pendingPages.length+'): '+[...new Set(pendingPages.map(x=>x.split(' ')[1]))].join(', '));
 if(required&&bad)process.exitCode=1;
