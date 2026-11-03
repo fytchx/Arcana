@@ -103,7 +103,12 @@ test('next: every tool link points at a real classic route', async () => {
 test('next: the server serves the new app without exposing other files', async () => {
   const server = await readFile(new URL('../server.mjs', import.meta.url), 'utf8');
   assert.match(server, /pathname==='\/next'/);
-  assert.match(server, /\^\\\/next\\\/\[a-z\]\[a-z0-9-\]\*\\\.\(\?:js\|css\)\$/);
+  // Only top-level app files plus the two language-pack folders, with two-letter names and no other paths.
+  const rule = server.match(/\/\^\\\/next\\\/\(\?:[^\n]*?\$\//)?.[0];
+  assert.ok(rule, 'the /next static rule is present');
+  const re = new RegExp(rule.slice(1, -1));
+  for (const ok of ['/next/app.js', '/next/app.css', '/next/game-locales/de.js', '/next/generated-locales/zh.json']) assert.ok(re.test(ok), ok);
+  for (const bad of ['/next/../server.mjs', '/next/game-locales/../x.js', '/next/generated-locales/de.js', '/next/data/pages.json', '/next/game-locales/deu.js']) assert.ok(!re.test(bad), bad);
   assert.match(server, /'x-robots-tag':'noindex, nofollow'/);
 });
 

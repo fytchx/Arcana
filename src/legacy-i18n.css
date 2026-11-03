@@ -1,0 +1,11 @@
+/* Classic header language switch, shares the Next translation system. */
+.arcana-classic-language { position:relative; z-index:500; display:flex; align-items:center; }
+.arcana-classic-language .nx-language { position:relative; }
+.arcana-classic-language .nx-language-trigger { display:flex; align-items:center; justify-content:center; gap:4px; min-height:40px; min-width:46px; padding:6px; border:1px solid transparent; background:transparent; color:var(--text,#e8eaf2); border-radius:10px; font:600 11px/1.2 system-ui,sans-serif; letter-spacing:.02em; cursor:pointer }
+.arcana-classic-language .nx-language-trigger svg { width:17px; height:17px }
+.arcana-classic-language .nx-language-trigger[aria-expanded=true], .arcana-classic-language .nx-language-trigger:focus-visible { border-color:var(--accent,#a98bff) }
+.arcana-classic-language .nx-language-menu { position:absolute; right:0; top:calc(100% + 6px); width:196px; max-height:min(425px,68dvh); overflow:auto; overscroll-behavior:contain; border:1px solid var(--line,#34394d); border-radius:12px; background:var(--panel,#171b28); padding:7px; box-shadow:0 16px 40px #000b; z-index:900; }
+.arcana-classic-language .nx-language-heading { display:block; font:600 11px system-ui,sans-serif; color:var(--muted,#aab); padding:8px 9px; }
+.arcana-classic-language .nx-language-option { display:flex; width:100%; justify-content:space-between; align-items:center; min-height:37px; border:0; border-radius:8px; background:transparent; color:var(--text,#e8eaf2); padding:7px 10px; text-align:left; font:500 13px/1.4 system-ui,sans-serif; cursor:pointer }
+.arcana-classic-language .nx-language-option:hover,.arcana-classic-language .nx-language-option[aria-selected=true] { background:color-mix(in srgb,var(--accent,#a98bff) 15%,transparent) }
+.arcana-classic-language .nx-language-option[aria-selected=true] {font-weight:700}

@@ -35,6 +35,7 @@ export const TABS = Object.freeze([
 
 // Arcana Minimal icons (assets/icons/arcana-minimal): inline SVG, so they follow the theme colors.
 import { arcanaIcon } from '../src/arcana-icons.js';
+import { getLocale } from './i18n.js';
 const ICON_MAP = { 'token-pet-egg': 'currency-pet-egg', 'token-pet-shard': 'currency-pet-shard', 'token-gem': 'currency-gem', 'token-gem-dust': 'currency-material', 'token-arcstone': 'currency-arcstone', 'token-ruby': 'currency-ruby', 'token-runic-core': 'currency-rune-shard', 'token-upgrade-catalyst': 'currency-awakening', 'token-guildstone': 'currency-guildstone', 'token-gold': 'currency-gold',
   'feature-guild-raid': 'feature-guild-finder', 'feature-builds': 'feature-build-studio', 'feature-tools': 'feature-calculator', 'feature-feedback': 'help', 'feature-class-skills': 'feature-skill-tree', 'stat-attack-damage': 'stat-attack', 'stat-flat-damage': 'stat-flat-attack' };
 export const iconId = path => { const id = String(path).split('/').pop(); return ICON_MAP[id] || id; };
@@ -125,7 +126,7 @@ export function sortArticles(articles) {
 export function shortDate(iso) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+  return d.toLocaleDateString(getLocale(), { month: 'short', day: 'numeric', timeZone: 'UTC' });
 }
 
 // News article body: the same plain format the classic Journal uses

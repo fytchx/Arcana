@@ -7,6 +7,8 @@ import {
 } from './core.js';
 import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSection } from './studio.js';
 import { nextCode } from './studio-core.js';
+import { languageControl, languageSettingsField, initLocalization, translateTree, translateEnglish, getLocale } from './i18n.js';
+import { editorialTranslation, editorialControl, initEditorialLocalization } from './i18n-content.js';
 import { toolView, initTools, NATIVE_TOOLS } from './tools.js';
 import { pathfinderView, initPathfinder, mlXpView, initMlXp, upgradeMapView, rarityView, compareView, initPathfinderViews } from './pathfinder.js';
 import { adminView, initAdmin } from './admin.js';
@@ -220,18 +222,20 @@ function buildView(query) {
 
 // ---------- featured guides ----------
 // Same text standard as the Handbook (tables, topic links, tool links), plus a short contents list.
-const guideCard = g => '<a class="nx-bcard gd-card" href="#/guides/' + g.id + '" style="--bt:' + (BUILD_TYPES[g.stance]?.color || 'var(--accent)') + ';--cc:' + classVar(CLASS_NAMES[1]) + '">' +
+const guideCard = source => { const {doc:g} = editorialTranslation('guides', source); return '<a class="nx-bcard gd-card" href="#/guides/' + g.id + '" style="--bt:' + (BUILD_TYPES[g.stance]?.color || 'var(--accent)') + ';--cc:' + classVar(CLASS_NAMES[1]) + '">' +
   '<span class="nx-bcard-emblem">' + classBadge(CLASS_NAMES[1], 52) + '</span><span class="nx-bcard-body"><span class="nx-tags"><span class="nx-tag nx-tag-accent">Featured guide</span><span class="nx-tag">' + esc(g.level) + '</span></span>' +
-  '<strong>' + esc(g.title) + '</strong><small>' + esc(g.summary) + '</small><span class="nx-by">by <b>' + esc(g.author) + '</b> · ' + esc(g.readTime) + ' read · updated ' + esc(shortDate(g.updated)) + '</span></span></a>';
+  '<strong>' + esc(g.title) + '</strong><small>' + esc(g.summary) + '</small><span class="nx-by">by <b>' + esc(g.author) + '</b> · ' + esc(g.readTime) + ' read · updated ' + esc(shortDate(g.updated)) + '</span></span></a>'; };
 const slug = t => String(t).toLowerCase().replace(/<[^>]+>/g, '').replace(/&[a-z#0-9]+;/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 function guideView(id) {
-  const g = featuredGuide(id);
+  const source = featuredGuide(id);
+  const {doc:g, translated:guideTranslated} = editorialTranslation('guides', source);
   const back = '<a class="nx-back" href="#/builds/guides">' + icon('back', 18) + 'Guides</a>';
   if (!g) return back + empty('Guide not found', 'It may have moved.');
   const heads = [];
-  const html = hbText(g.body).replace(/<h2>(.*?)<\/h2>/g, (_, t) => { const id = 'g-' + slug(t); heads.push([id, t]); return '<h2 id="' + id + '">' + t + '</h2>'; });
-  return back + '<article class="nx-article gd-article" style="--cc:' + classVar(CLASS_NAMES[1]) + '"><span class="nx-kicker">FEATURED GUIDE · WARRIOR · ' + esc(g.level.toUpperCase()) + '</span><h1>' + esc(g.title) + '</h1>' +
-    '<p class="nx-deck">' + esc(g.summary) + '</p><p class="nx-by">by <b>' + esc(g.author) + '</b> · updated ' + esc(shortDate(g.updated)) + ' · IdleArc ' + esc(g.gameVersion) + '</p>' +
+  const originalHeadings = [...hbText(source.body).matchAll(/<h2>(.*?)<\/h2>/g)].map(m => m[1]);
+  const html = hbText(g.body).replace(/<h2>(.*?)<\/h2>/g, (_, t) => { const id = 'g-' + (slug(originalHeadings[heads.length] || t) || String(heads.length + 1)); heads.push([id, t]); return '<h2 id="' + id + '">' + t + '</h2>'; });
+  return back + '<article class="nx-article gd-article" style="--cc:' + classVar(CLASS_NAMES[1]) + '"><span class="nx-kicker">FEATURED GUIDE · WARRIOR · ' + esc(g.level.toUpperCase()) + '</span><h1>' + esc(guideTranslated ? g.title : translateEnglish(g.title)) + '</h1>' +
+    '<p class="nx-deck">' + esc(g.summary) + '</p>' + editorialControl('guides', g.id, guideTranslated) + '<p class="nx-by">by <b>' + esc(g.author) + '</b> · updated ' + esc(shortDate(g.updated)) + ' · IdleArc ' + esc(g.gameVersion) + '</p>' +
     '<div class="gd-actions"><a class="nx-btn nx-btn-primary" href="#/tools/retaliation">Try your numbers</a><a class="nx-btn" href="#/build?d=' + g.build + '&from=' + g.id + '">Open the build</a></div>' +
     '<details class="gd-toc"><summary>In this guide</summary><ol>' + heads.map(([id, t]) => '<li><a href="#/guides/' + g.id + '" data-jump="' + id + '">' + t + '</a></li>').join('') + '</ol></details>' +
     '<div class="hb-page gd-body">' + html + '</div></article>' +
@@ -333,7 +337,7 @@ function postView(id) {
   if (p.state === 'loading') return back + loading('the build');
   if (p.state === 'error') return back + empty('Build not found', 'It may have been removed by its author or a moderator.');
   if (p.post.kind === 'guide') return back + '<article class="nx-article"><span class="nx-kicker">COMMUNITY GUIDE · ' + esc(shortDate(p.post.createdAt).toUpperCase()) + '</span><h1>' + esc(p.post.title) + '</h1>' +
-    (p.post.summary ? '<p class="nx-deck">' + esc(p.post.summary) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(p.author?.displayName || 'Arcana player') + '</b></p><div class="hb-page gd-body">' + hbText(p.post.body || '') + '</div></article>' +
+    (p.post.summary ? '<p class="nx-deck">' + esc(p.post.summary) + '</p>' : '') + (getLocale() !== 'en' ? '<p class="nx-language-note" data-no-translate>' + esc(translateEnglish('The article is currently available in English.')) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(p.author?.displayName || 'Arcana player') + '</b></p><div class="hb-page gd-body">' + hbText(p.post.body || '') + '</div></article>' +
     '<p class="nx-fine">Written by a player. Spot something wrong? <a href="#/feedback">Tell me</a>.</p>';
   const code = nextCode(p.post.build);
   const intro = (p.post.summary ? '<p class="nx-read">' + esc(p.post.summary) + '</p>' : '') + (p.post.body ? '<div class="nx-article">' + articleHtml(p.post.body) + '</div>' : '');
@@ -422,7 +426,7 @@ function profileView() {
   const admin = u?.permissions?.manageSite ? '<a class="nx-row nx-row-admin" href="#/admin"><span class="nx-row-text"><strong>Admin</strong><small>Community builds, Featured, announcement</small></span><span class="nx-row-end">' + icon('next', 18) + '</span></a>' : '';
   return who + admin +
     savedBuildsSection(!!u) + checklistsSection(!!u) +
-    installBanner('profile') + '<section>' + label('Display') + '<div class="nx-card nx-display"><div class="nx-seg" role="radiogroup" aria-label="Display">' +
+    installBanner('profile') + languageSettingsField() + '<section>' + label('Display') + '<div class="nx-card nx-display"><div class="nx-seg" role="radiogroup" aria-label="Display">' +
       [['full', 'Full design', 'Colors, depth and art'], ['simple', 'Simplified', 'Flat, calm, fastest']].map(([k, l, dsc]) => '<button role="radio" aria-checked="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" aria-selected="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" data-act="display" data-id="' + k + '"><b>' + l + '</b><small>' + dsc + '</small></button>').join('') + '</div></div></section>' +
     '<section>' + label('Community') + '<div class="nx-list">' + row('#/guilds', 'Guilds', 'Find a guild and apply', '') + row('#/lfg', 'Looking for group', 'Raids, teams and planned runs', '') + row('#/records', 'Season records', 'Top players and guilds by season', '') + row('/classic#/community', 'Community posts', '', '', true) + '</div></section>' +
     '<section>' + label('More') + '<div class="nx-list">' + row('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', '') + row('/classic', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
@@ -453,7 +457,7 @@ function render() {
   const title = section === 'home' ? '<a class="nx-brand" href="#/home" aria-label="Arcana home">' + logo + '<span>ARCANA</span></a>'
     : '<a class="nx-brand nx-brand-sm" href="#/home" aria-label="Arcana home">' + logo + '</a><span class="nx-title">' + esc(TITLES[section]) + '</span>';
   $('nxTopL').innerHTML = title;
-  $('nxTopR').innerHTML =
+  $('nxTopR').innerHTML = languageControl() +
     (user() ? '<a class="nx-avatar" href="#/profile" aria-label="Profile"' + (section === 'profile' ? ' aria-current="page"' : '') + '>' + esc(initial()) + '</a>'
       : data.me.state === 'ready' ? '<a class="nx-signin-pill" href="#/profile">Sign in</a>' : '');
   $('nxNav').innerHTML = TABS.map(t => '<a href="' + (t.href || hashFor(t.id)) + '"' + (t.id === 'search' ? ' class="nx-nav-search"' : '') + (t.id === tab ? ' aria-current="page"' : '') + '>' + (t.id === 'search' ? '<i>' + ic('search', 24) + '</i>' : ic(t.id === 'tools' ? 'tools' : t.id, 22)) + '<span>' + t.label + '</span></a>').join('');
@@ -466,7 +470,8 @@ function render() {
   if (main.dataset.key !== key) { main.dataset.key = key; window.scrollTo(0, 0); }
   if (section === 'studio') studioAfterRender();
   if (focusSearch) { const q = $('nxCodexQ'); q?.focus(); q?.setSelectionRange(q.value.length, q.value.length); }
-  document.title = (section === 'home' ? 'Arcana' : (TITLES[section] || 'Arcana') + ' · Arcana');
+  document.title = (section === 'home' ? 'Arcana' : translateEnglish(TITLES[section] || 'Arcana', getLocale()) + ' · Arcana');
+  translateTree(document.body);
 }
 
 document.addEventListener('change', e => { if (e.target.dataset?.g === 'ok') G.ok = e.target.checked; });
@@ -504,9 +509,11 @@ document.addEventListener('input', e => {
   if (e.target.id !== 'nxCodexQ') return;
   codexQuery = e.target.value;
   const body = $('nxCodexBody');
-  if (body && data.codex.state === 'ready') body.innerHTML = codexResults(data.codex.value);
+  if (body && data.codex.state === 'ready') { body.innerHTML = codexResults(data.codex.value); translateTree(body); }
 });
 window.addEventListener('hashchange', render);
+initLocalization(render);
+initEditorialLocalization(render);
 initStudio(render);
 initTools(render);
 // A generic Back goes to the previous page when there is one in this tab.

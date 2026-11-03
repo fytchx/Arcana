@@ -19,6 +19,8 @@ for module in sorted((ROOT/'src').glob('*.js')):
     source=re.sub(r"from\s*(['\"])\.\/([a-z0-9-]+\.js)(?:\?[^'\"]*)?\1",lambda m:"from "+m.group(1)+"@arcana/"+m.group(2)+m.group(1),source)
     IMPORTS[f'@arcana/{module.name}']='data:text/javascript;base64,'+base64.b64encode(source.encode()).decode()
 HTML=re.sub(r'<script[^>]+src="/src/app\.js[^>]*></script>', '',HTML)
+# The Next/Classic language bridge is separately tested by next_mobile_locales.py.
+HTML=re.sub(r'<script[^>]+src="/src/legacy-i18n\.js[^>]*></script>', '',HTML)
 # Render every stylesheet linked by the real entry point so QA follows the app's
 # current modular design layers automatically.
 for href in re.findall(r'<link rel="stylesheet" href="([^"]+)"', HTML):

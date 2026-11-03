@@ -3,6 +3,8 @@
 // or open the page and come straight back to where you were.
 import { esc, ic } from './core.js';
 import { CHAPTERS, PAGES, HANDBOOK_VERSION } from './handbook-content.js';
+import { editorialTranslation, editorialControl } from './i18n-content.js';
+import { getLocale, translateEnglish } from './i18n.js';
 
 // Pages come from the server (edited in the site); the seed file is the fallback until they load.
 let LIVE = PAGES, byId = new Map(LIVE.map(p => [p.id, p])), loadState = 'idle';
@@ -30,9 +32,9 @@ function inline(t) {
   return esc(String(t).replace(/\u0001/g, '|')).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\[\[([a-z]+:)?([a-z0-9-]+)(?:\|([^\]]+))?\]\]/g, (_, kind, id, words) => {
     kind = (kind || '').slice(0, -1);
     if (kind === 'tool') return '<a class="hb-tool" href="' + (TOOLS[id] || '#/tools') + '">' + (words || id) + ' ›</a>';
-    if (kind === 'chapter') { const c = chapterOf(id); return c ? '<a class="hb-link" data-hb="chapter:' + id + '" href="#/handbook/chapter/' + id + '">' + (words || esc(c.title)) + '</a>' : (words || id); }
+    if (kind === 'chapter') { const c = chapterOf(id); return c ? '<a class="hb-link" data-hb="chapter:' + id + '" href="#/handbook/chapter/' + id + '">' + (words || esc(translateEnglish(c.title))) + '</a>' : (words || id); }
     const p = byId.get(id);
-    return p ? '<a class="hb-link" data-hb="' + id + '" href="#/handbook/' + id + '">' + (words || esc(p.title)) + '</a>' : (words || id);
+    return p ? '<a class="hb-link" data-hb="' + id + '" href="#/handbook/' + id + '">' + (words || esc(editorialTranslation('handbook', p).doc.title)) + '</a>' : (words || id);
   }).replace(/\[([^\[\]]+)\]\(((?:#\/|https:\/\/)[^\s()<>"]+)\)/g, (_, words, href) =>
     // Plain links: inside the site (#/...) or to https pages only, which open in a new tab.
     '<a href="' + href + '"' + (href.startsWith('#') ? '' : ' target="_blank" rel="noopener noreferrer"') + '>' + words + '</a>');
@@ -57,12 +59,12 @@ export function hbText(src) {
     return '<p>' + lines.map(inline).join('<br>') + '</p>';
   }).join('');
 }
-const trustChip = p => { const [l, k] = TRUST[p.trust] || TRUST.config; return '<span class="hb-trust hb-' + k + '">' + l + ' · ' + esc(p.version || HANDBOOK_VERSION) + '</span>'; };
+const trustChip = (p, translated) => { if (translated) return '<span class="hb-trust hb-est">' + esc(translateEnglish('Unreviewed translation')) + '</span>'; const [l, k] = TRUST[p.trust] || TRUST.config; return '<span class="hb-trust hb-' + k + '">' + l + ' · ' + esc(p.version || HANDBOOK_VERSION) + '</span>'; };
 
 // ---------- views ----------
 export function handbookHomeSection() {
   return '<section><div class="nx-head"><h2 class="nx-label">Handbook</h2><span class="nx-fine">IdleArc ' + HANDBOOK_VERSION + '</span></div><div class="hb-chapters">' +
-    CHAPTERS.map(c => { const n = pagesIn(c.id).length; return '<a class="hb-ch' + (n ? '' : ' hb-soon') + '" href="#/handbook/chapter/' + c.id + '"><span class="nx-ic">' + ic(c.icon, 20) + '</span><span><b>' + c.n + ' · ' + esc(c.title) + '</b><small>' + esc(c.ask) + '</small></span></a>'; }).join('') + '</div></section>';
+    CHAPTERS.map(c => { const n = pagesIn(c.id).length; return '<a class="hb-ch' + (n ? '' : ' hb-soon') + '" href="#/handbook/chapter/' + c.id + '"><span class="nx-ic">' + ic(c.icon, 20) + '</span><span><b>' + c.n + ' · ' + esc(translateEnglish(c.title)) + '</b><small>' + esc(translateEnglish(c.ask)) + '</small></span></a>'; }).join('') + '</div></section>';
 }
 function backChip() {
   let b; try { b = JSON.parse(sessionStorage.getItem(BACK)); } catch { b = null; }
@@ -75,20 +77,22 @@ export function handbookView(id) {
     const c = chapterOf(id.slice(8));
     if (!c) return '<div class="nx-empty"><strong>Chapter not found</strong><a class="nx-btn" href="#/codex">Handbook</a></div>';
     const pages = pagesIn(c.id);
-    return backChip() + '<a class="nx-back" href="#/codex">‹ Handbook</a><header class="hb-head"><span class="nx-kicker">CHAPTER ' + c.n + '</span><h1>' + esc(c.title) + '</h1><p>' + esc(c.ask) + '</p></header>' +
-      (pages.length ? '<div class="nx-list">' + pages.map((p, i) => '<a class="nx-row" href="#/handbook/' + p.id + '"><span class="hb-num">' + (i + 1) + '</span><span class="nx-row-text"><strong>' + esc(p.title) + '</strong><small>' + esc(p.answer.replace(/^In game: /, '')) + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div>'
+    return backChip() + '<a class="nx-back" href="#/codex">‹ Handbook</a><header class="hb-head"><span class="nx-kicker">CHAPTER ' + c.n + '</span><h1>' + esc(translateEnglish(c.title)) + '</h1><p>' + esc(translateEnglish(c.ask)) + '</p></header>' +
+      (pages.length ? '<div class="nx-list">' + pages.map((p, i) => '<a class="nx-row" href="#/handbook/' + p.id + '"><span class="hb-num">' + (i + 1) + '</span><span class="nx-row-text"><strong>' + esc(editorialTranslation('handbook',p).doc.title) + '</strong><small>' + esc(editorialTranslation('handbook',p).doc.answer.replace(/^In game: /, '')) + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div>'
         : '<div class="nx-empty"><strong>Being written</strong><p>This chapter is next on the list.</p></div>') +
       (currentUser()?.permissions?.editHandbook ? '<a class="nx-btn" href="#/handbook/new/' + c.id + '">+ Add a page to this chapter</a>' : '') +
       (c.lists ? '<section><h2 class="nx-label">Look it up</h2><div class="nx-chips">' + c.lists.map(k => '<a class="nx-chip" href="#/codex?kind=' + k + '">' + esc(k.replace(/-/g, ' ')) + '</a>').join('') + '</div></section>' : '');
   }
-  const p = byId.get(id);
-  if (!p) return '<div class="nx-empty"><strong>Page not found</strong><p>It may have moved.</p><a class="nx-btn" href="#/codex">Handbook</a></div>';
-  const c = chapterOf(p.chapter), list = pagesIn(p.chapter), i = list.indexOf(p), nx = p.next ? byId.get(p.next) : list[i + 1];
-  return backChip() + '<a class="nx-back" href="#/handbook/chapter/' + c.id + '">‹ ' + esc(c.title) + '</a>' +
-    '<article class="hb-page"' + (p.cls ? ' style="--cc:var(--c-' + p.cls + ')"' : '') + '><header class="hb-head"><span class="nx-kicker">CHAPTER ' + c.n + ' · ' + esc(c.title.toUpperCase()) + '</span><h1>' + esc(p.title) + '</h1>' + trustChip(p) + '</header>' +
-    '<p class="hb-answer">' + inline(p.answer) + '</p>' + hbText(p.body) + '</article>' +
+  const original = byId.get(id);
+  if (!original) return '<div class="nx-empty"><strong>Page not found</strong><p>It may have moved.</p><a class="nx-btn" href="#/codex">Handbook</a></div>';
+  const {doc:p, translated} = editorialTranslation('handbook', original);
+  const c = chapterOf(p.chapter), list = pagesIn(p.chapter), i = list.indexOf(original), nx = p.next ? byId.get(p.next) : list[i + 1];
+  return backChip() + '<a class="nx-back" href="#/handbook/chapter/' + c.id + '">‹ ' + esc(translateEnglish(c.title)) + '</a>' +
+    '<article class="hb-page"' + (p.cls ? ' style="--cc:var(--c-' + p.cls + ')"' : '') + '><header class="hb-head"><span class="nx-kicker">' + esc(translateEnglish('CHAPTER ' + c.n + ' · ' + c.title.toUpperCase())) + '</span><h1>' + esc(p.title) + '</h1>' + trustChip(p, translated) + '</header>' +
+    editorialControl('handbook', p.id, translated) +
+    '<p class="hb-answer">' + inline(p.answer) + '</p>' + (translated ? '<div lang="' + getLocale() + '">' + hbText(p.body) + '</div>' : hbText(p.body)) + '</article>' +
     (currentUser()?.permissions?.editHandbook ? '<a class="nx-btn hb-editbtn" href="#/handbook/edit/' + p.id + '">Edit this page</a>' : '') +
-    (nx ? '<a class="hb-next" href="#/handbook/' + nx.id + '"><small>Next</small><b>' + esc(nx.title) + '</b><span>›</span></a>' : '') +
+    (nx ? '<a class="hb-next" href="#/handbook/' + nx.id + '"><small>Next</small><b>' + esc(editorialTranslation('handbook', nx).doc.title) + '</b><span>›</span></a>' : '') +
     '<p class="nx-fine">Something wrong on this page? <a href="#/feedback">Tell us</a>.</p>';
 }
 
@@ -97,8 +101,8 @@ export function handbookPopup() {
   if (!H.pop) return '';
   const [kind, id] = H.pop.includes(':') ? H.pop.split(':') : ['page', H.pop];
   let title, lead, body, href;
-  if (kind === 'chapter') { const c = chapterOf(id); if (!c) return ''; title = c.title; lead = c.ask; href = '#/handbook/chapter/' + id; body = '<ul>' + pagesIn(id).map(p => '<li>' + inline('[[' + p.id + ']]') + '</li>').join('') + '</ul>'; }
-  else { const p = byId.get(id); if (!p) return ''; title = p.title; lead = inline(p.answer); href = '#/handbook/' + id; body = hbText(p.body); }
+  if (kind === 'chapter') { const c = chapterOf(id); if (!c) return ''; title = translateEnglish(c.title); lead = esc(translateEnglish(c.ask)); href = '#/handbook/chapter/' + id; body = '<ul>' + pagesIn(id).map(p => '<li>' + inline('[[' + p.id + ']]') + '</li>').join('') + '</ul>'; }
+  else { const o = byId.get(id); if (!o) return ''; const p = editorialTranslation('handbook', o).doc; title = p.title; lead = inline(p.answer); href = '#/handbook/' + id; body = hbText(p.body); }
   return '<div class="hb-scrim' + (H.big ? ' big' : '') + '" data-hbact="close"></div><div class="hb-pop' + (H.big ? ' big' : '') + '" role="dialog" aria-label="' + esc(title) + '">' +
     '<div class="hb-pophead"><b>' + esc(title) + '</b>' + (H.big ? '<button class="nx-iconbtn" data-hbact="close" aria-label="Close">✕</button>' : '<button class="hb-popbtn" data-hbact="big" aria-label="Enlarge">⤢</button>') + '</div>' +
     '<p class="hb-answer">' + lead + '</p>' + (H.big ? '<div class="hb-popbody">' + body + '</div>' : '') +

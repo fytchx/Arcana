@@ -1,0 +1,95 @@
+name: Arcana Offline Editorial Translations
+on:
+  push:
+    branches: ['feature/localization-12-languages-20261102']
+    paths:
+      - '.github/workflows/arcana-translations.yml'
+      - 'scripts/translate-i18n-content.py'
+      - 'scripts/export-i18n-content.mjs'
+      - 'next/handbook-content.js'
+      - 'next/guides-content.js'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: arcana-editorial-localization-feature
+  cancel-in-progress: true
+jobs:
+  translate:
+    if: github.ref == 'refs/heads/feature/localization-12-languages-20261102'
+    runs-on: ubuntu-latest
+    timeout-minutes: 280
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - shard: 1
+            languages: 'de,es,fr'
+          - shard: 2
+            languages: 'it,ja,ko'
+          - shard: 3
+            languages: 'pl,pt,ru'
+          - shard: 4
+            languages: 'tr,zh'
+    env:
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+      OMP_NUM_THREADS: '3'
+      MKL_NUM_THREADS: '3'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install CPU-only open-source translator
+        run: |
+          python -m pip install --disable-pip-version-check 'torch==2.5.1' --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install --disable-pip-version-check 'transformers==4.46.3' 'sentencepiece==0.2.0' 'sacremoses==0.1.1'
+      - name: Export exact current English source
+        run: node scripts/export-i18n-content.mjs
+      - name: Translate shard
+        run: python scripts/translate-i18n-content.py --languages ${{ matrix.languages }}
+      - name: Upload JSON outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: arcana-locales-${{ matrix.shard }}
+          path: next/generated-locales/*.json
+          if-no-files-found: error
+          retention-days: 7
+  assemble:
+    needs: translate
+    if: github.ref == 'refs/heads/feature/localization-12-languages-20261102'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download every translation shard
+        uses: actions/download-artifact@v4
+        with:
+          pattern: arcana-locales-*
+          path: next/generated-locales
+          merge-multiple: true
+      - name: Audit completeness, source hashes, links and numerical values
+        run: node scripts/audit-i18n.mjs --strict
+      - name: Commit validated locale JSON to Test feature branch
+        run: |
+          git config user.name "Arcana Localization Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add next/generated-locales/*.json
+          if git diff --staged --quiet; then
+            echo "Translation files already match generated outputs"
+          else
+            git commit -m "Generate and audit all 11 offline content translations"
+            git fetch origin feature/localization-12-languages-20261102
+            git rebase origin/feature/localization-12-languages-20261102
+            git push origin HEAD:feature/localization-12-languages-20261102
+          fi
