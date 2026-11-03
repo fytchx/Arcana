@@ -160,7 +160,8 @@ function rolesTab() {
   return '<p class="nx-fine">Tick what each role can do. The Creator can always do everything; who can grant roles and change site settings never changes here.</p>' +
     '<div class="nx-tablewrap"><table class="nx-table adm-grid"><thead><tr><th scope="col">Can…</th>' + R.roles.map(r => '<th scope="col">' + esc(r.label) + '</th>').join('') + '</tr></thead><tbody>' +
     R.grid.map(c => '<tr><th scope="row">' + esc(c.label) + '</th>' + R.roles.map(r => '<td><input type="checkbox" aria-label="' + esc(r.label + ': ' + c.label) + '" data-adm-cap="' + c.id + '" data-role="' + r.id + '"' + (c.roles.includes(r.id) ? ' checked' : '') + '></td>').join('') + '</tr>').join('') +
-    '</tbody></table></div>' + btn('saveRoles', R.dirty ? 'Save permissions' : 'Saved', '', 'nx-btn nx-btn-primary');
+    '</tbody></table></div>' + btn('saveRoles', R.dirty ? 'Save permissions' : 'Saved', '', 'nx-btn nx-btn-primary') +
+    '<h3 class="st-h3">Backup</h3><p class="nx-fine">Everything the site has saved: accounts, sign-ins, Handbook edits, guilds, posts, wiki and feedback. Keep the file private.</p><a class="nx-btn" href="/api/admin/backup" download>Download backup</a>';
 }
 async function saveRoles() {
   const overrides = Object.fromEntries(R.grid.map(c => [c.id, c.roles]));
