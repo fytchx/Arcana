@@ -17,7 +17,7 @@ const marker = (lang, kind, id) => lang+':'+kind+':'+id;
 const comparable = (text, pattern) => [...String(text || '').matchAll(pattern)].map(x => x[1] || x[0]);
 function contentStructureSafe(source, translated) {
   const original = String(source.body || ''), candidate = String(translated.body || '');
-  const numbers = /(?<![A-Za-z])(?:[+\-−]?\d[\d.,]*%?|[Aa]\d+)(?![A-Za-z])/g;
+  const numbers = /(?<![A-Za-z])(?:[+\-−]?\d(?:[\d.,]*\d)?%?|[Aa]\d+)(?![A-Za-z])/g;
   const wiki = /\[\[([^\]]+)\]\]/g;
   const urls = /\]\((#[^)]*|https:\/\/[^)]*)\)/g;
   const tableWidth = text => text.split('\n').filter(x => x.trim().startsWith('|')).map(x => (x.match(/\|/g) || []).length);
