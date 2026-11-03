@@ -190,3 +190,10 @@ test('optimizer persistence retains affixes, observed stats, inventory and objec
  assert.equal(plan.items[0].observed.primary,'1.6k');
  assert.equal(plan.items[0].pathGroup,'alt-shared');
 });
+
+test('classic affix base rolls match the 2026-10-30-007 config', () => {
+ const roll = name => { const a = EQUIPMENT_AFFIXES.find(x => x.name === name); return [a.min, a.max]; };
+ assert.deepEqual(roll('of the Bulwark'), [8, 23]);
+ assert.deepEqual(roll('of the Fortress'), [2, 6]);
+ assert.deepEqual(roll('of Fortification'), [3, 11]);
+});

@@ -1,12 +1,12 @@
 /* Item projections for the Upgrade Optimizer.
  * Implicit tier ranges are from the 2026-10-21-003 equipment snapshot.
  * Ordinary affix definitions and scaling parameters were verified against
- * the complete 2026-09-30-001 game configuration. The executable server-side
+ * the 2026-10-30-007 live game configuration. The executable server-side
  * rounding/capping order is not available: values are ESTIMATES, never exact. */
 import {OPTIMIZER_ITEM_BY_ID,optimizerStatLabel} from './upgrade-optimizer-data.js';
 import {projectedStats} from './upgrade-family.js';
 
-export const AFFIX_SOURCE='IdleArc game configuration 2026-09-30-001';
+export const AFFIX_SOURCE='IdleArc game configuration 2026-10-30-007';
 export const AFFIX_SCALING=Object.freeze({
  tierMultipliers:[1,1.2,1.4,1.7,2,2.5],
  enhancementPerLevel:0.03,
@@ -22,9 +22,9 @@ const RAW_AFFIXES=[
  [24,'Earthen','prefix','damage_conversion_earth',3,5,['weapon']],
  [29,'Evasive','prefix','dodge_chance',0.5,1,['chest_armor','helmet','boots','gloves','shield','torch']],
  [3,'of Ambulance','prefix','max_health',10,50,['chest_armor','helmet','boots','gloves','amulet','ring','belt']],
- [13,'of Fortification','prefix','local_flat_defense',3,10,['chest_armor','helmet','boots','gloves']],
+ [13,'of Fortification','prefix','local_flat_defense',3,11,['chest_armor','helmet','boots','gloves']],
  [6,'of Pet Damage','prefix','pet_damage_bonus',2,8,['all']],
- [14,'of the Bulwark','prefix','local_percent_defense',10,30,['chest_armor','helmet','boots','gloves']],
+ [14,'of the Bulwark','prefix','local_percent_defense',8,23,['chest_armor','helmet','boots','gloves']],
  [20,'of Warding','prefix','damage_reduction',1,3,['chest_armor','helmet','shield','torch']],
  [22,'Tidal','prefix','damage_conversion_water',3,5,['weapon']],
  [25,'Venomous','prefix','damage_conversion_poison',3,5,['weapon']],
@@ -41,7 +41,7 @@ const RAW_AFFIXES=[
  [11,'of Regeneration','suffix','life_on_hit',1,1,['weapon','ring','amulet']],
  [27,'of Strength','suffix','strength',2,4,['weapon','ring','amulet','belt']],
  [16,'of Striking','suffix','jewelry_flat_damage',4,10,['ring','amulet','belt']],
- [19,'of the Fortress','suffix','defense_percent',3,8,['belt','ring','amulet']],
+ [19,'of the Fortress','suffix','defense_percent',2,6,['belt','ring','amulet']],
  [12,'of Vampirism','suffix','life_on_kill',3,10,['weapon','ring','amulet']],
  [8,'of Wealth','suffix','gold_gain',2,5,['all']]
 ];
