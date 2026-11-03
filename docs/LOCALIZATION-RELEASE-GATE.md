@@ -12,6 +12,10 @@
 - User-generated community guide translations: **deferred by owner**. News/Journal and legacy Classic's old article surfaces also require an explicit follow-up coverage decision before claiming the entire website is multilingual.
 - Displayed machine-translated editorial material is labeled, offers a return to the English original and must match source SHA-256. Edited Handbook pages whose source differs from the build-time snapshot fall back to English, not stale translations.
 
+## Release scope decided 2026-11-02
+
+Owner approved shipping the **interface translations only** (hand-written phrase lists, chapter names, game term packs). Machine-translated Handbook pages, guides and generated UI strings are switched off by `REVIEWED_LANGUAGES` in `next/i18n-content.js` (empty). Spot checks found wrong terms ("Character level" as "personality level" in Japanese, "Charakter-Ebene" in German) and broken grammar. A language's pack is turned on only after someone who reads it has reviewed it; then add its code to `REVIEWED_LANGUAGES`.
+
 ## Automated hard gates
 
 1. `next/handbook-content.js` and `next/guides-content.js` must remain byte-identical to the reviewed English source. Verified during development against `main` as of 2026-11-02.

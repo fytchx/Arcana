@@ -6,6 +6,10 @@ const cache = new Map(), pending = new Map(), verified = new Map(), originalView
 let rerender = () => {};
 const kinds = new Set(['handbook','guides']);
 const supported = new Set(['de','es','fr','it','ja','ko','pl','pt','ru','tr','zh']);
+// Machine-translated pages and UI strings stay off until someone who reads the language has checked them.
+// Add a language code here once its pack has been reviewed. Until then readers get the English original
+// with a note, and the interface uses only the hand-written phrase lists.
+export const REVIEWED_LANGUAGES = new Set([]);
 const sourceFields = (kind, doc) => kind === 'guides'
   ? { title:doc.title, summary:doc.summary, body:doc.body }
   : { title:doc.title, answer:doc.answer, body:doc.body };
@@ -32,7 +36,7 @@ async function sha256(data) {
 }
 
 export function loadEditorialLocale(lang) {
-  if (!supported.has(lang)) return Promise.resolve(null);
+  if (!supported.has(lang) || !REVIEWED_LANGUAGES.has(lang)) return Promise.resolve(null);
   if (cache.has(lang)) return Promise.resolve(cache.get(lang));
   if (pending.has(lang)) return pending.get(lang);
   const p = fetch('/next/generated-locales/'+lang+'.json', {cache:'force-cache'})

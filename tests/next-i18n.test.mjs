@@ -64,3 +64,9 @@ test('English is always the unselected first-visit default', () => {
     else globalThis.localStorage = original;
   }
 });
+
+test('i18n: machine translations stay off until a language is reviewed', async () => {
+  const m = await import('../next/i18n-content.js');
+  assert.equal(m.REVIEWED_LANGUAGES.size, 0);
+  assert.equal(await m.loadEditorialLocale('de'), null);
+});
