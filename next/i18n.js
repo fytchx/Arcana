@@ -18,7 +18,8 @@ export function setOfflineUIDictionary(locale, phrases) {
   if (!supported.has(locale) || !phrases || typeof phrases !== 'object' || Array.isArray(phrases)) return;
   const safe = Object.fromEntries(Object.entries(phrases).filter(([k,v]) =>
     k.length >= 3 && k.length < 180 && typeof v === 'string' && v.length < 300 && !/[<>]/.test(v)));
-  offlineUI.set(locale, Object.freeze(safe));
+  // Merge, so a later pack never wipes phrases an earlier one added.
+  offlineUI.set(locale, Object.freeze({ ...(offlineUI.get(locale) || {}), ...safe }));
 }
 
 export function normalizeLocale(input) {
@@ -155,11 +156,26 @@ export function languageSettingsField() {
     escapeText(translateEnglish('Select language', current)) + '">' + options + '</select></section>';
 }
 
+// Interface phrases the hand-written dictionaries don't cover yet: next/ui-locales/<lang>.json,
+// built by scripts/export-ui-phrases.mjs. Empty values stay English.
+const uiPacks = new Map();
+export function loadUiPhrases(code) {
+  if (!supported.has(code) || code === 'en') return Promise.resolve(false);
+  if (uiPacks.has(code)) return uiPacks.get(code);
+  const p = fetch('/next/ui-locales/' + code + '.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(j => {
+    if (j?.language !== code || j?.schema !== 1 || !j.phrases) return false;
+    setOfflineUIDictionary(code, Object.fromEntries(Object.entries(j.phrases).filter(([, v]) => typeof v === 'string' && v.trim())));
+    return true;
+  }).catch(() => { uiPacks.delete(code); return false; });
+  uiPacks.set(code, p);
+  return p;
+}
 export function initLocalization(render) {
   document.documentElement.lang = getLocale();
   const warm = code => {
-    if (code === 'en' || termPack(code)) return;
-    loadGameTermPack(code).then(p => { if (p && getLocale() === code) render(); });
+    if (code === 'en') return;
+    if (!termPack(code)) loadGameTermPack(code).then(p => { if (p && getLocale() === code) render(); });
+    loadUiPhrases(code).then(ok => { if (ok && getLocale() === code) render(); });
   };
   warm(getLocale());
   document.addEventListener('click', event => {
