@@ -8,7 +8,7 @@ const tree=normalizeTree({});
 const byName=n=>tree.classes.find(x=>x.name===n);
 const findSkill=(cls,name)=>cls.branches.flatMap(b=>b.skills).find(s=>s.name===name);
 test('complete source-backed class trees coexist with verified passive dataset',()=>{
- assert.equal(VERIFIED_CLASS_SKILL_SOURCE,'IdleArc 2026-10-09 config');
+ assert.equal(VERIFIED_CLASS_SKILL_SOURCE,'IdleArc 2026-10-30-007 config');
  assert.equal(tree.classes.length,5);
  assert.equal(verifiedClassTrees().length,5);
  assert.equal(tree.passive.rows.length,200);
@@ -93,4 +93,13 @@ test('every class can render a full branch independently of legacy passive API',
   assert.equal((html.match(/classSkillNode /g)||[]).length,6,cls.name);
   assert.ok(html.includes('Class Skill Simulator')||html.includes('CLASS SKILL SIMULATOR'),cls.name);
  }
+});
+
+test('classic class trees carry the 2026-10-30-007 skill changes',()=>{
+ const desc=(c,n)=>findSkill(byName(c),n).description;
+ assert.match(desc('Mage','Magic blast'),/extra 4% damage/);
+ assert.match(desc('Mage','Arcane Surge'),/up to 10%/);
+ assert.match(desc('Druid','Thick Pelt'),/7% per skill level/);
+ assert.match(desc('Archer',"Hunter's Mark"),/whole fight \(up to 30%\)/);
+ assert.match(desc('Rogue','First Strike'),/whole fight \(up to 50%\)/);
 });

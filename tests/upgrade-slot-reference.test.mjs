@@ -26,6 +26,6 @@ test('affix coefficients stay separate and are not mistaken for exact display fo
  assert.equal(SLOT_SCALE_EVIDENCE.exactA1BaselineKnown,false);
  assert.equal(SLOT_SCALE_EVIDENCE.exactDisplayFormulaVerified,false);
  assert.equal(maxRolledAffixReference(27).unscaledBaseMax,4);
- assert.equal(maxRolledAffixReference(19).unscaledBaseMax,8);
+ assert.equal(maxRolledAffixReference(19).unscaledBaseMax,6); // of the Fortress, 2-6 since 2026-10-30-007
  assert.equal(maxRolledAffixReference(6).unscaledBaseMax,8);
 });

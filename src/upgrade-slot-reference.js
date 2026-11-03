@@ -8,7 +8,7 @@ import {EQUIPMENT_AFFIXES} from './upgrade-optimizer-projections.js';
 
 export const SLOT_SCALE_EVIDENCE=Object.freeze({
  itemRanges:'IdleArc 1.3.8 / game config 2026-10-21-003',
- affixRanges:'complete config 2026-09-30-001 (26 ordinary affixes)',
+ affixRanges:'live config 2026-10-30-007 (26 ordinary affixes)',
  awakeningPerRank:0.12,
  affixEnhancementPerLevel:0.03,
  individualAffixBoostPerRank:0.10,
