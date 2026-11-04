@@ -14,6 +14,7 @@ import {createPathfinderRecipeCache} from './src/pathfinder-recipe-cache.mjs';
 import {safeCommunityArchive} from './src/community-archive-server.mjs';
 import {safeSiteAdminRequest} from './src/site-admin-server.mjs';
 import {safeHandbookRequest} from './src/handbook-server.mjs';
+import {safeBackupRequest} from './src/backup-server.mjs';
 import { safeAccountBuildRequest } from './src/account-builds.mjs';
 import {safeFarmingListRequest} from './src/farming-lists-server.mjs';
 import { safeCommunityRequest } from './src/community-server.mjs';
@@ -166,6 +167,7 @@ const server=http.createServer(async(req,res)=>{
   if(await handleWikiRequest(req,res,pathname))return;
   if(await handleTrafficRequest(req,res,parsedUrl))return;
   if((pathname==='/api/handbook'||pathname==='/api/admin/handbook')&&await safeHandbookRequest(req,res,parsedUrl))return;
+  if(pathname==='/api/admin/backup'&&req.method==='GET'&&await safeBackupRequest(req,res))return;
   if(await safeSiteAdminRequest(req,res,parsedUrl))return;
   if((req.method==='GET'||req.method==='HEAD')&&seoPageByPath(pathname)){
    const indexable=host==='arcanacompanion.xyz';
