@@ -15,7 +15,7 @@ const sha = o=>createHash('sha256').update(JSON.stringify(o)).digest('hex');
 const fields = (kind,d)=>kind==='guides'?{title:d.title,summary:d.summary,body:d.body}:{title:d.title,answer:d.answer,body:d.body};
 const normalizedNames = body => [...body.matchAll(/\[\[([^\]]+)\]\]/g)].map(x=>x[1].split('|')[0]);
 const links = body => [...body.matchAll(/\]\((#[^)]*|https:\/\/[^)]*)\)/g)].map(x=>x[1]);
-const nums = body => [...body.matchAll(/(?<![A-Za-z])(?:[+\-−]?\d[\d.,]*%?|[Aa]\d+)(?![A-Za-z])/g)].map(x=>x[0]).sort();
+const nums = body => [...body.matchAll(/(?<![A-Za-z])(?:[+\-−]?\d(?:[\d.,]*\d)?%?|[Aa]\d+)(?![A-Za-z])/g)].map(x=>x[0]).sort();
 const layout = body => body.split('\n').filter(x=>x.trim().startsWith('|')).map(x=>(x.match(/\|/g)||[]).length);
 const reports = [];
 let bad=0;
@@ -27,14 +27,19 @@ for(const locale of LANGUAGES){
   const file=JSON.parse(readFileSync(filename,'utf8'));
   const errors=[];
   if(file.language!==locale||file.schema!==1) errors.push('locale/schema mismatch');
-  if(file.engine?.license!=='MIT') errors.push('translation license mismatch');
+  const editorialEngine=file.engine?.id==='chatgpt-translation'&&file.engine?.mode==='editorial';
+  if(editorialEngine ? Object.hasOwn(file.engine,'license') : file.engine?.license!=='MIT') errors.push('translation license mismatch');
   let total=0,changed=0;
   for(const kind of ['guides','handbook']){
     for(const [id,src] of Object.entries(docs[kind])){
       total++;
       const translated=file[kind]?.[id];
       const baseline=fields(kind,src);
-      if(!translated||translated.sourceHash!==sha(baseline)){pendingPages.push(locale+' '+kind+':'+id);continue;}
+      if(!translated||translated.sourceHash!==sha(baseline)){
+        if(required&&editorialEngine)errors.push((translated?'stale source ':'missing ')+kind+':'+id);
+        else pendingPages.push(locale+' '+kind+':'+id);
+        continue;
+      }
       if(['title','body'].some(k=>typeof translated[k]!=='string'))errors.push('missing content '+kind+':'+id);
       for(const k of Object.keys(baseline)){
         const before=baseline[k],after=translated[k]||'';
