@@ -152,8 +152,10 @@ const label = t => '<h2 class="nx-label">' + esc(t) + '</h2>';
 const empty = (title, body, action = '') => '<div class="nx-empty"><strong>' + esc(title) + '</strong><p>' + esc(body) + '</p>' + action + '</div>';
 const loading = what => '<div class="nx-loading" role="status">Loading ' + esc(what) + '…</div>';
 const failed = (what, retry) => '<div class="nx-empty"><strong>' + esc(what) + ' didn\'t load</strong><p>Check your connection and try again.</p><button class="nx-btn" data-act="retry" data-slot="' + retry + '">Try again</button></div>';
+const KOFI = 'https://ko-fi.com/arcanacompanion';
+const SUPPORT_LINE = 'Arcana is free and fan-made.', SUPPORT_CTA = 'Support it on Ko-fi';
 const row = (href, title, detail, ic, external = false) =>
-  '<a class="nx-row" href="' + esc(href) + '">' + (ic ? '<span class="nx-row-icon">' + icon(ic, 22) + '</span>' : '') +
+  '<a class="nx-row" href="' + esc(href) + '"' + (/^https?:/.test(href) ? ' target="_blank" rel="noopener"' : '') + '>' + (ic ? '<span class="nx-row-icon">' + icon(ic, 22) + '</span>' : '') +
   '<span class="nx-row-text"><strong>' + esc(title) + '</strong>' + (detail ? '<small>' + esc(detail) + '</small>' : '') + '</span>' +
   '<span class="nx-row-end">' + icon(external ? 'out' : 'next', 18) + '</span></a>';
 const classicNote = '';
@@ -182,7 +184,8 @@ function homeView() {
     main.map(([h, i, l, dsc]) => '<a class="nx-tile nx-main-tile" href="' + h + '"><span class="nx-ic">' + ic(i, 24) + '</span><strong>' + l + '</strong><small>' + dsc + '</small></a>').join('') + '</div>' +
     (rec.length ? '<details class="nx-recent"><summary>Recently used</summary><div class="nx-recent-list">' + rec.map(t => '<a href="' + esc(t.href) + '">' + ic(t.art || 'tools', 16) + esc(t.short || t.name) + '</a>').join('') + '</div></details>' : '') + '</section>' +
     (evRow || newsRow ? '<section class="nx-strips">' + evRow + newsRow + '</section>' : '') +
-    '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredList(3) + '</section>';
+    '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredList(3) + '</section>' +
+    '<p class="nx-fine nx-support">' + esc(SUPPORT_LINE) + ' <a href="' + KOFI + '" target="_blank" rel="noopener">' + esc(SUPPORT_CTA) + '</a></p>';
 }
 // Featured picks come from the owner's list (/api/featured); each build loads through the public
 // community route, so hidden or deleted builds simply don't appear. Empty list -> Zane's build.
@@ -429,7 +432,7 @@ function profileView() {
     installBanner('profile') + languageSettingsField() + '<section>' + label('Display') + '<div class="nx-card nx-display"><div class="nx-seg" role="radiogroup" aria-label="Display">' +
       [['full', 'Full design', 'Colors, depth and art'], ['simple', 'Simplified', 'Flat, calm, fastest']].map(([k, l, dsc]) => '<button role="radio" aria-checked="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" aria-selected="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" data-act="display" data-id="' + k + '"><b>' + l + '</b><small>' + dsc + '</small></button>').join('') + '</div></div></section>' +
     '<section>' + label('Community') + '<div class="nx-list">' + row('#/guilds', 'Guilds', 'Find a guild and apply', '') + row('#/lfg', 'Looking for group', 'Raids, teams and planned runs', '') + row('#/records', 'Season records', 'Top players and guilds by season', '') + row('/classic#/community', 'Community posts', '', '', true) + '</div></section>' +
-    '<section>' + label('More') + '<div class="nx-list">' + row('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', '') + row('/classic', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
+    '<section>' + label('More') + '<div class="nx-list">' + row(KOFI, 'Support Arcana', 'Arcana is free and fan-made. Help keep it running on Ko-fi', '', true) + row('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', '') + row('/classic', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
 }
 
 // ---------- recently used tools ----------
