@@ -72,5 +72,9 @@ test('i18n: German editorial translations are enabled while other machine packs 
   assert.deepEqual([...m.REVIEWED_LANGUAGES], ['de','pl']);
   assert.deepEqual(pack.engine, { id: 'chatgpt-translation', mode: 'editorial' });
   assert.deepEqual(pack.ui, {});
-  const polish = JSON.parse(readFileSync(new URL('../next/generated-locales/pl.json', import.meta.url), 'utf8'));\n  assert.deepEqual(polish.engine, { id: 'chatgpt-translation', mode: 'editorial' });\n  assert.deepEqual(polish.ui, {});\n  assert.ok(polish.handbook['what-is-idlearc']);\n  assert.equal(await m.loadEditorialLocale('es'), null);
+  const polish = JSON.parse(readFileSync(new URL('../next/generated-locales/pl.json', import.meta.url), 'utf8'));
+  assert.deepEqual(polish.engine, { id: 'chatgpt-translation', mode: 'editorial' });
+  assert.deepEqual(polish.ui, {});
+  assert.ok(polish.handbook['what-is-idlearc']);
+  assert.equal(await m.loadEditorialLocale('es'), null);
 });
