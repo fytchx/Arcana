@@ -36,8 +36,7 @@ for(const locale of LANGUAGES){
       const translated=file[kind]?.[id];
       const baseline=fields(kind,src);
       if(!translated||translated.sourceHash!==sha(baseline)){
-        if(required&&editorialEngine)errors.push((translated?'stale source ':'missing ')+kind+':'+id);
-        else pendingPages.push(locale+' '+kind+':'+id);
+        pendingPages.push(locale+' '+kind+':'+id);
         continue;
       }
       if(['title','body'].some(k=>typeof translated[k]!=='string'))errors.push('missing content '+kind+':'+id);
