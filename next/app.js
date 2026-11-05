@@ -168,7 +168,7 @@ const toolById = id => TOOLS.find(t => t.id === id);
 // ---------- views ----------
 function homeView() {
   loadNews(); loadBuilds();
-  const ev = liveEvents().map(e => '<a class="nx-event" href="' + esc(e.href) + '"><span class="nx-kicker">LIVE EVENT</span><strong>' + esc(e.name) + '</strong><small>' + esc(e.detail) + '</small></a>').join('');
+  const ev = liveEvents().map(e => '<a class="nx-event" href="' + esc(e.href) + '"><span class="nx-kicker">' + esc(e.kicker) + '</span><strong>' + esc(e.name) + '</strong><small>' + esc(e.detail) + '</small></a>').join('');
   const n = data.news;
   const latest = n.state === 'ready' && n.value[0]
     ? '<a class="nx-card nx-story" href="' + hashFor('news', n.value[0].slug) + '"><span class="nx-kicker">' + esc((n.value[0].category || 'News').toUpperCase()) + ' · ' + esc(shortDate(n.value[0].publishedAt)) + '</span><strong>' + esc(n.value[0].teaserTitle || n.value[0].title) + '</strong><small>' + esc(n.value[0].subtitle || '') + '</small></a>'

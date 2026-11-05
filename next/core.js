@@ -59,12 +59,19 @@ export const TOOLS = Object.freeze([
   { group: 'Planning', id: 'skills', name: 'Skill trees', detail: 'Class and passive trees with the real point rules, in Build Studio', href: '#/studio/class', icon: 'tree', native: true, art: 'features/feature-passive-tree' }
 ]);
 
-// Live events for the Home card. Each hides itself after `until`.
+// Live events for the Home card. Each phase shows until its `until`, then the next one takes over;
+// the event hides after its last phase. Cutoffs match the in-game help (16:00 Pacific = 00:00 UTC).
 export const EVENTS = Object.freeze([
-  { id: 'hallowed-harvest-2026', name: 'Hallowed Harvest 2026', detail: 'Earn until Nov 4 · Pumpkin Shop until Nov 7',
-    until: '2026-11-08T07:59:00Z', href: '#/news/hallowed-harvest-2026-guide' }
+  { id: 'hallowed-harvest-2026', name: 'Hallowed Harvest 2026', href: '#/news/hallowed-harvest-2026-guide', phases: [
+    { until: '2026-11-05T00:00:00Z', kicker: 'LIVE EVENT', detail: 'Earn until Nov 4 · Pumpkin Shop until Nov 7' },
+    { until: '2026-11-08T00:00:00Z', kicker: 'PUMPKIN SHOP · FINAL DAYS', detail: 'Earning is over · Spend harvested pumpkins by Nov 7' },
+    { until: '2026-11-15T00:00:00Z', kicker: 'HALLOWEEN SHOP · FINAL DAYS', detail: 'Pumpkin Shop closed · Arcstone Halloween Shop until Nov 14' }
+  ] }
 ]);
-export const liveEvents = (now = new Date()) => EVENTS.filter(e => new Date(e.until) > now);
+export const liveEvents = (now = new Date()) => EVENTS.flatMap(e => {
+  const phase = e.phases.find(p => new Date(p.until) > now);
+  return phase ? [{ id: e.id, name: e.name, href: e.href, kicker: phase.kicker, detail: phase.detail, until: phase.until }] : [];
+});
 
 // Routes look like #/codex/<id> or #/news/<slug>. Unknown sections fall back to home.
 export function parseHash(hash = '') {
