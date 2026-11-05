@@ -89,7 +89,9 @@ test('next: article bodies render the journal format and escape everything else'
 
 test('next: events hide themselves after they end', () => {
   assert.equal(liveEvents(new Date('2026-11-01T12:00:00Z')).length, 1);
-  assert.equal(liveEvents(new Date('2026-11-09T00:00:00Z')).length, 0);
+  assert.match(liveEvents(new Date('2026-11-05T01:00:00Z'))[0].kicker, /PUMPKIN SHOP/);
+  assert.match(liveEvents(new Date('2026-11-09T00:00:00Z'))[0].kicker, /HALLOWEEN SHOP/);
+  assert.equal(liveEvents(new Date('2026-11-15T00:00:00Z')).length, 0);
 });
 
 test('next: every tool link points at a real classic route', async () => {
