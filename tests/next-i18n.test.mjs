@@ -69,12 +69,16 @@ test('i18n: German editorial translations are enabled while other machine packs 
   const { readFileSync } = await import('node:fs');
   const m = await import('../next/i18n-content.js');
   const pack = JSON.parse(readFileSync(new URL('../next/generated-locales/de.json', import.meta.url), 'utf8'));
-  assert.deepEqual([...m.REVIEWED_LANGUAGES], ['de','pl']);
+  assert.deepEqual([...m.REVIEWED_LANGUAGES], ['de','pl','es']);
   assert.deepEqual(pack.engine, { id: 'chatgpt-translation', mode: 'editorial' });
   assert.deepEqual(pack.ui, {});
   const polish = JSON.parse(readFileSync(new URL('../next/generated-locales/pl.json', import.meta.url), 'utf8'));
   assert.deepEqual(polish.engine, { id: 'chatgpt-translation', mode: 'editorial' });
   assert.deepEqual(polish.ui, {});
   assert.ok(polish.handbook['what-is-idlearc']);
-  assert.equal(await m.loadEditorialLocale('es'), null);
+  const spanish = JSON.parse(readFileSync(new URL('../next/generated-locales/es.json', import.meta.url), 'utf8'));
+  assert.deepEqual(spanish.engine, { id: 'chatgpt-translation', mode: 'editorial' });
+  assert.deepEqual(spanish.ui, {});
+  assert.ok(spanish.handbook['what-is-idlearc']);
+  assert.equal(await m.loadEditorialLocale('fr'), null);
 });
