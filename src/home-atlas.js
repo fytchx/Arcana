@@ -18,7 +18,7 @@ export function atlasHomeScreen(icon,profile=null){
  const accountPrompt=profile?'<strong>Welcome back, '+escapeHTML(accountName)+'</strong>':'<strong>New to Arcana?</strong>';
  const accountButton=profile?'My Account':'Sign up / Log in';
  return '<div class="atlasHome" aria-label="Arcana homepage">'+
- '<a class="atlasUpdate" data-seasonal-feature href="/#/journal/article?slug=hallowed-harvest-2026-guide" aria-label="Read the Hallowed Harvest 2026 event guide">'+
+ '<a class="atlasUpdate" data-seasonal-feature hidden href="/#/journal/article?slug=hallowed-harvest-2026-guide" aria-label="Read the Hallowed Harvest 2026 event guide">'+
  '<span class="atlasSeasonalEmblem" aria-hidden="true">🎃</span>'+
  '<span class="atlasSeasonalCopy"><span class="atlasUpdateTag" data-seasonal-phase>HALLOWED HARVEST · LIVE EVENT</span><strong class="atlasUpdateTitle">Hallowed Harvest 2026</strong><small class="atlasSeasonalDeadline" data-seasonal-deadline>Earn until Nov 4 · Pumpkin Shop until Nov 7</small></span>'+
  '<span class="atlasUpdateDate atlasSeasonalAction"><span>EVENT GUIDE</span> '+icon('arrow',16)+'</span></a>'+

@@ -1,11 +1,11 @@
 // Home always features the latest published Journal article, with a static fallback.
 let cache=null,lastFetch=0;
 // In-game event help shows 16:00 Pacific cutoffs on Nov 4, 7 and 14 (PST, UTC-8).
-// The seasonal promotion retires itself after the final Halloween Shop deadline.
+// Retire the large Halloween promotion as soon as the Pumpkin Shop closes.
 export function seasonalFeatureState(now=Date.now()){
  if(now<Date.parse('2026-11-05T00:00:00Z'))return {phase:'HALLOWED HARVEST · LIVE EVENT',deadline:'Earn until Nov 4 · Pumpkin Shop until Nov 7'};
  if(now<Date.parse('2026-11-08T00:00:00Z'))return {phase:'PUMPKIN SHOP · FINAL DAYS',deadline:'Spend harvested pumpkins by Nov 7'};
- if(now<Date.parse('2026-11-15T00:00:00Z'))return {phase:'HALLOWEEN SHOP · FINAL DAYS',deadline:'Arcstone Halloween Shop closes Nov 14'};
+
  return null;
 }
 export async function hydrateJournalPreview(){
@@ -30,7 +30,9 @@ export async function hydrateJournalPreview(){
    cache=Array.isArray(payload.articles)?payload.articles:[];
    lastFetch=Date.now();
   }
-  const current=cache[0];if(!current||!document.contains(link))return;
+  // Past event coverage stays in the Journal without displacing current stories on Home.
+  const evergreen=cache.filter(story=>story?.slug!=='hallowed-harvest-2026-guide');
+  const current=evergreen[0];if(!current||!document.contains(link))return;
   link.href='/#/journal/article?slug='+encodeURIComponent(current.slug);
   const title=link.querySelector('strong'),category=link.querySelector('.journalHomeCategory'),subtitle=link.querySelector('small');
   if(title)title.textContent=current.teaserTitle||current.title;
@@ -43,7 +45,7 @@ export async function hydrateJournalPreview(){
   const extras=document.getElementById('atlasJournalMore');
   if(extras&&document.contains(extras)&&cache.length>1){
    const frag=document.createDocumentFragment();
-   for(const story of cache.slice(1,5)){
+   for(const story of evergreen.slice(1,5)){
     if(!story||typeof story.title!=='string'||typeof story.url!=='string')continue;
     let url;try{url=new URL(story.url,location.origin)}catch{continue}
     if(url.origin!==location.origin||!url.pathname.startsWith('/journal/'))continue;
