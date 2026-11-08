@@ -42,7 +42,8 @@ test('Published editorial content replaces placeholders with safe DOM methods',a
  const code=await read('src/journal-home.js');
  const html=homeScreen();
  assert.match(html,/class="atlasJournalExtra"/);
- assert.match(code,/cache\.slice\(1,5\)/);
+ assert.match(code,/evergreen\.slice\(1,5\)/);
+ assert.match(code,/cache\.filter\(story=>story\?\.slug!==/);
  assert.match(code,/url\.origin!==location\.origin/);
  assert.match(code,/textContent/);
  assert.match(code,/extras\.replaceChildren\(frag\)/);
