@@ -4,9 +4,9 @@ import {homeScreen} from '../src/launch-navigation.js';
 import {seasonalFeatureState} from '../src/journal-home.js';
 import {readFile} from 'node:fs/promises';
 
-test('The Arcana home event feature is prominent and directly opens the published guide',()=>{
+test('The classic Halloween banner is hidden by default, but its historical article is preserved',()=>{
  const html=homeScreen();
- assert.match(html,/class="atlasUpdate" data-seasonal-feature/);
+ assert.match(html,/class="atlasUpdate" data-seasonal-feature hidden/);
  assert.match(html,/href="\/#\/journal\/article\?slug=hallowed-harvest-2026-guide"/);
  assert.match(html,/Hallowed Harvest 2026/);
  assert.ok(html.indexOf('data-seasonal-feature')<html.indexOf('class="atlasTileGrid"'));
@@ -14,11 +14,11 @@ test('The Arcana home event feature is prominent and directly opens the publishe
  assert.match(html,/class="atlasHero atlasGuideHighlight"/);
 });
 
-test('Halloween feature deadlines update through the final shop closure',()=>{
+test('Classic Halloween spotlight retires once the Pumpkin Shop closes',()=>{
  const phase=date=>seasonalFeatureState(Date.parse(date));
  assert.match(phase('2026-10-28T20:00:00Z').phase,/LIVE EVENT/);
  assert.match(phase('2026-11-05T00:00:00Z').phase,/PUMPKIN SHOP/);
- assert.match(phase('2026-11-08T00:00:00Z').phase,/HALLOWEEN SHOP/);
+ assert.equal(phase('2026-11-08T00:00:00Z'),null);
  assert.equal(phase('2026-11-15T00:00:00Z'),null);
 });
 
