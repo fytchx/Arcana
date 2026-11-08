@@ -2,7 +2,7 @@
 import {
   SURFACES, ACCENTS, SURFACE_KEY, ACCENT_KEY, surfaceById, accentById, TABS, TOOLS,
   parseHash, hashFor, activeTab, searchIndex, codexEntries, codexCategories, kindName, kindSingular,
-  sortArticles, shortDate, articleHtml, liveEvents, esc, signInButtons, RETURN_KEY, RECENT_TOOLS_KEY, rememberTool, recentTiles,
+  sortArticles, shortDate, articleHtml, liveEvents, finalShopReminder, esc, signInButtons, RETURN_KEY, RECENT_TOOLS_KEY, rememberTool, recentTiles,
   ic, setIconStyle, classVar, classBadge, buildMark, CLASS_NAMES, BUILD_TYPES, buildMeta,
 } from './core.js';
 import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSection } from './studio.js';
@@ -168,22 +168,20 @@ const toolById = id => TOOLS.find(t => t.id === id);
 // ---------- views ----------
 function homeView() {
   loadNews(); loadBuilds();
-  const ev = liveEvents().map(e => '<a class="nx-event" href="' + esc(e.href) + '"><span class="nx-kicker">' + esc(e.kicker) + '</span><strong>' + esc(e.name) + '</strong><small>' + esc(e.detail) + '</small></a>').join('');
   const n = data.news;
-  const latest = n.state === 'ready' && n.value[0]
-    ? '<a class="nx-card nx-story" href="' + hashFor('news', n.value[0].slug) + '"><span class="nx-kicker">' + esc((n.value[0].category || 'News').toUpperCase()) + ' · ' + esc(shortDate(n.value[0].publishedAt)) + '</span><strong>' + esc(n.value[0].teaserTitle || n.value[0].title) + '</strong><small>' + esc(n.value[0].subtitle || '') + '</small></a>'
-    : n.state === 'error' ? failed('News', 'news') : loading('news');
-  // Jump back in first; the event and the latest article are one compact line each.
-  const evRow = liveEvents().map(e => '<a class="nx-strip nx-strip-event" href="' + esc(e.href) + '">' + ic('event', 18) + '<span><b>' + esc(e.name) + '</b><small>' + esc(e.detail) + '</small></span><i class="nx-chev"></i></a>').join('');
-  const nw = n.state === 'ready' && n.value[0];
+  // The historic Halloween guide stays in News, never the homepage's latest-news slot.
+  const nw = n.state === 'ready' && n.value.find(a => a.slug !== 'hallowed-harvest-2026-guide');
   const newsRow = nw ? '<a class="nx-strip" href="' + hashFor('news', nw.slug) + '">' + ic('news', 18) + '<span><b>' + esc(nw.teaserTitle || nw.title) + '</b><small>' + esc((nw.category || 'News') + ' · ' + shortDate(nw.publishedAt)) + '</small></span><i class="nx-chev"></i></a>' : '';
+  const evRow = liveEvents().map(e => '<a class="nx-strip nx-strip-event" href="' + esc(e.href) + '">' + ic('event', 18) + '<span><b>' + esc(e.name) + '</b><small>' + esc(e.detail) + '</small></span><i class="nx-chev"></i></a>').join('');
+  const reminder = finalShopReminder();
+  const shopNote = reminder ? '<p class="nx-fine nx-shop-reminder"><a href="' + esc(reminder.href) + '">' + esc(reminder.detail) + '</a></p>' : '';
   // The three main tools, always in the same place; recently used tools sit one tap away.
   const main = [['#/tools/pathfinder', 'upgrade', 'Pathfinder', 'Upgrade costs and ML XP'], ['#/studio', 'studio', 'Build Studio', 'Make and share a build'], ['#/codex', 'codex', 'Handbook', 'Everything IdleArc']];
   const rec = recent().map(id => id === 'codex' ? null : TOOLS.find(t => t.id === id)).filter(Boolean);
   return installBanner('home') + '<section><div class="nx-head">' + label('Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
     main.map(([h, i, l, dsc]) => '<a class="nx-tile nx-main-tile" href="' + h + '"><span class="nx-ic">' + ic(i, 24) + '</span><strong>' + l + '</strong><small>' + dsc + '</small></a>').join('') + '</div>' +
     (rec.length ? '<details class="nx-recent"><summary>Recently used</summary><div class="nx-recent-list">' + rec.map(t => '<a href="' + esc(t.href) + '">' + ic(t.art || 'tools', 16) + esc(t.short || t.name) + '</a>').join('') + '</div></details>' : '') + '</section>' +
-    (evRow || newsRow ? '<section class="nx-strips">' + evRow + newsRow + '</section>' : '') +
+    (evRow || newsRow ? '<section class="nx-strips">' + evRow + newsRow + '</section>' : '') + shopNote +
     '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredList(3) + '</section>' +
     '<p class="nx-fine nx-support">' + esc(SUPPORT_LINE) + ' <a href="' + KOFI + '" target="_blank" rel="noopener">' + esc(SUPPORT_CTA) + '</a></p>';
 }
@@ -396,15 +394,16 @@ function newsView(slug) {
     if (!a || a.state === 'loading') return '<a class="nx-back" href="#/news">' + icon('back', 18) + 'News</a>' + loading('the article');
     if (a.state === 'error') return '<a class="nx-back" href="#/news">' + icon('back', 18) + 'News</a>' + empty('Article not found', 'It may have been moved or unpublished.');
     const v = a.value;
+    const archiveNote = slug === 'hallowed-harvest-2026-guide' ? '<p class="nx-fine">Event archive · Pumpkin earning ended Nov 4 and the Pumpkin Shop closed Nov 7. The Arcstone Halloween Shop was scheduled to close Nov 14.</p>' : '';
     return '<a class="nx-back" href="#/news">' + icon('back', 18) + 'News</a><article class="nx-article"><span class="nx-kicker">' + esc((v.category || 'News').toUpperCase()) + ' · ' + esc(shortDate(v.publishedAt)) + '</span><h1>' + esc(v.title) + '</h1>' +
-      (v.subtitle ? '<p class="nx-deck">' + esc(v.subtitle) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(v.author || 'Arcana') + '</b></p>' + articleHtml(v.body, slug) + '</article>';
+      (v.subtitle ? '<p class="nx-deck">' + esc(v.subtitle) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(v.author || 'Arcana') + '</b></p>' + archiveNote + articleHtml(v.body, slug) + '</article>';
   }
   loadNews();
   const n = data.news;
   if (n.state === 'error') return failed('News', 'news');
   if (n.state !== 'ready') return loading('news');
   if (!n.value.length) return empty('No news yet', 'Patch notes and events show up here.');
-  return '<div class="nx-list">' + n.value.map(a => '<a class="nx-card nx-story" href="' + hashFor('news', a.slug) + '"><span class="nx-kicker">' + esc((a.category || 'News').toUpperCase()) + ' · ' + esc(shortDate(a.publishedAt)) + '</span><strong>' + esc(a.teaserTitle || a.title) + '</strong>' + (a.subtitle ? '<small>' + esc(a.subtitle) + '</small>' : '') + '</a>').join('') + '</div>';
+  return '<div class="nx-list">' + n.value.map(a => '<a class="nx-card nx-story" href="' + hashFor('news', a.slug) + '"><span class="nx-kicker">' + esc(a.slug === 'hallowed-harvest-2026-guide' ? 'EVENT ARCHIVE' : (a.category || 'News').toUpperCase()) + ' · ' + esc(shortDate(a.publishedAt)) + '</span><strong>' + esc(a.teaserTitle || a.title) + '</strong>' + (a.subtitle ? '<small>' + esc(a.subtitle) + '</small>' : '') + '</a>').join('') + '</div>';
 }
 
 function directoryView() {
@@ -415,7 +414,7 @@ function directoryView() {
     sec('Tools', [artRow('#/tools', 'All tools', 'Pathfinder, pet calculators, planners', 'features/feature-tools'), ...TOOLS.filter(t => t.art).map(t => artRow(t.href, t.name, t.detail, t.art))]) +
     sec('Game reference', [artRow('#/codex', 'Handbook', 'Everything IdleArc', 'features/feature-codex')]) +
     sec('Builds and guides', [artRow('#/builds', 'Featured builds', 'Picked by Zane', 'features/feature-builds'), artRow('#/builds/community', 'Community builds', 'Shared by players', 'features/feature-community'), artRow('#/builds/guides', 'Guides', 'Written by players', 'features/feature-guides'), artRow('#/studio', 'Build Studio', 'Make your own and share it', 'features/feature-build-studio')]) +
-    sec('News and events', [artRow('#/news', 'News', 'Patch notes, events and articles', 'features/feature-wiki'), ...(ev ? [artRow(ev.href, ev.name, ev.detail, 'tokens/token-ruby')] : [])]) +
+    sec('News and events', [artRow('#/news', 'News', 'Patch notes, events and articles', 'features/feature-wiki'), ...(ev ? [artRow(ev.href, ev.name, ev.detail, 'tokens/token-ruby')] : [artRow('#/news/hallowed-harvest-2026-guide', 'Hallowed Harvest 2026', 'Past event · archived guide', 'features/feature-wiki')])]) +
     sec('Community', [artRow('#/guilds', 'Guilds', 'Find a guild and apply', 'features/feature-guild-raid'), artRow('#/lfg', 'Looking for group', 'Raids, teams and planned runs', 'features/feature-community'), artRow('#/records', 'Season records', 'Top players and guilds by season', 'stats/stat-boss-damage')]) +
     sec('You', [artRow('#/profile', 'Profile and theme', u ? 'Saved builds, checklists, colors' : 'Sign in, colors', 'tokens/token-guildstone'), artRow('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', 'features/feature-feedback'), ...(u?.permissions?.manageSite ? [artRow('#/admin', 'Admin', 'Featured, news, people, traffic', 'tokens/token-runic-core')] : [])]);
 }
