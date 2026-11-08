@@ -65,13 +65,20 @@ export const EVENTS = Object.freeze([
   { id: 'hallowed-harvest-2026', name: 'Hallowed Harvest 2026', href: '#/news/hallowed-harvest-2026-guide', phases: [
     { until: '2026-11-05T00:00:00Z', kicker: 'LIVE EVENT', detail: 'Earn until Nov 4 · Pumpkin Shop until Nov 7' },
     { until: '2026-11-08T00:00:00Z', kicker: 'PUMPKIN SHOP · FINAL DAYS', detail: 'Earning is over · Spend harvested pumpkins by Nov 7' },
-    { until: '2026-11-15T00:00:00Z', kicker: 'HALLOWEEN SHOP · FINAL DAYS', detail: 'Pumpkin Shop closed · Arcstone Halloween Shop until Nov 14' }
+    { until: '2026-11-15T00:00:00Z', kicker: 'HALLOWEEN SHOP · FINAL DAYS', detail: 'Pumpkin Shop closed · Arcstone Halloween Shop until Nov 14', home: false }
   ] }
 ]);
 export const liveEvents = (now = new Date()) => EVENTS.flatMap(e => {
   const phase = e.phases.find(p => new Date(p.until) > now);
-  return phase ? [{ id: e.id, name: e.name, href: e.href, kicker: phase.kicker, detail: phase.detail, until: phase.until }] : [];
+  return phase && phase.home !== false ? [{ id: e.id, name: e.name, href: e.href, kicker: phase.kicker, detail: phase.detail, until: phase.until }] : [];
 });
+// Keep a small shop reminder after pumpkin rewards end without promoting a past event.
+// The last in-game shop phase closes Nov 14 at 16:00 Pacific (Nov 15 00:00 UTC).
+export const finalShopReminder = (now = new Date()) => {
+  const time = new Date(now).getTime();
+  return time >= Date.parse('2026-11-08T00:00:00Z') && time < Date.parse('2026-11-15T00:00:00Z')
+    ? { href: '#/news/hallowed-harvest-2026-guide', detail: 'Arcstone Halloween Shop closes Nov 14' } : null;
+};
 
 // Routes look like #/codex/<id> or #/news/<slug>. Unknown sections fall back to home.
 export function parseHash(hash = '') {
@@ -125,9 +132,14 @@ export function codexCategories(entries, order = []) {
 }
 
 // News: newest first; featured pinned to the top.
-export function sortArticles(articles) {
+export function sortArticles(articles, now = new Date()) {
+  // Historic event articles stay readable in News but stop outranking current stories,
+  // even if their stored /data record still has featured=true.
+  const archived = a => a.slug === 'hallowed-harvest-2026-guide' && new Date(now).getTime() >= Date.parse('2026-11-08T00:00:00Z');
   return [...(Array.isArray(articles) ? articles : [])].filter(a => a && a.slug && a.title)
-    .sort((a, b) => (b.featured === true) - (a.featured === true) || String(b.publishedAt || '').localeCompare(String(a.publishedAt || '')));
+    .sort((a, b) => Number(archived(a)) - Number(archived(b))
+      || (b.featured === true) - (a.featured === true)
+      || String(b.publishedAt || '').localeCompare(String(a.publishedAt || '')));
 }
 
 export function shortDate(iso) {
