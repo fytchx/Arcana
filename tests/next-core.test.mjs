@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import {
   SURFACES, ACCENTS, surfaceById, accentById, parseHash, hashFor, activeTab, searchIndex,
-  codexEntries, codexCategories, sortArticles, articleHtml, liveEvents, esc, TOOLS
+  codexEntries, codexCategories, sortArticles, articleHtml, liveEvents, finalShopReminder, esc, TOOLS
 } from '../next/core.js';
 
 test('next: theme offers four backgrounds and five curated accents, no game colors', () => {
@@ -87,11 +87,24 @@ test('next: article bodies render the journal format and escape everything else'
   assert.equal(esc('"<&>\''), '&quot;&lt;&amp;&gt;&#39;');
 });
 
-test('next: events hide themselves after they end', () => {
+test('next: Halloween ends as a Home feature after the Pumpkin Shop, while the last shop reminder expires correctly', () => {
   assert.equal(liveEvents(new Date('2026-11-01T12:00:00Z')).length, 1);
-  assert.match(liveEvents(new Date('2026-11-05T01:00:00Z'))[0].kicker, /PUMPKIN SHOP/);
-  assert.match(liveEvents(new Date('2026-11-09T00:00:00Z'))[0].kicker, /HALLOWEEN SHOP/);
-  assert.equal(liveEvents(new Date('2026-11-15T00:00:00Z')).length, 0);
+  assert.match(liveEvents(new Date('2026-11-05T01:00:00Z'))[0].detail, /Nov 7/);
+  assert.equal(liveEvents(new Date('2026-11-08T00:00:00Z')).length, 0);
+  assert.equal(finalShopReminder(new Date('2026-11-07T23:59:59Z')), null);
+  assert.match(finalShopReminder(new Date('2026-11-08T00:00:00Z')).detail, /Nov 14/);
+  assert.match(finalShopReminder(new Date('2026-11-14T23:59:59Z')).detail, /Nov 14/);
+  assert.equal(finalShopReminder(new Date('2026-11-15T00:00:00Z')), null);
+});
+
+test('next: finished Halloween feature remains in the News archive but falls behind current stories', () => {
+  const stories = [
+    { slug: 'hallowed-harvest-2026-guide', title: 'Halloween', featured: true, publishedAt: '2026-10-28T00:00:00Z' },
+    { slug: 'current', title: 'New guide', featured: false, publishedAt: '2026-11-06T00:00:00Z' }
+  ];
+  assert.equal(sortArticles(stories, new Date('2026-11-01T00:00:00Z'))[0].slug, 'hallowed-harvest-2026-guide');
+  assert.deepEqual(sortArticles(stories, new Date('2026-11-08T00:00:00Z')).map(x => x.slug), ['current', 'hallowed-harvest-2026-guide']);
+  assert.equal(sortArticles(stories, new Date('2026-11-15T00:00:00Z')).length, 2);
 });
 
 test('next: every tool link points at a real classic route', async () => {
