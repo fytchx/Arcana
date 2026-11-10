@@ -67,3 +67,11 @@ test('event archive and season wording remain historically scoped', () => {
   assert.match(event.body, /November 14/);
   assert.doesNotMatch(seasons.answer, /running now/i);
 });
+test('Handbook reader hides internal trust and version metadata', async () => {
+  const { readFileSync } = await import('node:fs');
+  const reader = readFileSync(new URL('../next/handbook.js', import.meta.url), 'utf8');
+  assert.match(reader, /IdleArc reference/);
+  assert.doesNotMatch(reader, /IdleArc ' \+ HANDBOOK_VERSION/);
+  assert.doesNotMatch(reader, /p\.version \|\| HANDBOOK_VERSION/);
+  assert.match(reader, /if \(p\.trust === 'estimated'\)/);
+});
