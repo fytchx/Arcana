@@ -35,13 +35,20 @@ test('all Handbook page and chapter links still resolve', () => {
   }
 });
 
-test('pet pages distinguish new client evidence from unconfirmed server behavior', () => {
+test('pet-management guidance stays readable without version/source labels', () => {
   const hatch = PAGES.find(p => p.id === 'hatching');
   const pet = PAGES.find(p => p.id === 'pet-bonuses');
-  assert.match(hatch.body, /Batch hatching \(1\.3\.15 client\)/);
-  assert.match(pet.body, /Bulk Reforge protections \(1\.3\.15 client\)/);
-  assert.match(hatch.body, /not confirmed server behavior/);
-  assert.match(pet.body, /not confirmed server behavior/);
+  assert.match(hatch.body, /## Batch hatching/);
+  assert.match(pet.body, /## Bulk Reforge protections/);
+  assert.match(hatch.body, /Check your keep and sell rules/);
+  assert.match(pet.body, /Review every selection/);
+});
+
+test('the published Handbook prose does not expose internal source or patch labels', () => {
+  for (const p of PAGES) {
+    const visible = [p.title, p.answer, p.body].join(' ');
+    assert.doesNotMatch(visible, /(?:game data|datamin(?:e|ed|ing)|client evidence|player report|in game:|1\\.3\\.\\d+)/i, p.id);
+  }
 });
 
 test('oversized tables fold but smaller tables remain visible and unchanged', () => {
