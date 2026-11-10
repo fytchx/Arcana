@@ -40,10 +40,11 @@ function inline(t) {
     '<a href="' + href + '"' + (href.startsWith('#') ? '' : ' target="_blank" rel="noopener noreferrer"') + '>' + words + '</a>');
 }
 export function hbText(src) {
+  let section = 'Reference details';
   return String(src || '').trim().split(/\n\s*\n/).map(block => {
     const t = block.trim(), lines = t.split('\n');
-    if (t.startsWith('## ')) return '<h2>' + inline(t.slice(3)) + '</h2>';
-    if (t.startsWith('### ')) return '<h3>' + inline(t.slice(4)) + '</h3>';
+    if (t.startsWith('## ')) { section = t.slice(3); return '<h2>' + inline(section) + '</h2>'; }
+    if (t.startsWith('### ')) { section = t.slice(4); return '<h3>' + inline(section) + '</h3>'; }
     if (lines.every(l => l.startsWith('>'))) return '<p class="hb-note">' + lines.map(l => inline(l.replace(/^>\s?/, ''))).join('<br>') + '</p>';
     // "Table: caption" as the first line folds the table away behind an inviting summary row.
     const caption = /^Table: /.test(lines[0]) && lines.length > 2 ? lines[0].slice(7).trim() : null;
@@ -52,7 +53,10 @@ export function hbText(src) {
       const rows = tl.filter(l => !/^\|\s*-/.test(l.trim())).map(l => l.trim().replace(/\[\[[^\]]*\]\]/g, m => m.replace('|', '\u0001')).slice(1, -1).split('|').map(c => c.trim()));
       const table = '<div class="hb-tablewrap"><table class="hb-table"><thead><tr>' + rows[0].map(c => '<th>' + inline(c) + '</th>').join('') + '</tr></thead><tbody>' +
         rows.slice(1).map(r => '<tr>' + r.map(c => '<td>' + inline(c) + '</td>').join('') + '</tr>').join('') + '</tbody></table></div>';
-      return caption ? '<details class="hb-fold"><summary><span class="hb-fold-t">' + inline(caption) + '</span><span class="hb-fold-n">' + (rows.length - 1) + ' rows</span></summary>' + table + '</details>' : table;
+      // Large reference tables remain complete but no longer dominate a phone screen.
+      const autoFold = rows.length > 13 || rows[0].length > 5;
+      const foldTitle = caption || section;
+      return (caption || autoFold) ? '<details class="hb-fold"><summary><span class="hb-fold-t">' + inline(foldTitle) + '</span><span class="hb-fold-n">' + (rows.length - 1) + ' rows</span></summary>' + table + '</details>' : table;
     }
     if (lines.every(l => l.startsWith('- '))) return '<ul>' + lines.map(l => '<li>' + inline(l.slice(2)) + '</li>').join('') + '</ul>';
     if (lines.every(l => /^\d+\. /.test(l))) return '<ol>' + lines.map(l => '<li>' + inline(l.replace(/^\d+\. /, '')) + '</li>').join('') + '</ol>';
