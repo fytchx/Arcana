@@ -2,7 +2,7 @@
 import {
   SURFACES, ACCENTS, SURFACE_KEY, ACCENT_KEY, surfaceById, accentById, TABS, TOOLS,
   parseHash, hashFor, activeTab, searchIndex, codexEntries, codexCategories, kindName, kindSingular,
-  sortArticles, shortDate, articleHtml, liveEvents, finalShopReminder, esc, signInButtons, RETURN_KEY, RECENT_TOOLS_KEY, rememberTool, recentTiles,
+  sortArticles, shortDate, articleHtml, liveEvents, esc, signInButtons, RETURN_KEY, RECENT_TOOLS_KEY, rememberTool, recentTiles,
   ic, setIconStyle, classVar, classBadge, buildMark, CLASS_NAMES, BUILD_TYPES, buildMeta,
 } from './core.js';
 import { studioView, sharedView, initStudio, studioAfterRender, savedBuildsSection } from './studio.js';
@@ -173,15 +173,13 @@ function homeView() {
   const nw = n.state === 'ready' && n.value.find(a => a.slug !== 'hallowed-harvest-2026-guide');
   const newsRow = nw ? '<a class="nx-strip" href="' + hashFor('news', nw.slug) + '">' + ic('news', 18) + '<span><b>' + esc(nw.teaserTitle || nw.title) + '</b><small>' + esc((nw.category || 'News') + ' · ' + shortDate(nw.publishedAt)) + '</small></span><i class="nx-chev"></i></a>' : '';
   const evRow = liveEvents().map(e => '<a class="nx-strip nx-strip-event" href="' + esc(e.href) + '">' + ic('event', 18) + '<span><b>' + esc(e.name) + '</b><small>' + esc(e.detail) + '</small></span><i class="nx-chev"></i></a>').join('');
-  const reminder = finalShopReminder();
-  const shopNote = reminder ? '<p class="nx-fine nx-shop-reminder"><a href="' + esc(reminder.href) + '">' + esc(reminder.detail) + '</a></p>' : '';
   // The three main tools, always in the same place; recently used tools sit one tap away.
   const main = [['#/tools/pathfinder', 'upgrade', 'Pathfinder', 'Upgrade costs and ML XP'], ['#/studio', 'studio', 'Build Studio', 'Make and share a build'], ['#/codex', 'codex', 'Handbook', 'Everything IdleArc']];
   const rec = recent().map(id => id === 'codex' ? null : TOOLS.find(t => t.id === id)).filter(Boolean);
   return installBanner('home') + '<section><div class="nx-head">' + label('Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
     main.map(([h, i, l, dsc]) => '<a class="nx-tile nx-main-tile" href="' + h + '"><span class="nx-ic">' + ic(i, 24) + '</span><strong>' + l + '</strong><small>' + dsc + '</small></a>').join('') + '</div>' +
     (rec.length ? '<details class="nx-recent"><summary>Recently used</summary><div class="nx-recent-list">' + rec.map(t => '<a href="' + esc(t.href) + '">' + ic(t.art || 'tools', 16) + esc(t.short || t.name) + '</a>').join('') + '</div></details>' : '') + '</section>' +
-    (evRow || newsRow ? '<section class="nx-strips">' + evRow + newsRow + '</section>' : '') + shopNote +
+    (evRow || newsRow ? '<section class="nx-strips">' + evRow + newsRow + '</section>' : '') +
     '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredList(3) + '</section>' +
     '<p class="nx-fine nx-support">' + esc(SUPPORT_LINE) + ' <a href="' + KOFI + '" target="_blank" rel="noopener">' + esc(SUPPORT_CTA) + '</a></p>';
 }
