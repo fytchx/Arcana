@@ -100,7 +100,7 @@ export const PAGES = [
   {
     id: 'monster-level', chapter: 'progression', title: 'Raising Monster Level', trust: 'config', icon: 'xp',
     answer: "To raise Monster Level efficiently, compare Monster Level XP per second rather than the XP from one kill.",
-    body: '## What counts\n\n- Only normal kills award Monster Level XP. **Frenzy kills award none.**\n- **EXP Gain does not multiply Monster Level XP.** It only speeds up character level.\n\n## Choosing what to farm\n\nFrom Murky Depths onward, the weakest monster in a biome gives 10% less Monster Level XP than the biome normal, and the strongest gives 10% more. The lowest-health monster isn't automatically the best place to level.\n\nCompare XP earned per second. An easier monster may be better if you can kill it much faster.\n\n[[tool:mlxp|ML XP planner]] shows the XP, kills and time to your next levels.',
+    body: '## What counts\n\n- Only normal kills award Monster Level XP. **Frenzy kills award none.**\n- **EXP Gain does not multiply Monster Level XP.** It only speeds up character level.\n\n## Choosing what to farm\n\nFrom Murky Depths onward, the weakest monster in a biome gives 10% less Monster Level XP than the biome normal, and the strongest gives 10% more. The lowest-health monster is not automatically the best place to level.\n\nCompare XP earned per second. An easier monster may be better if you can kill it much faster.\n\n[[tool:mlxp|ML XP planner]] shows the XP, kills and time to your next levels.',
     next: 'ml-unlocks'
   },
   {
