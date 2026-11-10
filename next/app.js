@@ -50,7 +50,8 @@ const P = {
   chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   tree: '<circle cx="12" cy="4" r="2"/><circle cx="6" cy="13" r="2"/><circle cx="18" cy="13" r="2"/><circle cx="12" cy="20" r="2"/><path d="M12 6v12M12 9l-5 3M12 9l5 3"/>',
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
-  out: '<path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/>'
+  out: '<path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/>',
+  install: '<path d="M12 3v12m-5-5 5 5 5-5"/><path d="M4 17v3h16v-3"/>'
 };
 const icon = (name, size = 22) => '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (P[name] || '') + '</svg>';
 
@@ -61,13 +62,45 @@ let siteDesign = null;
 const DISPLAY_KEY = 'arcana-next-display-v1';
 // Install as an app: Chrome/Edge/Android fire beforeinstallprompt; iPhone needs Share → Add to Home Screen.
 let installEvt = null;
+let installHelpOpen = false;
 const INSTALL_HIDE = 'arcana-next-install-hidden-v1';
+const INSTALL_DONE = 'arcana-next-app-installed-v1';
+let installedThisBrowser = !!read(INSTALL_DONE);
 const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) && !/crios|fxios/i.test(navigator.userAgent);
-window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; render(); });
-window.addEventListener('appinstalled', () => { installEvt = null; render(); });
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const appInstalled = () => standalone() || installedThisBrowser;
+const rememberInstall = () => { installedThisBrowser = true; installHelpOpen = false; write(INSTALL_DONE, '1'); };
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  // If the browser can offer installation again, a persisted installed flag may be stale after an uninstall.
+  installedThisBrowser = false;
+  try { localStorage.removeItem(INSTALL_DONE); } catch { /* storage may be disabled */ }
+  installEvt = e;
+  render();
+});
+window.addEventListener('appinstalled', () => { installEvt = null; rememberInstall(); render(); });
+// Chromium can detect an already installed same-origin PWA even if it predates this feature.
+// Not all browsers implement this API; standalone mode and appinstalled remain the fallbacks.
+if (typeof navigator.getInstalledRelatedApps === 'function') {
+  navigator.getInstalledRelatedApps().then(apps => {
+    if (apps.some(app => app.platform === 'webapp' && (!app.url || new URL(app.url, location.href).origin === location.origin))) {
+      rememberInstall();
+      render();
+    }
+  }).catch(() => {});
+}
+function installDirectoryAction() {
+  return appInstalled() ? '' : '<button type="button" class="nx-directory-install" data-act="install">' + icon('install', 18) + '<span>Install app</span></button>';
+}
+function installDirectoryHelp() {
+  if (appInstalled() || !installHelpOpen) return '';
+  const message = isIOS()
+    ? 'In Safari, tap Share, then Add to Home Screen.'
+    : 'Open your browser menu and choose Install app or Add to Home screen. If you are inside another app, open Arcana in Chrome first.';
+  return '<div class="nx-directory-install-help" role="status"><span>' + esc(message) + '</span><button type="button" data-act="installhelpclose" aria-label="Close install instructions">×</button></div>';
+}
 function installBanner(where) {
-  if (standalone()) return '';
+  if (appInstalled()) return '';
   if (where === 'home' && read(INSTALL_HIDE)) return '';
   if (installEvt) return '<div class="nx-install"><img src="/assets/arcana-app-192.png" width="40" height="40" alt=""><span><b>Get the Arcana app</b><small>Opens full screen from your home screen.</small></span><button class="nx-btn nx-btn-primary" data-act="install">Install</button>' + (where === 'home' ? '<button class="nx-install-x" data-act="installhide" aria-label="Hide">✕</button>' : '') + '</div>';
   if (isIOS()) return '<div class="nx-install"><img src="/assets/arcana-app-192.png" width="40" height="40" alt=""><span><b>Get the Arcana app</b><small>Tap Share, then Add to Home Screen.</small></span>' + (where === 'home' ? '<button class="nx-install-x" data-act="installhide" aria-label="Hide">✕</button>' : '') + '</div>';
@@ -408,7 +441,7 @@ function directoryView() {
   const u = user();
   const ev = liveEvents()[0];
   const sec = (t, rows) => '<section>' + label(t) + '<div class="nx-list">' + rows.join('') + '</div></section>';
-  return '<header class="nx-page-head"><span class="nx-kicker">ALL OF ARCANA</span><h1>Directory</h1><p>Every page in one place.</p></header>' +
+  return '<header class="nx-page-head nx-directory-head"><div class="nx-directory-copy"><span class="nx-kicker">ALL OF ARCANA</span><h1>Directory</h1><p>Every page in one place.</p></div>' + installDirectoryAction() + '</header>' + installDirectoryHelp() +
     sec('Tools', [artRow('#/tools', 'All tools', 'Pathfinder, pet calculators, planners', 'features/feature-tools'), ...TOOLS.filter(t => t.art).map(t => artRow(t.href, t.name, t.detail, t.art))]) +
     sec('Game reference', [artRow('#/codex', 'Handbook', 'Everything IdleArc', 'features/feature-codex')]) +
     sec('Builds and guides', [artRow('#/builds', 'Featured builds', 'Picked by Zane', 'features/feature-builds'), artRow('#/builds/community', 'Community builds', 'Shared by players', 'features/feature-community'), artRow('#/builds/guides', 'Guides', 'Written by players', 'features/feature-guides'), artRow('#/studio', 'Build Studio', 'Make your own and share it', 'features/feature-build-studio')]) +
@@ -479,7 +512,25 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) return;
   const act = b.dataset.act;
-  if (act === 'install' && installEvt) { const e = installEvt; e.prompt(); e.userChoice.finally(() => { installEvt = null; render(); }); }
+  if (act === 'install') {
+    if (installEvt) {
+      const pending = installEvt;
+      installEvt = null; // beforeinstallprompt is one-use only
+      try {
+        pending.prompt();
+        Promise.resolve(pending.userChoice).then(choice => {
+          if (choice?.outcome === 'accepted') rememberInstall();
+        }).catch(() => {}).finally(() => render());
+      } catch {
+        installHelpOpen = true;
+        render();
+      }
+    } else {
+      installHelpOpen = true;
+      render();
+    }
+  }
+  if (act === 'installhelpclose') { installHelpOpen = false; render(); }
   if (act === 'installhide') { write(INSTALL_HIDE, '1'); render(); }
   if (act === 'display') { write(DISPLAY_KEY, b.dataset.id); applyTheme(); render(); }
   if (act === 'surface') { saveTheme(null); write(SURFACE_KEY, b.dataset.id); render(); }
