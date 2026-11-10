@@ -66,7 +66,7 @@ export const PAGES = [
   {
     id: 'what-is-idlearc', chapter: 'start', title: 'What IdleArc is', trust: 'config', icon: 'home',
     answer: "IdleArc handles the fighting while you decide what to farm and how to build your character with gear, skills, runes and pets.",
-    body: 'Your character fights automatically, but your decisions still matter. Choose what to farm and improve next while your hero fights in the current [[chapter:biomes|biome]] while you upgrade what it fights with.\n\n## What you build up\n\n- A **class** and its skill tree. See [[classes-overview|Classes]].\n- **Gear** in every slot, upgraded through ranks and awakening. See [[chapter:upgrading|Upgrading gear]].\n- **Runes** on a grid, which can form rune words. See [[chapter:runes|Runes]].\n- **Pets** that add bonuses. See [[chapter:pets|Pets]].\n- **Monster Level**, which rises as you kill monsters and unlocks more of the game. See [[chapter:progression|Progression]].',
+    body: 'Your character fights automatically, but your choices still matter. Pick a [[chapter:biomes|biome]] to farm, then improve your equipment and other bonuses as you progress.\n\n## What you build up\n\n- A **class** and its skill tree. See [[classes-overview|Classes]].\n- **Gear** in every slot, upgraded through ranks and awakening. See [[chapter:upgrading|Upgrading gear]].\n- **Runes** on a grid, which can form rune words. See [[chapter:runes|Runes]].\n- **Pets** that add bonuses. See [[chapter:pets|Pets]].\n- **Monster Level**, which rises as you kill monsters and unlocks more of the game. See [[chapter:progression|Progression]].',
     next: 'first-steps'
   },
   {
