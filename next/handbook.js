@@ -2,7 +2,7 @@
 // A highlighted topic opens a compact preview; tap outside to close, enlarge to read it all,
 // or open the page and come straight back to where you were.
 import { esc, ic } from './core.js';
-import { CHAPTERS, PAGES, HANDBOOK_VERSION } from './handbook-content.js';
+import { CHAPTERS, PAGES } from './handbook-content.js';
 import { editorialTranslation, editorialControl } from './i18n-content.js';
 import { getLocale, translateEnglish } from './i18n.js';
 
@@ -63,11 +63,17 @@ export function hbText(src) {
     return '<p>' + lines.map(inline).join('<br>') + '</p>';
   }).join('');
 }
-const trustChip = (p, translated) => { if (translated) return '<span class="hb-trust hb-est">' + esc(translateEnglish('Unreviewed translation')) + '</span>'; const [l, k] = TRUST[p.trust] || TRUST.config; return '<span class="hb-trust hb-' + k + '">' + l + ' · ' + esc(p.version || HANDBOOK_VERSION) + '</span>'; };
+const trustChip = (p, translated) => {
+  // Readers should see clear information, not internal source labels or patch versions.
+  if (translated) return '<span class="hb-trust hb-est">' + esc(translateEnglish('Unreviewed translation')) + '</span>';
+  if (p.trust === 'estimated') return '<span class="hb-trust hb-est">Needs confirmation</span>';
+  if (p.trust === 'legacy') return '<span class="hb-trust hb-old">Archive</span>';
+  return '';
+};
 
 // ---------- views ----------
 export function handbookHomeSection() {
-  return '<section><div class="nx-head"><h2 class="nx-label">Handbook</h2><span class="nx-fine">IdleArc ' + HANDBOOK_VERSION + '</span></div><div class="hb-chapters">' +
+  return '<section><div class="nx-head"><h2 class="nx-label">Handbook</h2><span class="nx-fine">IdleArc reference</span></div><div class="hb-chapters">' +
     CHAPTERS.map(c => { const n = pagesIn(c.id).length; return '<a class="hb-ch' + (n ? '' : ' hb-soon') + '" href="#/handbook/chapter/' + c.id + '"><span class="nx-ic">' + ic(c.icon, 20) + '</span><span><b>' + c.n + ' · ' + esc(translateEnglish(c.title)) + '</b><small>' + esc(translateEnglish(c.ask)) + '</small></span></a>'; }).join('') + '</div></section>';
 }
 function backChip() {
