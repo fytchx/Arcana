@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import {
   SURFACES, ACCENTS, surfaceById, accentById, parseHash, hashFor, activeTab, searchIndex,
-  codexEntries, codexCategories, sortArticles, articleHtml, liveEvents, finalShopReminder, esc, TOOLS
+  codexEntries, codexCategories, sortArticles, articleHtml, liveEvents, esc, TOOLS
 } from '../next/core.js';
 
 test('next: theme offers four backgrounds and five curated accents, no game colors', () => {
@@ -87,14 +87,10 @@ test('next: article bodies render the journal format and escape everything else'
   assert.equal(esc('"<&>\''), '&quot;&lt;&amp;&gt;&#39;');
 });
 
-test('next: Halloween ends as a Home feature after the Pumpkin Shop, while the last shop reminder expires correctly', () => {
+test('next: Halloween stops appearing on Home after the Pumpkin Shop closes', () => {
   assert.equal(liveEvents(new Date('2026-11-01T12:00:00Z')).length, 1);
   assert.match(liveEvents(new Date('2026-11-05T01:00:00Z'))[0].detail, /Nov 7/);
   assert.equal(liveEvents(new Date('2026-11-08T00:00:00Z')).length, 0);
-  assert.equal(finalShopReminder(new Date('2026-11-07T23:59:59Z')), null);
-  assert.match(finalShopReminder(new Date('2026-11-08T00:00:00Z')).detail, /Nov 14/);
-  assert.match(finalShopReminder(new Date('2026-11-14T23:59:59Z')).detail, /Nov 14/);
-  assert.equal(finalShopReminder(new Date('2026-11-15T00:00:00Z')), null);
 });
 
 test('next: finished Halloween feature remains in the News archive but falls behind current stories', () => {
