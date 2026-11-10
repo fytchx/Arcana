@@ -98,6 +98,39 @@ try:
         page.locator('[data-language-toggle]').click()
         page.locator('[data-language-choose="en"]').click()
         assert page.locator('.hb-page').inner_text() == english_handbook, 'English Handbook changed after language roundtrip'
+        # Directory install button: positioned beside the header, fallback help,
+        # hidden after app installation, and restored when browser offers reinstall.
+        page.evaluate("location.hash='#/directory'")
+        install = page.locator('.nx-directory-head [data-act="install"]')
+        install.wait_for(timeout=5000)
+        assert install.is_visible()
+        assert install.inner_text().strip() == 'Install app'
+        assert page.locator('.nx-directory-head h1').inner_text() == 'Directory'
+        assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth + 1'), 'Directory install button overflowed phone'
+        install.click()
+        help_panel = page.locator('.nx-directory-install-help')
+        help_panel.wait_for(timeout=5000)
+        assert 'Add to Home screen' in help_panel.inner_text()
+        page.locator('[data-act="installhelpclose"]').click()
+        assert help_panel.count() == 0
+        page.evaluate("window.dispatchEvent(new Event('appinstalled'))")
+        assert page.locator('.nx-directory-install').count() == 0, 'Button should vanish on installation'
+        assert page.evaluate("localStorage.getItem('arcana-next-app-installed-v1')") == '1'
+        page.reload(wait_until='domcontentloaded')
+        page.locator('.nx-directory-head').wait_for(timeout=5000)
+        assert page.locator('.nx-directory-install').count() == 0, 'Installed state should survive reload'
+        # A new install offer proves the prior installed flag is stale (for example after uninstall).
+        page.evaluate("""() => {
+          const event = new Event('beforeinstallprompt', {cancelable: true});
+          event.prompt = () => { window.arcanaInstallPrompted = true; return Promise.resolve(); };
+          event.userChoice = Promise.resolve({outcome: 'accepted'});
+          window.dispatchEvent(event);
+        }""")
+        install.wait_for(timeout=5000)
+        install.click()
+        page.wait_for_function("localStorage.getItem('arcana-next-app-installed-v1') === '1'")
+        assert page.evaluate('window.arcanaInstallPrompted === true'), 'Install button did not trigger browser prompt'
+        assert page.locator('.nx-directory-install').count() == 0, 'Button should hide after accepted install'
         page.evaluate("location.hash='#/home'")
         page.set_viewport_size({'width': 360, 'height': 740})
         assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth + 1'), '360px overflow'
