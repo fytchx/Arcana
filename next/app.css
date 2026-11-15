@@ -1093,3 +1093,32 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
   .nx-directory-head { column-gap: 6px; }
   .nx-directory-install { gap: 6px; padding: 8px 10px; font-size: 12px; }
 }
+
+
+/* Phone-first formatting controls for player-authored guides; preview uses Handbook reader styles. */
+.nx-guide-form { display: grid; gap: 14px; }
+.nx-guide-edithead { display: flex; align-items: center; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
+.nx-guide-edithead > strong { font-size: 15px; }
+.nx-guide-modes { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.nx-guide-modes button { min-width: 74px; min-height: 40px; padding: 8px 12px; color: var(--text); background: var(--card); border: 0; font: inherit; font-weight: 600; }
+.nx-guide-modes button[aria-pressed="true"] { color: var(--accent-ink); background: color-mix(in srgb, var(--accent) 13%, var(--card)); }
+.nx-guide-compose { display: grid; gap: 10px; min-width: 0; }
+.nx-guide-compose > .nx-fine { margin: 0; }
+.nx-guide-toolbar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.nx-guide-toolbar button { min-height: 44px; padding: 7px 4px; border-radius: 9px; border: 1px solid var(--line); background: var(--card); color: var(--text); font: inherit; font-size: 13px; font-weight: 600; }
+.nx-guide-toolbar button:active, .nx-guide-toolbar button:focus-visible { border-color: var(--accent); }
+.nx-guide-form textarea#nxGuideBody { min-height: 245px; font-size: 16px; line-height: 1.55; }
+.nx-guide-counter { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.nx-guide-linkers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.nx-guide-linkers label, .nx-guide-builder label { display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 600; color: var(--muted); min-width: 0; }
+.nx-guide-linkers select, .nx-guide-builder input { width: 100%; min-width: 0; min-height: 44px; padding: 8px; border: 1px solid var(--line); border-radius: 9px; color: var(--text); background: var(--bg); font: inherit; font-size: 14px; }
+.nx-guide-extras { display: grid; gap: 8px; }
+.nx-guide-extras details { border: 1px solid var(--line); border-radius: 9px; background: var(--card); }
+.nx-guide-extras summary { cursor: pointer; padding: 12px; font-weight: 600; font-size: 13px; }
+.nx-guide-builder { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 0 12px 12px; }
+.nx-guide-builder .nx-guide-wide, .nx-guide-builder > button { grid-column: 1 / -1; }
+.nx-guide-builder > button { min-height: 44px; }
+.nx-guide-preview { min-height: 180px; border: 1px dashed var(--line); border-radius: 10px; padding: 12px; }
+.nx-guide-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; }
+.nx-guide-actions button { min-height: 44px; }
+@media (max-width: 370px) { .nx-guide-linkers { grid-template-columns: minmax(0, 1fr); } }

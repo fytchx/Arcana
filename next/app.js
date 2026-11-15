@@ -21,6 +21,7 @@ import { DEFAULT_NEXT_DESIGN, safeNextDesign, designVars, fontHref } from './des
 import { designView, initDesign, readDraft } from './design-tool.js';
 import { handbookView, handbookHomeSection, handbookPopup, initHandbook, handbookPages, hbText } from './handbook.js';
 import { FEATURED_GUIDES, featuredGuide } from './guides-content.js';
+import { GUIDE_TOOL_OPTIONS, guideInsert } from './guide-editor.js';
 import { retaliationView, initRetaliation } from './retaliation.js';
 import { editorView, initHandbookEditor } from './handbook-editor.js';
 import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
@@ -380,18 +381,69 @@ function postView(id) {
 }
 
 let buildTab = 'featured';
-// Write a community guide (same /api/community/posts rules: title 6+, summary 20+, body 80+ characters).
-const G = { title: '', summary: '', body: '', ok: false, busy: false, error: '' };
+// Community guides use the same reader formatting as the Handbook, with a phone-friendly editor.
+const GUIDE_DRAFT_KEY = 'arcana-next-player-guide-draft-v1';
+const savedGuide = (() => { try { return JSON.parse(read(GUIDE_DRAFT_KEY) || '{}') || {}; } catch { return {}; } })();
+const G = {
+  title: String(savedGuide.title || '').slice(0, 110),
+  summary: String(savedGuide.summary || '').slice(0, 300),
+  body: String(savedGuide.body || '').slice(0, 12000),
+  ok: false, busy: false, error: '', preview: false,
+  columns: 2, rows: 3, caption: '', url: ''
+};
+function saveGuideDraft() {
+  if (G.title || G.summary || G.body) write(GUIDE_DRAFT_KEY, JSON.stringify({ title: G.title, summary: G.summary, body: G.body }));
+  else { try { localStorage.removeItem(GUIDE_DRAFT_KEY); } catch { /* private mode */ } }
+}
+function guideApply(action, options = {}) {
+  const area = $('nxGuideBody');
+  if (!area) return;
+  try {
+    const next = guideInsert(area.value, action, area.selectionStart, area.selectionEnd, options);
+    G.body = next.body; G.error = ''; area.value = G.body;
+    area.focus(); area.setSelectionRange(next.selectionStart, next.selectionEnd);
+    saveGuideDraft();
+    const counter = $('nxGuideCount'); if (counter) counter.textContent = G.body.length + ' / 12,000';
+    const issue = $('nxGuideError'); if (issue) issue.textContent = '';
+  } catch (err) {
+    G.error = err.message;
+    const issue = $('nxGuideError'); if (issue) issue.textContent = G.error;
+  }
+}
+const guideButton = (action, label) => '<button type="button" data-act="guideFormat" data-format="' + action + '">' + label + '</button>';
 function guideForm() {
   const u = user(), back = '<a class="nx-back" href="#/builds">' + icon('back', 18) + 'Builds</a>';
   if (!u) return back + '<div class="nx-card"><strong>Sign in to write a guide</strong><small>Guides are published under your Arcana name.</small>' + signInButtons(data.me.value) + '</div>';
-  return back + '<header class="nx-page-head"><span class="nx-kicker">COMMUNITY GUIDE</span><h1>Write a guide</h1><p>Explain how to play something well. Builds go in Build Studio; guides are the why and how.</p></header>' +
-    '<section class="nx-tool"><label class="nx-field">Title<input maxlength="110" value="' + esc(G.title) + '" data-g="title" placeholder="At least 6 characters"></label>' +
-    '<label class="nx-field">Summary<textarea rows="2" maxlength="300" data-g="summary" placeholder="One or two sentences (at least 20 characters)">' + esc(G.summary) + '</textarea></label>' +
-    '<label class="nx-field">Guide<textarea rows="12" maxlength="12000" data-g="body" placeholder="At least 80 characters. Blank line between blocks. ## and ### headings, - lists, 1. steps, | tables |, > notes, **bold**, [[tool:retaliation|tool links]].">' + esc(G.body) + '</textarea></label>' +
-    '<label class="st-consent"><input type="checkbox" data-g="ok"' + (G.ok ? ' checked' : '') + '><span>Publish this guide publicly, credited as <b>' + esc(u.displayName) + '</b>.</span></label>' +
-    (G.error ? '<p class="st-err" role="alert">' + esc(G.error) + '</p>' : '') +
-    '<button class="nx-btn nx-btn-primary" data-act="publishGuide"' + (G.busy ? ' disabled' : '') + '>' + (G.busy ? 'Publishing…' : 'Publish guide') + '</button></section>';
+  const writeTab = '<div class="nx-guide-modes" role="group" aria-label="Guide editing mode"><button type="button" data-act="guideMode" data-mode="write" aria-pressed="' + !G.preview + '">Write</button><button type="button" data-act="guideMode" data-mode="preview" aria-pressed="' + G.preview + '">Preview</button></div>';
+  const tools = '<div class="nx-guide-toolbar" role="toolbar" aria-label="Format guide text">' +
+    guideButton('heading', 'Heading') + guideButton('subheading', 'Subheading') + guideButton('bold', '<b>B</b> Bold') +
+    guideButton('bullets', '• List') + guideButton('steps', '1. Steps') + guideButton('note', 'Note') + '</div>';
+  const linkers = '<div class="nx-guide-linkers"><label>Link Handbook topic<select data-gselect="topic"><option value="">Choose topic…</option>' +
+    handbookPages().map(p => '<option value="' + esc(p.id) + '">' + esc(p.title) + '</option>').join('') + '</select></label>' +
+    '<label>Link Arcana tool<select data-gselect="tool"><option value="">Choose tool…</option>' +
+    GUIDE_TOOL_OPTIONS.map(t => '<option value="' + t[0] + '">' + esc(t[1]) + '</option>').join('') + '</select></label></div>';
+  const builders = '<div class="nx-guide-extras">' +
+    '<details><summary>Insert a table</summary><div class="nx-guide-builder">' +
+    '<label>Columns<input data-g="columns" type="number" min="2" max="5" value="' + esc(G.columns) + '"></label>' +
+    '<label>Rows<input data-g="rows" type="number" min="1" max="12" value="' + esc(G.rows) + '"></label>' +
+    '<label class="nx-guide-wide">Table title (optional)<input data-g="caption" maxlength="90" value="' + esc(G.caption) + '" placeholder="Comparison, costs, priorities…"></label>' +
+    '<button type="button" class="nx-btn" data-act="guideTable">Insert table</button></div></details>' +
+    '<details><summary>Add website link</summary><div class="nx-guide-builder">' +
+    '<label class="nx-guide-wide">Paste a secure URL<input data-g="url" type="url" value="' + esc(G.url) + '" placeholder="https://example.com"></label>' +
+    '<button type="button" class="nx-btn" data-act="guideLink">Insert link</button></div></details></div>';
+  return back + '<header class="nx-page-head"><span class="nx-kicker">COMMUNITY GUIDE</span><h1>Write a guide</h1><p>Share what works. Formatting takes a tap, no Markdown knowledge required.</p></header>' +
+    '<section class="nx-tool nx-guide-form"><label class="nx-field">Title<input maxlength="110" value="' + esc(G.title) + '" data-g="title" placeholder="What will this guide teach?"></label>' +
+    '<label class="nx-field">Summary<textarea rows="2" maxlength="300" data-g="summary" placeholder="Explain what players will learn in one or two sentences">' + esc(G.summary) + '</textarea></label>' +
+    '<div class="nx-guide-edithead"><strong>Guide content</strong>' + writeTab + '</div>' +
+    (G.preview ? '<article class="hb-page gd-body nx-guide-preview">' + (G.body.trim() ? hbText(G.body) : '<p>Start writing to see your guide here.</p>') + '</article>' :
+      '<div class="nx-guide-compose"><p class="nx-fine">Select words to format them, or tap a button to insert a section.</p>' +
+      tools + '<label class="nx-field" for="nxGuideBody">Your guide<textarea id="nxGuideBody" rows="13" maxlength="12000" data-g="body" placeholder="Start with the most important tip, then break the details into sections…">' + esc(G.body) + '</textarea></label>' +
+      '<div class="nx-guide-counter"><span>Draft saved on this device</span><span id="nxGuideCount">' + G.body.length + ' / 12,000</span></div>' +
+      linkers + builders + '</div>') +
+    '<p id="nxGuideError" class="st-err" role="alert">' + esc(G.error) + '</p>' +
+    '<label class="st-consent"><input type="checkbox" data-g="ok"' + (G.ok ? ' checked' : '') + '><span>Publish publicly under <b>' + esc(u.displayName) + '</b>.</span></label>' +
+    '<div class="nx-guide-actions"><button type="button" class="nx-btn" data-act="guideClear">Clear draft</button>' +
+    '<button class="nx-btn nx-btn-primary" data-act="publishGuide"' + (G.busy ? ' disabled' : '') + '>' + (G.busy ? 'Publishing…' : 'Publish guide') + '</button></div></section>';
 }
 
 function buildsView(id) {
@@ -537,13 +589,22 @@ document.addEventListener('click', e => {
   if (act === 'accent') { saveTheme(null); write(ACCENT_KEY, b.dataset.id); render(); }
   if (act === 'buildtab') { buildTab = b.dataset.tab; render(); }
   if (act === 'kind') { codexKind = b.dataset.kind; codexQuery = ''; render(); }
+  if (act === 'guideMode') { G.preview = b.dataset.mode === 'preview'; G.error = ''; render(); return; }
+  if (act === 'guideFormat') { guideApply(b.dataset.format); return; }
+  if (act === 'guideTable') { guideApply('table', { columns: G.columns, rows: G.rows, caption: G.caption }); return; }
+  if (act === 'guideLink') { guideApply('link', { href: G.url }); return; }
+  if (act === 'guideClear') {
+    if (!confirm('Delete this unfinished guide from this device?')) return;
+    Object.assign(G, { title: '', summary: '', body: '', ok: false, preview: false, error: '' });
+    saveGuideDraft(); render(); return;
+  }
   if (act === 'publishGuide') {
     const t = G.title.trim(), su = G.summary.trim(), bo = G.body.trim();
     G.error = t.length < 6 ? 'Give it a title of at least 6 characters.' : su.length < 20 ? 'Add a summary of at least 20 characters.' : bo.length < 80 ? 'The guide needs at least 80 characters.' : !G.ok ? 'Tick the box to agree to publishing under your name.' : '';
     if (G.error) return render();
     G.busy = true; render();
     fetch('/api/community/posts', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'guide', title: t, summary: su, body: bo }) })
-      .then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw Error(r.status === 429 ? 'You’ve hit today’s publishing limit (10).' : j.error || 'Couldn’t publish.'); Object.assign(G, { title: '', summary: '', body: '', ok: false }); data.guides.state = 'idle'; location.hash = '#/builds/' + j.post.id; })
+      .then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw Error(r.status === 429 ? 'You’ve hit today’s publishing limit (10).' : j.error || 'Couldn’t publish.'); Object.assign(G, { title: '', summary: '', body: '', ok: false, preview: false }); saveGuideDraft(); data.guides.state = 'idle'; location.hash = '#/builds/' + j.post.id; })
       .catch(err => { G.error = err.message; }).finally(() => { G.busy = false; render(); });
     return;
   }
@@ -556,11 +617,27 @@ document.addEventListener('click', e => {
 }, true);
 document.addEventListener('input', e => {
   const gk = e.target.dataset?.g;
-  if (gk) { G[gk] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; return; }
+  if (gk) {
+    G[gk] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    if (['title', 'summary', 'body'].includes(gk)) saveGuideDraft();
+    if (gk === 'body') { const count = $('nxGuideCount'); if (count) count.textContent = G.body.length + ' / 12,000'; }
+    return;
+  }
   if (e.target.id !== 'nxCodexQ') return;
   codexQuery = e.target.value;
   const body = $('nxCodexBody');
   if (body && data.codex.state === 'ready') { body.innerHTML = codexResults(data.codex.value); translateTree(body); }
+});
+document.addEventListener('change', e => {
+  const kind = e.target.dataset?.gselect;
+  if (!kind || !e.target.value) return;
+  const id = e.target.value;
+  e.target.value = '';
+  if (kind === 'tool') guideApply('tool', { id });
+  if (kind === 'topic') {
+    const topic = handbookPages().find(p => p.id === id);
+    if (topic) guideApply('topic', { id, label: topic.title });
+  }
 });
 window.addEventListener('hashchange', render);
 initLocalization(render);
