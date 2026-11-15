@@ -104,3 +104,30 @@ test('shared build: runes and runewords are summarised once each, with counts', 
   assert.match(html, /<b>Fortitude<\/b>.*?<em>×28<\/em>/s);
   assert.match(html, /<b>Immortal Bulwark<\/b>.*?<em>×14<\/em>/s);
 });
+
+
+test('player guide toolbar inserts reader-compatible blocks and protects draft length', async () => {
+  const { guideInsert, guideTableMarkdown, GUIDE_TOOL_OPTIONS } = await import('../next/guide-editor.js');
+  const heading = guideInsert('Intro', 'heading', 5, 5);
+  assert.match(hbText(heading.body), /<h2>Section heading<\/h2>/);
+  const b = guideInsert('Welcome friends', 'bold', 8, 15);
+  assert.match(hbText(b.body), /<strong>friends<\/strong>/);
+  const steps = guideInsert('', 'steps', 0, 0);
+  assert.match(hbText(steps.body), /<ol><li>First point<\/li><li>Second point<\/li><\/ol>/);
+  const note = guideInsert('', 'note', 0, 0);
+  assert.match(hbText(note.body), /class="hb-note"/);
+  const table = guideInsert('', 'table', 0, 0, { columns: 3, rows: 4, caption: 'Comparison' });
+  const preview = hbText(table.body);
+  assert.match(preview, /<details class="hb-fold">/);
+  assert.match(preview, /4 rows/);
+  assert.equal((preview.match(/<td>/g) || []).length, 12);
+  assert.match(guideTableMarkdown({ columns: 1, rows: 100 }), /Column 2/);
+  assert.ok(GUIDE_TOOL_OPTIONS.some(t => t[0] === 'pathfinder'));
+  assert.match(hbText(guideInsert('', 'tool', 0, 0, { id: 'pathfinder' }).body), /href="#\/tools\/pathfinder"/);
+  assert.match(hbText(guideInsert('', 'topic', 0, 0, { id: 'start-here', label: 'Start here' }).body), /Start here/);
+  assert.match(hbText(guideInsert('', 'link', 0, 0, { href: 'https://example.com' }).body), /href="https:\/\/example.com"/);
+  assert.throws(() => guideInsert('', 'link', 0, 0, { href: 'javascript:alert(1)' }), /valid https/);
+  assert.throws(() => guideInsert('a'.repeat(12000), 'bold', 0, 0), /12,000/);
+  const source = await (await import('node:fs/promises')).readFile(new URL('../next/app.js', import.meta.url), 'utf8');
+  for (const element of ['nx-guide-toolbar', 'guideMode', 'guideTable', 'guideLink', 'guideClear', 'saveGuideDraft', 'nxGuideBody']) assert.ok(source.includes(element), element);
+});
