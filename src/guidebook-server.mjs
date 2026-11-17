@@ -15,7 +15,7 @@ const CHAPTER_IDS=new Set(CHAPTERS.map(c=>c.id));
 const TRUST=new Set(['verified','config','estimated','legacy']);
 const ID=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SEED=ORIGINAL_SEED.map(p=>({...p,...(SEED_UPDATES[p.id]||{})})).concat(NEW_SEED_PAGES);
-const SEED_STRUCTURE_VERSION=3;
+const SEED_STRUCTURE_VERSION=2;
 const contentFingerprint=p=>p?createHash('sha256').update(JSON.stringify({title:p.title,answer:p.answer,body:p.body})).digest('hex'):'';
 const text=(v,max)=>String(v??'').replace(/\r\n/g,'\n').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').slice(0,max);
 let chain=Promise.resolve();
@@ -56,7 +56,7 @@ async function load(){
    // Refresh only untouched seed copies. Any text the owner has edited stays exactly as saved.
    if(migrateApprovedCopy&&update&&e.draft&&original&&contentFingerprint(e.draft)===contentFingerprint(original)){
     e.history=[{at:new Date().toISOString(),by:'Seed refresh · original draft preserved',page:{...e.draft}},...(e.history||[])].slice(0,25);
-    e.draft={...e.draft,title:seed.title,answer:seed.answer,body:seed.body,related:seed.related||e.draft.related};
+    e.draft={...e.draft,title:seed.title,answer:seed.answer,body:seed.body};
    }
    if(seed&&migrateStructure){e.draft=syncStructure(e.draft,seed);e.published=syncStructure(e.published,seed);}
    // Older preview builds exposed working drafts. Retain their complete text in the editor/history,
