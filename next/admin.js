@@ -4,6 +4,7 @@ import { esc, shortDate, articleHtml } from './core.js';
 import { ic } from './core.js';
 import { AWARD_LABELS, ROLE_NAMES } from '../src/account-policy.js';
 import { adminHandbookTab } from './handbook-editor.js';
+import { adminGuidebookTab } from './guidebook-editor.js';
 import { reportsTab } from './feedback.js';
 
 let rerender = () => {};
@@ -212,8 +213,8 @@ function more() {
 
 export function adminView(user) {
   if (!user?.permissions?.manageSite) return '<div class="nx-empty"><strong>Admins only</strong><p>This page is for Arcana admins.</p><a class="nx-btn" href="#/profile">Back to Profile</a></div>';
-  const tabs = [['inbox', 'Inbox'], ['featured', 'Featured'], ['reports', 'Reports'], ['news', 'News'], ['handbook', 'Handbook'], ['people', 'People'], ...(user?.isOwner ? [['roles', 'Roles']] : []), ['traffic', 'Traffic'], ['site', 'Site']];
-  const body = A.tab === 'handbook' ? adminHandbookTab() : A.tab === 'roles' ? rolesTab() : A.tab === 'featured' ? featured() : A.tab === 'site' ? site() + more() : A.tab === 'news' ? newsTab() : A.tab === 'people' ? peopleTab(user) : A.tab === 'traffic' ? trafficTab() : A.tab === 'reports' ? reportsTab() : inbox();
+  const tabs = [['inbox', 'Inbox'], ['featured', 'Featured'], ['reports', 'Reports'], ['news', 'News'], ['handbook', 'Handbook'], ...(user?.permissions?.editHandbook ? [['guidebook', 'Guidebook']] : []), ['people', 'People'], ...(user?.isOwner ? [['roles', 'Roles']] : []), ['traffic', 'Traffic'], ['site', 'Site']];
+  const body = A.tab === 'handbook' ? adminHandbookTab() : A.tab === 'guidebook' ? adminGuidebookTab() : A.tab === 'roles' ? rolesTab() : A.tab === 'featured' ? featured() : A.tab === 'site' ? site() + more() : A.tab === 'news' ? newsTab() : A.tab === 'people' ? peopleTab(user) : A.tab === 'traffic' ? trafficTab() : A.tab === 'reports' ? reportsTab() : inbox();
   return '<a class="nx-back" href="#/profile">‹ Profile</a><header class="nx-page-head"><span class="nx-kicker">OWNER</span><h1>Admin</h1></header>' +
     '<a class="nx-row nx-row-design" href="#/admin/design"><span class="nx-ic">' + ic('theme', 22) + '</span><span class="nx-row-text"><strong>Site design</strong><small>Colors, corners, fonts and icons for everyone. Preview first, then publish.</small></span><span class="nx-row-end">›</span></a>' +
     '<div class="st-tabs adm-tabs nx-scrollx" role="tablist">' + tabs.map(([id, l]) => '<button role="tab" aria-selected="' + (A.tab === id) + '" data-adm="tab" data-v="' + id + '">' + l + (id === 'featured' && A.feat.dirty ? ' •' : '') + '</button>').join('') + '</div>' +
