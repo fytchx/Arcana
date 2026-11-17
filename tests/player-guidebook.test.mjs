@@ -14,7 +14,7 @@ test('Guidebook has stable IDs, sequence, contributors, linked source, and no le
   assert.ok(p.title&&p.answer&&p.author,p.id);
   for(const ref of p.related||[])assert.ok(ids.has(ref),p.id+' -> '+ref);
   assert.ok(!/\bZane:\s/.test(p.body),p.id+' leaked reviewer notes');
-  if(p.status==='awaiting')assert.match(p.body,/reserved for its contributor/);
+  if(p.status==='awaiting')assert.match(p.body,/reserved for (?:its|the) contributor/);
  }
  assert.equal(PAGES.filter(p=>p.status==='review').length,9);
  assert.ok(EXTERNAL_CLASS_GUIDES.some(x=>x.id==='retaliation-warrior'));
