@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 15821)
+Total output lines: 706
+
 // Arcana Next: the new app shell. Runs beside the classic site and uses the same APIs.
 import {
   SURFACES, ACCENTS, SURFACE_KEY, ACCENT_KEY, surfaceById, accentById, TABS, TOOLS,
@@ -290,8 +293,9 @@ function guideView(id) {
   const heads = [];
   const originalHeadings = [...hbText(source.body).matchAll(/<h2>(.*?)<\/h2>/g)].map(m => m[1]);
   const html = hbText(g.body).replace(/<h2>(.*?)<\/h2>/g, (_, t) => { const id = 'g-' + (slug(originalHeadings[heads.length] || t) || String(heads.length + 1)); heads.push([id, t]); return '<h2 id="' + id + '">' + t + '</h2>'; });
+  const buildIdentity = g.id === 'retaliation-warrior' ? '<div class="gd-identity"><span class="gd-identity-class">' + classBadge('warrior', 58) + '</span><span><small class="nx-kicker">PLAYER BUILD</small><b>Retaliation Warrior</b><small>Defense, block and retaliation · Zane</small></span><span class="gd-identity-build">' + artImg('build-types/retaliation', 44) + '</span></div>' : '';
   return back + '<article class="nx-article gd-article" style="--cc:' + classVar(CLASS_NAMES[1]) + '"><span class="nx-kicker">FEATURED GUIDE · WARRIOR · ' + esc(g.level.toUpperCase()) + '</span><h1>' + esc(guideTranslated ? g.title : translateEnglish(g.title)) + '</h1>' +
-    '<p class="nx-deck">' + esc(g.summary) + '</p>' + editorialControl('guides', g.id, guideTranslated) + '<p class="nx-by">by <b>' + esc(g.author) + '</b> · updated ' + esc(shortDate(g.updated)) + ' · IdleArc ' + esc(g.gameVersion) + '</p>' +
+    '<p class="nx-deck">' + esc(g.summary) + '</p>' + buildIdentity + editorialControl('guides', g.id, guideTranslated) + '<p class="nx-by">by <b>' + esc(g.author) + '</b> · updated ' + esc(shortDate(g.updated)) + ' · IdleArc ' + esc(g.gameVersion) + '</p>' +
     '<div class="gd-actions"><a class="nx-btn nx-btn-primary" href="#/tools/retaliation">Try your numbers</a><a class="nx-btn" href="#/build?d=' + g.build + '&from=' + g.id + '">Open the build</a></div>' +
     '<details class="gd-toc"><summary>In this guide</summary><ol>' + heads.map(([id, t]) => '<li><a href="#/guides/' + g.id + '" data-jump="' + id + '">' + t + '</a></li>').join('') + '</ol></details>' +
     '<div class="hb-page gd-body">' + html + '</div></article>' +
@@ -343,33 +347,7 @@ function codexView(id) {
     if (!e) return empty('Not in the Codex', 'This page may have been renamed after a patch.', '<a class="nx-btn" href="#/codex">Back to the Codex</a>');
     const byId = c.byId, rel = (e.related || []).map(r => byId.get(r)).filter(Boolean);
     return '<a class="nx-back" href="#/codex">' + icon('back', 18) + 'Codex</a>' +
-      '<header class="nx-page-head nx-codexhead">' + (e.art || e.swatch ? '<span class="nx-bigart">' + art(e, 72) + '</span>' : '') + '<span><span class="nx-kicker">' + esc(kindSingular(e.kind).toUpperCase()) + '</span><h1>' + esc(e.title) + '</h1>' + (e.subtitle ? '<p>' + esc(e.subtitle) + '</p>' : '') + '</span></header>' +
-      (e.description ? '<p class="nx-read">' + esc(e.description) + '</p>' : '') +
-      (e.chips ? '<div class="nx-chips">' + e.chips.map(x => '<span style="background:' + esc(x.color) + '">' + esc(x.label) + '</span>').join('') + '</div>' : '') +
-      (e.facts.length ? '<dl class="nx-facts">' + e.facts.map(([k, v]) => '<div><dt>' + esc(k) + '</dt><dd>' + esc(v) + '</dd></div>').join('') + '</dl>' : '') +
-      (e.table ? '<div class="nx-tablewrap"><table class="nx-table"><thead><tr>' + e.table.head.map(h => '<th scope="col">' + esc(h) + '</th>').join('') + '</tr></thead><tbody>' + e.table.rows.map(r => '<tr>' + r.map((v, i) => i ? '<td>' + esc(v) + '</td>' : '<th scope="row">' + esc(v) + '</th>').join('') + '</tr>').join('') + '</tbody></table></div>' : '') +
-      (e.note ? '<p class="nx-callout">' + esc(e.note) + '</p>' : '') +
-      (e.links.length ? '<section>' + label('Use it') + '<div class="nx-list">' + e.links.map(l => row(l.href, l.label, '', '', !!l.ext)).join('') + '</div></section>' : '') +
-      (rel.length ? '<section>' + label(e.relatedTitle || 'Related') + '<div class="nx-list">' + rel.map(r => codexRow(r, withKind(r))).join('') + '</div></section>' : '') +
-      '<p class="nx-fine">From the game config' + (c.version ? ' (' + esc(c.version) + ')' : '') + '.</p>';
-  }
-  const body = c.state === 'error' ? failed('The Codex', 'codex') : c.state !== 'ready' ? loading('the Codex') : codexResults(c.value);
-  return '<label class="nx-search nx-search-input">' + icon('search', 18) + '<input id="nxCodexQ" type="search" autocomplete="off" placeholder="Search guides, tools, the Handbook, items, skills, monsters" aria-label="Search the Handbook" value="' + esc(codexQuery) + '"></label><div id="nxCodexBody">' + body + '</div>';
-}
-function codexResults(entries) {
-  if (codexKind && !codexQuery.trim()) {
-    const list = entries.filter(e => e.kind === codexKind);
-    return '<div class="nx-head">' + label(kindName(codexKind)) + '<button class="nx-link" data-act="kind" data-kind="">All categories</button></div><div class="nx-list">' + list.map(e => codexRow(e)).join('') + '</div>';
-  }
-  if (codexQuery.trim()) {
-    const hits = searchIndex(entries, codexQuery, 40);
-    const words = codexQuery.trim().toLowerCase().split(/\s+/);
-    const pages = handbookPages().filter(p => words.every(w => (p.title + ' ' + p.answer + ' ' + p.body).toLowerCase().includes(w))).slice(0, 6);
-    const match = t => words.every(w => t.toLowerCase().includes(w));
-    const guides = FEATURED_GUIDES.filter(g => match(g.title + ' ' + g.summary + ' ' + g.body)).slice(0, 3);
-    const tools = TOOLS.filter(t => match(t.name + ' ' + t.detail + ' ' + t.id)).slice(0, 4);
-    if (!hits.length && !pages.length && !guides.length && !tools.length) return empty('Nothing found', 'Try a shorter word, like an item, skill or monster name.');
-    return (guides.length ? '<section>' + label('Guides') + '<div class="nx-list">' + guides.map(g => '<a class="nx-row" href="#/guides/' + g.id + '"><span class="nx-row-text"><strong>' + esc(g.title) + '</strong><small>by ' + esc(g.author) + ' · ' + esc(g.readTime) + ' read</small></span><span class="nx-row-end">›</span></a>').join('') + '</div></section>' : '') +
+      '<header class="nx-page-head nx-codexhead">' + (e.art || e.swatch ? '<span class="nx-bigart">' + art(e, 72) + '</span>' : '…821 tokens truncated…esc(g.author) + ' · ' + esc(g.readTime) + ' read</small></span><span class="nx-row-end">›</span></a>').join('') + '</div></section>' : '') +
       (tools.length ? '<section>' + label('Tools') + '<div class="nx-list">' + tools.map(t => '<a class="nx-row" href="' + t.href + '"><span class="nx-row-text"><strong>' + esc(t.name) + '</strong><small>' + esc(t.detail) + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div></section>' : '') +
       (pages.length ? '<section>' + label('Handbook') + '<div class="nx-list">' + pages.map(p => '<a class="nx-row" href="#/handbook/' + p.id + '"><span class="nx-row-text"><strong>' + esc(p.title) + '</strong><small>' + esc(p.answer.replace(/\[\[[^|\]]*\|?([^\]]*)\]\]/g, '$1')) + '</small></span><span class="nx-row-end">›</span></a>').join('') + '</div></section>' : '') +
       (hits.length ? '<section>' + (pages.length ? label('Look it up') : '') + '<div class="nx-list">' + hits.map(e => codexRow(e, withKind(e))).join('') + '</div></section>' : '');

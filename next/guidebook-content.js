@@ -13,8 +13,8 @@ export const CHAPTERS = [
   {
     "id": "classes",
     "n": 2,
-    "title": "Choose a Direction",
-    "ask": "Class and build options, with room for RNG to change your plans.",
+    "title": "Classes and Builds",
+    "ask": "Choose a starting direction without treating it as a permanent commitment.",
     "icon": "class-rogue"
   },
   {

@@ -3,16 +3,20 @@
 //  - guidebook:publish can publish, hide, and restore earlier versions
 // Every published version is kept (last 25 per page). Editorial seed text stays server-side.
 import {resolve} from 'node:path';
+import {createHash} from 'node:crypto';
 import {dataRoot,readJSON,saveAtomic,sendJSON,accountUser,checkOrigin,parseJSON,publicProfile} from './account-server.mjs';
 import {can} from './account-policy.js';
 import {CHAPTERS} from '../next/guidebook-content.js';
-import {PAGES as SEED} from './guidebook-seed.mjs';
+import {PAGES as ORIGINAL_SEED} from './guidebook-seed.mjs';
+import {NEW_SEED_PAGES,SEED_UPDATES} from './guidebook-seed-updates.mjs';
 
 const file=()=>resolve(dataRoot(),'guidebook','pages.json');
 const CHAPTER_IDS=new Set(CHAPTERS.map(c=>c.id));
 const TRUST=new Set(['verified','config','estimated','legacy']);
 const ID=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const SEED_STRUCTURE_VERSION=2;
+const SEED=ORIGINAL_SEED.map(p=>({...p,...(SEED_UPDATES[p.id]||{})})).concat(NEW_SEED_PAGES);
+const SEED_STRUCTURE_VERSION=3;
+const contentFingerprint=p=>p?createHash('sha256').update(JSON.stringify({title:p.title,answer:p.answer,body:p.body})).digest('hex'):'';
 const text=(v,max)=>String(v??'').replace(/\r\n/g,'\n').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').slice(0,max);
 let chain=Promise.resolve();
 const serialized=task=>{const work=chain.then(task);chain=work.catch(()=>{});return work;};
@@ -44,9 +48,16 @@ async function load(){
  if(saved&&saved.pages){
   // New pages enter the editor as private drafts. The reader only receives explicitly approved pages.
   const seeds=new Map(SEED.map(p=>[p.id,p])),migrateStructure=Number(saved.structureVersion||0)<SEED_STRUCTURE_VERSION;
+  const originals=new Map(ORIGINAL_SEED.map(p=>[p.id,p])),migrateApprovedCopy=Number(saved.contentVersion||0)<1;
   SEED.forEach((p,i)=>{if(!saved.pages[p.id]&&!(saved.removed||[]).includes(p.id))saved.pages[p.id]=editorPage(p,i);});
   Object.entries(saved.pages).forEach(([id,e])=>{
    const seed=seeds.get(id);
+   const original=originals.get(id),update=SEED_UPDATES[id];
+   // Refresh only untouched seed copies. Any text the owner has edited stays exactly as saved.
+   if(migrateApprovedCopy&&update&&e.draft&&original&&contentFingerprint(e.draft)===contentFingerprint(original)){
+    e.history=[{at:new Date().toISOString(),by:'Seed refresh · original draft preserved',page:{...e.draft}},...(e.history||[])].slice(0,25);
+    e.draft={...e.draft,title:seed.title,answer:seed.answer,body:seed.body,related:seed.related||e.draft.related};
+   }
    if(seed&&migrateStructure){e.draft=syncStructure(e.draft,seed);e.published=syncStructure(e.published,seed);}
    // Older preview builds exposed working drafts. Retain their complete text in the editor/history,
    // but remove them from the public reader until an authorized publisher approves them.
@@ -58,10 +69,11 @@ async function load(){
    if(!e.draft&&!e.published&&seed)e.draft={...seed};
   });
   saved.structureVersion=SEED_STRUCTURE_VERSION;
+  saved.contentVersion=1;
   return saved;
  }
  const pages={};SEED.forEach((p,i)=>{pages[p.id]=editorPage(p,i);});
- return {revision:0,structureVersion:SEED_STRUCTURE_VERSION,pages};
+ return {revision:0,structureVersion:SEED_STRUCTURE_VERSION,contentVersion:1,pages};
 }
 const publicList=store=>Object.values(store.pages).filter(e=>e.published&&!e.hidden&&e.published.status==='ready').map(e=>e.published).sort((a,b)=>(a.order??100)-(b.order??100));
 const byline=user=>publicProfile(user).displayName;
