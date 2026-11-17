@@ -34,6 +34,9 @@ test('Guidebook routes, source server and editor use isolated paths; no producti
  const app=await readFile(new URL('../next/app.js',import.meta.url),'utf8');
  const srv=await readFile(new URL('../server.mjs',import.meta.url),'utf8');
  const editor=await readFile(new URL('../next/guidebook-editor.js',import.meta.url),'utf8');
+ const entryHtml=await readFile(new URL('../next/index.html',import.meta.url),'utf8');
+ const nextAllowlist=entryHtml.match(/var NEXT=\[([^\]]+)\]/)?.[1]||'';
+ assert.match(nextAllowlist,/'guidebook'/,'Guidebook deep links must stay in Arcana Next, not redirect to /classic');
  assert.match(app,/guidebookView/);
  assert.match(srv,/api\/admin\/guidebook/);
  assert.match(editor,/Save draft/);
