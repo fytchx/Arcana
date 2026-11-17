@@ -139,6 +139,7 @@ function applyTheme() {
 }
 
 // ---------- data (each loads once, and re-renders when it arrives) ----------
+let logoutBusy = false, logoutError = '';
 const data = {
   me: { state: 'idle', value: null },
   codex: { state: 'idle', value: [] },
@@ -160,6 +161,25 @@ function load(slot, url, pick) {
   getJSON(url).then(j => { d.value = pick(j); d.state = 'ready'; }).catch(() => { d.state = 'error'; }).finally(render);
 }
 const loadMe = () => load('me', '/api/account/me', j => j);
+// Logout is a POST mutation, not a link to visit in the browser.
+async function signOut() {
+  if (logoutBusy) return;
+  logoutBusy = true; logoutError = '';
+  render();
+  try {
+    const response = await fetch('/api/account/logout', { method: 'POST', credentials: 'same-origin', cache: 'no-store', headers: { accept: 'application/json' } });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok || body.ok !== true) throw Error(body.error || 'Sign out failed. Please try again.');
+    try { sessionStorage.removeItem(RETURN_KEY); } catch { /* unavailable storage */ }
+    location.hash = '#/profile';
+    location.reload(); // load account state again with the cleared session cookie
+  } catch (err) {
+    logoutError = err.message || 'Sign out failed. Please try again.';
+    logoutBusy = false;
+    render();
+  }
+}
+
 // The Codex ships with the app (generated from the game config), so it works even when other servers are down.
 function loadCodex() {
   const d = data.codex;
@@ -517,7 +537,7 @@ function profileView() {
     installBanner('profile') + languageSettingsField() + '<section>' + label('Display') + '<div class="nx-card nx-display"><div class="nx-seg" role="radiogroup" aria-label="Display">' +
       [['full', 'Full design', 'Colors, depth and art'], ['simple', 'Simplified', 'Flat, calm, fastest']].map(([k, l, dsc]) => '<button role="radio" aria-checked="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" aria-selected="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" data-act="display" data-id="' + k + '"><b>' + l + '</b><small>' + dsc + '</small></button>').join('') + '</div></div></section>' +
     '<section>' + label('Community') + '<div class="nx-list">' + row('#/guilds', 'Guilds', 'Find a guild and apply', '') + row('#/lfg', 'Looking for group', 'Raids, teams and planned runs', '') + row('#/records', 'Season records', 'Top players and guilds by season', '') + row('/classic#/community', 'Community posts', '', '', true) + '</div></section>' +
-    '<section>' + label('More') + '<div class="nx-list">' + row(KOFI, 'Support Arcana', 'Arcana is free and fan-made. Help keep it running on Ko-fi', '', true) + row('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', '') + row('/classic', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
+    '<section>' + label('More') + '<div class="nx-list">' + row(KOFI, 'Support Arcana', 'Arcana is free and fan-made. Help keep it running on Ko-fi', '', true) + row('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', '') + row('/classic', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? '<button type="button" class="nx-row nx-signout" data-act="logout"' + (logoutBusy ? ' disabled' : '') + '><span class="nx-row-text"><strong>' + (logoutBusy ? 'Signing out…' : 'Sign out') + '</strong><small>Switch to another account</small></span><span class="nx-row-end">' + icon('next', 18) + '</span></button>' + (logoutError ? '<p class="nx-signout-error" role="alert">' + esc(logoutError) + '</p>' : '') : '') + '</div></section>';
 }
 
 // ---------- recently used tools ----------
@@ -567,6 +587,7 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) return;
   const act = b.dataset.act;
+  if (act === 'logout') { signOut(); return; }
   if (act === 'install') {
     if (installEvt) {
       const pending = installEvt;

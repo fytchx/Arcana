@@ -1143,3 +1143,8 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
 .gb-related{margin:24px 0 10px}
 .gb-home-link{margin-top:18px}
 @media(max-width:410px){.gb-pillars{grid-template-columns:1fr}}
+
+/* Session sign-out uses a POST action, never a GET route. */
+.nx-signout{width:100%;text-align:left;color:var(--text);font:inherit;cursor:pointer}
+.nx-signout:disabled{opacity:.65;cursor:wait}
+.nx-signout-error{font-size:13px;color:var(--danger,#f2a3a3);padding:8px 10px}

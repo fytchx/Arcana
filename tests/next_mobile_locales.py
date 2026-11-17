@@ -21,10 +21,21 @@ try:
         errors = []
         page.on('pageerror', lambda error: errors.append(str(error)))
 
+        auth = {'signed_in': True, 'logout_methods': []}
+
         def api(route):
             url = route.request.url
+            if '/api/account/logout' in url:
+                auth['logout_methods'].append(route.request.method)
+                if route.request.method != 'POST':
+                    route.fulfill(status=405, json={'error': 'Method not allowed'})
+                else:
+                    auth['signed_in'] = False
+                    route.fulfill(status=200, json={'ok': True})
+                return
             if '/api/account/me' in url:
-                data = {'user': None}
+                member = {'id': 'mock-google-member', 'displayName': 'Wrong Google account', 'roles': [], 'permissions': {'manageSite': False}} if auth['signed_in'] else None
+                data = {'user': member, 'providers': {'google': True, 'discord': True}, 'enabled': True}
             elif '/api/site/theme' in url:
                 data = {'next': None, 'notice': None}
             elif '/api/journal' in url:
@@ -40,6 +51,20 @@ try:
             route.fulfill(status=200, json=data)
 
         page.route('**/api/**', api)
+        # The wrong-Google-account signout must POST and return to the Next login screen.
+        page.goto(f'http://127.0.0.1:{server.server_port}/next/index.html#/profile', wait_until='domcontentloaded')
+        logout = page.locator('[data-act="logout"]')
+        logout.wait_for(timeout=10000)
+        assert logout.get_attribute('href') is None, 'Sign out must not use a GET link'
+        assert page.locator('.nx-me').is_visible(), 'Signed-in profile did not load'
+        logout.click()
+        page.locator('.nx-sso-google').wait_for(timeout=10000)
+        assert auth['logout_methods'] == ['POST'], 'Sign out must POST exactly once'
+        assert 'Continue with Google' in page.locator('.nx-sso-google').inner_text()
+        assert page.locator('.nx-me').count() == 0, 'Signed-in account persisted'
+        assert page.url.endswith('#/profile')
+        assert errors == [], 'Sign out produced JS errors: ' + repr(errors)
+
         # Regression: a direct Guidebook link must render in Arcana Next,
         # not get redirected to the classic Not Found page.
         page.goto(f'http://127.0.0.1:{server.server_port}/next/index.html#/guidebook', wait_until='domcontentloaded')

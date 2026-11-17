@@ -277,6 +277,7 @@ export async function handleAccountRequest(req,res,url){
   authorize.searchParams.set('redirect_uri',new URL('/api/account/google/callback',baseUrl()).href);
   authorize.searchParams.set('response_type','code');
   authorize.searchParams.set('scope','openid email profile');
+  if(!link)authorize.searchParams.set('prompt','select_account');
   authorize.searchParams.set('state',state);
   authorize.searchParams.set('nonce',nonce);
   redirect(res,authorize.href,googleStateName()+'='+[state,nonce,...(member?[member.id]:[])].join('~')+'; '+cookieFlags(600));return true;
