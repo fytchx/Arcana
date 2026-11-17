@@ -162,7 +162,7 @@ async function verifyGoogleIdToken(jwt,nonce){
   payload.email_verified!==true)
   throw error(401,'Google identity could not be verified.');
  const email=typeof payload.email==='string'?payload.email.trim().toLowerCase():'';
- return {sub:payload.sub,name:safeText(payload.name||payload.given_name||'Arcana player',70),verifiedEmail:/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)&&email.length<=254?email:''};
+ return {sub:payload.sub,name:safeText(payload.name||payload.given_name||'Arcana player',70),verifiedEmail:/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)&&email.length<=254?email:''};
 }
 async function googleIdentity(identity,{linkAccount=null}={}){
  if(!GOOGLE_SUB.test(identity.sub))throw error(401,'Invalid Google identity.');
