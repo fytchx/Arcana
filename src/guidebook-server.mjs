@@ -51,10 +51,10 @@ export async function handleGuidebookRequest(req,res,url){
  if(path!=='/api/admin/guidebook')return false;
  const user=await accountUser(req);
  if(!user){sendJSON(res,401,{error:'Sign in to continue.'});return true;}
- if(!can(user,'guidebook:edit')){sendJSON(res,403,{error:'Your role cannot edit the Guidebook.'});return true;}
+ if(!can(user,'handbook:edit')){sendJSON(res,403,{error:'Your role cannot edit pages. Ask for Handbook Editor access.'});return true;}
  if(req.method==='GET'){
   const s=await load();
-  sendJSON(res,200,{revision:s.revision,canPublish:can(user,'guidebook:publish'),entries:Object.entries(s.pages).map(([id,e])=>({id,published:e.published,draft:e.draft,review:e.review,hidden:e.hidden,draftBy:e.draftBy||'',draftAt:e.draftAt||'',history:(e.history||[]).map((h,i)=>({i,at:h.at,by:h.by,title:h.page.title}))}))});
+  sendJSON(res,200,{revision:s.revision,canPublish:can(user,'handbook:publish'),entries:Object.entries(s.pages).map(([id,e])=>({id,published:e.published,draft:e.draft,review:e.review,hidden:e.hidden,draftBy:e.draftBy||'',draftAt:e.draftAt||'',history:(e.history||[]).map((h,i)=>({i,at:h.at,by:h.by,title:h.page.title}))}))});
   return true;
  }
  if(req.method!=='PUT'){sendJSON(res,405,{error:'Method not allowed.'});return true;}
@@ -63,7 +63,7 @@ export async function handleGuidebookRequest(req,res,url){
  if(!body||!Number.isInteger(body.expectedRevision)){sendJSON(res,422,{error:'A current revision is required.'});return true;}
  const action=body.action, publishing=['publish','hide','unhide','restore'].includes(action);
  if(!['draft','review','discard',...(publishing?[action]:[])].includes(action)){sendJSON(res,422,{error:'Unknown action.'});return true;}
- if(publishing&&!can(user,'guidebook:publish')){sendJSON(res,403,{error:'Your role can save drafts but not publish.'});return true;}
+ if(publishing&&!can(user,'handbook:publish')){sendJSON(res,403,{error:'Your role can save drafts but not publish.'});return true;}
  let page=null;
  if(action==='draft'||action==='review'||action==='publish'){try{page=normalizePage(body.page);}catch(e){sendJSON(res,422,{error:e.message});return true;}}
  const id=page?page.id:text(body.id,60);

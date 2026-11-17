@@ -27,14 +27,14 @@ const entry = id => E.entries.find(x => x.id === id);
 
 function openEditor(id, chapter) {
   const en = id ? entry(id) : null, base = en ? (en.draft || en.published) : null;
-  E.edit = base ? { ...base, isNew: false, fromDraft: !!en.draft } : { id: '', chapter: chapter || 'start', title: '', answer: '', body: '', trust: 'config', version: GUIDEBOOK_VERSION, author: 'Zane', status:'review', order: 100, isNew: true };
+  E.edit = base ? { ...base, isNew: false, fromDraft: !!en.draft } : { id: '', chapter: chapter || 'start', title: '', answer: '', body: '', trust: 'estimated', version: GUIDEBOOK_VERSION, author: 'Zane', status:'review', order: 100, isNew: true };
   E.preview = false; E.msg = '';
 }
 
 // ---------- views ----------
 export function guidebookEditorView(id, isNew) {
   loadEditorData();
-  if (E.state === 'denied') return '<div class="nx-empty"><strong>Editors only</strong><p>Ask an admin for the Guidebook Editor or Game Developer role.</p></div>';
+  if (E.state === 'denied') return '<div class="nx-empty"><strong>Editors only</strong><p>Sign into Arcana Test with a Handbook Editor or Game Developer account to edit.</p></div>';
   if (E.state === 'error') return '<div class="nx-empty"><strong>Couldn’t load the Guidebook editor</strong><button class="nx-btn" data-ge="reload">Try again</button></div>';
   if (E.state !== 'ready') return '<div class="nx-loading">Loading the editor…</div>';
   const key = (isNew ? 'new:' : '') + id;
@@ -124,8 +124,8 @@ export function initGuidebookEditor(render) {
   document.addEventListener('change', e => {
     const t = e.target;
     if (t.dataset?.geF === 'chapter' || t.dataset?.geF === 'trust') { E.edit[t.dataset.geF] = t.value; }
-    if (t.dataset?.he === 'topic' && t.value) { insert('topic', t.value); t.value = ''; }
-    if (t.dataset?.he === 'tool' && t.value) { insert('tool', t.value); t.value = ''; }
+    if (t.dataset?.ge === 'topic' && t.value) { insert('topic', t.value); t.value = ''; }
+    if (t.dataset?.ge === 'tool' && t.value) { insert('tool', t.value); t.value = ''; }
   });
   document.addEventListener('click', e => {
     const b = e.target.closest('[data-ge]'); if (!b || b.disabled || b.tagName === 'SELECT') return;
