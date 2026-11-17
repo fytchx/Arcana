@@ -1,16 +1,18 @@
 // Arcana Guidebook storage and API. Pages are edited inside the site:
 //  - guidebook:edit    can save drafts and send them for review
 //  - guidebook:publish can publish, hide, and restore earlier versions
-// Every published version is kept (last 25 per page). The seed content ships in next/guidebook-content.js.
+// Every published version is kept (last 25 per page). Editorial seed text stays server-side.
 import {resolve} from 'node:path';
 import {dataRoot,readJSON,saveAtomic,sendJSON,accountUser,checkOrigin,parseJSON,publicProfile} from './account-server.mjs';
 import {can} from './account-policy.js';
-import {PAGES as SEED,CHAPTERS} from '../next/guidebook-content.js';
+import {CHAPTERS} from '../next/guidebook-content.js';
+import {PAGES as SEED} from './guidebook-seed.mjs';
 
 const file=()=>resolve(dataRoot(),'guidebook','pages.json');
 const CHAPTER_IDS=new Set(CHAPTERS.map(c=>c.id));
 const TRUST=new Set(['verified','config','estimated','legacy']);
 const ID=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const SEED_STRUCTURE_VERSION=2;
 const text=(v,max)=>String(v??'').replace(/\r\n/g,'\n').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').slice(0,max);
 let chain=Promise.resolve();
 const serialized=task=>{const work=chain.then(task);chain=work.catch(()=>{});return work;};
@@ -31,27 +33,52 @@ export function normalizePage(raw){
  if(page.trust==='verified'&&raw.verifiedAt)page.verifiedAt=text(raw.verifiedAt,40);
  return page;
 }
+const editorPage=(p,i)=>({published:null,draft:{...p,order:Number.isFinite(p.order)?p.order:i*10},review:p.status==='review',hidden:false,history:[]});
+function syncStructure(page,seed){
+ if(!page||!seed)return page;
+ // Keep every saved word. Only move pages into the new approved chapter sequence.
+ return {...page,chapter:seed.chapter,order:seed.order,related:seed.related||[]};
+}
 async function load(){
  const saved=await readJSON(file());
  if(saved&&saved.pages){
-  // New pages added to the seed file appear for readers even after the Guidebook has been edited.
-  // A page an editor removed is remembered and never comes back.
-  SEED.forEach((p,i)=>{if(!saved.pages[p.id]&&!(saved.removed||[]).includes(p.id))saved.pages[p.id]={published:{...p,order:i},draft:null,review:false,hidden:false,history:[]};});
+  // New pages enter the editor as private drafts. The reader only receives explicitly approved pages.
+  const seeds=new Map(SEED.map(p=>[p.id,p])),migrateStructure=Number(saved.structureVersion||0)<SEED_STRUCTURE_VERSION;
+  SEED.forEach((p,i)=>{if(!saved.pages[p.id]&&!(saved.removed||[]).includes(p.id))saved.pages[p.id]=editorPage(p,i);});
+  Object.entries(saved.pages).forEach(([id,e])=>{
+   const seed=seeds.get(id);
+   if(seed&&migrateStructure){e.draft=syncStructure(e.draft,seed);e.published=syncStructure(e.published,seed);}
+   // Older preview builds exposed working drafts. Retain their complete text in the editor/history,
+   // but remove them from the public reader until an authorized publisher approves them.
+   if(e.published&&e.published.status!=='ready'){
+    if(!e.draft)e.draft=e.published;
+    else e.history=[{at:e.publishedAt||new Date(0).toISOString(),by:e.publishedBy||'Preview migration',page:e.published},...(e.history||[])].slice(0,25);
+    e.published=null;e.review=e.draft?.status==='review';
+   }
+   if(!e.draft&&!e.published&&seed)e.draft={...seed};
+  });
+  saved.structureVersion=SEED_STRUCTURE_VERSION;
   return saved;
  }
- const pages={};SEED.forEach((p,i)=>{pages[p.id]={published:{...p,order:i},draft:null,review:false,hidden:false,history:[]};});
- return {revision:0,pages};
+ const pages={};SEED.forEach((p,i)=>{pages[p.id]=editorPage(p,i);});
+ return {revision:0,structureVersion:SEED_STRUCTURE_VERSION,pages};
 }
-const publicList=store=>Object.values(store.pages).filter(e=>e.published&&!e.hidden).map(e=>e.published).sort((a,b)=>(a.order??100)-(b.order??100));
+const publicList=store=>Object.values(store.pages).filter(e=>e.published&&!e.hidden&&e.published.status==='ready').map(e=>e.published).sort((a,b)=>(a.order??100)-(b.order??100));
 const byline=user=>publicProfile(user).displayName;
 
 export async function handleGuidebookRequest(req,res,url){
  const path=url.pathname;
- if(path==='/api/guidebook'&&req.method==='GET'){const s=await load();sendJSON(res,200,{revision:s.revision,pages:publicList(s)});return true;}
- if(path!=='/api/admin/guidebook')return false;
+ if(path==='/api/guidebook'&&req.method==='GET'){
+  const s=await load(),user=await accountUser(req),isEditor=!!user&&can(user,'handbook:edit');
+  sendJSON(res,200,{revision:s.revision,pages:publicList(s),...(isEditor?{editorDrafts:Object.values(s.pages).filter(e=>e.draft||e.published).map(e=>e.draft||e.published).filter(Boolean).sort((a,b)=>(a.order??100)-(b.order??100))}:{})});return true;
+ }
+ if(path!=='/api/admin/guidebook'&&path!=='/api/admin/guidebook/export')return false;
  const user=await accountUser(req);
  if(!user){sendJSON(res,401,{error:'Sign in to continue.'});return true;}
  if(!can(user,'handbook:edit')){sendJSON(res,403,{error:'Your role cannot edit pages. Ask for Handbook Editor access.'});return true;}
+ if(path==='/api/admin/guidebook/export'&&req.method==='GET'){
+  const s=await load();res.writeHead(200,{'content-type':'application/json; charset=utf-8','content-disposition':'attachment; filename="arcana-guidebook-backup.json"','cache-control':'no-store','x-content-type-options':'nosniff'});res.end(JSON.stringify(s,null,2));return true;
+ }
  if(req.method==='GET'){
   const s=await load();
   sendJSON(res,200,{revision:s.revision,canPublish:can(user,'handbook:publish'),entries:Object.entries(s.pages).map(([id,e])=>({id,published:e.published,draft:e.draft,review:e.review,hidden:e.hidden,draftBy:e.draftBy||'',draftAt:e.draftAt||'',history:(e.history||[]).map((h,i)=>({i,at:h.at,by:h.by,title:h.page.title}))}))});
@@ -74,6 +101,7 @@ export async function handleGuidebookRequest(req,res,url){
   if(action==='draft'||action==='review'){e.draft=page;e.review=action==='review';e.draftBy=byline(user);e.draftAt=now;}
   else if(action==='discard'){e.draft=null;e.review=false;}
   else if(action==='publish'){
+   page.status='ready';
    if(page.trust==='verified'&&!page.verifiedBy){page.verifiedBy=byline(user);page.verifiedAt=now;}
    if(e.published)e.history=[{at:now,by:byline(user),page:e.published},...(e.history||[])].slice(0,25);
    e.published=page;e.draft=null;e.review=false;e.publishedBy=byline(user);e.publishedAt=now;
@@ -82,7 +110,7 @@ export async function handleGuidebookRequest(req,res,url){
   else if(action==='restore'){
    const h=(e.history||[])[Number(body.index)];
    if(!h){sendJSON(res,404,{error:'That version is gone.'});return true;}
-   e.history=[{at:now,by:byline(user),page:e.published},...e.history.filter(x=>x!==h)].slice(0,25);e.published=h.page;
+   e.history=[{at:now,by:byline(user),page:e.published},...e.history.filter(x=>x!==h)].slice(0,25);e.published={...h.page,status:'ready'};
   }
   if(!e.published&&!e.draft){delete s.pages[id];s.removed=[...new Set([...(s.removed||[]),id])];}
   s.revision++;

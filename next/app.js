@@ -25,7 +25,7 @@ import { GUIDE_TOOL_OPTIONS, guideInsert } from './guide-editor.js';
 import { retaliationView, initRetaliation } from './retaliation.js';
 import { editorView, initHandbookEditor } from './handbook-editor.js';
 import {guidebookView,initGuidebook} from './guidebook.js';
-import {guidebookEditorView,initGuidebookEditor} from './guidebook-editor.js';
+import {guidebookEditorView,adminGuidebookTab,initGuidebookEditor} from './guidebook-editor.js';
 import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 
@@ -558,7 +558,7 @@ function render() {
   if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'guidebook' ? (id.startsWith('edit/') ? guidebookEditorView(id.slice(5)) : id.startsWith('new/') ? guidebookEditorView(id.slice(4), true) : guidebookView(id)) : section === 'guides' ? guideView(id) : section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? buildView(query) : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'guidebook' ? (id === 'manage' ? adminGuidebookTab() : id.startsWith('edit/') ? guidebookEditorView(id.slice(5)) : id.startsWith('new/') ? guidebookEditorView(id.slice(4), true) : guidebookView(id)) : section === 'guides' ? guideView(id) : section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? buildView(query) : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   // The original triangle, recolored to the site accent the same way the classic theme designer did it.
   const logo = '<img class="nx-logo" src="/assets/arcana-logo.webp" width="38" height="32" alt="">';

@@ -963,6 +963,13 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
 .hb-editbtn { align-self: flex-start; }
 .adm-grid td { text-align: center; } .adm-grid input { width: 20px; height: 20px; accent-color: var(--accent); }
 .he-linkers .nx-field, .he-meta .nx-field { min-width: 0; } .he-linkers select, .he-meta select { width: 100%; min-width: 0; }
+.he-structure { display: grid; grid-template-columns: 1fr 150px; gap: 8px; align-items: end; }
+.he-autosave { position: sticky; bottom: calc(var(--nav) + env(safe-area-inset-bottom)); z-index: 5; margin: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; color: var(--muted); background: color-mix(in srgb, var(--card) 94%, transparent); font-size: 12px; }
+.he-related-list { display: grid; gap: 4px; padding: 0 10px 10px; }
+.he-related-list label { display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 5px; color: var(--text); font-size: 14px; }
+.he-related-list input { width: 20px; height: 20px; flex: none; accent-color: var(--accent); }
+.he-related small { color: var(--muted); font-weight: 400; }
+@media (max-width: 480px) { .he-structure { grid-template-columns: 1fr; } }
 
 /* ---------- rich text additions: h3, notes, plain links (Handbook + guides share one text standard) ---------- */
 .hb-page h3 { font-size: 16px; margin: 14px 0 2px; }
@@ -1142,6 +1149,11 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
 .gb-coming{font-size:14px;line-height:1.6}
 .gb-related{margin:24px 0 10px}
 .gb-home-link{margin-top:18px}
+.gb-start-cta{padding:12px;border:1px solid var(--edge);border-radius:var(--r-lg);background:color-mix(in srgb,var(--accent) 8%,var(--card));line-height:1.55}
+.gb-start-cta a{display:inline-block;color:var(--accent-ink);font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.gb-player-guides{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.gb-player-guides h2{margin:6px 0;font-size:20px}
+.gb-player-guides>p{margin:0 0 12px;color:var(--muted);font-size:13px;line-height:1.5}
 @media(max-width:410px){.gb-pillars{grid-template-columns:1fr}}
 
 /* Session sign-out uses a POST action, never a GET route. */
