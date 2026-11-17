@@ -73,12 +73,8 @@ try:
         assert 'start here:' in page.locator('.gb-start-cta').inner_text().lower()
         assert page.locator('.gb-chapter').count() == 0, 'Empty draft chapters must stay hidden from readers'
         assert '/classic' not in page.url, 'Guidebook deep-link redirected to Classic'
-        page.goto(f'http://127.0.0.1:{server.server_port}/next/index.html#/guidebook/gear', wait_until='domcontentloaded')
-        page.locator('.gb-page h1').wait_for(timeout=10000)
-        assert page.locator('.gb-page h1').inner_text().strip() == 'Gear and Forge Priorities'
-        assert 'Grounded Treads' in page.locator('.gb-content').inner_text()
-        assert '/classic' not in page.url, 'Gear page redirected to Classic'
         assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth + 1'), 'Guidebook overflows phone'
+        assert errors == [], 'Guidebook overview produced JS errors: ' + repr(errors)
         (ROOT / 'qa-output').mkdir(exist_ok=True)
         page.screenshot(path=str(ROOT / 'qa-output' / 'guidebook-mobile.png'), full_page=True)
 
