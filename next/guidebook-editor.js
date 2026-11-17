@@ -44,7 +44,7 @@ export function guidebookEditorView(id, isNew) {
   const tool = (act, label, title) => '<button type="button" data-ge="ins" data-v="' + act + '" title="' + esc(title) + '">' + label + '</button>';
   const status = en?.draft ? (en.review ? 'Waiting for review' : 'Draft saved') + (en.draftBy ? ' by ' + esc(en.draftBy) : '') : en?.hidden ? 'Hidden from readers' : en ? 'Published' : 'New page';
   return '<a class="nx-back" href="' + (isNew ? '#/guidebook/chapter/' + esc(id) : '#/guidebook/' + esc(id)) + '">‹ ' + (isNew ? 'Chapter' : 'Back to page') + '</a>' +
-    '<header class="dz-head"><span><span class="nx-kicker">HANDBOOK EDITOR</span><h1>' + (isNew ? 'New page' : esc(e.title || 'Edit page')) + '</h1></span><span class="dz-status' + (en?.draft ? ' dz-draft' : '') + '">' + status + '</span></header>' +
+    '<header class="dz-head"><span><span class="nx-kicker">GUIDEBOOK EDITOR</span><h1>' + (isNew ? 'New page' : esc(e.title || 'Edit page')) + '</h1></span><span class="dz-status' + (en?.draft ? ' dz-draft' : '') + '">' + status + '</span></header>' +
     '<div class="nx-seg" role="tablist"><button role="tab" aria-selected="' + !E.preview + '" data-ge="mode" data-v="write">Write</button><button role="tab" aria-selected="' + E.preview + '" data-ge="mode" data-v="preview">Preview</button></div>' +
     (E.preview ? '<article class="hb-page he-preview"><header class="hb-head"><span class="nx-kicker">' + esc((chapterOf(e.chapter)?.title || '').toUpperCase()) + '</span><h1>' + esc(e.title) + '</h1></header><p class="hb-answer">' + esc(e.answer) + '</p>' + hbText(e.body) + '</article>' :
     '<section class="nx-tool he-form">' +
@@ -52,12 +52,12 @@ export function guidebookEditorView(id, isNew) {
       field('title', 'Title', 'For example: Pity', 80) +
       (isNew ? field('id', 'Page address', 'made from the title', 60) : '') +
       field('answer', 'One-line answer <small>shown first, in bold</small>', 'Answer the reader’s question in one sentence.', 400, 2) +
-      '<div class="he-toolbar" role="toolbar" aria-label="Insert">' + tool('h2', 'Heading', 'Section heading') + tool('bold', '<b>B</b>', 'Bold') + tool('list', '• List', 'Bullet list') + tool('steps', '1. Steps', 'Numbered steps') + tool('table', 'Table', 'Small table') + '</div>' +
+      '<div class="he-toolbar" role="toolbar" aria-label="Insert">' + tool('h2', 'Heading', 'Section heading') + tool('h3','Subheading','Subheading') + tool('bold', '<b>B</b>', 'Bold') + tool('list', '• List', 'Bullet list') + tool('steps', '1. Steps', 'Numbered steps') + tool('note','Note','Highlighted note') + tool('table', 'Table', 'Small table') + '</div>' +
       '<div class="he-linkers"><label class="nx-field">Link a topic <small>select words in the text first</small><select data-ge="topic"><option value="">Choose a page…</option>' +
         CHAPTERS.map(c => '<optgroup label="' + esc(c.title) + '"><option value="chapter:' + c.id + '">Chapter: ' + esc(c.title) + '</option>' + guidebookPages().filter(p => p.chapter === c.id && p.id !== e.id).map(p => '<option value="' + p.id + '">' + esc(p.title) + '</option>').join('') + '</optgroup>').join('') + '</select></label>' +
         '<label class="nx-field">Add a tool button<select data-ge="tool"><option value="">Choose a tool…</option>' + TOOLS.map(([k, l]) => '<option value="' + k + '">' + l + '</option>').join('') + '</select></label></div>' +
       field('body', 'Page', 'Write in short paragraphs. Blank line between paragraphs.', 30000, 16) +
-      '<details class="nx-help"><summary>How to format</summary><p><b>## Heading</b> starts a section. <b>- item</b> makes a list, <b>1. step</b> numbered steps. <b>**words**</b> is bold. Tables: <b>| A | B |</b> rows, with <b>| --- | --- |</b> under the first. Linked topics look like <b>[[page|words]]</b> and open a preview for readers.</p></details>' +
+      '<details class="nx-help"><summary>How to format</summary><p><b>## Heading</b> starts a section. <b>- item</b> makes a list, <b>1. step</b> numbered steps. <b>**words**</b> is bold. Tables: <b>| A | B |</b> rows, with <b>| --- | --- |</b> under the first. Link Handbook topics with <b>[[topic-id|words]]</b>; use the menu above for links within the Guidebook.</p></details>' +
       '<div class="he-meta"><label class="nx-field">Trust<select data-ge-f="trust">' + TRUST.map(([k, l, d]) => '<option value="' + k + '"' + (k === e.trust ? ' selected' : '') + '>' + l + ' · ' + d + '</option>').join('') + '</select></label>' +
       field('author', 'Author / contributor', 'Zane or contributor name', 100) + field('version', 'Season covered', GUIDEBOOK_VERSION, 40) + '</div></section>') +
     (E.msg ? '<p class="st-err" role="alert">' + esc(E.msg) + '</p>' : '') +
@@ -91,7 +91,7 @@ function insert(kind, value) {
   const a = ta.selectionStart, b = ta.selectionEnd, sel = ta.value.slice(a, b), before = ta.value.slice(0, a), after = ta.value.slice(b);
   const block = t => (before && !before.endsWith('\n\n') ? (before.endsWith('\n') ? '\n' : '\n\n') : '') + t + '\n\n';
   const out = { h2: block('## ' + (sel || 'Heading')), bold: '**' + (sel || 'bold words') + '**', list: block((sel || 'First point\nSecond point').split('\n').map(l => '- ' + l).join('\n')),
-    steps: block((sel || 'First step\nSecond step').split('\n').map((l, i) => (i + 1) + '. ' + l).join('\n')), table: block('| Column | Column |\n| --- | --- |\n| Value | Value |'),
+    steps: block((sel || 'First step\nSecond step').split('\n').map((l, i) => (i + 1) + '. ' + l).join('\n')), table: block('| Column | Column |\n| --- | --- |\n| Value | Value |'), h3: block('### ' + (sel || 'Subheading')), note: block('> ' + (sel || 'Practical note')),
     topic: '[' + (sel || (value.startsWith('chapter:') ? chapterOf(value.slice(8))?.title : guidebookPages().find(p => p.id === value)?.title) || value) + '](#/guidebook/' + (value.startsWith('chapter:') ? 'chapter/' + value.slice(8) : value) + ')', tool: '[[tool:' + value + '|' + (sel || TOOLS.find(t => t[0] === value)?.[1] || value) + ']]' }[kind];
   ta.value = before + out + after; E.edit.body = ta.value; ta.focus(); const pos = (before + out).length; ta.setSelectionRange(pos, pos);
 }
