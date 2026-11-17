@@ -39,5 +39,5 @@ test('Guidebook routes, source server and editor use isolated paths; no producti
  assert.match(editor,/Save draft/);
  assert.match(editor,/data-ge/);
  assert.doesNotMatch(editor,/dataset\?\.he/);
- assert.doesNotMatch(srv,/safeGuidebookRequest[\s\S]*pathname==='\/api\/admin\/handbook'/);
+ assert.match(srv,/pathname==='\/api\/guidebook'\|\|pathname==='\/api\/admin\/guidebook'/);
 });
