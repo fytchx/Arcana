@@ -1122,3 +1122,24 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
 .nx-guide-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; }
 .nx-guide-actions button { min-height: 44px; }
 @media (max-width: 370px) { .nx-guide-linkers { grid-template-columns: minmax(0, 1fr); } }
+
+/* Player Guidebook preview: shares the Handbook reading/layout tokens. */
+.gb-head{margin-bottom:12px}
+.gb-pillars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.gb-pillars>div{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px;min-width:0}
+.gb-pillars strong{display:block;font-size:14px;line-height:1.35;color:var(--text)}
+.gb-pillars p{color:var(--muted);font-size:13px;line-height:1.5;margin:7px 0 0}
+.gb-notice{margin:12px 0}
+.gb-chapters{display:grid;gap:10px}
+.gb-chapter{display:flex;align-items:center;gap:12px;text-decoration:none;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px;color:var(--text)}
+.gb-chapter>span:nth-child(2){flex:1;min-width:0;display:grid;gap:5px}
+.gb-chapter b{font-size:14px}
+.gb-chapter small{color:var(--muted);font-size:12px;line-height:1.45}
+.gb-chaptercount{opacity:.8}
+.gb-page .hb-head{margin-bottom:8px}
+.gb-page .nx-by{margin:0 0 16px;font-size:12px}
+.gb-content{line-height:1.7}
+.gb-coming{font-size:14px;line-height:1.6}
+.gb-related{margin:24px 0 10px}
+.gb-home-link{margin-top:18px}
+@media(max-width:410px){.gb-pillars{grid-template-columns:1fr}}

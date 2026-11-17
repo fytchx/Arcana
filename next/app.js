@@ -24,6 +24,8 @@ import { FEATURED_GUIDES, featuredGuide } from './guides-content.js';
 import { GUIDE_TOOL_OPTIONS, guideInsert } from './guide-editor.js';
 import { retaliationView, initRetaliation } from './retaliation.js';
 import { editorView, initHandbookEditor } from './handbook-editor.js';
+import {guidebookView,initGuidebook} from './guidebook.js';
+import {guidebookEditorView,initGuidebookEditor} from './guidebook-editor.js';
 import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 
@@ -215,6 +217,7 @@ function homeView() {
     (rec.length ? '<details class="nx-recent"><summary>Recently used</summary><div class="nx-recent-list">' + rec.map(t => '<a href="' + esc(t.href) + '">' + ic(t.art || 'tools', 16) + esc(t.short || t.name) + '</a>').join('') + '</div></details>' : '') + '</section>' +
     (evRow || newsRow ? '<section class="nx-strips">' + evRow + newsRow + '</section>' : '') +
     '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredList(3) + '</section>' +
+    '<section class="gb-home-link"><div class="nx-head"><h2 class="nx-label">Player Guidebook</h2><span class="nx-fine">Working draft · Arcana Test</span></div><div class="nx-list">'+row('#/guidebook','Explore the Player Guidebook','Season strategy, classes, pets, runes and gear','books')+'</div></section>' +
     '<p class="nx-fine nx-support">' + esc(SUPPORT_LINE) + ' <a href="' + KOFI + '" target="_blank" rel="noopener">' + esc(SUPPORT_CTA) + '</a></p>';
 }
 // Featured picks come from the owner's list (/api/featured); each build loads through the public
@@ -527,7 +530,7 @@ function noteVisit(section, id) {
 }
 
 // ---------- shell ----------
-const TITLES = { handbook: 'Handbook', directory: 'Directory', lfg: 'LFG', records: 'Records', guilds: 'Guilds', checklist: 'Checklist', feedback: 'Feedback', admin: 'Admin', tools: 'Tools', codex: 'Handbook', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
+const TITLES = { guidebook:'Player Guidebook', handbook: 'Handbook', directory: 'Directory', lfg: 'LFG', records: 'Records', guilds: 'Guilds', checklist: 'Checklist', feedback: 'Feedback', admin: 'Admin', tools: 'Tools', codex: 'Handbook', builds: 'Builds', news: 'News', profile: 'Profile', studio: 'Build Studio', build: 'Shared build' };
 function render() {
   const { section, id, query } = parseHash(location.hash);
   if (section === 'codex' && !id && query.get('kind')) { codexKind = query.get('kind'); codexQuery = ''; history.replaceState(null, '', '#/codex'); }
@@ -535,7 +538,7 @@ function render() {
   if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'guides' ? guideView(id) : section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? buildView(query) : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'guidebook' ? (id.startsWith('edit/') ? guidebookEditorView(id.slice(5)) : id.startsWith('new/') ? guidebookEditorView(id.slice(4), true) : guidebookView(id)) : section === 'guides' ? guideView(id) : section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? buildView(query) : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   // The original triangle, recolored to the site accent the same way the classic theme designer did it.
   const logo = '<img class="nx-logo" src="/assets/arcana-logo.webp" width="38" height="32" alt="">';
@@ -662,6 +665,8 @@ initTheme(render, applyTheme);
 initDesign(render, applyTheme);
 initHandbook(render, () => data.me.value?.user || null);
 initHandbookEditor(render);
+initGuidebook(render,()=>data.me.value?.user||null);
+initGuidebookEditor(render);
 window.addEventListener('arcana:news-changed', () => { data.news.state = 'idle'; data.article = {}; });
 window.addEventListener('arcana:featured-changed', () => { featuredState.state = 'idle'; data.builds.state = 'idle'; });
 // Boot: hold the loading screen until the published design, fonts and account are in (2.5 s at most),
