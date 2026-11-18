@@ -23,8 +23,8 @@ Don't force Retaliation before the pieces come together. Keep progressing with t
 
 ## Save these for the pivot
 
-- **Gear:** keep high-Defense base armor and pieces with strong Reflecting or Armored bonuses. Also keep useful Strength and Retaliation rolls rather than salvaging them just because they do not fit your current item.
-- **Runes:** save small runes and Retaliation secondaries until you can assemble a working grid. Avoid breaking a useful setup for a partial Retaliation one.
+- **Gear:** keep high-Defense bases, especially chest and helm, pieces with useful Reflecting or Armored drop bonuses, and good Strength or Retaliation rolls. My rough slot priority is chest > helm > gloves and boots > rings, belt and amulet > weapon and shield > Torch. A standout drop can change the order.
+- **Runes:** save useful small runes with Retaliation or Strength secondaries, and keep the pieces needed for a runeword that suits the build. Don't break a working grid for a partial upgrade.
 - **Pets:** save Strength and Retaliation options, and don't let a flat Strength pet fall behind while leveling the others.
 - **Materials:** spend on upgrades that help your current progression. Hold rare materials when an upgrade is only a minor improvement to temporary gear.
 
