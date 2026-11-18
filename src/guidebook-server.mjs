@@ -15,7 +15,7 @@ const CHAPTER_IDS=new Set(CHAPTERS.map(c=>c.id));
 const TRUST=new Set(['verified','config','estimated','legacy']);
 const ID=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SEED=ORIGINAL_SEED.map(p=>({...p,...(SEED_UPDATES[p.id]||{})})).concat(NEW_SEED_PAGES);
-const SEED_STRUCTURE_VERSION=2;
+const SEED_STRUCTURE_VERSION=3;
 const contentFingerprint=p=>p?createHash('sha256').update(JSON.stringify({title:p.title,answer:p.answer,body:p.body})).digest('hex'):'';
 const text=(v,max)=>String(v??'').replace(/\r\n/g,'\n').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').slice(0,max);
 let chain=Promise.resolve();
@@ -41,7 +41,7 @@ const editorPage=(p,i)=>({published:null,draft:{...p,order:Number.isFinite(p.ord
 function syncStructure(page,seed){
  if(!page||!seed)return page;
  // Keep every saved word. Only move pages into the new approved chapter sequence.
- return {...page,chapter:seed.chapter,order:seed.order,related:seed.related||[]};
+ return {...page,chapter:seed.chapter,order:seed.order,related:seed.related||[],...(seed.status==='planned'?{status:'planned'}:{})};
 }
 async function load(){
  const saved=await readJSON(file());
@@ -49,6 +49,12 @@ async function load(){
   // New pages enter the editor as private drafts. The reader only receives explicitly approved pages.
   const seeds=new Map(SEED.map(p=>[p.id,p])),migrateStructure=Number(saved.structureVersion||0)<SEED_STRUCTURE_VERSION;
   const originals=new Map(ORIGINAL_SEED.map(p=>[p.id,p])),migrateApprovedCopy=Number(saved.contentVersion||0)<1;
+  // Fold the existing live drafts together at migration time, so edits made inside Test survive
+  // the compact page structure as well as the original source text.
+  if(migrateStructure&&!saved.pages['systems-progression']){
+   const source=['systems-overview','grind-ml'].map(id=>saved.pages[id]?.draft||saved.pages[id]?.published).filter(Boolean);
+   if(source.length){const merged={...seeds.get('systems-progression'),body:source.map(p=>'## '+p.title+'\n\n'+(p.answer||'')+'\n\n'+(p.body||'')).join('\n\n')};saved.pages['systems-progression']=editorPage(merged,0);}
+  }
   SEED.forEach((p,i)=>{if(!saved.pages[p.id]&&!(saved.removed||[]).includes(p.id))saved.pages[p.id]=editorPage(p,i);});
   Object.entries(saved.pages).forEach(([id,e])=>{
    const seed=seeds.get(id);

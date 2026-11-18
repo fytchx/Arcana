@@ -1,9 +1,9 @@
-// Arcana Player Guidebook. Strategy content is separate from the Handbook, Fandom and community posts.
+// The Season 3 Playbook reader and navigation.
 // Test preview: all imported pages are clearly marked as unfinished; editing requires Handbook editorial access.
 import {esc,ic} from './core.js';
 import {hbText} from './handbook.js';
 import {CHAPTERS,EXTERNAL_CLASS_GUIDES} from './guidebook-content.js';
-let live=[],byId=new Map(),loadState='idle',rerender=()=>{},currentUser=()=>null;
+let live=[],byId=new Map(),loadState='idle',rerender=()=>{},currentUser=()=>null,playerGuideState='idle',playerGuideIds=[],playerGuideItems=[];
 export const chapterOf=id=>CHAPTERS.find(c=>c.id===id);
 export const guidebookPages=()=>live;
 export function setGuidebookPages(pages) {
@@ -18,6 +18,12 @@ export function loadGuidebook(force=false) {
     .then(j=>{if(j?.pages)setGuidebookPages(j.editorDrafts||j.pages);loadState='ready';rerender();})
     .catch(()=>{loadState='error';rerender();});
 }
+function loadPlayerGuideIds(force=false){
+ if(!force&&playerGuideState!=='idle')return;
+ playerGuideState='loading';
+ Promise.all([fetch('/api/playbook-guides',{credentials:'same-origin',cache:'no-store'}).then(r=>r.ok?r.json():null),fetch('/api/community/posts?kind=guide',{credentials:'same-origin',cache:'no-store'}).then(r=>r.ok?r.json():null)])
+  .then(async([f,g])=>{playerGuideIds=Array.isArray(f?.items)?f.items:[];const posts=(g?.posts||[]).filter(p=>playerGuideIds.includes(p.id));playerGuideItems=await Promise.all(posts.map(async p=>{try{const d=await fetch('/api/community/posts/'+encodeURIComponent(p.id),{credentials:'same-origin',cache:'no-store'}).then(r=>r.ok?r.json():null);return {...p,author:d?.author?.displayName||'Arcana player'};}catch{return {...p,author:'Arcana player'};}}));playerGuideState='ready';}).catch(()=>{playerGuideIds=[];playerGuideItems=[];playerGuideState='error';}).finally(rerender);
+}
 const count=ch=>live.filter(p=>p.chapter===ch&&p.status!=='awaiting').length;
 const status=p=>p.status==='ready'?'Published on Test':p.status==='awaiting'?'Contributor draft pending':p.status==='planned'?'Planned section':'Working draft · editor preview';
 const classArt=name=>'<img src="/assets/icons/idlearc-refined/classes/class-'+name+'.svg" alt="" loading="lazy">';
@@ -29,9 +35,9 @@ const GUIDE_ART={
 };
 const row=(p)=>'<a class="nx-row gb-row" href="#/guidebook/'+esc(p.id)+'">'+(GUIDE_ART[p.id]?'<span class="gb-row-art">'+GUIDE_ART[p.id]+'</span>':'')+'<span class="nx-row-text"><strong>'+esc(p.title)+'</strong><small>'+esc(p.answer)+'</small>'+(p.chapter==='player-guides'?'<small class="gb-row-by">By '+esc(p.author||'Contributor pending')+'</small>':'')+'</span><span class="nx-row-end">›</span></a>';
 const linked=(href,t,detail,id='')=>'<a class="nx-row gb-row" href="'+href+'">'+(GUIDE_ART[id]?'<span class="gb-row-art">'+GUIDE_ART[id]+'</span>':'')+'<span class="nx-row-text"><strong>'+esc(t)+'</strong><small>'+esc(detail)+'</small></span><span class="nx-row-end">›</span></a>';
-const classCompass=()=>'<section class="gb-class-compass"><div class="gb-compass-head"><span class="nx-kicker">A QUICK CLASS COMPASS</span><h2>Choose what sounds fun</h2><p>These are starting identities, not complete builds. Your class and your damage direction are related choices, but they are not the same thing.</p></div><div class="gb-class-grid">'+[
- ['warrior','Warrior','Melee combat · Attack or Retaliation'],['rogue','Rogue','Fast attacks · a flexible farming start'],['archer','Archer','Ranged attacks · marks and pets'],['mage','Mage','Spell-focused damage'],['druid','Druid','A pet-centered playstyle']
- ].map(([id,name,desc])=>'<div class="gb-class-tile'+(id==='rogue'?' gb-class-featured':'')+'">'+classArt(id)+'<b>'+name+'</b><small>'+desc+'</small></div>').join('')+'</div><a class="gb-route-card" href="#/guidebook/rogue-explore"><span class="gb-route-mark">'+buildArt('attack-damage')+classArt('rogue')+'</span><span><small class="nx-kicker">A PRACTICAL STARTING ROUTE</small><b>Attack Damage Rogue</b><small>My recommended route for a new season. The combined guide also covers Mage and Warrior.</small></span><span class="nx-row-end">›</span></a><div class="gb-class-links"><a href="#/guidebook/harmony-overview">Understand Harmony in general <span>›</span></a><a href="#/guidebook/chapter/player-guides">Browse the separate Player Guides <span>›</span></a></div></section>';
+const classCompass=()=>'<section class="gb-class-compass"><div class="gb-compass-head"><span class="nx-kicker">CLASS & BUILD TYPES</span><h2>Choose what sounds fun</h2><p>Choose a class, then pick a build direction.</p></div><div class="gb-class-grid">'+[
+ ['warrior','Warrior',['Retaliation','Attack Damage']],['rogue','Rogue',['Attack Damage','Harmony']],['mage','Mage',['Attack Damage','Harmony']],['archer','Archer',['Pet Damage','Harmony']],['druid','Druid',['Pet Damage','Harmony']]
+ ].map(([id,name,builds])=>'<div class="gb-class-tile'+(id==='rogue'?' gb-class-featured':'')+'"><div class="gb-class-name">'+classArt(id)+'<b>'+name+'</b></div><div class="gb-build-types">'+builds.map(type=>'<span>'+buildArt(type==='Pet Damage'?'pet-damage':type.toLowerCase().replaceAll(' ','-'))+type+'</span>').join('')+'</div></div>').join('')+'</div><a class="gb-route-card" href="#/guidebook/rogue-explore"><span class="gb-route-mark">'+buildArt('attack-damage')+classArt('rogue')+'</span><span><small class="nx-kicker">A GREAT BUILD FOR NEW PLAYERS</small><b>Attack Damage · Rogue, Mage and Warrior</b><small>Start with Rogue. Switching class later is manageable.</small></span><span class="nx-row-end">›</span></a><div class="gb-class-links"><a href="#/guidebook/harmony-overview">Harmony overview <span>›</span></a><a href="#/guidebook/chapter/player-guides">Browse Player Guides <span>›</span></a></div></section>';
 const guideHero=p=>{
  if(p.id==='harmony-overview')return '<div class="gb-guide-hero"><span class="gb-guide-build">'+buildArt('harmony')+'</span><span><small class="nx-kicker">BUILD DIRECTION</small><b>Harmony</b><small>Attack Damage and Pet Damage, considered together</small></span></div>';
  if(p.id==='rogue-explore')return '<div class="gb-guide-hero"><span class="gb-guide-classes">'+classArt('rogue')+classArt('mage')+classArt('warrior')+'</span><span><small class="nx-kicker">PLAYER GUIDE · THREE CLASSES</small><b>One Attack Damage foundation</b><small>Rogue · Mage · Warrior</small></span><span class="gb-guide-build">'+buildArt('attack-damage')+'</span></div>';
@@ -39,35 +45,44 @@ const guideHero=p=>{
 };
 function home(){
   const editor=!!currentUser()?.permissions?.editHandbook;
-  return '<header class="hb-head gb-head"><span class="nx-kicker">SEASON 3 PLAYER GUIDEBOOK</span><h1>The Season 3 Playbook</h1><p>This is a practical walkthrough for approaching the new season. Read it in order for the full route, or jump to a system or build guide when that is what you need. Player Guides are separate, credited build articles.</p><p>The Handbook and Fandom wiki are the places to check confirmed mechanics and detailed references. This collection focuses on strategy: why you might choose a path, when a detour is useful, and when to keep progressing.</p><p class="gb-start-cta"><strong>If you\'re interested in learning how you can start Season 3 like a pro would, start here:</strong> <a href="#/guidebook/start-season">Starting Season 3</a></p></header>'+
+  const pages=id=>live.filter(p=>p.chapter===id&&(p.status==='ready'||editor&&p.status!=='awaiting')&&!['systems-overview','grind-ml'].includes(p.id)).sort((a,b)=>a.order-b.order);
+  const item=p=>'<a class="playbook-outline-item" href="'+(p.href||('#/guidebook/'+esc(p.id)))+'"><span><b>'+esc(p.title)+'</b><small>'+esc(p.answer)+'</small></span><span>›</span></a>';
+  const group=(title,items,open=false)=>'<details class="playbook-outline"'+(open?' open':'')+'><summary><span>'+title+'</span><small>'+items.length+' '+(items.length===1?'page':'pages')+'</small></summary><div class="playbook-outline-list">'+items.map(item).join('')+'</div></details>';
+  const start=[...pages('transition'),...pages('classes')],deep=['pets','runes','gear','endgame'].flatMap(pages),system=pages('systems'),closing=pages('conclusion');
+  loadPlayerGuideIds();
+  return '<header class="hb-head gb-head"><span class="nx-kicker">SEASON 3</span><h1>The Season 3 Playbook</h1><p>A practical route from your first class choice through Monster Level, core systems and endgame. Follow the path in order or open a section you need.</p><p class="gb-start-cta"><strong>If you\'re interested in learning how you can start Season 3 like a pro would, start here:</strong> <a href="#/guidebook/start-season">Starting Season 3</a></p></header>'+
   '<div class="gb-pillars"><div><strong>Prepare, then let drops shape the route</strong><p>Choose a direction early, but keep useful options until you know what the season gives you.</p></div><div><strong>Keep Monster Level moving</strong><p>Stop to farm or upgrade when the gain is worth the time, then return to progression.</p></div></div>'+
   (editor?'<p><a class="nx-btn" href="#/guidebook/manage">Open the private Guidebook editor</a></p>':'')+
-  '<div class="gb-chapters">'+CHAPTERS.filter(ch=>ch.id!=='player-guides'&&(editor||live.some(p=>p.chapter===ch.id))).map(ch=>{
-    const pages=live.filter(p=>p.chapter===ch.id);
-    return '<a class="gb-chapter" href="#/guidebook/chapter/'+ch.id+'"><span class="nx-ic">'+ic(ch.icon,24)+'</span><span><b>'+ch.n+' · '+esc(ch.title)+'</b><small>'+esc(ch.ask)+'</small><small class="gb-chaptercount">'+(pages.length?pages.length+' pages in this view':'Reserved for future guides')+'</small></span><span class="nx-row-end">›</span></a>';
-  }).join('')+'</div>'+(editor||live.some(p=>p.chapter==='player-guides')?'<section class="gb-player-guides"><span class="nx-kicker">SEPARATE COLLECTION</span><h2>Player Guides</h2><p>Long-form builds with their own author credit, kept apart from the main walkthrough.</p>'+(()=>{const ch=chapterOf('player-guides'),pages=live.filter(p=>p.chapter==='player-guides').sort((a,b)=>a.order-b.order);return '<a class="gb-chapter" href="#/guidebook/chapter/player-guides"><span class="nx-ic">'+ic(ch.icon,24)+'</span><span><b>Player-written builds</b><small>'+esc(ch.ask)+'</small><small class="gb-chaptercount">'+pages.length+' entries in this view</small></span><span class="nx-row-end">›</span></a>';})()+'</section>':'')+
-  (!editor&&!live.length?'<div class="nx-empty"><strong>Guidebook pages are still under review.</strong><p>They will appear here after approval.</p></div>':'');
+  '<div class="playbook-outline-groups">'+group('Start Here',start,true)+(system.length?group('Systems & Progression',system):'')+(deep.length?group('Deep Dives',deep):'')+group('Player Guides',EXTERNAL_CLASS_GUIDES.map(x=>({title:x.title,answer:x.detail,href:x.href})).concat(pages('player-guides').map(p=>({id:p.id,title:p.title,answer:p.answer})),playerGuideItems.map(p=>({title:p.title,answer:(p.summary||'')+' · By '+p.author,href:'#/builds/'+encodeURIComponent(p.id)}))))+(closing.length?group('Conclusion',closing):'')+'</div>';
 }
 function chapterView(id){
   const ch=chapterOf(id);
   if(!ch)return '<div class="nx-empty">Chapter not found.</div>';
-  const pages=live.filter(p=>p.chapter===id).sort((a,b)=>a.order-b.order);
-  const ext=id==='player-guides'?EXTERNAL_CLASS_GUIDES.map(x=>linked(x.href,x.title,x.detail+' · By '+x.author,x.id)).join(''):'';
-  return '<a class="nx-back" href="#/guidebook">‹ Player Guidebook</a><header class="hb-head gb-head"><span class="nx-kicker">CHAPTER '+ch.n+'</span><h1>'+esc(ch.title)+'</h1><p>'+esc(ch.ask)+'</p></header>'+
+  const editor=!!currentUser()?.permissions?.editHandbook;
+  const pages=live.filter(p=>p.chapter===id&&(p.status==='ready'||editor&&p.status!=='awaiting')&&!['systems-overview','grind-ml'].includes(p.id)).sort((a,b)=>a.order-b.order);
+  if(id==='player-guides'){
+   loadPlayerGuideIds();
+   const content=playerGuideState==='loading'&&playerGuideIds.length===0?'<div class="nx-loading">Loading guides…</div>':playerGuideState==='error'?'<div class="nx-empty"><strong>Couldn’t load the featured guides</strong><button class="nx-btn" data-gb-guides-reload>Try again</button></div>':playerGuideItems.length?'<div class="nx-list">'+playerGuideItems.map(p=>'<a class="nx-row gb-row" href="#/builds/'+encodeURIComponent(p.id)+'"><span class="nx-row-text"><strong>'+esc(p.title)+'</strong><small>'+esc(p.summary||'')+'</small><small class="gb-row-by">By '+esc(p.author)+'</small></span><span class="nx-row-end">›</span></a>').join('')+'</div>':'<div class="nx-empty"><strong>More guides are on the way</strong></div>';
+   const ext=EXTERNAL_CLASS_GUIDES.map(x=>linked(x.href,x.title,x.detail+' · By '+x.author,x.id)).join('');
+   const harmony=pages.filter(p=>p.id==='harmony-overview');
+   return '<a class="nx-back" href="#/guidebook">‹ The Season 3 Playbook</a><header class="hb-head gb-head"><span class="nx-kicker">PLAYER GUIDES</span><h1>'+esc(ch.title)+'</h1><p>'+esc(ch.ask)+'</p></header>'+(harmony.length?'<section class="playbook-guide-type"><h2 class="nx-label">Harmony</h2><div class="nx-list">'+harmony.map(row).join('')+'</div></section>':'')+(ext?'<section class="playbook-guide-type"><h2 class="nx-label">Featured guides</h2><div class="nx-list">'+ext+'</div></section>':'')+'<section class="playbook-guide-type"><h2 class="nx-label">Player guides</h2>'+content+'</section>';
+  }
+  return '<a class="nx-back" href="#/guidebook">‹ The Season 3 Playbook</a><header class="hb-head gb-head"><span class="nx-kicker">'+esc(ch.title.toUpperCase())+'</span><h1>'+esc(ch.title)+'</h1><p>'+esc(ch.ask)+'</p></header>'+
     (pages.length?'<div class="nx-list">'+pages.map(row).join('')+'</div>':'<div class="nx-empty"><strong>Being planned</strong><p>This chapter is reserved for future articles.</p></div>')+
     (ext?'<section><h2 class="nx-label">Existing class guide</h2><div class="nx-list">'+ext+'</div></section>':'');
 }
 function pageView(id){
   const p=byId.get(id);
-  if(!p)return '<a class="nx-back" href="#/guidebook">‹ Player Guidebook</a><div class="nx-empty"><strong>This Guidebook page is still under review.</strong><p>Approved pages will appear here when they are ready.</p></div>';
+  if(!p)return '<a class="nx-back" href="#/guidebook">‹ The Season 3 Playbook</a><div class="nx-empty"><strong>This page is still under review.</strong><p>It will appear here when it is ready.</p></div>';
   const ch=chapterOf(p.chapter), rank=x=>CHAPTERS.findIndex(c=>c.id===x.chapter)*1000+(x.order||0), all=live.filter(x=>x.status!=='awaiting'&&x.status!=='planned').sort((a,b)=>rank(a)-rank(b)), pos=all.findIndex(x=>x.id===id), next=all[pos+1]||null;
   const related=(p.related||[]).map(x=>byId.get(x)).filter(Boolean);
   const canEdit=!!currentUser()?.permissions?.editHandbook;
-  return '<a class="nx-back" href="#/guidebook/chapter/'+esc(p.chapter)+'">‹ '+esc(ch?.title||'Guidebook')+'</a>'+
-  '<article class="hb-page gb-page"><header class="hb-head"><span class="nx-kicker">'+esc(ch?.title.toUpperCase()||'PLAYER GUIDEBOOK')+' · '+esc(status(p))+'</span><h1>'+esc(p.title)+'</h1></header>'+
+  if(p.chapter==='player-guides')return '<a class="nx-back" href="#/guidebook/chapter/player-guides">‹ Player Guides</a><article class="nx-article"><span class="nx-kicker">PLAYER GUIDE · '+esc(status(p).toUpperCase())+'</span><h1>'+esc(p.title)+'</h1><p class="nx-deck">'+esc(p.answer)+'</p><p class="nx-by">by <b>'+esc(p.author||'Contributor pending')+'</b></p>'+(p.status==='awaiting'?'<p class="gb-coming">This guide is being prepared.</p>':'<div class="hb-page gd-body">'+hbText(p.body)+'</div>')+'</article>'+(canEdit?'<p><a class="nx-btn" href="#/guidebook/edit/'+esc(p.id)+'">Edit this page</a></p>':'');
+  return '<a class="nx-back" href="#/guidebook/chapter/'+esc(p.chapter)+'">‹ '+esc(ch?.title||'The Season 3 Playbook')+'</a>'+
+  '<article class="hb-page gb-page"><header class="hb-head"><span class="nx-kicker">'+esc(ch?.title.toUpperCase()||'THE SEASON 3 PLAYBOOK')+' · '+esc(status(p))+'</span><h1>'+esc(p.title)+'</h1></header>'+
   '<p class="hb-answer">'+esc(p.answer)+'</p>'+guideHero(p)+(p.id==='choose-class'?classCompass():'')+'<p class="nx-by">By <b>'+esc(p.author||'Contributor pending')+'</b> · '+esc(p.version||'Season 2 working draft')+'</p>'+
   (p.status==='awaiting'?'<p class="gb-coming">The contributor has not submitted this article yet. We have reserved its position without inventing a build.</p>':'<div class="gb-content">'+hbText(p.body)+'</div>')+
-  '</article>'+(canEdit?'<p><a class="nx-btn" href="#/guidebook/edit/'+esc(p.id)+'">Edit this Guidebook draft</a></p>':'<p class="nx-fine">Editing is available to authorized Arcana Handbook editors. Sign in to edit drafts.</p>')+
+  '</article>'+(canEdit?'<p><a class="nx-btn" href="#/guidebook/edit/'+esc(p.id)+'">Edit this page</a></p>':'')+
   (related.length?'<section class="gb-related"><h2 class="nx-label">Useful next reading</h2><div class="nx-list">'+related.slice(0,3).map(row).join('')+'</div></section>':'')+
   (next?'<a class="hb-next" href="#/guidebook/'+esc(next.id)+'"><small>Continue</small><b>'+esc(next.title)+'</b><span>›</span></a>':'');
 }
@@ -80,5 +95,5 @@ export function guidebookView(id=''){
 }
 export function initGuidebook(render,getUser){
  rerender=render;currentUser=getUser;
- document.addEventListener('click',e=>{if(e.target.closest('[data-gb-reload]')){loadState='idle';loadGuidebook(true);}});
+ document.addEventListener('click',e=>{if(e.target.closest('[data-gb-reload]')){loadState='idle';loadGuidebook(true);}if(e.target.closest('[data-gb-guides-reload]')){playerGuideState='idle';loadPlayerGuideIds(true);}});
 }

@@ -1,5 +1,18 @@
 // Owner-directed refreshes for the private Season 3 Test workspace.
 // The original draft text remains in guidebook-seed.mjs as an intact source copy.
+import {PAGES as ORIGINAL_PAGES} from './guidebook-seed.mjs';
+const original = Object.fromEntries(ORIGINAL_PAGES.map(p=>[p.id,p]));
+const systems = original['systems-overview'];
+const progression = original['grind-ml'];
+const combinedOverview = {
+  ...systems,
+  id:'systems-progression',
+  title:'Systems & Progression',
+  chapter:'systems',
+  answer:'Get the essentials of gear, pets and runes, then keep Monster Level moving while you build.',
+  body:`## Gear, pets and runes\n\n${systems.answer}\n\n${systems.body}\n\n## Monster Level and progression\n\n${progression.answer}\n\n${progression.body}`,
+  status:'review', order:10, related:['choose-class','pets','runes','gear']
+};
 export const SEED_UPDATES = {
   'choose-class': {
     title: 'Choosing a Class',
@@ -8,7 +21,7 @@ export const SEED_UPDATES = {
 
 ## The quick recommendation
 
-If you want a practical starting route, I recommend **Attack Damage Rogue**. Rogue is a strong early farming choice, and the same broad Attack Damage direction can also work on Mage and Warrior. The full setup belongs in one separate [Attack Damage Player Guide](#/guidebook/rogue-explore), so this page can stay focused on choosing.
+If you want a practical starting route, I recommend **Attack Damage Rogue**. Rogue is a strong early farming choice, and the same broad Attack Damage direction can also work on Mage and Warrior. For the full setup, open [Attack Damage: Rogue, Mage and Warrior](#/guidebook/rogue-explore) in Player Guides.
 
 ## Choose by what sounds fun
 
@@ -18,7 +31,7 @@ If you want a practical starting route, I recommend **Attack Damage Rogue**. Rog
 - **Mage:** spell-focused skills and several ways to build around direct damage.
 - **Druid:** a pet-centered identity with room to experiment.
 
-These are starting impressions, not complete builds or promises about the strongest class. The Handbook explains the current class skills; individual Player Guides show how their authors put a build together.
+These are starting impressions, not complete builds or promises about the strongest class. The Player Guides show how each author develops a specific build.
 
 ## Switching later is manageable
 
@@ -28,14 +41,13 @@ Keep promising drops while you're still learning what your next build might need
 
 ## Follow a player's build
 
-Want a step-by-step setup instead of a broad overview? Browse the separate, credited [Player Guides](#/guidebook/chapter/player-guides). Start with the combined Attack Damage guide for Rogue, Mage and Warrior, or choose a different guide when one is available. The Harmony overview is separate from the contributor-written Harmony Rogue build.`
+Want a step-by-step setup? Browse the [Player Guides](#/guidebook/chapter/player-guides). Start with the combined Attack Damage guide for Rogue, Mage and Warrior, or choose another build.`
   },
   'rogue-explore': {
     title: 'Attack Damage: Rogue, Mage and Warrior',
     answer: 'One flexible Attack Damage route for three classes, with Rogue as the recommended starting point.',
     body: `This is one guide for Attack Damage Rogue, Mage and Warrior. They share the same broad gear, pet and rune direction; their class skills are what make each version feel different. I recommend starting with Rogue if you want to farm efficiently, then let your drops and interests shape what comes next.
 
-This is player strategy drawn from earlier seasons, not a guarantee about Season 3. Check the Handbook for current skill descriptions and the Fandom wiki for reference details.
 
 ## Why start with Rogue
 
@@ -58,7 +70,7 @@ The three classes can use a similar foundation:
 
 The class skill tree changes; the overall Attack Damage direction does not need to. Use the class's own damage skills and keep the rest of your setup focused on the same goal. The current skill descriptions and unlocks live in the [Handbook](#/handbook/classes).
 
-This guide intentionally stays with Attack Damage Rogue, Mage and Warrior. Retaliation Warrior has its own separate guide. Harmony is a different damage direction, and the Harmony Rogue guide is being written separately by its contributor. Archer and Druid also have their own reserved guide pages; their authors' advice will live there rather than being folded into this one.
+Retaliation Warrior, Harmony Rogue, Archer and Druid each have their own guide.
 
 ## Keep Monster Level moving
 
@@ -70,19 +82,30 @@ Choose a direction, then stay open to better options. A useful pet, rune or piec
   }
 };
 
+SEED_UPDATES['systems-overview']={chapter:'systems',status:'planned'};
+SEED_UPDATES['grind-ml']={chapter:'systems',status:'planned'};
+SEED_UPDATES['harmony-overview']={chapter:'player-guides'};
+
 export const NEW_SEED_PAGES = [
+  combinedOverview,
+  {
+    id:'endgame-overview', title:'Endgame', chapter:'endgame',
+    answer:'This page is reserved for the endgame deep dive.',
+    body:'', author:'Zane', status:'planned', trust:'estimated',
+    version:'Season 3 Playbook', order:10, related:['gear','pets','runes']
+  },
   {
     id: 'harmony-overview',
     title: 'Harmony: The General Build Direction',
-    chapter: 'classes',
+    chapter: 'player-guides',
     answer: 'Harmony rewards a build that meaningfully uses both Attack Damage and Pet Damage.',
-    body: `Harmony is a general build direction, not another name for the Harmony Rogue guide. It boosts Attack Damage and Pet Damage together, and its bonus grows with Monster Level. The Handbook's [Stances page](#/handbook/stances) has the current mechanics.
+    body: `Harmony combines Attack Damage and Pet Damage, and its bonus grows with Monster Level. The [Stances page](#/handbook/stances) has the skill details.
 
 ## What Harmony asks of a build
 
 Harmony is most useful when both your attacks and your pets contribute meaningful damage. If nearly all of your damage comes from only one source, compare the focused Aggressive or Beastmaster stance instead. The best choice depends on your actual build and damage split.
 
-That gives you room to explore different classes. Rogue, Mage and Archer can each approach Harmony differently; a contributor's Harmony Rogue Player Guide will cover one specific setup without standing in for the whole build type.
+That gives you room to explore different classes. Rogue, Mage and Archer can each approach Harmony differently. The Harmony Rogue guide shows one way to build around it.
 
 ## Before you commit
 
@@ -90,7 +113,7 @@ That gives you room to explore different classes. Rogue, Mage and Archer can eac
 - Test the result after changing your stance or equipment; don't assume the label alone makes a setup stronger.
 - If your current build is still one-shotting, keep pushing Monster Level and save a larger rebuild for when it has a clear purpose.
 
-This page is the general strategy overview. The [separate Player Guides](#/guidebook/chapter/player-guides) contain individual player builds and keep their authors' advice and credit intact.`,
+Browse the [Player Guides](#/guidebook/chapter/player-guides) for individual builds.`,
     author: 'Zane',
     status: 'review',
     trust: 'config',
