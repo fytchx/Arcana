@@ -118,6 +118,7 @@ For gear comparisons, the [Retaliation planner](#/tools/retaliation) can help ra
 
 These figures are from my earlier character at **Level 404 and ML 314**. They are a snapshot of one build at that point, not targets for Season 3. The detailed gear and skill screens should be reviewed before using them as a current template.
 
+Table: My previous endgame character
 | Example | Previous value |
 | --- | --- |
 | Retaliation per attack, boss setup | 16.83qa average |
@@ -130,7 +131,7 @@ The lesson from that setup was to compare the size of each change against the wh
 
 ## What I would check before copying my old setup
 
-The earlier version of this guide included exact formulas, breakpoints, drop ranges, gem values, pet odds and skill caps. Those details need a fresh check against the current game before I recommend them as Season 3 facts. The original article and its full tables are preserved in the archived copy linked from the editor notes.
+The earlier version of this guide included exact formulas, breakpoints, drop ranges, gem values, pet odds and skill caps. Those details need a fresh check against the current game before I recommend them as Season 3 facts. The full prior article, including its original tables and exact character snapshot, is preserved in the Test repository archive.
 
 For now, use the old snapshot as a case study, compare against your own live stats, and let your drops decide which upgrade is worth making next.`
   }
