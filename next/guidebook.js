@@ -54,7 +54,7 @@ function home(){
   loadPlayerGuideIds();
   return '<div class="playbook-home"><header class="hb-head gb-head playbook-home-head"><span class="nx-kicker">SEASON 3</span><h1>The Season 3 Playbook</h1><p>Choose a direction, plan ahead, and save gear, pets, and runes that could open another path. Let your drops shape the build, but keep pushing Monster Level—detour only when it helps you progress.</p><p class="playbook-start-link"><strong>If you\'re interested in learning how you can start Season 3 like a pro would, start here:</strong> <a href="#/guidebook/start-season">Starting Season 3</a></p></header>'+
   
-  (contributors.length?'<p class="playbook-contributors"><span class="nx-kicker">CONTRIBUTORS</span> '+contributors.map(x=>esc(x)).join(' · ')+'</p>':'')+
+  (contributors.length?'<p class="playbook-contributors"><span class="nx-kicker">CONTRIBUTORS</span> '+contributors.map(x=>esc(typeof x==='string'?x:x?.displayName||'Arcana player')).join(' · ')+'</p>':'')+
   (editor?'<a class="playbook-editor-link" href="#/guidebook/manage">Edit Playbook content <span aria-hidden="true">›</span></a>':'')+
   '<div class="playbook-outline-groups">'+groups.map((entry,i)=>group(entry[0],String(i+1).padStart(2,'0'),entry[1],entry[2],entry[3]||false)).join('')+'</div></div>';
 }
