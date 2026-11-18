@@ -41,7 +41,7 @@ const editorPage=(p,i)=>({published:null,draft:{...p,order:Number.isFinite(p.ord
 function syncStructure(page,seed){
  if(!page||!seed)return page;
  // Keep every saved word. Only move pages into the new approved chapter sequence.
- return {...page,chapter:seed.chapter,order:seed.order,related:seed.related||[],...(seed.status==='planned'?{status:'planned'}:{})};
+ return {...page,chapter:seed.chapter,order:seed.order,related:Array.isArray(page.related)?page.related:(seed.related||[]),...(seed.status==='planned'?{status:'planned'}:{})};
 }
 async function load(){
  const saved=await readJSON(file());
