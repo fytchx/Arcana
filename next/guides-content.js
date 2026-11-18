@@ -6,6 +6,44 @@
 
 export const FEATURED_GUIDES = [
   {
+    id: 'attack-damage',
+    title: 'Attack Damage: Rogue, Mage and Warrior',
+    summary: 'One flexible Attack Damage route for three classes, with Rogue as the recommended starting point.',
+    author: 'Zane', cls: 'rogue', classLabel: 'ROGUE · MAGE · WARRIOR', stance: 'attack-damage', updated: '2026-11-17', gameVersion: 'Season 3 review draft', level: 'Any stage', readTime: '5 min',
+    body: `This is one guide for Attack Damage Rogue, Mage and Warrior. They share the same broad gear, pet and rune direction; their class skills are what make each version feel different. I recommend starting with Rogue if you want to farm efficiently, then let your drops and interests shape what comes next.
+
+## Why start with Rogue
+
+Rogue is my preferred starting class because its skill tree offers useful farming tools while you level. That gives you more chances to find upgrades and materials as you build toward an Attack Damage setup.
+
+## A simple leveling route
+
+Start by improving Rogue's direct attacks and Double Hit skills. As you level, balance damage with farming utility: if you are still one-shotting your target, take useful utility; if your kills are slowing down, put more points toward damage. Check the current Handbook skill pages before copying exact ranks, because class skill details can change.
+
+## The shared Attack Damage foundation
+
+The three classes can use a similar foundation:
+
+- Prioritize gear and upgrades that improve Attack Damage and the attributes your setup uses.
+- Keep useful Attack Damage runes and pets while you are still deciding what to play.
+- Save gear with a strong roll instead of replacing it just because a new item dropped.
+- Test your kill speed after changing a build. If the change costs one-shots, revisit it before investing more.
+
+## What changes between Rogue, Mage and Warrior
+
+The class skill tree changes; the overall Attack Damage direction does not need to. Use the class's own damage skills and keep the rest of your setup focused on the same goal. The current skill descriptions and unlocks live in the [Handbook](#/handbook/classes).
+
+Retaliation Warrior, Harmony Rogue, Archer and Druid each have their own guide.
+
+## Keep Monster Level moving
+
+If your regular target is still dying in one hit, keep pushing Monster Level. Farm or upgrade when the change is likely to restore your kill speed or unlock a meaningful next step, then return to pushing. Frenzy is useful for loot, but its extra kills do not give Monster Level XP.
+
+## Let the drops shape the route
+
+Choose a direction, then stay open to better options. A useful pet, rune or piece of gear can make another class or build more attractive. Keeping those options early makes a later pivot much easier than trying to rebuild after discarding everything that did not fit your first plan.`
+  },
+  {
     id: 'retaliation-warrior',
     title: 'Retaliation Warrior: the journey to endgame',
     summary: 'Start with a build that works, keep useful options, then transition into Retaliation and develop it for endgame.',
@@ -17,7 +55,7 @@ export const FEATURED_GUIDES = [
 
 ## Start with Attack Damage
 
-AD Rogue is a comfortable early farming route because of its gear-finding skills. AD Warrior also works if you want to stay on Warrior from the start. Use the [combined Attack Damage guide](#/guidebook/rogue-explore) for the leveling setup.
+AD Rogue is a comfortable early farming route because of its gear-finding skills. AD Warrior also works if you want to stay on Warrior from the start. Use the [combined Attack Damage guide](#/guides/attack-damage) for the leveling setup.
 
 Don't force Retaliation before the pieces come together. Keep progressing with the build that works now, and save the useful drops as you go.
 

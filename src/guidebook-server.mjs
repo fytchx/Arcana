@@ -92,9 +92,10 @@ async function guidebookContributors(raw,includeIds=false){
  const people=Array.isArray(raw)?raw:[];
  const resolved=await Promise.all(people.slice(0,30).map(async item=>{
   if(!ACCOUNT_ID.test(String(item?.userId||'')))return null;
-  const account=await readJSON(accountFile(item.userId));if(!account||account.suspended)return null;
-  const profile=publicProfile(account),creditName=text(item.creditName,80).trim();
-  return includeIds?{userId:item.userId,displayName:profile.displayName,creditName}:{displayName:creditName||profile.displayName||'Arcana player'};
+  const account=await readJSON(accountFile(item.userId));
+  if(!account||account.suspended)return null;
+  const profile=publicProfile(account),displayName=text(item.creditName,80).trim()||profile.displayName||'Arcana player';
+  return includeIds?{userId:item.userId,displayName:profile.displayName,creditName:text(item.creditName,80).trim()}:{displayName};
  }));
  return resolved.filter(Boolean);
 }
@@ -102,10 +103,14 @@ async function findContributorAccounts(query){
  const q=String(query||'').trim().toLocaleLowerCase();if(q.length<2)return [];
  let files=[];try{files=(await readdir(resolve(dataRoot(),'users'))).filter(f=>ACCOUNT_ID.test(f.slice(0,-5))).slice(0,5000);}catch(e){if(e.code!=='ENOENT')throw e;}
  const matches=[];
- for(const filename of files){const id=filename.slice(0,-5),account=await readJSON(accountFile(id));if(!account||account.suspended)continue;const displayName=publicProfile(account).displayName;if(displayName.toLocaleLowerCase().includes(q))matches.push({id,displayName});}
+ for(const filename of files){
+  const id=filename.slice(0,-5),account=await readJSON(accountFile(id));
+  if(!account||account.suspended)continue;
+  const name=publicProfile(account).displayName;
+  if(name.toLocaleLowerCase().includes(q))matches.push({id,displayName:name});
+ }
  return matches.sort((a,b)=>a.displayName.localeCompare(b.displayName)).slice(0,20);
 }
-
 
 export async function handleGuidebookRequest(req,res,url){
  const path=url.pathname;
@@ -147,9 +152,18 @@ export async function handleGuidebookRequest(req,res,url){
   if(action==='contributors'){
    if(!Array.isArray(body.contributors)||body.contributors.length>30){sendJSON(res,422,{error:'Choose up to 30 contributors.'});return true;}
    const ids=new Set();
-   for(const item of body.contributors){const id=String(item?.userId||'');if(!ACCOUNT_ID.test(id)||ids.has(id)){sendJSON(res,422,{error:'Each contributor must be a unique registered Arcana user.'});return true;}ids.add(id);const account=await readJSON(accountFile(id));if(!account||account.suspended){sendJSON(res,422,{error:'A selected account is no longer available.'});return true;}}
-   s.contributors=body.contributors.map(item=>({userId:String(item.userId),creditName:text(item.creditName,80).trim()}));s.revision++;
-   await saveAtomic(file(),s);sendJSON(res,200,{revision:s.revision,contributors:await guidebookContributors(s.contributors,true)});return true;
+   for(const item of body.contributors){
+    const id=String(item?.userId||'');
+    if(!ACCOUNT_ID.test(id)||ids.has(id)){sendJSON(res,422,{error:'Each contributor must be a unique registered Arcana user.'});return true;}
+    ids.add(id);
+    if(text(item?.creditName,80).trim().length>80){sendJSON(res,422,{error:'Credit names must be 80 characters or fewer.'});return true;}
+    const account=await readJSON(accountFile(id));
+    if(!account||account.suspended){sendJSON(res,422,{error:'A selected account is no longer available.'});return true;}
+   }
+   s.contributors=body.contributors.map(item=>({userId:String(item.userId),creditName:text(item.creditName,80).trim()}));
+   s.revision++;
+   await saveAtomic(file(),s);
+   sendJSON(res,200,{revision:s.revision,contributors:await guidebookContributors(s.contributors,true)});return true;
   }
   const now=new Date().toISOString(),e=s.pages[id]||(s.pages[id]={published:null,draft:null,review:false,hidden:false,history:[]});
   if(action==='draft'||action==='review'){e.draft=page;e.review=action==='review';e.draftBy=byline(user);e.draftAt=now;}

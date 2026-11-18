@@ -188,14 +188,14 @@ function loadCodex() {
   import('./codex-data.js').then(m => { d.value = codexEntries(m.default); d.order = m.default.kinds; d.version = m.default.version; d.byId = new Map(d.value.map(e => [e.id, e])); d.state = 'ready'; })
     .catch(() => { d.state = 'error'; }).finally(render);
 }
-const loadNews = () => load('news', '/api/journal', j => sortArticles(j.articles));
+const loadNews = () => load('news', '/api/journal?surface=next', j => sortArticles(j.articles));
 const loadBuilds = () => load('builds', '/api/community/posts?kind=build', j => Array.isArray(j.posts) ? j.posts : []);
 const loadGuides = () => load('guides', '/api/community/posts?kind=guide', j => Array.isArray(j.posts) ? j.posts : []);
 const loadNotice = () => load('notice', '/api/site/theme', j => { const d = safeNextDesign(j.next); if (d && JSON.stringify(d) !== JSON.stringify(siteDesign)) { siteDesign = d; applyTheme(); } return j.notice?.enabled && j.notice.text ? j.notice.text : null; });
 function loadArticle(slug) {
   if (data.article[slug]) return;
   data.article[slug] = { state: 'loading', value: null };
-  getJSON('/api/journal?slug=' + encodeURIComponent(slug))
+  getJSON('/api/journal?surface=next&slug=' + encodeURIComponent(slug))
     .then(j => { data.article[slug] = { state: 'ready', value: j }; })
     .catch(() => { data.article[slug] = { state: 'error', value: null }; })
     .finally(render);
@@ -237,11 +237,12 @@ function homeView() {
     (rec.length ? '<details class="nx-recent"><summary>Recently used</summary><div class="nx-recent-list">' + rec.map(t => '<a href="' + esc(t.href) + '">' + ic(t.art || 'tools', 16) + esc(t.short || t.name) + '</a>').join('') + '</div></details>' : '') + '</section>' +
     '<a class="playbook-home-feature" href="#/guidebook"><span class="playbook-home-mark" aria-hidden="true">'+['warrior','rogue','mage','archer','druid'].map(x=>classBadge(x,30)).join('')+'</span><span class="playbook-home-copy"><small class="nx-kicker">SEASON 3</small><strong>The Season 3 Playbook</strong><small>Find the build that works for you, avoid these common mistakes, and prepare yourself for every step of the journey.</small></span><span class="playbook-home-action">Open <i>›</i></span></a>' +
     (evRow || newsRow ? '<section class="nx-strips">' + evRow + newsRow + '</section>' : '') +
-    '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredList(3) + '</section>' +
+    featuredPlayerGuidesSection() +
+    '<section><div class="nx-head">' + label('Featured builds') + '<span><a href="#/builds">All builds</a>' + (user()?.permissions?.manageSite ? ' · <a href="#/admin/featured">Manage</a>' : '') + '</span></div>' + featuredList(3) + '</section>' +
     '<p class="nx-fine nx-support">' + esc(SUPPORT_LINE) + ' <a href="' + KOFI + '" target="_blank" rel="noopener">' + esc(SUPPORT_CTA) + '</a></p>';
 }
 // Featured picks come from the owner's list (/api/featured); each build loads through the public
-// community route, so hidden or deleted builds simply don't appear. Empty list -> Zane's build.
+// community route, so hidden or deleted builds simply don't appear.
 const featuredState = { state: 'idle', cards: [] };
 function loadFeatured() {
   if (featuredState.state !== 'idle') return;
@@ -264,23 +265,47 @@ function buildCard(href, { title, summary = '', note = '', by = '', date = '', m
     '<span class="nx-by">' + [by ? 'by <b>' + esc(by) + '</b>' : '', meta?.level ? 'Level ' + meta.level : '', date].filter(Boolean).join(' · ') + '</span></span></a>';
 }
 const featuredPick = c => buildCard('#/builds/' + c.post.id, { title: c.post.title, summary: c.post.summary, note: c.note, by: c.author?.displayName || 'Arcana player', meta: nextCode(c.post.build) ? buildMeta(nextCode(c.post.build)) : null, featured: true });
-const featuredList = (limit = 12) => { loadFeatured(); return featuredState.cards.length ? '<div class="nx-list">' + featuredState.cards.slice(0, limit).map(featuredPick).join('') + '</div>' : featuredCard(); };
-const featuredCard = () => buildCard(FEATURED, { title: "Zane's Retaliation Warrior", summary: 'Endgame retaliation at ML 300+: Reflecting, Strength and Defense gems, one Increased Strength pet and three Retaliation pets.', by: 'Zane', meta: { cls: 1, stance: 'bulwark', level: 404 }, featured: true });
+const featuredList = (limit = 12) => { loadFeatured(); return featuredState.cards.length ? '<div class="nx-list">' + featuredState.cards.slice(0, limit).map(featuredPick).join('') + '</div>' : '<div class="nx-empty"><strong>No featured builds</strong><p>Community builds you feature will appear here.</p>' + (user()?.permissions?.manageSite ? '<a class="nx-btn" href="#/admin/featured">Manage featured builds</a>' : '') + '</div>'; };
+
+const featuredPlayerGuideState = { state: 'idle', cards: [] };
+function loadFeaturedPlayerGuides() {
+  if (featuredPlayerGuideState.state !== 'idle') return;
+  featuredPlayerGuideState.state = 'loading';
+  getJSON('/api/featured-player-guides').then(async f => {
+    const got = await Promise.all((f.items || []).slice(0, 12).map(raw => {
+      const id = typeof raw === 'string' ? raw : raw?.postId;
+      if (id?.startsWith('guide:')) {
+        const source = featuredGuide(id.slice(6));
+        return source ? { staticGuide: true, source, post: { id, title: source.title, summary: source.summary, kind: 'guide' }, author: { displayName: source.author } } : null;
+      }
+      return id ? getJSON('/api/community/posts/' + encodeURIComponent(id)).catch(() => null) : null;
+    }));
+    featuredPlayerGuideState.cards = got.filter(x => x?.staticGuide || x?.post?.kind === 'guide');
+    featuredPlayerGuideState.state = 'ready';
+  }).catch(() => { featuredPlayerGuideState.state = 'error'; }).finally(render);
+}
+function featuredPlayerGuidesSection() {
+  loadFeaturedPlayerGuides();
+  const admin = !!user()?.permissions?.manageSite, cards = featuredPlayerGuideState.cards;
+  if (!admin && !cards.length && featuredPlayerGuideState.state !== 'loading') return '';
+  const entries = cards.map(({post, author, staticGuide}) => '<a class="nx-card nx-player-guide-feature" href="' + (staticGuide ? '#/guides/' + encodeURIComponent(post.id.slice(6)) : '#/builds/' + encodeURIComponent(post.id)) + '"><strong>' + esc(post.title) + '</strong><small>' + esc(post.summary || '') + '</small><span class="nx-by">by <b>' + esc(author?.displayName || 'Arcana player') + '</b></span></a>').join('');
+  return '<section><div class="nx-head">' + label('Featured Player Guides') + '<span><a href="#/builds/guides">All guides</a>' + (admin ? ' · <a href="#/admin/player-guides">Manage</a>' : '') + '</span></div>' +
+    (entries ? '<div class="nx-list">' + entries + '</div>' : featuredPlayerGuideState.state === 'loading' ? loading('featured Player Guides') : admin ? '<div class="nx-empty"><strong>No featured Player Guides</strong><p>Choose published guides in Admin to show them here.</p><a class="nx-btn" href="#/admin/player-guides">Manage Player Guides</a></div>' : '') + '</section>';
+}
 
 // A shared build always has a way back: to the guide it was opened from, or to Builds.
 function buildView(query) {
   const g = featuredGuide(query.get('from') || '');
+  const buildGuide = FEATURED_GUIDES.find(item => item.build && item.build === query.get('d'));
   const back = g ? '<a class="nx-back" href="#/guides/' + g.id + '">' + icon('back', 18) + esc(g.title) + '</a>'
     : '<a class="nx-back" href="#/builds" data-back>' + icon('back', 18) + 'Back</a>';
-  const guideLink = !g && query.get('d') === FEATURED_GUIDES[0].build ? '<p class="nx-read"><a href="#/guides/' + FEATURED_GUIDES[0].id + '">Read the guide behind this build ›</a></p>' : '';
+  const guideLink = !g && buildGuide ? '<p class="nx-read"><a href="#/guides/' + buildGuide.id + '">Read the guide behind this build ›</a></p>' : '';
   return sharedView(query.get('d') || '', { back, intro: guideLink });
 }
 
 // ---------- featured guides ----------
 // Same text standard as the Handbook (tables, topic links, tool links), plus a short contents list.
-const guideCard = source => { const {doc:g} = editorialTranslation('guides', source); return '<a class="nx-bcard gd-card" href="#/guides/' + g.id + '" style="--bt:' + (BUILD_TYPES[g.stance]?.color || 'var(--accent)') + ';--cc:' + classVar(CLASS_NAMES[1]) + '">' +
-  '<span class="nx-bcard-emblem">' + classBadge(CLASS_NAMES[1], 52) + '</span><span class="nx-bcard-body"><span class="nx-tags"><span class="nx-tag nx-tag-accent">Featured guide</span><span class="nx-tag">' + esc(g.level) + '</span></span>' +
-  '<strong>' + esc(g.title) + '</strong><small>' + esc(g.summary) + '</small><span class="nx-by">by <b>' + esc(g.author) + '</b> · ' + esc(g.readTime) + ' read · updated ' + esc(shortDate(g.updated)) + '</span></span></a>'; };
+const guideCard = source => { const {doc:g} = editorialTranslation('guides', source); return '<a class="nx-card nx-player-guide-feature" href="#/guides/' + encodeURIComponent(g.id) + '"><strong>' + esc(g.title) + '</strong><small>' + esc(g.summary) + '</small><span class="nx-by">by <b>' + esc(g.author) + '</b></span></a>'; };
 const slug = t => String(t).toLowerCase().replace(/<[^>]+>/g, '').replace(/&[a-z#0-9]+;/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 function guideView(id) {
   const source = featuredGuide(id);
@@ -291,9 +316,11 @@ function guideView(id) {
   const originalHeadings = [...hbText(source.body).matchAll(/<h2>(.*?)<\/h2>/g)].map(m => m[1]);
   const html = hbText(g.body).replace(/<h2>(.*?)<\/h2>/g, (_, t) => { const id = 'g-' + (slug(originalHeadings[heads.length] || t) || String(heads.length + 1)); heads.push([id, t]); return '<h2 id="' + id + '">' + t + '</h2>'; });
   const buildIdentity = g.id === 'retaliation-warrior' ? '<div class="gd-identity"><span class="gd-identity-class">' + classBadge('warrior', 58) + '</span><span><small class="nx-kicker">PLAYER BUILD</small><b>Retaliation Warrior</b><small>Defense, block and retaliation · Zane</small></span><span class="gd-identity-build">' + artImg('build-types/retaliation', 44) + '</span></div>' : '';
-  return back + '<article class="nx-article gd-article" style="--cc:' + classVar(CLASS_NAMES[1]) + '"><span class="nx-kicker">FEATURED GUIDE · WARRIOR · ' + esc(g.level.toUpperCase()) + '</span><h1>' + esc(guideTranslated ? g.title : translateEnglish(g.title)) + '</h1>' +
+  const guideClass = g.classLabel || String(g.cls || 'PLAYER').toUpperCase();
+  const primaryClass = Object.values(CLASS_NAMES).find(name => name.toLowerCase() === String(g.cls || '').toLowerCase()) || CLASS_NAMES[1];
+  return back + '<article class="nx-article gd-article" style="--cc:' + classVar(primaryClass) + '"><span class="nx-kicker">PLAYER GUIDE · ' + esc(guideClass) + ' · ' + esc((g.level || 'Any stage').toUpperCase()) + '</span><h1>' + esc(guideTranslated ? g.title : translateEnglish(g.title)) + '</h1>' +
     '<p class="nx-deck">' + esc(g.summary) + '</p>' + buildIdentity + editorialControl('guides', g.id, guideTranslated) + '<p class="nx-by">by <b>' + esc(g.author) + '</b> · updated ' + esc(shortDate(g.updated)) + ' · IdleArc ' + esc(g.gameVersion) + '</p>' +
-    '<div class="gd-actions"><a class="nx-btn nx-btn-primary" href="#/tools/retaliation">Try your numbers</a>' + (g.id === 'retaliation-warrior' ? '' : '<a class="nx-btn" href="#/build?d=' + g.build + '&from=' + g.id + '">Open the build</a>') + '</div>' +
+    (g.id === 'retaliation-warrior' ? '<div class="gd-actions"><a class="nx-btn nx-btn-primary" href="#/tools/retaliation">Try your numbers</a></div>' : '') +
     '<details class="gd-toc"><summary>In this guide</summary><ol>' + heads.map(([id, t]) => '<li><a href="#/guides/' + g.id + '" data-jump="' + id + '">' + t + '</a></li>').join('') + '</ol></details>' +
     '<div class="hb-page gd-body">' + html + '</div></article>' +
     '<p class="nx-fine">Written by ' + esc(g.author) + '. Spot something wrong? <a href="#/feedback">Tell me</a>.</p>';
@@ -367,7 +394,7 @@ function codexResults(entries) {
     const words = codexQuery.trim().toLowerCase().split(/\s+/);
     const pages = handbookPages().filter(p => words.every(w => (p.title + ' ' + p.answer + ' ' + p.body).toLowerCase().includes(w))).slice(0, 6);
     const match = t => words.every(w => t.toLowerCase().includes(w));
-    const guides = FEATURED_GUIDES.filter(g => match(g.title + ' ' + g.summary + ' ' + g.body)).slice(0, 3);
+    const guides = [];
     const tools = TOOLS.filter(t => match(t.name + ' ' + t.detail + ' ' + t.id)).slice(0, 4);
     if (!hits.length && !pages.length && !guides.length && !tools.length) return empty('Nothing found', 'Try a shorter word, like an item, skill or monster name.');
     return (guides.length ? '<section>' + label('Guides') + '<div class="nx-list">' + guides.map(g => '<a class="nx-row" href="#/guides/' + g.id + '"><span class="nx-row-text"><strong>' + esc(g.title) + '</strong><small>by ' + esc(g.author) + ' · ' + esc(g.readTime) + ' read</small></span><span class="nx-row-end">›</span></a>').join('') + '</div></section>' : '') +
@@ -476,14 +503,14 @@ function buildsView(id) {
   else if (id) return postView(id);
   loadBuilds();
   if (buildTab === 'guides') loadGuides();
-  const tabs = '<div class="nx-seg" role="tablist" aria-label="Source">' + [['featured', 'Featured'], ['community', 'Community'], ['guides', 'Guides']].map(([id, l]) => '<button role="tab" aria-selected="' + (buildTab === id) + '" data-act="buildtab" data-tab="' + id + '">' + l + '</button>').join('') + '</div>';
+  const tabs = '<div class="nx-seg" role="tablist" aria-label="Source">' + [['featured', 'Featured'], ['community', 'Community'], ['guides', 'Player Guides']].map(([id, l]) => '<button role="tab" aria-selected="' + (buildTab === id) + '" data-act="buildtab" data-tab="' + id + '">' + l + '</button>').join('') + '</div>';
   let body;
   if (buildTab === 'featured') body = featuredList();
   else if (buildTab === 'guides') {
     const g = data.guides;
-    body = '<div class="nx-list">' + FEATURED_GUIDES.map(guideCard).join('') + '</div><a class="nx-btn nx-btn-primary" href="#/builds/new-guide">Write a guide</a>' + (g.state === 'error' ? failed('Guides', 'guides') : g.state !== 'ready' ? loading('guides')
-      : g.value.length ? '<div class="nx-list">' + g.value.map(p => '<a class="nx-card" href="#/builds/' + encodeURIComponent(p.id) + '"><strong>' + esc(p.title) + '</strong><small>' + esc(p.summary || p.excerpt || '') + '</small><span class="nx-by">' + esc(shortDate(p.createdAt)) + '</span></a>').join('') + '</div>'
-      : empty('No community guides yet', 'Know something other players should? Write the first one.'));
+    body = '<header class="nx-page-head"><span class="nx-kicker">PLAYER GUIDES</span><h1>Player Guides</h1><p>Guides shared by Arcana players, with each author credited.</p></header><a class="nx-btn nx-btn-primary" href="#/builds/new-guide">Write a guide</a>' + (g.state === 'error' ? failed('Guides', 'guides') : g.state !== 'ready' ? loading('guides')
+      : (FEATURED_GUIDES.length || g.value.length) ? '<div class="nx-list">' + FEATURED_GUIDES.map(guideCard).join('') + g.value.map(p => '<a class="nx-card nx-player-guide-feature" href="#/builds/' + encodeURIComponent(p.id) + '"><strong>' + esc(p.title) + '</strong><small>' + esc(p.summary || p.excerpt || '') + '</small><span class="nx-by">by <b>' + esc(p.author || 'Arcana player') + '</b> · ' + esc(shortDate(p.createdAt)) + '</span></a>').join('') + '</div>'
+      : empty('No player guides yet', 'Know something other players should? Write the first one.'));
     return tabs + body;
   } else {
     const b = data.builds;
@@ -559,7 +586,7 @@ function render() {
   if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'guidebook' ? (id === 'manage' ? adminGuidebookTab() : id.startsWith('edit/') ? guidebookEditorView(id.slice(5)) : id.startsWith('new/') ? guidebookEditorView(id.slice(4), true) : guidebookView(id)) : section === 'guides' ? guideView(id) : section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? buildView(query) : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'guidebook' ? (id === 'manage' ? adminGuidebookTab() : id.startsWith('edit/') ? guidebookEditorView(id.slice(5)) : id.startsWith('new/') ? guidebookEditorView(id.slice(4), true) : guidebookView(id)) : section === 'guides' ? guideView(id) : section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user(), id)) : section === 'studio' ? studioView(id) : section === 'build' ? buildView(query) : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   // The original triangle, recolored to the site accent the same way the classic theme designer did it.
   const logo = '<img class="nx-logo" src="/assets/arcana-logo.webp" width="38" height="32" alt="">';

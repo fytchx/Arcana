@@ -21,7 +21,7 @@ export const SEED_UPDATES = {
 
 ## The quick recommendation
 
-If you want a practical starting route, I recommend **Attack Damage Rogue**. Rogue is a strong early farming choice, and the same broad Attack Damage direction can also work on Mage and Warrior. For the full setup, open [Attack Damage: Rogue, Mage and Warrior](#/guidebook/rogue-explore) in Player Guides.
+If you want a practical starting route, I recommend **Attack Damage Rogue**. Rogue is a strong early farming choice, and the same broad Attack Damage direction can also work on Mage and Warrior. For the full setup, open [Attack Damage: Rogue, Mage and Warrior](#/guides/attack-damage) in Player Guides.
 
 ## Choose by what sounds fun
 

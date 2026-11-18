@@ -1,7 +1,7 @@
 # Arcana Preview — Season 3 Guidebook Work Handoff
-**Editorial document only; not a UI/content implementation. Updated 2026-11-17.**
+**Updated 2026-11-18.**
 
-The owner has approved a new reading order and a separation between the core Season 3 Guidebook and independently authored **Player Guides**. The current five-chapter Guidebook UI on this branch still uses the older layout; do **not** treat it as approved. This is a docs-only commit on the existing Test branch, which is auto-deployed to **Arcana-Test**; never merge/deploy Live based on this alone.
+The owner approved the Playbook redesign and its move to Live. The current implementation is based on the latest `main` and keeps Playbook editing separate from independent Player Guides. Preserve Test and Live `/data`; never copy or replace either volume. Do not merge a preview branch directly into `main`; use a focused feature PR, passing checks and the release verifier. Fandom edits still require separate explicit approval.
 
 **Canonical source:** [IdleArc-Hub approved direction](https://github.com/fytchx/IdleArc-Hub/blob/main/arcana/season-guides/DIRECTION-2026-11-17.md)
 
@@ -23,6 +23,16 @@ The owner has approved a new reading order and a separation between the core Sea
 
 Recurring strategy should be **contextual**: (a) prepare early, resist impulsive salvaging/reforging and protect potentially valuable RNG drops while choosing a flexible direction; (b) keep pushing Monster Level and spend/backtrack only when useful.
 
+## Player Guide independence — 2026-11-18
+
+- The public Player Guides collection is Arcana's community guide collection (`#/builds/guides`) and must work without the Season 3 Playbook.
+- Published community guides stay in that collection regardless of homepage feature status. Owner controls select multiple guides for a separate **Featured Player Guides** home section and can remove a feature without deleting or hiding the guide.
+- Featured Player Guides use their own `/data/admin/featured-player-guides.json` setting. The old `playbook-guides.json` is read only as a migration fallback so Test's existing selections are not discarded.
+- Featured builds remain a separate home section with a direct Admin route. When its list is empty, show an empty state; never insert Zane's character/build snapshot as a code fallback.
+- The owner-written Attack Damage and Retaliation guides appear in the independent Player Guides collection from `next/guides-content.js`; each can be featured or unfeatured from Admin. Community guide posts appear there dynamically and retain their profile bylines. All remain available in the collection whether featured or not.
+- Preserve the original `rogue-explore` and Retaliation source material. The old Playbook Player Guides chapter links to the independent collection; it does not own or gate those articles.
+- The class-choice feature links into the independent Player Guides collection. The Playbook's Player Guides chapter is a doorway to that collection, not its storage or management layer.
+
 ### Read before editing
 
 1. Hub `START-HERE.md`, `context/PROJECT-STATE.md`, `CATALOG.md` and canonical direction.
@@ -32,13 +42,15 @@ Recurring strategy should be **contextual**: (a) prepare early, resist impulsive
 
 ### Implementation guardrails
 
-- Safe editor improvements first: draft access/privacy, autosave/recovery, manager/reordering/related links/bylines, complete mobile save/reload/publish-to-Test test, backup/restore. Seeded Guidebook drafts are currently visible to visitors of the public Test URL.
-- Reorder and restructure only with preservation of source drafts; move the existing `rogue-explore` draft into *source material* for the combined AD Player Guide rather than discarding it.
-- Protect original contributor attribution; the existing Retaliation guide remains separate under Player Guides.
-- Review Season 3 mechanics with current sources and separate game facts vs estimates vs personal strategic observation.
-- Preserve Railway Test/Live `/data`; do not merge PR #102, deploy Live, or publish Fandom without explicit owner approval.
+- Keep the independent Player Guides collection on the existing community guide creator and store; preserve author profile credits on listing cards and articles.
+- Keep Playbook review/editor controls separate from community-guide feature controls. Admin links from Home should open the relevant feature tab directly.
+- Preserve source drafts and all user-entered Test data. Do not manipulate `/data` directly.
+- Review Season 3 mechanics with current sources and distinguish verified game facts from estimates and personal strategy.
+- Preserve Railway Test/Live `/data`. The owner authorized the current Arcana release; future Live releases and Fandom publication still require explicit approval.
 
-## Full Work handoff (mirrored from private Hub)
+## Historical handoff (mirrored from private Hub)
+
+The notes below preserve the original project handoff. The current implementation and release guidance above supersede its earlier status and next-step list.
 
 # Work chat handoff — Season 3 Player Guidebook
 **Date: 2026-11-17.** [Full owner-approved direction](DIRECTION-2026-11-17.md) and [remaining-work audit](REMAINING-WORK-AUDIT-2026-11-17.md).

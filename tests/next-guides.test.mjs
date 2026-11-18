@@ -25,9 +25,14 @@ test('rich text: h3, notes, tables, steps and safe links', () => {
 
 test('guides: featured guide routes, renders every table, links only to real tools', () => {
   assert.deepEqual(parseHash('#/guides/retaliation-warrior').section, 'guides');
+  assert.deepEqual(parseHash('#/guides/attack-damage').section, 'guides');
   assert.equal(activeTab('guides'), 'builds');
   const g = featuredGuide('retaliation-warrior');
-  assert.ok(g && FEATURED_GUIDES.length >= 1);
+  const ad = featuredGuide('attack-damage');
+  assert.ok(g && ad && FEATURED_GUIDES.length >= 2);
+  assert.match(g.body, /1 % bonus Strength pet, 1 flat Strength pet, and 2 Retaliation pets/);
+  assert.match(g.body, /three Retaliation pets do not scale well enough for endgame/);
+  assert.match(ad.body, /Attack Damage Rogue, Mage and Warrior/);
   const html = hbText(g.body);
   const blocks = g.body.split(/\n\s*\n/).filter(b => /^(Table: |\|)/.test(b.trim()));
   assert.equal((html.match(/<table/g) || []).length, blocks.length, 'every table block renders as a table');
@@ -79,7 +84,7 @@ test('guides: shared guide links open in the new app, old guide links redirect',
   assert.match(html, /retaliation-warrior-zane'\)\{history\.replaceState\(null,'','\/#\/guides\/retaliation-warrior'\)/);
 });
 
-test('guides: the featured guide carries Zane\'s own Build Studio setup, with a way back', async () => {
+test('guides: Retaliation keeps its saved setup without foregrounding the character snapshot', async () => {
   const { default: D } = await import('../next/studio-data.js');
   const { decodeShare } = await import('../next/studio-core.js');
   const { readFile } = await import('node:fs/promises');
@@ -92,8 +97,10 @@ test('guides: the featured guide carries Zane\'s own Build Studio setup, with a 
   assert.deepEqual(got.build.pets, ['increased_strength', 'retaliation', 'retaliation', 'retaliation']);
   assert.ok(got.build.runes.length > 0 && Object.keys(got.build.gear).length > 0);
   const app = await readFile(new URL('../next/app.js', import.meta.url), 'utf8');
-  assert.match(app, /'&from=' \+ g\.id/, 'guide button remembers the guide');
-  assert.match(app, /function buildView\(query\)/, 'shared builds render with a back link');
+  assert.match(app, /PLAYER GUIDE · ' \+ esc\(guideClass\)/, 'article is rendered with its guide-specific class label');
+  assert.doesNotMatch(app, /Open the build<\/a>/, 'reader view does not promote the old character snapshot');
+  assert.match(app, /PLAYER GUIDE · ' \+ esc\(guideClass\)/, 'reader labels each guide with its own class or build type');
+  assert.match(app, /g\.id === 'retaliation-warrior'.*Try your numbers/s, 'the Retaliation planner is only shown on the Retaliation guide');
 });
 
 test('shared build: runes and runewords are summarised once each, with counts', async () => {

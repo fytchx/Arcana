@@ -45,12 +45,15 @@ export function normalizeNotice(raw){
 }
 async function current(){return safeConfig(await readJSON(configPath()));}
 const featuredPath=()=>resolve(dataRoot(),'admin','featured-builds.json');
-const featuredGuidePath=()=>resolve(dataRoot(),'admin','playbook-guides.json');
-const POST_ID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+const featuredGuidePath=()=>resolve(dataRoot(),'admin','featured-player-guides.json');
+const legacyFeaturedGuidePath=()=>resolve(dataRoot(),'admin','playbook-guides.json');
+async function readFeaturedGuides(){return (await readJSON(featuredGuidePath()))||await readJSON(legacyFeaturedGuidePath());}
+ const POST_ID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+ const STATIC_GUIDE_ID=/^guide:[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export function normalizeFeaturedGuideItems(raw){
  if(!Array.isArray(raw))throw new Error('Player Guides must be a list.');
  if(raw.length>40)throw new Error('Feature at most 40 Player Guides.');
- return [...new Set(raw.map(x=>String(typeof x==='string'?x:x?.postId||'').toLowerCase()).filter(id=>POST_ID.test(id)))];
+ return [...new Set(raw.map(x=>String(typeof x==='string'?x:x?.postId||'').toLowerCase()).filter(id=>POST_ID.test(id)||STATIC_GUIDE_ID.test(id)))];
 }
 function safeFeaturedGuides(raw){
  if(!raw||typeof raw!=='object'||!Number.isSafeInteger(raw.revision)||raw.revision<0)return {revision:0,updatedAt:null,items:[]};
@@ -166,21 +169,21 @@ export async function handleSiteAdminRequest(req,res,url){
  }
  // Player Guides are published with the public guide creator; this list only curates which ones
  // appear in The Season 3 Playbook. Article text and author credit stay in the community store.
- if(pathname==='/api/playbook-guides'){
+ if(pathname==='/api/featured-player-guides'||pathname==='/api/playbook-guides'){
   if(req.method!=='GET')return fail(res,405,'Method not allowed.');
-  const f=safeFeaturedGuides(await readJSON(featuredGuidePath()));
+  const f=safeFeaturedGuides(await readFeaturedGuides());
   response(res,200,f);return true;
  }
- if(pathname==='/api/admin/playbook-guides'){
+ if(pathname==='/api/admin/featured-player-guides'||pathname==='/api/admin/playbook-guides'){
   if(req.method!=='GET'&&req.method!=='PUT')return fail(res,405,'Method not allowed.');
   if(!await requireAdmin(req,res,'site:manage'))return true;
-  if(req.method==='GET'){response(res,200,safeFeaturedGuides(await readJSON(featuredGuidePath())));return true;}
+  if(req.method==='GET'){response(res,200,safeFeaturedGuides(await readFeaturedGuides()));return true;}
   try{checkOrigin(req);}catch{return fail(res,403,'Invalid request origin.');}
   const payload=await parseJSON(req,8000).catch(()=>null);
   if(!payload||!Number.isInteger(payload.expectedRevision))return fail(res,422,'A current revision is required.');
   let items;try{items=normalizeFeaturedGuideItems(payload.items);}catch(e){return fail(res,422,e.message);}
   return serialized(async()=>{
-   const old=safeFeaturedGuides(await readJSON(featuredGuidePath()));
+   const old=safeFeaturedGuides(await readFeaturedGuides());
    if(old.revision!==payload.expectedRevision)return fail(res,409,'Player Guides changed. Reload before saving.');
    const next={revision:old.revision+1,updatedAt:new Date().toISOString(),items};
    await saveAtomic(featuredGuidePath(),next);response(res,200,next);return true;
