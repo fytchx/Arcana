@@ -123,7 +123,7 @@ try:
         page.locator('.gd-article').wait_for(timeout=5000)
         english_guide = page.locator('.gd-article').inner_text()
         english_anchors = page.locator('.gd-article h2').evaluate_all('(nodes) => nodes.map(n=>n.id)')
-        assert "I'm a washed-out Retaliation Warrior" in english_guide
+        assert 'My target is 1 % bonus Strength pet, 1 flat Strength pet, and 2 Retaliation pets.' in english_guide
         page.locator('[data-language-toggle]').click()
         page.locator('[data-language-choose="de"]').click()
         page.locator('[data-language-toggle]').click()
