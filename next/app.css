@@ -1194,7 +1194,7 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
 .gb-route-card>span:nth-child(2)>small:last-child{color:var(--muted);font-size:12px;line-height:1.45}
 .gb-route-mark{position:relative;width:48px;height:48px;flex:0 0 48px;display:grid;place-items:center;border-radius:14px;background:var(--card);border:1px solid var(--line)}
 .gb-route-mark img:first-child{width:31px;height:31px;object-fit:contain}
-.gb-route-mark img:last-child{position:absolute;right:-3px;bottom:-3px;width:23px;height:23px;padding:2px;border-radius:50%;background:var(--card);border:1px solid var(--line);object-fit:contain}
+.gb-route-mark img:nth-child(2){position:absolute;right:-3px;bottom:-3px;width:23px;height:23px;padding:2px;border-radius:50%;background:var(--card);border:1px solid var(--line);object-fit:contain}
 .gb-class-links{display:grid;gap:0;margin-top:7px}
 .gb-class-links a{display:flex;justify-content:space-between;gap:10px;padding:11px 2px;border-bottom:1px solid var(--line);font-size:13px;font-weight:700;text-decoration:none}
 .gb-guide-hero{display:flex;align-items:center;gap:12px;margin:12px 0 16px;padding:13px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(120deg,color-mix(in srgb,var(--accent) 10%,var(--card)),var(--card))}
