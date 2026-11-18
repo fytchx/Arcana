@@ -4,10 +4,11 @@ import { esc, shortDate, articleHtml } from './core.js';
 import { ic } from './core.js';
 import { AWARD_LABELS, ROLE_NAMES } from '../src/account-policy.js';
 import { adminHandbookTab } from './handbook-editor.js';
+import { adminGuidebookTab } from './guidebook-editor.js';
 import { reportsTab } from './feedback.js';
 
 let rerender = () => {};
-const A = { news: { state: 'idle', revision: 0, list: [], edit: null, preview: false }, people: { state: 'idle', page: 1, pages: 1, total: 0, list: [], q: '', sel: null }, traffic: { state: 'idle', d: null }, tab: 'inbox', posts: { state: 'idle', list: [] }, feat: { state: 'idle', revision: 0, items: [], dirty: false }, site: { state: 'idle', revision: 0, notice: { enabled: false, text: '' } }, busy: false, toast: '' };
+const A = { news: { state: 'idle', revision: 0, list: [], edit: null, preview: false }, people: { state: 'idle', page: 1, pages: 1, total: 0, list: [], q: '', sel: null }, traffic: { state: 'idle', d: null }, tab: 'inbox', posts: { state: 'idle', list: [] }, feat: { state: 'idle', revision: 0, items: [], dirty: false }, playbook: { state:'idle', revision:0, items:[], posts:[], dirty:false }, site: { state: 'idle', revision: 0, notice: { enabled: false, text: '' } }, busy: false, toast: '' };
 async function api(url, opts = {}) {
   const r = await fetch(url, { credentials: 'same-origin', cache: 'no-store', signal: AbortSignal.timeout(12000), ...opts, headers: { 'content-type': 'application/json', ...(opts.headers || {}) } });
   let j = {}; try { j = await r.json(); } catch { /* empty */ }
@@ -25,6 +26,14 @@ function loadFeatured(force) {
   if (!force && A.feat.state !== 'idle') return;
   A.feat.state = 'loading';
   api('/api/featured').then(j => { A.feat.revision = j.revision; A.feat.items = j.items || []; A.feat.dirty = false; A.feat.state = 'ready'; }).catch(() => { A.feat.state = 'error'; }).finally(rerender);
+}
+function loadPlaybookGuides(force=false){
+ if(!force&&A.playbook.state!=='idle')return;
+ A.playbook.state='loading';
+ Promise.all([api('/api/admin/playbook-guides'),api('/api/community/posts?kind=guide&includeHidden=true')])
+  .then(([f,g])=>{A.playbook.revision=f.revision;A.playbook.items=f.items||[];A.playbook.posts=g.posts||[];A.playbook.dirty=false;A.playbook.state='ready';})
+  .catch(e=>{A.playbook.state=e.status===401||e.status===403?'denied':'error';})
+  .finally(rerender);
 }
 function loadSite(force) {
   if (!force && A.site.state !== 'idle') return;
@@ -195,6 +204,20 @@ function featured() {
     '<div class="st-two">' + btn('saveFeat', A.feat.dirty ? 'Save Featured' : 'Saved', A.feat.dirty ? '' : 'disabled', 'nx-btn nx-btn-primary') + btn('reload', 'Reload') + '</div>' +
     '<p class="nx-fine">Up to 12. Hidden or deleted builds drop off the public list on their own.</p>';
 }
+function playbookGuidesTab(){
+ loadPlaybookGuides();
+ const P=A.playbook;
+ if(P.state==='denied')return '<div class="nx-empty"><strong>Admins only</strong><p>Sign in with an Arcana admin account.</p></div>';
+ if(P.state==='error')return '<div class="nx-empty"><strong>Couldn’t load Player Guides</strong>'+btn('reload','Try again')+'</div>';
+ if(P.state!=='ready')return '<div class="nx-loading">Loading Player Guides…</div>';
+ const rows=P.posts.map(p=>{
+  const on=P.items.includes(p.id),hidden=p.status==='hidden';
+  return '<div class="nx-card adm-post'+(hidden?' hidden':'')+'"><span class="nx-tags">'+(on?'<span class="nx-tag nx-tag-accent">On Playbook</span>':'')+(hidden?'<span class="nx-tag adm-red">Hidden</span>':'')+'<span class="nx-tag">'+esc(shortDate(p.createdAt))+'</span></span><a href="#/builds/'+encodeURIComponent(p.id)+'"><strong>'+esc(p.title)+'</strong></a><small>'+esc(p.summary||p.excerpt||'')+'</small><div class="st-two">'+btn(on?'unfeaturePlaybook':'featurePlaybook',on?'Remove from Playbook':'Feature on Playbook','data-id="'+esc(p.id)+'"',on?'nx-btn':'nx-btn nx-btn-primary')+'</div></div>';
+ }).join('');
+ return '<header class="hb-head"><span class="nx-kicker">THE SEASON 3 PLAYBOOK</span><h2>Player Guides</h2><p>Guides use Arcana’s guide creator and keep the author’s site profile and article formatting. New published guides appear here for you to feature.</p></header>'+
+  (rows?'<div class="nx-list">'+rows+'</div>':'<div class="nx-empty"><strong>No player guides yet</strong><p>Published guides will appear here when they are created.</p><a class="nx-btn" href="#/builds/guides">Open Guides</a></div>')+
+  '<div class="st-two">'+btn('savePlaybook',P.dirty?'Save Player Guides':'Saved',P.dirty?'':'disabled','nx-btn nx-btn-primary')+btn('reload','Reload')+'</div><p class="nx-fine">Hidden or removed guides stop appearing to readers automatically.</p>';
+}
 function site() {
   loadSite();
   if (A.site.state === 'denied') return '<div class="nx-empty"><strong>Admins only</strong><p>Sign in with an admin account.</p></div>';
@@ -212,8 +235,8 @@ function more() {
 
 export function adminView(user) {
   if (!user?.permissions?.manageSite) return '<div class="nx-empty"><strong>Admins only</strong><p>This page is for Arcana admins.</p><a class="nx-btn" href="#/profile">Back to Profile</a></div>';
-  const tabs = [['inbox', 'Inbox'], ['featured', 'Featured'], ['reports', 'Reports'], ['news', 'News'], ['handbook', 'Handbook'], ['people', 'People'], ...(user?.isOwner ? [['roles', 'Roles']] : []), ['traffic', 'Traffic'], ['site', 'Site']];
-  const body = A.tab === 'handbook' ? adminHandbookTab() : A.tab === 'roles' ? rolesTab() : A.tab === 'featured' ? featured() : A.tab === 'site' ? site() + more() : A.tab === 'news' ? newsTab() : A.tab === 'people' ? peopleTab(user) : A.tab === 'traffic' ? trafficTab() : A.tab === 'reports' ? reportsTab() : inbox();
+  const tabs = [['inbox', 'Inbox'], ['featured', 'Featured'], ['playbook', 'Player Guides'], ['reports', 'Reports'], ['news', 'News'], ['handbook', 'Handbook'], ...(user?.permissions?.editHandbook ? [['guidebook', 'Guidebook']] : []), ['people', 'People'], ...(user?.isOwner ? [['roles', 'Roles']] : []), ['traffic', 'Traffic'], ['site', 'Site']];
+  const body = A.tab === 'handbook' ? adminHandbookTab() : A.tab === 'guidebook' ? adminGuidebookTab() : A.tab === 'roles' ? rolesTab() : A.tab === 'featured' ? featured() : A.tab === 'playbook' ? playbookGuidesTab() : A.tab === 'site' ? site() + more() : A.tab === 'news' ? newsTab() : A.tab === 'people' ? peopleTab(user) : A.tab === 'traffic' ? trafficTab() : A.tab === 'reports' ? reportsTab() : inbox();
   return '<a class="nx-back" href="#/profile">‹ Profile</a><header class="nx-page-head"><span class="nx-kicker">OWNER</span><h1>Admin</h1></header>' +
     '<a class="nx-row nx-row-design" href="#/admin/design"><span class="nx-ic">' + ic('theme', 22) + '</span><span class="nx-row-text"><strong>Site design</strong><small>Colors, corners, fonts and icons for everyone. Preview first, then publish.</small></span><span class="nx-row-end">›</span></a>' +
     '<div class="st-tabs adm-tabs nx-scrollx" role="tablist">' + tabs.map(([id, l]) => '<button role="tab" aria-selected="' + (A.tab === id) + '" data-adm="tab" data-v="' + id + '">' + l + (id === 'featured' && A.feat.dirty ? ' •' : '') + '</button>').join('') + '</div>' +
@@ -227,6 +250,12 @@ async function saveFeatured() {
     A.feat.revision = j.revision; A.feat.items = j.items; A.feat.dirty = false; window.dispatchEvent(new Event('arcana:featured-changed')); toast('Featured saved.');
   } catch (e) { toast(e.status === 409 ? 'Featured changed somewhere else. Reload, then save again.' : e.message); }
   finally { A.busy = false; rerender(); }
+}
+async function savePlaybookGuides(){
+ const P=A.playbook;A.busy=true;rerender();
+ try{const j=await api('/api/admin/playbook-guides',{method:'PUT',body:JSON.stringify({expectedRevision:P.revision,items:P.items})});P.revision=j.revision;P.items=j.items;P.dirty=false;window.dispatchEvent(new Event('arcana:featured-changed'));toast('Player Guides saved.');}
+ catch(e){toast(e.status===409?'Player Guides changed elsewhere. Reload, then save again.':e.message);}
+ finally{A.busy=false;rerender();}
 }
 async function setVisibility(id, status) {
   A.busy = true; rerender();
@@ -246,13 +275,15 @@ export function initAdmin(render) {
     if (!b || b.disabled) return;
     const a = b.dataset.adm, id = b.dataset.id, i = +b.dataset.i, items = A.feat.items;
     if (a === 'tab') { A.tab = b.dataset.v; return rerender(); }
-    if (a === 'reload') { A.posts.state = A.feat.state = A.site.state = A.news.state = A.people.state = A.traffic.state = 'idle'; return rerender(); }
+    if (a === 'reload') { A.posts.state = A.feat.state = A.playbook.state = A.site.state = A.news.state = A.people.state = A.traffic.state = 'idle'; return rerender(); }
     if (a === 'feature') { if (items.length >= 12) return toast('Feature at most 12 builds.'); A.feat.items = [...items, { postId: id, note: '' }]; A.feat.dirty = true; return saveFeatured(); }
     if (a === 'unfeature') { A.feat.items = items.filter(x => x.postId !== id); A.feat.dirty = true; return saveFeatured(); }
     if (a === 'hide' || a === 'unhide') return setVisibility(id, a === 'hide' ? 'hidden' : 'public');
     if (a === 'up' || a === 'down') { const j = a === 'up' ? i - 1 : i + 1, n = [...items];[n[i], n[j]] = [n[j], n[i]]; A.feat.items = n; A.feat.dirty = true; return rerender(); }
     if (a === 'remove') { A.feat.items = items.filter((_, k) => k !== i); A.feat.dirty = true; return rerender(); }
     if (a === 'saveFeat') return saveFeatured();
+    if(a==='featurePlaybook'||a==='unfeaturePlaybook'){const ids=A.playbook.items;A.playbook.items=a==='featurePlaybook'?[...ids,id]:ids.filter(x=>x!==id);A.playbook.dirty=true;return rerender();}
+    if(a==='savePlaybook')return savePlaybookGuides();
     if (a === 'newArticle') { A.news.edit = { category: 'News', published: false }; A.news.preview = false; return rerender(); }
     if (a === 'featureArticle') return toggleFeatured(i);
     if (a === 'saveRoles') return R.dirty && saveRoles();

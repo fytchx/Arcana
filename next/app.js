@@ -24,6 +24,8 @@ import { FEATURED_GUIDES, featuredGuide } from './guides-content.js';
 import { GUIDE_TOOL_OPTIONS, guideInsert } from './guide-editor.js';
 import { retaliationView, initRetaliation } from './retaliation.js';
 import { editorView, initHandbookEditor } from './handbook-editor.js';
+import {guidebookView,initGuidebook} from './guidebook.js';
+import {guidebookEditorView,adminGuidebookTab,initGuidebookEditor} from './guidebook-editor.js';
 import { saveChecklistBlock, checklistsSection, checklistView, initChecklists } from './checklists.js';
 import { emptyBuild, encodeShare } from './studio-core.js';
 
@@ -137,6 +139,7 @@ function applyTheme() {
 }
 
 // ---------- data (each loads once, and re-renders when it arrives) ----------
+let logoutBusy = false, logoutError = '';
 const data = {
   me: { state: 'idle', value: null },
   codex: { state: 'idle', value: [] },
@@ -158,6 +161,25 @@ function load(slot, url, pick) {
   getJSON(url).then(j => { d.value = pick(j); d.state = 'ready'; }).catch(() => { d.state = 'error'; }).finally(render);
 }
 const loadMe = () => load('me', '/api/account/me', j => j);
+// Logout is a POST mutation, not a link to visit in the browser.
+async function signOut() {
+  if (logoutBusy) return;
+  logoutBusy = true; logoutError = '';
+  render();
+  try {
+    const response = await fetch('/api/account/logout', { method: 'POST', credentials: 'same-origin', cache: 'no-store', headers: { accept: 'application/json' } });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok || body.ok !== true) throw Error(body.error || 'Sign out failed. Please try again.');
+    try { sessionStorage.removeItem(RETURN_KEY); } catch { /* unavailable storage */ }
+    location.hash = '#/profile';
+    location.reload(); // load account state again with the cleared session cookie
+  } catch (err) {
+    logoutError = err.message || 'Sign out failed. Please try again.';
+    logoutBusy = false;
+    render();
+  }
+}
+
 // The Codex ships with the app (generated from the game config), so it works even when other servers are down.
 function loadCodex() {
   const d = data.codex;
@@ -213,6 +235,7 @@ function homeView() {
   return installBanner('home') + '<section><div class="nx-head">' + label('Start here') + '<a href="#/tools">All tools</a></div><div class="nx-grid3">' +
     main.map(([h, i, l, dsc]) => '<a class="nx-tile nx-main-tile" href="' + h + '"><span class="nx-ic">' + ic(i, 24) + '</span><strong>' + l + '</strong><small>' + dsc + '</small></a>').join('') + '</div>' +
     (rec.length ? '<details class="nx-recent"><summary>Recently used</summary><div class="nx-recent-list">' + rec.map(t => '<a href="' + esc(t.href) + '">' + ic(t.art || 'tools', 16) + esc(t.short || t.name) + '</a>').join('') + '</div></details>' : '') + '</section>' +
+    '<a class="playbook-home-feature" href="#/guidebook"><span class="playbook-home-mark" aria-hidden="true">'+['warrior','rogue','mage','archer','druid'].map(x=>classBadge(x,30)).join('')+'</span><span class="playbook-home-copy"><small class="nx-kicker">SEASON 3</small><strong>The Season 3 Playbook</strong><small>Choose a class. Build your route. Keep progressing.</small></span><span class="playbook-home-action">Open <i>›</i></span></a>' +
     (evRow || newsRow ? '<section class="nx-strips">' + evRow + newsRow + '</section>' : '') +
     '<section><div class="nx-head">' + label('Featured builds') + '<a href="#/builds">All builds</a></div>' + featuredList(3) + '</section>' +
     '<p class="nx-fine nx-support">' + esc(SUPPORT_LINE) + ' <a href="' + KOFI + '" target="_blank" rel="noopener">' + esc(SUPPORT_CTA) + '</a></p>';
@@ -267,9 +290,10 @@ function guideView(id) {
   const heads = [];
   const originalHeadings = [...hbText(source.body).matchAll(/<h2>(.*?)<\/h2>/g)].map(m => m[1]);
   const html = hbText(g.body).replace(/<h2>(.*?)<\/h2>/g, (_, t) => { const id = 'g-' + (slug(originalHeadings[heads.length] || t) || String(heads.length + 1)); heads.push([id, t]); return '<h2 id="' + id + '">' + t + '</h2>'; });
+  const buildIdentity = g.id === 'retaliation-warrior' ? '<div class="gd-identity"><span class="gd-identity-class">' + classBadge('warrior', 58) + '</span><span><small class="nx-kicker">PLAYER BUILD</small><b>Retaliation Warrior</b><small>Defense, block and retaliation · Zane</small></span><span class="gd-identity-build">' + artImg('build-types/retaliation', 44) + '</span></div>' : '';
   return back + '<article class="nx-article gd-article" style="--cc:' + classVar(CLASS_NAMES[1]) + '"><span class="nx-kicker">FEATURED GUIDE · WARRIOR · ' + esc(g.level.toUpperCase()) + '</span><h1>' + esc(guideTranslated ? g.title : translateEnglish(g.title)) + '</h1>' +
-    '<p class="nx-deck">' + esc(g.summary) + '</p>' + editorialControl('guides', g.id, guideTranslated) + '<p class="nx-by">by <b>' + esc(g.author) + '</b> · updated ' + esc(shortDate(g.updated)) + ' · IdleArc ' + esc(g.gameVersion) + '</p>' +
-    '<div class="gd-actions"><a class="nx-btn nx-btn-primary" href="#/tools/retaliation">Try your numbers</a><a class="nx-btn" href="#/build?d=' + g.build + '&from=' + g.id + '">Open the build</a></div>' +
+    '<p class="nx-deck">' + esc(g.summary) + '</p>' + buildIdentity + editorialControl('guides', g.id, guideTranslated) + '<p class="nx-by">by <b>' + esc(g.author) + '</b> · updated ' + esc(shortDate(g.updated)) + ' · IdleArc ' + esc(g.gameVersion) + '</p>' +
+    '<div class="gd-actions"><a class="nx-btn nx-btn-primary" href="#/tools/retaliation">Try your numbers</a>' + (g.id === 'retaliation-warrior' ? '' : '<a class="nx-btn" href="#/build?d=' + g.build + '&from=' + g.id + '">Open the build</a>') + '</div>' +
     '<details class="gd-toc"><summary>In this guide</summary><ol>' + heads.map(([id, t]) => '<li><a href="#/guides/' + g.id + '" data-jump="' + id + '">' + t + '</a></li>').join('') + '</ol></details>' +
     '<div class="hb-page gd-body">' + html + '</div></article>' +
     '<p class="nx-fine">Written by ' + esc(g.author) + '. Spot something wrong? <a href="#/feedback">Tell me</a>.</p>';
@@ -514,7 +538,7 @@ function profileView() {
     installBanner('profile') + languageSettingsField() + '<section>' + label('Display') + '<div class="nx-card nx-display"><div class="nx-seg" role="radiogroup" aria-label="Display">' +
       [['full', 'Full design', 'Colors, depth and art'], ['simple', 'Simplified', 'Flat, calm, fastest']].map(([k, l, dsc]) => '<button role="radio" aria-checked="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" aria-selected="' + ((read(DISPLAY_KEY) === 'simple') === (k === 'simple')) + '" data-act="display" data-id="' + k + '"><b>' + l + '</b><small>' + dsc + '</small></button>').join('') + '</div></div></section>' +
     '<section>' + label('Community') + '<div class="nx-list">' + row('#/guilds', 'Guilds', 'Find a guild and apply', '') + row('#/lfg', 'Looking for group', 'Raids, teams and planned runs', '') + row('#/records', 'Season records', 'Top players and guilds by season', '') + row('/classic#/community', 'Community posts', '', '', true) + '</div></section>' +
-    '<section>' + label('More') + '<div class="nx-list">' + row(KOFI, 'Support Arcana', 'Arcana is free and fan-made. Help keep it running on Ko-fi', '', true) + row('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', '') + row('/classic', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? row('/api/account/logout', 'Sign out', '', '', true) : '') + '</div></section>';
+    '<section>' + label('More') + '<div class="nx-list">' + row(KOFI, 'Support Arcana', 'Arcana is free and fan-made. Help keep it running on Ko-fi', '', true) + row('#/feedback', 'Report a problem', 'Bugs, wrong data, ideas', '') + row('/classic', 'Classic Arcana', 'The current site, unchanged', '', true) + (u ? '<button type="button" class="nx-row nx-signout" data-act="logout"' + (logoutBusy ? ' disabled' : '') + '><span class="nx-row-text"><strong>' + (logoutBusy ? 'Signing out…' : 'Sign out') + '</strong><small>Switch to another account</small></span><span class="nx-row-end">' + icon('next', 18) + '</span></button>' + (logoutError ? '<p class="nx-signout-error" role="alert">' + esc(logoutError) + '</p>' : '') : '') + '</div></section>';
 }
 
 // ---------- recently used tools ----------
@@ -535,11 +559,11 @@ function render() {
   if (section !== 'feedback' && section !== 'profile') notePage(location.hash);
   loadMe(); loadNotice();
   const tab = activeTab(section);
-  const view = section === 'guides' ? guideView(id) : section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? buildView(query) : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
+  const view = section === 'guidebook' ? (id === 'manage' ? adminGuidebookTab() : id.startsWith('edit/') ? guidebookEditorView(id.slice(5)) : id.startsWith('new/') ? guidebookEditorView(id.slice(4), true) : guidebookView(id)) : section === 'guides' ? guideView(id) : section === 'handbook' ? (id.startsWith('edit/') ? editorView(id.slice(5)) : id.startsWith('new/') ? editorView(id.slice(4), true) : handbookView(id)) : section === 'directory' ? directoryView() : section === 'lfg' ? lfgView() : section === 'records' ? recordsView() : section === 'guilds' ? guildsView(id, data.me.value) : section === 'checklist' ? checklistView(id) : section === 'feedback' ? feedbackView() : section === 'admin' ? (id === 'design' ? designView(user()) : adminView(user())) : section === 'studio' ? studioView(id) : section === 'build' ? buildView(query) : section === 'tools' ? toolsView(id, query) : section === 'codex' ? codexView(id) : section === 'builds' ? buildsView(id)
     : section === 'news' ? newsView(id) : section === 'profile' ? profileView() : homeView();
   // The original triangle, recolored to the site accent the same way the classic theme designer did it.
   const logo = '<img class="nx-logo" src="/assets/arcana-logo.webp" width="38" height="32" alt="">';
-  const title = section === 'home' ? '<a class="nx-brand" href="#/home" aria-label="Arcana home">' + logo + '<span>ARCANA</span></a>'
+  const title = section === 'home' || section === 'guidebook' ? '<a class="nx-brand" href="#/home" aria-label="Arcana home">' + logo + '<span>ARCANA</span></a>'
     : '<a class="nx-brand nx-brand-sm" href="#/home" aria-label="Arcana home">' + logo + '</a><span class="nx-title">' + esc(TITLES[section]) + '</span>';
   $('nxTopL').innerHTML = title;
   $('nxTopR').innerHTML = languageControl() +
@@ -564,6 +588,7 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) return;
   const act = b.dataset.act;
+  if (act === 'logout') { signOut(); return; }
   if (act === 'install') {
     if (installEvt) {
       const pending = installEvt;
@@ -662,6 +687,8 @@ initTheme(render, applyTheme);
 initDesign(render, applyTheme);
 initHandbook(render, () => data.me.value?.user || null);
 initHandbookEditor(render);
+initGuidebook(render,()=>data.me.value?.user||null);
+initGuidebookEditor(render);
 window.addEventListener('arcana:news-changed', () => { data.news.state = 'idle'; data.article = {}; });
 window.addEventListener('arcana:featured-changed', () => { featuredState.state = 'idle'; data.builds.state = 'idle'; });
 // Boot: hold the loading screen until the published design, fonts and account are in (2.5 s at most),
