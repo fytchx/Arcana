@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Warrior class symbol">
+  <circle cx="32" cy="32" r="30" fill="#381f22" stroke="#5c2b30" stroke-width="1.5"/>
+  <g transform="translate(11, 11) scale(1.3125)">
+    <path d="M16 4.5 L25.5 8.2 V15.2 C25.5 21.4 21.4 25.8 16 28 C10.6 25.8 6.5 21.4 6.5 15.2 V8.2 Z" fill="#f04235"/>
+  </g>
+</svg>

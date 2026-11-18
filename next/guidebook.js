@@ -26,7 +26,7 @@ function loadPlayerGuideIds(force=false){
 }
 const count=ch=>live.filter(p=>p.chapter===ch&&p.status!=='awaiting').length;
 const status=p=>p.status==='ready'?'Published on Test':p.status==='awaiting'?'Contributor draft pending':p.status==='planned'?'Planned section':'Working draft · editor preview';
-const classArt=name=>'<img src="/assets/icons/idlearc-refined/classes/class-'+name+'.svg" alt="" loading="lazy">';
+const classArt=name=>'<img src="/assets/icons/arcana-pack/guidebook-classes/'+name+'.svg" alt="" loading="lazy">';
 const buildArt=name=>'<img src="/assets/icons/arcana-pack/build-types/'+name+'.svg" alt="" loading="lazy">';
 const GUIDE_ART={
  'rogue-explore':'<span class="gb-row-art gb-row-art-multi">'+classArt('rogue')+classArt('mage')+classArt('warrior')+'</span>',
