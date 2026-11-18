@@ -168,7 +168,7 @@ const server=http.createServer(async(req,res)=>{
   if(await handleWikiRequest(req,res,pathname))return;
   if(await handleTrafficRequest(req,res,parsedUrl))return;
   if((pathname==='/api/handbook'||pathname==='/api/admin/handbook')&&await safeHandbookRequest(req,res,parsedUrl))return;
-  if((pathname==='/api/guidebook'||pathname==='/api/admin/guidebook'||pathname==='/api/admin/guidebook/export')&&await safeGuidebookRequest(req,res,parsedUrl))return;
+  if((pathname==='/api/guidebook'||pathname==='/api/admin/guidebook'||pathname==='/api/admin/guidebook/export'||pathname==='/api/admin/guidebook/contributors')&&await safeGuidebookRequest(req,res,parsedUrl))return;
   if(pathname==='/api/admin/backup'&&req.method==='GET'&&await safeBackupRequest(req,res))return;
   if(await safeSiteAdminRequest(req,res,parsedUrl))return;
   if((req.method==='GET'||req.method==='HEAD')&&seoPageByPath(pathname)){

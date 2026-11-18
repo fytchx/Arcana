@@ -5,8 +5,8 @@ import { CHAPTERS, GUIDEBOOK_VERSION } from './guidebook-content.js';
 import { guidebookPages, loadGuidebook, chapterOf } from './guidebook.js';
 import { hbText } from './handbook.js';
 
-const E = { state: 'idle', revision: 0, entries: [], canPublish: false, edit: null, preview: false, busy: false, msg: '', toast: '', confirm: '', remoteDirty: false, localSaved: false, editVersion: 0 };
-let rerender = () => {}, tt, autosaveTimer;
+const E = { state: 'idle', revision: 0, entries: [], canPublish: false, isOwner: false, contributors: [], contributorMatches: [], contributorQuery: '', edit: null, preview: false, busy: false, msg: '', toast: '', confirm: '', remoteDirty: false, localSaved: false, editVersion: 0 };
+let rerender = () => {}, tt, autosaveTimer, contributorSearchTimer;
 const toast = m => { E.toast = m; clearTimeout(tt); tt = setTimeout(() => { E.toast = ''; rerender(); }, 2600); rerender(); };
 const TOOLS = [['studio', 'Build Studio'], ['pathfinder', 'Pathfinder'], ['mlxp', 'ML XP'], ['pets', 'Pet calculators'], ['guildtree', 'Guild tree'], ['builds', 'Builds'], ['lfg', 'Looking for group'], ['retaliation','Retaliation planner']];
 const TRUST = [['estimated', 'Working draft', 'Under editorial review'], ['verified', 'Reviewed', 'Checked and approved'], ['config', 'Referenced mechanics', 'Linked to a dated game config'], ['legacy', 'Earlier season', 'Older advice']];
@@ -21,7 +21,7 @@ async function api(method, body) {
 export function loadEditorData(force) {
   if (!force && E.state !== 'idle') return;
   E.state = 'loading';
-  api('GET').then(j => { E.revision = j.revision; E.entries = j.entries; E.canPublish = j.canPublish; E.state = 'ready'; }).catch(e => { E.state = e.status === 403 || e.status === 401 ? 'denied' : 'error'; }).finally(rerender);
+  api('GET').then(j => { E.revision = j.revision; E.entries = j.entries; E.canPublish = j.canPublish; E.isOwner=!!j.isOwner; E.contributors=Array.isArray(j.contributors)?j.contributors:[]; E.state = 'ready'; }).catch(e => { E.state = e.status === 403 || e.status === 401 ? 'denied' : 'error'; }).finally(rerender);
 }
 const entry = id => E.entries.find(x => x.id === id);
 
@@ -93,7 +93,9 @@ export function adminGuidebookTab() {
   if (E.state !== 'ready') return E.state === 'denied' ? '<div class="nx-empty"><strong>No Guidebook access</strong></div>' : '<div class="nx-loading">Loading…</div>';
   const waiting = E.entries.filter(x => x.review), drafts = E.entries.filter(x => x.draft && !x.review), hidden = E.entries.filter(x => x.hidden);
   const row = (x, sub) => '<a class="nx-row" href="#/guidebook/edit/' + esc(x.id) + '"><span class="nx-row-text"><strong>' + esc((x.draft || x.published).title) + '</strong><small>' + esc(sub) + '</small></span><span class="nx-row-end">›</span></a>';
+  const contributorPanel=E.isOwner?'<section class="playbook-contributor-panel"><div class="nx-head"><h2 class="nx-label">Playbook contributors</h2><small>Only you can manage this list.</small></div><p class="nx-fine">Search registered Arcana users. Set a public credit name when their profile name is missing or not the name they want credited.</p><label class="nx-field">Find a user<input type="search" autocomplete="off" data-gc-search value="'+esc(E.contributorQuery)+'" placeholder="Type at least two characters"></label><div class="nx-list">'+E.contributorMatches.map(m=>'<div class="nx-row"><span class="nx-row-text"><strong>'+esc(m.displayName)+'</strong></span><button class="nx-btn" type="button" data-gc="add" data-id="'+esc(m.id)+'"'+(E.contributors.some(c=>c.userId===m.id)?' disabled':'')+'>Add</button></div>').join('')+'</div>'+(E.contributors.length?'<div class="nx-list">'+E.contributors.map(c=>'<div class="playbook-credit-row"><label class="nx-field">Public credit name<input maxlength="80" data-gc-name="'+esc(c.userId)+'" value="'+esc(c.creditName||'')+'" placeholder="'+esc(c.displayName||'Arcana player')+'"></label><button class="nx-btn" type="button" data-gc="remove" data-id="'+esc(c.userId)+'">Remove</button></div>').join('')+'</div>':'<p class="nx-fine">No contributors selected yet.</p>')+'<button class="nx-btn nx-btn-primary" type="button" data-gc="save"'+(E.busy?' disabled':'')+'>Save contributor list</button></section>':'';
   return '<header class="hb-head"><span class="nx-kicker">PRIVATE EDITOR WORKSPACE</span><h1>Guidebook manager</h1><p>Drafts stay visible to editors. Publishing to Test is a separate, deliberate action.</p><a class="nx-btn" href="/api/admin/guidebook/export">Download a Guidebook backup</a></header>'+
+    contributorPanel+
     '<section><h2 class="nx-label">Waiting for review · ' + waiting.length + '</h2>' + (waiting.length ? '<div class="nx-list">' + waiting.map(x => row(x, 'From ' + (x.draftBy || 'an editor'))).join('') + '</div>' : '<p class="nx-fine">Nothing waiting.</p>') + '</section>' +
     '<section><h2 class="nx-label">Drafts · ' + drafts.length + '</h2>' + (drafts.length ? '<div class="nx-list">' + drafts.map(x => row(x, 'Saved by ' + (x.draftBy || 'an editor'))).join('') + '</div>' : '<p class="nx-fine">No drafts.</p>') + '</section>' +
     CHAPTERS.map(c=>{const rows=E.entries.filter(x=>(x.draft||x.published)?.chapter===c.id).sort((a,b)=>((a.draft||a.published).order||0)-((b.draft||b.published).order||0));return '<section><div class="nx-head"><h2 class="nx-label">'+c.n+' · '+esc(c.title)+'</h2><a class="nx-btn" href="#/guidebook/new/'+esc(c.id)+'">+ Add page</a></div>'+(rows.length?'<div class="nx-list">'+rows.map(x=>row(x,'Position '+((x.draft||x.published).order??0)+' · '+(x.draft?'Draft':x.published?.status==='ready'?'Ready on Test':'Needs review'))).join('')+'</div>':'<p class="nx-fine">No pages yet.</p>')+'</section>';}).join('')+
@@ -160,6 +162,30 @@ export function initGuidebookEditor(render) {
     E.remoteDirty=true;clearTimeout(autosaveTimer);keepLocal();
     const label=document.querySelector('.he-autosave');if(label)label.textContent='Changes saved in a private recovery copy. Saving draft…';
     autosaveTimer=setTimeout(autosave,1300);
+  });
+  document.addEventListener('input',e=>{
+    if(e.target.matches('[data-gc-search]')){
+      E.contributorQuery=e.target.value;clearTimeout(contributorSearchTimer);
+      const query=E.contributorQuery.trim();
+      if(query.length<2){E.contributorMatches=[];rerender();return;}
+      contributorSearchTimer=setTimeout(async()=>{
+        try{const r=await fetch('/api/admin/guidebook/contributors?q='+encodeURIComponent(query),{credentials:'same-origin',cache:'no-store'}),j=await r.json();if(r.ok){E.contributorMatches=j.matches||[];rerender();}}
+        catch{E.contributorMatches=[];rerender();}
+      },280);
+    }
+    if(e.target.matches('[data-gc-name]')){const userId=e.target.dataset.gcName,c=E.contributors.find(x=>x.userId===userId);if(c)c.creditName=e.target.value;}
+  });
+  document.addEventListener('click',async e=>{
+    const b=e.target.closest('[data-gc]');if(!b||b.disabled)return;
+    const action=b.dataset.gc;
+    if(action==='add'){const m=E.contributorMatches.find(x=>x.id===b.dataset.id);if(m&&!E.contributors.some(c=>c.userId===m.id))E.contributors.push({userId:m.id,displayName:m.displayName,creditName:''});rerender();return;}
+    if(action==='remove'){E.contributors=E.contributors.filter(c=>c.userId!==b.dataset.id);rerender();return;}
+    if(action==='save'){
+      E.busy=true;rerender();
+      try{const j=await api('PUT',{expectedRevision:E.revision,action:'contributors',contributors:E.contributors.map(({userId,creditName})=>({userId,creditName}))});E.revision=j.revision;E.contributors=j.contributors||[];E.contributorMatches=[];E.contributorQuery='';E.state='idle';toast('Contributor credits saved.');loadEditorData(true);loadGuidebook(true);}
+      catch(err){toast(err.message);}
+      finally{E.busy=false;rerender();}
+    }
   });
   document.addEventListener('change', e => {
     const t = e.target;

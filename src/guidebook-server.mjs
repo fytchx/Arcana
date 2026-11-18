@@ -3,6 +3,7 @@
 //  - guidebook:publish can publish, hide, and restore earlier versions
 // Every published version is kept (last 25 per page). Editorial seed text stays server-side.
 import {resolve} from 'node:path';
+import {readdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {dataRoot,readJSON,saveAtomic,sendJSON,accountUser,checkOrigin,parseJSON,publicProfile} from './account-server.mjs';
 import {can} from './account-policy.js';
@@ -14,6 +15,7 @@ const file=()=>resolve(dataRoot(),'guidebook','pages.json');
 const CHAPTER_IDS=new Set(CHAPTERS.map(c=>c.id));
 const TRUST=new Set(['verified','config','estimated','legacy']);
 const ID=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const ACCOUNT_ID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const SEED=ORIGINAL_SEED.map(p=>({...p,...(SEED_UPDATES[p.id]||{})})).concat(NEW_SEED_PAGES);
 const SEED_STRUCTURE_VERSION=3;
 const contentFingerprint=p=>p?createHash('sha256').update(JSON.stringify({title:p.title,answer:p.answer,body:p.body})).digest('hex'):'';
@@ -76,30 +78,56 @@ async function load(){
   });
   saved.structureVersion=SEED_STRUCTURE_VERSION;
   saved.contentVersion=1;
+  if(!Array.isArray(saved.contributors))saved.contributors=[];
   return saved;
  }
  const pages={};SEED.forEach((p,i)=>{pages[p.id]=editorPage(p,i);});
- return {revision:0,structureVersion:SEED_STRUCTURE_VERSION,contentVersion:1,pages};
+ return {revision:0,structureVersion:SEED_STRUCTURE_VERSION,contentVersion:1,pages,contributors:[]};
 }
 const publicList=store=>Object.values(store.pages).filter(e=>e.published&&!e.hidden&&e.published.status==='ready').map(e=>e.published).sort((a,b)=>(a.order??100)-(b.order??100));
 const byline=user=>publicProfile(user).displayName;
+const owner=user=>user?.isCreator===true;
+const accountFile=id=>resolve(dataRoot(),'users',id+'.json');
+async function guidebookContributors(raw,includeIds=false){
+ const people=Array.isArray(raw)?raw:[];
+ const resolved=await Promise.all(people.slice(0,30).map(async item=>{
+  if(!ACCOUNT_ID.test(String(item?.userId||'')))return null;
+  const account=await readJSON(accountFile(item.userId));if(!account||account.suspended)return null;
+  const profile=publicProfile(account),creditName=text(item.creditName,80).trim();
+  return includeIds?{userId:item.userId,displayName:profile.displayName,creditName}:{displayName:creditName||profile.displayName||'Arcana player'};
+ }));
+ return resolved.filter(Boolean);
+}
+async function findContributorAccounts(query){
+ const q=String(query||'').trim().toLocaleLowerCase();if(q.length<2)return [];
+ let files=[];try{files=(await readdir(resolve(dataRoot(),'users'))).filter(f=>ACCOUNT_ID.test(f.slice(0,-5))).slice(0,5000);}catch(e){if(e.code!=='ENOENT')throw e;}
+ const matches=[];
+ for(const filename of files){const id=filename.slice(0,-5),account=await readJSON(accountFile(id));if(!account||account.suspended)continue;const displayName=publicProfile(account).displayName;if(displayName.toLocaleLowerCase().includes(q))matches.push({id,displayName});}
+ return matches.sort((a,b)=>a.displayName.localeCompare(b.displayName)).slice(0,20);
+}
+
 
 export async function handleGuidebookRequest(req,res,url){
  const path=url.pathname;
  if(path==='/api/guidebook'&&req.method==='GET'){
   const s=await load(),user=await accountUser(req),isEditor=!!user&&can(user,'handbook:edit');
-  sendJSON(res,200,{revision:s.revision,pages:publicList(s),...(isEditor?{editorDrafts:Object.values(s.pages).filter(e=>e.draft||e.published).map(e=>e.draft||e.published).filter(Boolean).sort((a,b)=>(a.order??100)-(b.order??100))}:{})});return true;
+  sendJSON(res,200,{revision:s.revision,pages:publicList(s),contributors:await guidebookContributors(s.contributors),...(isEditor?{editorDrafts:Object.values(s.pages).filter(e=>e.draft||e.published).map(e=>e.draft||e.published).filter(Boolean).sort((a,b)=>(a.order??100)-(b.order??100))}:{})});return true;
+ }
+ if(path==='/api/admin/guidebook/contributors'&&req.method==='GET'){
+  const user=await accountUser(req);
+  if(!owner(user)){sendJSON(res,user?403:401,{error:user?'Only the Playbook owner can manage contributors.':'Sign in to continue.'});return true;}
+  sendJSON(res,200,{matches:await findContributorAccounts(url.searchParams.get('q'))});return true;
  }
  if(path!=='/api/admin/guidebook'&&path!=='/api/admin/guidebook/export')return false;
  const user=await accountUser(req);
  if(!user){sendJSON(res,401,{error:'Sign in to continue.'});return true;}
  if(!can(user,'handbook:edit')){sendJSON(res,403,{error:'Your role cannot edit pages. Ask for Handbook Editor access.'});return true;}
  if(path==='/api/admin/guidebook/export'&&req.method==='GET'){
-  const s=await load();res.writeHead(200,{'content-type':'application/json; charset=utf-8','content-disposition':'attachment; filename="arcana-guidebook-backup.json"','cache-control':'no-store','x-content-type-options':'nosniff'});res.end(JSON.stringify(s,null,2));return true;
+  const s=await load(),backup=owner(user)?s:{...s,contributors:undefined};res.writeHead(200,{'content-type':'application/json; charset=utf-8','content-disposition':'attachment; filename="arcana-guidebook-backup.json"','cache-control':'no-store','x-content-type-options':'nosniff'});res.end(JSON.stringify(backup,null,2));return true;
  }
  if(req.method==='GET'){
   const s=await load();
-  sendJSON(res,200,{revision:s.revision,canPublish:can(user,'handbook:publish'),entries:Object.entries(s.pages).map(([id,e])=>({id,published:e.published,draft:e.draft,review:e.review,hidden:e.hidden,draftBy:e.draftBy||'',draftAt:e.draftAt||'',history:(e.history||[]).map((h,i)=>({i,at:h.at,by:h.by,title:h.page.title}))}))});
+  sendJSON(res,200,{revision:s.revision,canPublish:can(user,'handbook:publish'),isOwner:owner(user),...(owner(user)?{contributors:await guidebookContributors(s.contributors,true)}:{}),entries:Object.entries(s.pages).map(([id,e])=>({id,published:e.published,draft:e.draft,review:e.review,hidden:e.hidden,draftBy:e.draftBy||'',draftAt:e.draftAt||'',history:(e.history||[]).map((h,i)=>({i,at:h.at,by:h.by,title:h.page.title}))}))});
   return true;
  }
  if(req.method!=='PUT'){sendJSON(res,405,{error:'Method not allowed.'});return true;}
@@ -107,7 +135,8 @@ export async function handleGuidebookRequest(req,res,url){
  const body=await parseJSON(req,40000).catch(()=>null);
  if(!body||!Number.isInteger(body.expectedRevision)){sendJSON(res,422,{error:'A current revision is required.'});return true;}
  const action=body.action, publishing=['publish','hide','unhide','restore'].includes(action);
- if(!['draft','review','discard',...(publishing?[action]:[])].includes(action)){sendJSON(res,422,{error:'Unknown action.'});return true;}
+ if(action==='contributors'&&!owner(user)){sendJSON(res,403,{error:'Only the Playbook owner can manage contributors.'});return true;}
+ if(!['draft','review','discard','contributors',...(publishing?[action]:[])].includes(action)){sendJSON(res,422,{error:'Unknown action.'});return true;}
  if(publishing&&!can(user,'handbook:publish')){sendJSON(res,403,{error:'Your role can save drafts but not publish.'});return true;}
  let page=null;
  if(action==='draft'||action==='review'||action==='publish'){try{page=normalizePage(body.page);}catch(e){sendJSON(res,422,{error:e.message});return true;}}
@@ -115,6 +144,13 @@ export async function handleGuidebookRequest(req,res,url){
  return serialized(async()=>{
   const s=await load();
   if(s.revision!==body.expectedRevision){sendJSON(res,409,{error:'Someone else changed the Guidebook. Reload, then save again.'});return true;}
+  if(action==='contributors'){
+   if(!Array.isArray(body.contributors)||body.contributors.length>30){sendJSON(res,422,{error:'Choose up to 30 contributors.'});return true;}
+   const ids=new Set();
+   for(const item of body.contributors){const id=String(item?.userId||'');if(!ACCOUNT_ID.test(id)||ids.has(id)){sendJSON(res,422,{error:'Each contributor must be a unique registered Arcana user.'});return true;}ids.add(id);const account=await readJSON(accountFile(id));if(!account||account.suspended){sendJSON(res,422,{error:'A selected account is no longer available.'});return true;}}
+   s.contributors=body.contributors.map(item=>({userId:String(item.userId),creditName:text(item.creditName,80).trim()}));s.revision++;
+   await saveAtomic(file(),s);sendJSON(res,200,{revision:s.revision,contributors:await guidebookContributors(s.contributors,true)});return true;
+  }
   const now=new Date().toISOString(),e=s.pages[id]||(s.pages[id]={published:null,draft:null,review:false,hidden:false,history:[]});
   if(action==='draft'||action==='review'){e.draft=page;e.review=action==='review';e.draftBy=byline(user);e.draftAt=now;}
   else if(action==='discard'){e.draft=null;e.review=false;}

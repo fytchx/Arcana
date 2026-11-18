@@ -1252,3 +1252,16 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
 @media(max-width:380px){.playbook-home .gb-pillars>div{padding:8px}.playbook-home .gb-pillars strong{font-size:11px}.playbook-outline>summary{gap:7px;padding-right:9px;padding-left:9px}.playbook-outline-copy b{font-size:12px}}
 
 .playbook-outline[open]>summary::after{content:none}
+
+/* Compact contributor credit line and owner-only Playbook roster controls */
+.playbook-start-link{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.45}
+.playbook-start-link a{color:var(--accent-ink);font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.playbook-contributors{margin:0 0 10px;padding:0 2px;color:var(--muted);font-size:13px}
+.playbook-contributors .nx-kicker{margin-right:8px;color:var(--accent-ink)}
+.playbook-contributor-panel{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--r-lg);background:var(--card)}
+.playbook-contributor-panel .nx-head{margin:0;align-items:center}
+.playbook-contributor-panel .nx-head small{color:var(--muted)}
+.playbook-credit-row{display:flex;align-items:flex-end;gap:8px;padding:8px;border-bottom:1px solid var(--line)}
+.playbook-credit-row .nx-field{flex:1;min-width:0}
+.playbook-contributor-panel .nx-list{display:grid;gap:6px}
+@media(max-width:480px){.playbook-credit-row{align-items:stretch;flex-direction:column}.playbook-credit-row .nx-btn{align-self:flex-start}.playbook-start-link{font-size:13px}}

@@ -3,7 +3,7 @@
 import {esc,ic} from './core.js';
 import {hbText} from './handbook.js';
 import {CHAPTERS,EXTERNAL_CLASS_GUIDES} from './guidebook-content.js';
-let live=[],byId=new Map(),loadState='idle',rerender=()=>{},currentUser=()=>null,playerGuideState='idle',playerGuideIds=[],playerGuideItems=[];
+let live=[],byId=new Map(),loadState='idle',rerender=()=>{},currentUser=()=>null,playerGuideState='idle',playerGuideIds=[],playerGuideItems=[],contributors=[];
 export const chapterOf=id=>CHAPTERS.find(c=>c.id===id);
 export const guidebookPages=()=>live;
 export function setGuidebookPages(pages) {
@@ -15,7 +15,7 @@ export function loadGuidebook(force=false) {
   loadState='loading';
   fetch('/api/guidebook',{credentials:'same-origin',cache:'no-store'})
     .then(r=>r.ok?r.json():null)
-    .then(j=>{if(j?.pages)setGuidebookPages(j.editorDrafts||j.pages);loadState='ready';rerender();})
+    .then(j=>{if(j?.pages)setGuidebookPages(j.editorDrafts||j.pages);contributors=Array.isArray(j?.contributors)?j.contributors:[];loadState='ready';rerender();})
     .catch(()=>{loadState='error';rerender();});
 }
 function loadPlayerGuideIds(force=false){
@@ -52,8 +52,9 @@ function home(){
   const playerGuides=EXTERNAL_CLASS_GUIDES.map(x=>({title:x.title,answer:x.detail,href:x.href})).concat(pages('player-guides').map(p=>({id:p.id,title:p.title,answer:p.answer})),playerGuideItems.map(p=>({title:p.title,answer:(p.summary||'')+' · By '+p.author,href:'#/builds/'+encodeURIComponent(p.id)})));
   const groups=[['start','Start Here',start,true],...(system.length?[['systems','Systems & Progression',system]]:[]),...(deep.length?[['deep','Deep Dives',deep]]:[]),['guides','Player Guides',playerGuides],...(closing.length?[['conclusion','Conclusion',closing]]:[])];
   loadPlayerGuideIds();
-  return '<div class="playbook-home"><header class="hb-head gb-head playbook-home-head"><span class="nx-kicker">SEASON 3</span><h1>The Season 3 Playbook</h1><p>A practical guide from your first class choice to endgame. Follow the route or jump to a topic.</p><p class="gb-start-cta"><strong>If you\'re interested in learning how you can start Season 3 like a pro would, start here:</strong> <a href="#/guidebook/start-season">Starting Season 3</a></p></header>'+
-  '<div class="gb-pillars"><div><strong>Plan ahead; let drops shape the route</strong><p>Keep useful options until the best path becomes clear.</p></div><div><strong>Keep Monster Level moving</strong><p>Detour when the payoff is worth the time.</p></div></div>'+
+  return '<div class="playbook-home"><header class="hb-head gb-head playbook-home-head"><span class="nx-kicker">SEASON 3</span><h1>The Season 3 Playbook</h1><p>Choose a direction, plan ahead, and save gear, pets, and runes that could open another path. Let your drops shape the build, but keep pushing Monster Level—detour only when it helps you progress.</p><p class="playbook-start-link"><strong>If you\'re interested in learning how you can start Season 3 like a pro would, start here:</strong> <a href="#/guidebook/start-season">Starting Season 3</a></p></header>'+
+  
+  (contributors.length?'<p class="playbook-contributors"><span class="nx-kicker">CONTRIBUTORS</span> '+contributors.map(x=>esc(x)).join(' · ')+'</p>':'')+
   (editor?'<a class="playbook-editor-link" href="#/guidebook/manage">Edit Playbook content <span aria-hidden="true">›</span></a>':'')+
   '<div class="playbook-outline-groups">'+groups.map((entry,i)=>group(entry[0],String(i+1).padStart(2,'0'),entry[1],entry[2],entry[3]||false)).join('')+'</div></div>';
 }
