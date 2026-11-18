@@ -173,12 +173,16 @@ export function initGuidebookEditor(render) {
         catch{E.contributorMatches=[];rerender();}
       },280);
     }
-    if(e.target.matches('[data-gc-name]')){const userId=e.target.dataset.gcName,c=E.contributors.find(x=>x.userId===userId);if(c)c.creditName=e.target.value;}
+    if(e.target.matches('[data-gc-name]')){
+      const userId=e.target.dataset.gcName,c=E.contributors.find(x=>x.userId===userId);if(c)c.creditName=e.target.value;
+    }
   });
   document.addEventListener('click',async e=>{
     const b=e.target.closest('[data-gc]');if(!b||b.disabled)return;
     const action=b.dataset.gc;
-    if(action==='add'){const m=E.contributorMatches.find(x=>x.id===b.dataset.id);if(m&&!E.contributors.some(c=>c.userId===m.id))E.contributors.push({userId:m.id,displayName:m.displayName,creditName:''});rerender();return;}
+    if(action==='add'){
+      const m=E.contributorMatches.find(x=>x.id===b.dataset.id);if(m&&!E.contributors.some(c=>c.userId===m.id))E.contributors.push({userId:m.id,displayName:m.displayName,creditName:''});rerender();return;
+    }
     if(action==='remove'){E.contributors=E.contributors.filter(c=>c.userId!==b.dataset.id);rerender();return;}
     if(action==='save'){
       E.busy=true;rerender();
