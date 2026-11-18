@@ -138,3 +138,18 @@ test('player guide toolbar inserts reader-compatible blocks and protects draft l
   const source = await (await import('node:fs/promises')).readFile(new URL('../next/app.js', import.meta.url), 'utf8');
   for (const element of ['nx-guide-toolbar', 'guideMode', 'guideTable', 'guideLink', 'guideClear', 'saveGuideDraft', 'nxGuideBody']) assert.ok(source.includes(element), element);
 });
+
+test('player guides expose class/topic identity and theme-aware visual controls', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const app = await readFile(new URL('../next/app.js', import.meta.url), 'utf8');
+  const css = await readFile(new URL('../next/app.css', import.meta.url), 'utf8');
+  const server = await readFile(new URL('../src/community-server.mjs', import.meta.url), 'utf8');
+  for (const field of ['data-guide-class=', 'data-guide-topic=', 'data-g="trimColor"', 'data-guide-upload="icon"', 'data-guide-upload="image"']) assert.ok(app.includes(field), field);
+  assert.match(app, /label\('Featured Player Guides'\)/);
+  assert.match(app, /nx-player-guide-mark.*many/);
+  assert.match(css, /\.nx-player-guide-feature[^{]*\{[^}]*var\(--guide-trim\)/s);
+  assert.match(css, /\.nx-guide-screenshot img/);
+  assert.match(server, /community\/assets/);
+  assert.match(server, /Use a screenshot under 5 MB/);
+  assert.match(server, /guideClasses:Array\.isArray\(post\.guideClasses\)/);
+});
