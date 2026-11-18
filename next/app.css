@@ -1250,3 +1250,5 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
 .playbook-outline-item small{font-size:10px;line-height:1.35}
 .playbook-outline-item b{font-size:12px}
 @media(max-width:380px){.playbook-home .gb-pillars>div{padding:8px}.playbook-home .gb-pillars strong{font-size:11px}.playbook-outline>summary{gap:7px;padding-right:9px;padding-left:9px}.playbook-outline-copy b{font-size:12px}}
+
+.playbook-outline[open]>summary::after{content:none}
