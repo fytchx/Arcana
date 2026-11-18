@@ -75,7 +75,7 @@ Endgame is not one finished shopping list. It is a set of improvements you revis
 
 Ordinary base armor can have substantially more Defense than some special pieces. Sage Diadem, Wardplate and other special items each have trade-offs; they are not automatic upgrades for a Retaliation build. If you are choosing between a base item and a special, compare your actual Retaliation damage and survival with both equipped.
 
-For drop bonuses, I look for Reflecting and Armored pieces that fit the job. Keep a progression or farming setup if it helps you move through monsters, and a stronger boss setup if you need it. Use a planner or compare your stats after changing one piece at a time.
+For drop bonuses, I look for Reflecting and Armored pieces that fit the job. Keep a progression or farming setup if it helps you move through monsters, and a stronger boss setup if you need it. Frenzy is useful only while the setup still kills quickly; compare total kills and progression instead of chasing a large Frenzy number by itself. In my earlier build, block-chance boots helped until the rest of my setup covered enough Block, then higher-Defense base boots became more attractive. That was my experience, not a universal A6 breakpoint. Use a planner or compare your stats after changing one piece at a time.
 
 Do not treat an awakening, set milestone or Torch requirement from an old season as a universal breakpoint. The exact Forge requirements and the best place to spend materials need to be checked against the current game.
 
@@ -126,6 +126,23 @@ Table: My previous endgame character
 | Reflecting pool, boss setup | 323.4% |
 | Strength, boss setup | 8.81K |
 | Pets | Crow +35 Increased Strength; Wasp +47, Diablo +46 and Zbakus +45 Retaliation |
+
+Table: My old boss setup at ML 314
+| Slot | Item | Drop bonus | Key affixes |
+| --- | --- | --- | --- |
+| Weapon | Frostfang Blade | Armored 74.6% | Strength 227; Double Hit 58% |
+| Offhand | Gilded Shield | Armored 68.7% | Crit Damage 58%; Double Damage 48% |
+| Helmet | Steel Plate Helm | Armored 38.2% | Increased Defense 740%; Double Damage 72% |
+| Armor | Steel Plate Armor | Armored 48.5% | Increased Defense 925% |
+| Gloves | Steel Plate Gauntlets | Reflecting 46.2% | Increased Defense 957%; Double Damage 72% |
+| Boots | Steel Plate Boots | Reflecting 72.5% | Increased Defense 796% |
+| Amulet | Warrior's Amulet | Reflecting 45.8% | Strength 266; Defense 198%; Double Hit 59% |
+| Ring 1 | Warrior's Ring | Armored 67.3% | Strength 287; Defense 183%; Double Damage 65% |
+| Ring 2 | Warrior's Ring | Reflecting 58.5% | Defense 172%; Double Hit 59% |
+| Belt | Scholar's Belt | Reflecting 55.3% | Strength 222; Defense 202%; Double Hit 55% |
+| Torch | Torch | Reflecting 39.7% | +9 All Class Skills; Double Damage 58% |
+
+This is a record of my old character and game version, not a shopping list or a claim about current best-in-slot gear.
 
 The lesson from that setup was to compare the size of each change against the whole build. A roll that looks large on its own can add little when that stat is already abundant; a smaller bonus can matter more when it improves a weaker part of the build.
 
