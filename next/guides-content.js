@@ -9,45 +9,37 @@ export const FEATURED_GUIDES = [
     id: 'attack-damage',
     title: 'Attack Damage: Rogue, Mage and Warrior',
     summary: 'One flexible Attack Damage route for three classes, with Rogue as the recommended starting point.',
-    author: 'Zane', cls: 'rogue', classLabel: 'ROGUE · MAGE · WARRIOR', stance: 'attack-damage', updated: '2026-11-17', gameVersion: 'Season 3 review draft', level: 'Any stage', readTime: '5 min',
-    body: `This is one guide for Attack Damage Rogue, Mage and Warrior. They share the same broad gear, pet and rune direction; their class skills are what make each version feel different. I recommend starting with Rogue if you want to farm efficiently, then let your drops and interests shape what comes next.
+    author: 'Zane', cls: 'rogue', classes: ['rogue','mage','warrior'], topics: [], trimColor: '#F3B25A', classLabel: 'ROGUE · MAGE · WARRIOR', stance: 'attack-damage', updated: '2026-11-17', gameVersion: 'Season 3 review draft', level: 'Any stage', readTime: '5 min',
+    body: `Attack Damage Rogue, Mage and Warrior share a flexible route. The core plan is similar across all three: build around Attack Damage, improve your kill speed, and keep useful gear, pets and runes instead of locking every resource into one narrow setup.
 
 ## Why start with Rogue
 
-Rogue is my preferred starting class because its skill tree offers useful farming tools while you level. That gives you more chances to find upgrades and materials as you build toward an Attack Damage setup.
+Rogue is my recommended starting point because its farming tools help while you level and gather upgrades. You can carry your useful Attack Damage pieces into Mage or Warrior later, so changing class is manageable when you have a reason to try something new.
 
-## A simple leveling route
+## Build the shared foundation
 
-Start by improving Rogue's direct attacks and Double Hit skills. As you level, balance damage with farming utility: if you are still one-shotting your target, take useful utility; if your kills are slowing down, put more points toward damage. Check the current Handbook skill pages before copying exact ranks, because class skill details can change.
+- Keep gear that supports your Attack Damage setup and has a strong roll. A new drop is not automatically an upgrade.
+- Hold on to useful Attack Damage runes and pets while your direction is still developing.
+- Spend skill points on damage when kills slow down. When your regular target is dying quickly, use spare points for useful farming or utility skills.
+- Check your actual kill speed after a change. If you lose reliable one-shots, find the cause before investing further.
 
-## The shared Attack Damage foundation
-
-The three classes can use a similar foundation:
-
-- Prioritize gear and upgrades that improve Attack Damage and the attributes your setup uses.
-- Keep useful Attack Damage runes and pets while you are still deciding what to play.
-- Save gear with a strong roll instead of replacing it just because a new item dropped.
-- Test your kill speed after changing a build. If the change costs one-shots, revisit it before investing more.
-
-## What changes between Rogue, Mage and Warrior
-
-The class skill tree changes; the overall Attack Damage direction does not need to. Use the class's own damage skills and keep the rest of your setup focused on the same goal. The current skill descriptions and unlocks live in the [Handbook](#/handbook/classes).
-
-Retaliation Warrior, Harmony Rogue, Archer and Druid each have their own guide.
+The class trees are different, but you do not need to rebuild your whole equipment plan to change between these three classes. Choose the skills that support direct damage in your current class and keep the shared setup working toward the same goal. See [classes and skills](#/handbook/classes) for current skill descriptions.
 
 ## Keep Monster Level moving
 
-If your regular target is still dying in one hit, keep pushing Monster Level. Farm or upgrade when the change is likely to restore your kill speed or unlock a meaningful next step, then return to pushing. Frenzy is useful for loot, but its extra kills do not give Monster Level XP.
+When your normal target is still dying in one hit, push Monster Level. Take a short detour to farm or upgrade when it restores your pace or unlocks a useful next step, then return to progression. Frenzy can help with loot, but Frenzy kills do not count toward Monster Level XP.
 
-## Let the drops shape the route
+## Leave room for a better route
 
-Choose a direction, then stay open to better options. A useful pet, rune or piece of gear can make another class or build more attractive. Keeping those options early makes a later pivot much easier than trying to rebuild after discarding everything that did not fit your first plan.`
+Plan ahead, but let useful drops influence the details. Save promising pieces until you know whether they improve your current build or open another one. This makes a later pivot much easier than trying to recover gear, runes or pets you discarded too early.
+
+For a different direction, see the separate [Retaliation Warrior guide](#/guides/retaliation-warrior) or browse the [Player Guides](#/builds/guides).`
   },
   {
     id: 'retaliation-warrior',
     title: 'Retaliation Warrior: the journey to endgame',
     summary: 'Start with a build that works, keep useful options, then transition into Retaliation and develop it for endgame.',
-    author: 'Zane', cls: 'warrior', stance: 'bulwark', updated: '2026-11-17', gameVersion: 'Season 3 review draft', level: 'Any stage',
+    author: 'Zane', cls: 'warrior', classes: ['warrior'], topics: [], trimColor: '#EF7F79', stance: 'bulwark', updated: '2026-11-17', gameVersion: 'Season 3 review draft', level: 'Any stage',
     readTime: '6 min',
     // Zane's own Build Studio setup (share code from #/build?d=...). Update it by pasting a new code.
     build: 'eyJ2IjoxLCJjIjoxLCJsIjo0MDQsImkiOlsiZ2VhciIsInBldHMiLCJydW5lcyIsInN0YW5jZSJdLCJ0aXRsZSI6IlphbmUncyBSZXRhbGlhdGlvbiBXYXJyaW9yIiwiZyI6eyJoZWFkIjp7Iml0ZW0iOjMsImF3IjoxLCJyYW5rIjowLCJkYiI6InRob3JuZWQiLCJhZmYiOlsxNF0sImdlbXMiOltudWxsLG51bGxdfSwiY2hlc3QiOnsiaXRlbSI6MiwiYXciOjEsInJhbmsiOjAsImRiIjpudWxsLCJhZmYiOltdLCJnZW1zIjpbbnVsbCxudWxsXX0sImhhbmRzIjp7Iml0ZW0iOjUsImF3IjoxLCJyYW5rIjowLCJkYiI6bnVsbCwiYWZmIjpbXSwiZ2VtcyI6W251bGwsbnVsbF19LCJmZWV0Ijp7Iml0ZW0iOjksImF3IjoxLCJyYW5rIjowLCJkYiI6bnVsbCwiYWZmIjpbXSwiZ2VtcyI6W251bGwsbnVsbF19LCJtYWluIjp7Iml0ZW0iOjEsImF3IjoxLCJyYW5rIjowLCJkYiI6InRob3JuZWQiLCJhZmYiOlsyNyw1LDE4LDIsNF0sImdlbXMiOltudWxsLG51bGwsbnVsbF19LCJvZmYiOnsiaXRlbSI6MTIsImF3IjoxLCJyYW5rIjowLCJkYiI6bnVsbCwiYWZmIjpbXSwiZ2VtcyI6W119LCJyaW5nMSI6eyJpdGVtIjoxNiwiYXciOjEsInJhbmsiOjAsImRiIjpudWxsLCJhZmYiOltdLCJnZW1zIjpbbnVsbF19LCJhbXVsZXQiOnsiaXRlbSI6MTcsImF3IjoxLCJyYW5rIjowLCJkYiI6InRob3JuZWQiLCJhZmYiOlsyNywxOSw1LDE4LDJdLCJnZW1zIjpbbnVsbF19LCJyaW5nMiI6eyJpdGVtIjoxNiwiYXciOjEsInJhbmsiOjAsImRiIjoidGhvcm5lZCIsImFmZiI6WzI3LDE5LDUsMTgsMl0sImdlbXMiOltudWxsXX0sImJlbHQiOnsiaXRlbSI6MjUsImF3IjoxLCJyYW5rIjowLCJkYiI6InRob3JuZWQiLCJhZmYiOlsyNywxOSw1LDE4LDJdLCJnZW1zIjpbbnVsbCxudWxsXX19LCJ0Ijp7InRhbDEiOiJmdXJ5IiwidGFsMiI6Imlyb24ifSwicCI6WyJpbmNyZWFzZWRfc3RyZW5ndGgiLCJyZXRhbGlhdGlvbiIsInJldGFsaWF0aW9uIiwicmV0YWxpYXRpb24iXSwiciI6W1swLDAsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFswLDEsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFsxLDAsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFsxLDEsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFsyLDAsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFsyLDEsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFszLDAsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFszLDEsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFs0LDAsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFs0LDEsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFs1LDAsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFs1LDEsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFswLDMsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFswLDQsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFsxLDMsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFsxLDQsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFsyLDMsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFsyLDQsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFszLDMsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFszLDQsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFs0LDMsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFs0LDQsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFs1LDMsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFs1LDQsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFswLDYsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFsxLDYsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFszLDYsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFs0LDYsImZvcnRpdHVkZSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFswLDIsInZpdGFsaXR5IiwicmV0YWxpYXRpb25fcGVyY2VudCIsInNtYWxsIl0sWzEsMiwidml0YWxpdHkiLCJyZXRhbGlhdGlvbl9wZXJjZW50Iiwic21hbGwiXSxbMiwyLCJ2aXRhbGl0eSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFszLDIsInZpdGFsaXR5IiwicmV0YWxpYXRpb25fcGVyY2VudCIsInNtYWxsIl0sWzQsMiwidml0YWxpdHkiLCJyZXRhbGlhdGlvbl9wZXJjZW50Iiwic21hbGwiXSxbNSwyLCJ2aXRhbGl0eSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFswLDUsInZpdGFsaXR5IiwicmV0YWxpYXRpb25fcGVyY2VudCIsInNtYWxsIl0sWzEsNSwidml0YWxpdHkiLCJyZXRhbGlhdGlvbl9wZXJjZW50Iiwic21hbGwiXSxbMiw1LCJ2aXRhbGl0eSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFszLDUsInZpdGFsaXR5IiwicmV0YWxpYXRpb25fcGVyY2VudCIsInNtYWxsIl0sWzQsNSwidml0YWxpdHkiLCJyZXRhbGlhdGlvbl9wZXJjZW50Iiwic21hbGwiXSxbNSw1LCJ2aXRhbGl0eSIsInJldGFsaWF0aW9uX3BlcmNlbnQiLCJzbWFsbCJdLFsyLDYsInZpdGFsaXR5IiwicmV0YWxpYXRpb25fcGVyY2VudCIsInNtYWxsIl0sWzUsNiwidml0YWxpdHkiLCJyZXRhbGlhdGlvbl9wZXJjZW50Iiwic21hbGwiXV0sInMiOiJidWx3YXJrIiwibiI6eyJnZWFyIjoiUmVmbGVjdGluZyBkcm9wIGJvbnVzZXMgZmlyc3QsIHRoZW4gU3RyZW5ndGgsIERvdWJsZSBIaXQgYW5kIERvdWJsZSBEYW1hZ2UgYWZmaXhlcy4gRGVmZW5zZSBHYXJuZXRzIGluIGFybW9yIHNsb3RzLCBTdHJlbmd0aCBHYXJuZXRzIGluIGpld2VscnksIExhcGlzIGluIHRoZSB3ZWFwb24uIEZ1bGwgcmVhc29uaW5nIGluIHRoZSBSZXRhbGlhdGlvbiBXYXJyaW9yIGd1aWRlLiJ9LCJieSI6IlphbmUifQ',

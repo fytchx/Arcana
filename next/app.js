@@ -288,7 +288,18 @@ function featuredPlayerGuidesSection() {
   loadFeaturedPlayerGuides();
   const admin = !!user()?.permissions?.manageSite, cards = featuredPlayerGuideState.cards;
   if (!admin && !cards.length && featuredPlayerGuideState.state !== 'loading') return '';
-  const entries = cards.map(({post, author, staticGuide}) => '<a class="nx-card nx-player-guide-feature" href="' + (staticGuide ? '#/guides/' + encodeURIComponent(post.id.slice(6)) : '#/builds/' + encodeURIComponent(post.id)) + '"><strong>' + esc(post.title) + '</strong><small>' + esc(post.summary || '') + '</small><span class="nx-by">by <b>' + esc(author?.displayName || 'Arcana player') + '</b></span></a>').join('');
+  const entries = cards.map(({post, author, staticGuide, source}) => {
+    const allowedClasses = ['warrior','rogue','mage','archer','druid'];
+    const classes = ((staticGuide ? source.classes : post.guideClasses) || (post.card?.cls ? [CLASS_NAMES[post.card.cls]?.toLowerCase()] : [])).filter(x => allowedClasses.includes(String(x).toLowerCase())).map(x => String(x).toLowerCase()).slice(0, 5);
+    const allowedTopics = ['pets','runes','gear','progression','farming','systems','misc'];
+    const topics = ((staticGuide ? source.topics : post.guideTopics) || []).filter(x => allowedTopics.includes(String(x).toLowerCase())).map(x => String(x).toLowerCase());
+    const rawTint = (staticGuide ? source.trimColor : post.trimColor) || '';
+    const tint = /^#[0-9a-f]{6}$/i.test(rawTint) ? rawTint : 'var(--accent)';
+    const custom = !staticGuide && /^[0-9a-f-]{36}$/.test(post.customIcon || '') ? '<img class="nx-guide-custom-icon" src="/api/community/assets/' + post.customIcon + '" alt="">' : '';
+    const marks = custom || classes.slice(0, 5).map(name => classBadge(name, classes.length > 2 ? 25 : 34)).join('') || artImg(topics.length ? 'features/feature-codex' : 'features/feature-build-studio', 34);
+    const meta = [...classes.map(x => CLASS_NAMES[Object.keys(CLASS_NAMES).find(k => CLASS_NAMES[k].toLowerCase() === x)] || x), ...topics.slice(0, 2)].filter(Boolean);
+    return '<a class="nx-card nx-player-guide-feature" style="--guide-trim:' + esc(tint) + '" href="' + (staticGuide ? '#/guides/' + encodeURIComponent(post.id.slice(6)) : '#/builds/' + encodeURIComponent(post.id)) + '"><span class="nx-player-guide-mark' + (classes.length > 2 ? ' many' : '') + '" aria-hidden="true">' + marks + '</span><span class="nx-player-guide-copy">' + (meta.length ? '<span class="nx-guide-tags">' + meta.map(x => '<i>' + esc(x) + '</i>').join('') + '</span>' : '') + '<strong>' + esc(post.title) + '</strong><small>' + esc(post.summary || '') + '</small><span class="nx-by">by <b>' + esc(author?.displayName || 'Arcana player') + '</b></span></span><span class="nx-guide-chevron" aria-hidden="true">›</span></a>';
+  }).join('');
   return '<section><div class="nx-head">' + label('Featured Player Guides') + '<span><a href="#/builds/guides">All guides</a>' + (admin ? ' · <a href="#/admin/player-guides">Manage</a>' : '') + '</span></div>' +
     (entries ? '<div class="nx-list">' + entries + '</div>' : featuredPlayerGuideState.state === 'loading' ? loading('featured Player Guides') : admin ? '<div class="nx-empty"><strong>No featured Player Guides</strong><p>Choose published guides in Admin to show them here.</p><a class="nx-btn" href="#/admin/player-guides">Manage Player Guides</a></div>' : '') + '</section>';
 }
@@ -305,7 +316,7 @@ function buildView(query) {
 
 // ---------- featured guides ----------
 // Same text standard as the Handbook (tables, topic links, tool links), plus a short contents list.
-const guideCard = source => { const {doc:g} = editorialTranslation('guides', source); return '<a class="nx-card nx-player-guide-feature" href="#/guides/' + encodeURIComponent(g.id) + '"><strong>' + esc(g.title) + '</strong><small>' + esc(g.summary) + '</small><span class="nx-by">by <b>' + esc(g.author) + '</b></span></a>'; };
+const guideCard = source => { const {doc:g} = editorialTranslation('guides', source), classes=(source.classes||[]).filter(x=>['warrior','rogue','mage','archer','druid'].includes(x)), trim=/^#[0-9a-f]{6}$/i.test(source.trimColor||'')?source.trimColor:'var(--accent)'; const marks=classes.length?classes.map(x=>classBadge(x,classes.length>2?25:34)).join(''):artImg('features/feature-codex',34); return '<a class="nx-card nx-player-guide-feature" style="--guide-trim:'+esc(trim)+'" href="#/guides/' + encodeURIComponent(g.id) + '"><span class="nx-player-guide-mark'+(classes.length>2?' many':'')+'">'+marks+'</span><span class="nx-player-guide-copy"><span class="nx-guide-tags">'+[...classes.map(x=>x[0].toUpperCase()+x.slice(1)),...(source.topics||[])].map(x=>'<i>'+esc(x)+'</i>').join('')+'</span><strong>' + esc(g.title) + '</strong><small>' + esc(g.summary) + '</small><span class="nx-by">by <b>' + esc(g.author) + '</b></span></span><span class="nx-guide-chevron">›</span></a>'; };
 const slug = t => String(t).toLowerCase().replace(/<[^>]+>/g, '').replace(/&[a-z#0-9]+;/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 function guideView(id) {
   const source = featuredGuide(id);
@@ -420,9 +431,17 @@ function postView(id) {
   const p = posts[id];
   if (p.state === 'loading') return back + loading('the build');
   if (p.state === 'error') return back + empty('Build not found', 'It may have been removed by its author or a moderator.');
-  if (p.post.kind === 'guide') return back + '<article class="nx-article"><span class="nx-kicker">COMMUNITY GUIDE · ' + esc(shortDate(p.post.createdAt).toUpperCase()) + '</span><h1>' + esc(p.post.title) + '</h1>' +
-    (p.post.summary ? '<p class="nx-deck">' + esc(p.post.summary) + '</p>' : '') + (getLocale() !== 'en' ? '<p class="nx-language-note" data-no-translate>' + esc(translateEnglish('The article is currently available in English.')) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(p.author?.displayName || 'Arcana player') + '</b></p><div class="hb-page gd-body">' + hbText(p.post.body || '') + '</div></article>' +
+  if (p.post.kind === 'guide') {
+    const cls = (p.post.guideClasses || []).filter(x => ['warrior','rogue','mage','archer','druid'].includes(x)).slice(0,5);
+    const topics = (p.post.guideTopics || []).filter(x => ['pets','runes','gear','progression','farming','systems','misc'].includes(x));
+    const trim = /^#[0-9a-f]{6}$/i.test(p.post.trimColor || '') ? p.post.trimColor : 'var(--accent)';
+    const custom = /^[0-9a-f-]{36}$/.test(p.post.customIcon || '') ? '<img class="nx-guide-custom-icon" src="/api/community/assets/' + p.post.customIcon + '" alt="">' : '';
+    const identity = '<div class="nx-guide-identity" style="--guide-trim:' + esc(trim) + '"><span class="nx-player-guide-mark' + (cls.length > 2 ? ' many' : '') + '">' + (custom || (cls.length ? cls.map(x => classBadge(x, cls.length > 2 ? 25 : 34)).join('') : artImg(topics.length ? 'features/feature-codex' : 'features/feature-build-studio', 34))) + '</span><span class="nx-guide-tags">' + [...cls.map(x => x[0].toUpperCase()+x.slice(1)), ...topics].map(x => '<i>' + esc(x) + '</i>').join('') + '</span></div>';
+    const articleBody = renderGuideBody(p.post.body || '', p.post.guideImages || []);
+    return back + '<article class="nx-article nx-community-guide" style="--guide-trim:' + esc(trim) + '"><span class="nx-kicker">PLAYER GUIDE · ' + esc(shortDate(p.post.createdAt).toUpperCase()) + '</span><h1>' + esc(p.post.title) + '</h1>' + identity +
+    (p.post.summary ? '<p class="nx-deck">' + esc(p.post.summary) + '</p>' : '') + (getLocale() !== 'en' ? '<p class="nx-language-note" data-no-translate>' + esc(translateEnglish('The article is currently available in English.')) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(p.author?.displayName || 'Arcana player') + '</b></p><div class="hb-page gd-body">' + articleBody + '</div></article>' +
     '<p class="nx-fine">Written by a player. Spot something wrong? <a href="#/feedback">Tell me</a>.</p>';
+  }
   const code = nextCode(p.post.build);
   const intro = (p.post.summary ? '<p class="nx-read">' + esc(p.post.summary) + '</p>' : '') + (p.post.body ? '<div class="nx-article">' + articleHtml(p.post.body) + '</div>' : '');
   if (!code) return back + '<header class="nx-page-head"><span class="nx-kicker">COMMUNITY BUILD</span><h1>' + esc(p.post.title) + '</h1><p>by ' + esc(p.author?.displayName || 'Arcana player') + '</p></header>' + intro +
@@ -439,12 +458,35 @@ const G = {
   title: String(savedGuide.title || '').slice(0, 110),
   summary: String(savedGuide.summary || '').slice(0, 300),
   body: String(savedGuide.body || '').slice(0, 12000),
+  classes: Array.isArray(savedGuide.classes) ? savedGuide.classes.filter(x => ['warrior','rogue','mage','archer','druid'].includes(x)) : [],
+  topics: Array.isArray(savedGuide.topics) ? savedGuide.topics.filter(x => ['pets','runes','gear','progression','farming','systems','misc'].includes(x)) : [],
+  trimColor: /^#[0-9a-f]{6}$/i.test(savedGuide.trimColor || '') ? savedGuide.trimColor : '#A98BFF',
+  customIcon: /^[0-9a-f-]{36}$/.test(savedGuide.customIcon || '') ? savedGuide.customIcon : '',
+  guideImages: Array.isArray(savedGuide.guideImages) ? savedGuide.guideImages.filter(x => /^[0-9a-f-]{36}$/.test(x)).slice(0,12) : [],
   ok: false, busy: false, error: '', preview: false,
   columns: 2, rows: 3, caption: '', url: ''
 };
 function saveGuideDraft() {
-  if (G.title || G.summary || G.body) write(GUIDE_DRAFT_KEY, JSON.stringify({ title: G.title, summary: G.summary, body: G.body }));
+  if (G.title || G.summary || G.body || G.classes.length || G.topics.length || G.customIcon || G.guideImages.length) write(GUIDE_DRAFT_KEY, JSON.stringify({ title: G.title, summary: G.summary, body: G.body, classes: G.classes, topics: G.topics, trimColor: G.trimColor, customIcon: G.customIcon, guideImages: G.guideImages }));
   else { try { localStorage.removeItem(GUIDE_DRAFT_KEY); } catch { /* private mode */ } }
+}
+function guideBodyHtml(text) {
+  return renderGuideBody(text,G.guideImages);
+}
+function renderGuideBody(text,images) {
+  const allowed=new Set((images||[]).filter(x=>/^[0-9a-f-]{36}$/.test(x)));
+  const marked=String(text).replace(/\[\[image:([0-9a-f-]{36})\]\]/g,(token,id)=>allowed.has(id)?'ARCGUIDEIMAGE'+id+'END':token);
+  return hbText(marked).replace(/<p>ARCGUIDEIMAGE([0-9a-f-]{36})END<\/p>/g,(block,id)=>allowed.has(id)?'<figure class="nx-guide-screenshot"><img loading="lazy" src="/api/community/assets/'+id+'" alt="Guide screenshot"></figure>':block);
+}
+async function uploadGuideImage(file,purpose) {
+  const max = purpose === 'icon' ? 1_500_000 : 5_000_000;
+  if (!file || file.size > max || !['image/png','image/jpeg','image/webp'].includes(file.type)) { G.error = purpose === 'icon' ? 'Choose a PNG, JPG or WebP icon under 1.5 MB.' : 'Choose a PNG, JPG or WebP screenshot under 5 MB.'; render(); return; }
+  const data = await new Promise((resolve,reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => reject(Error('Could not read that image.')); reader.readAsDataURL(file); });
+  const response = await fetch('/api/community/assets',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({purpose,data})});
+  const result = await response.json().catch(()=>({}));if(!response.ok)throw Error(result.error||'Image upload failed.');
+  if(purpose==='icon')G.customIcon=result.assetId;
+  else {G.guideImages=[...G.guideImages,result.assetId].slice(0,12);const marker='[[image:'+result.assetId+']]';const area=$('nxGuideBody');if(area){const pos=area.selectionStart;G.body=area.value.slice(0,pos)+(pos?'\n\n':'')+marker+'\n\n'+area.value.slice(area.selectionEnd);}}
+  G.error='';saveGuideDraft();render();
 }
 function guideApply(action, options = {}) {
   const area = $('nxGuideBody');
@@ -473,6 +515,9 @@ function guideForm() {
     handbookPages().map(p => '<option value="' + esc(p.id) + '">' + esc(p.title) + '</option>').join('') + '</select></label>' +
     '<label>Link Arcana tool<select data-gselect="tool"><option value="">Choose tool…</option>' +
     GUIDE_TOOL_OPTIONS.map(t => '<option value="' + t[0] + '">' + esc(t[1]) + '</option>').join('') + '</select></label></div>';
+  const guideClasses = ['warrior','rogue','mage','archer','druid'];
+  const guideTopics = [['pets','Pets'],['runes','Runes'],['gear','Gear'],['progression','Progression'],['farming','Farming'],['systems','Systems'],['misc','Miscellaneous']];
+  const classification = '<fieldset class="nx-guide-classify"><legend>What does this guide cover?</legend><div class="nx-guide-class-grid">' + guideClasses.map(c => '<label><input type="checkbox" data-guide-class="' + c + '"' + (G.classes.includes(c) ? ' checked' : '') + '><span>' + classBadge(c, 25) + '<b>' + esc(c) + '</b></span></label>').join('') + '</div><div class="nx-guide-topic-grid">' + guideTopics.map(([id,name]) => '<label><input type="checkbox" data-guide-topic="' + id + '"' + (G.topics.includes(id) ? ' checked' : '') + '><span>' + esc(name) + '</span></label>').join('') + '</div><div class="nx-guide-visual-options"><label class="nx-guide-trim">Card trim <input type="color" data-g="trimColor" value="' + esc(G.trimColor) + '"></label><label class="nx-guide-upload">Custom icon <input type="file" accept="image/png,image/jpeg,image/webp" data-guide-upload="icon"></label><label class="nx-guide-upload">Add screenshot <input type="file" accept="image/png,image/jpeg,image/webp" data-guide-upload="image"></label></div>' + (G.customIcon ? '<small class="nx-fine">Custom icon uploaded</small>' : '') + '</fieldset>';
   const builders = '<div class="nx-guide-extras">' +
     '<details><summary>Insert a table</summary><div class="nx-guide-builder">' +
     '<label>Columns<input data-g="columns" type="number" min="2" max="5" value="' + esc(G.columns) + '"></label>' +
@@ -485,8 +530,9 @@ function guideForm() {
   return back + '<header class="nx-page-head"><span class="nx-kicker">COMMUNITY GUIDE</span><h1>Write a guide</h1><p>Share what works. Formatting takes a tap, no Markdown knowledge required.</p></header>' +
     '<section class="nx-tool nx-guide-form"><label class="nx-field">Title<input maxlength="110" value="' + esc(G.title) + '" data-g="title" placeholder="What will this guide teach?"></label>' +
     '<label class="nx-field">Summary<textarea rows="2" maxlength="300" data-g="summary" placeholder="Explain what players will learn in one or two sentences">' + esc(G.summary) + '</textarea></label>' +
+    classification +
     '<div class="nx-guide-edithead"><strong>Guide content</strong>' + writeTab + '</div>' +
-    (G.preview ? '<article class="hb-page gd-body nx-guide-preview">' + (G.body.trim() ? hbText(G.body) : '<p>Start writing to see your guide here.</p>') + '</article>' :
+    (G.preview ? '<article class="hb-page gd-body nx-guide-preview">' + (G.body.trim() ? guideBodyHtml(G.body) : '<p>Start writing to see your guide here.</p>') + '</article>' :
       '<div class="nx-guide-compose"><p class="nx-fine">Select words to format them, or tap a button to insert a section.</p>' +
       tools + '<label class="nx-field" for="nxGuideBody">Your guide<textarea id="nxGuideBody" rows="13" maxlength="12000" data-g="body" placeholder="Start with the most important tip, then break the details into sections…">' + esc(G.body) + '</textarea></label>' +
       '<div class="nx-guide-counter"><span>Draft saved on this device</span><span id="nxGuideCount">' + G.body.length + ' / 12,000</span></div>' +
@@ -509,7 +555,7 @@ function buildsView(id) {
   else if (buildTab === 'guides') {
     const g = data.guides;
     body = '<header class="nx-page-head"><span class="nx-kicker">PLAYER GUIDES</span><h1>Player Guides</h1><p>Guides shared by Arcana players, with each author credited.</p></header><a class="nx-btn nx-btn-primary" href="#/builds/new-guide">Write a guide</a>' + (g.state === 'error' ? failed('Guides', 'guides') : g.state !== 'ready' ? loading('guides')
-      : (FEATURED_GUIDES.length || g.value.length) ? '<div class="nx-list">' + FEATURED_GUIDES.map(guideCard).join('') + g.value.map(p => '<a class="nx-card nx-player-guide-feature" href="#/builds/' + encodeURIComponent(p.id) + '"><strong>' + esc(p.title) + '</strong><small>' + esc(p.summary || p.excerpt || '') + '</small><span class="nx-by">by <b>' + esc(p.author || 'Arcana player') + '</b> · ' + esc(shortDate(p.createdAt)) + '</span></a>').join('') + '</div>'
+      : (FEATURED_GUIDES.length || g.value.length) ? '<div class="nx-list">' + FEATURED_GUIDES.map(guideCard).join('') + g.value.map(p => { const cls=(p.guideClasses||[]).filter(x=>['warrior','rogue','mage','archer','druid'].includes(x)).slice(0,5), topics=(p.guideTopics||[]).filter(x=>['pets','runes','gear','progression','farming','systems','misc'].includes(x)), tint=/^#[0-9a-f]{6}$/i.test(p.trimColor||'')?p.trimColor:'var(--accent)', marks=p.customIcon&&/^[0-9a-f-]{36}$/.test(p.customIcon)?'<img class="nx-guide-custom-icon" src="/api/community/assets/'+p.customIcon+'" alt="">':cls.map(x=>classBadge(x,cls.length>2?25:34)).join('')||artImg('features/feature-codex',34); return '<a class="nx-card nx-player-guide-feature" style="--guide-trim:'+esc(tint)+'" href="#/builds/' + encodeURIComponent(p.id) + '"><span class="nx-player-guide-mark'+(cls.length>2?' many':'')+'">'+marks+'</span><span class="nx-player-guide-copy">'+([...cls.map(x=>x[0].toUpperCase()+x.slice(1)),...topics].length?'<span class="nx-guide-tags">'+[...cls.map(x=>x[0].toUpperCase()+x.slice(1)),...topics].map(x=>'<i>'+esc(x)+'</i>').join('')+'</span>':'')+'<strong>' + esc(p.title) + '</strong><small>' + esc(p.summary || p.excerpt || '') + '</small><span class="nx-by">by <b>' + esc(p.author || 'Arcana player') + '</b> · ' + esc(shortDate(p.createdAt)) + '</span></span><span class="nx-guide-chevron">›</span></a>'; }).join('') + '</div>'
       : empty('No player guides yet', 'Know something other players should? Write the first one.'));
     return tabs + body;
   } else {
@@ -610,7 +656,18 @@ function render() {
   translateTree(document.body);
 }
 
-document.addEventListener('change', e => { if (e.target.dataset?.g === 'ok') G.ok = e.target.checked; });
+document.addEventListener('change', e => {
+  if (e.target.dataset?.guideUpload) {
+    const file=e.target.files?.[0], purpose=e.target.dataset.guideUpload;
+    uploadGuideImage(file,purpose).catch(err=>{G.error=err.message;render();});
+    return;
+  }
+  if (e.target.dataset?.g === 'ok') G.ok = e.target.checked;
+  const cls = e.target.dataset?.guideClass, topic = e.target.dataset?.guideTopic;
+  if (cls) G.classes = [...new Set([...G.classes.filter(x => x !== cls), ...(e.target.checked ? [cls] : [])])];
+  if (topic) G.topics = [...new Set([...G.topics.filter(x => x !== topic), ...(e.target.checked ? [topic] : [])])];
+  if (cls || topic || e.target.dataset?.g === 'trimColor') saveGuideDraft();
+});
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) return;
@@ -647,7 +704,7 @@ document.addEventListener('click', e => {
   if (act === 'guideLink') { guideApply('link', { href: G.url }); return; }
   if (act === 'guideClear') {
     if (!confirm('Delete this unfinished guide from this device?')) return;
-    Object.assign(G, { title: '', summary: '', body: '', ok: false, preview: false, error: '' });
+    Object.assign(G, { title: '', summary: '', body: '', classes: [], topics: [], trimColor: '#A98BFF', customIcon: '', guideImages: [], ok: false, preview: false, error: '' });
     saveGuideDraft(); render(); return;
   }
   if (act === 'publishGuide') {
@@ -655,8 +712,8 @@ document.addEventListener('click', e => {
     G.error = t.length < 6 ? 'Give it a title of at least 6 characters.' : su.length < 20 ? 'Add a summary of at least 20 characters.' : bo.length < 80 ? 'The guide needs at least 80 characters.' : !G.ok ? 'Tick the box to agree to publishing under your name.' : '';
     if (G.error) return render();
     G.busy = true; render();
-    fetch('/api/community/posts', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'guide', title: t, summary: su, body: bo }) })
-      .then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw Error(r.status === 429 ? 'You’ve hit today’s publishing limit (10).' : j.error || 'Couldn’t publish.'); Object.assign(G, { title: '', summary: '', body: '', ok: false, preview: false }); saveGuideDraft(); data.guides.state = 'idle'; location.hash = '#/builds/' + j.post.id; })
+    fetch('/api/community/posts', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'guide', title: t, summary: su, body: bo, guideClasses: G.classes, guideTopics: G.topics, trimColor: G.trimColor, customIcon: G.customIcon, guideImages: G.guideImages }) })
+      .then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw Error(r.status === 429 ? 'You’ve hit today’s publishing limit (10).' : j.error || 'Couldn’t publish.'); Object.assign(G, { title: '', summary: '', body: '', classes: [], topics: [], trimColor: '#A98BFF', customIcon: '', guideImages: [], ok: false, preview: false }); saveGuideDraft(); data.guides.state = 'idle'; location.hash = '#/builds/' + j.post.id; })
       .catch(err => { G.error = err.message; }).finally(() => { G.busy = false; render(); });
     return;
   }
@@ -671,7 +728,7 @@ document.addEventListener('input', e => {
   const gk = e.target.dataset?.g;
   if (gk) {
     G[gk] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-    if (['title', 'summary', 'body'].includes(gk)) saveGuideDraft();
+    if (['title', 'summary', 'body', 'trimColor'].includes(gk)) saveGuideDraft();
     if (gk === 'body') { const count = $('nxGuideCount'); if (count) count.textContent = G.body.length + ' / 12,000'; }
     return;
   }

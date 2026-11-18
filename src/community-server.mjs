@@ -1,4 +1,4 @@
-import {readdir,readFile,unlink,mkdir,appendFile} from 'node:fs/promises';
+import {readdir,readFile,writeFile,unlink,mkdir,appendFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {randomUUID,createHash} from 'node:crypto';
 import {accountUser,requireCapability,dataRoot,readJSON,saveAtomic,queued,parseJSON,checkOrigin,sendJSON,publicProfile} from './account-server.mjs';
@@ -6,6 +6,8 @@ import {can} from './account-policy.js';
 const UUID=/^[0-9a-f]{8}-[0-9a-f-]{27,36}$/;
 const BASE=()=>resolve(dataRoot(),'community','posts');
 const file=id=>resolve(BASE(),id+'.json');
+const ASSETS=()=>resolve(dataRoot(),'community','assets');
+const assetMeta=id=>resolve(ASSETS(),id+'.json');
 // Light card facts for build lists (class, build type, level), read from a new-app share code.
 const CARD_STANCES=new Set(['bulwark','aggressive','beastmaster','harmony']);
 export function buildCard(build){
@@ -20,7 +22,7 @@ const clean=(value,n)=>String(value||'').trim().replace(/[\u0000-\u001f\u007f]/g
 const failure=(status,message)=>Object.assign(Error(message),{status});
 const revision=post=>createHash('sha256').update(JSON.stringify(post)).digest('hex');
 const publicPost=post=>({id:post.id,kind:post.kind,title:post.title,summary:post.summary,
- body:post.body,build:post.kind==='build'?post.build:null,authorId:post.authorId,createdAt:post.createdAt,
+ body:post.body,build:post.kind==='build'?post.build:null,guideClasses:Array.isArray(post.guideClasses)?post.guideClasses:[],guideTopics:Array.isArray(post.guideTopics)?post.guideTopics:[],trimColor:post.trimColor||null,customIcon:post.customIcon||null,guideImages:Array.isArray(post.guideImages)?post.guideImages:[],authorId:post.authorId,createdAt:post.createdAt,
  updatedAt:post.updatedAt,status:post.status,revision:revision(post)});
 async function recentPosts(){
  try{const files=(await readdir(BASE())).filter(x=>UUID.test(x.slice(0,-5))&&x.endsWith('.json')).slice(0,2500);
@@ -41,7 +43,24 @@ function inputPost(payload){
   build=JSON.parse(serialized);
   if(!build.equipment||typeof build.equipment!=='object'||Array.isArray(build.equipment)||!Array.isArray(build.runes))throw failure(422,'Invalid Build Studio snapshot.');
  }
- return {kind,title,summary,body,build};
+ const classes=kind==='guide'&&Array.isArray(payload.guideClasses)?[...new Set(payload.guideClasses.filter(x=>['warrior','rogue','mage','archer','druid'].includes(x)))].slice(0,5):[];
+ const topics=kind==='guide'&&Array.isArray(payload.guideTopics)?[...new Set(payload.guideTopics.filter(x=>['pets','runes','gear','progression','farming','systems','misc'].includes(x)))].slice(0,7):[];
+ const trimColor=kind==='guide'&&typeof payload.trimColor==='string'&&/^#[0-9a-f]{6}$/i.test(payload.trimColor)?payload.trimColor:null;
+ const customIcon=kind==='guide'&&typeof payload.customIcon==='string'&&UUID.test(payload.customIcon)?payload.customIcon:null;
+ const guideImages=kind==='guide'&&Array.isArray(payload.guideImages)?[...new Set(payload.guideImages.filter(x=>typeof x==='string'&&UUID.test(x)))].slice(0,12):[];
+ return {kind,title,summary,body,build,guideClasses:classes,guideTopics:topics,trimColor,customIcon,guideImages};
+}
+async function verifyGuideAssets(post,authorId){
+ for(const id of [...(post.customIcon?[post.customIcon]:[]),...(post.guideImages||[])]){
+  const meta=await readJSON(assetMeta(id));
+  if(!meta||meta.authorId!==authorId)throw failure(422,'An uploaded guide image is missing or belongs to another account.');
+ }
+}
+function imageType(buf){
+ if(buf.length>=8&&buf.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])))return ['image/png','.png'];
+ if(buf.length>=3&&buf[0]===255&&buf[1]===216&&buf[2]===255)return ['image/jpeg','.jpg'];
+ if(buf.length>=12&&buf.toString('ascii',0,4)==='RIFF'&&buf.toString('ascii',8,12)==='WEBP')return ['image/webp','.webp'];
+ return null;
 }
 async function audit(event){
  const log=resolve(dataRoot(),'community','moderation.jsonl');
@@ -50,6 +69,25 @@ async function audit(event){
 }
 export async function handleCommunityRequest(req,res,url){
  const path=url.pathname,method=req.method;
+ if(path==='/api/community/assets'&&method==='POST'){
+  checkOrigin(req);const member=await requireCapability(req,'community:create');
+  const input=await parseJSON(req,7_000_000);
+  if(!['icon','image'].includes(input?.purpose)||typeof input.data!=='string'||!/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(input.data))throw failure(422,'Choose a PNG, JPG or WebP image.');
+  const raw=Buffer.from(input.data.slice(input.data.indexOf(',')+1),'base64'),kind=imageType(raw),limit=input.purpose==='icon'?1_500_000:5_000_000;
+  if(!kind||raw.length>limit)throw failure(413,input.purpose==='icon'?'Use an image under 1.5 MB.':'Use a screenshot under 5 MB.');
+  const id=randomUUID();await mkdir(ASSETS(),{recursive:true});
+  await writeFile(resolve(ASSETS(),id+kind[1]),raw,{flag:'wx',mode:0o644});
+  await saveAtomic(assetMeta(id),{id,authorId:member.id,mime:kind[0],extension:kind[1],size:raw.length,createdAt:new Date().toISOString()});
+  sendJSON(res,201,{assetId:id,purpose:input.purpose});return true;
+ }
+ const asset=path.match(/^\/api\/community\/assets\/([0-9a-f-]{36})$/);
+ if(asset&&method==='GET'){
+  const meta=await readJSON(assetMeta(asset[1]));if(!meta)throw failure(404,'Image not found.');
+  const viewer=await accountUser(req),refs=(await recentPosts()).filter(p=>p.status==='public'&&(p.customIcon===asset[1]||(p.guideImages||[]).includes(asset[1])));
+  if(!refs.length&&viewer?.id!==meta.authorId)throw failure(404,'Image not found.');
+  const bytes=await readFile(resolve(ASSETS(),asset[1]+meta.extension));
+  res.writeHead(200,{'Content-Type':meta.mime,'Content-Length':bytes.length,'Cache-Control':'public, max-age=86400','X-Content-Type-Options':'nosniff','Cross-Origin-Resource-Policy':'same-origin'});res.end(bytes);return true;
+ }
  if(path==='/api/community/mine'&&method==='GET'){
   const me=await requireCapability(req);
   const posts=(await recentPosts()).filter(p=>p.authorId===me.id).sort((a,b)=>String(b.updatedAt).localeCompare(String(a.updatedAt)));
@@ -73,7 +111,8 @@ export async function handleCommunityRequest(req,res,url){
  }
  if(path==='/api/community/posts'&&method==='POST'){
   checkOrigin(req);const member=await requireCapability(req,'community:create');
-  const input=inputPost(await parseJSON(req,90000));
+  const input=inputPost(await parseJSON(req,7_000_000));
+  await verifyGuideAssets(input,member.id);
   const post=await queued(async()=>{
    const all=await recentPosts();
    if(all.filter(p=>p.authorId===member.id&&Date.now()-Date.parse(p.createdAt)<86400000).length>=10)throw failure(429,'Daily publication limit reached.');
@@ -96,14 +135,14 @@ export async function handleCommunityRequest(req,res,url){
  }
  if(exact&&method==='PATCH'){
   checkOrigin(req);const user=await requireCapability(req);
-  const input=await parseJSON(req,90000);
+  const input=await parseJSON(req,7_000_000);
   const updated=await queued(async()=>{
    const post=await readJSON(file(exact[1]));
    if(!post)throw failure(404,'Post not found.');
    if(post.authorId!==user.id)throw failure(403,'Only the author can edit this post.');
    if(post.status!=='public')throw failure(403,'Hidden content cannot be edited until moderation clears it.');
    if(revision(post)!==input.baseRevision)throw failure(409,'This post has changed; reload before editing.');
-   Object.assign(post,inputPost({...post,...input,kind:post.kind}));
+   const cleanInput=inputPost({...post,...input,kind:post.kind});await verifyGuideAssets(cleanInput,user.id);Object.assign(post,cleanInput);
    post.updatedAt=new Date().toISOString();await saveAtomic(file(post.id),post);return post;
   });
   sendJSON(res,200,{post:publicPost(updated)});return true;
