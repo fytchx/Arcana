@@ -1108,6 +1108,7 @@ html[data-display=simple] .nx-strip-event { background: var(--card); }
 
 /* Phone-first formatting controls for player-authored guides; preview uses Handbook reader styles. */
 .nx-guide-form { display: grid; gap: 14px; }
+.nx-guide-owner-actions,.nx-my-guide>span{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0}.nx-legacy-guide-import{margin:12px 0;padding:14px}.nx-legacy-guide-import p{margin:5px 0 10px;color:var(--muted)}.nx-legacy-guide-import small{display:block;margin-top:8px;color:var(--muted)}.nx-my-guide{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:9px 0;padding:13px}.nx-my-guide>div{display:grid;gap:4px;min-width:0}.nx-my-guide small{color:var(--muted)}
 .nx-guide-edithead { display: flex; align-items: center; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
 .nx-guide-edithead > strong { font-size: 15px; }
 .nx-guide-modes { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }

@@ -1,39 +1,51 @@
-// Featured guides: written by the owner (or credited players, with consent), kept in the repo so they
-// can be long, versioned and reviewed like code. Body uses the Handbook text syntax (see handbook.js):
+// Legacy guide drafts retained as one-time import material for the owner's account. Published
+// Player Guides now live as account-owned community posts. Body uses Handbook text syntax:
 // ## / ### headings, - lists, 1. steps, | tables |, > notes, **bold**, [[topic]] Handbook links,
 // [[tool:id|words]] tool links and [words](#/route) links.
-// The editing draft lives in a Claude Doc; author-only "Zane:" notes there are never copied here.
+// Keep these source drafts until the owner imports them through Player Guides.
 
 export const FEATURED_GUIDES = [
   {
     id: 'attack-damage',
     title: 'Attack Damage: Rogue, Mage and Warrior',
-    summary: 'One flexible Attack Damage route for three classes, with Rogue as the recommended starting point.',
+    summary: 'A flexible Attack Damage start for Rogue, Mage and Warrior, with Rogue as an easy first class.',
     author: 'Zane', cls: 'rogue', classes: ['rogue','mage','warrior'], topics: [], trimColor: '#F3B25A', classLabel: 'ROGUE · MAGE · WARRIOR', stance: 'attack-damage', updated: '2026-11-17', gameVersion: 'Season 3 review draft', level: 'Any stage', readTime: '5 min',
-    body: `Attack Damage Rogue, Mage and Warrior share a flexible route. The core plan is similar across all three: build around Attack Damage, improve your kill speed, and keep useful gear, pets and runes instead of locking every resource into one narrow setup.
+    body: `This guide covers an Attack Damage build that works for Rogue, Mage, and Warrior. It is also a great build for new players to start the season with. Use it to get started and figure out where you want to go from here.
 
 ## Why start with Rogue
 
-Rogue is my recommended starting point because its farming tools help while you level and gather upgrades. You can carry your useful Attack Damage pieces into Mage or Warrior later, so changing class is manageable when you have a reason to try something new.
+Rogue is an ideal class to start the season with. Its skill tree gives you a quick path to one-shotting mobs and arguably the strongest farming utility.
 
-## Build the shared foundation
+## A simple leveling route
 
-- Keep gear that supports your Attack Damage setup and has a strong roll. A new drop is not automatically an upgrade.
-- Hold on to useful Attack Damage runes and pets while your direction is still developing.
-- Spend skill points on damage when kills slow down. When your regular target is dying quickly, use spare points for useful farming or utility skills.
-- Check your actual kill speed after a change. If you lose reliable one-shots, find the cause before investing further.
+Before you unlock All Class Skills from pets and the Torch at ML 50, put your class skill points into Swift Blades and Phantom Strike. You can also put a point into Shadow Echo.
 
-The class trees are different, but you do not need to rebuild your whole equipment plan to change between these three classes. Choose the skills that support direct damage in your current class and keep the shared setup working toward the same goal. See [classes and skills](#/handbook/classes) for current skill descriptions.
+Equip one dagger and one claw to make the most of Double Hit.
+
+Get familiar with [Pets](#/guidebook/chapter/pets), [Runes](#/guidebook/chapter/runes), and [Gear](#/guidebook/chapter/gear); I won't repeat those chapters here. Get your Torch and ACS on your four Legendary pets, then spend skill points in the Shadowwalker tree. Once you can comfortably one-shot monsters, add farming utility. Early on, damage and Monster Level progression are more productive than farming utility.
+
+## The shared Attack Damage foundation
+
+The three classes can use a similar foundation:
+
+- Attack Damage, Strength, and Intelligence are your primary stats.
+- Trinity of Blood, Enlightenment, and Battle Scholar are your main runes.
+- Berserker Grips, Harmonic Cuirass, Sage Diadem, Scholar's Belt/Ring/Amulet, and Warrior's Ring/Amulet are key items. A Ranger's or Warrior's belt can work if it has a good drop bonus or you have not found a Scholar's Belt yet.
+- Test your kill speed after changing your build. If the change costs one-shots, revisit it before investing more.
+
+## What changes between Rogue, Mage and Warrior
+
+The class skill tree changes; the overall Attack Damage direction can stay the same. Use the class's own damage skills and keep the rest of your setup focused on the same goal. Current skill descriptions and unlocks are in the [Handbook](#/handbook/classes).
+
+Retaliation Warrior, Harmony Rogue, Archer, and Druid each have their own guide.
 
 ## Keep Monster Level moving
 
-When your normal target is still dying in one hit, push Monster Level. Take a short detour to farm or upgrade when it restores your pace or unlocks a useful next step, then return to progression. Frenzy can help with loot, but Frenzy kills do not count toward Monster Level XP.
+If your regular target is still dying in one hit, keep pushing Monster Level. Farm or upgrade when the change is likely to restore your kill speed or unlock a meaningful next step, then return to pushing. Frenzy is useful for loot, but its extra kills do not give Monster Level XP.
 
-## Leave room for a better route
+## Let the drops shape the route
 
-Plan ahead, but let useful drops influence the details. Save promising pieces until you know whether they improve your current build or open another one. This makes a later pivot much easier than trying to recover gear, runes or pets you discarded too early.
-
-For a different direction, see the separate [Retaliation Warrior guide](#/guides/retaliation-warrior) or browse the [Player Guides](#/builds/guides).`
+Choose a direction, then stay open to better options. A useful pet, rune, or piece of gear can make another class or build more attractive. Keeping those options early makes a later pivot much easier than trying to rebuild after discarding everything that did not fit your first plan.`
   },
   {
     id: 'retaliation-warrior',

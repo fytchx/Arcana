@@ -268,6 +268,43 @@ const featuredPick = c => buildCard('#/builds/' + c.post.id, { title: c.post.tit
 const featuredList = (limit = 12) => { loadFeatured(); return featuredState.cards.length ? '<div class="nx-list">' + featuredState.cards.slice(0, limit).map(featuredPick).join('') + '</div>' : '<div class="nx-empty"><strong>No featured builds</strong><p>Community builds you feature will appear here.</p>' + (user()?.permissions?.manageSite ? '<a class="nx-btn" href="#/admin/featured">Manage featured builds</a>' : '') + '</div>'; };
 
 const featuredPlayerGuideState = { state: 'idle', cards: [] };
+const legacyGuideImport = { busy: false, message: '' };
+const myGuidesState = { state: 'idle', posts: [] };
+function loadMyGuides() {
+  if (myGuidesState.state !== 'idle') return;
+  myGuidesState.state = 'loading';
+  getJSON('/api/community/mine').then(j => { myGuidesState.posts = (j.posts || []).filter(p => p.kind === 'guide'); myGuidesState.state = 'ready'; }).catch(() => { myGuidesState.state = 'error'; }).finally(render);
+}
+function myGuidesView() {
+  loadMyGuides();
+  const back = '<a class="nx-back" href="#/builds/guides">' + icon('back', 18) + 'Player Guides</a>';
+  if (myGuidesState.state === 'loading' || myGuidesState.state === 'idle') return back + loading('your guides');
+  if (myGuidesState.state === 'error') return back + empty('Couldn’t load your guides', 'Check your connection and try again.');
+  const rows = myGuidesState.posts.map(p => '<div class="nx-card nx-my-guide"><div><strong>' + esc(p.title) + '</strong><small>' + (p.status === 'archived' ? 'Removed from public listings' : 'Published') + '</small></div><span>' + (p.status === 'archived' ? '<button class="nx-btn" data-act="restoreGuide" data-id="' + esc(p.id) + '">Restore</button>' : '<a class="nx-btn" href="#/builds/edit-guide/' + encodeURIComponent(p.id) + '">Edit</a><button class="nx-btn" data-act="archiveGuide" data-id="' + esc(p.id) + '">Remove</button>') + '</span></div>').join('');
+  return back + '<header class="nx-page-head"><span class="nx-kicker">YOUR CONTRIBUTIONS</span><h1>My Player Guides</h1></header>' + (rows || empty('No guides in your account yet', 'Import your existing guides or write a new one.')) + '<p class="nx-fine">Removed guides stay saved here and can be restored.</p>';
+}
+async function importLegacyPlayerGuides() {
+  if (legacyGuideImport.busy) return;
+  if (!user()?.permissions?.manageSite) { legacyGuideImport.message = 'Sign in with the Arcana owner account to import these drafts.'; render(); return; }
+  legacyGuideImport.busy = true; legacyGuideImport.message = 'Importing your guides…'; render();
+  try {
+    const mine = await getJSON('/api/community/mine');
+    const existing = new Map((mine.posts || []).filter(p => p.kind === 'guide').map(p => [p.title, p]));
+    let imported = 0;
+    for (const g of FEATURED_GUIDES.filter(g => ['attack-damage','retaliation-warrior'].includes(g.id))) {
+      const prior = existing.get(g.title);
+      if (prior && g.id === 'retaliation-warrior') continue;
+      const sourceBody = g.id === 'retaliation-warrior' ? g.body.replaceAll('#/guides/attack-damage', '#/builds/guides') : g.body;
+      const response = await fetch(prior ? '/api/community/posts/' + encodeURIComponent(prior.id) : '/api/community/posts', { method: prior ? 'PATCH' : 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...(prior ? { baseRevision: (await getJSON('/api/community/posts/' + encodeURIComponent(prior.id))).post.revision } : {}), kind: 'guide', title: g.title, summary: g.summary, body: sourceBody, guideClasses: g.classes || [], guideTopics: g.topics || [], trimColor: g.trimColor }) });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw Error(result.error || 'Could not import ' + g.title + '.');
+      imported++; existing.set(g.title, result.post);
+    }
+    legacyGuideImport.message = imported ? imported + ' guides are now yours to edit and remove.' : 'Both guides are already in your account.';
+    data.guides.state = 'idle'; featuredPlayerGuideState.state = 'idle';
+  } catch (err) { legacyGuideImport.message = err.message; }
+  finally { legacyGuideImport.busy = false; render(); }
+}
 function loadFeaturedPlayerGuides() {
   if (featuredPlayerGuideState.state !== 'idle') return;
   featuredPlayerGuideState.state = 'loading';
@@ -280,7 +317,7 @@ function loadFeaturedPlayerGuides() {
       }
       return id ? getJSON('/api/community/posts/' + encodeURIComponent(id)).catch(() => null) : null;
     }));
-    featuredPlayerGuideState.cards = got.filter(x => x?.staticGuide || x?.post?.kind === 'guide');
+    featuredPlayerGuideState.cards = got.filter(x => !x?.staticGuide && x?.post?.kind === 'guide');
     featuredPlayerGuideState.state = 'ready';
   }).catch(() => { featuredPlayerGuideState.state = 'error'; }).finally(render);
 }
@@ -438,8 +475,9 @@ function postView(id) {
     const custom = /^[0-9a-f-]{36}$/.test(p.post.customIcon || '') ? '<img class="nx-guide-custom-icon" src="/api/community/assets/' + p.post.customIcon + '" alt="">' : '';
     const identity = '<div class="nx-guide-identity" style="--guide-trim:' + esc(trim) + '"><span class="nx-player-guide-mark' + (cls.length > 2 ? ' many' : '') + '">' + (custom || (cls.length ? cls.map(x => classBadge(x, cls.length > 2 ? 25 : 34)).join('') : artImg(topics.length ? 'features/feature-codex' : 'features/feature-build-studio', 34))) + '</span><span class="nx-guide-tags">' + [...cls.map(x => x[0].toUpperCase()+x.slice(1)), ...topics].map(x => '<i>' + esc(x) + '</i>').join('') + '</span></div>';
     const articleBody = renderGuideBody(p.post.body || '', p.post.guideImages || []);
+    const ownerActions = user()?.id === p.post.authorId ? '<div class="nx-guide-owner-actions"><a class="nx-btn" href="#/builds/edit-guide/' + encodeURIComponent(id) + '">Edit guide</a><button type="button" class="nx-btn" data-act="archiveGuide" data-id="' + esc(id) + '">Remove guide</button></div>' : '';
     return back + '<article class="nx-article nx-community-guide" style="--guide-trim:' + esc(trim) + '"><span class="nx-kicker">PLAYER GUIDE · ' + esc(shortDate(p.post.createdAt).toUpperCase()) + '</span><h1>' + esc(p.post.title) + '</h1>' + identity +
-    (p.post.summary ? '<p class="nx-deck">' + esc(p.post.summary) + '</p>' : '') + (getLocale() !== 'en' ? '<p class="nx-language-note" data-no-translate>' + esc(translateEnglish('The article is currently available in English.')) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(p.author?.displayName || 'Arcana player') + '</b></p><div class="hb-page gd-body">' + articleBody + '</div></article>' +
+    (p.post.summary ? '<p class="nx-deck">' + esc(p.post.summary) + '</p>' : '') + (getLocale() !== 'en' ? '<p class="nx-language-note" data-no-translate>' + esc(translateEnglish('The article is currently available in English.')) + '</p>' : '') + '<p class="nx-by">by <b>' + esc(p.author?.displayName || 'Arcana player') + '</b></p>' + ownerActions + '<div class="hb-page gd-body">' + articleBody + '</div></article>' +
     '<p class="nx-fine">Written by a player. Spot something wrong? <a href="#/feedback">Tell me</a>.</p>';
   }
   const code = nextCode(p.post.build);
@@ -463,7 +501,7 @@ const G = {
   trimColor: /^#[0-9a-f]{6}$/i.test(savedGuide.trimColor || '') ? savedGuide.trimColor : '#A98BFF',
   customIcon: /^[0-9a-f-]{36}$/.test(savedGuide.customIcon || '') ? savedGuide.customIcon : '',
   guideImages: Array.isArray(savedGuide.guideImages) ? savedGuide.guideImages.filter(x => /^[0-9a-f-]{36}$/.test(x)).slice(0,12) : [],
-  ok: false, busy: false, error: '', preview: false,
+  ok: false, busy: false, error: '', preview: false, editId: '', baseRevision: '',
   columns: 2, rows: 3, caption: '', url: ''
 };
 function saveGuideDraft() {
@@ -504,9 +542,16 @@ function guideApply(action, options = {}) {
   }
 }
 const guideButton = (action, label) => '<button type="button" data-act="guideFormat" data-format="' + action + '">' + label + '</button>';
-function guideForm() {
+function guideForm(editId = '') {
   const u = user(), back = '<a class="nx-back" href="#/builds">' + icon('back', 18) + 'Builds</a>';
   if (!u) return back + '<div class="nx-card"><strong>Sign in to write a guide</strong><small>Guides are published under your Arcana name.</small>' + signInButtons(data.me.value) + '</div>';
+  if (editId) {
+    loadPost(editId);
+    const source = posts[editId];
+    if (!source || source.state === 'loading') return back + loading('your guide');
+    if (source.state !== 'ready' || source.post.kind !== 'guide' || source.post.authorId !== u.id) return back + empty('Guide unavailable', 'Only the guide author can edit this guide.');
+    if (G.editId !== editId) Object.assign(G, { editId, baseRevision: source.post.revision, title: source.post.title, summary: source.post.summary || '', body: source.post.body || '', classes: source.post.guideClasses || [], topics: source.post.guideTopics || [], trimColor: source.post.trimColor || '#A98BFF', customIcon: source.post.customIcon || '', guideImages: source.post.guideImages || [], ok: true, preview: false, error: '' });
+  } else if (G.editId) Object.assign(G, { editId: '', baseRevision: '', title: '', summary: '', body: '', classes: [], topics: [], trimColor: '#A98BFF', customIcon: '', guideImages: [], ok: false });
   const writeTab = '<div class="nx-guide-modes" role="group" aria-label="Guide editing mode"><button type="button" data-act="guideMode" data-mode="write" aria-pressed="' + !G.preview + '">Write</button><button type="button" data-act="guideMode" data-mode="preview" aria-pressed="' + G.preview + '">Preview</button></div>';
   const tools = '<div class="nx-guide-toolbar" role="toolbar" aria-label="Format guide text">' +
     guideButton('heading', 'Heading') + guideButton('subheading', 'Subheading') + guideButton('bold', '<b>B</b> Bold') +
@@ -527,7 +572,7 @@ function guideForm() {
     '<details><summary>Add website link</summary><div class="nx-guide-builder">' +
     '<label class="nx-guide-wide">Paste a secure URL<input data-g="url" type="url" value="' + esc(G.url) + '" placeholder="https://example.com"></label>' +
     '<button type="button" class="nx-btn" data-act="guideLink">Insert link</button></div></details></div>';
-  return back + '<header class="nx-page-head"><span class="nx-kicker">COMMUNITY GUIDE</span><h1>Write a guide</h1><p>Share what works. Formatting takes a tap, no Markdown knowledge required.</p></header>' +
+  return back + '<header class="nx-page-head"><span class="nx-kicker">COMMUNITY GUIDE</span><h1>' + (editId ? 'Edit your guide' : 'Write a guide') + '</h1><p>Share what works. Formatting takes a tap, no Markdown knowledge required.</p></header>' +
     '<section class="nx-tool nx-guide-form"><label class="nx-field">Title<input maxlength="110" value="' + esc(G.title) + '" data-g="title" placeholder="What will this guide teach?"></label>' +
     '<label class="nx-field">Summary<textarea rows="2" maxlength="300" data-g="summary" placeholder="Explain what players will learn in one or two sentences">' + esc(G.summary) + '</textarea></label>' +
     classification +
@@ -538,13 +583,15 @@ function guideForm() {
       '<div class="nx-guide-counter"><span>Draft saved on this device</span><span id="nxGuideCount">' + G.body.length + ' / 12,000</span></div>' +
       linkers + builders + '</div>') +
     '<p id="nxGuideError" class="st-err" role="alert">' + esc(G.error) + '</p>' +
-    '<label class="st-consent"><input type="checkbox" data-g="ok"' + (G.ok ? ' checked' : '') + '><span>Publish publicly under <b>' + esc(u.displayName) + '</b>.</span></label>' +
-    '<div class="nx-guide-actions"><button type="button" class="nx-btn" data-act="guideClear">Clear draft</button>' +
-    '<button class="nx-btn nx-btn-primary" data-act="publishGuide"' + (G.busy ? ' disabled' : '') + '>' + (G.busy ? 'Publishing…' : 'Publish guide') + '</button></div></section>';
+    (editId ? '<p class="nx-fine">Changes save to your published guide under <b>' + esc(u.displayName) + '</b>.</p>' : '<label class="st-consent"><input type="checkbox" data-g="ok"' + (G.ok ? ' checked' : '') + '><span>Publish publicly under <b>' + esc(u.displayName) + '</b>.</span></label>') +
+    '<div class="nx-guide-actions">' + (editId ? '' : '<button type="button" class="nx-btn" data-act="guideClear">Clear draft</button>') +
+    '<button class="nx-btn nx-btn-primary" data-act="publishGuide"' + (G.busy ? ' disabled' : '') + '>' + (G.busy ? (editId ? 'Saving…' : 'Publishing…') : (editId ? 'Save changes' : 'Publish guide')) + '</button></div></section>';
 }
 
 function buildsView(id) {
   if (id === 'new-guide') return guideForm();
+  if (id.startsWith('edit-guide/')) return guideForm(id.slice('edit-guide/'.length));
+  if (id === 'mine') return myGuidesView();
   if (id === 'community' || id === 'guides' || id === 'featured') { buildTab = id; history.replaceState(null, '', '#/builds'); }
   else if (id) return postView(id);
   loadBuilds();
@@ -554,8 +601,8 @@ function buildsView(id) {
   if (buildTab === 'featured') body = featuredList();
   else if (buildTab === 'guides') {
     const g = data.guides;
-    body = '<header class="nx-page-head"><span class="nx-kicker">PLAYER GUIDES</span><h1>Player Guides</h1><p>Guides shared by Arcana players, with each author credited.</p></header><a class="nx-btn nx-btn-primary" href="#/builds/new-guide">Write a guide</a>' + (g.state === 'error' ? failed('Guides', 'guides') : g.state !== 'ready' ? loading('guides')
-      : (FEATURED_GUIDES.length || g.value.length) ? '<div class="nx-list">' + FEATURED_GUIDES.map(guideCard).join('') + g.value.map(p => { const cls=(p.guideClasses||[]).filter(x=>['warrior','rogue','mage','archer','druid'].includes(x)).slice(0,5), topics=(p.guideTopics||[]).filter(x=>['pets','runes','gear','progression','farming','systems','misc'].includes(x)), tint=/^#[0-9a-f]{6}$/i.test(p.trimColor||'')?p.trimColor:'var(--accent)', marks=p.customIcon&&/^[0-9a-f-]{36}$/.test(p.customIcon)?'<img class="nx-guide-custom-icon" src="/api/community/assets/'+p.customIcon+'" alt="">':cls.map(x=>classBadge(x,cls.length>2?25:34)).join('')||artImg('features/feature-codex',34); return '<a class="nx-card nx-player-guide-feature" style="--guide-trim:'+esc(tint)+'" href="#/builds/' + encodeURIComponent(p.id) + '"><span class="nx-player-guide-mark'+(cls.length>2?' many':'')+'">'+marks+'</span><span class="nx-player-guide-copy">'+([...cls.map(x=>x[0].toUpperCase()+x.slice(1)),...topics].length?'<span class="nx-guide-tags">'+[...cls.map(x=>x[0].toUpperCase()+x.slice(1)),...topics].map(x=>'<i>'+esc(x)+'</i>').join('')+'</span>':'')+'<strong>' + esc(p.title) + '</strong><small>' + esc(p.summary || p.excerpt || '') + '</small><span class="nx-by">by <b>' + esc(p.author || 'Arcana player') + '</b> · ' + esc(shortDate(p.createdAt)) + '</span></span><span class="nx-guide-chevron">›</span></a>'; }).join('') + '</div>'
+    body = '<header class="nx-page-head"><span class="nx-kicker">PLAYER GUIDES</span><h1>Player Guides</h1><p>Guides shared by Arcana players, with each author credited.</p></header><a class="nx-btn nx-btn-primary" href="#/builds/new-guide">Write a guide</a>' + (user() ? '<a class="nx-btn" href="#/builds/mine">My guides</a>' : '') + (user()?.permissions?.manageSite ? '<section class="nx-card nx-legacy-guide-import"><strong>Move your existing guides into your account</strong><p>Import the Attack Damage and Retaliation drafts as editable Player Guides credited to you.</p><button type="button" class="nx-btn" data-act="importLegacyGuides"' + (legacyGuideImport.busy ? ' disabled' : '') + '>' + (legacyGuideImport.busy ? 'Importing…' : 'Import my two guides') + '</button>' + (legacyGuideImport.message ? '<small role="status">' + esc(legacyGuideImport.message) + '</small>' : '') + '</section>' : '') + (g.state === 'error' ? failed('Guides', 'guides') : g.state !== 'ready' ? loading('guides')
+      : g.value.length ? '<div class="nx-list">' + g.value.map(p => { const cls=(p.guideClasses||[]).filter(x=>['warrior','rogue','mage','archer','druid'].includes(x)).slice(0,5), topics=(p.guideTopics||[]).filter(x=>['pets','runes','gear','progression','farming','systems','misc'].includes(x)), tint=/^#[0-9a-f]{6}$/i.test(p.trimColor||'')?p.trimColor:'var(--accent)', marks=p.customIcon&&/^[0-9a-f-]{36}$/.test(p.customIcon)?'<img class="nx-guide-custom-icon" src="/api/community/assets/'+p.customIcon+'" alt="">':cls.map(x=>classBadge(x,cls.length>2?25:34)).join('')||artImg('features/feature-codex',34); return '<a class="nx-card nx-player-guide-feature" style="--guide-trim:'+esc(tint)+'" href="#/builds/' + encodeURIComponent(p.id) + '"><span class="nx-player-guide-mark'+(cls.length>2?' many':'')+'">'+marks+'</span><span class="nx-player-guide-copy">'+([...cls.map(x=>x[0].toUpperCase()+x.slice(1)),...topics].length?'<span class="nx-guide-tags">'+[...cls.map(x=>x[0].toUpperCase()+x.slice(1)),...topics].map(x=>'<i>'+esc(x)+'</i>').join('')+'</span>':'')+'<strong>' + esc(p.title) + '</strong><small>' + esc(p.summary || p.excerpt || '') + '</small><span class="nx-by">by <b>' + esc(p.author || 'Arcana player') + '</b> · ' + esc(shortDate(p.createdAt)) + '</span></span><span class="nx-guide-chevron">›</span></a>'; }).join('') + '</div>'
       : empty('No player guides yet', 'Know something other players should? Write the first one.'));
     return tabs + body;
   } else {
@@ -697,6 +744,7 @@ document.addEventListener('click', e => {
   if (act === 'surface') { saveTheme(null); write(SURFACE_KEY, b.dataset.id); render(); }
   if (act === 'accent') { saveTheme(null); write(ACCENT_KEY, b.dataset.id); render(); }
   if (act === 'buildtab') { buildTab = b.dataset.tab; render(); }
+  if (act === 'importLegacyGuides') { importLegacyPlayerGuides(); return; }
   if (act === 'kind') { codexKind = b.dataset.kind; codexQuery = ''; render(); }
   if (act === 'guideMode') { G.preview = b.dataset.mode === 'preview'; G.error = ''; render(); return; }
   if (act === 'guideFormat') { guideApply(b.dataset.format); return; }
@@ -709,12 +757,28 @@ document.addEventListener('click', e => {
   }
   if (act === 'publishGuide') {
     const t = G.title.trim(), su = G.summary.trim(), bo = G.body.trim();
-    G.error = t.length < 6 ? 'Give it a title of at least 6 characters.' : su.length < 20 ? 'Add a summary of at least 20 characters.' : bo.length < 80 ? 'The guide needs at least 80 characters.' : !G.ok ? 'Tick the box to agree to publishing under your name.' : '';
+    G.error = t.length < 6 ? 'Give it a title of at least 6 characters.' : su.length < 20 ? 'Add a summary of at least 20 characters.' : bo.length < 80 ? 'The guide needs at least 80 characters.' : (!G.editId && !G.ok) ? 'Tick the box to agree to publishing under your name.' : '';
     if (G.error) return render();
     G.busy = true; render();
-    fetch('/api/community/posts', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'guide', title: t, summary: su, body: bo, guideClasses: G.classes, guideTopics: G.topics, trimColor: G.trimColor, customIcon: G.customIcon, guideImages: G.guideImages }) })
-      .then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw Error(r.status === 429 ? 'You’ve hit today’s publishing limit (10).' : j.error || 'Couldn’t publish.'); Object.assign(G, { title: '', summary: '', body: '', classes: [], topics: [], trimColor: '#A98BFF', customIcon: '', guideImages: [], ok: false, preview: false }); saveGuideDraft(); data.guides.state = 'idle'; location.hash = '#/builds/' + j.post.id; })
+    const editing = !!G.editId, guideId = G.editId;
+    fetch(editing ? '/api/community/posts/' + encodeURIComponent(guideId) : '/api/community/posts', { method: editing ? 'PATCH' : 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...(editing ? { baseRevision: G.baseRevision } : {}), kind: 'guide', title: t, summary: su, body: bo, guideClasses: G.classes, guideTopics: G.topics, trimColor: G.trimColor, customIcon: G.customIcon, guideImages: G.guideImages }) })
+      .then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw Error(r.status === 429 ? 'You’ve hit today’s publishing limit (10).' : j.error || (editing ? 'Couldn’t save changes.' : 'Couldn’t publish.')); const post = j.post; posts[post.id] = { state: 'ready', post, author: { displayName: user()?.displayName || 'Arcana player' } }; if (!editing) Object.assign(G, { title: '', summary: '', body: '', classes: [], topics: [], trimColor: '#A98BFF', customIcon: '', guideImages: [], ok: false, preview: false }); G.editId = ''; G.baseRevision = ''; saveGuideDraft(); data.guides.state = 'idle'; location.hash = '#/builds/' + post.id; })
       .catch(err => { G.error = err.message; }).finally(() => { G.busy = false; render(); });
+    return;
+  }
+  if (act === 'archiveGuide') {
+    const id = b.dataset.id;
+    if (!confirm('Remove this guide from public Player Guides? You can restore it later from your account contributions.')) return;
+    fetch('/api/community/posts/' + encodeURIComponent(id) + '/archive', { method: 'PATCH', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ archived: true }) })
+      .then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw Error(j.error || 'Could not remove the guide.'); delete posts[id]; data.guides.state = 'idle'; myGuidesState.state = 'idle'; location.hash = '#/builds/guides'; })
+      .catch(err => alert(err.message));
+    return;
+  }
+  if (act === 'restoreGuide') {
+    const id = b.dataset.id;
+    fetch('/api/community/posts/' + encodeURIComponent(id) + '/archive', { method: 'PATCH', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ archived: false }) })
+      .then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw Error(j.error || 'Could not restore the guide.'); myGuidesState.state = 'idle'; data.guides.state = 'idle'; render(); })
+      .catch(err => alert(err.message));
     return;
   }
   if (act === 'retry') { const slot = { news: 'news', codex: 'codex', builds: 'builds', guides: 'guides' }[b.dataset.slot]; if (slot) { data[slot].state = 'idle'; render(); } }
