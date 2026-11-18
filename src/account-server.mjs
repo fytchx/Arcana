@@ -55,7 +55,19 @@ const cookies=req=>Object.fromEntries(String(req.headers.cookie||'').split(';').
  const i=pair.indexOf('=');return i<0?['','']:[pair.slice(0,i).trim(),pair.slice(i+1).trim()];
 }).filter(([k])=>k));
 const safeText=(value,max)=>String(value||'').trim().slice(0,max).replace(/[\u0000-\u001f\u007f]/g,' ');
-const asCreator=account=>({...account,isCreator:DISCORD_ID.test(process.env.ARCANA_CREATOR_DISCORD_ID||'')&&account.discordId===process.env.ARCANA_CREATOR_DISCORD_ID});
+// Preview-only admin bootstrap. This is deliberately tied to one Railway project AND
+// environment so copying the setting to production cannot grant site access.
+// The email value is configured only in Railway, not committed to GitHub.
+const previewAdminEmail=()=>process.env.RAILWAY_PROJECT_ID==='ddb157cb-ab62-410f-829f-180432db31c6'&&
+ process.env.RAILWAY_ENVIRONMENT_ID==='4650cd2d-1ea5-475f-a49c-22730f90e062'
+ ? String(process.env.ARCANA_PREVIEW_ADMIN_GOOGLE_EMAIL||'').trim().toLowerCase() : '';
+const asCreator=account=>{
+ const allowed=previewAdminEmail();
+ const previewAdmin=Boolean(allowed&&account.googleSub&&account.googleVerifiedEmail&&account.googleVerifiedEmail===allowed);
+ return {...account,
+  roles:previewAdmin?[...new Set([...(Array.isArray(account.roles)?account.roles:[]),'admin'])]:account.roles,
+  isCreator:DISCORD_ID.test(process.env.ARCANA_CREATOR_DISCORD_ID||'')&&account.discordId===process.env.ARCANA_CREATOR_DISCORD_ID};
+};
 const ARCANA_BANNERS=['nebula','frost','ember','forest','royal'];
 export function publicProfile(account){
  const a=asCreator(account),earned=new Set(rolesOf(a));for(const award of a.awards||[])if(AWARD_LABELS[award])earned.add(award);if(a.profile?.verifiedCharacter?.status==='approved')earned.add('verified-character');
@@ -149,7 +161,8 @@ async function verifyGoogleIdToken(jwt,nonce){
   !equal(payload.nonce,nonce)||!GOOGLE_SUB.test(String(payload.sub||''))||
   payload.email_verified!==true)
   throw error(401,'Google identity could not be verified.');
- return {sub:payload.sub,name:safeText(payload.name||payload.given_name||'Arcana player',70)};
+ const email=typeof payload.email==='string'?payload.email.trim().toLowerCase():'';
+ return {sub:payload.sub,name:safeText(payload.name||payload.given_name||'Arcana player',70),verifiedEmail:/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)&&email.length<=254?email:''};
 }
 async function googleIdentity(identity,{linkAccount=null}={}){
  if(!GOOGLE_SUB.test(identity.sub))throw error(401,'Invalid Google identity.');
@@ -163,7 +176,7 @@ async function googleIdentity(identity,{linkAccount=null}={}){
    const account=await readJSON(accountFile(linkAccount.id));
    if(!account||account.suspended)throw error(403,'Account unavailable.');
    if(account.googleSub&&account.googleSub!==identity.sub)throw error(409,'This Arcana account already has a different Google login.');
-   account.googleSub=identity.sub;account.googleName=identity.name;
+   account.googleSub=identity.sub;account.googleName=identity.name;account.googleVerifiedEmail=identity.verifiedEmail||'';
    await saveAtomic(accountFile(account.id),account);
    await saveAtomic(indexPath,{id:account.id});
    return account;
@@ -172,7 +185,7 @@ async function googleIdentity(identity,{linkAccount=null}={}){
   if(linkedId&&!account)throw error(409,'Google identity is linked to an unavailable account.');
   if(!account){
    const name=safeText(identity.name||'Arcana player',50)||'Arcana player';
-   account={id:randomUUID(),googleSub:identity.sub,googleName:identity.name,roles:[],
+   account={id:randomUUID(),googleSub:identity.sub,googleName:identity.name,googleVerifiedEmail:identity.verifiedEmail||'',roles:[],
     betaTesterSince:betaEnrollmentOpen()?new Date().toISOString():'',
     profile:{displayName:name,inGameName:'',guild:'',favoriteClass:'',description:'',raidStatus:'',guildStatus:''},
     joinedAt:new Date().toISOString(),suspended:false};
@@ -181,7 +194,7 @@ async function googleIdentity(identity,{linkAccount=null}={}){
   }else{
    if(account.suspended)throw error(403,'Account unavailable.');
    if(betaEnrollmentOpen()&&!account.betaTesterSince)account.betaTesterSince=new Date().toISOString();
-   account.googleName=identity.name;await saveAtomic(accountFile(account.id),account);
+   account.googleName=identity.name;account.googleVerifiedEmail=identity.verifiedEmail||'';await saveAtomic(accountFile(account.id),account);
   }
   return account;
  });
@@ -277,6 +290,7 @@ export async function handleAccountRequest(req,res,url){
   authorize.searchParams.set('redirect_uri',new URL('/api/account/google/callback',baseUrl()).href);
   authorize.searchParams.set('response_type','code');
   authorize.searchParams.set('scope','openid email profile');
+  if(!link)authorize.searchParams.set('prompt','select_account');
   authorize.searchParams.set('state',state);
   authorize.searchParams.set('nonce',nonce);
   redirect(res,authorize.href,googleStateName()+'='+[state,nonce,...(member?[member.id]:[])].join('~')+'; '+cookieFlags(600));return true;

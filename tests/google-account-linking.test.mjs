@@ -10,7 +10,8 @@ import {once} from 'node:events';
 test('Google and Discord can sign in independently and link explicitly without losing identities or roles',async()=>{
  const root=await mkdtemp(join(tmpdir(),'arcana-google-auth-'));
  const names=['ARCANA_ACCOUNT_DATA_DIR','ARCANA_AUTH_BASE_URL','ARCANA_GOOGLE_CLIENT_ID','ARCANA_GOOGLE_CLIENT_SECRET',
-  'ARCANA_DISCORD_CLIENT_ID','ARCANA_DISCORD_CLIENT_SECRET','ARCANA_CREATOR_DISCORD_ID','ARCANA_BETA_COHORT_OPEN'];
+  'ARCANA_DISCORD_CLIENT_ID','ARCANA_DISCORD_CLIENT_SECRET','ARCANA_CREATOR_DISCORD_ID','ARCANA_BETA_COHORT_OPEN',
+  'ARCANA_PREVIEW_ADMIN_GOOGLE_EMAIL','RAILWAY_PROJECT_ID','RAILWAY_ENVIRONMENT_ID'];
  const previous=Object.fromEntries(names.map(k=>[k,process.env[k]]));
  const realFetch=globalThis.fetch;
  const {publicKey,privateKey}=generateKeyPairSync('rsa',{modulusLength:2048});
@@ -94,6 +95,24 @@ test('Google and Discord can sign in independently and link explicitly without l
   assert.ok(first.roles.some(r=>r.id==='beta-tester'));
   assert.equal(first.displayName,'Google Player');
   assert.equal(JSON.stringify(first).includes(googleSub),false,'Never disclose Google subject');
+
+  // Exact, Google-verified email grants Admin only in the isolated Test Railway environment.
+  const envGateNames=['ARCANA_PREVIEW_ADMIN_GOOGLE_EMAIL','RAILWAY_PROJECT_ID','RAILWAY_ENVIRONMENT_ID'];
+  process.env.ARCANA_PREVIEW_ADMIN_GOOGLE_EMAIL='player@example.invalid';
+  process.env.RAILWAY_PROJECT_ID='ddb157cb-ab62-410f-829f-180432db31c6';
+  process.env.RAILWAY_ENVIRONMENT_ID='4650cd2d-1ea5-475f-a49c-22730f90e062';
+  const previewUser=(await me(googleSession)).user;
+  assert.ok(previewUser.roles.some(r=>r.id==='admin'),'Verified Google email receives Test Admin');
+  assert.equal(previewUser.isOwner,false,'Admin is not Owner');
+  assert.equal(previewUser.permissions.editHandbook,true,'Test Admin can edit the Guidebook');
+  assert.equal(previewUser.permissions.publishHandbook,true,'Test Admin can publish to the isolated test volume');
+  assert.equal(JSON.stringify(previewUser).includes('player@example.invalid'),false,'Verified email not exposed in profile');
+  process.env.RAILWAY_ENVIRONMENT_ID='wrong-environment';
+  assert.equal((await me(googleSession)).user.roles.some(r=>r.id==='admin'),false,'Never grants Admin outside exact preview environment');
+  process.env.RAILWAY_ENVIRONMENT_ID='4650cd2d-1ea5-475f-a49c-22730f90e062';
+  process.env.ARCANA_PREVIEW_ADMIN_GOOGLE_EMAIL='different@example.invalid';
+  assert.equal((await me(googleSession)).user.roles.some(r=>r.id==='admin'),false,'Email mismatch must not grant Admin');
+  for(const key of envGateNames)delete process.env[key];
 
   start=await begin('/api/account/google/login');
   callback=await finish('/api/account/google/callback',start);
