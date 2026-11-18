@@ -32,7 +32,7 @@ test('guides: featured guide routes, renders every table, links only to real too
   assert.ok(g && ad && FEATURED_GUIDES.length >= 2);
   assert.match(g.body, /1 % bonus Strength pet, 1 flat Strength pet, and 2 Retaliation pets/);
   assert.match(g.body, /three Retaliation pets do not scale well enough for endgame/);
-  assert.match(ad.body, /Attack Damage Rogue, Mage and Warrior/);
+  assert.match(ad.body, /Attack Damage build that works for Rogue, Mage, and Warrior/);
   const html = hbText(g.body);
   const blocks = g.body.split(/\n\s*\n/).filter(b => /^(Table: |\|)/.test(b.trim()));
   assert.equal((html.match(/<table/g) || []).length, blocks.length, 'every table block renders as a table');
