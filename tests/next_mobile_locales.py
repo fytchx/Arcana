@@ -70,7 +70,10 @@ try:
         page.goto(f'http://127.0.0.1:{server.server_port}/next/index.html#/guidebook', wait_until='domcontentloaded')
         page.locator('.gb-head h1').wait_for(timeout=10000)
         assert 'Season 3 Playbook' in page.locator('.gb-head h1').inner_text()
-        assert 'start here:' in page.locator('.gb-start-cta').inner_text().lower()
+        overview = page.locator('.gb-head').inner_text().lower()
+        assert 'start here:' in page.locator('.playbook-start-link').inner_text().lower()
+        assert 'keep pushing monster level' in overview
+        assert page.locator('.gb-pillars').count() == 0, 'Overview philosophy should not use separate cards'
         assert page.locator('.gb-chapter').count() == 0, 'Empty draft chapters must stay hidden from readers'
         assert '/classic' not in page.url, 'Guidebook deep-link redirected to Classic'
         assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth + 1'), 'Guidebook overflows phone'
