@@ -51,7 +51,7 @@ function layout({title,description,canonical,body,image='',schema=null,robots='i
 }
 function storyCard(p,large=false){return '<a class="journalStory '+(large?'journalStoryFeature':'')+'" href="/journal/'+esc(p.slug)+'"><span class="journalBadge">'+esc(p.category)+'</span><h2>'+esc(p.title)+'</h2><p>'+esc(p.subtitle)+'</p><div class="journalStoryMeta">'+esc(p.author)+' · '+dateLabel(p.publishedAt)+' <span>Read story →</span></div></a>';}
 async function indexPage(url){
- const all=await list();const requested=url.searchParams.get('category')||'';const filter=categories.includes(requested)?requested:'';
+ const all=(await list()).filter(x=>!x.arcanaNextOnly);const requested=url.searchParams.get('category')||'';const filter=categories.includes(requested)?requested:'';
  const posts=filter?all.filter(x=>x.category===filter):all;
  const tags=['All',...categories.filter(t=>all.some(p=>p.category===t))];
  return layout({title:'News, Meta & Community Analysis',description:'Independent IdleArc news, class balance analysis, community perspectives and Arcana development updates.',canonical:'/journal',schema:{'@context':'https://schema.org','@type':'Blog',name:'Arcana Journal',url:ORIGIN+'/journal'},body:
@@ -61,9 +61,9 @@ async function indexPage(url){
  '<section class="journalJoin"><strong>Built by players, for players.</strong><p>Read the analysis, bring your own perspective, and explore Arcana\'s free builds and tools.</p><a href="/#/community">Explore Community →</a></section>'});
 }
 async function storyPage(slug){
- const p=(await list()).find(p=>p.slug===slug);
+ const p=(await list()).find(p=>p.slug===slug&&!p.arcanaNextOnly);
  if(!p)return null;
- const all=await list(),related=all.filter(x=>x.slug!==p.slug).slice(0,2);
+ const all=(await list()).filter(x=>!x.arcanaNextOnly),related=all.filter(x=>x.slug!==p.slug).slice(0,2);
  return layout({title:p.title,description:p.subtitle,canonical:'/journal/'+p.slug,image:p.coverUrl,schema:{'@context':'https://schema.org','@type':'BlogPosting',headline:p.title,description:p.subtitle,datePublished:p.publishedAt,dateModified:p.updatedAt,author:{'@type':'Person',name:p.author},publisher:{'@type':'Organization',name:'Arcana Journal'},mainEntityOfPage:ORIGIN+'/journal/'+p.slug},body:
  '<article class="journalArticle"><a class="journalBack" href="/journal">← All Journal stories</a><header><span class="journalBadge">'+esc(p.category)+'</span><h1>'+esc(p.title)+'</h1><p class="journalStandfirst">'+esc(p.subtitle)+'</p><div class="journalArticleMeta">By <strong>'+esc(p.author)+'</strong> · '+dateLabel(p.publishedAt)+'</div></header>'+
  (p.coverUrl?'<img class="journalCover" src="'+esc(p.coverUrl)+'" alt="" loading="lazy">':'')+
@@ -86,7 +86,7 @@ function validate(payload,old){
  const coverUrl=String(payload.coverUrl||'').trim();
  if(!validImage(coverUrl))throw Error('Use a public HTTPS image URL, or leave the cover empty.');
  const published=payload.published===true;const now=new Date().toISOString();
- return {slug,title,subtitle,body,category,coverUrl,author:'Zane',published,featured:payload.featured===true,createdAt:old?.createdAt||now,publishedAt:published&&!old?.published?now:(old?.publishedAt||now),updatedAt:now};
+ return {slug,title,subtitle,body,category,coverUrl,author:'Zane',published,featured:payload.featured===true,arcanaNextOnly:!!old?.arcanaNextOnly,createdAt:old?.createdAt||now,publishedAt:published&&!old?.published?now:(old?.publishedAt||now),updatedAt:now};
 }
 function studioPage(){
  return layout({title:'Journal Studio',description:'Arcana editorial publishing workspace.',canonical:'/journal/studio',robots:'noindex,nofollow',body:'<section class="journalStudio"><span class="journalEyebrow">EDITORIAL WORKSPACE</span><h1>Journal Studio</h1><p>Write, preview, save drafts and publish directly to Arcana Journal. Articles live in the existing persistent Arcana data volume.</p><div class="journalStudioLayout"><aside><h2>Articles</h2><button type="button" id="journalNew">+ New article</button><div id="journalStudioList"></div></aside><form id="journalEditor"><label>Title<input name="title" required maxlength="130"></label><label>URL slug<input name="slug" required maxlength="90" pattern="[a-z0-9-]+"></label><label>Summary<input name="subtitle" required maxlength="340"></label><div class="journalStudioRow"><label>Category<select name="category">'+categories.map(c=>'<option>'+esc(c)+'</option>').join('')+'</select></label><label>Cover image URL (optional)<input name="coverUrl" type="url" placeholder="https://…"></label></div><label>Story body<textarea name="body" required rows="22" maxlength="35000" placeholder="## Section heading&#10;&#10;Write your article here. Use **bold** for emphasis."></textarea></label><p class="journalHelp">Use ## for headings, **text** for bold, and - for bullet points. The class-balance chart markers are supported in existing articles.</p><div class="journalStudioActions"><label><input type="checkbox" name="featured"> Featured</label><label><input type="checkbox" name="published"> Published</label><button type="button" id="journalPreview">Preview</button><button type="submit">Save article</button></div><p id="journalStudioStatus" role="status"></p></form></div><div id="journalPreviewArea"></div></section>',extraScript:'<script type="module" src="/journal-studio.js"></script>'});
@@ -97,18 +97,19 @@ export async function handleJournalRequest(req,res,url){
   send(res,200,req.method==='HEAD'?null:'User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /journal/studio\nSitemap: '+ORIGIN+'/sitemap.xml\n','text/plain; charset=utf-8');return true;
  }
  if(pathname==='/sitemap.xml'&&['GET','HEAD'].includes(req.method)){
-  const publicPosts=await list();const links=[{url:'/',date:'2026-10-20'},{url:'/journal',date:'2026-10-18'},...SEO_PAGES.map(p=>({url:p.path,date:'2026-10-20'})),...publicPosts.map(p=>({url:'/journal/'+p.slug,date:p.updatedAt.slice(0,10)}))];
+  const publicPosts=(await list()).filter(p=>!p.arcanaNextOnly);const links=[{url:'/',date:'2026-10-20'},{url:'/journal',date:'2026-10-18'},...SEO_PAGES.map(p=>({url:p.path,date:'2026-10-20'})),...publicPosts.map(p=>({url:'/journal/'+p.slug,date:p.updatedAt.slice(0,10)}))];
   send(res,200,req.method==='HEAD'?null:'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+links.map(x=>'<url><loc>'+ORIGIN+x.url+'</loc><lastmod>'+x.date+'</lastmod></url>').join('')+'</urlset>','application/xml; charset=utf-8');return true;
  }
  if(pathname==='/api/journal'){
   if(req.method!=='GET')return fail(res,405,'Method not allowed.');
+  const nextSurface=url.searchParams.get('surface')==='next';
   const slug=url.searchParams.get('slug');
-  if(slug){const article=(await list()).find(post=>post.slug===slug);if(!article)return fail(res,404,'Story not found.');sendJSON(res,200,article);return true;}
-  sendJSON(res,200,{articles:(await list()).map(summary)});return true;
+  if(slug){const article=(await list()).find(post=>post.slug===slug&&(!post.arcanaNextOnly||nextSurface));if(!article)return fail(res,404,'Story not found.');sendJSON(res,200,article);return true;}
+  sendJSON(res,200,{articles:(await list()).filter(post=>!post.arcanaNextOnly||nextSurface).map(summary)});return true;
  }
  if(pathname==='/api/journal/admin'){
   if(!await auth(req,res))return true;
-  if(req.method==='GET'){const raw=await state();sendJSON(res,200,{revision:raw.revision,articles:combined(raw)});return true;}
+  if(req.method==='GET'){const raw=await state(),nextSurface=url.searchParams.get('surface')==='next';sendJSON(res,200,{revision:raw.revision,articles:combined(raw).filter(post=>!post.arcanaNextOnly||nextSurface)});return true;}
   if(req.method!=='PUT')return fail(res,405,'Method not allowed.');
   try{checkOrigin(req)}catch{return fail(res,403,'Request origin not permitted.');}
   let payload;try{payload=await parseJSON(req,55000);}catch(error){return fail(res,error.status||400,error.message);}

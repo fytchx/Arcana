@@ -50,7 +50,7 @@ test('Unknown and draft content never appears as a live story',async()=>{
  assert.equal(list.status,200);
  const articles=JSON.parse(list.text).articles;
  assert.ok(articles.length>=4);
- const latestPublishedSeed=[...JOURNAL_SEEDS].filter(x=>x.published).sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt))[0];
+ const latestPublishedSeed=[...JOURNAL_SEEDS].filter(x=>x.published&&!x.arcanaNextOnly).sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt))[0];
  assert.equal(articles[0].slug,latestPublishedSeed.slug);
  assert.ok(articles.some(x=>x.slug==='hallowed-harvest-2026-guide'));
  assert.ok(articles.find(x=>x.slug==='idlearc-1-3-7-the-timing-couldnt-be-better'));
@@ -75,6 +75,19 @@ test('SEO discovery endpoints include current public stories',async()=>{
  const robots=await request('/robots.txt');assert.equal(robots.status,200);assert.match(robots.text,/sitemap.xml/);
  const sitemap=await request('/sitemap.xml');assert.equal(sitemap.status,200);assert.match(sitemap.text,/class-balance-top-250-season-2/);
  const head=await request('/journal','HEAD');assert.equal(head.status,200);assert.equal(head.text,'');
+});
+
+test('Next-only news articles stay out of the classic Journal routes',async()=>{
+ const slug='arcana-next-season-3-playbook';
+ const classicApi=JSON.parse((await request('/api/journal')).text).articles;
+ const nextApi=JSON.parse((await request('/api/journal?surface=next')).text).articles;
+ assert.ok(!classicApi.some(article=>article.slug===slug));
+ assert.ok(nextApi.some(article=>article.slug===slug));
+ assert.equal((await request('/api/journal?slug='+slug)).status,404);
+ assert.equal((await request('/api/journal?surface=next&slug='+slug)).status,200);
+ assert.equal((await request('/journal/'+slug)).status,404);
+ const index=await request('/journal');assert.equal(index.status,200);assert.doesNotMatch(index.text,new RegExp(slug));
+ const sitemap=await request('/sitemap.xml');assert.doesNotMatch(sitemap.text,new RegExp(slug));
 });
 
 

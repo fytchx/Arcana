@@ -201,5 +201,26 @@ My criticism was never about demanding nerfs for the sake of nerfs. It was about
 **If this is the direction we're heading, I'm all for it.**
 
 *Editor's note: This article discusses the October 18, 2026, version 1.3.7 patch notes. The top-250 data in the earlier Arcana Journal analysis was captured before these changes, and it should not be interpreted as a measurement of post-patch performance.*`
+  },
+  {
+    slug: 'arcana-next-season-3-playbook',
+    title: 'A New Season, and the Next Step for Arcana',
+    teaserTitle: 'The Season 3 Playbook: Arcana’s Next Step',
+    subtitle: 'Season 2 has been rough, but I still believe in IdleArc—and I want Arcana to grow with its players.',
+    category: 'Community',
+    author: 'Zane',
+    publishedAt: '2026-11-18T05:00:00Z',
+    updatedAt: '2026-11-18T05:00:00Z',
+    arcanaNextOnly: true,
+    published: true,
+    featured: true,
+    coverUrl: '',
+    body: `Season 2 has been a rough one. Balance problems have been hard to ignore, more than 20 people have left my guild, and familiar names from the top 100 have disappeared. The pet system feels completely broken in its current state, and I think the way it affects progress has hurt the game and the community.
+
+Even so, I still love IdleArc. I have high hopes for Season 3, and I’m excited to see where the game goes in the seasons after it. I want Arcana to help people enjoy the journey, make sense of their choices, and avoid some of the mistakes I’ve made myself.
+
+Arcana is growing, too. Experienced players are writing guides that share what has worked for them, and more contributors are getting involved. The Season 3 Playbook is the next step: a practical route through the season, alongside a separate collection for player-written guides. The Handbook remains the place for clear game references and system information.
+
+I’m going to keep maintaining Arcana and the Fandom wiki, and do what I can to make useful resources, support the people who contribute, and help this community grow. I’m grateful to everyone who keeps playing, sharing what they’ve learned, and helping make the next season better.`
   }
 ]);

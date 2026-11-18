@@ -6,6 +6,7 @@ import { AWARD_LABELS, ROLE_NAMES } from '../src/account-policy.js';
 import { adminHandbookTab } from './handbook-editor.js';
 import { adminGuidebookTab } from './guidebook-editor.js';
 import { reportsTab } from './feedback.js';
+import { FEATURED_GUIDES } from './guides-content.js';
 
 let rerender = () => {};
 const A = { news: { state: 'idle', revision: 0, list: [], edit: null, preview: false }, people: { state: 'idle', page: 1, pages: 1, total: 0, list: [], q: '', sel: null }, traffic: { state: 'idle', d: null }, tab: 'inbox', posts: { state: 'idle', list: [] }, feat: { state: 'idle', revision: 0, items: [], dirty: false }, playbook: { state:'idle', revision:0, items:[], posts:[], dirty:false }, site: { state: 'idle', revision: 0, notice: { enabled: false, text: '' } }, busy: false, toast: '' };
@@ -30,8 +31,8 @@ function loadFeatured(force) {
 function loadPlaybookGuides(force=false){
  if(!force&&A.playbook.state!=='idle')return;
  A.playbook.state='loading';
- Promise.all([api('/api/admin/playbook-guides'),api('/api/community/posts?kind=guide&includeHidden=true')])
-  .then(([f,g])=>{A.playbook.revision=f.revision;A.playbook.items=f.items||[];A.playbook.posts=g.posts||[];A.playbook.dirty=false;A.playbook.state='ready';})
+ Promise.all([api('/api/admin/featured-player-guides'),api('/api/community/posts?kind=guide&includeHidden=true')])
+  .then(([f,g])=>{A.playbook.revision=f.revision;A.playbook.items=f.items||[];A.playbook.posts=[...FEATURED_GUIDES.map(x=>({id:'guide:'+x.id,title:x.title,summary:x.summary,author:x.author,createdAt:x.updated,status:'public',staticGuide:true})),...(g.posts||[])];A.playbook.dirty=false;A.playbook.state='ready';})
   .catch(e=>{A.playbook.state=e.status===401||e.status===403?'denied':'error';})
   .finally(rerender);
 }
@@ -46,7 +47,7 @@ const CATS = ['News', 'Meta & Balance', 'Opinion', 'Guides & Strategy', 'Communi
 function loadNews(force) {
   if (!force && A.news.state !== 'idle') return;
   A.news.state = 'loading';
-  api('/api/journal/admin').then(j => { A.news.revision = j.revision; A.news.list = (j.articles || []).sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || ''))); A.news.state = 'ready'; })
+  api('/api/journal/admin?surface=next').then(j => { A.news.revision = j.revision; A.news.list = (j.articles || []).sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || ''))); A.news.state = 'ready'; })
     .catch(e => { A.news.state = e.status === 403 || e.status === 401 ? 'denied' : 'error'; }).finally(rerender);
 }
 const slugify = t => String(t || '').toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 90);
@@ -78,7 +79,7 @@ async function toggleFeatured(i) {
   const article = { slug: a.slug, title: a.title || '', subtitle: a.subtitle || '', category: a.category || 'News', coverUrl: a.coverUrl || '', body: a.body || '', featured: !a.featured, published: !!a.published };
   A.busy = true; rerender();
   try {
-    const j = await api('/api/journal/admin', { method: 'PUT', body: JSON.stringify({ expectedRevision: A.news.revision, article }) });
+    const j = await api('/api/journal/admin?surface=next', { method: 'PUT', body: JSON.stringify({ expectedRevision: A.news.revision, article }) });
     A.news.revision = j.revision; A.news.list[i] = j.article;
     window.dispatchEvent(new Event('arcana:news-changed'));
     toast(j.article.featured ? 'Featured on Home.' : 'No longer featured.');
@@ -90,7 +91,7 @@ async function saveArticle(publish) {
   const article = { slug: e.slug || slugify(e.title), title: e.title || '', subtitle: e.subtitle || '', category: e.category || 'News', coverUrl: e.coverUrl || '', body: e.body || '', featured: !!e.featured, published: publish };
   A.busy = true; rerender();
   try {
-    const j = await api('/api/journal/admin', { method: 'PUT', body: JSON.stringify({ expectedRevision: A.news.revision, article }) });
+    const j = await api('/api/journal/admin?surface=next', { method: 'PUT', body: JSON.stringify({ expectedRevision: A.news.revision, article }) });
     A.news.revision = j.revision; A.news.edit = { ...j.article, existing: true };
     const i = A.news.list.findIndex(x => x.slug === j.article.slug);
     if (i >= 0) A.news.list[i] = j.article; else A.news.list.unshift(j.article);
@@ -200,7 +201,7 @@ function featured() {
   return (items.length ? '<div class="nx-list">' + items.map((x, i) => '<div class="nx-card adm-feat"><div class="adm-feathead"><b>' + (i + 1) + '. ' + esc(title(x.postId)) + '</b><span>' +
       btn('up', '↑', 'data-i="' + i + '" aria-label="Move up"' + (i === 0 ? ' disabled' : ''), 'adm-mini') + btn('down', '↓', 'data-i="' + i + '" aria-label="Move down"' + (i === items.length - 1 ? ' disabled' : ''), 'adm-mini') + btn('remove', '✕', 'data-i="' + i + '" aria-label="Remove"', 'adm-mini') + '</span></div>' +
       '<label class="nx-field">Note <small>optional, shown on the card</small><input maxlength="140" value="' + esc(x.note) + '" data-adm-note="' + i + '" placeholder="e.g. Best starter for Warriors"></label></div>').join('') + '</div>'
-    : '<div class="nx-empty"><strong>Nothing featured yet</strong><p>Feature builds from the Inbox. Until then, Home shows your Retaliation Warrior.</p></div>') +
+    : '<div class="nx-empty"><strong>Nothing featured yet</strong><p>Featured builds appear on Home only after you choose them.</p><a class="nx-btn" href="#/admin/inbox">Choose builds</a></div>') +
     '<div class="st-two">' + btn('saveFeat', A.feat.dirty ? 'Save Featured' : 'Saved', A.feat.dirty ? '' : 'disabled', 'nx-btn nx-btn-primary') + btn('reload', 'Reload') + '</div>' +
     '<p class="nx-fine">Up to 12. Hidden or deleted builds drop off the public list on their own.</p>';
 }
@@ -212,11 +213,12 @@ function playbookGuidesTab(){
  if(P.state!=='ready')return '<div class="nx-loading">Loading Player Guides…</div>';
  const rows=P.posts.map(p=>{
   const on=P.items.includes(p.id),hidden=p.status==='hidden';
-  return '<div class="nx-card adm-post'+(hidden?' hidden':'')+'"><span class="nx-tags">'+(on?'<span class="nx-tag nx-tag-accent">On Playbook</span>':'')+(hidden?'<span class="nx-tag adm-red">Hidden</span>':'')+'<span class="nx-tag">'+esc(shortDate(p.createdAt))+'</span></span><a href="#/builds/'+encodeURIComponent(p.id)+'"><strong>'+esc(p.title)+'</strong></a><small>'+esc(p.summary||p.excerpt||'')+'</small><div class="st-two">'+btn(on?'unfeaturePlaybook':'featurePlaybook',on?'Remove from Playbook':'Feature on Playbook','data-id="'+esc(p.id)+'"',on?'nx-btn':'nx-btn nx-btn-primary')+'</div></div>';
+  const href=p.staticGuide?'#/guides/'+encodeURIComponent(p.id.slice(6)):'#/builds/'+encodeURIComponent(p.id);
+  return '<div class="nx-card adm-post'+(hidden?' hidden':'')+'"><span class="nx-tags">'+(on?'<span class="nx-tag nx-tag-accent">On Home</span>':'')+(hidden?'<span class="nx-tag adm-red">Hidden</span>':'')+'<span class="nx-tag">'+esc(shortDate(p.createdAt))+'</span></span><a href="'+href+'"><strong>'+esc(p.title)+'</strong></a><small>'+esc(p.summary||p.excerpt||'')+'</small><div class="st-two">'+btn(on?'unfeaturePlayerGuide':'featurePlayerGuide',on?'Remove from Home':'Feature on Home','data-id="'+esc(p.id)+'"'+(hidden&&!on?' disabled':''),on?'nx-btn':'nx-btn nx-btn-primary')+'</div></div>';
  }).join('');
- return '<header class="hb-head"><span class="nx-kicker">THE SEASON 3 PLAYBOOK</span><h2>Player Guides</h2><p>Guides use Arcana’s guide creator and keep the author’s site profile and article formatting. New published guides appear here for you to feature.</p></header>'+
+ return '<header class="hb-head"><span class="nx-kicker">HOMEPAGE</span><h2>Featured Player Guides</h2><p>Choose guides for Home. Every published guide stays in the Player Guides collection whether it is featured or not.</p></header>'+
   (rows?'<div class="nx-list">'+rows+'</div>':'<div class="nx-empty"><strong>No player guides yet</strong><p>Published guides will appear here when they are created.</p><a class="nx-btn" href="#/builds/guides">Open Guides</a></div>')+
-  '<div class="st-two">'+btn('savePlaybook',P.dirty?'Save Player Guides':'Saved',P.dirty?'':'disabled','nx-btn nx-btn-primary')+btn('reload','Reload')+'</div><p class="nx-fine">Hidden or removed guides stop appearing to readers automatically.</p>';
+ '<div class="st-two">'+btn('savePlayerGuides',P.dirty?'Save featured guides':'Saved',P.dirty?'':'disabled','nx-btn nx-btn-primary')+btn('reload','Reload')+'</div><p class="nx-fine">Hidden guides cannot be newly featured. Removing a guide here only removes its Home feature.</p>';
 }
 function site() {
   loadSite();
@@ -233,13 +235,14 @@ function more() {
   return '<section><h2 class="nx-label">Classic tools</h2><div class="nx-list">' + r('/classic#/admin?tab=appearance', 'Theme and history', 'Default theme and rollback') + r('/classic#/wiki/studio', 'Wiki Studio', 'Classic wiki articles') + '</div></section>';
 }
 
-export function adminView(user) {
+export function adminView(user, requestedTab='') {
   if (!user?.permissions?.manageSite) return '<div class="nx-empty"><strong>Admins only</strong><p>This page is for Arcana admins.</p><a class="nx-btn" href="#/profile">Back to Profile</a></div>';
-  const tabs = [['inbox', 'Inbox'], ['featured', 'Featured'], ['playbook', 'Player Guides'], ['reports', 'Reports'], ['news', 'News'], ['handbook', 'Handbook'], ...(user?.permissions?.editHandbook ? [['guidebook', 'Guidebook']] : []), ['people', 'People'], ...(user?.isOwner ? [['roles', 'Roles']] : []), ['traffic', 'Traffic'], ['site', 'Site']];
-  const body = A.tab === 'handbook' ? adminHandbookTab() : A.tab === 'guidebook' ? adminGuidebookTab() : A.tab === 'roles' ? rolesTab() : A.tab === 'featured' ? featured() : A.tab === 'playbook' ? playbookGuidesTab() : A.tab === 'site' ? site() + more() : A.tab === 'news' ? newsTab() : A.tab === 'people' ? peopleTab(user) : A.tab === 'traffic' ? trafficTab() : A.tab === 'reports' ? reportsTab() : inbox();
+  const tabs = [['inbox', 'Inbox'], ['featured', 'Featured Builds'], ['player-guides', 'Player Guides'], ['reports', 'Reports'], ['news', 'News'], ['handbook', 'Handbook'], ...(user?.permissions?.editHandbook ? [['guidebook', 'Guidebook']] : []), ['people', 'People'], ...(user?.isOwner ? [['roles', 'Roles']] : []), ['traffic', 'Traffic'], ['site', 'Site']];
+  if (tabs.some(([id]) => id === requestedTab)) A.tab = requestedTab;
+  const body = A.tab === 'handbook' ? adminHandbookTab() : A.tab === 'guidebook' ? adminGuidebookTab() : A.tab === 'roles' ? rolesTab() : A.tab === 'featured' ? featured() : A.tab === 'player-guides' ? playbookGuidesTab() : A.tab === 'site' ? site() + more() : A.tab === 'news' ? newsTab() : A.tab === 'people' ? peopleTab(user) : A.tab === 'traffic' ? trafficTab() : A.tab === 'reports' ? reportsTab() : inbox();
   return '<a class="nx-back" href="#/profile">‹ Profile</a><header class="nx-page-head"><span class="nx-kicker">OWNER</span><h1>Admin</h1></header>' +
     '<a class="nx-row nx-row-design" href="#/admin/design"><span class="nx-ic">' + ic('theme', 22) + '</span><span class="nx-row-text"><strong>Site design</strong><small>Colors, corners, fonts and icons for everyone. Preview first, then publish.</small></span><span class="nx-row-end">›</span></a>' +
-    '<div class="st-tabs adm-tabs nx-scrollx" role="tablist">' + tabs.map(([id, l]) => '<button role="tab" aria-selected="' + (A.tab === id) + '" data-adm="tab" data-v="' + id + '">' + l + (id === 'featured' && A.feat.dirty ? ' •' : '') + '</button>').join('') + '</div>' +
+    '<div class="st-tabs adm-tabs nx-scrollx" role="tablist">' + tabs.map(([id, l]) => '<button role="tab" aria-selected="' + (A.tab === id) + '" data-adm="tab" data-v="' + id + '">' + l + (((id === 'featured' && A.feat.dirty) || (id === 'player-guides' && A.playbook.dirty)) ? ' •' : '') + '</button>').join('') + '</div>' +
     body + (A.toast ? '<div class="st-toast" role="status">' + esc(A.toast) + '</div>' : '');
 }
 
@@ -253,7 +256,7 @@ async function saveFeatured() {
 }
 async function savePlaybookGuides(){
  const P=A.playbook;A.busy=true;rerender();
- try{const j=await api('/api/admin/playbook-guides',{method:'PUT',body:JSON.stringify({expectedRevision:P.revision,items:P.items})});P.revision=j.revision;P.items=j.items;P.dirty=false;window.dispatchEvent(new Event('arcana:featured-changed'));toast('Player Guides saved.');}
+ try{const j=await api('/api/admin/featured-player-guides',{method:'PUT',body:JSON.stringify({expectedRevision:P.revision,items:P.items})});P.revision=j.revision;P.items=j.items;P.dirty=false;window.dispatchEvent(new Event('arcana:featured-changed'));toast('Featured Player Guides saved.');}
  catch(e){toast(e.status===409?'Player Guides changed elsewhere. Reload, then save again.':e.message);}
  finally{A.busy=false;rerender();}
 }
@@ -274,7 +277,7 @@ export function initAdmin(render) {
     const b = e.target.closest('[data-adm]');
     if (!b || b.disabled) return;
     const a = b.dataset.adm, id = b.dataset.id, i = +b.dataset.i, items = A.feat.items;
-    if (a === 'tab') { A.tab = b.dataset.v; return rerender(); }
+    if (a === 'tab') { A.tab = b.dataset.v; history.replaceState(null, '', '#/admin'); return rerender(); }
     if (a === 'reload') { A.posts.state = A.feat.state = A.playbook.state = A.site.state = A.news.state = A.people.state = A.traffic.state = 'idle'; return rerender(); }
     if (a === 'feature') { if (items.length >= 12) return toast('Feature at most 12 builds.'); A.feat.items = [...items, { postId: id, note: '' }]; A.feat.dirty = true; return saveFeatured(); }
     if (a === 'unfeature') { A.feat.items = items.filter(x => x.postId !== id); A.feat.dirty = true; return saveFeatured(); }
@@ -282,8 +285,8 @@ export function initAdmin(render) {
     if (a === 'up' || a === 'down') { const j = a === 'up' ? i - 1 : i + 1, n = [...items];[n[i], n[j]] = [n[j], n[i]]; A.feat.items = n; A.feat.dirty = true; return rerender(); }
     if (a === 'remove') { A.feat.items = items.filter((_, k) => k !== i); A.feat.dirty = true; return rerender(); }
     if (a === 'saveFeat') return saveFeatured();
-    if(a==='featurePlaybook'||a==='unfeaturePlaybook'){const ids=A.playbook.items;A.playbook.items=a==='featurePlaybook'?[...ids,id]:ids.filter(x=>x!==id);A.playbook.dirty=true;return rerender();}
-    if(a==='savePlaybook')return savePlaybookGuides();
+    if(a==='featurePlayerGuide'||a==='unfeaturePlayerGuide'){const ids=A.playbook.items;A.playbook.items=a==='featurePlayerGuide'?[...ids,id]:ids.filter(x=>x!==id);A.playbook.dirty=true;return savePlaybookGuides();}
+    if(a==='savePlayerGuides')return savePlaybookGuides();
     if (a === 'newArticle') { A.news.edit = { category: 'News', published: false }; A.news.preview = false; return rerender(); }
     if (a === 'featureArticle') return toggleFeatured(i);
     if (a === 'saveRoles') return R.dirty && saveRoles();

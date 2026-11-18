@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { Readable } from 'node:stream';
-import { handleSiteAdminRequest, normalizeFeaturedItems, safeFeatured } from '../src/site-admin-server.mjs';
+import { handleSiteAdminRequest, normalizeFeaturedItems, normalizeFeaturedGuideItems, safeFeatured } from '../src/site-admin-server.mjs';
 
 const base = 'http://localhost:3000';
 async function call(method, path, body, token, origin = base) {
@@ -27,6 +27,12 @@ test('featured builds: validation keeps only clean post ids and short plain note
   assert.throws(() => normalizeFeaturedItems('nope'), /list/);
   assert.deepEqual(safeFeatured(null), { revision: 0, updatedAt: null, items: [] });
   assert.deepEqual(safeFeatured({ revision: 3, items: [{ postId: 'bad' }] }).items, []);
+});
+
+test('featured Player Guides accept community IDs and stable static guide IDs', () => {
+  const id = randomUUID();
+  assert.deepEqual(normalizeFeaturedGuideItems([id.toUpperCase(), 'guide:retaliation-warrior', 'guide:attack-damage', 'invalid/id', id]), [id, 'guide:retaliation-warrior', 'guide:attack-damage']);
+  assert.throws(() => normalizeFeaturedGuideItems(Array.from({ length: 41 }, (_, i) => 'guide:sample-' + i)), /at most 40/);
 });
 
 test('featured builds: anyone can read, only admins can change, stale saves are refused', async () => {
