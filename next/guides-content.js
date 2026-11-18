@@ -85,7 +85,7 @@ Pets are one of the biggest long-term sources of power and one of the most RNG-d
 
 The practical lesson is to avoid over-investing in one pet while the rest of the team falls behind. Check the displayed stats after leveling or changing a pet; the weakest pet can limit the value of the rest. Save promising pets while you are building the team, and use the current pet-management tools carefully before compounding, selling or sacrificing anything.
 
-My old character's pet comparison is included below as a dated example, not a guaranteed result for your character.
+My previous pet numbers are included in the archived original as a dated example, not a guaranteed target for your character.
 
 ### Runes, runewords and talismans
 
