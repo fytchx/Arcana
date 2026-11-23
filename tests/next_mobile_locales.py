@@ -94,6 +94,19 @@ try:
         (ROOT / 'qa-output').mkdir(exist_ok=True)
         page.screenshot(path=str(ROOT / 'qa-output' / 'guidebook-mobile.png'), full_page=True)
 
+        # Handbook next-page and popup return-to-source navigation must both work.
+        page.goto(f'http://127.0.0.1:{server.server_port}/next/index.html#/handbook/what-is-idlearc', wait_until='domcontentloaded')
+        assert page.locator('.hb-next b').inner_text() == 'Your first steps', 'Handbook next-page link missing'
+        page.locator('.hb-next').click()
+        assert page.locator('.hb-page h1').inner_text() == 'Your first steps'
+        page.goto(f'http://127.0.0.1:{server.server_port}/next/index.html#/handbook/what-is-idlearc', wait_until='domcontentloaded')
+        page.locator('.hb-link[data-hb="chapter:biomes"]').first.click()
+        page.locator('.hb-go').click()
+        back = page.locator('.hb-back')
+        assert 'Back to What IdleArc is' in back.inner_text(), 'Return-to-source link missing after opening a Handbook topic'
+        back.click()
+        assert page.locator('.hb-page h1').inner_text() == 'What IdleArc is', 'Return-to-source navigation failed'
+
         page.goto(f'http://127.0.0.1:{server.server_port}/next/index.html#/home', wait_until='domcontentloaded')
         page.locator('[data-language-toggle]').wait_for(timeout=10000)
         page.wait_for_function("!document.querySelector('#nxSplash') || getComputedStyle(document.querySelector('#nxSplash')).visibility === 'hidden'", timeout=12000)
