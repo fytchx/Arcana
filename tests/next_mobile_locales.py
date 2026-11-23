@@ -85,6 +85,7 @@ try:
         assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth + 1'), 'Guidebook overflows phone'
         systems_group = page.locator('.playbook-outline').filter(has_text='Systems & Progression')
         assert '2 pages' in systems_group.locator('summary').inner_text(), 'Published ML article missing from chapter dropdown'
+        systems_group.locator('summary').click()
         page.locator('.playbook-outline-item[href="#/guidebook/systems-progression"]').click()
         assert page.locator('.hb-next b').inner_text() == 'Grinding Monster Level Efficiently', 'Next-page navigation skipped a published page'
         page.locator('.hb-next').click()
