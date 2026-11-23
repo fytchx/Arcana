@@ -1,9 +1,9 @@
 // The Season 3 Playbook reader and navigation.
-// Test preview: all imported pages are clearly marked as unfinished; editing requires Handbook editorial access.
+// Live Playbook reader. Editors can also preview private drafts; visitors only receive published pages.
 import {esc,ic} from './core.js';
 import {hbText} from './handbook.js';
 import {CHAPTERS,EXTERNAL_CLASS_GUIDES} from './guidebook-content.js';
-let live=[],byId=new Map(),loadState='idle',rerender=()=>{},currentUser=()=>null,playerGuideState='idle',playerGuideIds=[],playerGuideItems=[],contributors=[];
+let live=[],byId=new Map(),publishedIds=new Set(),loadState='idle',rerender=()=>{},currentUser=()=>null,playerGuideState='idle',playerGuideIds=[],playerGuideItems=[],contributors=[];
 export const chapterOf=id=>CHAPTERS.find(c=>c.id===id);
 export const guidebookPages=()=>live;
 export function setGuidebookPages(pages) {
@@ -15,7 +15,7 @@ export function loadGuidebook(force=false) {
   loadState='loading';
   fetch('/api/guidebook',{credentials:'same-origin',cache:'no-store'})
     .then(r=>r.ok?r.json():null)
-    .then(j=>{if(j?.pages)setGuidebookPages(j.editorDrafts||j.pages);contributors=Array.isArray(j?.contributors)?j.contributors:[];loadState='ready';rerender();})
+    .then(j=>{if(j?.pages){publishedIds=new Set(j.pages.map(p=>p.id));setGuidebookPages(j.editorDrafts||j.pages);}contributors=Array.isArray(j?.contributors)?j.contributors:[];loadState='ready';rerender();})
     .catch(()=>{loadState='error';rerender();});
 }
 function loadPlayerGuideIds(force=false){
@@ -25,7 +25,7 @@ function loadPlayerGuideIds(force=false){
   .then(async([f,g])=>{playerGuideIds=Array.isArray(f?.items)?f.items:[];const posts=(g?.posts||[]).filter(p=>playerGuideIds.includes(p.id));playerGuideItems=await Promise.all(posts.map(async p=>{try{const d=await fetch('/api/community/posts/'+encodeURIComponent(p.id),{credentials:'same-origin',cache:'no-store'}).then(r=>r.ok?r.json():null);return {...p,author:d?.author?.displayName||'Arcana player'};}catch{return {...p,author:'Arcana player'};}}));playerGuideState='ready';}).catch(()=>{playerGuideIds=[];playerGuideItems=[];playerGuideState='error';}).finally(rerender);
 }
 const count=ch=>live.filter(p=>p.chapter===ch&&p.status!=='awaiting').length;
-const status=p=>p.status==='ready'?'Published on Test':p.status==='awaiting'?'Contributor draft pending':p.status==='planned'?'Planned section':'Working draft · editor preview';
+const status=p=>publishedIds.has(p.id)?'Published':p.status==='ready'?'Ready to publish · editor preview':p.status==='awaiting'?'Contributor draft pending':p.status==='planned'?'Planned section':'Working draft · editor preview';
 const classArt=name=>'<img src="/assets/icons/idlearc-refined/classes/class-'+name+'.svg" alt="" loading="lazy">';
 const buildArt=name=>'<img src="/assets/icons/arcana-pack/build-types/'+name+'.svg" alt="" loading="lazy">';
 const GUIDE_ART={
