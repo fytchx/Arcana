@@ -44,6 +44,12 @@ try:
                 data = {'posts': []}
             elif '/api/featured' in url:
                 data = {'featured': [], 'ids': []}
+            elif '/api/guidebook' in url:
+                data = {'pages': [
+                    {'id': 'systems-progression', 'chapter': 'systems', 'title': 'Systems & Progression', 'answer': 'The primary sources of character power and why.', 'body': 'Overview.', 'author': 'Zane', 'status': 'ready', 'order': 10},
+                    {'id': 'grind-ml', 'chapter': 'systems', 'title': 'Grinding Monster Level Efficiently', 'answer': 'Keep Monster Level moving.', 'body': 'One-shot your target.', 'author': 'Zane', 'status': 'ready', 'order': 30},
+                    {'id': 'pets', 'chapter': 'pets', 'title': 'Pets and Compounding', 'answer': 'Protect your future Legendaries.', 'body': 'Pets.', 'author': 'Zane', 'status': 'ready', 'order': 10},
+                ]}
             elif '/api/handbook' in url:
                 data = {'pages': []}
             else:
@@ -77,7 +83,14 @@ try:
         assert page.locator('.gb-chapter').count() == 0, 'Empty draft chapters must stay hidden from readers'
         assert '/classic' not in page.url, 'Guidebook deep-link redirected to Classic'
         assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth + 1'), 'Guidebook overflows phone'
-        assert errors == [], 'Guidebook overview produced JS errors: ' + repr(errors)
+        systems_group = page.locator('.playbook-outline').filter(has_text='Systems & Progression')
+        assert '2 pages' in systems_group.locator('summary').inner_text(), 'Published ML article missing from chapter dropdown'
+        page.locator('.playbook-outline-item[href="#/guidebook/systems-progression"]').click()
+        assert page.locator('.hb-next b').inner_text() == 'Grinding Monster Level Efficiently', 'Next-page navigation skipped a published page'
+        page.locator('.hb-next').click()
+        assert page.locator('.gb-page h1').inner_text() == 'Grinding Monster Level Efficiently'
+        assert page.locator('.hb-next b').inner_text() == 'Pets and Compounding', 'Next-page navigation did not continue across chapters'
+        assert errors == [], 'Guidebook overview/navigation produced JS errors: ' + repr(errors)
         (ROOT / 'qa-output').mkdir(exist_ok=True)
         page.screenshot(path=str(ROOT / 'qa-output' / 'guidebook-mobile.png'), full_page=True)
 
