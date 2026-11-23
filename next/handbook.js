@@ -96,7 +96,7 @@ export function handbookView(id) {
   const original = byId.get(id);
   if (!original) return '<div class="nx-empty"><strong>Page not found</strong><p>It may have moved.</p><a class="nx-btn" href="#/codex">Handbook</a></div>';
   const {doc:p, translated} = editorialTranslation('handbook', original);
-  const c = chapterOf(p.chapter), list = pagesIn(p.chapter), i = list.indexOf(original), nx = p.next ? byId.get(p.next) : list[i + 1];
+  const c = chapterOf(p.chapter), list = pagesIn(p.chapter), i = list.indexOf(original), nx = (p.next ? byId.get(p.next) : null) || list[i + 1];
   return backChip() + '<a class="nx-back" href="#/handbook/chapter/' + c.id + '">‹ ' + esc(translateEnglish(c.title)) + '</a>' +
     '<article class="hb-page"' + (p.cls ? ' style="--cc:var(--c-' + p.cls + ')"' : '') + '><header class="hb-head"><span class="nx-kicker">' + esc(translateEnglish('CHAPTER ' + c.n + ' · ' + c.title.toUpperCase())) + '</span><h1>' + esc(p.title) + '</h1>' + trustChip(p, translated) + '</header>' +
     editorialControl('handbook', p.id, translated) +
