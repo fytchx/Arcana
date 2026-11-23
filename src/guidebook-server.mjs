@@ -17,7 +17,7 @@ const TRUST=new Set(['verified','config','estimated','legacy']);
 const ID=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const ACCOUNT_ID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const SEED=ORIGINAL_SEED.map(p=>({...p,...(SEED_UPDATES[p.id]||{})})).concat(NEW_SEED_PAGES);
-const SEED_STRUCTURE_VERSION=3;
+const SEED_STRUCTURE_VERSION=4;
 const contentFingerprint=p=>p?createHash('sha256').update(JSON.stringify({title:p.title,answer:p.answer,body:p.body})).digest('hex'):'';
 const text=(v,max)=>String(v??'').replace(/\r\n/g,'\n').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').slice(0,max);
 let chain=Promise.resolve();
@@ -49,15 +49,19 @@ async function load(){
  const saved=await readJSON(file());
  if(saved&&saved.pages){
   // New pages enter the editor as private drafts. The reader only receives explicitly approved pages.
-  const seeds=new Map(SEED.map(p=>[p.id,p])),migrateStructure=Number(saved.structureVersion||0)<SEED_STRUCTURE_VERSION;
+  const savedStructureVersion=Number(saved.structureVersion||0),seeds=new Map(SEED.map(p=>[p.id,p])),migrateStructure=savedStructureVersion<3,migrateHarmonyOverview=savedStructureVersion<SEED_STRUCTURE_VERSION;
   const originals=new Map(ORIGINAL_SEED.map(p=>[p.id,p])),migrateApprovedCopy=Number(saved.contentVersion||0)<1;
-  // Fold the existing live drafts together at migration time, so edits made inside Test survive
-  // the compact page structure as well as the original source text.
+  // Fold existing saved drafts into the compact page structure while preserving their text
+  // alongside the original source copy.
   if(migrateStructure&&!saved.pages['systems-progression']){
    const source=['systems-overview','grind-ml'].map(id=>saved.pages[id]?.draft||saved.pages[id]?.published).filter(Boolean);
    if(source.length){const merged={...seeds.get('systems-progression'),body:source.map(p=>'## '+p.title+'\n\n'+(p.answer||'')+'\n\n'+(p.body||'')).join('\n\n')};saved.pages['systems-progression']=editorPage(merged,0);}
   }
   SEED.forEach((p,i)=>{if(!saved.pages[p.id]&&!(saved.removed||[]).includes(p.id))saved.pages[p.id]=editorPage(p,i);});
+  if(migrateHarmonyOverview){
+   const harmony=saved.pages['harmony-overview'];
+   for(const version of [harmony?.draft,harmony?.published])if(version?.chapter==='player-guides')version.chapter='classes';
+  }
   Object.entries(saved.pages).forEach(([id,e])=>{
    const seed=seeds.get(id);
    const original=originals.get(id),update=SEED_UPDATES[id];

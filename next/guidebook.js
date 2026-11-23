@@ -45,7 +45,7 @@ const guideHero=p=>{
 };
 function home(){
   const editor=!!currentUser()?.permissions?.editHandbook;
-  const pages=id=>live.filter(p=>p.chapter===id&&(p.status==='ready'||editor&&p.status!=='awaiting')&&!['systems-overview','grind-ml'].includes(p.id)).sort((a,b)=>a.order-b.order);
+  const pages=id=>live.filter(p=>p.chapter===id&&(publishedIds.has(p.id)||editor&&p.status!=='awaiting')).sort((a,b)=>a.order-b.order);
   const item=p=>'<a class="playbook-outline-item" href="'+(p.href||('#/guidebook/'+esc(p.id)))+'"><span><b>'+esc(p.title)+'</b><small>'+esc(p.answer)+'</small></span><span>›</span></a>';
   const group=(title,items,open=false)=>'<details class="playbook-outline"'+(open?' open':'')+'><summary><span>'+title+'</span><small>'+items.length+' '+(items.length===1?'page':'pages')+'</small></summary><div class="playbook-outline-list">'+items.map(item).join('')+'</div></details>';
   const start=[...pages('transition'),...pages('classes')],deep=['pets','runes','gear','endgame'].flatMap(pages),system=pages('systems'),closing=pages('conclusion');
@@ -58,7 +58,7 @@ function chapterView(id){
   const ch=chapterOf(id);
   if(!ch)return '<div class="nx-empty">Chapter not found.</div>';
   const editor=!!currentUser()?.permissions?.editHandbook;
-  const pages=live.filter(p=>p.chapter===id&&(p.status==='ready'||editor&&p.status!=='awaiting')&&!['systems-overview','grind-ml'].includes(p.id)).sort((a,b)=>a.order-b.order);
+  const pages=live.filter(p=>p.chapter===id&&(publishedIds.has(p.id)||editor&&p.status!=='awaiting')&&p.id!=='systems-overview').sort((a,b)=>a.order-b.order);
   if(id==='player-guides'){
    return '<a class="nx-back" href="#/guidebook">‹ The Season 3 Playbook</a><header class="hb-head gb-head"><span class="nx-kicker">PLAYER GUIDES</span><h1>'+esc(ch.title)+'</h1><p>'+esc(ch.ask)+'</p></header><a class="nx-btn nx-btn-primary" href="#/builds/guides">Open Player Guides</a>';
   }
@@ -69,7 +69,7 @@ function chapterView(id){
 function pageView(id){
   const p=byId.get(id);
   if(!p)return '<a class="nx-back" href="#/guidebook">‹ The Season 3 Playbook</a><div class="nx-empty"><strong>This page is still under review.</strong><p>It will appear here when it is ready.</p></div>';
-  const ch=chapterOf(p.chapter), rank=x=>CHAPTERS.findIndex(c=>c.id===x.chapter)*1000+(x.order||0), all=live.filter(x=>publishedIds.has(x.id)&&!['systems-overview','grind-ml'].includes(x.id)).sort((a,b)=>rank(a)-rank(b)), pos=all.findIndex(x=>x.id===id), next=publishedIds.has(id)?(all[pos+1]||null):null;
+  const ch=chapterOf(p.chapter), rank=x=>CHAPTERS.findIndex(c=>c.id===x.chapter)*1000+(x.order||0), all=live.filter(x=>publishedIds.has(x.id)).sort((a,b)=>rank(a)-rank(b)), pos=all.findIndex(x=>x.id===id), next=publishedIds.has(id)?(all[pos+1]||null):null;
   const related=(p.related||[]).map(x=>byId.get(x)).filter(Boolean);
   const canEdit=!!currentUser()?.permissions?.editHandbook;
   if(p.chapter==='player-guides')return '<a class="nx-back" href="#/guidebook">‹ The Season 3 Playbook</a><div class="nx-empty"><strong>Player guides now live in their own collection</strong><p>Open the collection to browse and manage player-written guides.</p><a class="nx-btn nx-btn-primary" href="#/builds/guides">Browse Player Guides</a></div>';

@@ -59,7 +59,7 @@ export function guidebookEditorView(id, isNew) {
     '<div class="nx-seg" role="tablist"><button role="tab" aria-selected="' + !E.preview + '" data-ge="mode" data-v="write">Write</button><button role="tab" aria-selected="' + E.preview + '" data-ge="mode" data-v="preview">Preview</button></div>' +
     (E.preview ? '<article class="hb-page he-preview"><header class="hb-head"><span class="nx-kicker">' + esc((chapterOf(e.chapter)?.title || '').toUpperCase()) + '</span><h1>' + esc(e.title) + '</h1></header><p class="hb-answer">' + esc(e.answer) + '</p>' + hbText(e.body) + '</article>' :
     '<section class="nx-tool he-form">' +
-      '<div class="he-structure"><label class="nx-field">Chapter<select data-ge-f="chapter">' + CHAPTERS.map(c => '<option value="' + c.id + '"' + (c.id === e.chapter ? ' selected' : '') + '>' + c.n + ' · ' + esc(c.title) + '</option>').join('') + '</select></label>' +
+      '<div class="he-structure"><label class="nx-field">Chapter<select data-ge-f="chapter">' + CHAPTERS.map(c => '<option value="' + c.id + '"' + (c.id === e.chapter ? ' selected' : '') + '>' + c.n + ' · ' + esc(c.id==='player-guides'?'Player Guides · separate collection':c.title) + '</option>').join('') + '</select><small>Player Guides is a separate collection, not a regular Playbook chapter. Use another chapter for articles that belong in the main directory.</small></label>' +
       '<label class="nx-field">Position in chapter<input type="number" inputmode="numeric" min="0" max="999" data-ge-f="order" value="' + Number(e.order||0) + '"><small>Lower numbers appear first.</small></label></div>' +
       field('title', 'Title', 'For example: Pity', 80) +
       (isNew ? field('id', 'Page address', 'made from the title', 60) : '') +

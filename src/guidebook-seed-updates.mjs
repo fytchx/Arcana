@@ -1,4 +1,4 @@
-// Owner-directed refreshes for the private Season 3 Test workspace.
+// Owner-directed content and structure updates for the Season 3 Playbook.
 // The original draft text remains in guidebook-seed.mjs as an intact source copy.
 import {PAGES as ORIGINAL_PAGES} from './guidebook-seed.mjs';
 const original = Object.fromEntries(ORIGINAL_PAGES.map(p=>[p.id,p]));
@@ -83,8 +83,8 @@ Choose a direction, then stay open to better options. A useful pet, rune or piec
 };
 
 SEED_UPDATES['systems-overview']={chapter:'systems',status:'planned'};
-SEED_UPDATES['grind-ml']={chapter:'systems',status:'planned'};
-SEED_UPDATES['harmony-overview']={chapter:'player-guides'};
+SEED_UPDATES['grind-ml']={chapter:'systems'};
+SEED_UPDATES['harmony-overview']={chapter:'classes'};
 
 export const NEW_SEED_PAGES = [
   combinedOverview,
@@ -97,7 +97,7 @@ export const NEW_SEED_PAGES = [
   {
     id: 'harmony-overview',
     title: 'Harmony: The General Build Direction',
-    chapter: 'player-guides',
+    chapter: 'classes',
     answer: 'Harmony rewards a build that meaningfully uses both Attack Damage and Pet Damage.',
     body: `Harmony combines Attack Damage and Pet Damage, and its bonus grows with Monster Level. The [Stances page](#/handbook/stances) has the skill details.
 
