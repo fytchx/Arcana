@@ -1,6 +1,5 @@
 // The Season 3 Playbook. Player-authored articles are rendered through Arcana's guide creator.
-// Work-in-progress test preview. Preserve the originals in fytchx/IdleArc-Hub.
-// Do not merge or deploy live until all content is reviewed and authors approve.
+// Live Playbook chapter structure. Editable page content is stored in the Live Guidebook API.
 export const GUIDEBOOK_VERSION = 'Season 3 Playbook';
 export const CHAPTERS = [
   {
