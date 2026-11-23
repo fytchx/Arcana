@@ -69,7 +69,7 @@ function chapterView(id){
 function pageView(id){
   const p=byId.get(id);
   if(!p)return '<a class="nx-back" href="#/guidebook">‹ The Season 3 Playbook</a><div class="nx-empty"><strong>This page is still under review.</strong><p>It will appear here when it is ready.</p></div>';
-  const ch=chapterOf(p.chapter), rank=x=>CHAPTERS.findIndex(c=>c.id===x.chapter)*1000+(x.order||0), all=live.filter(x=>publishedIds.has(x.id)).sort((a,b)=>rank(a)-rank(b)), pos=all.findIndex(x=>x.id===id), next=publishedIds.has(id)?(all[pos+1]||null):null;
+  const ch=chapterOf(p.chapter), rank=x=>CHAPTERS.findIndex(c=>c.id===x.chapter)*1000+(x.order||0), all=live.filter(x=>publishedIds.has(x.id)&&!['systems-overview','grind-ml'].includes(x.id)).sort((a,b)=>rank(a)-rank(b)), pos=all.findIndex(x=>x.id===id), next=publishedIds.has(id)?(all[pos+1]||null):null;
   const related=(p.related||[]).map(x=>byId.get(x)).filter(Boolean);
   const canEdit=!!currentUser()?.permissions?.editHandbook;
   if(p.chapter==='player-guides')return '<a class="nx-back" href="#/guidebook">‹ The Season 3 Playbook</a><div class="nx-empty"><strong>Player guides now live in their own collection</strong><p>Open the collection to browse and manage player-written guides.</p><a class="nx-btn nx-btn-primary" href="#/builds/guides">Browse Player Guides</a></div>';
