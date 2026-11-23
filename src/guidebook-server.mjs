@@ -51,8 +51,8 @@ async function load(){
   // New pages enter the editor as private drafts. The reader only receives explicitly approved pages.
   const savedStructureVersion=Number(saved.structureVersion||0),seeds=new Map(SEED.map(p=>[p.id,p])),migrateStructure=savedStructureVersion<3,migrateHarmonyOverview=savedStructureVersion<SEED_STRUCTURE_VERSION;
   const originals=new Map(ORIGINAL_SEED.map(p=>[p.id,p])),migrateApprovedCopy=Number(saved.contentVersion||0)<1;
-  // Fold existing saved drafts together at migration time, preserving their text
-  // the compact page structure as well as the original source text.
+  // Fold existing saved drafts into the compact page structure while preserving their text
+  // alongside the original source copy.
   if(migrateStructure&&!saved.pages['systems-progression']){
    const source=['systems-overview','grind-ml'].map(id=>saved.pages[id]?.draft||saved.pages[id]?.published).filter(Boolean);
    if(source.length){const merged={...seeds.get('systems-progression'),body:source.map(p=>'## '+p.title+'\n\n'+(p.answer||'')+'\n\n'+(p.body||'')).join('\n\n')};saved.pages['systems-progression']=editorPage(merged,0);}
