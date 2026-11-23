@@ -35,6 +35,10 @@ test('Guidebook routes, source server and editor use isolated paths; no producti
  const app=await readFile(new URL('../next/app.js',import.meta.url),'utf8');
  const srv=await readFile(new URL('../server.mjs',import.meta.url),'utf8');
  const editor=await readFile(new URL('../next/guidebook-editor.js',import.meta.url),'utf8');
+ const reader=await readFile(new URL('../next/guidebook.js',import.meta.url),'utf8');
+ const handbook=await readFile(new URL('../next/handbook.js',import.meta.url),'utf8');
+ const seedUpdates=await readFile(new URL('../src/guidebook-seed-updates.mjs',import.meta.url),'utf8');
+ const guidebookServer=await readFile(new URL('../src/guidebook-server.mjs',import.meta.url),'utf8');
  const entryHtml=await readFile(new URL('../next/index.html',import.meta.url),'utf8');
  const nextAllowlist=entryHtml.match(/var NEXT=\[([^\]]+)\]/)?.[1]||'';
  assert.match(nextAllowlist,/'guidebook'/,'Guidebook deep links must stay in Arcana Next, not redirect to /classic');
@@ -42,6 +46,13 @@ test('Guidebook routes, source server and editor use isolated paths; no producti
  assert.match(srv,/api\/admin\/guidebook/);
  assert.match(editor,/Save draft/);
  assert.match(editor,/data-ge/);
+ assert.match(reader,/publishedIds\.has\(p\.id\)/,'Published pages remain in chapter directories even if an editor has a pending revision');
+ assert.doesNotMatch(reader,/!\['systems-overview','grind-ml'\]/,'Published ML page must not be excluded from the directory');
+ assert.match(reader,/publishedIds\.has\(x\.id\)&&x\.id!=='systems-overview'/,'Next-page sequence includes published ML page');
+ assert.match(handbook,/\(p\.next \? byId\.get\(p\.next\) : null\) \|\| list\[i \+ 1\]/,'Missing explicit Handbook next targets fall back to the next page');
+ assert.match(seedUpdates,/SEED_UPDATES\['harmony-overview'\]=\{chapter:'classes'\}/,'Harmony overview belongs in the main Playbook');
+ assert.match(guidebookServer,/migrateHarmonyOverview/,'Existing Harmony overview drafts are moved without replacing their text');
+ assert.match(editor,/Player Guides is a separate collection/,'Editor explains the separate Player Guides destination');
  assert.doesNotMatch(editor,/dataset\?\.he/);
  assert.match(srv,/pathname==='\/api\/guidebook'\|\|pathname==='\/api\/admin\/guidebook'/);
 });
