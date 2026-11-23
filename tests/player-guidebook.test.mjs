@@ -48,7 +48,7 @@ test('Guidebook routes, source server and editor use isolated paths; no producti
  assert.match(editor,/data-ge/);
  assert.match(reader,/publishedIds\.has\(p\.id\)/,'Published pages remain in chapter directories even if an editor has a pending revision');
  assert.doesNotMatch(reader,/!\['systems-overview','grind-ml'\]/,'Published ML page must not be excluded from the directory');
- assert.match(reader,/publishedIds\.has\(x\.id\)&&x\.id!=='systems-overview'/,'Next-page sequence includes published ML page');
+ assert.match(reader,/live\.filter\(x=>publishedIds\.has\(x\.id\)\)/,'Next-page sequence includes every published page without legacy ID exclusions');
  assert.match(handbook,/\(p\.next \? byId\.get\(p\.next\) : null\) \|\| list\[i \+ 1\]/,'Missing explicit Handbook next targets fall back to the next page');
  assert.match(seedUpdates,/SEED_UPDATES\['harmony-overview'\]=\{chapter:'classes'\}/,'Harmony overview belongs in the main Playbook');
  assert.match(guidebookServer,/migrateHarmonyOverview/,'Existing Harmony overview drafts are moved without replacing their text');
