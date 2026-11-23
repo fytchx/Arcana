@@ -89,6 +89,7 @@ try:
         page.locator('.playbook-outline-item[href="#/guidebook/systems-progression"]').click()
         assert page.locator('.hb-next b').inner_text() == 'Grinding Monster Level Efficiently', 'Next-page navigation skipped a published page'
         page.locator('.hb-next').click()
+        page.get_by_role('heading', name='Grinding Monster Level Efficiently').wait_for(timeout=5000)
         assert page.locator('.gb-page h1').inner_text() == 'Grinding Monster Level Efficiently'
         assert page.locator('.hb-next b').inner_text() == 'Pets and Compounding', 'Next-page navigation did not continue across chapters'
         assert errors == [], 'Guidebook overview/navigation produced JS errors: ' + repr(errors)
@@ -99,6 +100,7 @@ try:
         page.goto(f'http://127.0.0.1:{server.server_port}/next/index.html#/handbook/what-is-idlearc', wait_until='domcontentloaded')
         assert page.locator('.hb-next b').inner_text() == 'Your first steps', 'Handbook next-page link missing'
         page.locator('.hb-next').click()
+        page.get_by_role('heading', name='Your first steps').wait_for(timeout=5000)
         assert page.locator('.hb-page h1').inner_text() == 'Your first steps'
         page.goto(f'http://127.0.0.1:{server.server_port}/next/index.html#/handbook/what-is-idlearc', wait_until='domcontentloaded')
         page.locator('.hb-link[data-hb="chapter:biomes"]').first.click()
@@ -106,6 +108,7 @@ try:
         back = page.locator('.hb-back')
         assert 'Back to What IdleArc is' in back.inner_text(), 'Return-to-source link missing after opening a Handbook topic'
         back.click()
+        page.get_by_role('heading', name='What IdleArc is').wait_for(timeout=5000)
         assert page.locator('.hb-page h1').inner_text() == 'What IdleArc is', 'Return-to-source navigation failed'
 
         page.goto(f'http://127.0.0.1:{server.server_port}/next/index.html#/home', wait_until='domcontentloaded')
